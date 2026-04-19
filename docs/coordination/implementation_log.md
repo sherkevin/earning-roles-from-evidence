@@ -2399,3 +2399,41 @@ Day 11-15:E-004 vector belief (3 d) + E-005 整合 (5 d, parallel start)
   - 若 SWAP-4 实际 ΔF1 < 0 (MAD + R2 swap 反而比 MAD original 差)：**这是有效的科学结果**，不是 blocker。Engineer 把数字交付 scientist；scientist 在 §4.x 诚实写"On MAD, R2 audit swap underperforms by Y; this is consistent with our Limitations item (3) — backbone-sensitivity / aggregator-protocol-sensitivity"。R-FULL-002 D3 cap 仍能 lift（reviewer 看的是是否 benchmark 了，不是是否赢），且符合我们 R16 已经定的 honesty framing。
 
 ---
+
+### [reviewer_r_full_003_ack_20260420]
+
+- when: 2026-04-20 (R18 commit)
+- who: scientist (S-104 mandatory loop for R-FULL-003)
+- intent: §F.4 1-line ack of R-FULL-003 reviewer batch landing + record S-104 4-step processing summary. Reviewer-agent 已自更新 REVIEWER_TODO §A/§C/§F.5；scientist 不动那部分。本子条按 §F.4 规范仅记录 (a) batch landed + (b) scientist 4-step 决议出口（S-132..S-135 + 0 engineer 工单 + 0 user 决策）。
+- status: ✅ (decision routing 完毕；落地 4 个 S-XXX 由 scientist 自行执行，本 phase 块只是 ack + dispatch summary)
+- batch identification:
+  - reviewer_id: `reviewer_20260419_193730_03_288f84`
+  - SAC profile: P2 Empirical-NLP SAC (D4 / S5 / S6 / S7 焦点；与 R-FULL-001 P5 oral / R-FULL-002 P3 adversarial-novelty 是不同 persona)
+  - target PDF: `article/build/edo_paper.pdf` (R16 commit `979faec`，347.8 KB / 11 pages)
+  - score: overall=4.5 / weighted_sum=5.905 / experiments_solidity_score=1/8 (only EXP-5 ablation pass) / oral_eligible=false / verdict=weak_reject
+  - cap chain: §6 hard rule "experiments_solidity_score ≤ 3 → cap overall at 4.5" 锁死；其它 caps (D4 / oral / S5 / S6) 全部 non-binding 因已 below cap
+  - structural signal: **连续 3 轮 weak_reject (R-FULL-001/002/003)**, 都被同一 §6 cap 锁；reviewer 自己在 review.md 末段建议 "下一轮 R-FULL-004 时点 = experiments_solidity_score ≥ 4 之后" — 即 sprint Day 18-19 后 (E-005 fullval ✅ + E-006 multi-seed ✅ + E-009..E-016 external baselines ✅) 时再 trigger，避免 reviewer 资源浪费
+- S-104 4-step 处理结果:
+  - **step 1 通读**: review.md 230 行，6 weaknesses + 6 fix-for-8+ + 6 fix-for-oral + DR-1/DR-3 POSSIBLE + 8 EXP audits + 12 prior-work novelty audit
+  - **step 2 不盲从分类** (12 items 全过):
+    - **4 NEW (actionable)** → SCIENTIST_TODO §B.5 加 S-132/S-133/S-134/S-135（全 scientist 自做，无 engineer/user 依赖）
+    - **12 redundant** (in sprint)：experiments_solidity / 单 benchmark / 单 seed / 无 paired test / 无外部 SOTA / Finding 4 self-falsified / Stage-2 not impl / Figure 1 placeholder / equivalent Table 2 ablation on gpt-4.1-mini / R1/R2/R3 implement / external SOTA improve / seed-level stability — 全部已在 sprint workstream（E-005 / E-006 / E-009..E-016 / U-EXEC-004 / E-014 / Day 1.5 ✅ Stage-2 frozen / R16 honesty rewrite / R17 MAD 加入），不重复加 TODO
+    - **0 user 决策**：R17 已闭环 MAD；R-FULL-003 没有任何需要 user 拍板的路线选择
+    - **0 engineer 工单**：E-014（gpt-4.1-mini Table 2 ablation）已在 R13 R-FULL-002 处理时 dispatched，覆盖 P2 reviewer "fix #4 add equivalent Table 2 on gpt-4.1-mini"；无新增
+    - **2 reject/defer with reason**：(1) quantitative error analysis with named failure modes — 已在 SCIENTIST_TODO §B 标 `S-XXX-defer-error-analysis` low priority；(2) community-impact case study — delivered Stage-1 scope 下 D2 天花板 ≤ 6, case study 占大量页面但仅边际收益, 在 8-page main body 容量约束下 reject
+  - **step 3 scientist TODO 更新**: §C 加 5 行 R-FULL-003 themes (4 NEW + 1 redundant + 1 reject/defer 块) + §B.5 加 S-132/S-133/S-134/S-135 + §D R18 行 + 状态块更新 ("R18 后立即 unblocked: S-135 → S-132+S-134, S-133")
+  - **step 4 dispatch fan-out**: 本 phase 块 ack (§F.4 1-line equivalent) + USER_TODO §D 1 行通知 (用户无 action 需要) + REVIEWER_TODO 不动（reviewer-agent 自己已写）
+- depends_on:
+  - REVIEWER_TODO §A R-FULL-003 ✅ (reviewer-agent 自己 2026-04-19 19:37 落盘)
+  - SCIENTIST_TODO §B 强制循环 §S-104 protocol (永远 ✅，每次 reviewer batch 自动重 trigger)
+- unblocks:
+  - **S-135** (DR-1 verification, 必须先于其它，避免在污染数据上做 trim)
+  - **S-132** (Limitations 5 移走 engineering description) — 在 S-135 验证后做
+  - **S-133** (Algorithm 1 page-pressure decision: trim or split) — 在 S-135 验证后做（如已超页紧急做）
+  - **S-134** (B5 PII section, 5 min, 可与 S-132 同 commit)
+- next_action:
+  - scientist: 立即开始 S-135 → S-132/S-134 → S-133（本 phase 块 ✅ 后即开）
+  - engineer: 不变（继续 E-005 step 3-5）
+  - user: 无 action 需要；R-FULL-004 触发等 sprint Day 18-19 之后（exp_solidity ≥ 4 时再 trigger 价值最大）
+
+---
