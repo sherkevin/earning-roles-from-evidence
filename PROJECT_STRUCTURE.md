@@ -23,8 +23,9 @@ EMNLP long paper —— **`Emergent Delegation Organization (EDO)`**：研究近
 | **用户 TODO + 决策池**（**权威源**） | `docs/coordination/USER_TODO.md` |
 | **科学家 TODO**（§A 仅 cross-reference 到 USER_TODO） | `docs/coordination/SCIENTIST_TODO.md` |
 | **工程实现日志** | `docs/coordination/implementation_log.md` |
-| **审稿人归档**（异步，每 batch 独立目录） | `artifacts/idea_reviews/reviewer_<YYYYMMDD>_<HHMMSS>_<NN>_<hash>/` + 聚合 `scoreboard.md` / `fix_themes.md` |
-| **审稿人系统提示** | `prompts/reviewer_prompt.md` |
+| **审稿人 TODO**（R-FULL 全文仅用户触 / R-PART 局部科学家工程师可自触） | `docs/coordination/REVIEWER_TODO.md` |
+| **审稿人 batch 归档**（每 batch 独立目录） | `artifacts/idea_reviews/reviewer_<YYYYMMDD>_<HHMMSS>_<NN>_<hash>/` + 聚合 `scoreboard.md` / `fix_themes.md` |
+| **审稿人系统提示 + schema 单一源** | `prompts/reviewer_prompt.md` |
 | **历史 Markdown 论文稿（不再维护）** | `docs/paper/EMNLP_paper_draft.md` |
 
 ---
@@ -71,12 +72,14 @@ docs/
 │   └── figures_prompts/       论文图表的 prompt + caption 草稿
 │       ├── fig1_3action_policy_prompt.md   Figure 1 概念图 prompt（user 出图）
 │       └── fig2_caption_draft.md           Figure 2 caption（asset 已就绪）
-├── coordination/              协作 / TODO / 日志（用户 + 科学家 + 工程师 三角色）
-│   ├── USER_TODO.md              **用户决策池 + 人工执行 TODO（权威源）**
-│   │                              §A：U-XXX-decide 路线决策（用户拍板）
-│   │                              §B：U-EXEC-XXX 人工操作（API 充值 / prompt 出图）
+├── coordination/              协作 / TODO / 日志（用户 + 科学家 + 工程师 + 审稿人 四角色）
+│   ├── USER_TODO.md              **用户决策池 + 用户专属工作（权威源）**
+│   │                              §A：U-XXX 路线决策（用户拍板）
+│   │                              §B：U-RES/U-FIG/U-REF/U-DIR 用户专属工作
+│   │                              §C：C-XXX 派给用户的具体 todo（dispatch inbox）
 │   ├── SCIENTIST_TODO.md         科学家写作 TODO（§B–E；§A 仅 cross-reference 到 USER_TODO）
-│   ├── implementation_log.md     工程实现日志（append-only，工程师维护）
+│   ├── REVIEWER_TODO.md          **审稿人工作清单**：R-FULL（仅用户触）+ R-PART（科学家/工程师可自触审局部内容）
+│   ├── implementation_log.md     工程实现日志（append-only，工程师维护，新 phase 用 E-XXX 前缀）
 │   └── COORDINATION_AGENT1_AGENT2.md  早期工程师 1 ↔ 2 分工约定（archive 候选）
 └── archive/                   历史文档（不再活跃，保留 git history）
     ├── engineer_prompt.md                       原 short paper 工程师启动提示词
@@ -239,17 +242,19 @@ article/
 ## 9. 四角色协作文件分布
 
 > 协作规范硬约束：[`.cursor/rules/four-role-todo-workflow.md`](./.cursor/rules/four-role-todo-workflow.md)（4 个协作角色：用户 / 科学家 / 工程师 / 审稿人）。
+>
+> **ID 命名约定**（per cursor rule §12）：用户 `U-x` / 科学家 `S-x` / 工程师 `E-x` / 审稿人 `R-x`。
 
 | 角色 | 入口文件 | 备注 |
 |---|---|---|
-| **用户**（总协调） | `docs/coordination/USER_TODO.md` | **§A 决策池权威源** + §B 人工执行（API / 出图 / 上传 / 注册） |
-| **科学家** | `docs/coordination/SCIENTIST_TODO.md` | 写作 TODO + 修订记录 + Reviewer 反馈追踪（§A 仅 cross-reference 到 USER_TODO §A） |
-| **工程师**（统一日志） | `docs/coordination/implementation_log.md` | append-only 工程实现日志 |
-| **审稿人**（异步触发） | `artifacts/idea_reviews/reviewer_<YYYYMMDD>_<HHMMSS>_<NN>_<hash>/` 每 batch 独立目录 + 聚合 `scoreboard.md` / `fix_themes.md` | stateless（不读历史 review）；输入：当前 PDF + `prompts/reviewer_prompt.md`；hand-off：scientist 必须按 SCIENTIST_TODO §B.4 S-104 4 步循环处理 |
-| **共享决策（权威源）** | `docs/coordination/USER_TODO.md § A` | 用户拍板；科学家/工程师/AI 在此挂 `U-XXX-decide`，等用户回复 |
-| **派给用户的人工活** | `docs/coordination/USER_TODO.md § B` | 任何角色可挂 `U-EXEC-XXX`（API 充值 / 用 prompt 出概念图 / 上传 paper / OpenReview 操作） |
+| **用户**（总协调） | `docs/coordination/USER_TODO.md` | §A 决策池（权威源，`U-XXX`）+ §B 用户专属工作（`U-RES`/`U-FIG`/`U-REF`/`U-DIR`）+ §C 派给用户的 dispatch inbox（`C-XXX`） |
+| **科学家** | `docs/coordination/SCIENTIST_TODO.md` | §B–E 写作 TODO（`S-XXX`）+ Reviewer 反馈追踪 + S-104 强制循环（§A 仅 cross-reference 到 USER_TODO §A） |
+| **工程师**（统一日志） | `docs/coordination/implementation_log.md` | append-only 工程实现日志（新 phase 用 `E-XXX` 前缀；历史 phase block 用 `[<descriptive-name>]` 不回写） |
+| **审稿人** | `docs/coordination/REVIEWER_TODO.md` + `artifacts/idea_reviews/reviewer_<...>/` 每 batch 独立目录 + 聚合 `scoreboard.md` / `fix_themes.md` | §A `R-FULL-XXX` 全文审稿（**仅用户触发**）+ §B `R-PART-XXX` 局部审稿（科学家/工程师可自触发审自己新写的部分内容）；batch 内 stateless；hand-off：scientist 必须按 SCIENTIST_TODO §B.4 S-104 4 步循环处理 |
+| **共享决策（权威源）** | `docs/coordination/USER_TODO.md § A` | 用户拍板；科学家/工程师在此挂 `U-XXX`，等用户回复 |
+| **派给用户的具体 todo** | `docs/coordination/USER_TODO.md § C` | 任何角色可挂 `C-XXX`（科学家 / 工程师 派给 USER 的 dispatch inbox） |
 
-注 1：原 `agent-1/2/3-task.md` + `agent-1/2/3-summary.md` 六文件协作模式已被用户简化为 `USER_TODO.md` + `SCIENTIST_TODO.md` + `implementation_log.md` 三文件 + 审稿人归档目录。
+注 1：原 `agent-1/2/3-task.md` + `agent-1/2/3-summary.md` 六文件协作模式已被用户简化为 `USER_TODO.md` + `SCIENTIST_TODO.md` + `REVIEWER_TODO.md` + `implementation_log.md` 四文件 + 审稿 batch 归档目录。
 
 注 2：**派工方向**：
 - 用户的活（决策 / 充 API / 出概念图）：任何角色可在 `USER_TODO.md §A` 或 `§B` 挂 todo 等用户做。

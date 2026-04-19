@@ -834,6 +834,51 @@
   - 无（请求闭环）
   - 后续若需新审稿 batch：先在 USER_TODO §A 加 `U-XXX-decide` 请用户批准 → 用户批 → engineer/scientist 用 `prompts/reviewer_prompt.md` 触发 → 落盘到 `artifacts/idea_reviews/reviewer_<TS>_<NN>_<HASH>/`
 
+### [E-rules-polish-2026-04-19]
+- status: completed
+- date: 2026-04-19
+- 用户 10 条指令逐项消化:
+  - 指令 1+3：rule 不再出现 "AI 扮演 / 由谁实际执行" 字样（避免幻觉），§0 角色映射表删 "谁实际执行" 列、删 "多角色 AI 场景" 段落；§1 / §2 / §8 全文清掉 "AI 扮演"
+  - 指令 2：reviewer 升级为有持久 TODO 的角色 → **新建 `docs/coordination/REVIEWER_TODO.md`**（§A `R-FULL-XXX` 仅用户触 + §B `R-PART-XXX` 科学家/工程师可自触审局部内容 + §C 完成 + §D 修订 + §E 输入输出契约）
+  - 指令 4：按合适方式改（已综合执行）
+  - 指令 5：评分倒退**不**触发回滚 → §7 末新增引述："reviewer batch 之间 overall 分数小幅波动 (±0.5/±1.0) 属审稿人采样噪声，不触发回滚；scientist 在 S-104 第 ② 步 必须兼顾 scoreboard.md 历史趋势，单次小波动不能阻碍前进；仅多次连续 batch 在同一 fix-theme 上指向真实退化时，才考虑 7.1 回滚"；同义引述也加到 §11.4 第 ② 步
+  - 指令 6：原 §8 stakeholder 分类 polish 取消 → §8 简化为 3 行（"完成可做项 → 回报用户 → 等指令"），不再列 stakeholder 三方分类
+  - 指令 7：§11.1 触发条件 AND/OR 逻辑保持现状（不再纠结）
+  - 指令 8：rule 中**全部删 review.json 字段引用** → §6 quality gate 改为 "按 reviewer_prompt.md 规定的结构化格式"；§11.2 缩为 "schema 单一源 = reviewer_prompt.md，详细 I/O 见 REVIEWER_TODO §E"
+  - 指令 9：ID 命名规范化 → §12 表头加 "前缀按角色分配：U-x 用户 / S-x 科学家 / E-x 工程师 / R-x 审稿人"；新增 `E-XXX` 行（工程师新 phase 用此前缀，历史 phase block `[<descriptive-name>]` 不回写）；新增 `R-FULL-XXX` / `R-PART-XXX` 行
+  - 指令 10：§11.6 退出条件保持现状
+- files_added:
+  - `docs/coordination/REVIEWER_TODO.md`（约 5 KB；§0/§A/§B/§C/§D/§E 6 节；接管 R-FULL-001 历史 batch 元数据）
+- files_modified:
+  - `.cursor/rules/four-role-todo-workflow.md`（重写约 8 KB；front-matter `globs` 加 `REVIEWER_TODO.md`；§0–§12 全套按 10 条指令翻新）
+  - `docs/coordination/USER_TODO.md`：L7 配对文件清单加入 `REVIEWER_TODO.md` 指针
+  - `docs/coordination/SCIENTIST_TODO.md`：L6 协作规范引用范围 §1-10 → §1-12（含 §11+§12）；新增 L7 配对文件清单
+  - `PROJECT_STRUCTURE.md`：§0 entry 加 REVIEWER_TODO 行 + 改 batch 归档行；§3 docs/ 树加 REVIEWER_TODO 行；§9 协作分布表完整重写为含 4 角色 + ID 前缀（U-x/S-x/E-x/R-x）
+  - `README.md`：1 分钟入口表加 REVIEWER_TODO 行；角色与协作表增列"主 ID 前缀"
+  - `docs/coordination/implementation_log.md`（本条）
+- key_decisions（用户直接指令，未涉路线）:
+  - 全部 10 条指令是用户对 rule polish 的具体方向决策；engineer 直接执行
+  - 选 `R-FULL-XXX` vs `R-PART-XXX` 双轨命名（与 §11.1 触发权限矩阵对应）
+  - REVIEWER_TODO §E 把 schema 详情指向 `prompts/reviewer_prompt.md` 单一权威源（避免双源 drift）
+- blockers:
+  - none
+- conflicts_with_docs:
+  - none（USER_TODO §B 现有 `U-RES`/`U-FIG`/`U-REF`/`U-DIR` 子前缀全部纳入 §12 ID 表；§C dispatch inbox `C-XXX` 也纳入；老 `U-EXEC-XXX` 已废弃→纳入 ID 表说明）
+- verification:
+  - `Read .cursor/rules/four-role-todo-workflow.md` → 12 节结构完整，无 "AI 扮演" / "review.json" 残留
+  - `Read docs/coordination/REVIEWER_TODO.md` → §A R-FULL-001 历史 batch 已接管；§B 留空待用；§E 输入输出契约完整指向 reviewer_prompt.md 单源
+  - 5 处活跃引用全部更新（USER_TODO L7 / SCIENTIST_TODO L6+L7 / PROJECT_STRUCTURE §0+§3+§9 / README §1 entry+角色表）
+  - ReadLints 6 文件全部 0 错误（待跑）
+- impact_on_other_tracks:
+  - 工程师（我）：未来新 phase block 应用 `[E-XXX]` 前缀（如 `[E-001-foo]`）；历史 phase block `[<descriptive-name>]` 保持不动（不回写）
+  - 科学家：S-104 第 ② 步现在硬性要求"兼顾 scoreboard.md 历史趋势"，不能因单次评分小波动停滞
+  - 审稿人：R-PART-XXX 自由触发解锁了"自审"模式（科学家写完一段可自触局部审稿验证清晰度，无需全文 batch 成本）
+  - 用户：R-FULL-XXX 仍是用户独占触发权；新增 §C dispatch inbox 让派工链路明确
+  - 不影响任何 in-flight run / 论文 LaTeX 编译 / 现有 U-XXX 决策内容
+- next_action:
+  - 无（请求闭环）
+  - 后续若用 `E-XXX` 前缀，先 Grep 现有最大 E-XXX 编号 +1（当前是首次引入，下一次可用 E-001）
+
 ### [reviewer_p5_oral_gatekeeper_review_20260419]
 - status: completed
 - date: 2026-04-19

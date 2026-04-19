@@ -17,6 +17,7 @@ EMNLP long paper 仓库。研究**近似同质 LLM agent 在稀疏图上通过�
 | **看用户的 TODO + 决策池**（**权威源**） | [`docs/coordination/USER_TODO.md`](./docs/coordination/USER_TODO.md) |
 | **看科学家的写作 TODO** | [`docs/coordination/SCIENTIST_TODO.md`](./docs/coordination/SCIENTIST_TODO.md) |
 | **看工程实现日志（append-only）** | [`docs/coordination/implementation_log.md`](./docs/coordination/implementation_log.md) |
+| **看审稿人 TODO**（R-FULL/R-PART） | [`docs/coordination/REVIEWER_TODO.md`](./docs/coordination/REVIEWER_TODO.md) |
 | **看每个 run 的状态标签** | [`artifacts/RUN_INDEX.md`](./artifacts/RUN_INDEX.md) |
 | **看可执行 spec** | [`artifacts/edo_lite_executable_spec.md`](./artifacts/edo_lite_executable_spec.md) |
 | **看 8-page 预算审计** | [`docs/paper/page_budget_audit.md`](./docs/paper/page_budget_audit.md) |
@@ -59,12 +60,12 @@ idea04/
 
 ## 角色与协作
 
-| 角色 | 入口文件 |
-|---|---|
-| 用户（总协调） | [`docs/coordination/USER_TODO.md`](./docs/coordination/USER_TODO.md) — §A 决策池（权威源）+ §B 人工执行 |
-| 科学家（writing lead） | [`docs/coordination/SCIENTIST_TODO.md`](./docs/coordination/SCIENTIST_TODO.md) — §B–E 写作 TODO（§A 仅 cross-reference 到 USER_TODO） |
-| 工程师 | [`docs/coordination/implementation_log.md`](./docs/coordination/implementation_log.md) — append-only 工程日志 |
-| 审稿人（异步触发） | [`artifacts/idea_reviews/`](./artifacts/idea_reviews/) — 每 batch 独立 `reviewer_<...>/` 目录 + 聚合 `scoreboard.md` / `fix_themes.md`；用 [`prompts/reviewer_prompt.md`](./prompts/reviewer_prompt.md) 触发 |
+| 角色 | 入口文件 | 主 ID 前缀 |
+|---|---|---|
+| 用户（总协调） | [`docs/coordination/USER_TODO.md`](./docs/coordination/USER_TODO.md) — §A 决策池（权威源）+ §B 用户专属工作 + §C dispatch inbox | `U-x` / `C-x` |
+| 科学家（writing lead） | [`docs/coordination/SCIENTIST_TODO.md`](./docs/coordination/SCIENTIST_TODO.md) — §B–E 写作 TODO（§A 仅 cross-reference 到 USER_TODO） | `S-x` |
+| 工程师 | [`docs/coordination/implementation_log.md`](./docs/coordination/implementation_log.md) — append-only 工程日志 | `E-x`（新 phase） |
+| 审稿人 | [`docs/coordination/REVIEWER_TODO.md`](./docs/coordination/REVIEWER_TODO.md) — `R-FULL-XXX` 全文（仅用户触）+ `R-PART-XXX` 局部（科学家/工程师可自触审自己新写内容）；batch 归档落 [`artifacts/idea_reviews/`](./artifacts/idea_reviews/) | `R-x` |
 
 协作规范硬约束：[`.cursor/rules/four-role-todo-workflow.md`](./.cursor/rules/four-role-todo-workflow.md)（4 个协作角色：用户 / 科学家 / 工程师 / 审稿人）。
 

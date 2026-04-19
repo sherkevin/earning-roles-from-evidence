@@ -4,7 +4,7 @@
 > 创建日期：2026-04-19。
 > 当前位置：`docs/coordination/USER_TODO.md`。
 > 协作规范：[`.cursor/rules/four-role-todo-workflow.md`](../../.cursor/rules/four-role-todo-workflow.md) §0/§4/§11/§12。
-> 配对文件：[`SCIENTIST_TODO.md`](./SCIENTIST_TODO.md)（科学家工作清单，§A 是 cross-ref 镜像）、[`implementation_log.md`](./implementation_log.md)（工程实现日志，append-only）。
+> 配对文件：[`SCIENTIST_TODO.md`](./SCIENTIST_TODO.md)（科学家工作清单，§A 是 cross-ref 镜像）、[`implementation_log.md`](./implementation_log.md)（工程实现日志，append-only）、[`REVIEWER_TODO.md`](./REVIEWER_TODO.md)（审稿人工作清单，R-FULL 仅我触发 / R-PART 科学家工程师可自触）。
 
 ---
 
