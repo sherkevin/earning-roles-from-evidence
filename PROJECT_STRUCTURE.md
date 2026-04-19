@@ -1,7 +1,7 @@
 # PROJECT_STRUCTURE — 项目目录鸟瞰图
 
 > 维护者：科学家（writing lead）。这是项目的**单一索引文件**，新人 / 新窗口接手时**只读这一份**就能定位所有内容。
-> 创建日期：2026-04-19  最后更新：2026-04-20（R17 commit：U-018 → ✅ 加 MAD 第 3 个外部 baseline；外部 baseline N=2→**N=3** (AutoGen + ChatEval + MAD)；派 E-015 + E-016；R-FULL-002 D3 novelty `is_overlap_risk` cap 关闭路径锁定；T-35 to ARR May 25 不变 — Day 1.5 提前关闭省下 buffer 吸收 +5 d MAD 工作量）。
+> 创建日期：2026-04-19  最后更新：2026-04-20（R35 commit：per user "我们要跑到 SOTA, 进行一轮调研" → 新写 `docs/paper/sota_baseline_survey_2026.md` 调研 11 个 2024-2026 multi-agent multi-hop QA candidates → Tier-1 finalists = MA-RAG + ReAgent (both have public code + multi-hop QA core + ≥2024)；2-axis design (Axis A full-system SOTA + Axis B existing module-swap)；派 engineer E-018 (Tier-1 reproduce ~10-12h $40) + E-019 (Tier-2 BELLE+MAR probe 30-60min) + user U-022-decide default-on Tier-1 batch；scientist S-149/S-150/S-151 链式 unblock at E-018 ack）。
 > 任何目录新增 / 重命名 / 归档必须同步更新本文件。
 
 ---
@@ -88,8 +88,9 @@ docs/
 ├── demand.md                  EMNLP 2027 long paper 投稿要求（用户提供）
 ├── paper/
 │   ├── EMNLP_paper_draft.md   ⚠ 历史 markdown 副本（U-003 已隐式 ✅；写作目标已切到 `article/latex/edo_paper.tex`）
-│   ├── benchmark_inventory.md   **benchmark 唯一权威说明文档**（datasets + baselines + topologies + backbones + sample sizes + module-swap + status table；R34 commit）
-│   ├── external_baseline_plan.md   外部 baseline 选型 + module-swap 设计 + 时间线（含 SWAP-1/3/4 + N=3 hosts）
+│   ├── benchmark_inventory.md   **benchmark 唯一权威说明文档**（datasets + baselines + topologies + backbones + sample sizes + module-swap + status table；R34 commit；R35 §3.3 加 Axis A SOTA finalists）
+│   ├── sota_baseline_survey_2026.md   ⚡ R35 NEW — full-system SOTA 调研（11 candidates → Tier-1 MA-RAG + ReAgent finalists）+ 2-axis design rationale
+│   ├── external_baseline_plan.md   外部 baseline 选型 + module-swap 设计 + 时间线（含 SWAP-1/3/4 + N=3 hosts；R35 §10 cross-link 加 sota_baseline_survey_2026.md）
 │   ├── page_budget_audit.md   S-011 产出：vs demand.md §5 的差距清单 + 压缩计划
 │   └── figures_prompts/       论文图表的 prompt + caption 草稿
 │       ├── fig1_3action_policy_prompt.md   Figure 1 概念图 prompt（user 出图）

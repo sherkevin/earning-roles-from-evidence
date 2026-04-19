@@ -3391,3 +3391,102 @@ R-FULL-006 BATCH-B 的 DR-1 finding NOT 影响 E-017 (实验和论文结构是�
   - reviewer-agent: 注意未来 R-FULL batches 应 strict literal read demand.md §2 (这是真实 ARR/EMNLP 的 worst-case reviewer view, 不是 charitable softball)
 
 ---
+
+### [sota_full_system_workstream_20260420]
+
+- when: 2026-04-20 (R35 commit, scientist self-survey + engineer dispatch per user instruction "我们是要把算法跑到 SOTA，而不是跟自己对比，是要跟同赛道的其他解决相同问题的公开模型对比，你需要进行一轮调研工作")
+- who: scientist (survey + dispatch) + engineer (E-018 + E-019 reproduce + locate)
+- intent: 用户明确指出我们需要 **full-system head-to-head F1 comparison** to recent 2024-2026 multi-agent SOTA on HotpotQA/MuSiQue, NOT just module-swap (which is the existing axis B). 本 phase 块 record 调研结果 + 派出 E-018 + E-019 + dispatch user U-022-decide。
+- status: ✅ (调研 + dispatch 落地；engineer 下一轮 session 复制 nohup 命令; user 拍 U-022 后 Tier-1 系统 lock-in)
+- companion docs: [`docs/paper/sota_baseline_survey_2026.md`](../paper/sota_baseline_survey_2026.md) (full survey 含 11 candidates 比较表 + filter criteria + Tier-1/2/3 选型 + 最终推荐 + 2-axis design rationale) + [`docs/paper/benchmark_inventory.md`](../paper/benchmark_inventory.md) §3.3 (synced)
+
+#### A. Survey result summary (per `sota_baseline_survey_2026.md`)
+
+11 candidates 调研后过 3 项 filter (open code + multi-hop QA core + ≥2024 release):
+- **Tier 1 finalists (2)**: MA-RAG (arXiv:2505.20096, github thangylvp/MA-RAG) + ReAgent (arXiv:2503.06951, github astridesa/ReAgent)
+- **Tier 2 probe (2)**: BELLE + MAR (need engineer locate code)
+- **Tier 3 retain (3)**: AutoGen + ChatEval + MAD (already cloned, retained for Axis B module-swap)
+- **Skipped (4)**: Reasoning Court (no code) + PRISM (no code yet) + AgentRouter (anonymous repo) + AgentVerse (not multi-hop QA core)
+
+#### B. Two-axis comparison strategy (paper §4.x design)
+
+- **Axis A (full-system SOTA, NEW R35)**: TCPB Stage-2 / EDO degenerate-Stage-2 vs MA-RAG vs ReAgent vs MAD (+ optional BELLE/MAR) on **same backbone (gpt-4.1-mini) + same HotpotQA-200/fullval slice + same paired-bootstrap CI**. Answers reviewer "S6 baseline_quality" + fatal #3 directly.
+- **Axis B (module-swap, existing R10/R17)**: SWAP-1 (R3 → AutoGen `select_speaker`) + SWAP-3 (R2 → ChatEval `MetaReviewer`) + SWAP-4 (R2 → MAD `final_aggregator`). Answers fatal #1 (Finding 4 self-falsified) + isolates mechanism contribution.
+- Both axes are NEEDED — they answer DIFFERENT reviewer questions.
+
+#### C. Newly-dispatched tickets
+
+##### Ticket: E-018 — MA-RAG + ReAgent reproduce on HotpotQA (Tier-1 finalists)
+
+- ticket_id: E-018
+- assigned_to: engineer (next session)
+- priority: P0 — sprint critical-path (closes fatal #3 directly)
+- estimate: ~10-12 h wall on server, 2 systems × {clone + install + LLM-adapt + smoke + 200-sample reproduce}, parallelisable
+- depends_on: E-008 ✅ newapi PRIMARY; server SSH ✅ (per [u_019_server_ssh_recovered_20260420])
+- launch commands (engineer copy-paste; use SSH pinned cautions Recovery playbook if connection issues):
+
+  **Step 1 (clone, < 1 min total)**:
+  ```bash
+  ssh -i ~/.ssh/school -o BatchMode=yes -o ControlMaster=no -o ControlPath=none -o IdentityAgent=none dengkw@10.103.16.12 \
+    'cd /media/data3/dengkw/idea04/external_baselines && \
+     git clone https://github.com/thangylvp/MA-RAG marag 2>&1 | tee /media/data3/dengkw/idea04/logs/e018_marag_clone_$(date +%Y%m%d_%H%M%S).log && \
+     git clone https://github.com/astridesa/ReAgent reagent 2>&1 | tee /media/data3/dengkw/idea04/logs/e018_reagent_clone_$(date +%Y%m%d_%H%M%S).log && \
+     ls -la marag reagent'
+  ```
+
+  **Step 2-5 (install + adapt + smoke + 200-sample reproduce)**: separate venvs to avoid dep conflicts. Outline command (engineer to refine after seeing each repo's actual install instructions):
+  ```bash
+  ssh -i ~/.ssh/school -o BatchMode=yes -o ControlMaster=no -o ControlPath=none -o IdentityAgent=none dengkw@10.103.16.12 \
+    'cd /media/data3/dengkw/idea04/external_baselines/marag && nohup bash -c "
+      python3 -m venv venv_marag && source venv_marag/bin/activate &&
+      pip install -r requirements.txt &&
+      # adapt LLM client → newapi (xh.v1api.cc) + gpt-4.1-mini
+      python3 run_marag.py --benchmark hotpotqa --slice /media/data3/dengkw/idea04/artifacts/seed/hotpotqa_validation_200.jsonl --backbone gpt-4.1-mini --workers 4
+      " > /media/data3/dengkw/idea04/logs/e018_marag_install_$(date +%Y%m%d_%H%M%S).log 2>&1 &'
+  # parallel for reagent in separate venv
+  ```
+  (Engineer will adapt the actual driver script name + CLI args after `head` / `cat README.md` of each repo.)
+
+- task spec details: see `sota_baseline_survey_2026.md §4.1` for 7-step procedure + 8 pinned cautions
+- pinned_cautions:
+  - **C-1**: newapi PRIMARY only
+  - **C-3**: isolated venvs (`venv_marag`, `venv_reagent`); do NOT pollute system Python or our `workspace/idea04_core/` deps
+  - **C-5**: cost ≤ $20 per system × 2 = $40 budget; use `workers=4` not `workers=8` to stay within newapi rate-limit while E-017 still running
+  - **C-7 (R22 SSH)**: see `[pinned_cautions_for_engineer_ssh_failure_mode_20260420]` 5-step Recovery playbook
+  - **C-8 NEW**: if MA-RAG uses retrieval (it does — needs embedding index), use HotpotQA's gold supporting facts as the retrievable corpus (the question's `context` field), NOT a separate Wikipedia dump. This keeps comparison fair to our `evidence_seeker` setup.
+- if_blocked:
+  - MA-RAG LLM swap fails → fall back to their reported number with backbone-difference disclaimer
+  - ReAgent install too sparse → write `repo_reagent_install_blocker.md` + scientist notifies user U-022-decide whether to drop ReAgent OR wait
+- output:
+  - `artifacts/external_baselines/marag/marag_200sample_<TS>/metrics.json` + `repo_marag_smoke.md`
+  - `artifacts/external_baselines/reagent/reagent_200sample_<TS>/metrics.json` + `repo_reagent_smoke.md`
+  - append `[E-018_done_<TS>]` sub-entry under THIS phase block + handoff F1+token data to scientist S-149
+
+##### Ticket: E-019 — Tier-2 probe (BELLE + MAR repo locator)
+
+- ticket_id: E-019
+- assigned_to: engineer
+- priority: P2 (after E-018 underway)
+- estimate: 30-60 min total
+- task spec:
+  1. Locate BELLE (arXiv:2505.11811, ACL 2025) actual code repo. Search arXiv abs page external links + Google Scholar + paperswithcode. The `LianjiaTech/BELLE` link in our search is a different BELLE LLM project, not the multi-agent paper.
+  2. Locate MAR (arXiv:2512.20845, multi-agent reflexion) — likely 2025-12 paper; check abs page for code link.
+  3. If found → propose adding to E-018 spec as Tier-2 (repeat the install/smoke/200-sample pattern); if not found → skip and note "code not located, deferred."
+- output: `logs/e019_tier2_probe_<TS>.md` with findings; if codes found, append to E-018 spec
+
+#### D. depends_on / unblocks
+
+- depends_on: U-022-decide ✅ (if user approves Tier-1 = MA-RAG + ReAgent; default-on per scientist recommendation if user doesn't object)
+- unblocks:
+  - **scientist S-149** (after E-018 done): fill `_pending_data_templates.tex` TEMPLATE 3 rows 1+2 with MA-RAG + ReAgent F1
+  - **scientist S-150** (after E-018 done): update `benchmark_inventory.md` §3.3 to reflect actual eligible roster
+  - **scientist S-151** (after S-149 done): update §1 Introduction + §6 Conclusion to claim "evaluated against 2024-2025 SOTA on HotpotQA"
+
+#### E. next_action
+
+- engineer (next session): copy-paste C step-1 clone command (1 min); then iteratively step-2..step-5 in 2 separate venvs; OR if engineer prefers to wait for explicit go-ahead, just probe E-019 first (Tier-2 BELLE + MAR locate, 30-60 min low-risk task)
+- scientist: monitor via S-144 + S-148 (NEW: this survey doc as ongoing reference); when E-018 reports back, fill TEMPLATE 3 + R36 commit
+- user: 拍 U-022-decide (Tier-1 MA-RAG + ReAgent approval; default-on if no objection)
+- reviewer-agent: future R-FULL-007 batch (if triggered after E-018+E-017 land) should verify Axis A SOTA delta (which is what reviewer fatal #3 has been asking for)
+
+---

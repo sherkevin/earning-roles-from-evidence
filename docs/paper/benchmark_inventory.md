@@ -113,13 +113,27 @@ These are NOT separate methods in `METHOD_NAMES` — they are M-4 / M-7 with fea
 
 R-FULL-002+ asks for equivalent Table 2 on `gpt-4.1-mini` strong backbone — engineer **E-014** (R13 派, in queue). When delivered, scientist fills `_pending_data_templates.tex` TEMPLATE 2 → R##+ commit.
 
-### 3.3 External baselines (per `external_baseline_plan.md` §3.2 — N=3 SWAP hosts)
+### 3.3 External baselines (two-axis design)
+
+**Axis B — module-swap hosts** (per `external_baseline_plan.md` §3.2 — N=3 SWAP hosts; mechanism isolation):
 
 | ID | System | Reference | Repo on server | Status (2026-04-20) |
 |---|---|---|---|---|
 | **EX-1** | **AutoGen** (`microsoft/autogen`) | Wu et al. 2024 (`wu2023autogen`) | `/media/data3/dengkw/idea04/external_baselines/chateval/` ✅ cloned (note: directory name was set during clone; engineer track) | E-010 step 1 (clone) ✅; step 2-3 (install + smoke) ⏳ engineer next session per `[parallel_orchestration_plan_20260420]` Section C |
 | **EX-2** | **ChatEval** (`chanchimin/ChatEval`) | Chan et al. 2024 (`chan2024chateval`) | (in `external_baselines/chateval/`) ✅ cloned | E-010 step 1 ✅; step 2-3 ⏳ engineer |
 | **EX-3** | **Multi-Agent Debate (MAD)** (`composable-models/llm_multiagent_debate`) | Liang et al. 2024 (`liang2023mad`) + Du et al. 2024 (`du2024improving`) | `/media/data3/dengkw/idea04/external_baselines/mad/` ✅ cloned | U-018 ✅ approved (2026-04-20); E-015 step 1 (clone) ✅; step 2-3 (install + smoke) ⏳; HotpotQA adapter (step 4) is engineer's longer 4-6h task |
+
+**Axis A — Full-system SOTA finalists** (NEW per R35, [`sota_baseline_survey_2026.md`](sota_baseline_survey_2026.md); direct head-to-head F1 on HotpotQA — answers reviewer R-FULL fatal #3 "S6 baseline_quality"):
+
+| ID | System | Reference | Repo | Why eligible | Status (2026-04-20) |
+|---|---|---|---|---|---|
+| **EX-4** ⚡ NEW | **MA-RAG** (`thangylvp/MA-RAG`) | Tran et al. 2025 (arXiv:2505.20096) | https://github.com/thangylvp/MA-RAG (15 ⭐) | claims SOTA on HotpotQA + 2WikimQA + MuSiQue with LLaMA3-8B/70B/GPT-4o-mini; 4-agent RAG (Planner/StepDefiner/Extractor/QA); 2025-05 recent | engineer **E-018** Tier-1 dispatched (R35; clone + install + adapt to newapi/gpt-4.1-mini + 200-sample reproduce) |
+| **EX-5** ⚡ NEW | **ReAgent** (`astridesa/ReAgent`) | Liu et al. EMNLP 2025 (arXiv:2503.06951) | https://github.com/astridesa/ReAgent (4 ⭐) | EMNLP 2025; reversible multi-agent (rollback when conflicts); +6% over forward baselines on HotpotQA + 2 others; conceptually distinct from MAD's debate | engineer **E-018** Tier-1 dispatched (R35; same step pattern as EX-4) |
+| **EX-6 Tier-2** | _BELLE_ (arXiv:2505.11811, ACL 2025) | _Zhang et al. 2025_ | _code link unclear (LianjiaTech/BELLE is wrong project)_ | _bi-level multi-agent + fast/slow debaters; multi-hop QA core; ACL 2025_ | engineer **E-019** probe to locate code (30 min) |
+| **EX-7 Tier-2** | _MAR_ (arXiv:2512.20845?) | _Multi-Agent Reflexion_ | _need engineer locate_ | _claims HotpotQA EM 44 → 47_ | engineer **E-019** probe |
+| (skipped) | _Reasoning Court_ (arXiv:2504.09781) | _2025-04_ | _❌ no public code_ | — | skip pending de-anonymisation |
+| (skipped) | _PRISM_ (arXiv:2510.14278) | _2025-10_ | _❌ no public code yet_ | — | skip; re-evaluate when code drops |
+| (skipped) | _AgentRouter_ (arXiv:2510.05445) | _2025-10_ | _"anonymous repository"_ | — | skip |
 
 External baselines NOT included (rejected paths):
 - MetaGPT — too tightly coupled to software-engineering pipeline; multi-hop QA out of scope; SWAP-5 (R1 → MetaGPT) is `external_baseline_plan.md §4` future-work only.
