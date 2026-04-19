@@ -2199,3 +2199,34 @@ Day 11-15:E-004 vector belief (3 d) + E-005 整合 (5 d, parallel start)
   - **scientist**: 仍 fully unblocked S-118；仍可推进 R-FULL-002 触发的 S-104 4 步循环；其余 §B.5 仍 blocked on E-005 fullval data
 
 ---
+
+### [E-005_step0_integration_smoke_20260420]
+
+- when: 2026-04-19 (engineer Day 6 — 主动加做)
+- who: engineer
+- intent: 在动 `methods.py / runner.py` 之前，先做"4 模块 composition smoke"——纯本地、0-LLM、0-API-cost，验证 task_tree + action_policy + audit_runtime + persona_model 在端到端微流程下接口对得上（防止 E-005 step 1 才发现某个数据 shape 不兼容）。这一步不动 production 代码，只在新建 test 文件里 wire 4 个模块跑一个 mini case。
+- status: ✅ done
+- delivered:
+  - `workspace/idea04_core/test_stage2_integration.py` (~220 行 / 2 tests)
+    - `test_stage2_full_micro_flow`: 8 阶段端到端
+      1. 建 root TaskTreeState (1 节点)
+      2. select_action 选 SPLIT (mock LLM 返回 2 children)
+      3. add_subtask 注册 (3 节点)
+      4. 模拟下游 candidate 返回 (alpha=好答案, beta=空)
+      5. audit_candidate 各产 1 AuditEvent (rule path: ACCEPT vs REJECT_REROUTE)
+      6. apply_audit_to_tree 写回 audit_status；update_belief_from_audit 推 BeliefStore
+      7. AuditEventBuffer flush jsonl + load round-trip byte-equal
+      8. serialize_v2 dual-track + deserialize round-trip
+    - `test_stage2_split_downgrades_at_total_nodes_cap_and_pipeline_still_runs`: 边界 + pipeline 健壮性
+- verification:
+  - 2/2 integration tests pass in 0.17 s
+  - 全 5-suite regression: **90 passed in 0.34 s** (18 + 18 + 21 + 31 + 2)
+  - alpha (good audit) belief mean > beta (empty audit) belief mean — R3 differentiation 实证
+  - dual-track v1 scalar = v2 mean — C-3 实证
+- C-2 触发: **未触及** methods.py / runner.py / contracts.py / llm_client.py
+- impact:
+  - **E-005 step 1 风险显著降低**：4 模块的对接接口已经在 mini 端到端跑通，next session engineer 只需做 plumbing (在 methods.py 替换 routing block / 在 runner.py 注入 task_tree state per sample) 不再担心数据 shape 不兼容
+  - 这一 smoke 也是**未来 R-PART-001 复审**的素材："工程师做了独立 integration smoke，91 个测试齐全"
+- next_action: 已无后续；下一 P0 仍是 E-005 step 1-3（改 4 个 production 文件 + 1-sample sanity probe + 触发 U-020 fullval gate）
+
+---
