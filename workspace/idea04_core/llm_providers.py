@@ -1,21 +1,23 @@
 """
 LLM provider resolution and light-weight request gating.
 
-configs/llm.json may use three top-level blocks (each with its own base URLs):
+configs/llm.json may use the following top-level blocks (each with its own base URLs):
 
   zhipu    — URL, URL1, URL2, KEY, chat_model
-  oversea  — base_url, key, models (OpenAI-compatible ids)
+  oversea  — base_url, key, models (OpenAI-compatible ids)  [DEPRECATED 2026-04-20 per U-EXEC-001 — see _status field]
   gptplus5 — base_url, key, models (OpenAI-compatible; same routing rules as oversea)
   nvidia   — base_url, key, chat_model, note, max_requests_per_minute,
              route_slash_ids, models (NIM catalog ids; when non-empty, routing uses this list only)
+  newapi   — base_url, key, chat_model, models (OpenAI-compatible relay; PRIMARY backbone since 2026-04-20)
+             base_url MAY omit the trailing ``/v1``; normalisation auto-appends.
 
 Legacy flat keys are still accepted; see normalize_llm_config().
 
 Environment (same semantics as llm_client):
-  LLM_BACKEND   zhipu | oversea | gptplus5 | nvidia
+  LLM_BACKEND   zhipu | oversea | gptplus5 | nvidia | newapi
   LLM_MODEL     override model id
   LLM_API_KEY   override API key
-  LLM_BASE_URL  oversea/gptplus5/nvidia: base /v1; zhipu: full chat completions URL
+  LLM_BASE_URL  oversea/gptplus5/nvidia/newapi: base /v1; zhipu: full chat completions URL
 """
 
 from __future__ import annotations
@@ -36,8 +38,25 @@ _nvidia_limiter: Any = None
 _nvidia_limiter_rpm: int | None = None
 
 
+def _ensure_v1_suffix(base_url: str) -> str:
+    """Append ``/v1`` if the base URL does not already end with it.
+
+    Newer providers (e.g. ``newapi`` xh.v1api.cc) are sometimes recorded in
+    ``configs/llm.json`` without the ``/v1`` suffix. The dispatcher always
+    constructs ``<base>/chat/completions``, so a missing ``/v1`` produces a 404.
+    Centralise the fix-up here so caller / dispatch code stays uniform.
+    """
+    base = (base_url or "").strip().rstrip("/")
+    if not base:
+        return base
+    # avoid double-appending if the user already wrote .../v1 or .../api/v1 etc.
+    if base.endswith("/v1") or "/v1/" in base:
+        return base
+    return base + "/v1"
+
+
 def normalize_llm_config(raw: dict[str, Any]) -> dict[str, Any]:
-    """Expand nested provider blocks (zhipu / oversea / gptplus5 / nvidia) to flat keys for resolvers.
+    """Expand nested provider blocks (zhipu / oversea / gptplus5 / nvidia / newapi) to flat keys for resolvers.
 
     If the file is already legacy flat format (no provider objects), returns a copy of ``raw``.
     """
@@ -47,11 +66,13 @@ def normalize_llm_config(raw: dict[str, Any]) -> dict[str, Any]:
     o_block = raw.get("oversea")
     g5_block = raw.get("gptplus5")
     n_block = raw.get("nvidia")
+    na_block = raw.get("newapi")
     if not (
         isinstance(z_block, dict)
         or isinstance(o_block, dict)
         or isinstance(g5_block, dict)
         or isinstance(n_block, dict)
+        or isinstance(na_block, dict)
     ):
         return dict(raw)
 
@@ -69,6 +90,7 @@ def normalize_llm_config(raw: dict[str, Any]) -> dict[str, Any]:
     out["oversea_key"] = o.get("key", "")
     om = o.get("models")
     out["oversea_model"] = list(om) if isinstance(om, list) else []
+    out["oversea_status"] = str(o.get("_status", "")).strip()
 
     g5 = g5_block if isinstance(g5_block, dict) else {}
     base_g5 = (g5.get("base_url") or g5.get("url") or "").strip().rstrip("/")
@@ -91,6 +113,17 @@ def normalize_llm_config(raw: dict[str, Any]) -> dict[str, Any]:
     nm = n.get("models")
     out["nvidia_model"] = list(nm) if isinstance(nm, list) else []
     out["nvidia_route_slash_ids"] = bool(n.get("route_slash_ids", True))
+
+    # newapi (xh.v1api.cc) — PRIMARY since 2026-04-20 per U-EXEC-001.
+    # base_url is auto-normalised to include /v1 (the JSON sometimes omits it).
+    na = na_block if isinstance(na_block, dict) else {}
+    base_na_raw = (na.get("base_url") or na.get("url") or "").strip().rstrip("/")
+    out["newapi_url"] = _ensure_v1_suffix(base_na_raw)
+    out["newapi_key"] = na.get("key", "")
+    out["newapi_chat_model"] = na.get("chat_model", "gpt-4.1-mini")
+    nam = na.get("models")
+    out["newapi_model"] = list(nam) if isinstance(nam, list) else []
+    out["newapi_status"] = str(na.get("_status", "")).strip()
 
     return out
 
@@ -115,7 +148,32 @@ def _is_oversea_model(model_name: str, cfg: dict[str, Any]) -> bool:
     g5_list = cfg.get("gptplus5_model", [])
     if isinstance(g5_list, list) and model_name in g5_list:
         return True
+    newapi_list = cfg.get("newapi_model", [])
+    if isinstance(newapi_list, list) and model_name in newapi_list:
+        return True
     return False
+
+
+def _is_newapi_routable(model_name: str, cfg: dict[str, Any]) -> bool:
+    """True iff newapi block is present (key + base_url) and model is in its catalogue."""
+    if not (cfg.get("newapi_key") and cfg.get("newapi_url")):
+        return False
+    listed = cfg.get("newapi_model", [])
+    if isinstance(listed, list) and len(listed) > 0:
+        return model_name in listed
+    return False
+
+
+def _newapi_is_primary(cfg: dict[str, Any]) -> bool:
+    """True iff newapi._status starts with 'PRIMARY' AND oversea is deprecated.
+
+    When this returns True and no explicit ``LLM_BACKEND`` is set, oversea-style
+    model names auto-route through newapi instead of oversea (which the
+    ``_status`` field marks deprecated).
+    """
+    na_status = str(cfg.get("newapi_status", "")).upper()
+    o_status = str(cfg.get("oversea_status", "")).lower()
+    return na_status.startswith("PRIMARY") and "deprecated" in o_status
 
 
 def _is_nvidia_routable(model_name: str, cfg: dict[str, Any]) -> bool:
@@ -201,6 +259,18 @@ def resolve_llm_chat_target(model_name: str, cfg: dict[str, Any] | None = None) 
             model = str(cfg.get("gptplus5_chat_model") or "gpt-4.1-mini")
         return LLMChatTarget("gptplus5", chat_url, api_key, model, None)
 
+    def newapi_target(m: str) -> LLMChatTarget:
+        # newapi base_url is auto-normalised in normalize_llm_config; but env
+        # override may bypass that, so re-normalise here just in case.
+        env_base = os.environ.get("LLM_BASE_URL")
+        base_url = _ensure_v1_suffix(env_base) if env_base else cfg.get("newapi_url", "")
+        api_key = os.environ.get("LLM_API_KEY") or cfg.get("newapi_key", "")
+        chat_url = f"{base_url.rstrip('/')}/chat/completions"
+        model = m
+        if not model or not _is_oversea_model(model, cfg):
+            model = str(cfg.get("newapi_chat_model") or "gpt-4.1-mini")
+        return LLMChatTarget("newapi", chat_url, api_key, model, None)
+
     def nvidia_target(m: str) -> LLMChatTarget:
         base_url = (os.environ.get("LLM_BASE_URL") or cfg.get("nvidia_url", "")).rstrip("/")
         api_key = os.environ.get("LLM_API_KEY") or cfg.get("nvidia_key", "")
@@ -235,11 +305,20 @@ def resolve_llm_chat_target(model_name: str, cfg: dict[str, Any] | None = None) 
         return oversea_target(effective_model)
     if force_backend == "gptplus5":
         return gptplus5_target(effective_model)
+    if force_backend == "newapi":
+        return newapi_target(effective_model)
     if force_backend == "zhipu":
         return zhipu_target(effective_model)
 
     if _is_nvidia_routable(effective_model, cfg):
         return nvidia_target(effective_model)
+    # Auto-route oversea-style ids to newapi when newapi has been promoted to
+    # PRIMARY (per configs/llm.json _status fields, set on 2026-04-20). This
+    # avoids requiring every caller to pass LLM_BACKEND=newapi explicitly.
     if _is_oversea_model(effective_model, cfg):
+        if _newapi_is_primary(cfg) and cfg.get("newapi_url") and cfg.get("newapi_key"):
+            return newapi_target(effective_model)
         return oversea_target(effective_model)
+    if _is_newapi_routable(effective_model, cfg):
+        return newapi_target(effective_model)
     return zhipu_target(effective_model)

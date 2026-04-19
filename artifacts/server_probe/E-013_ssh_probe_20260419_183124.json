@@ -1,0 +1,30 @@
+﻿{
+    "ssh_ok_marker_found":  true,
+    "exit_code":  0,
+    "verdict":  "REACHABLE",
+    "timestamp":  "20260419_183124",
+    "stdout_lines":  [
+                         "__SSH_OK__",
+                         "Linux viplabserver12 6.8.0-40-generic #40~22.04.3-Ubuntu SMP PREEMPT_DYNAMIC Tue Jul 30 17:30:19 UTC 2 x86_64 x86_64 x86_64 GNU/Linux",
+                         "/home/dengkw",
+                         "Filesystem      Size  Used Avail Use% Mounted on",
+                         "/dev/sdc5       1.8T  1.1T  693G  61% /media/data3",
+                         "name, memory.total [MiB], memory.free [MiB], driver_version",
+                         "NVIDIA GeForce RTX 2080 Ti, 11264 MiB, 10999 MiB, 550.120",
+                         "NVIDIA GeForce RTX 3090, 24576 MiB, 24243 MiB, 550.120",
+                         "NVIDIA GeForce RTX 2080 Ti, 11264 MiB, 10999 MiB, 550.120",
+                         "NVIDIA GeForce RTX 2080 Ti, 11264 MiB, 10999 MiB, 550.120",
+                         "NVIDIA GeForce RTX 3090, 24576 MiB, 24243 MiB, 550.120",
+                         "NVIDIA GeForce RTX 3090, 24576 MiB, 24243 MiB, 550.120",
+                         "NVIDIA GeForce RTX 2080 Ti, 11264 MiB, 10999 MiB, 550.120",
+                         "NVIDIA GeForce RTX 3090, 24576 MiB, 24243 MiB, 550.120",
+                         "Python 3.10.12",
+                         "total 20",
+                         "drwxr-x---  5 dengkw root   4096  4鏈?18 18:26 .",
+                         "drwxr-xr-x 12 root   root   4096  4鏈?14 09:36 ..",
+                         "drwxrwxr-x  3 dengkw dengkw 4096  4鏈?18 17:39 .cache",
+                         "drwxrwxr-x  5 dengkw dengkw 4096  4鏈?19 17:53 FNC",
+                         "drwxrwxr-x  6 dengkw dengkw 4096  4鏈?18 16:45 recsys"
+                     ],
+    "ssh_command":  "ssh -i C:\\Users\\shers\\.ssh\\school -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=10 dengkw@10.103.16.12 \"echo __SSH_OK__; uname -a; pwd; df -h /media/data3 2\u003e/dev/null || echo NO_DATA3; nvidia-smi --query-gpu=name,memory.total,memory.free,driver_version --format=csv 2\u003e/dev/null || echo NO_NVIDIA_SMI; python3 --version 2\u003e\u00261; ls -la /media/data3/dengkw/ 2\u003e/dev/null | head -30 || echo NO_REMOTE_ROOT\""
+}

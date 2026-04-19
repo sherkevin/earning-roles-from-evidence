@@ -1,7 +1,7 @@
 # PROJECT_STRUCTURE — 项目目录鸟瞰图
 
 > 维护者：科学家（writing lead）。这是项目的**单一索引文件**，新人 / 新窗口接手时**只读这一份**就能定位所有内容。
-> 创建日期：2026-04-19  最后更新：2026-04-20（Stage-2 sprint Day 1 启动：U-012 R1+R2+R3 / U-013 MuSiQue / U-EXEC-006 newapi key 全 ✅，T-35 to ARR May 25）。
+> 创建日期：2026-04-19  最后更新：2026-04-20（R10 commit：Stage-2 sprint Day 1 ✅ 闭合 + U-014/U-015/U-016 三决策落地，外部 baseline workstream 全 unblocked，T-34 to ARR May 25）。
 > 任何目录新增 / 重命名 / 归档必须同步更新本文件。
 
 ---
@@ -11,7 +11,7 @@
 EMNLP long paper —— **`Emergent Delegation Organization (EDO)`**：研究近似同质 LLM agent 在稀疏图上通过递归委派与递归验收形成分工组织。
 当前可执行原型 **`Terminal-Consensus Peer Backpropagation (TCPB)`** 是 Stage-1 受限实例。
 
-> **🚀 Sprint 启动状态（Day 1 = 2026-04-20）**：用户已批 U-011 (b) + U-012 **R1+R2+R3 全做** + U-013 **MuSiQue 加入** + U-EXEC-006 **新 newapi 通道交付**。目标 **EMNLP 2026 ARR May 25 deadline = T-35**。Sprint phase 块 `[stage2_sprint_kickoff_20260420]` 已含 E-001..E-008 工程师工单（task_tree / split / audit / persona vector / runner integ / multi-seed CI / external baselines / newapi probe）+ S-115..S-119 科学家写作 TODO（§1/§6 重写 / Algorithm 1 升级 / §4 Stage-2 Results / Figure 1 prompt）。无阻塞可立即启动：E-001 + E-008（engineer）+ S-119（scientist）。详见 [`docs/coordination/USER_TODO.md`](docs/coordination/USER_TODO.md) `§A` + [`docs/coordination/implementation_log.md`](docs/coordination/implementation_log.md) `[stage2_sprint_kickoff_20260420]`。
+> **🚀 Sprint Day 1 ✅ 闭合（2026-04-20）+ Day 1.5 起 active**：用户已批 U-011 (b) + U-012 **R1+R2+R3** + U-013 **MuSiQue** + U-EXEC-006 **newapi key** + U-014 **2 hosts (AutoGen+ChatEval)** + U-015 **R2+R3 swap (SWAP-1+SWAP-3)** + U-016 **drop E-007**。Day 1 ✅ 完成 = E-001 task_tree + E-008 newapi probe + E-013 SSH server probe（详见 `[engineer_day1_completion_20260420]`）。**Day 1.5 起 P0** = 三线并行启动：(a) E-002 split policy / (b) E-003 audit runtime / (c) E-009 external baseline survey + selection。**外部 baseline workstream** `[external_baseline_workstream_20260420]` + `[external_baseline_decisions_landed_20260420]` 全 unblocked，含 E-009..E-012 (survey / reproduce / swap / compare on AutoGen + ChatEval)；planning 文档 [`docs/paper/external_baseline_plan.md`](docs/paper/external_baseline_plan.md)。目标 **EMNLP 2026 ARR May 25 deadline = T-35**（Day 1 完成后剩 34 天，buffer 5-6 天）。详见 [`docs/coordination/USER_TODO.md`](docs/coordination/USER_TODO.md) `§A` + [`docs/coordination/implementation_log.md`](docs/coordination/implementation_log.md) 末三块。
 
 | 角色 | 文件入口 |
 |---|---|

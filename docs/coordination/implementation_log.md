@@ -1383,3 +1383,309 @@ vs R8 时间线净增 +2 d (Day 14-16 要平行写 swap adapter)；buffer 从 7 
   - **user**: 拍板 U-014 (system 个数) + U-015 (swap 范围) + U-016 (是否 drop E-007)；推荐 (b)/(b)/Yes
   - **engineer**: 暂无新派工（等用户拍板才能开 E-009）；继续 R8 已派的 E-001/E-008
   - **scientist**: 暂无新派工（S-121..S-123 全部 blocked on E-012）；继续 R8 已派的 S-119
+
+---
+
+### [E-008_newapi_smoke_20260420]
+
+- when: 2026-04-20 (engineer Day 1, R10 commit pending)
+- who: engineer (executing R6/R7 sprint kickoff E-008 ticket; activated by user 04-20 instruction "审查目前 todo + 一步一步严谨科学的去做下去")
+- intent: P0 critical-path —— newapi (xh.v1api.cc) endpoint smoke probe + 加 `_normalize_newapi()` + `newapi_target()` 到 `workspace/idea04_core/llm_providers.py`，按 `oversea` / `gptplus5` 模板。完成后才能解锁 sprint 任何 chain-200 / fullval batch (per `[pinned_cautions_for_engineer_20260420]` C-1 #3)
+- status: ⏳ in_progress (本块；完成时翻 ✅ 并 append result section)
+- depends_on: 无（U-EXEC-006 newapi key 已交付 ✅）
+- unblocks_for_engineer: E-001 (task_tree, no actual block, 仅是 sprint 协同)、E-002 (split policy)、E-005 (Stage-2 fullval)、E-007 (external baseline if 不 drop per U-016)、E-010..E-012 (external baseline reproduce/swap/compare, 仍待 U-014/U-015 拍板)
+- planned_steps:
+  1. `GET https://xh.v1api.cc/v1/models` —— 列出可用 model；key 从 `configs/llm.json newapi.key` 读，**禁止硬编码**（C-7 #2）
+  2. `POST https://xh.v1api.cc/v1/chat/completions` —— 1 sample (`gpt-4.1-mini`, prompt = `Say OK in one word.`) 验证 schema 兼容
+  3. 编辑 `workspace/idea04_core/llm_providers.py`：normalize 加 `newapi_url`/`newapi_key`/`newapi_chat_model`/`newapi_model`；加 `_is_newapi_model()`；加 `newapi_target()` (template = `oversea_target`，且自动补 `/v1` 后缀因 `configs/llm.json` newapi base_url 不带 `/v1`)；在 `resolve_llm_chat_target` dispatch 处加 `force_backend == "newapi"` 分支
+  4. ModelDriftError negative smoke：deliberate 让 caller 传 `model="gpt-99-fake"` (不存在)，验证 guard 在 pre-send 阶段抛 ModelDriftError 而非 silent
+  5. 落 `artifacts/newapi_smoke/run_<TS>/{models_list.json, chat_smoke.json, drift_negative_smoke.log, smoke_report.md}`
+- planned_files_added:
+  - `artifacts/newapi_smoke/run_<TS>/` 目录 + 4 个 artifact 文件
+- planned_files_modified:
+  - `workspace/idea04_core/llm_providers.py` (normalize + dispatch + target)
+  - `docs/coordination/implementation_log.md`（本块翻 ✅ 时 append result section）
+- expected_verification:
+  - smoke probe 退出 0 + ModelDriftError 在 negative test 上 fire (positive smoke 上不 fire)
+  - `python -c "from workspace.idea04_core.llm_providers import resolve_llm_chat_target, load_llm_json; ..."` 返回 newapi target 且 chat_url 正确含 `/v1/chat/completions`
+  - `validate_logs.py artifacts/round2_gpt41mini/run_20260414_115739/fixed_peer_calibrated` 仍 [OK]（C-2 byte-id 不回归）
+- pinned_cautions_acknowledged: C-1 (provider 红线 — 走 newapi 不走 kuaipao), C-7 #2 (key 不硬编码), C-7 #3 (jsonl 不 echo key)
+- next_action:
+  - 若 ✅：本块翻 ✅ + 写 verification + sweep SCIENTIST_TODO §B.5 / §B.3 阻塞列清下游
+  - 若 ❌（newapi 端点不通 / 鉴权失败）：本块翻 ❌ + 在 `USER_TODO §A` 加 `U-018-newapi-fail-decide` 让用户拍板（候选：(a) 等 newapi 修 (b) 临时回 oversea 走 LLM_BACKEND env workaround per `configs/llm.json newapi._note`）
+
+---
+
+### [E-001_task_tree_module_20260420]
+
+- when: 2026-04-20 (engineer Day 1, R10 commit pending; parallel with E-008)
+- who: engineer (executing R6/R7 sprint kickoff E-001 ticket)
+- intent: P1 —— 新建 `workspace/idea04_core/task_tree.py` 模块：`TaskNode` dataclass (16 字段：14 来自 `idea.md §7.3` 必需 + `child_task_ids` + `candidate_result`) + `TaskTreeState` 容器 + jsonl 双轨序列化 + 终止边界 `MAX_SUBTASKS_PER_SPLIT=3` / `MAX_TREE_DEPTH=3` / `MAX_TOTAL_NODES=12` (per pinned_cautions C-4 #2)
+- status: ⏳ in_progress (本块)
+- depends_on: 无
+- unblocks_for_engineer: E-002 (split policy 需要 task_tree state)、E-003 (audit runtime 需要)、E-004 (persona vector schema 升级)
+- unblocks_for_scientist: S-118 (Algorithm 1 升级 — 需 task_tree 接口冻结)
+- planned_steps:
+  1. 创建 `workspace/idea04_core/task_tree.py`：
+     - `TaskNode` dataclass，16 字段：`task_id`, `parent_task_id`, `root_task_id`, `task_text`, `task_type_guess`, `required_output`, `input_evidence`, `current_uncertainty`, `depth`, `budget_remaining`, `status`, `owner_agent`, `executor_agent`, `audit_status`, `child_task_ids`, `candidate_result`
+     - `TaskTreeState`：管理 root + nodes dict + parent-child 一致性 + `add_subtask()` 含边界检查（depth/subtasks/total_nodes 三层）
+     - 边界常量 `MAX_SUBTASKS_PER_SPLIT=3`, `MAX_TREE_DEPTH=3`, `MAX_TOTAL_NODES=12` (C-4 #2)
+     - jsonl 序列化方法 `to_jsonl_record()` / `from_jsonl_record()`，dataclass field 名稳定
+     - 双轨兼容字段 stub: `competence_v1_scalar` (R0 baseline 兼容) + `competence_v2_vector` (E-004 R3 vector belief 留位 placeholder)；本块只 plumb schema 不 implement E-004 业务逻辑
+  2. 单元测试 `workspace/idea04_core/test_task_tree.py`：
+     - `test_round_trip_serialization`（dataclass → jsonl → dataclass byte-identical）
+     - `test_parent_child_consistency`（add_subtask 后 parent.children_ids 含 child.task_id；child.parent_task_id == parent.task_id）
+     - `test_max_depth_bound`（depth=3 时第 4 层 add_subtask 抛 ValueError）
+     - `test_max_subtasks_bound`（同 parent 第 4 个 subtask 抛 ValueError）
+     - `test_max_total_nodes_bound`（13th node 抛 ValueError）
+     - `test_dual_track_schema`（jsonl 含 competence_v1_scalar field，v2 placeholder 默认 None）
+  3. 跑 `python -m pytest workspace/idea04_core/test_task_tree.py -v`，输出落 `artifacts/test_results/E-001_task_tree_pytest_<TS>.txt`
+  4. 写 `artifacts/task_tree_examples.jsonl`：3 个 example tree (root only / root+1 child / 2-level depth-2 tree) 用于后续 E-002/E-003 集成测试
+- planned_files_added:
+  - `workspace/idea04_core/task_tree.py`
+  - `workspace/idea04_core/test_task_tree.py`
+  - `artifacts/test_results/E-001_task_tree_pytest_<TS>.txt`
+  - `artifacts/task_tree_examples.jsonl`
+- planned_files_modified:
+  - `docs/coordination/implementation_log.md`（本块翻 ✅）
+  - **不动** `methods.py` / `runner.py` / `contracts.py`（这些在 E-002/E-003/E-005 才改）
+- expected_verification:
+  - pytest 6 个 test 全绿
+  - `task_tree_examples.jsonl` 3 行可 round-trip
+  - `validate_logs.py` 在 R0 baseline 上仍 [OK] (per pinned_cautions C-2)
+- pinned_cautions_acknowledged: C-2 (Stage-1 byte-id 回归 — 本块不改老路径), C-3 (backward-compat schema 升级 — competence_v1_scalar + competence_v2_vector 双轨预留 stub)
+- next_action:
+  - 若 ✅：本块翻 ✅ + 写 unblocks 给 E-002/E-003/E-004/S-118
+  - 若 ❌（test 红 / 设计冲突）：本块翻 ❌ + diagnosis；按情况自挂 `U-Rollback-XXX-decide` 或 in-flight 修
+
+---
+
+### [E-013_ssh_server_probe_20260420]
+
+- when: 2026-04-20 (engineer Day 1, R10 commit pending; parallel with E-008/E-001)
+- who: engineer (executing user 04-20 instruction "优先用服务器上的 gpu 跑实验" + "对于模型，能部署到服务器上的尽量部署")
+- intent: 激活 `ssh-server-rules.mdc` (当前 dormant) — verify SSH key/host 可达 + GPU inventory + 远端目录状态；为后续 sprint 阶段（E-002 split prompt dev iteration / 可能的 local-deploy open-weights model 作为 ablation 上下文）做基础设施铺垫
+- status: ⏳ in_progress (本块)
+- depends_on: 无（用户 04-20 instruction 即激活批准）
+- 编号说明: 原 plan 写 E-009，但发现 R9 commit `[external_baseline_workstream_20260420]` 已分配 E-009..E-012，故 renumber 到 next available **E-013**
+- unblocks_for_engineer: 后续任何"想用 GPU 跑事情"的工单都得先有 E-013 ✅
+- planned_steps:
+  1. 检查 `~/.ssh/school` 私钥（已 pre-verified ✅，存在）
+  2. SSH probe（fail-fast，10 s timeout，no password prompt 即立即失败）：
+     ```
+     ssh -i school -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=10 dengkw@10.103.16.12 "echo __SSH_OK__; uname -a; pwd; df -h /media/data3 2>/dev/null || echo NO_DATA3; nvidia-smi --query-gpu=name,memory.total,memory.free,driver_version --format=csv 2>/dev/null || echo NO_NVIDIA_SMI; python3 --version; ls -la /media/data3/dengkw/ 2>/dev/null || echo NO_REMOTE_ROOT"
+     ```
+  3. 解析结果：成功 = `__SSH_OK__` 出现且退出 0；失败 = 任何 prompt / connect refused / auth fail
+  4. 若可达：
+     - 落 `artifacts/server_probe/E-013_ssh_probe_<TS>.json` 含完整 stdout + GPU inventory + 远端目录状态
+     - 更新 `.cursor/rules/ssh-server-rules.mdc` STATUS 段：`dormant → active (2026-04-20)` + 加备注"激活由用户 2026-04-20 instruction 默认批准"
+     - 在 `USER_TODO §A` 加 `U-017` informational ✅ 行（不是 decide，是 fact record）
+     - 评估 sprint 受益项：dev iteration（split prompt 调试，避免烧 newapi 配额）/ open-weights ablation 上下文（meta/llama-3.3-70b-instruct on local GPU 作为 reviewer 复审上下文，**不替换** canonical gpt-4.1-mini 主线 per `experiment.md §1.3`）
+  5. 若不可达：
+     - 落 forensic JSON 含 exact error + exit code
+     - 在 `USER_TODO §A` 加 `U-017-ssh-decide` ⏳ 让用户拍板候选：(a) 修网络/key (b) 放弃 server 路径继续纯 API
+     - Sprint 继续 — 不阻塞主线（E-001/E-008/E-002..E-007 都是 API 路径）
+- planned_files_added:
+  - `artifacts/server_probe/E-013_ssh_probe_<TS>.json`
+- planned_files_modified（成功路径）:
+  - `.cursor/rules/ssh-server-rules.mdc`（STATUS 段 dormant → active）
+  - `docs/coordination/USER_TODO.md` §A 加 `U-017` informational ✅ 行
+  - `docs/coordination/implementation_log.md`（本块翻 ✅）
+- planned_files_modified（失败路径）:
+  - `docs/coordination/USER_TODO.md` §A 加 `U-017-ssh-decide` ⏳ 行
+  - `docs/coordination/implementation_log.md`（本块翻 ❌）
+- expected_verification:
+  - JSON artifact 完整含 echo + uname + nvidia-smi 解析
+  - `.cursor/rules/ssh-server-rules.mdc` STATUS 段反映新状态
+- pinned_cautions_acknowledged: C-6 (决策路由 — 本块未涉路线决策，仅基础设施 probe；激活记录走 informational `U-017` 不走 decide)
+- next_action:
+  - 报告 GPU inventory + 是否激活 / 失败原因
+
+---
+
+### [E-API-budget-check_placeholder_20260420]
+
+- when: 2026-04-20 (engineer Day 1, R10 commit pending)
+- who: engineer (executing user 04-20 instruction "对于比较大的大模型需要调 API 的，写一个 todo 放在你的文档里，阻塞项是「如果有需要调用较大大模型需求时启动」")
+- intent: **永久 ⏳ 占位 TODO** — 当 sprint 中出现需调用比 `gpt-4.1-mini` 更大 / 更贵的 LLM 需求时，engineer 自触发本占位 → 在 `USER_TODO §B` 加新一行 `U-EXEC-XXX` 让用户充值，带预算估算
+- status: ⏳ permanent placeholder（仅在触发时翻 ✅ 单次后保留为历史，下次触发再开 `[E-API-budget-check_<n>_<date>]`）
+- 阻塞项: **如果有需要调用较大大模型需求时启动**（per user 04-20 原话）
+- 当前 sprint 默认: 全 sprint 走 `gpt-4.1-mini` via `newapi` (xh.v1api.cc) — 用户已 pre-paid via U-EXEC-006；**当前无新增 API 需求，本占位不触发**
+- 触发判定（任一满足即触发）:
+  - 任何新工单需调用比 `gpt-4.1-mini` 更大 / 更贵的 model（如 `gpt-4o` / `gpt-5` / `claude-opus` / `o1-pro` / `gemini-2.5-pro` 等）
+  - newapi quota dry-run 估算超阈值（default 100 USD per batch；监控点：每个 fullval batch 启动前 dry-run 1 sample 外推全 batch 总 cost）
+  - provider 静默切换 / model drift（`ModelDriftError` 触发后引发的 fallback 决策）
+- 触发后 engineer 必须递的信息（per user 04-20 原话）:
+  - 模型名（如 `gpt-4o-2024-08-06`）
+  - 当前 API endpoint（如 `https://xh.v1api.cc/v1/chat/completions`）
+  - 估算需预充值美元数（基于剩余 batch × token/sample × pricing 公示价）
+  - 落 `USER_TODO §B` 新一行 `U-EXEC-XXX` 让用户充值
+- planned_files_added: 无（占位 TODO，只本块）
+- planned_files_modified: 无
+- pinned_cautions_acknowledged: C-4 #3 (token 预算硬约束 — 本占位即响应)
+- next_action:
+  - 无 — 永久 ⏳，等触发条件
+  - 类似 SCIENTIST `S-104` 永远不会被关闭
+
+---
+
+### [engineer_day1_completion_20260420]
+
+- when: 2026-04-19 (engineer Day 1 终结，R10 commit 待落地)
+- who: engineer
+- intent: 把今天派的 4 个 ⏳ phase 块状态闭合：3 个翻 ✅，1 个 (E-API-budget-check) 永久 ⏳。**Sprint Day 1 完成，Day 1.5 P0 (E-002 split policy) 解锁。**
+
+#### 状态汇总
+
+| phase 块 | 上次状态 | 现状态 | 备注 |
+|---|---|---|---|
+| `[E-008_newapi_smoke_20260420]` | ⏳ | ✅ | newapi (xh.v1api.cc) 132 models / GET 200/188 ms / POST gpt-4.1-mini 200/2 s answer "OK"；`llm_providers.py` 加 `_normalize_newapi` + `newapi_target` + dispatch（auto-route oversea-style models 到 newapi 当 `_status="PRIMARY..."` 且 `oversea._status="deprecated..."`）；ModelDriftError pre-send guard 在 negative smoke (`model="gpt-99-fake-not-exists"`) 上正确 fire；R0 baseline + fullval validate_logs 仍 [OK] no regression。Smoke report: `artifacts/newapi_smoke/run_20260419_183721/smoke_report.md` |
+| `[E-001_task_tree_module_20260420]` | ⏳ | ✅ | `workspace/idea04_core/task_tree.py` `TaskNode` 16 字段 + `TaskTreeState` 含三层边界检查 + jsonl 双轨 forward-compat；`workspace/idea04_core/test_task_tree.py` **18/18 tests pass in 0.16 s**；`artifacts/task_tree_examples.jsonl` 3 example trees 全 round-trip OK；R0 baseline `validate_logs` 仍 [OK]。**接口冻结**：sci 可即开 S-118 Algorithm 1 升级（已 partial unblock）。 |
+| `[E-013_ssh_server_probe_20260420]` | ⏳ | ✅ | host `viplabserver12` (10.103.16.12, Ubuntu 22.04 kernel 6.8) `__SSH_OK__` exit 0；**8 GPUs 全空闲**：4× RTX 3090 (24 GB) + 4× RTX 2080 Ti (11 GB)；`/media/data3` 1.8 TB 总 / 693 GB 可用；Python 3.10.12 系统级；远端目录 `/media/data3/dengkw/` 含其他项目子目录 (`FNC` / `recsys`)。`ssh-server-rules.mdc` STATUS dormant → **active (2026-04-19)**；USER_TODO §A 加 `U-017` informational ✅ record。Probe artifact: `artifacts/server_probe/E-013_ssh_probe_20260419_183124.json`。 |
+| `[E-API-budget-check_placeholder_20260420]` | ⏳ permanent | ⏳ permanent | 永久占位；当前 sprint 无大模型 API 需求（gpt-4.1-mini 已 pre-paid via U-EXEC-006 newapi）。触发条件不变。 |
+
+#### Day 1 整体 verification
+
+- `python -m py_compile workspace/idea04_core/llm_providers.py` exit 0
+- `python -m py_compile workspace/idea04_core/task_tree.py` exit 0（dataclass）
+- `pytest workspace/idea04_core/test_task_tree.py -v` 18 passed in 0.16 s
+- routing assertions 5/5 passed (`gpt-4.1-mini` → newapi auto, `LLM_BACKEND=oversea` → oversea, `LLM_BACKEND=newapi` → newapi explicit, `glm-4-flash` → zhipu, `meta/llama-*` → nvidia)
+- `call_llm` positive smoke：`configure_runtime("gpt-4.1-mini", enforce_model=True)` + send → answer "OK", `_sent_provider="newapi"`, `model` returned `gpt-4.1-mini`
+- `call_llm` negative smoke：caller-arg `model="gpt-99-fake-not-exists"` 在 pre-send 阶段抛 `ModelDriftError`，未发出 HTTP 请求
+- R0 baseline `python scripts/validate_logs.py artifacts/round2_gpt41mini/run_20260414_115739/fixed_peer_calibrated` → [OK] (200 samples, 100% coverage)
+- fullval `python scripts/validate_logs.py artifacts/round2_gpt41mini_fullval/run_20260414_135408/fixed_peer_calibrated` → [OK] (7 405 samples, 100% coverage)
+- SSH probe 实测连通 + GPU inventory 完整 + 远端目录可读
+
+#### Files added today
+
+- `workspace/idea04_core/task_tree.py` (new, ~340 lines)
+- `workspace/idea04_core/test_task_tree.py` (new, ~270 lines, 18 tests)
+- `artifacts/task_tree_examples.jsonl` (3 example trees, 7 jsonl records)
+- `artifacts/test_results/E-001_task_tree_pytest_20260419_183611.txt` (pytest log)
+- `artifacts/server_probe/E-013_ssh_probe_20260419_183124.json` (SSH probe forensic)
+- `artifacts/newapi_smoke/run_20260419_183721/models_list.json` (132 models reported)
+- `artifacts/newapi_smoke/run_20260419_183721/chat_smoke.json` (1 sample chat round-trip)
+- `artifacts/newapi_smoke/run_20260419_183721/drift_negative_smoke.log` (positive + negative ModelDriftError smoke)
+- `artifacts/newapi_smoke/run_20260419_183721/smoke_report.md` (E-008 self-contained verdict + 5 routing assertions table)
+
+#### Files modified today
+
+- `workspace/idea04_core/llm_providers.py` (newapi normalize + target + dispatch + auto-route on PRIMARY)
+- `.cursor/rules/ssh-server-rules.mdc` (STATUS dormant → active 2026-04-19，含 GPU inventory + 部署候选清单)
+- `docs/coordination/USER_TODO.md` §A 加 `U-017` informational ✅ (SSH 激活记录)
+- `docs/coordination/SCIENTIST_TODO.md` §B.5 S-118 阻塞列 partial unlock + §F sprint 状态对应行
+- `docs/coordination/implementation_log.md`（本块 + 4 个上面 phase 块）
+
+#### Cross-file 阻塞列 sweep (per four-role rule §1 step 2 + §3)
+
+| 下游 | 上次阻塞 | 现状 |
+|---|---|---|
+| SCIENTIST_TODO §B.5 S-118 (Algorithm 1 升级) | E-001 + E-002 接口冻结 | 🟡 partial unblock：E-001 ✅；仍等 E-002 |
+| SCIENTIST_TODO §B.5 S-115/S-116/S-117 | E-005 fullval 数据 | 不变（E-005 仍未启动） |
+| SCIENTIST_TODO §B.5 S-119 (Figure 1 prompt 升级) | none | 仍待 scientist 自行启动（不依赖 engineer） |
+| SCIENTIST_TODO §B.3 S-009 (用 fullval 真数字替换 §4.3) | 等 fullval rerun (U-006 + U-RES-001) | 不变（E-005 仍未启动） |
+| USER_TODO §B U-FIG-001 (Figure 1 出图) | scientist prompt 已就位 | 不变（用户专属任务） |
+| USER_TODO §A U-014/U-015/U-016 (external baseline 决策) | 等用户拍板 | 不变（不在 engineer 域内推动） |
+
+#### unblocks_for_engineer (sprint Day 1.5 onward)
+
+- **E-002 split policy**（3-action runtime + LLM decomposition call + max bounds）：依赖 E-001 ✅ + E-008 ✅ 全部就位 → **可立即启动**
+- **E-003 audit runtime** (per-hop AuditDecision + reroute/resplit)：依赖 E-001 ✅ → **可启动**（与 E-002 并行 OK）
+- **E-004 R3 vector belief**：依赖 E-003 (要先有 audit signal) → 等 E-003
+- **E-005 Stage-2 整合 + fullval batch**：依赖 E-001..E-004 全部 ✅ + newapi probe ✅ → 等 E-002/E-003/E-004
+- **E-006 multi-seed CI**：依赖 E-005 → 等
+- **E-007 external baseline (full-system)**：可能 drop per U-016 ⏳；不主动启动
+- **E-009..E-012 external baseline workstream** (R9 commit)：blocked on U-014/U-015/U-016 ⏳
+
+#### 下一 Day 推荐
+
+按 sprint kickoff `[stage2_sprint_kickoff_20260420]` C-8 队列，Day 1.5 起的 P0 = **E-002 split policy**（4 d 估时）。E-002 + E-003 (5 d 估时) 可并行（不同模块文件）；建议下一轮启动 E-002 + E-003 双线，E-001 ✅ 后已无阻塞。
+
+#### 风险登记 (Day 1 新增)
+
+- **newapi `models` list 缺失**：`configs/llm.json newapi.models` 当前只列 5 项，但端点实际返回 **132 个 model**。**不立即扩列**（避免误激活更贵的 Claude / GPT-5 routing），E-API-budget-check 占位将在需要时按用户 04-20 instruction 上报。
+- **dispatch auto-route 行为变更**：`gpt-4.1-mini` 现 default → newapi（之前 → oversea）。所有历史脚本若未带 `LLM_BACKEND` env 都会受影响。**back-compat 已保留**：`LLM_BACKEND=oversea` 仍走 kuaipao（虽然 deprecated）。Sprint 内任何脚本应**显式** `LLM_BACKEND=newapi` 或 `LLM_BACKEND=oversea` 以避免歧义。
+- **SSH 激活后未实际部署任何 local-deploy model**：仅完成基础设施 probe；`experiment.md §1.3` 仍硬约束"不混模型社会"，因此 server GPU 当前只能用于 dev iteration / supplementary appendix，不能动 canonical mainline。
+
+#### 本条 commit 落地
+
+- commit ref: R10 commit（engineer Day 1 闭合 + scientist 同步落地 U-014/U-015/U-016；详见下面的 `[external_baseline_decisions_landed_20260420]` 子条）
+- next_action:
+  - **engineer (next window)**: 等用户启动下一 Day → Day 1.5 P0 = E-002 split policy + E-003 audit runtime 并行启动；**U-014/U-015/U-016 已批准 → E-009 (survey + selection) 同时 unblocked，可与 E-002/E-003 并行启动**
+  - **user**: 暂无新派工；外部 baseline workstream 已批准（详见下条）；可启动 U-FIG-001 / U-EXEC-005 任意一项
+  - **scientist**: **partial unblocked S-118**（task_tree 接口已冻结，可即引用）；S-119 Figure 1 prompt 升级仍可即做；其余 S-115/S-116/S-117 仍等 E-005；**S-121/S-122/S-123 现在仅等 E-012**（U-014/015/016 已 ✅）
+
+---
+
+### [external_baseline_decisions_landed_20260420]
+
+- when: 2026-04-20 (R10 commit)
+- who: scientist (落地用户三决策一次性批准)
+- intent: 把用户对 U-014/U-015/U-016 的批准转译为 sprint 工单状态变化；本块紧跟 `[engineer_day1_completion_20260420]` 后入档，与 engineer Day 1 closure 共享 R10 commit
+- supersedes: 部分 supersede `[external_baseline_workstream_20260420]`（"⏳ 等用户拍板"片段全部 stale；具体配置以本条为准）
+
+#### 用户原话与解读
+
+- 用户原话："三个新决策都按照你的建议来"
+- 解读：U-014 = 推荐 (b) 2 systems = AutoGen + ChatEval；U-015 = 推荐 (b) R2+R3 swap (SWAP-1 + SWAP-3)；U-016 = 推荐 Yes (drop E-007)。批准来源 = R9 commit (`dbfa087`) USER_TODO §A 三行 ⏳ 项推荐方案。
+
+#### 决策落地 → sprint 状态变更
+
+| 项 | 之前（R9） | 现在（R10） |
+|---|---|---|
+| `U-014-decide` (system 个数) | ⏳ 等用户 | ✅ **N=2: AutoGen + ChatEval** |
+| `U-015-decide` (swap 范围) | ⏳ 等用户 | ✅ **R2+R3: SWAP-1 (R3 vector belief → AutoGen `select_speaker`) + SWAP-3 (R2 audit → ChatEval `MetaReviewer.aggregate`)**；SWAP-5 (R1 → MetaGPT) 留 future work |
+| `U-016-decide` (drop 原 E-007) | ⏳ 等用户 | ✅ **drop**（subsumed by E-009..E-012） |
+| `[stage2_sprint_kickoff_20260420]` 中 **E-007** (line 1108：4 d full-system 对比) | ⏳ blocked | **❌ cancelled_by_R10**（不要执行；被 E-009..E-012 完全替代）|
+| `[external_baseline_workstream_20260420]` 中 **E-009..E-012** | ⏳ blocked on U-014/015/016 | **✅ unblocked** — engineer 可即刻并行 E-002/E-003 启动 E-009 (survey + selection, 1 d) |
+| SCIENTIST_TODO §B.5 **S-121/S-122/S-123** 阻塞 | "blocked on E-012 + U-014/U-015/U-016" | "blocked on E-012"（U-决策已消除） |
+
+#### 锁定后的 sprint 入队顺序（替代 `[stage2_sprint_kickoff_20260420]` C-8）
+
+```
+Day 1   (04-20) ✅: E-001 task_tree + E-008 newapi probe + E-013 SSH probe (engineer Day 1 闭合)
+Day 1.5 (04-20 半天后) — Day 2: 
+   P0: E-002 split policy (4 d, engineer)
+   P0: E-003 audit runtime (5 d, engineer; 与 E-002 并行不同模块文件)
+   P0: E-009 external survey + selection (1 d, engineer; 选定 AutoGen + ChatEval 两个 finalist)
+   P1: S-119 Figure 1 prompt 升级 (30 min, scientist; 不阻塞)
+   P1: S-118 Algorithm 1 升级 partial start (E-001 接口冻结后 task_tree 引用部分先写)
+Day 6-7: E-010 reproduce AutoGen baseline (2 d, engineer; E-009 ✅ 后立即开)
+Day 8-10: E-003 done → E-004 R3 vector belief 启动 (3 d, engineer)
+            E-010 reproduce ChatEval baseline (并行)
+Day 11-13: E-004 done → E-011 swap adapter (2 d × 2 hosts, engineer; SWAP-1 需 E-004 ✅, SWAP-3 需 E-003 ✅)
+            E-005 Stage-2 fullval 启动准备
+Day 14-16: E-005 Stage-2 fullval batch (HotpotQA + MuSiQue × 6 methods × ≥3 seeds) + E-011 swap adapter 完成
+Day 17-19: E-006 multi-seed paired bootstrap CI + E-012 swap comparison (2 d × 2 hosts，与 E-006 共享 harness)
+Day 20-22: scientist S-117 §4 Stage-2 Results 写作 (含 module-swap 表)
+Day 23-26: scientist S-115 §1 + S-116 §6 framing 重写 + S-121/S-122/S-123 写作
+Day 27-29: R-FULL-002 user-triggered reviewer batch + S-104 4-step loop
+Day 30-35: final polish + ARR submission prep
+```
+
+vs 原 plan 净增 +5-6 天用于 external baseline workstream，由 buffer 吸收（buffer 从 7 d 缩到 5-6 d）。
+
+#### 派给 engineer 的明确指令（next window）
+
+- **E-002 split policy** (P0, 4 d): 启动 — 依赖 E-001 ✅ + E-008 ✅
+- **E-003 audit runtime** (P0, 5 d): 启动 — 依赖 E-001 ✅；与 E-002 并行
+- **E-009 external survey + selection** (P0, 1 d): **新增立即可启动** — 依赖 U-014/U-015/U-016 ✅；finalist 锁定在 AutoGen + ChatEval（用户已选），engineer 只需做 license / freshness / OpenAI-compat / repo-size 实地核查 + 输出 `artifacts/external_baselines/survey_report.md`
+
+后续工单（E-004 / E-005 / E-006 / E-010 / E-011 / E-012）按上面入队顺序自然解锁，不在本条提前授予。
+
+#### 派给 scientist 的明确指令（next window）
+
+- **S-119 Figure 1 prompt 升级** (30 min): 立即可启动；新 prompt 须强调 Stage-2 三机制（R1 split tree + R2 audit ladder + R3 vector belief），同时**额外强调** module-swap 设计（"Figure 1 应当能让 reviewer 一眼看出 R3 替换 AutoGen `select_speaker`、R2 替换 ChatEval `MetaReviewer`"）
+- **S-118 Algorithm 1 升级 partial start**: task_tree 接口已冻结，可先写"Stage-2 execution loop"骨架（do_self/outsource/split + 显式 audit step），等 E-002 split policy ✅ 后补 split 分支细节
+- 其余 S-115/S-116/S-117/S-120/S-121/S-122/S-123 仍 blocked on engineer，按 §B.5 表追踪
+
+#### 本条 commit 落地
+
+- files_added: none（本条仅是决策落地登记，无新文件）
+- files_modified:
+  - `docs/coordination/USER_TODO.md` §A U-014/U-015/U-016 ⏳→✅ + §C done log + §D R10 修订
+  - `docs/coordination/SCIENTIST_TODO.md` §A cross-ref + §B.5 S-121/S-122/S-123 锁定 scope + §D R10 修订
+  - `docs/coordination/implementation_log.md`（本块）
+  - `PROJECT_STRUCTURE.md` §0 sprint 状态块补充外部 baseline workstream 已 unblocked
+- commit ref: R10 commit（与 engineer Day 1 closure 同 commit 落地）
+- next_action: 见上"派给 engineer / scientist 的明确指令"两节
