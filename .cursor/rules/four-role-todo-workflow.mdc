@@ -83,6 +83,21 @@ Scientist / engineer / reviewer are **strictly forbidden** from making the follo
 
 Any **physical operation that only the user can perform** (API top-ups, generating a concept figure from a prompt, uploading the paper, registering accounts, OpenReview operations) goes into `USER_TODO.md § B/§C`.
 
+### 4.1 Decision-dispatch dialog protocol (user instruction, 2026-04-20)
+
+> **Source**: User instruction "需要我拍板的时候，你直接切到的 plan 模式，让我们选择就行" (R21).
+
+When scientist or engineer needs to dispatch a fresh `U-XXX-decide` to the user, the following dispatch-dialog protocol applies (in addition to landing the row in `USER_TODO.md § A`):
+
+1. **Switch mode**: invoke `SwitchMode` with `target_mode_id: "plan"` and a brief `explanation` naming the decision ID and why it requires user input. This makes the decision moment visually distinct and signals the user that a route choice is at hand.
+2. **Render structured choices**: use `AskQuestion` to expose the candidate options (a) / (b) / (c)... as labeled radio choices. Each option's `label` should be one short sentence summarising the trade-off (≤ 80 chars), so the user can decide without re-reading the full `USER_TODO § A` row.
+3. **Always include a "use scientist recommendation" or "skip / defer" escape**: even when the scientist has a clear recommendation, present at least one alternative + one defer option so the user is never visually cornered into a single answer.
+4. **Wait for the user's `AskQuestion` reply** before flipping `USER_TODO § A` to ✅. The user's reply becomes the canonical decision; the scientist then writes a `§C done log` row + appends a `§D` revision row + dispatches downstream tickets per the standard four-role workflow.
+5. **Do not use this protocol for retroactive decisions**: when the user has already volunteered an answer in plain text (e.g., user message "U-018-decide：a" or "U-020：继续跑"), skip the `SwitchMode` + `AskQuestion` step and treat the plain-text reply as the canonical decision. The protocol is for **new** dispatch moments, not for confirming decisions the user has already made.
+6. **Exception — physical operations / `U-EXEC-XXX`**: physical-operation tickets (API top-ups / figure generation / SSH probes / OpenReview steps) go directly into `USER_TODO § B` as `U-EXEC-XXX` and do **not** require a plan-mode dialog (those are tasks, not decisions). Plan-mode + `AskQuestion` is reserved for genuine route-choice decisions.
+
+This protocol does NOT replace the requirement that every decision still be persisted as a `U-XXX` row in `USER_TODO § A` with the full context, recommendation, impact, and status fields. The plan-mode dialog is the **dispatch UX layer**; the `USER_TODO § A` row is the **persistent record**.
+
 ## 5. Window-switch / new-conversation handoff protocol
 
 When opening a fresh window, each role must read the following files first (≤ 100 lines per file):

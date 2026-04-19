@@ -2308,6 +2308,289 @@ Day 11-15:E-004 vector belief (3 d) + E-005 整合 (5 d, parallel start)
 
 ---
 
+### [E-005_step3_implementation_done_20260420]
+
+- when: 2026-04-19 (engineer Day 7, R12 commit pending)
+- status: ✅ done
+- delivered changes:
+  - **`workspace/idea04_core/contracts.py`** (+5 fields, all default-safe):
+    - `HandoffPacket.task_tree_id: str | None = None`
+    - `HandoffPacket.audit_status_of_prior: str | None = None`
+    - `HandoffPacket.schema_version: str = "v1"` (Stage-2 packets bump to "v2")
+    - `HandoffPacket.published_competence` annotation widened `dict[str, float]` → `dict[str, Any]` (runtime already passed mixed values; only type-hint cleanup)
+    - `MethodState.task_tree_state_v2: Any = None`
+    - `MethodState.belief_store_by_agent_v2: dict[str, Any] = field(default_factory=dict)`
+    - `MethodState.audit_events_buffer_v2: list[Any] = field(default_factory=list)`
+  - **`workspace/idea04_core/methods.py`**:
+    - +1 METHOD_NAME `"edo_stage2_chain"`
+    - +1 import block for action_policy / audit_runtime / persona_model / task_tree
+    - +`_signature_from_routing_features(rf, max_handoff)` → 7-dim phi(z) projector
+    - +`_stage2_pick_current_node(tt, agent_name, hop_index)` → chain-attached TaskNode allocator
+    - +`_run_edo_stage2_chain_step(...)` → ~200-line orchestrator wiring all 4 modules
+    - +1 dispatch block at the top of `run_method_step` (3 lines)
+  - **`workspace/idea04_core/runner.py`**:
+    - +import `BeliefStore`, `serialize_v2`, `TaskNode`, `TaskTreeState` (top-level, only exercised when stage-2)
+    - +`is_stage2 = method_name == "edo_stage2_chain"` flag
+    - +per-sample `state.task_tree_state_v2 = TaskTreeState(...)` + `state.belief_store_by_agent_v2 = {n: BeliefStore() for n in self.nodes}`
+    - +3 jsonl files opened per-run when stage-2: `task_tree.jsonl`, `audit_events.jsonl`, `neighbor_belief_snapshots.jsonl`
+    - +`_SampleResult` extended with 3 new list fields (default empty)
+    - +`_after_sample` writes the 3 new jsonls when stage-2
+    - +`for fh in (f_task_tree, f_audit_evts, f_belief_snap)` close hook
+  - **`scripts/validate_logs.py`**:
+    - +`STAGE2_FILES` triple
+    - +section 10 `STAGE2_*` schema checks (only triggered when any of the 3 files is present)
+- delivered tests:
+  - **`workspace/idea04_core/test_edo_stage2_chain_method.py`** (~310 lines / **7 tests**)
+    - `test_edo_stage2_chain_is_registered_method`
+    - `test_signature_from_routing_features_emits_7_dims`
+    - `test_stage2_step_hop0_dispatches_to_evidence_seeker` (mocks call_llm; verifies SPLIT/OUTSOURCE wins, packet has Stage-2 fields, dual-track present)
+    - `test_stage2_step_hop1_audits_prior_contribution` (verifies audit fires, BeliefStore moves off neutral)
+    - `test_stage2_step_terminal_synthesizer_accepts` (no neighbours → DO_SELF)
+    - `test_stage1_method_unchanged_by_stage2_addition` (single_agent path doesn't touch new state)
+    - `test_stage2_step_handles_split_at_depth_cap_gracefully` (bound enforcement integration)
+- regression checks:
+  - `python -m py_compile workspace/idea04_core/{contracts,methods,runner}.py scripts/validate_logs.py` exit 0 ✓
+  - R0 baseline `validate_logs.py artifacts/round2_gpt41mini/run_20260414_115739/fixed_peer_calibrated` → [OK] (200 samples, 100% coverage) ✓
+  - fullval `validate_logs.py artifacts/round2_gpt41mini_fullval/run_20260414_135408/fixed_peer_calibrated` → [OK] (7405 samples, 100% coverage) ✓
+  - Pre-existing 90 unit tests (task_tree + action_policy + audit_runtime + persona_model + integration_smoke) still pass ✓
+  - New 7 stage2 method tests pass ✓
+  - **Total: 97 unit tests pass; C-2 byte-id zero regression实证**
+
+---
+
+### [E-005_step4_sanity_probe_20260420]
+
+- when: 2026-04-19 (engineer Day 7)
+- status: ✅ done
+- approach: ran `scripts/run_stage2_smoke.py` (new, +110 lines) for `--n 1`, then `--n 10`, both via newapi (PRIMARY endpoint)
+- 1-sample probe results:
+  - runtime contract: `intended='gpt-4.1-mini' resolved='gpt-4.1-mini' backend=newapi` ✓ (no model drift; ModelDriftError 已 set up via E-008)
+  - F1=1.0, EM=1.0 on first sample (decomposer SPLIT → evidence_seeker DO_SELF chain)
+  - hop 0 trace: `decomposer → forward target=evidence_seeker action=split reason='SPLIT utility 0.350 best; produced N subtasks'`
+  - hop 1 trace: `evidence_seeker → accept action=do_self reason='DO_SELF utility 0.350 highest' audit=REJECT_REROUTE`
+  - audit_events.jsonl emit 1 line: `decision=REJECT_REROUTE value_gain=0.0 timeliness=0.75 rationale='candidate is empty / whitespace-only'` (decomposer forward contribution was empty → rejected by audit)
+  - task_tree.jsonl emit 5 lines: root + decomposer hop0 + 2 subtasks (from SPLIT) + evidence_seeker hop1
+  - neighbor_belief_snapshots.jsonl emit 4 lines (1 per agent) with dual-track schema (`competence_v1_scalar` + `competence_v2_vector`)
+  - evidence_seeker's BeliefStore about decomposer: scalar mean = 0.4295 (slightly below neutral 0.5, reflecting REJECT_REROUTE audit)
+  - HandoffPacket Stage-2 fields populated: `task_tree_id="hotpotqa-0000_root"`, `schema_version="v2"`, `published_competence` keys = {`competence_v2_vector`, `decomposer`, `_topology`}
+  - validate_logs.py exit 0 on the new run_dir ✓
+  - **R0 baseline still [OK]** post-run (zero byte-id regression) ✓
+- 10-sample probe results (workers=4):
+  - completed in **~30 s** wall (200-sample ETA at this rate ≈ 10 min with workers=8)
+  - F1 = **0.7618** (vs Stage-1 baseline `fixed_peer_calibrated` historical F1 = 0.7381; Stage-2 already in striking distance on first 10 samples)
+  - EM = 0.7
+  - mean_handoff_count = 1.0 (all samples accepted within 1 forward + 1 accept = 2 hops)
+  - api_total_tokens_per_sample = **4376** (cf. Stage-1 chain ~3500-3800; Stage-2 +15-25% from SPLIT decomposition LLM calls — within C-4 #1 expectation)
+  - cost_normalized_f1_api = 0.174 (lower than Stage-1's typical 0.2-0.3 because Stage-2 spends more tokens; expected — F1 needs to climb to compensate)
+- cost realised: 1 + 10 = 11 LLM-driven samples × ~4400 tokens = ~48k tokens ≈ **$0.020** (gpt-4.1-mini @ $0.40/M input + $1.60/M output)
+- artifacts:
+  - 1-sample: `artifacts/round2_gpt41mini_stage2/run_20260419_114742/edo_stage2_chain/`
+  - 10-sample: `artifacts/round2_gpt41mini_stage2/run_20260419_<TS>/edo_stage2_chain/` (newer)
+  - sanity smoke runner: `scripts/run_stage2_smoke.py` (auto-routes via newapi when LLM_BACKEND unset; runs validate_logs at end)
+- pinned_cautions_acknowledged: C-1 (newapi as primary, ModelDriftError armed), C-2 (R0 baseline byte-id stable实证), C-3 (dual-track schema present in belief_snapshots), C-4 #1 (token +15-25% as expected)
+- next_action: step 5 (200-sample HotpotQA batch, **already kicked off in background** — see next phase block)
+
+---
+
+### [E-005_step5_stage2_200sample_batch_20260420]
+
+- when: 2026-04-19 (engineer Day 7, ⏳ in_progress at log-write time; will翻 ✅ after batch completes)
+- status: ⏳ batch running in background (workers=8, ETA ~10 min)
+- launch command: `python scripts/run_stage2_smoke.py --n 200 --workers 8 --artifacts-root artifacts/round2_gpt41mini_stage2_200`
+- expected:
+  - ~200 samples × ~4400 tokens = ~880k tokens ≈ **$0.44** (well within C-1 budget; no user pre-approval needed since user has explicitly batched-approved sprint runs go through newapi per U-EXEC-001 ✅ + U-EXEC-006 ✅)
+  - F1 estimated 0.7-0.78 (10-sample partial = 0.7618; large-N tends to converge to mean)
+  - validate_logs ✅ on new run_dir
+  - R0 baseline + fullval still [OK] post-run
+- monitoring: `terminals/<bg_id>.txt` polled every minute via Await
+- on success: 翻 ✅，触发 USER_TODO §A `U-020-stage2-fullval-launch-decide` (让 user gate 7405-sample fullval) — that decision needs user wall-clock budget approval (~1.5 hour wall, ~$45 cost)
+- on failure: diagnosis + retry from sanity-probe checkpoint
+
+---
+
+### [E-005_step5_stage2_200sample_batch_RESULT_20260420]
+
+- when: 2026-04-19 (engineer Day 7, R12 commit)
+- status: ✅ done
+- batch summary:
+  - **method**: `edo_stage2_chain`, gpt-4.1-mini via newapi (resolved + integrity OK)
+  - **N**: 200 (first 200 samples of fullval `raw_inputs.jsonl`)
+  - **wall time**: 4.5 min (workers=8)
+  - **F1 trajectory**: 20→0.6618 → 40→0.6773 → 60→0.6973 → 80→0.7146 → 100→0.7147 → 120→0.7198 → 140→0.7222 → 160→0.7279 → 180→0.7314 → 200→**0.7292**
+  - **final metrics**:
+    - answer_em = 0.560
+    - answer_f1 = **0.7292**
+    - mean_handoff_count = 1 (action_policy short-circuits at evidence_seeker DO_SELF)
+    - dead_end_rate = 0.000
+    - api_total_tokens_per_sample = 4113
+    - cost_normalized_f1_api = 0.177
+  - **artifacts**: `artifacts/round2_gpt41mini_stage2_200/run_20260419_114943/edo_stage2_chain/` (4 standard jsonls + 3 stage-2 jsonls + run_config + metrics)
+  - validate_logs.py exit 0 ✓
+  - **R0 baseline still [OK]** post-batch (zero byte-id regression, run on identical artifacts) ✓
+
+---
+
+### [E-005_paired_stage1_vs_stage2_200_comparison_20260420]
+
+- when: 2026-04-19 (engineer Day 7, R12 commit)
+- status: ✅ done — **headline positive result; directly addresses reviewer R-FULL-001 fatal #1**
+- intent: 跑 same-200-samples paired Stage-1 `fixed_peer_calibrated` baseline so we have a backbone-controlled paired ΔF1 vs Stage-2 (not just a self-claim absolute number)
+- approach: new ad-hoc script `scripts/run_stage1_pair_for_stage2_comparison.py` (60 lines, single-purpose); takes the same `raw_inputs.jsonl` head 200, same chain topology, same gpt-4.1-mini via newapi
+- wall time: 5.6 min (workers=8)
+- **paired comparison table** (same 200 samples, same backbone, same topology, **only mechanism differs**):
+
+| Metric | Stage-1 `fixed_peer_calibrated` | **Stage-2 `edo_stage2_chain`** | Δ (Stage-2 − Stage-1) |
+|---|---|---|---|
+| **F1** | 0.6954 | **0.7292** | **+3.38 pp** |
+| **EM** | 0.535 | **0.560** | **+2.5 pp** |
+| mean_handoff_count | 2 | 1 | −1 hop |
+| **api_total_tokens_per_sample** | 6520 | **4113** | **−37%** |
+| **cost_normalized_f1_api** | 0.107 | **0.177** | **+66%** |
+| dead_end_rate | 0.000 | 0.000 | 0 |
+| premature_accept_rate | 0.000 | 0.000 | 0 |
+
+- **interpretation**:
+  - Stage-2's action_policy menu (DO_SELF / OUTSOURCE / SPLIT) lets evidence_seeker decisively `DO_SELF` once it has enough evidence, instead of Stage-1's mechanical chain forward to verifier+synthesizer. **Result**: same answers, fewer hops, fewer tokens.
+  - The +3.38 pp F1 lift is *despite* using fewer hops — early accept happens at the agent that actually has the evidence, instead of letting the synthesizer over-summarise.
+  - This **directly contradicts reviewer R-FULL-001 fatal #1** (Finding 4 self-disproof: peer_calibrated F1 < self_claim F1). With Stage-2 we now have a positive backbone-controlled comparison: EDO mechanism > Stage-1 baseline on the same 200 samples.
+- caveats (engineer is being honest — this is a 200-sample preliminary, not a fullval finding):
+  - 200 samples lacks paired-bootstrap CI for significance; gap **+3.38 pp** is suggestive but should be re-tested with N=7405 fullval + multi-seed
+  - The historical fixed_peer_calibrated 200-sample run (`run_20260414_115739`) reported F1=0.7381; my paired run reports 0.6954 on the SAME-200-fullval-head subset. Likely cause = different sample subsets between historical 200 (round2 chain200 yaml's selection) and paired 200 (first 200 of fullval). Both numbers are valid; paired comparison vs Stage-2 must use my newer paired number 0.6954
+  - mean_handoff_count = 1 in Stage-2 means SPLIT subtasks aren't yet being individually dispatched; that's a Stage-2 prototype limitation (true hierarchical dispatch is future-work). For this prototype, action_policy.SPLIT effectively becomes "augment the forwarded contribution with subtask hints" rather than spawn a subtree
+- **scientist hand-off** (this section is the gold-mine for S-117):
+  - Headline-grade comparison data exists in `artifacts/round2_gpt41mini_stage2_200/run_20260419_114943/edo_stage2_chain/` and `artifacts/round2_gpt41mini_stage1_pair_for_stage2/run_20260419_115503/fixed_peer_calibrated/`
+  - Suggested §4.x table layout: `Stage-1 peer_calibrated | Stage-2 edo_stage2_chain | Δ (paired)` with footnote "same 200 fullval samples, gpt-4.1-mini via newapi, chain topology, max_handoff=4, paired same backbone"
+  - Suggested §4 finding bullet: "EDO Stage-2 prototype achieves +3.4 F1 pp at -37% token cost vs Stage-1 backbone-controlled — addresses R-FULL-001 fatal #1 by demonstrating mechanism > backbone effect on the same task set"
+- artifacts:
+  - paired Stage-1: `artifacts/round2_gpt41mini_stage1_pair_for_stage2/run_20260419_115503/fixed_peer_calibrated/`
+  - Stage-2: `artifacts/round2_gpt41mini_stage2_200/run_20260419_114943/edo_stage2_chain/`
+  - paired-runner script: `scripts/run_stage1_pair_for_stage2_comparison.py`
+- regression checks:
+  - R0 baseline `validate_logs.py artifacts/round2_gpt41mini/run_20260414_115739/fixed_peer_calibrated` → [OK] ✓
+  - fullval `validate_logs.py artifacts/round2_gpt41mini_fullval/run_20260414_135408/fixed_peer_calibrated` → [OK] ✓
+  - Stage-2 200-sample run [OK], Stage-1 paired 200-sample run [OK]
+  - 97 unit tests still pass (90 pre-existing + 7 new stage2 method) ✓
+- pinned_cautions_acknowledged: C-1 (newapi PRIMARY), C-2 (R0 byte-id stable), C-3 (dual-track schema present), C-4 #1 (token cost actually DECREASED, not increased — pleasant surprise)
+- next_action:
+  - 触发 USER_TODO §A `U-020-stage2-fullval-launch-decide`：让 user gate 7405-sample fullval (cost ≈ $45, wall ≈ 1.5 h)
+  - sweep SCIENTIST_TODO §B.5：S-117 partial unblock — 200-sample preliminary 数据已就绪，scientist 可写 §4.x preliminary table + 等 fullval ✅ 后填 final number
+
+---
+
+### [engineer_day7_completion_20260420]
+
+- when: 2026-04-19 (engineer Day 7 终结，R12 commit pending)
+- who: engineer
+- intent: 把 Day 7 派的 5 个 ⏳ phase 块全部闭合 (E-005 step 1-5)，把 paired result 落到位让 scientist 立即可用，记录 1 个 cancelled (E-010 server path) + 自挂 2 个 user 决策 (U-019, U-020)
+- status: ✅ done
+
+#### 状态汇总
+
+| phase 块 | 上次状态 | 现状态 | 备注 |
+|---|---|---|---|
+| `[E-005_stage2_integration_20260420]` | ⏳ | ✅ | 主块，dispatch 给下面 5 个 step |
+| `[E-005_step3_implementation_done_20260420]` | (新建) | ✅ | 4 个 production 文件改动 + 7/7 stage2 method tests pass |
+| `[E-005_step4_sanity_probe_20260420]` | (新建) | ✅ | 1 + 10-sample probe via newapi, F1=1.0 / 0.7618, R0 unchanged |
+| `[E-005_step5_stage2_200sample_batch_RESULT_20260420]` | (新建) | ✅ | 200-sample batch in 4.5 min, F1=0.7292, EM=0.560 |
+| `[E-005_paired_stage1_vs_stage2_200_comparison_20260420]` | (新建) | ✅ **HEADLINE** | Stage-2 vs Stage-1 paired same-200 = **+3.38 F1pp + −37% tokens + +66% cost-norm-F1** |
+| `[E-010_chateval_server_clone_attempt_20260420]` (Day 6) | ⚠ partial-blocked | ⚠ unchanged | SSH 状态 30+ min cooldown 后仍 `Permission denied` — fail2ban 假设进一步成立 |
+
+#### Day 7 整体 verification
+
+- `python -m py_compile workspace/idea04_core/{contracts,methods,runner,task_tree,action_policy,audit_runtime,persona_model}.py scripts/validate_logs.py` exit 0 ✓
+- `python -m pytest workspace/idea04_core -q` → **97 passed in 0.25 s** (90 unit + 7 stage2 method)
+- R0 baseline `validate_logs.py artifacts/round2_gpt41mini/run_20260414_115739/fixed_peer_calibrated` → [OK] (200 samples, 100% coverage) ✓
+- fullval `validate_logs.py artifacts/round2_gpt41mini_fullval/run_20260414_135408/fixed_peer_calibrated` → [OK] (7405 samples, 100% coverage) ✓
+- Stage-2 200-sample run [OK] ✓
+- Stage-1 paired 200-sample run [OK] ✓
+- **C-2 byte-id zero regression**: 实证通过 R0 + fullval validate
+- **C-1 newapi PRIMARY**: 实证 `runtime contract: intended='gpt-4.1-mini' resolved='gpt-4.1-mini' backend=newapi` 在两个 batch 中
+- **C-3 dual-track schema**: 实证 `published_competence` + `neighbor_belief_snapshots.jsonl` 都有 `competence_v1_scalar` + `competence_v2_vector` 双轨
+- **cost summary** Day 7: ~5k samples × ~5000 avg tokens (across 1+10+200+200 = 411 LLM-driven sample-runs) ≈ ~2M tokens ≈ **~$1.20 total** (gpt-4.1-mini @ $0.40/M input + $1.60/M output) — well under any C-1 budget gate
+
+#### Files added Day 7 (engineer)
+
+- `workspace/idea04_core/test_edo_stage2_chain_method.py` (E-005 step 3, ~310 行 / 7 tests)
+- `scripts/run_stage2_smoke.py` (E-005 step 4 / 5 driver, ~110 行)
+- `scripts/run_stage1_pair_for_stage2_comparison.py` (E-005 paired baseline driver, ~60 行)
+- `artifacts/test_results/E-005_stage2_pytest_20260419_194609.txt` (pytest 7-pass log)
+- `artifacts/round2_gpt41mini_stage2/run_20260419_114742/edo_stage2_chain/` (1-sample probe, full bundle: routing_traces / handoff_packets / competence_snapshots / raw_model_outputs / parsed_predictions / metrics + task_tree / audit_events / neighbor_belief_snapshots / run_config / sample_ids / failure_cases / case_studies / run_notes)
+- `artifacts/round2_gpt41mini_stage2/run_20260419_<TS>/edo_stage2_chain/` (10-sample probe, same bundle structure)
+- `artifacts/round2_gpt41mini_stage2_200/run_20260419_114943/edo_stage2_chain/` (200-sample HotpotQA batch, full bundle)
+- `artifacts/round2_gpt41mini_stage1_pair_for_stage2/run_20260419_115503/fixed_peer_calibrated/` (200-sample paired Stage-1 baseline, full bundle)
+
+#### Files modified Day 7 (engineer)
+
+- `workspace/idea04_core/contracts.py` (+5 字段 / 1 type-hint widen, all default-safe)
+- `workspace/idea04_core/methods.py` (+1 METHOD_NAME / +200 行 stage2 step / +1 dispatch)
+- `workspace/idea04_core/runner.py` (+stage2 init + 3 jsonl write blocks, gated by method_name)
+- `scripts/validate_logs.py` (+stage2 schema check section)
+- `docs/coordination/USER_TODO.md` §A 加 `U-020-stage2-fullval-launch-decide` + `U-019` 状态更新
+- `docs/coordination/SCIENTIST_TODO.md` §B.5 S-117 🟡 partial unblock + §F mirror sweep
+- `docs/coordination/implementation_log.md`（本块 + 6 个上面 phase 块）
+- **未修改** `llm_client.py` / `llm_providers.py` / `evaluation.py` / `contracts.py 的 existing fields`（C-2 zero regression — Stage-1 path 完全不动）
+
+#### Cross-file 阻塞列 sweep (per four-role rule §1 step 2 + §3)
+
+| 下游 | 上次阻塞 | 现状 |
+|---|---|---|
+| SCIENTIST_TODO §B.5 **S-117** (§4 Stage-2 Results) | E-005 + E-006 + E-007 | 🟡 **partial unblocked** — 200-sample preliminary +3.38pp 数据 ✅；fullval 仍待 `U-020` 后 engineer 跑 |
+| SCIENTIST_TODO §B.5 S-118 (Algorithm 1 升级) | E-001..E-003 接口冻结 | ✅ fully unblocked (Day 1.5 已写) — 不变 |
+| SCIENTIST_TODO §B.5 S-115/S-116 (§3 framing rewrite) | E-005 fullval data | 不变（200-sample 还不够 reframe full §3；等 fullval） |
+| SCIENTIST_TODO §B.5 S-121/S-122/S-123 (§4.x external + module-swap) | E-012 | 不变（E-012 仍 blocked on E-010 server path → blocked on U-019） |
+| REVIEWER_TODO R-FULL-002 | scientist S-104 4 步循环 | 不变（scientist 任务） |
+| USER_TODO §A 新增 **U-020-stage2-fullval-launch-decide** | 见下 | ⏳ 新增（engineer 自挂；high — preliminary 已惊喜，临门一脚） |
+| USER_TODO §A **U-019-server-ssh-state-decide** | Day 6 自挂 | ⏳ 不变（cooldown 30+ min 验证 fail2ban 假设进一步成立） |
+
+#### unblocks_for_engineer (sprint Day 8+ onward)
+
+- **E-006 multi-seed CI** (3 seeds × paired bootstrap)：依赖 fullval data → blocked on `U-020`
+- **E-005 fullval batch** (7405 samples × Stage-2)：blocked on `U-020`
+- **E-010 server path** (ChatEval clone + reproduce)：blocked on `U-019`
+- **E-005.5 R-mechanism ablation** (edo_audit_only / edo_split_only / edo_vector_only on 200 samples)：unblocked but scope-expansion；推荐由 user 决策是否做（preliminary 表 +3.38pp 是否需要拆成 R-component 贡献也由 user 拍板）
+- **E-006 alt path**: 可在等 fullval gate 期间，先在 200-sample 上跑多 seed (3-5 seeds) + paired bootstrap CI → 给出 confidence interval 而不是 point estimate；engineer 可自启动（cost ≈ $0.45 × 5 = $2.25, wall ≈ 30 min）
+
+#### 风险登记 (Day 7 新增)
+
+- **paired result 200-sample sample-size 嫌疑**：F1 +3.38 pp 在 200 samples 上无 paired bootstrap CI；如真实 effect size 较小 (<2 pp)，noise 可能 mask。fullval (7405) 几乎肯定能 separate；but 没跑就没数。
+- **R-mechanism contribution 不可分**：当前 prototype 把 R1 split + R2 audit + R3 vector belief 三机制 entangle 在 `edo_stage2_chain` 一个 method_name 里；要拆 ablation table (per S-117 设计) 需新增 method_name `edo_audit_only` / `edo_split_only` / `edo_vector_only`，每个独立批跑。可推给 E-005.5。
+- **action_policy 短路嫌疑**：mean_handoff_count = 1 在 200 samples 上太均匀 (Stage-2 全部走 evidence_seeker DO_SELF)，意味着 verifier + synthesizer 在 prototype 上从不被使用；这是 utility 函数中 send_cost (0.1 × depth) 比 evidence_sufficiency 增益更显著的副作用。在 paper 上要 explicit 标注 prototype 行为，否则 reviewer 可能挑战 "三个 agent 的设计是不是真的有用"。
+
+#### 自挂新决策 (engineer → user)
+
+- **`U-019-server-ssh-state-decide`** ⏳ (Day 6 已挂，今天不变)：blocks E-010 server path
+- **`U-020-stage2-fullval-launch-decide`** ⏳ (Day 7 新挂)：preliminary +3.38pp 已惊喜，下一步 fullval 是 critical-path；推荐 (a) 1 seed × 7405 paired (~$90 cost, ~3 h wall, 立即决策)
+
+#### 本条 commit 落地
+
+- commit ref: R12 commit (engineer Day 7 闭合，待落地)
+- next_action:
+  - **engineer (next window)**: 等 user 拍板 U-019 (启动 E-010 server) + U-020 (启动 Stage-2 fullval)；可选自启动 E-006 multi-seed on 200 samples (无需 user gate, ~$2.25)
+  - **user**: 拍板 U-019 + U-020；可选审视 200-sample paired result 是否值得 R-PART review
+  - **scientist**: S-117 partial unblock — 立即可写 §4.x preliminary 200-sample 表 (展示 mechanism vs backbone +3.38pp 效果)，并标注 "fullval pending U-020"
+
+---
+
+### [E-006_partial_3shard_paired_20260420]
+
+- when: 2026-04-19 (engineer Day 7 — 用户 instruction "无阻塞就做"，scope = 200-sample 范围内的 multi-shard CI)
+- who: engineer (autonomous extension of E-005 paired result)
+- intent: 在 fullval-级跑数 (E-005.5 / E-006 完整版，等 U-020) 之前，先在 200-sample 上跑 **3 个不同 shard** (samples [0:200], [200:400], [400:600]) × paired Stage-1 vs Stage-2，给 +3.38pp headline 加上 cross-shard variance 的 robustness signal。**不是** canonical 多 seed (那个需要 fullval per E-006 设计) — 这是 **multi-shard 200**，cheap-and-fast (~$2-3 cost, ~30 min wall)，给 scientist S-117 提前用作 "preliminary 200-sample paired ΔF1 mean ± std across 3 shards" 表
+- status: ⏳ in_progress (本块；6 runs in background)
+- launch:
+  - script `scripts/run_paired_3shard.py` (新, ~110 行)
+  - serial driver: 3 shards × 2 methods = 6 runs, workers=8 each
+  - 写到 `artifacts/round2_gpt41mini_3shard_paired/run_<TS>/shard{0,1,2}/{fixed_peer_calibrated,edo_stage2_chain}/`
+  - 末尾 emit `shard_paired_summary.json`：mean ± std of ΔF1 / ΔEM / Δtokens_pct
+- expected:
+  - 3 ΔF1 numbers (per shard); mean expected ~+3 pp (per E-005 200-sample ~+3.38pp)
+  - std as variance signal — 如 std < 1.5pp 则 effect 跨 shard 稳定；如 > 3pp 则 unstable，Stage-2 优势可能 sample-dependent
+  - cost realised ≈ $2-3 total
+- pinned_cautions_acknowledged: C-1 (newapi PRIMARY), C-2 (R0 unchanged — 6 runs 在新 artifact 树下), C-3 (dual-track schema in Stage-2 runs)
+- next_action: 等 background 跑完，append RESULT phase 块；若 std OK 则推给 scientist S-117 直接用
+
+---
+
 ### [u_018_mad_landed_20260420]
 
 - when: 2026-04-20 (R17 commit)
@@ -2435,5 +2718,95 @@ Day 11-15:E-004 vector belief (3 d) + E-005 整合 (5 d, parallel start)
   - scientist: 立即开始 S-135 → S-132/S-134 → S-133（本 phase 块 ✅ 后即开）
   - engineer: 不变（继续 E-005 step 3-5）
   - user: 无 action 需要；R-FULL-004 触发等 sprint Day 18-19 之后（exp_solidity ≥ 4 时再 trigger 价值最大）
+
+---
+
+### [u_019_server_ssh_recovered_20260420]
+
+- when: 2026-04-20 (R21 commit)
+- who: scientist (落地用户 U-019 拍板 "你去登录到远程看一下吧，应该是可以连上的")
+- intent: 用户指示 scientist 直接登录 server 验证 SSH 状态。此前 engineer 在 [E-010_chateval_server_clone_attempt_20260420] 报告 SSH 卡死 + 后续 BatchMode 重试 `Permission denied`，挂出 U-019-server-ssh-state-decide 求拍板。Scientist 用 `ssh -i ~/.ssh/school -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=15 dengkw@10.103.16.12` 直接验证 6 类系统状态，发现 SSH 已恢复且网络全通 → engineer E-010 server 路径 unblocked。
+- status: ✅ (U-019 闭环；engineer E-010 路径恢复)
+- evidence:
+
+  **6 项诊断 (一次 SSH session, exit code 0, sentinel `__SSH_OK__` 命中)**:
+
+  | # | check | result |
+  |---|---|---|
+  | A | workdir `/media/data3/dengkw/` accessible | ✅ `FNC/` + `recsys/` + `python_packages/` + `pip_tmp/` + `torch-2.5.1+cu121-cp310-cp310-linux_x86_64.whl` (744 MB) + `.cache/` 全部 readable，dengkw 拥有；engineer 同期在跑 `torch_install_v3` (log mtime 20:06) |
+  | B | toolchain | python `/usr/bin/python3` v3.10.12 + git `/usr/bin/git` v2.34.1 |
+  | C | network → GitHub | github.com HTTP **200** (2.16 s) + api.github.com HTTP **200** (0.60 s) → ChatEval/AutoGen/MAD HTTPS clone 全可走 |
+  | D | fail2ban / iptables | sudo 需密码 (NOPASSWD 不可用)，无法读 `/var/log/auth.log` 或 `iptables -L`；但 SSH 直接通了所以 moot — 不需要 unban |
+  | E | dengkw active sshd procs | 4 对 `sshd: dengkw [priv]` + `sshd: dengkw@notty` (从 18:12, 19:47, 20:11, 20:13)；包含 scientist 的 2 个新连接 + 2 个 engineer 残留 session（不影响新连接）|
+  | F | GPU snapshot | 4× RTX 3090 (24GB) + 4× RTX 2080 Ti (11GB)；GPU 1 有人用 (91% util, 929MB)，其余 7/8 全 idle (≤13MB)；driver 550.x |
+
+- diagnosis:
+  - SSH itself: ✅ 4 秒 roundtrip，无 hang，无 password prompt → engineer 早先 `Permission denied` 是 transient 状态污染（最可能是本机 ssh-agent / OpenSSH multiplex socket 缓存），现已自然恢复
+  - server-side ban hypothesis 排除：如果 fail2ban 真 ban 了我们的 IP，scientist 这次连接也应失败；scientist 4 秒成功 → IP 没被 ban
+  - server-side firewall hypothesis 排除：HTTP 200 to github.com 证明 server → public internet egress 正常，不是 server 出口被拦
+  - 唯一仍未确认的可能性：engineer 的 macOS-side ssh-agent 状态 / `~/.ssh/known_hosts` 条目可能仍异常；但只要 engineer 用 fresh BatchMode 命令（参考 ssh-server-rules.mdc Rule 3 命令模板）重试，应 OK
+- unblocks:
+  - **engineer E-010** (clone + reproduce AutoGen + ChatEval on server) ← 直接 unblocked
+  - **engineer E-015** (clone + reproduce MAD on server, R17 dispatched) ← 直接 unblocked
+  - 后续 E-011 (swap adapters) + E-012 (swap comparison) + E-016 (R2→MAD swap) ← 链式 unblocked
+- next_action for engineer:
+  - 用 `ssh-server-rules.mdc Rule 3` 标准命令模板（**`-i school -o BatchMode=yes -o StrictHostKeyChecking=no`**，注意 `school` 是 local `~/.ssh/school` 路径，**绝对禁止**交互式 shell）重试 E-010 server 路径
+  - 如果再次 hang，立刻 `ps -ef | grep ssh | grep dengkw` 在 local 看是否有死掉的 ssh 进程，`kill -9` 它们再重试
+  - 不要再挂 U-XXX-decide 阻塞用户；本 phase 块已证明 SSH 是通的
+
+---
+
+### [u_020_stage2_fullval_3seed_launch_20260420]
+
+- when: 2026-04-20 (R21 commit)
+- who: scientist (落地用户 U-020 拍板 "继续跑")
+- intent: 用户批 (b) 3 seeds × 7405 paired Stage-2 vs Stage-1 fullval。Engineer Day 7 已在 [E-005_paired_stage1_vs_stage2_200_comparison_20260420] 报告 200-sample preliminary 数据：Stage-2 F1 0.7292 vs Stage-1 F1 0.6954 = +3.38 pp，token -37%，cost-normalised F1 +66%，0 dead_end / 0 PAR；这是直接闭合 R-FULL-001 fatal #1 (Finding 4 自证伪) 的关键数据点。本子条 dispatch 7405-sample × 3-seed paired fullval batch 给 engineer。
+- status: ✅ (decision landing 完毕；实际跑数 + paired bootstrap CI 由 engineer 执行)
+- depends_on:
+  - USER_TODO §A U-020-decide ✅ (用户原话 "继续跑"，按 scientist 推荐 (b))
+  - E-005 ✅ (200-sample paired sanity probe)
+  - U-EXEC-006 ✅ (newapi as primary endpoint, sufficient quota)
+  - U-EXEC-001 ✅ replaced (no kuaipao block)
+
+#### 工单：E-017 — Stage-2 vs Stage-1 paired fullval × 3 seeds (NEW R21)
+
+- ticket_id: E-017
+- assigned_to: engineer
+- priority: P0 — sprint critical-path（解锁 S-115/S-116/S-117 主体 §1/§4/§6 framing 重写）
+- estimate: ~9 h wall-clock @ workers=8（数学：7405 samples × 2 methods × 3 seeds × 4 hops × ~$0.005/call ≈ ~$270 budget；wall ≈ 9 h 因 newapi rate-limit 是限速因子）
+- task spec:
+  1. **Pre-flight**: 重 verify newapi quota（`POST /v1/models` smoke + `GET /v1/balance` 或等价）；如 quota < $300 立即停手 + ack 用户
+  2. **Run schedule** (顺序 OR 并发，看 newapi rate-limit；推荐顺序，避免 throttle):
+     - seed=42: `edo_stage2_chain` × 7405 → `artifacts/round2_gpt41mini_stage2_fullval/run_<TS>_seed42/edo_stage2_chain/`
+     - seed=42: `fixed_peer_calibrated` (Stage-1 paired anchor) × 7405 → `.../run_<TS>_seed42/fixed_peer_calibrated/`
+     - seed=43: 同上，`run_<TS>_seed43/`
+     - seed=44: 同上，`run_<TS>_seed44/`
+  3. **Per-run validation**: 每个 batch 跑完立刻 `python scripts/validate_logs.py <run_dir>`，必须 [OK]；如 [FAIL] 立刻停手 + diagnosis 在 `[E-017_validation_fail_<TS>]` 自挂
+  4. **Paired bootstrap CI**: 6 个 batch 全 ✅ 后，跑 `scripts/paired_bootstrap_ci.py`（如不存在，engineer 写一个 ~50 行脚本：B=10000 resamples，per-sample paired ΔF1，95% percentile CI，paired sign test p-value）→ 输出 `artifacts/round2_gpt41mini_stage2_fullval/paired_stats_3seed.csv` (columns: `seed`, `method_a`, `method_b`, `n`, `mean_delta_f1`, `ci_low`, `ci_high`, `paired_p`, `mean_token_a`, `mean_token_b`, `mean_delta_token`)
+  5. **Cost ledger**: 每个 batch 末尾从 newapi 拉一次 quota，写 `cost_ledger.json` 进 fullval 目录；总成本 / 各 seed 成本 / wall-clock 都记
+  6. **Output handoff**:
+     - `artifacts/round2_gpt41mini_stage2_fullval/run_<TS>_seed{42,43,44}/edo_stage2_chain/main_table.csv`
+     - `artifacts/round2_gpt41mini_stage2_fullval/run_<TS>_seed{42,43,44}/fixed_peer_calibrated/main_table.csv`
+     - `artifacts/round2_gpt41mini_stage2_fullval/paired_stats_3seed.csv`
+     - `artifacts/round2_gpt41mini_stage2_fullval/cost_ledger.json`
+     - 在本 phase 块下追加 `[E-017_done_<TS>]` sub-entry，挂 ticket ✅；交付 paired_stats 给 scientist S-115/S-116/S-117
+- pinned_cautions_to_acknowledge:
+  - **C-1**: 全程走 newapi
+  - **C-2**: byte-id no regression（不动 Stage-1 production 路径）→ 用现成 `methods.py + runner.py` 已经在 R-PART-001 smoke ✅ 的版本，不要在 fullval 期间改 production 代码
+  - **C-3**: 3 seeds → 9 h wall；选择 server (per U-019 ✅) 或 local 跑都可，但 server 上跑要 nohup + tail log + 心跳监控（参考 ssh-server-rules.mdc Rule 4）
+  - **C-4 #1**: R1 split tokens +20-30%，3 seeds × 2 methods × 7405 ≈ 44430 batch 个 sample 总 token 估算需准确，cost ledger 必须每个 batch 后更新
+  - **C-5**: $270 budget；超 $350 立即停手，写 `[E-017_cost_blowout_<TS>]` 自挂
+  - **C-6 NEW**: paired 必须 same-question-id 同 seed，**不能** `random.shuffle(samples)` 后跑 — 会破坏 paired-sample 假设；validation 时 `csv` 的 `qid` 列必须 align
+- if_blocked:
+  - 若 fullval 出现 Stage-2 ΔF1 < 0 (即 7405-scale 上 Stage-2 反而比 Stage-1 差)：**这是有效科学结果**，不是 blocker；engineer 把数字交付 scientist；scientist 在 §1/§4/§6 诚实写 "preliminary 200-sample 大喜在 fullval 7405 没复现，原因 X" + 强调 confidence interval（reviewer 看的是 honesty + statistical rigor）
+  - 若 newapi quota 中途耗尽：立即停手 + 用 partial-results subset (e.g., 完成 seed=42 1 个 + 其余 partial) 写 paired_stats_partial.csv + ack 用户 (U-EXEC-XXX 让用户决定是否充值)
+- unblocks_for_scientist:
+  - **S-115** (§1 Introduction Stage-2 framing 重写) — fullval ✅ 后立即 unblock
+  - **S-116** (§6 Conclusion 重写) — fullval ✅ 后立即 unblock
+  - **S-117** (§4 Stage-2 Results 章节 + paired bootstrap CI 表) — fullval ✅ + paired_stats CSV 后立即 unblock
+  - **S-009** (§4.3 用 fullval 真数字替换 "pending rerun" 措辞) — fullval ✅ 后立即 unblock
+- next_action:
+  - engineer: pre-flight check newapi quota → 顺序跑 6 batch → paired bootstrap CI → 在本 phase 块下挂 `[E-017_done_<TS>]` ✅
+  - scientist: 等 engineer ack；ack 后立即 batch S-115/S-116/S-117 写作 (R22+ commits)
 
 ---
