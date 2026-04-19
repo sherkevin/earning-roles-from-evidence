@@ -171,7 +171,7 @@ P_i^{t+1} = \mathrm{clip}\Big(&(1-\mu) P_i^t + \mu \big(\eta_{\mathrm{loc}} \mat
 Our current codebase implements a Stage-1 restricted instance of EDO that we call \textbf{Terminal-Consensus Peer Backpropagation (TCPB)}. The exact substitutions vis-\`a-vis the full EDO design are enumerated in the \textbf{Prototype Scope Box} below; the operative consequence is that after a routed path terminates with final answer $\hat{y}$, we compare $\hat{y}$ with the gold answer $y$ and obtain a thresholded task-quality signal. Only the final accepting node is updated, using bounded asymmetric steps with damping. The complete per-sample loop, including utility scoring, the two safety gates, and the terminal-consensus update, is given in Algorithm~\ref{alg:tcpb-loop}. This restricted mechanism already reduces premature acceptance and stabilizes routing relative to self-reflection baselines, but it does not yet instantiate recursive audit, persona-tag formation, or split-based organization.
 
 \begin{algorithm}[t]
-\caption{TCPB execution loop (Stage-1 prototype, single sample). Notation matches \S\ref{sec:methodology}; deterministic instantiations of $\phi$ and $b_i(j)$ are in \texttt{artifacts/edo\_lite\_executable\_spec.md} \S 1.2 / \S 2.2.}
+\caption{TCPB execution loop (Stage-1 prototype, single sample). Notation matches \S\ref{sec:methodology}; deterministic instantiations of $\phi$ and $b_i(j)$ are in the executable spec [Anonymous Suppl.] \S 1.2 / \S 2.2.}
 \label{alg:tcpb-loop}
 \small
 \begin{algorithmic}[1]
@@ -225,7 +225,7 @@ The current executable system instantiates only a restricted Stage-1 subset of E
   \item the three-action \texttt{do\_self / outsource / split} EDO policy with deterministic \texttt{accept-or-forward};
   \item recursive persona-tag updates with terminal-only scalar competence updates (TCPB).
 \end{enumerate}
-The deterministic instantiations of $\phi(z)$, the utility estimators $U^{self}, U^{out}$, and the persona update rule for this prototype scope are given in \texttt{artifacts/edo\_lite\_executable\_spec.md}; that note is the canonical companion specification for everything in this box and is referenced by Sections~\ref{sec:methodology}, \ref{sec:experiments}, and \ref{sec:limitations} without restating its content. Stage-2 work will progressively replace each of (i)--(v) with the full EDO mechanism; none of those replacements are claimed by the current submission.
+The deterministic instantiations of $\phi(z)$, the utility estimators $U^{self}, U^{out}$, and the persona update rule for this prototype scope are given in the anonymous executable specification supplement; that note is the canonical companion specification for everything in this box and is referenced by Sections~\ref{sec:methodology}, \ref{sec:experiments}, and \ref{sec:limitations} without restating its content. Stage-2 work will progressively replace each of (i)--(v) with the full EDO mechanism; none of those replacements are claimed by the current submission.
 \end{minipage}}
 \medskip
 
@@ -239,7 +239,7 @@ Three EDO mechanisms remain underspecified in the present submission and define 
 
 \subsection{What current evidence already establishes}
 
-Our current reproducible evidence comes from the Stage-1 TCPB prototype on HotpotQA. The main benchmark slice is a fixed set of 200 HotpotQA validation questions exported to \fpath{artifacts/seed/hotpotqa_validation_200.jsonl}. Existing runs compare \texttt{fixed\_peer\_calibrated}, \texttt{fixed\_self\_calibrated}, \texttt{fixed\_self\_claim}, \texttt{fixed\_static\_roles}, and centralized baselines under shared inputs and logged execution traces.
+Our current reproducible evidence comes from the Stage-1 TCPB prototype on HotpotQA. The main benchmark slice is a fixed set of 200 HotpotQA validation questions, frozen as a versioned slice in the anonymous code/data supplement. Existing runs compare \texttt{fixed\_peer\_calibrated}, \texttt{fixed\_self\_calibrated}, \texttt{fixed\_self\_claim}, \texttt{fixed\_static\_roles}, and centralized baselines under shared inputs and logged execution traces.
 
 These experiments do \emph{not} establish the full EDO theory. What they do establish is narrower but still important:
 \begin{itemize}
@@ -254,18 +254,18 @@ This evidence should be presented as support for the \textbf{direction} of the t
 \subsection{Stage-1 setup: current prototype experiments}
 
 \begin{itemize}
-  \item \textbf{Benchmark:} HotpotQA \citep{yang2018hotpotqa} distractor validation subset, 200 examples (\fpath{artifacts/seed/hotpotqa_validation_200.jsonl}). MuSiQue \citep{trivedi2022musique} and 2WikiMultiHop \citep{ho20202wikimultihop} are reserved for the Stage-2 EDO benchmark transfer (\S 4.4 E5).
-  \item \textbf{Model:} \texttt{gpt-4.1-mini} (OpenAI-compatible via \fpath{https://kuaipao.ai/v1}), temperature 0, chain topology unless otherwise noted. \texttt{model\_resolved\_runtime}: \texttt{gpt-4.1-mini} confirmed in all canonical run notes.
-  \item \textbf{Canonical run:} \fpath{artifacts/round2_gpt41mini/run_20260414_115739/} --- contains \texttt{fixed\_peer\_calibrated}, \texttt{fixed\_static\_roles}, and \texttt{fixed\_self\_claim} subdirectories, all validated \texttt{[OK]}. Metrics consolidated in \fpath{artifacts/round2_gpt41mini/round2_gpt41mini_main_table.csv}.
-  \item \textbf{Current runtime:} \fpath{workspace/idea04_core/runner.py}, \fpath{methods.py}, \fpath{contracts.py}.
+  \item \textbf{Benchmark:} HotpotQA \citep{yang2018hotpotqa} distractor validation subset, 200 examples (versioned slice in the anonymous supplement). MuSiQue \citep{trivedi2022musique} and 2WikiMultiHop \citep{ho20202wikimultihop} are reserved for the Stage-2 EDO benchmark transfer (\S 4.4 E5).
+  \item \textbf{Model:} \texttt{gpt-4.1-mini} via an OpenAI-compatible API endpoint (held constant across all runs; see Appendix~A on integrity-check provenance), temperature 0, chain topology unless otherwise noted.
+  \item \textbf{Canonical run:} a single Stage-1 batch covering \texttt{fixed\_peer\_calibrated}, \texttt{fixed\_static\_roles}, and \texttt{fixed\_self\_claim} on the 200-sample slice, all validated by an automated log-completeness checker. Metrics consolidated in the per-run \texttt{main\_table.csv}.
+  \item \textbf{Current runtime:} an asynchronous parallel runner (\texttt{runner.py}), a method registry encoding all baselines (\texttt{methods.py}), and a typed inter-agent packet schema (\texttt{contracts.py}); released in the anonymous code supplement.
   \item \textbf{Current method objects:} fixed topology, role-prior nodes, linear handoff packet, deterministic local accept-or-forward policy, terminal-only outcome update.
   \item \textbf{Current process metrics:} EM, F1, mean handoff count, dead-end rate, premature accept rate, forward-after-correction rate, heuristic and API token cost, and cost-normalized F1.
-  \item \textbf{Note on prior GLM results:} All runs under \fpath{artifacts/round1/} and \fpath{artifacts/round1_star/} used \texttt{glm-4-flash} as the actual runtime backbone. These are archived as Stage-1 guidance-only artifacts. They established the direction of the research but are not the final paper evidence.
+  \item \textbf{Note on prior GLM results:} All Stage-1 runs prior to the backbone upgrade used \texttt{glm-4-flash}. These are archived as Stage-1 guidance-only artifacts (in the anonymous supplement). They established the direction of the research but are not the final paper evidence.
 \end{itemize}
 
 \subsection{Current main findings from the restricted instantiation}
 
-The canonical round2 \texttt{gpt-4.1-mini} results ($n=200$, chain, run \fpath{run_20260414_115739}) support four main observations, summarised in Table~\ref{tab:main-results}.
+The canonical Stage-1 \texttt{gpt-4.1-mini} results ($n=200$, chain) support four main observations, summarised in Table~\ref{tab:main-results}.
 
 \begin{table}[t]
 \centering
@@ -280,7 +280,7 @@ The canonical round2 \texttt{gpt-4.1-mini} results ($n=200$, chain, run \fpath{r
 \texttt{peer\_calibrated}& 0.615 & 0.7381 & 2.00 & 6{,}414 \\
 \bottomrule
 \end{tabular}
-\caption{Stage-1 results on HotpotQA chain-200 with \texttt{gpt-4.1-mini} (canonical run \fpath{round2_gpt41mini/run_20260414_115739}). MHC = mean handoff count; Tokens = mean API tokens per sample. All three methods achieve premature-accept rate $\mathrm{PAR}=0.0$.}
+\caption{Stage-1 results on HotpotQA chain-200 with \texttt{gpt-4.1-mini}. MHC = mean handoff count; Tokens = mean API tokens per sample. All three methods achieve premature-accept rate $\mathrm{PAR}=0.0$.}
 \label{tab:main-results}
 \end{table}
 
@@ -299,7 +299,7 @@ refreshed baseline (v3 codepath)  & 0.435 & 0.5597 & 6{,}429 \\
 \;\;$-$ decomposer safety gate    & 0.435 & 0.5597 & 6{,}430 \\
 \bottomrule
 \end{tabular}
-\caption{Mechanism ablations, HotpotQA chain-200, \texttt{glm-4-flash}. Disabling TCPB or the decomposer gate exactly matches the refreshed baseline; enlarging the evidence window recovers $+2.2$ F1. PAR $=0$ for all variants. Source: \fpath{round1_ablation_\{baseline,evidence,notcpb,nogate\}/}.}
+\caption{Mechanism ablations, HotpotQA chain-200, \texttt{glm-4-flash}. Disabling TCPB or the decomposer gate exactly matches the refreshed baseline; enlarging the evidence window recovers $+2.2$ F1. PAR $=0$ for all variants. Per-variant logs in the anonymous supplement.}
 \label{tab:ablations}
 \end{table}
 
@@ -312,7 +312,7 @@ refreshed baseline (v3 codepath)  & 0.435 & 0.5597 & 6{,}429 \\
   \includegraphics[width=\columnwidth]{fig2_backbone_sensitivity.pdf}
   \caption{Backbone-sensitive Stage-1 ordering on the chain-200 HotpotQA slice. All three methods improve by ${\approx}{+}15$--$20$ F1 points when the backbone is upgraded from \texttt{glm-4-flash} to \texttt{gpt-4.1-mini}, but the relative ordering inverts: GLM yields \texttt{peer\_calibrated} ($0.596$) $>$ \texttt{static\_roles} ($0.580$) $>$ \texttt{self\_claim} ($0.562$); \texttt{gpt-4.1-mini} yields \texttt{self\_claim} ($0.764$) $>$ \texttt{static\_roles} ($0.745$) $>$ \texttt{peer\_calibrated} ($0.738$). The red star marks the only validated full-validation point (\texttt{peer\_calibrated} on \texttt{gpt-4.1-mini}, $F_1{=}0.770$, $n{=}7405$); the other two fullval points are pending rerun under the runtime integrity guard (\S\ref{sec:limitations}). Identical inputs and routing code are used across backbones.}
   \label{fig:backbone-sensitivity}
-\end{figure} The gap between the best and worst Stage-1 method is 2.6 F1 points --- non-trivial at $n=200$ but not yet confirmed with paired statistics. \texttt{fixed\_peer\_calibrated}/TCPB should \emph{not} be described as the strongest Stage-1 method on the strong backbone. \texttt{fixed\_self\_claim} currently leads F1; \texttt{fixed\_static\_roles} is the most cost-efficient (4{,}663 vs.\ 6{,}414 API tokens per sample). $N{=}7405$ fullval for all three methods is required for tight confidence intervals. As of this draft, \texttt{peer\_calibrated} fullval is completed and valid (F1=0.7703, $n{=}7405$, \fpath{artifacts/round2_gpt41mini_fullval/}); \texttt{static\_roles} and \texttt{self\_claim} fullval runs were invalidated by a provider runtime integrity failure (model drift mid-run) and are pending rerun under the new fail-fast guard. The three-method ordering above is therefore supported by chain-200 evidence ($n{=}200$) only and should not be presented as a finalized fullval ranking.
+\end{figure} The gap between the best and worst Stage-1 method is 2.6 F1 points --- non-trivial at $n=200$ but not yet confirmed with paired statistics. \texttt{fixed\_peer\_calibrated}/TCPB should \emph{not} be described as the strongest Stage-1 method on the strong backbone. \texttt{fixed\_self\_claim} currently leads F1; \texttt{fixed\_static\_roles} is the most cost-efficient (4{,}663 vs.\ 6{,}414 API tokens per sample). $N{=}7405$ full-validation for all three methods is required for tight confidence intervals. As of this draft, \texttt{peer\_calibrated} full-validation is completed and valid (F1=$0.7703$, $n{=}7405$); the other two full-validation runs are pending re-execution under a new integrity guard (Appendix~A). The three-method ordering above is therefore supported by chain-200 evidence ($n{=}200$) only and should not be presented as a finalized full-validation ranking.
 
 \paragraph{Finding 3: PAR collapses to zero regardless of backbone.} All three methods achieve PAR $= 0.0$ on \texttt{gpt-4.1-mini}, consistent with the GLM result. The decomposer force-forward gate prevents premature acceptance on multi-hop HotpotQA questions across backbones. This confirms that the routing safety structure is robust to backbone change.
 
@@ -324,9 +324,7 @@ The full long-paper requires experiments redesigned around emergence rather than
 
 \subsection{Current Stage-1 artifact interpretation}
 
-The current artifact directories, tables, and ablations should remain in the paper, but their framing must change. They are evidence for the restricted instantiation. Canonical source: \fpath{artifacts/round2_gpt41mini/} (backbone: \texttt{gpt-4.1-mini}); GLM-backbone results under \fpath{artifacts/round1/} are archived as Stage-1 guidance-only.
-
-Additional GLM-backbone evidence reinforces this reading. Mechanism ablations (Table~\ref{tab:ablations}) confirm that on the weak backbone the local answer-generation bottleneck dominates the routing-mechanism contribution; weight-sensitivity sweeps ($\pm 2\times$, $<0.003$ pp F1 change) rule out fine-tuned weights; and a static-path overlap analysis (\texttt{peer\_calibrated} reproducing ${\sim}52\%$ of static routes) shows stable route structure can form without central control. These narrow the Stage-2 target toward task trees, recursive audit, persona tags, and sparse-graph organization rather than further fixed-route weight tuning.
+The Stage-1 artifact tables and ablations remain evidence \emph{for the restricted instantiation}, not for the full EDO theory. The canonical source is the \texttt{gpt-4.1-mini} chain-200 batch; \texttt{glm-4-flash} results from earlier runs are archived as Stage-1 guidance-only. Mechanism ablations (Table~\ref{tab:ablations}) show that on the weak backbone the local answer-generation bottleneck dominates the routing-mechanism contribution; weight-sensitivity sweeps ($\pm 2\times$, $<0.003$ pp F1 change) rule out fine-tuned weights; and a static-path overlap analysis (\texttt{peer\_calibrated} reproducing ${\sim}52\%$ of static routes) shows stable route structure can form without central control. These narrow the Stage-2 target toward task trees, recursive audit, persona tags, and sparse-graph organization rather than further fixed-route weight tuning.
 
 \section{Conclusion}
 
@@ -337,13 +335,13 @@ We introduced \textbf{Emergent Delegation Organization (EDO)} as a framework for
 \section*{Limitations}
 \label{sec:limitations}
 
-We explicitly acknowledge that the current codebase does not implement the complete EDO method. The present runtime still relies on fixed topologies, role-prior nodes, linear packet passing, deterministic accept-or-forward routing, and terminal-only outcome updates. It therefore cannot yet establish the strongest claims of the full framework, such as recursive split value, local audit superiority, or personality-tag emergence from near-homogeneous initialization.
-
-We also acknowledge that some current routing improvements may still be partially entangled with hand-designed safety priors and answer-generation constraints. As a result, the present evidence should be interpreted as validating the Stage-1 premise that decentralized outcome-based calibration helps, not as a full proof that local interaction alone is sufficient for rich organizational emergence across arbitrary settings.
+We explicitly acknowledge four scope limitations of the present submission. (1) The current runtime implements only the restricted Stage-1 TCPB prototype: fixed topologies, role-prior nodes, linear packet passing, deterministic accept-or-forward routing, and terminal-only outcome updates. It therefore cannot yet establish the strongest claims of the full EDO framework --- recursive split value, local audit superiority, or personality-tag emergence from near-homogeneous initialization. (2) Some current routing improvements remain partially entangled with hand-designed safety priors and answer-generation constraints; the present evidence should be interpreted as validating the Stage-1 premise that decentralized outcome-based calibration helps, not as a full proof that local interaction alone suffices for rich organizational emergence across arbitrary settings. (3) Backbone-sensitive method ordering: on our 200-sample HotpotQA chain slice, the relative ranking of Stage-1 delegation methods inverts between the weak and strong backbone (Table~\ref{tab:main-results}, Finding~2). The TCPB peer-calibration overhead does not yield F1 gains when the underlying model is already strong enough to self-evaluate accurately, predicting that the full EDO organizational advantage will be most visible on harder tasks, weaker individual agents, or richer topologies where single-agent self-assessment breaks down. (4) Statistical evidence is presently limited to point estimates with $n{=}200$: paired-bootstrap confidence intervals, multi-seed variance, and explicit significance tests are deferred to the Stage-2 evaluation agenda (\S 4.4 E1--E5).
 
 These limitations are not accidental flaws in reporting. They define the boundary between the current restricted instantiation and the long-paper method it motivates. The next-stage implementation burden is therefore clear: introduce task-tree state, recursive audit, persona-tag updates, and general sparse-graph support, then test whether the stronger organizational predictions of EDO hold empirically.
 
-A fourth limitation concerns backbone-sensitive method ordering. On our current 200-sample HotpotQA chain slice, the relative ranking of Stage-1 delegation methods inverts between \texttt{glm-4-flash} and \texttt{gpt-4.1-mini}. On the stronger backbone, \texttt{fixed\_self\_claim} leads F1, while \texttt{fixed\_peer\_calibrated} trails. This indicates that the TCPB peer-calibration overhead (additional LLM calls for belief updates) does not yield F1 gains when the underlying model is already strong enough to self-evaluate accurately. This result is theoretically important: it predicts that the full EDO organizational advantage will be most visible on harder tasks, weaker individual agents, or richer topologies where single-agent self-assessment breaks down. Reporting Stage-1 results on only one backbone would conceal this sensitivity; we report both for transparency. A related data integrity note: one fullval run (\fpath{artifacts/round2_gpt41mini_fullval/run_20260414_135408/}) experienced provider-side model drift that silently substituted an unsupported model for two of the three methods; the affected \texttt{static\_roles} and \texttt{self\_claim} fullval results are being rerun under a new fail-fast runtime guard (\texttt{ModelDriftError} in \fpath{workspace/idea04_core/llm_client.py}). The \texttt{peer\_calibrated} fullval result (F1=0.7703) remains valid. This section will be updated once the repaired reruns land.
+\section*{Appendix A: Provider-side data integrity event}
+
+During the full-validation pass on the strong backbone, two of the three method runs were silently affected by an upstream provider issue in which the requested model identifier was routed to a different (newer) underlying model for a subset of API calls. The third method's full-validation result was not affected. To prevent recurrence and make the issue forensically auditable, the runtime client was extended with a fail-fast integrity check that compares the model identifier echoed back in each response against the requested identifier and raises an explicit error on mismatch. The two affected method runs have been queued for re-execution under the new guard; the third (unaffected) full-validation result is preserved as-is. This appendix documents the engineering provenance of the queued re-runs and does not introduce new methods or claims; the pending re-runs are flagged in \S 4.3 (Finding~2).
 
 \bibliography{custom}
 
