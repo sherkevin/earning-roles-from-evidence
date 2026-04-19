@@ -1,0 +1,206 @@
+%% =============================================================
+%% _pending_data_templates.tex
+%% =============================================================
+%%
+%% Created: 2026-04-20 (R31 commit, scientist self-prep per user
+%% instruction "提交任务后立即做下一步").
+%%
+%% PURPOSE: Pre-written LaTeX skeletons for the §4.x tables,
+%% paragraphs, and Related Work updates that scientist will inline
+%% into edo_paper.tex AS SOON AS the corresponding engineer batches
+%% (E-017 / E-014 / E-012 / E-016) ack their data. Each block is
+%% labelled with: (1) source ticket, (2) which scientist S-XXX it
+%% closes, (3) where to insert in edo_paper.tex, (4) the exact
+%% placeholders to fill from the engineer's CSV / metrics.json
+%% output.
+%%
+%% This file is NEVER \input{} into edo_paper.tex; it is a holding
+%% area only. Inlining is a manual scientist commit (R32+ when data
+%% arrives).
+%%
+%% NOTE: column-spec (\@{}lcccr@{}, etc.) deliberately mirrors the
+%% existing Table 1 / Table 2 conventions so visual style matches.
+%% =============================================================
+
+
+%% =============================================================
+%% TEMPLATE 1 — S-117 fullval Stage-2 vs Stage-1 paired result
+%% Source ticket: E-017 (3-seed × 7405 paired fullval, R21 派工)
+%% Closes: S-117 main fullval table + S-115 §1 framing + S-116 §6
+%% Conclusion + S-009 §4.3 真数字
+%% Insert location: end of §4.3 (after Table 1, before Finding 4 OR
+%%   between Finding 4 and §4.4) as a NEW paragraph + table.
+%% Section title proposal: §4.3.5 "Stage-2 prototype fullval"
+%%   (do NOT make new subsection; integrate as paragraph)
+%% Required engineer artifact:
+%%   artifacts/round2_gpt41mini_stage2_fullval/paired_stats_3seed.csv
+%%   columns: seed, method_a, method_b, n, mean_delta_f1,
+%%            ci_low, ci_high, paired_p, mean_delta_token
+%% =============================================================
+
+\paragraph{Stage-2 prototype full-validation (paired).}
+On the full HotpotQA validation set ($n{=}7405$) with $\geq 3$ seeds, paired-bootstrap CI shows the degenerate-Stage-2 prototype \texttt{edo\_stage2\_chain} delivers $\Delta F_1 = \langle FILL\_DELTA\_F1 \rangle$ pp [95\% CI $\langle FILL\_CI\_LOW \rangle$, $\langle FILL\_CI\_HIGH \rangle$] versus \texttt{fixed\_peer\_calibrated} at the same backbone (paired sign-test $p{=}\langle FILL\_PAIRED\_P \rangle$), with $\Delta \mathrm{tokens} = \langle FILL\_DELTA\_TOKENS \rangle\%$ (cross-seed $\sigma{=}\langle FILL\_TOKEN\_STD \rangle$\%). \langle FILL\_INTERPRETATION: \emph{either} ``This confirms the preliminary 3-shard observation (Appendix~D) at $35{\times}$ the sample size and lifts the Pareto frontier above Stage-1 baselines'' \emph{or} ``Despite the order-of-magnitude sample increase, the F1 effect remains within noise; the token cost reduction holds'' \rangle.
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lccr@{}}
+\toprule
+\textbf{Method} & \textbf{F1 mean$\pm\sigma$} & \textbf{$\Delta$F1 (pp)} & \textbf{Tok.} \\
+\midrule
+\texttt{peer\_calibrated} (Stage-1) & $\langle X.XXX\pm Y.YYY \rangle$ & --- & $\langle Z \rangle$ \\
+\texttt{edo\_stage2\_chain}         & $\langle X.XXX\pm Y.YYY \rangle$ & $\langle\pm 0.YYY\rangle$ & $\langle Z \rangle$ \\
+\bottomrule
+\end{tabular}
+\caption{Full-validation paired Stage-2 vs.\ Stage-1 results, HotpotQA $n{=}7405$, \texttt{gpt-4.1-mini}, $3$ seeds (42 / 43 / 44). Mean $\pm$ cross-seed std. PAR $= 0$ for both; mean handoff count $\langle\rangle$. Paired-bootstrap CI on $\Delta F_1$ in main text.}
+\label{tab:fullval-stage2-vs-stage1}
+\end{table}
+
+
+%% =============================================================
+%% TEMPLATE 2 — S-117 Table 2.b (gpt-4.1-mini Table 2 ablation)
+%% Source ticket: E-014 (R13 派工, 队列中)
+%% Closes: R-FULL-002 NEW gpt-4.1-mini Table 2 ablation (only
+%%   glm-4-flash currently)
+%% Insert location: §4.3 after existing Table 2 (which is
+%%   glm-4-flash) — as Table 3 OR as second sub-table within
+%%   Table 2 (LaTeX \begin{table*} with two \begin{tabular})
+%% Required engineer artifact:
+%%   artifacts/round2_gpt41mini_ablations/<TS>/{refreshed_baseline,
+%%     evidence_window, no_tcpb, no_decomposer_gate}/metrics.json
+%% =============================================================
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lccr@{}}
+\toprule
+\textbf{Variant} & \textbf{EM} & \textbf{F1} & \textbf{Tok.} \\
+\midrule
+canonical anchor (\texttt{peer\_calibrated})   & $\langle X.XXX \rangle$ & $\langle X.XXX \rangle$ & $\langle X \rangle$ \\
+refreshed baseline (v3 codepath)               & $\langle X.XXX \rangle$ & $\langle X.XXX \rangle$ & $\langle X \rangle$ \\
+\;\;$+$ evidence window enlarged               & $\langle X.XXX \rangle$ & $\langle X.XXX \rangle$ & $\langle X \rangle$ \\
+\;\;$-$ TCPB terminal update                   & $\langle X.XXX \rangle$ & $\langle X.XXX \rangle$ & $\langle X \rangle$ \\
+\;\;$-$ decomposer safety gate                 & $\langle X.XXX \rangle$ & $\langle X.XXX \rangle$ & $\langle X \rangle$ \\
+\bottomrule
+\end{tabular}
+\caption{Mechanism ablations on the canonical strong backbone. HotpotQA chain-200, \texttt{gpt-4.1-mini}, \texttt{seed=42}. Compare to Table~\ref{tab:ablations} (\texttt{glm-4-flash}); the $-$TCPB / $-$gate equivalence on \texttt{glm-4-flash} \langle FILL\_INTERP: persists / inverts \rangle on the strong backbone.}
+\label{tab:ablations-strong-backbone}
+\end{table}
+
+
+%% =============================================================
+%% TEMPLATE 3 — S-121 / S-122 / S-131: §4.x External Baseline +
+%% Module-Swap Comparison (3-host = AutoGen + ChatEval + MAD)
+%% Source tickets: E-010 + E-011 + E-012 (AutoGen + ChatEval) +
+%%   E-015 + E-016 (MAD reproduce + R2 swap into MAD aggregator)
+%% Closes: S-121 + S-122 + S-131 + R-FULL-001 fatal #3 (S6 cap)
+%%   + R-FULL-002 D3 MAD overlap-risk
+%% Insert location: NEW §4.x subsection between §4.3 (Findings)
+%%   and §4.4 (Stage-2 agenda); proposed title:
+%%   §4.4 "External Baseline + Module-Swap Comparison" (renumber
+%%   §4.4 Stage-2 agenda → §4.5; etc.)
+%% Required engineer artifacts:
+%%   artifacts/external_baselines/{autogen,chateval,mad}/
+%%     swap_results_<TS>/paired_stats.csv
+%%   columns per row: host, benchmark, seed, original_f1,
+%%     swapped_f1, delta_f1, delta_token_cost, paired_p_value,
+%%     bootstrap_ci_low, bootstrap_ci_high
+%% =============================================================
+
+\subsection{External baseline + module-swap comparison}
+\label{sec:external-swap}
+
+To address whether the EDO mechanisms add value on top of independent multi-agent systems --- not just on top of our own Stage-1 baselines --- we run a controlled module-swap comparison on three open-source 2024 systems (AutoGen, ChatEval, MAD). For each host we hold the host's prompts, agent count, retrieval stack, and termination policy fixed and only swap a single decision component to one of our R-x mechanisms.
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lcccr@{}}
+\toprule
+\textbf{Host \& swap target} & \textbf{Host F1} & \textbf{+R-x F1} & \textbf{$\Delta$F1 (pp)} & \textbf{$\Delta$Tok\%} \\
+\midrule
+AutoGen \texttt{select\_speaker} -- SWAP-1 R3 & $\langle\rangle$ & $\langle\rangle$ & $\langle\pm\rangle$ & $\langle\pm\rangle$ \\
+ChatEval \texttt{MetaReviewer} -- SWAP-3 R2  & $\langle\rangle$ & $\langle\rangle$ & $\langle\pm\rangle$ & $\langle\pm\rangle$ \\
+MAD \texttt{final\_aggregator} -- SWAP-4 R2  & $\langle\rangle$ & $\langle\rangle$ & $\langle\pm\rangle$ & $\langle\pm\rangle$ \\
+\bottomrule
+\end{tabular}
+\caption{Module-swap paired comparison on three independent 2024 multi-agent systems. HotpotQA-200 + MuSiQue-200, \texttt{gpt-4.1-mini}, paired same-question per host, $\geq 3$ seeds, paired-bootstrap CI. Each row replaces a single host component with our R-x module while holding everything else constant; controlled comparison isolates the mechanism's contribution from host-side architecture differences.}
+\label{tab:external-swap}
+\end{table}
+
+On all three hosts, swapping the host's [original component] for our [R-x] yields F1 $\langle FILL\_DELTAS\rangle$ and cost $\langle FILL\_TOKEN\_DELTAS\rangle$. The MAD swap (SWAP-4) directly tests R-FULL-002 reviewer's overlap-risk concern that TCPB is a degenerate case of MAD with aggregator-window = full trajectory: the empirical $\Delta$ on SWAP-4 quantifies the gap between per-hop audit (intervene + reroute) and debate-aggregator (terminal-outcome collapse) --- these are \langle FILL\_VERDICT: not / sometimes / consistently \rangle the same operator class.
+
+
+%% =============================================================
+%% TEMPLATE 4 — S-123 Related Work §2.1 + §2.2 reverse cross-ref
+%% Source: lands AFTER S-121 + S-122 + S-131 ✅
+%% Closes: S-123
+%% Insert location: end of §2.1 (orchestrator paragraph) + end
+%%   of §2.2 (peer critique paragraph)
+%% =============================================================
+
+%% Append to §2.1 (after the existing AutoGen/MetaGPT/HuggingGPT
+%% paragraph, before "ChatDev/AgentVerse"):
+%%
+%%   We benchmark our R3 vector-belief routing as a drop-in
+%%   replacement for AutoGen's \texttt{GroupChatManager.select\_speaker}
+%%   in §\ref{sec:external-swap} (SWAP-1), holding all other AutoGen
+%%   configuration (prompts, agent count, retrieval, termination)
+%%   constant; this is a controlled mechanism-isolation comparison
+%%   rather than a confounded full-system comparison.
+
+%% Append to §2.2 (after the existing Multi-Agent Debate / ChatEval
+%% mention, before "All these approaches assume..."):
+%%
+%%   In §\ref{sec:external-swap} we benchmark R2 audit as a drop-in
+%%   replacement for ChatEval's \texttt{MetaReviewer.aggregate}
+%%   (SWAP-3) and for MAD's \texttt{final\_aggregator} (SWAP-4).
+%%   The MAD swap in particular addresses the categorical-difference
+%%   question of whether per-hop audit (intervene + reroute) and
+%%   debate-aggregator (terminal-outcome collapse) belong to the
+%%   same operator class on multi-hop QA.
+
+
+%% =============================================================
+%% TEMPLATE 5 — S-115 §1 Introduction framing rewrite (Stage-2)
+%% Source: lands AFTER E-017 ✅ delivers paired CI evidence
+%% Closes: S-115
+%% Insert location: §1 paragraph 4 (or new para 5) after the
+%%   "We therefore propose Emergent Delegation Organization (EDO)"
+%%   paragraph; replaces / supplements the current "we explicitly
+%%   separate theory from currently executed evidence" sentence.
+%% Decision tree based on E-017 outcome (fill in based on actual data):
+%%   IF paired CI excludes 0 with positive ΔF1:
+%%     → "Stage-2 prototype achieves [+X.X pp F1, p<0.05] over
+%%        Stage-1 baseline at [-37%] token cost (full validation,
+%%        n=7405 × 3 seeds; Table~\ref{tab:fullval-stage2-vs-stage1})"
+%%   ELIF paired CI includes 0 but token win robust:
+%%     → "Stage-2 prototype matches Stage-1 baseline on F1 (paired
+%%        CI [X, Y] includes 0) at [-37%] token cost; the framework's
+%%        empirical contribution at present is efficiency at parity"
+%%   ELIF paired CI shows negative ΔF1:
+%%     → "Stage-2 prototype shows [-X.X pp F1] vs Stage-1 (paired CI
+%%        excludes 0); we report this as a delivered-system limitation
+%%        and discuss in §5 / Limitations item (8) [add new item]"
+%% =============================================================
+
+%% TBD — author manually fills based on actual E-017 paired_stats_3seed.csv
+
+%% =============================================================
+%% TEMPLATE 6 — S-116 §6 Conclusion rewrite (Stage-2)
+%% Source: lands with TEMPLATE 5
+%% Closes: S-116
+%% Insert location: §6 Conclusion paragraph 2 (currently ends with
+%%   "long-paper opportunity lies in implementing and empirically
+%%   evaluating the Stage-2 mechanisms")
+%% =============================================================
+
+%% TBD — author manually replaces the final 1-2 sentences depending
+%% on whether E-017 produces positive / null / negative paired ΔF1
+%% at fullval scale. Use same decision tree as TEMPLATE 5.
+
+%% END OF FILE _pending_data_templates.tex

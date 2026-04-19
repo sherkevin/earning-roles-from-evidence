@@ -1845,6 +1845,8 @@ vs 原 plan 净增 +5-6 天用于 external baseline workstream，由 buffer 吸�
 
 > **[reviewer-ack 2026-04-19 20:48]** R-FULL-005 落盘 → `artifacts/idea_reviews/reviewer_20260419_204827_05_5d4006/review.md`（按 §F.3 只 review.md）。**P4 Reproducibility-Ethics SAC**（唯一未用过 persona），**stateless** + **100% 重读 prompts/reviewer_prompt.md 完整规范不凭记忆** + **严格按 §8 10 步流程**：overall=4.5 (weak_reject), weighted_sum=4.910, experiments_solidity_score=1/8。审的是同 PDF SHA `4504614E`（与 R-FULL-004 同），按用户 verbal trigger "全新审稿人角度" 作 implicit U-Review-5 override §F.4 24h cooldown。**Cross-persona 一致性大验证**：连续 5 轮 R-FULL P5/P3/P2/P1/P4 五种独立 persona 全 overall=4.5 weak_reject → **4.5 floor 是 persona-invariant 的结构性结论**（不是 reviewer noise）。**P4 specialty deep audit 收益**：D5=5.5（LLM_ANSWER/LLM_DECOMPOSE/AUDIT-rule/EVIDENCE_EXTRACT prompts 不在 paper + FIT undefined for vector + TCPB 权重映射缺）+ D7=7.5（Limitations honest+specific 但 missing demographic/societal risks for band 8+），是前 4 轮 reviewer 没做的深度。**主动派工** (per R-FULL-004 已建立 dispatch pattern + 用户授权)：SCIENTIST_TODO §C 加 R-FULL-005 themes + §B.5 加 S-XXX TODO + §F.5 加 ack 块 + USER_TODO §D 加通知。详见 REVIEWER_TODO §A/§C/§D/§F.5 + 本行（§F.4 允许的唯一 ack）。
 
+> **[reviewer-ack 2026-04-19 21:46]** R-FULL-006 落盘 → `artifacts/idea_reviews/reviewer_20260419_214636_06_c5c5ad/review.md`（按 §F.3 只 review.md）。**P5 Best-Paper-Committee Oral-track gatekeeper STRICT**，stateless（不读历史 review 评分），用户 feedback "不够严厉" 后的严格修正版。**审的是 NEW PDF SHA `8161E9D3`** (vs R-FULL-005 PDF `4504614E`)，**scientist 在 R-FULL-005 后 30-60 分钟内重新编译了新 PDF**：11→13 页，加了 9 项实质修复 — ①§3.3 explicit FIT formula (closes S-137) / ②§3.6 explicit TCPB scoring formula `0.55 c[j] + 0.20 accept(j) + 0.10 forward_bias - λ_a audit` (closes S-136) / ③Appendix C 4 LLM prompt templates (closes S-138) / ④Appendix D 3-shard preliminary Stage-2 paired (Table 3, F1 inside noise) / ⑤B2 random seed=42 (closes S-140) / ⑥Limitations 5→7 items (item 6 Pareto-domination + item 7 demographic/societal closes S-139) / ⑦§5 Conclusion 重写 honest / ⑧§3.1 加 "decentralized within fixed role-prior topology with hand-tuned safety priors" / ⑨Finding 3 加 PAR-attribution 修正 (gate not TCPB)。**评分**: overall=4.5 cap-bound / weak_reject / **weighted_sum=4.560** = R-FULL-005 soft 4.910 - 0.350 严格修正 + R-FULL-005 errata strict 4.300 + 0.260 反映 PDF 真改进；P5 严格视角下 D1=5.0 / D5=5.0 / D6=5.0 / D7=6.0 / oral=3.0；experiments_solidity_score=1/8 仍是 binding cap floor。**结构性结论**：scientist 真做了 9 项实质工作但 weight 太小 (D5=0.10, D7=0.07) 不能 break 4.5 cap；唯一 lever 是 experiments_solidity，scientist 应放弃 D5/D7 grind，全部精力转到 E-017 fullval + 外部 baseline + Stage-2 mechanism 实现。**同时承认 R-FULL-005 评分讨好** (D1=5.5/D5=5.5/D6=6.0/D7=7.5/S1-4/S7-8/oral 共 11 处偏宽)，已在 R-FULL-005 review.md 顶部加 STRICT REVISION errata 修正对照表。**主动派工**: SCIENTIST_TODO §C/§B.5/§F.5 + USER_TODO §D。详见 REVIEWER_TODO §A/§C/§D/§F.5 + 本行 (§F.4 唯一允许的 ack)。
+
 ---
 
 ### [engineer_day1_5_completion_20260420]
@@ -3179,5 +3181,136 @@ Engineer 在 [E-017_seed42_running_20260420] 已正式启动 E-017 (R21 派工)�
   - engineer: 不变 (E-017 seed=42 跑中, 后续 seed=43/44, ETA total ~10 h walltime; per E-017 ticket spec)
   - user: 无 action 需要；如认为 reviewer protocol observation (R25 ID 撞号) 需正式裁定，加 U-XXX-decide 到 USER_TODO §A
   - reviewer-agent (self-improvement note): 下次主动派工前先 `Grep "S-"` 找最大 ID +1，避免再次撞号
+
+---
+
+### [parallel_orchestration_plan_20260420]
+
+- when: 2026-04-20 (R31 commit, scientist coordination per user instruction "并行跑足够多的事 / 不要等待服务器上的实验结束 / 优先用服务器上的 GPU 跑实验")
+- who: scientist (issuing parallel orchestration coordination + monitoring schedule + new ticket dispatch with engineer-runnable shell commands)
+- intent: 用户明确指示 "并行跑足够多的事" + "提交任务后立即做下一步"，且 sweep 发现 engineer 已自发把 E-017 移到 server 并写了 `schedule_e017_seeds.sh` 自动调度器（auto seed=42 → 43 → 44）。本 phase 块的目的是：(1) 记录 server 端 E-017 的真实 live state，让任何接手 session 都不会重启已在跑的 batch；(2) 派出 3 个 parallel-launchable 工单 (E-014 / E-010 / E-015) 含可直接复制运行的 nohup 命令；(3) 定义 monitoring schedule 让 scientist / engineer 任意一方都能 1 行 ssh 拉到 progress；(4) 标 sprint critical-path 决策点（e.g. "newapi quota 阈值时停手"）。
+- status: ✅ (orchestration plan landed; 实际新工单的执行由 engineer 在下一轮 session 拉起；scientist 在自己 §B.5 加了 self-checkpoint TODO 1h/5h/10h 三档 monitor 任务)
+
+#### A. Server-side E-017 live state snapshot (2026-04-19 22:14)
+
+```
+host: dengkw@10.103.16.12 (viplabserver12)
+workdir: /media/data3/dengkw/idea04
+scheduler: /media/data3/dengkw/idea04/scripts/schedule_e017_seeds.sh
+scheduler log: logs/e017_scheduler_main.log (heartbeat every 60s)
+
+ALIVE processes (`ps -ef | grep run_e017`):
+  PID 217406  python3 -u scripts/run_e017_fullval_seed.py --seed 42 --method edo_stage2_chain      --workers 8 --run-dir artifacts/round2_gpt41mini_stage2_fullval/run_20260419_124129_seed42/edo_stage2_chain
+  PID 217416  python3 -u scripts/run_e017_fullval_seed.py --seed 42 --method fixed_peer_calibrated --workers 8 --run-dir artifacts/round2_gpt41mini_stage2_fullval/run_20260419_124130_seed42/fixed_peer_calibrated
+
+Live progress (last 60s):
+  seed=42 stage2: 5531 / 7405 (74.7%) — throughput ~75 samples/min
+  seed=42 stage1 paired: 3572 / 7405 (48.2%) — throughput ~38 samples/min
+
+ETA from 22:14:
+  seed=42 stage2: ~22:38 done (24 min more)
+  seed=42 stage1 paired: ~24:16 done (~2.0 h more) — bottleneck
+
+Disk on /media/data3: 1.1 TB used / 682 GB free (61% full)
+configs/llm.json: present, newapi block synced from local
+```
+
+#### B. CRITICAL — DO NOT restart these batches
+
+The local windows-side `D:\Codes\idea04\artifacts\round2_gpt41mini_stage2_fullval\run_20260419_124129_seed42` / `run_20260419_124130_seed42` directories on the engineer's local repo are **stale** (those Windows background python procs died ~50 min ago, which is why engineer migrated to server). The **canonical** in-flight artifacts are now on the server. Any next session must NOT restart from local stale `_ckpt_preds.jsonl`; instead `scp` the server-side ckpt back if needed for inspection, or just leave the server runs to complete and download `metrics.json` after.
+
+#### C. Newly-dispatched parallel-launchable tickets (engineer 下一轮 session 可直接 copy-paste 运行)
+
+These three tickets are **independent of E-017** (different methods / different repos) and can run in parallel on server in background. Each is wrapped as a single self-contained `nohup ... &` shell block.
+
+##### Ticket E-014 — gpt-4.1-mini Table 2 ablation (CRITICAL — closes R-FULL-002 NEW theme)
+
+- ticket_id: E-014 (R13 dispatched, sat in queue 1 day; promote to P1 now)
+- assigned_to: engineer (next session)
+- estimate: ~30 min wall on server with `workers=4` (200 samples × 4 method variants × 4 hops × ~5000 tokens/call ≈ 16 M tokens, ~$16 on gpt-4.1-mini)
+- depends_on: E-008 ✅ newapi PRIMARY; engineer needs to register 4 ablation method variants in `methods.py` per R-FULL-002 NEW comment ("gpt-4.1-mini chain-200 上重跑 4 个 ablation method：refreshed baseline / +evidence / -TCPB / -gate"). The 4 method names matching glm-4-flash legacy Table 2:
+  - `refreshed_baseline_v3` (current `fixed_peer_calibrated` v3 codepath, exact)
+  - `refreshed_baseline_evidence_window` (= refreshed + evidence window enlarged)
+  - `refreshed_baseline_no_tcpb` (= refreshed without TCPB terminal update)
+  - `refreshed_baseline_no_decomposer_gate` (= refreshed without safety gate)
+- launch command (engineer next session, after registering methods if not yet):
+  ```bash
+  ssh -i ~/.ssh/school -o BatchMode=yes -o ControlMaster=no -o ControlPath=none -o IdentityAgent=none dengkw@10.103.16.12 \
+    'cd /media/data3/dengkw/idea04 && nohup bash -c "for M in refreshed_baseline_v3 refreshed_baseline_evidence_window refreshed_baseline_no_tcpb refreshed_baseline_no_decomposer_gate; do python3 -u scripts/run_method_via_yaml.py --method \$M --n 200 --backbone gpt-4.1-mini --workers 4 --run-dir artifacts/round2_gpt41mini_ablations/$(date +%Y%m%d_%H%M%S)/\$M; done" > logs/e014_ablation_$(date +%Y%m%d_%H%M%S).log 2>&1 &'
+  ```
+- output: `artifacts/round2_gpt41mini_ablations/<TS>/<METHOD>/metrics.json` × 4
+- handoff: append `[E-014_done_<TS>]` sub-entry under this phase block once 4 batches ✅; scientist will use 4-row data to fill TEMPLATE 2 in `article/latex/_pending_data_templates.tex`
+- pinned_cautions: C-1 (newapi PRIMARY); C-5 budget < $25 hard cap; if newapi rate-limit conflicts with running E-017 (3 parallel batches), cut to `workers=2` first or wait for seed=42 done before launching
+
+##### Ticket E-015 step 1-3 — MAD repo install + smoke probe (HotpotQA adapter still outstanding)
+
+- ticket_id: E-015 step 1-3 (R17 dispatched, server clone ✅)
+- assigned_to: engineer
+- estimate: ~1 h wall (install + 1-example smoke probe), then a separate 4-6 h work for HotpotQA adapter (E-015 step 4)
+- depends_on: E-008 ✅; MAD repo cloned at `/media/data3/dengkw/idea04/external_baselines/mad/` ✅
+- launch command (step 1-3, engineer next session):
+  ```bash
+  ssh -i ~/.ssh/school -o BatchMode=yes -o ControlMaster=no -o ControlPath=none -o IdentityAgent=none dengkw@10.103.16.12 \
+    'cd /media/data3/dengkw/idea04/external_baselines/mad && nohup bash -c "python3 -m venv venv_mad && source venv_mad/bin/activate && pip install -r requirements.txt && pip install openai && python3 quickstart.py 2>&1 | tee /media/data3/dengkw/idea04/logs/e015_mad_smoke_$(date +%Y%m%d_%H%M%S).log" > /media/data3/dengkw/idea04/logs/e015_mad_install_$(date +%Y%m%d_%H%M%S).log 2>&1 &'
+  ```
+  - **NOTE**: `requirements.txt` is 56 bytes minimal; if `quickstart.py` doesn't exist, engineer should `ls external_baselines/mad/` to see entry-point structure and adapt (math/gsm/biography/mmlu folders per E-017 phase block notes — use any one as smoke probe)
+- output: `logs/e015_mad_install_<TS>.log` + `logs/e015_mad_smoke_<TS>.log`
+- handoff: append `[E-015_step1-3_done_<TS>]` under this phase block; if smoke runs → E-015 step 4 (HotpotQA adapter) is the remaining 4-6h work; defer to E-016 timeline
+
+##### Ticket E-010 step 1-3 — ChatEval install + smoke probe
+
+- ticket_id: E-010 step 1-3 (R10/R17 dispatched, server clone ✅, install pending)
+- assigned_to: engineer
+- estimate: ~1 h wall (install + 1-example smoke)
+- depends_on: E-008 ✅; ChatEval repo cloned at `/media/data3/dengkw/idea04/external_baselines/chateval/` ✅
+- launch command (step 1-3, engineer next session):
+  ```bash
+  ssh -i ~/.ssh/school -o BatchMode=yes -o ControlMaster=no -o ControlPath=none -o IdentityAgent=none dengkw@10.103.16.12 \
+    'cd /media/data3/dengkw/idea04/external_baselines/chateval && nohup bash -c "python3 -m venv venv_chateval && source venv_chateval/bin/activate && pip install -r requirements.txt && python3 main.py --task FairEval 2>&1 | tee /media/data3/dengkw/idea04/logs/e010_chateval_smoke_$(date +%Y%m%d_%H%M%S).log" > /media/data3/dengkw/idea04/logs/e010_chateval_install_$(date +%Y%m%d_%H%M%S).log 2>&1 &'
+  ```
+  - **NOTE**: ChatEval `requirements.txt` includes `langchain>=0.0.155` + `openai` + `fastapi` + `git+https://github.com/OpenBMB/BMTools` (per E-017 phase block notes); install may be heavy; if `main.py` doesn't have `--task FairEval` arg, engineer should `head main.py` to find the right CLI entry
+- output: same pattern as E-015
+- handoff: append `[E-010_step1-3_done_<TS>]` under this phase block
+
+#### D. Monitoring schedule (anybody — scientist OR engineer can run in any session)
+
+```bash
+# 1-line server-side progress check (covers ALL e017 batches alive):
+ssh -i ~/.ssh/school -o BatchMode=yes -o ControlMaster=no -o ControlPath=none -o IdentityAgent=none dengkw@10.103.16.12 \
+  'tail -10 /media/data3/dengkw/idea04/logs/e017_scheduler_main.log; echo ---; ls -la /media/data3/dengkw/idea04/logs/'
+
+# 1-line ckpt sample count (no jq needed):
+ssh -i ~/.ssh/school -o BatchMode=yes -o ControlMaster=no -o ControlPath=none -o IdentityAgent=none dengkw@10.103.16.12 \
+  'find /media/data3/dengkw/idea04/artifacts/round2_gpt41mini_stage2_fullval -name _ckpt_preds.jsonl -exec wc -l {} +'
+
+# Live process inventory (active background python procs, e017 + any new e014/e010/e015):
+ssh -i ~/.ssh/school -o BatchMode=yes -o ControlMaster=no -o ControlPath=none -o IdentityAgent=none dengkw@10.103.16.12 \
+  'ps -ef | grep -E "python.*scripts|python.*main.py|python.*quickstart" | grep -v grep'
+```
+
+#### E. Scientist self-checkpoint schedule (R31 dispatched to SCIENTIST_TODO §B.5 as new S-144 ticket)
+
+- **+1 h** (next session ~23:14): check server seed=42 stage1 progress (should be ~70% by then)
+- **+3 h** (~01:14 next-day): check seed=42 done → seed=43 auto-launched by scheduler
+- **+8-10 h** (~06:14-08:14 next-day): check all 3 seeds done → run paired_bootstrap_ci → fill TEMPLATE 1 → S-115/S-116/S-117 main fullval write-up unblocked
+- **+24 h sanity check**: confirm cost_ledger.jsonl total < $300 budget; confirm no rate-limit / quota exhaust events
+
+#### F. depends_on & unblocks
+
+- depends_on:
+  - server SSH ✅ (per [u_019_server_ssh_recovered_20260420])
+  - newapi as PRIMARY ✅ (per E-008)
+  - engineer's `schedule_e017_seeds.sh` already running on server ✅
+- unblocks (after engineer ack the new tickets):
+  - scientist S-117 partial → S-117 full (after E-017 + E-014 ✅) — fill TEMPLATE 1 + 2
+  - scientist S-121/S-122 (after E-010 + E-012 ✅) — fill TEMPLATE 3 (AutoGen + ChatEval rows)
+  - scientist S-131 (after E-015 + E-016 ✅) — fill TEMPLATE 3 (MAD row) + TEMPLATE 4 (RW §2.2)
+  - scientist S-115/S-116 (after E-017 ✅) — TEMPLATE 5 + 6 framing rewrite
+
+#### G. next_action
+
+- engineer (next session): copy-paste C.E-014 + C.E-010 + C.E-015 launch commands; verify each starts via `tail -f logs/<latest>`; do NOT touch the running E-017 (D.A inventory)
+- scientist: monitor per E.+1h / +3h / +8-10h checkpoints (S-144 in §B.5); when E-017 paired_stats_3seed.csv lands → fill TEMPLATE 1 → R32 commit
+- user: no action needed unless newapi quota near exhausted (engineer cost_ledger.jsonl will trigger U-EXEC notification if so)
 
 ---
