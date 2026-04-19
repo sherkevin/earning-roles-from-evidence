@@ -1,5 +1,33 @@
 # Review of `article/build/edo_paper.pdf` (R-FULL-005)
 
+> ## ⚠ SOFT SCORING — SUPERSEDED BY R-FULL-006 STRICT REVISION
+>
+> **Issued at**: 2026-04-19 ~20:48. Per user feedback "不够严厉，你的审稿太过于温和" issued shortly after this review landed, the scoring below is admitted to be **soft / lenient on multiple dimensions**, even though it claimed P4 strictness. Specifically the following dimension scores were inflated by giving credit for "scientist made hygiene effort" rather than evaluating content quality against the rubric bands:
+>
+> | Dim | Original (soft) | R-FULL-006 strict | Why this was soft |
+> |---|---:|---:|---|
+> | D1 soundness | 5.5 | **4.5** | Algorithm 1 has 8+ undefined functions (FIT for vector, AUDIT non-default rule, EVIDENCE_EXTRACT, SPLITGAIN/MERGECOST/AUDITCOST, λ_c/λ_a/λ_m/λ_d/λ_s/λ_r, TCPB weight-to-term mapping). LLM_ANSWER / LLM_DECOMPOSE / AUDIT-rule / EVIDENCE_EXTRACT prompts not in paper body. By band 5 ("Material gaps: a concept is intuitive but not implementable from the paper") this is exactly the right anchor. 5.5 was a band-6 score that gave credit for "Algorithm 1 inline" effort — but the inlined algorithm itself contains the un-implementable holes. |
+> | D5 reproducibility (P4 SPECIALTY) | 5.5 | **4.0** | P4 should be MOST strict here. Reading paper alone you cannot reproduce TCPB. LLM-call prompts, ϕ extraction rule, FIT vector form, audit_score proxy, TCPB weight-to-term mapping all in external `edo_lite_executable_spec.md` supplement. By band 4 ("Methods description is too sparse for any reliable replication") this is the correct anchor. Wall-clock + USD reporting is a B2 hygiene check that does NOT compensate for missing prompts/rules — that was the mistake. |
+> | D6 clarity | 6.0 | **5.0** | Figure 1 caption explicitly admits placeholder ("Vector asset to be inserted") — for an EMNLP submission this is band-5 territory ("Substantial revision needed for ... figure quality"), not band-6 "minor awkward phrasing". Algorithm 1 column-spanning narrative + multiple undefined symbols make the methods section materially harder to read on first pass. |
+> | D7 limitations (P4 SPECIALTY) | 7.5 | **5.5** | This was the worst inflation. Limitations 5 items are: (1) Stage-1 only / (2) safety priors entanglement / (3) backbone-sensitive conjectural / (4) statistical evidence point estimates deferred / (5) cross-endpoint comparability open. Of these, (1) (4) (5) are framed as "Stage-2 will fix this" — band-5 explicitly: "Limitations read as future work rather than honest scope-bounding". Item (2) is vague. Only item (3) is genuinely conjectural-honest. Plus: NO demographic / societal / multilingual / dataset-bias / per-method failure-mode discussion (band 8+ requires demographic/societal). Honest = 5.5 (between band 5 future-work tone and band 6 vague), not 7.5. |
+> | S1 executability | 5.0 | **4.5** | "needs guesswork on multiple components" = 6; "effectively un-implementable" = 3. With LLM prompts + ϕ + FIT + audit_score + weight mapping all in supplement, the paper alone cannot be reimplemented in 1 week → 4.5. |
+> | S2 falsifiability | 5.5 | **4.5** | Central EDO claim "emergent organization from local interaction" admittedly NOT testable as designed (Stage-2 mechanisms not implemented). The TCPB sub-claim that IS testable was self-falsified. |
+> | S3 empirical_plan | 6.0 | **5.0** | Plan covers main comparison only; given execution shows the claimed mechanism doesn't help, plan quality is downgraded — band 5 ("covers main comparison only"). |
+> | S4 technical_clarity | 6.0 | **5.0** | Multiple symbols undefined; equations clear but operational meaning incomplete → band 5. |
+> | S7 ablation_completeness | 5.5 | **4.5** | Table 2 ablation is glm-4-flash only + ZERO Stage-2 mechanism ablations + the headline backbone (gpt-4.1-mini) has no equivalent. Band 4 ("Only a single all-or-nothing ablation") is closer than band 5. |
+> | S8 writing_and_figures | 6.0 | **5.0** | Figure 1 placeholder for an EMNLP submission is band-5, not band-6. |
+> | oral_quality_score | 3.0 | **2.5** | P5/P4 strictest view = "Reject; not on a path to acceptance" (band 2) for a paper whose proposed mechanism loses to its simplest baseline at equal cost AND whose claimed contribution is admittedly unimplemented. |
+> | weighted_sum | 4.910 | **4.300** | recomputed with strict scores |
+> | overall (after caps) | 4.5 | **4.3** | breaks below the 4.5 cap floor (raw weighted_sum < cap, so cap is not binding) |
+>
+> **Strict re-evaluation drops the verdict from cap-bound 4.5 to genuinely-derived 4.3** — still `weak_reject` but now closer to `reject` (4.0 boundary). The 4.5 cap floor is not always binding when the raw weighted_sum is itself below 4.5. **This is a critical methodological correction**: previous 5 R-FULL batches all reported overall=4.5 because reviewer scores were all soft enough that §6 caps were binding; if reviewers had scored strictly enough, raw weighted_sum could go below cap floor, exposing that the structural ceiling on this paper's quality is even lower than previously reported.
+>
+> **Per reviewer §F.4 cooldown rule**, R-FULL-006 was triggered immediately after this admission and uses the same PDF SHA `4504614E` with a stricter recalibration of the same dimensions; see `artifacts/idea_reviews/reviewer_<TS>_06_<HASH>/review.md`.
+>
+> **This file is preserved as historical evidence of reviewer score-inflation drift.** Use **R-FULL-006** for the current authoritative judgment.
+>
+> ---
+
 > **Reviewing standard**: EMNLP 2026 Long Paper Track. Stateless reviewer; did not consult any prior R-FULL-001/002/003/004 review, scoreboard, or fix_themes. All scores derived independently from the paper text + `prompts/reviewer_prompt.md` rubric + `docs/demand.md` rulebook.
 >
 > **User instruction acknowledgment**: "全新的审稿人，不被之前的审稿意见左右，按审稿模版的要求来审，客观严格公正" — followed strictly.

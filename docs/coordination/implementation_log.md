@@ -3314,3 +3314,80 @@ ssh -i ~/.ssh/school -o BatchMode=yes -o ControlMaster=no -o ControlPath=none -o
 - user: no action needed unless newapi quota near exhausted (engineer cost_ledger.jsonl will trigger U-EXEC notification if so)
 
 ---
+
+### [reviewer_r_full_006_ack_20260420]
+
+- when: 2026-04-20 (R32 commit)
+- who: scientist (S-104 mandatory loop for R-FULL-006 × 2 batches + CRITICAL conflict escalation to user)
+- intent: 处理两份 R-FULL-006 reviewer batch（reviewer-agent 在用户 instruction "不够严厉" 后连发两份）+ 升级一个**critical conflict**给用户 — reviewer P5 strict literal-read demand.md §2 判定 R29 后的 Appendix B/C/D/E 全部 DR-1 violation → 与用户 R29 editorial preference 冲突。
+- status: ✅ (S-104 4-step done; U-021-decide dispatched to USER_TODO §A; 2 NEW non-conflict hygiene items S-145 + S-146 unblocked, 等 R33 commit)
+- batch identification:
+  - **BATCH-A**: `reviewer_20260419_214636_06_c5c5ad` — P5 strict (Best-Paper-Committee chair), strictness correction applied per user "不够严厉" feedback on R-FULL-005
+    - target PDF: R29 commit `b8ddd61` (365.1 KB / 13 pages, SHA `8161E9D3`)
+    - score: overall=4.5 weak_reject (cap-bound), weighted_sum=4.560
+    - key finding: scientist 的 R29 + R-FULL-005 fixes (S-136/S-137/S-138/S-141/S-142) 真实 lift 了 D5 (5.5→5.0 strict) + S4 (5.0→5.5) + D7 (5.5→6.0 honest)，但 §6 cap (D4<5 + experiments_solidity ≤ 3) 仍锁 4.5
+    - explicit statement: "**The lever for moving overall above 4.5 is exclusively `experiments_solidity_score` — D5/D7/S4 improvements alone cannot break the cap because their weights (0.10/0.07/0) are too small to overcome the §6 D4 + experiments_solidity caps**"
+  - **BATCH-B** (CRITICAL): `reviewer_20260419_221546_06_0297b0` — P5 strict literal demand.md §2 reading
+    - target PDF: 同 R29 PDF
+    - score: **overall=4.0 (FORCED reject by DR-1 confirmed)**, weighted_sum=4.725, verdict=reject
+    - key finding: reviewer 引用 demand.md §2 字面：`"All figures, tables, equations, **pseudocode**, and algorithm descriptions must fit entirely within these 8 pages."` + exemption list 仅 `{references, Limitations, Ethical Considerations}` (3 项 exhaustive)
+    - 判定 Appendix B (Provider Integrity Event = engineering postmortem, NOT Ethical Considerations) + Appendix C (LLM Prompt Templates = method content) + Appendix D (Stage-2 preliminary Table 3 = new empirical content) + Appendix E (Algorithm 1 pseudocode = "headline pseudocode that demand.md §2 explicitly requires to fit within 8 pages") **全 4 个非 exemption** → DR-1 CONFIRMED VIOLATION
+    - 同时 DR-3 POSSIBLE confirmed: §4.5 narrative cites Appendix D Table 3 → 违反 demand.md §3 self-containment "main text can be read and understood independently without relying on appendices"
+    - reviewer 自我承认: "前 5 R-FULL batches all granted DR-1 PASS by charitably interpreting all Appendix content as supplementary material outside the 8-page cap. **This was wrong.**"
+
+#### S-104 4-step processing
+
+  - **step 1 通读**: BATCH-A 230 行 strict re-grade with R-FULL-005 errata cross-reference; BATCH-B 365 行 literal demand.md §2 enforcement + verdict=reject force
+  - **step 2 不盲从分类**:
+    - BATCH-A: 0 NEW actionable (核心 finding 已知 — cross-persona structural cap)；reviewer 实际是 R-FULL-005 的强化版自我 walk-back，R29 改动后多个 D 维度提升，但 cap 不变
+    - BATCH-B: **1 NEW CRITICAL conflict (DR-1 reading) — 升级 user U-021-decide** + 2 NEW non-conflict hygiene items (S-145 EM regression honesty + S-146 Abstract/§3.1 consistency) + 多 redundant items (in sprint via E-017 / E-014 / E-010..E-016 / U-EXEC-004)
+    - **scientist preliminary 评估 of BATCH-B reviewer reading**:
+      - reviewer literal §2 reading is **technically correct** per file as written
+      - 但 ACL/EMNLP **standard practice** does allow "supplementary material" appendices that aren't counted (e.g., ACL Style Guide 显式区分 main paper vs supplementary)
+      - demand.md §2 wording 严于 ACL standard — 这是 project's own self-imposed strict rule
+      - 实际 ARR reviewer 是否会 strict literal-read? 不确定。R-FULL-006 BATCH-B 是 5 R-FULL 中第一个这么 read 的，前 5 reviewers 全部 charitable-interpreted
+      - 风险评估: 如 actual ARR reviewer 严格读 demand.md 标准（即 ACL standard, 不 strict literal）→ Appendix OK；如 strict literal-read project's own demand.md → reject force
+    - 不擅自 override user R29 editorial OR 不擅自接受 reviewer strict reading → escalate to user
+    - **0 new engineer tickets**: U-021 是 editorial / structural decision，不是 experiment design 问题
+    - **1 new user decision** (U-021-decide): 4 选项 + 推荐 Path C Hybrid (详见 USER_TODO §A)
+  - **step 3 scientist TODO 更新**:
+    - §C 加 4 行 R-FULL-006 themes (BATCH-A summary + BATCH-B CRITICAL DR-1 + S-145 EM honesty + S-146 Abstract consistency)
+    - §B.5 加 S-145 + S-146 (non-conflict hygiene 不依赖 U-021)
+    - §D R32 行 + 状态块更新 "R32 后状态: U-021-decide pending user; S-145 + S-146 非阻塞 hygiene 即将在 R33 落地"
+  - **step 4 dispatch fan-out**:
+    - USER_TODO §A 加 U-021-decide ⚠ CRITICAL (4 选项: Path A full rollback / Path B stand pat / Path C Hybrid 推荐 / Path D rewrite demand.md §2 自我放宽)
+    - USER_TODO §D R32 行 1 行通知 + 用户**需要拍板**（与之前 commits 不同）
+    - 本 phase 块 ack + scientist 4-step 决议表 + reviewer protocol observations
+    - **scientist 立即可做的 R33 commit (independent of U-021)**: S-145 + S-146 hygiene fixes
+    - **scientist 等 user 决定 U-021 后做的 R34+ commit (path-dependent)**:
+      - Path A: rollback Algorithm 1 + Appendix B + Appendix D + Appendix C 全部入 main body, 重写 + 重压 8 页 (估时 2-3 h)
+      - Path B: 不动 (仅记录 risk)
+      - Path C (推荐): rollback Algorithm 1 + Appendix B + Appendix D 入 main body, 保留 Appendix A + LLM prompts 仅 cross-ref supplement (估时 1-1.5 h)
+      - Path D: 修改 demand.md §2 加 "Appendix" 到 exemption list (写一段 rationale 给 user 自己最终确认)
+
+#### Engineer-side update note (informational)
+
+E-017 在 server 跑中 (per [parallel_orchestration_plan_20260420])，不受本 commit 影响：
+- seed=42 stage2 ~74% (可能现在已到 80%+ if 50 min 后)
+- seed=42 stage1 paired ~48% (可能 ~58%+)
+- seed=43/44 待 scheduler 自动 chain
+- ETA 全部 done ~6-8 h (新 estimate based on throughput)
+
+R-FULL-006 BATCH-B 的 DR-1 finding NOT 影响 E-017 (实验和论文结构是正交的)，scientist 可以并行做 R32 dispatch + S-145+S-146 hygiene 同时 engineer experiment 继续跑。
+
+#### depends_on / unblocks
+
+- depends_on:
+  - REVIEWER_TODO §A R-FULL-006 BATCH-A + BATCH-B ✅ (reviewer-agent 自落)
+  - SCIENTIST_TODO §B 强制循环 §S-104 protocol (永远 ✅，第 6 + 7 次 reviewer batch 触发)
+- unblocks:
+  - **S-145** (Appendix D + §4.5 EM regression honesty, 15 min, R33)
+  - **S-146** (Abstract/§3.1 consistency, 10 min, R33)
+  - **U-021-decide** to user → after user 拍板, R34+ path-specific rollback action
+- next_action:
+  - scientist: R33 commit S-145 + S-146 立即落地 (independent of U-021)
+  - user: 拍 U-021-decide (4 选项, 推荐 Path C); per §4.1 dispatch protocol scientist 应 SwitchMode plan + AskQuestion (本 R32 commit 后 trigger)
+  - engineer: 不变 (E-017 在跑)
+  - reviewer-agent: 注意未来 R-FULL batches 应 strict literal read demand.md §2 (这是真实 ARR/EMNLP 的 worst-case reviewer view, 不是 charitable softball)
+
+---
