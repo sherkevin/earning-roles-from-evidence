@@ -1,0 +1,343 @@
+\documentclass[11pt]{article}
+
+% Anonymous review mode for ARR / EMNLP submission. Switch to "final" for camera-ready.
+\usepackage[review]{acl}
+
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{microtype}
+\usepackage{inconsolata}
+\usepackage{graphicx}
+\graphicspath{{../../artifacts/figures/}}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{xurl}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\renewcommand\UrlFont{\ttfamily\small}
+% Allow URL line breaks at any character (xurl behaviour),
+% then provide a non-hyperlink \fpath macro for in-text file paths.
+\providecommand{\fpath}[1]{\begingroup\Urlmuskip=0mu plus 1mu\relax\url{#1}\endgroup}
+
+% Override the default "Anonymous ACL submission" placeholder that acl.sty
+% emits in [review] mode (see acl.sty L132). "ACL" there refers to the
+% Association for Computational Linguistics (the umbrella org), but we make
+% the EMNLP 2026 target explicit. Per ACL rules acl.sty itself must not be
+% modified --- this is a user-side \renewcommand only.
+\renewcommand\outauthor{%
+    \begin{tabular}[t]{c}
+    \bfseries Anonymous EMNLP 2026 Submission
+    \end{tabular}}
+
+\title{Emergent Delegation Organization from Local Interaction \\
+in Multi-Agent Systems}
+
+% Used only in [final] / [preprint] mode; in [review] mode acl.sty replaces
+% this with the \outauthor block above.
+\author{Anonymous Authors \\
+  Submission for EMNLP 2026 Long Paper Track (via ARR) \\
+  \texttt{anonymous@anonymous.org}}
+
+\begin{document}
+\maketitle
+\sloppy
+
+\begin{abstract}
+Large Language Model (LLM) multi-agent systems are usually built around either centralized orchestrators or preassigned specialist roles. Both assumptions are convenient, but they hide a more fundamental scientific question: how can useful division of labor emerge when agents have only local visibility, no global expert catalog, and no predeclared identities? We study this question through \textbf{Emergent Delegation Organization (EDO)}, a decentralized framework in which near-homogeneous agents interact over sparse connected graphs and repeatedly choose among three primitive actions: solve the task themselves, outsource it to a visible neighbor, or split it into subtasks. Each delegation creates an upstream acceptance obligation, and these obligations compose into a recursive acceptance ladder; social reputation is therefore shaped not by self-report but by whether downstream work is accepted and ultimately contributes value to the global task. This yields a structured personality-tag space that drives future local allocation decisions. We further position our current executable system, based on \textbf{Terminal-Consensus Peer Backpropagation (TCPB)}, as a restricted Stage-1 instantiation of this broader framework: fixed topologies, role-prior nodes, linear handoff packets, and terminal outcome calibration only. Existing HotpotQA evidence already shows that decentralized outcome-based calibration improves delegation safety and stabilizes routing without a central controller. We argue that the main long-paper contribution is therefore not another tuned router, but a general method for studying how division of labor, trust, and coordination emerge from local interaction in language-agent societies.
+\end{abstract}
+
+\section{Introduction}
+
+The dominant design patterns in LLM-based multi-agent systems make a strong assumption before the system has even started to work: either a central orchestrator decides who should do what, or each agent is assigned a fixed specialist identity in advance. These strategies can be effective engineering shortcuts, but they leave open a more basic question about organization. In realistic collaborative settings, useful division of labor is rarely known perfectly at initialization time. Groups begin with partial knowledge, repeated interaction, local judgments, and uneven structural exposure. Over time, some members become recognized as better decomposers, others as reliable integrators, others as useful auditors or bridge-builders. In other words, organization is not only executed; it is formed.
+
+This paper takes that organizational view seriously. We ask whether a society of near-homogeneous language agents, each with only local neighbor visibility on a sparse connected graph, can self-organize into useful task division through recursive delegation, recursive acceptance, and value-based social updating. Our interest is therefore not simply in improving multi-agent answer quality by adding more dialogue turns or building a stronger router. We study how tasks move through a constrained society, how local trust is formed, when agents decide to keep work, when they outsource it, when they split it, and how these repeated interactions induce recognizable organizational structure.
+
+The failure mode motivating our work remains \textbf{delegation miscalibration}. Prior systems often assume that an agent can accurately assess whether it should accept a task or hand it off. In practice, LLMs are prone to overconfident self-assessment: they often accept work they should not keep, delay delegation, or pass forward low-quality intermediate results. Earlier versions of our project showed that replacing self-reflection with terminal outcome feedback significantly improves delegation safety on fixed-topology benchmarks. However, we now argue that this is only the first layer of a richer theory. Delegation quality is not just a routing score problem; it is a problem of organizational emergence under local interaction.
+
+We therefore propose \textbf{Emergent Delegation Organization (EDO)} as the full long-paper method. In EDO, agents start from the same cognitive machinery and the same action grammar. The only allowed asymmetries arise from graph position, local interaction history, and the task neighborhoods each agent encounters over time. Every task is treated as a node in a task tree, not merely as a single linear message. Upon receiving a task, an agent chooses among three primitive actions: \texttt{do\_self}, \texttt{outsource(neighbor)}, or \texttt{split(subtasks)}. Importantly, each outsourcing decision also creates a recursive accountability chain: if agent $a$ delegates to $b$, then $a$ is responsible for accepting, revising, rerouting, or rejecting $b$'s returned result. This recursive audit structure turns delivered value, not self-description, into the basis of social reputation.
+
+Under this framing, an agent's ``personality'' is not a stylistic prompt trait but a structured operational tag vector induced by interaction history (acceptance rate, decomposition usefulness, integration quality, rework cost, solving efficiency). Future local delegation decisions compare task demands against these socially formed tags under local visibility constraints, asking the more ambitious question of whether useful division of labor can emerge from local interaction alone. We explicitly separate theory from currently executed evidence: our present codebase implements a restricted Stage-1 system, \textbf{Terminal-Consensus Peer Backpropagation (TCPB)} --- fixed \texttt{chain} and \texttt{star} topologies, role-prior nodes, linear handoff packets, and terminal-only competence updates on the final accepting node --- which already provides a reproducible, fully logged baseline showing that decentralized outcome-based calibration reduces premature acceptance and stabilizes routing without centralized orchestration. We reinterpret that system as the first executable approximation of the broader organizational framework, not as the final method.
+
+Our contributions are therefore four-fold:
+\begin{enumerate}
+  \item We reframe decentralized multi-agent routing as a problem of \textbf{organizational emergence under local interaction}, rather than merely better static role assignment or router tuning.
+  \item We introduce \textbf{Emergent Delegation Organization (EDO)}, a method built around sparse local graphs, recursive \texttt{do / outsource / split} decisions, recursive upstream acceptance audits, and value-induced personality tags.
+  \item We formalize the distinction between the \textbf{full long-paper method} and the \textbf{current restricted executable instantiation}, positioning TCPB as a Stage-1 prototype rather than the endpoint of the research line.
+  \item Using current HotpotQA evidence, we show that even the restricted instantiation already supports the central direction: decentralized outcome-based calibration improves delegation safety and creates measurable route stabilization without relying on a central controller.
+\end{enumerate}
+
+\section{Related Work}
+
+\subsection{Routing and orchestration in multi-agent systems}
+
+Much of the LLM multi-agent literature is organized around central decomposition and routing. Orchestrator-based frameworks achieve strong control and interpretability, but they also impose severe token bottlenecks and create single points of failure. Other lines of work introduce dynamic graph traversal or planner-controller patterns, yet many still rely on globally visible states or centralized arbitration. Our work is different in emphasis. We are not trying to produce a smarter global scheduler. We ask how division of labor can emerge when no node has a global expert table and each node sees only its local neighborhood.
+
+\subsection{Reflection, critique, and outcome-based calibration}
+
+Reflection has become a common mechanism for improving LLM reasoning, and several multi-agent systems use self-critique or peer-critique to refine outputs. However, these approaches often assume that agents are at least moderately reliable judges of their own competence or that a centralized reviewer can resolve peer disagreement. Earlier versions of our work found that self-reflection is especially unreliable when the question is not ``is this sentence better?'' but ``should I have handled this task at all?'' This motivates our continued emphasis on result-grounded feedback. In the restricted TCPB prototype, only terminal outcomes are used for calibration. In the full EDO framework, terminal outcomes are retained, but they are augmented by recursive upstream acceptance signals that are local, structured, and audit-like rather than free-form opinion exchanges.
+
+\subsection{Division of labor, reputation, and local organization}
+
+Our long-paper framing is closer to a theory of organization than to static role play. In human groups, stable roles are often the outcome of repeated coordination, evaluation, and structural position rather than perfect advance assignment. Reputation is socially constructed through accepted contributions, not self-claims. Local neighborhood structure also matters: sparse connectivity creates bridge positions, clustered exposure, and bounded trust propagation. EDO imports these intuitions into language-agent systems by making local delegation, recursive acceptance, and value-based personality formation the primary objects of study.
+
+\section{Methodology}
+\label{sec:methodology}
+
+\subsection{Problem formulation}
+
+We model a multi-agent society as a sparse connected directed graph $\mathcal{G} = (\mathcal{A}, \mathcal{E})$, where $\mathcal{A} = \{a_1, a_2, \dots, a_N\}$ is the set of agents and $\mathcal{E}$ defines allowed communication channels. Unlike role-based systems, agents do not start with fixed specialist identities. They share the same base cognitive machinery and the same action grammar. We allow only mild structural asymmetry: graph position, local exposure history, and differences induced by repeated interactions.
+
+Each input instance $x = (q, y, C)$ consists of a question $q$, gold answer $y$, and optional supporting context $C$. In the full method, $x$ expands into a \textbf{task tree} rather than a single linear message. Each task node records its parent, children, current uncertainty, required output, evidence state, owner agent, executor agent, candidate result, and audit status. This representation is necessary because a task may be solved directly, outsourced intact, or recursively split into subtasks that later require integration and audit.
+
+\subsection{Agent state and personality}
+
+At time $t$, each agent $a_i$ maintains state
+\[
+S_i^t = \{P_i^t, B_i^t, M_i^t, H_i^t, \mathcal{N}(i)\},
+\]
+where $P_i^t$ is the agent's public personality-tag vector, $B_i^t$ is its local belief state over neighbors, $M_i^t$ is its private episodic memory, $H_i^t$ is a summary of past delegation and audit interactions, and $\mathcal{N}(i)$ is its visible neighbor set.
+
+The key object is $P_i^t$, the \textbf{value-induced operational persona}. This is not a stylistic role prompt. It is a structured vector whose components summarize socially observed capability, for example:
+\begin{multline*}
+P_i = [\text{solve}, \text{decompose}, \text{audit}, \text{integrate},\\
+\text{explore}, \text{efficiency}, \text{reliability}].
+\end{multline*}
+These components are intended to capture how useful the agent has been to others in the society: whether its outputs are accepted, whether it reduces or increases rework, whether its decompositions help, whether its integrated outputs are reliable, and whether it achieves useful work efficiently.
+
+Each agent also maintains only \textbf{local} beliefs about neighbors. There is no global competence directory. For a neighbor $a_j$, the local belief $B_i^t(j)$ is constructed from interaction history with $a_j$, recent publicly visible persona summaries, and local audit outcomes involving $a_j$. This preserves decentralization while allowing trust and specialization to be gradually formed.
+
+\subsection{Task signatures and local utility}
+
+Instead of matching tasks to fixed role names, EDO represents each task node $z$ by a task-signature vector
+\begin{multline*}
+\phi(z) = [\text{need\_decompose}, \text{need\_verification},\\
+\text{need\_integration}, \text{need\_exploration},\\
+\text{evidence\_breadth}, \text{uncertainty}, \text{cost\_sensitivity}].
+\end{multline*}
+This task signature can be extracted through rules, light-weight LLM judgment, or future learned modules. The key point is conceptual: routing should be based on the match between task demands and socially formed personality tags, not on a hard-coded role lookup and not necessarily on a large embedding router.
+
+For an agent $a_i$ receiving task node $z$, the three candidate utilities are:
+\begin{align*}
+U_i^{\mathit{self}}(z) ={} & \mathrm{Fit}(P_i, \phi(z)) \\
+                           & - \lambda_c \mathrm{Cost}_{\mathit{self}}(z) \\
+                           & - \lambda_r \mathrm{Risk}_{\mathit{self}}(z), \\
+U_i^{\mathit{out}}(z, j) ={} & \mathrm{Fit}(B_i(j), \phi(z)) \\
+                            & - \lambda_s \mathrm{SendCost}(i,j) \\
+                            & - \lambda_a \mathrm{AuditCost}(z) \\
+                            & - \lambda_r \mathrm{RejectRisk}(j,z), \\
+U_i^{\mathit{split}}(z) ={} & \mathrm{SplitGain}(z) - \lambda_m \mathrm{MergeCost}(z) \\
+                            & - \lambda_d \mathrm{DepthPenalty}(z) \\
+                            & - \lambda_a \mathrm{AuditLoad}(z).
+\end{align*}
+The selected action is
+\begin{align*}
+\pi_i(z) = \arg\max \big\{ & U_i^{\mathit{self}}(z), \;\; U_i^{\mathit{split}}(z), \\
+                            & \textstyle\max_{j \in \mathcal{N}(i)} U_i^{\mathit{out}}(z,j) \big\},
+\end{align*}
+subject to budget, depth, and safety constraints.
+
+\subsection{Three primitive actions}
+
+The EDO action space is intentionally minimal but organizationally expressive:
+\begin{itemize}
+  \item \texttt{do\_self}: solve the task locally.
+  \item \texttt{outsource(neighbor)}: pass the task to the locally best visible neighbor.
+  \item \texttt{split(subtasks)}: decompose the task into child tasks that each re-enter the same policy.
+\end{itemize}
+These three actions correspond to the basic organizational choices of doing the work, finding someone else to do it, or restructuring the work into manageable parts. Additional behaviors such as timeout, reroute, or fallback are treated as safety policies layered on top of these primitives rather than as the conceptual center of the method.
+
+\subsection{Recursive upstream audit}
+
+The main departure from the current prototype is that delegation is not terminal at handoff time. Every outsourcing decision also creates an \textbf{acceptance obligation}. If $a$ delegates a task to $b$, then $a$ must later evaluate whether to accept $b$'s result, reject it and redo the task, reject it and reroute, or reject it and resplit.
+
+This produces a recursive structure. If $a \rightarrow b \rightarrow c$, then $b$ audits $c$ before returning upward, and $a$ audits $b$. The system therefore operates on a \textbf{delegation tree with a recursive acceptance ladder}, not merely on a one-dimensional chain of messages. This is essential because social reputation should be grounded in accepted delivered value, not only in terminal answer correctness.
+
+\subsection{Personality-tag update}
+
+Each audit event generates a local social signal for the downstream executor. For a parent-upstream node $u$, downstream node $v$, and task node $z$, a local audit event can be written as:
+\begin{multline*}
+\ell_{u \rightarrow v, z} = [\text{accepted}, \text{rework\_cost},\\
+\text{value\_gain}, \text{timeliness},\\
+\text{decomposition\_help}, \text{integration\_help}].
+\end{multline*}
+After the root task finishes, the system also observes a terminal event
+\begin{multline*}
+r_{\mathrm{terminal}}(x) = [\text{quality}, \text{total\_cost},\\
+\text{total\_depth}, \text{final\_accept}].
+\end{multline*}
+The full update rule combines local accepted-value signals with slower terminal correction:
+\begin{align*}
+P_i^{t+1} = \mathrm{clip}\Big(&(1-\mu) P_i^t + \mu \big(\eta_{\mathrm{loc}} \mathrm{LocalValue}_i^t \\
+&+ \eta_{\mathrm{trm}} \mathrm{TerminalValue}_i^t \\
+&- \eta_{\mathrm{rew}} \mathrm{ReworkPenalty}_i^t \big)\Big).
+\end{align*}
+
+\subsection{Current restricted executable instantiation: TCPB prototype}
+
+Our current codebase implements a Stage-1 restricted instance of EDO that we call \textbf{Terminal-Consensus Peer Backpropagation (TCPB)}. The exact substitutions vis-\`a-vis the full EDO design are enumerated in the \textbf{Prototype Scope Box} below; the operative consequence is that after a routed path terminates with final answer $\hat{y}$, we compare $\hat{y}$ with the gold answer $y$ and obtain a thresholded task-quality signal. Only the final accepting node is updated, using bounded asymmetric steps with damping. The complete per-sample loop, including utility scoring, the two safety gates, and the terminal-consensus update, is given in Algorithm~\ref{alg:tcpb-loop}. This restricted mechanism already reduces premature acceptance and stabilizes routing relative to self-reflection baselines, but it does not yet instantiate recursive audit, persona-tag formation, or split-based organization.
+
+\begin{algorithm}[t]
+\caption{TCPB execution loop (Stage-1 prototype, single sample). Notation matches \S\ref{sec:methodology}; deterministic instantiations of $\phi$ and $b_i(j)$ are in \texttt{artifacts/edo\_lite\_executable\_spec.md} \S 1.2 / \S 2.2.}
+\label{alg:tcpb-loop}
+\small
+\begin{algorithmic}[1]
+\Require Question $q$, gold $y$; chain agents $\mathcal{A}{=}\{\textsc{dec},\textsc{evi},\textsc{ver},\textsc{syn}\}$ with adjacency $\mathcal{N}$; competence $c\!\in\![0.05,0.95]^{|\mathcal{A}|}$; constants $\delta_a{=}0.02$, $H_{\max}{=}4$, $F_\textsc{th}{=}0.5$, $\Delta^{+}{=}{+}0.06$, $\Delta^{-}{=}{-}0.10$, $\rho{=}0.5$.
+\Ensure Predicted answer $\hat{y}$; updated competence $c'$.
+\State $P \gets \textsc{HandoffPacket}(q,\emptyset,0,\emptyset)$; \  $i \gets \textsc{dec}$
+\While{$\textit{hop\_count}(P) < H_{\max}$}
+  \State $\phi \gets \textsc{extract}(P)$ \Comment{rule-based, no LLM call}
+  \State $U^\textsc{s} \gets 0.55\,c[i] + 0.20\,\phi.\textit{ev} + 0.10(1{-}\phi.\textit{unc})$
+  \Statex \quad\quad\;\;\, $- 0.10\,\phi.\textit{loop} - 0.05\,\phi.\textit{rev}$
+  \For{$j \in \mathcal{N}(i)$}
+    \State $U^\textsc{o}_j \gets 0.60\,b_i(j) + 0.25\,\mathbb{1}[\textit{role}(j){=}\textit{pref}(P)]$
+    \Statex \quad\quad\quad\;\, $+ 0.05\,\textit{struct}(j) - 0.25\,\mathbb{1}[j\!\in\!\textit{vis}(P)]$
+  \EndFor
+  \State $j^{\star} \gets \arg\max_{j\in\mathcal{N}(i)} U^\textsc{o}_j$;\, $\textit{acc} \gets (U^\textsc{s} \!\geq\! U^\textsc{o}_{j^{\star}}\!+\!\delta_a)$
+  \If{$i{=}\textsc{dec}$ \textbf{and} \textsc{multihop}$(q)$} $\textit{acc} \gets \textsf{F}$ \EndIf
+  \If{$i{=}\textsc{dec}$ \textbf{and not} \textsc{multihop}$(q)$ \textbf{and} $c[i]{<}0.90$} $\textit{acc} \gets \textsf{F}$ \EndIf
+  \If{$\mathcal{N}(i){=}\emptyset$} $\textit{acc} \gets \textsf{T}$ \EndIf
+  \If{$\textit{acc}$}
+    \State $\hat{y} \gets \textsc{LLM\_answer}(P)$;\;\; \textbf{break}
+  \Else
+    \State $P \gets P.\textsc{append}(\textsc{LLM\_contribute}(P))$
+    \State $\textit{vis}(P) \gets \textit{vis}(P)\!\cup\!\{j^{\star}\}$;\, $\textit{hop\_count}(P)\,{+}{=}1$;\, $i \gets j^{\star}$
+  \EndIf
+\EndWhile
+\Statex \quad\textit{// Terminal-Consensus update (only the accepting node)}
+\State $r \gets {+}1$ \textbf{if} $F_1(\hat{y},y){\geq}F_\textsc{th}$ \textbf{else} ${-}1$
+\State $\delta \gets \Delta^{+}$ \textbf{if} $r{>}0$ \textbf{else} $\Delta^{-}$;\, $\delta \gets \textsc{clip}(\delta,{-}\Delta^{+},{+}\Delta^{+})$
+\State $\textit{tgt} \gets \textsc{clip}(c[i]{+}\delta,0.05,0.95)$
+\State $c'[i] \gets (1{-}\rho)c[i] + \rho\cdot\textit{tgt}$;\, $c'[k\!\neq\! i] \gets c[k]$
+\State \Return $\hat{y}, c'$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Why the separation matters}
+
+Without separating the full EDO method from the current TCPB prototype, the paper falls into one of two traps. If we write only what the code already does, the paper becomes a fixed-role routing paper with limited conceptual novelty. If we write only the grand theory and ignore implementation limits, reviewers will rightly reject the paper for overclaiming. The correct scientific stance is to make EDO the main theory and TCPB the current restricted instantiation. The exact boundary between the two is fixed by the Prototype Scope Box that follows.
+
+\medskip
+\noindent\fbox{%
+\begin{minipage}{0.95\columnwidth}
+\small
+\textbf{Prototype Scope Box} (single source of truth for what the current submission instantiates).
+
+\smallskip
+The current executable system instantiates only a restricted Stage-1 subset of EDO. Concretely, the prototype replaces:
+\begin{enumerate}[label=(\roman*),leftmargin=*,topsep=2pt,itemsep=1pt]
+  \item arbitrary sparse graphs with fixed \texttt{chain}/\texttt{star} topologies;
+  \item near-homogeneous agents with four role-prior nodes (\texttt{decomposer}, \texttt{evidence\_seeker}, \texttt{verifier}, \texttt{synthesizer});
+  \item task-tree state with a linear \texttt{HandoffPacket};
+  \item the three-action \texttt{do\_self / outsource / split} EDO policy with deterministic \texttt{accept-or-forward};
+  \item recursive persona-tag updates with terminal-only scalar competence updates (TCPB).
+\end{enumerate}
+The deterministic instantiations of $\phi(z)$, the utility estimators $U^{self}, U^{out}$, and the persona update rule for this prototype scope are given in \texttt{artifacts/edo\_lite\_executable\_spec.md}; that note is the canonical companion specification for everything in this box and is referenced by Sections~\ref{sec:methodology}, \ref{sec:experiments}, and \ref{sec:limitations} without restating its content. Stage-2 work will progressively replace each of (i)--(v) with the full EDO mechanism; none of those replacements are claimed by the current submission.
+\end{minipage}}
+\medskip
+
+\subsection{Stage-2 Roadmap (boundaries the current submission does not cross)}
+\label{sec:stage2-roadmap}
+
+Three EDO mechanisms remain underspecified in the present submission and define the Stage-2 boundary that empirical Section~\ref{sec:experiments} numbers must \emph{not} be read as supporting. \textbf{(R1) \texttt{split} subtask generation:} Stage-2 introduces $\mathrm{split}(z){\to}\{z_1,\dots,z_k\}$ via a light-weight LLM call gated by $U_i^{split}(z){>}\max(U_i^{self}, \max_j U_i^{out})$ with hard bounds \texttt{max\_subtasks=3}, \texttt{max\_depth=3}, \texttt{max\_nodes=12} (see \texttt{edo\_lite\_executable\_spec.md \S 4.3}); the current submission contains zero \texttt{split} events. \textbf{(R2) Recursive audit decision protocol:} Stage-2 elevates audit to a per-handoff decision $\mathrm{Audit}(u,v,z)$ returning one of \textsc{accept}, \textsc{accept-w-note}, \textsc{reject-reroute}, or \textsc{reject-resplit}, executed by upstream $u$ on the result returned by downstream $v$, rule-based on answer length, refusal patterns, and an \texttt{audit\_score} proxy (\S 4.2 of the same note); each audit emits a social-signal tuple $\ell_{u\to v,z}$ that feeds (R3). The current submission performs no per-hop upstream rejection. \textbf{(R3) Neighbor belief update:} Stage-2 replaces the scalar self-competence with a vector belief $B_i^t(j)\in[0,1]^7$ updated as $B_i^{t+1}(j)=\mathrm{clip}\big((1{-}\nu)B_i^t(j)+\nu\cdot\mathrm{evidence\_extract}(\ell_{u\to v,z})\big)$ with $\nu{=}0.2$. The current submission's \texttt{published\_competence} is the \texttt{solve}-dimension projection only and is not updated per hop.
+
+\section{Experiments}
+\label{sec:experiments}
+
+\subsection{What current evidence already establishes}
+
+Our current reproducible evidence comes from the Stage-1 TCPB prototype on HotpotQA. The main benchmark slice is a fixed set of 200 HotpotQA validation questions exported to \fpath{artifacts/seed/hotpotqa_validation_200.jsonl}. Existing runs compare \texttt{fixed\_peer\_calibrated}, \texttt{fixed\_self\_calibrated}, \texttt{fixed\_self\_claim}, \texttt{fixed\_static\_roles}, and centralized baselines under shared inputs and logged execution traces.
+
+These experiments do \emph{not} establish the full EDO theory. What they do establish is narrower but still important:
+\begin{itemize}
+  \item decentralized outcome-based calibration matters;
+  \item delegation safety is measurable and improvable;
+  \item structured intermediate state is necessary for route-level auditing;
+  \item route preferences can stabilize without a central controller;
+  \item some remaining errors are generated by local answer bottlenecks rather than by routing failure.
+\end{itemize}
+This evidence should be presented as support for the \textbf{direction} of the theory, not as proof of the entire organizational framework.
+
+\subsection{Stage-1 setup: current prototype experiments}
+
+\begin{itemize}
+  \item \textbf{Benchmark:} HotpotQA distractor validation subset, 200 examples (\fpath{artifacts/seed/hotpotqa_validation_200.jsonl}).
+  \item \textbf{Model:} \texttt{gpt-4.1-mini} (OpenAI-compatible via \fpath{https://kuaipao.ai/v1}), temperature 0, chain topology unless otherwise noted. \texttt{model\_resolved\_runtime}: \texttt{gpt-4.1-mini} confirmed in all canonical run notes.
+  \item \textbf{Canonical run:} \fpath{artifacts/round2_gpt41mini/run_20260414_115739/} --- contains \texttt{fixed\_peer\_calibrated}, \texttt{fixed\_static\_roles}, and \texttt{fixed\_self\_claim} subdirectories, all validated \texttt{[OK]}. Metrics consolidated in \fpath{artifacts/round2_gpt41mini/round2_gpt41mini_main_table.csv}.
+  \item \textbf{Current runtime:} \fpath{workspace/idea04_core/runner.py}, \fpath{methods.py}, \fpath{contracts.py}.
+  \item \textbf{Current method objects:} fixed topology, role-prior nodes, linear handoff packet, deterministic local accept-or-forward policy, terminal-only outcome update.
+  \item \textbf{Current process metrics:} EM, F1, mean handoff count, dead-end rate, premature accept rate, forward-after-correction rate, heuristic and API token cost, and cost-normalized F1.
+  \item \textbf{Note on prior GLM results:} All runs under \fpath{artifacts/round1/} and \fpath{artifacts/round1_star/} used \texttt{glm-4-flash} as the actual runtime backbone. These are archived as Stage-1 guidance-only artifacts. They established the direction of the research but are not the final paper evidence.
+\end{itemize}
+
+\subsection{Current main findings from the restricted instantiation}
+
+The canonical round2 \texttt{gpt-4.1-mini} results ($n=200$, chain, run \fpath{run_20260414_115739}) support four main observations, summarised in Table~\ref{tab:main-results}.
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lcccr@{}}
+\toprule
+\textbf{Method} & \textbf{EM} & \textbf{F1} & \textbf{MHC} & \textbf{Tok.} \\
+\midrule
+\texttt{self\_claim}     & 0.635 & \textbf{0.7641} & 2.00 & 6{,}414 \\
+\texttt{static\_roles}   & 0.610 & 0.7454 & 1.68 & \textbf{4{,}663} \\
+\texttt{peer\_calibrated}& 0.615 & 0.7381 & 2.00 & 6{,}414 \\
+\bottomrule
+\end{tabular}
+\caption{Stage-1 results on HotpotQA chain-200 with \texttt{gpt-4.1-mini} (canonical run \fpath{round2_gpt41mini/run_20260414_115739}). MHC = mean handoff count; Tokens = mean API tokens per sample. All three methods achieve premature-accept rate $\mathrm{PAR}=0.0$.}
+\label{tab:main-results}
+\end{table}
+
+\paragraph{Finding 1: Backbone quality dominates all method differences.} All three Stage-1 methods improve by $+15$ to $+20$ F1 points when switching from \texttt{glm-4-flash} to \texttt{gpt-4.1-mini} on the same 200-sample slice and identical routing code. The routing mechanism is secondary to generation quality on this benchmark/topology combination.
+
+\paragraph{Finding 2: Method ordering is backbone-sensitive and must not be over-interpreted from a single backbone.} On \texttt{glm-4-flash} (Stage-1 GLM), the ordering was \texttt{static\_roles} $>$ \texttt{peer\_calibrated} $\approx$ \texttt{self\_claim}. On \texttt{gpt-4.1-mini}, the ordering inverts: \texttt{self\_claim} (F1=0.7641) $>$ \texttt{static\_roles} (0.7454) $>$ \texttt{peer\_calibrated} (0.7381). Figure~\ref{fig:backbone-sensitivity} visualises the inversion under identical inputs and routing code.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{fig2_backbone_sensitivity.pdf}
+  \caption{Backbone-sensitive Stage-1 ordering on the chain-200 HotpotQA slice. All three methods improve by ${\approx}{+}15$--$20$ F1 points when the backbone is upgraded from \texttt{glm-4-flash} to \texttt{gpt-4.1-mini}, but the relative ordering inverts: GLM yields \texttt{peer\_calibrated} ($0.596$) $>$ \texttt{static\_roles} ($0.580$) $>$ \texttt{self\_claim} ($0.562$); \texttt{gpt-4.1-mini} yields \texttt{self\_claim} ($0.764$) $>$ \texttt{static\_roles} ($0.745$) $>$ \texttt{peer\_calibrated} ($0.738$). The red star marks the only validated full-validation point (\texttt{peer\_calibrated} on \texttt{gpt-4.1-mini}, $F_1{=}0.770$, $n{=}7405$); the other two fullval points are pending rerun under the runtime integrity guard (\S\ref{sec:limitations}). Identical inputs and routing code are used across backbones.}
+  \label{fig:backbone-sensitivity}
+\end{figure} The gap between the best and worst Stage-1 method is 2.6 F1 points --- non-trivial at $n=200$ but not yet confirmed with paired statistics. \texttt{fixed\_peer\_calibrated}/TCPB should \emph{not} be described as the strongest Stage-1 method on the strong backbone. \texttt{fixed\_self\_claim} currently leads F1; \texttt{fixed\_static\_roles} is the most cost-efficient (4{,}663 vs.\ 6{,}414 API tokens per sample). $N{=}7405$ fullval for all three methods is required for tight confidence intervals. As of this draft, \texttt{peer\_calibrated} fullval is completed and valid (F1=0.7703, $n{=}7405$, \fpath{artifacts/round2_gpt41mini_fullval/}); \texttt{static\_roles} and \texttt{self\_claim} fullval runs were invalidated by a provider runtime integrity failure (model drift mid-run) and are pending rerun under the new fail-fast guard. The three-method ordering above is therefore supported by chain-200 evidence ($n{=}200$) only and should not be presented as a finalized fullval ranking.
+
+\paragraph{Finding 3: PAR collapses to zero regardless of backbone.} All three methods achieve PAR $= 0.0$ on \texttt{gpt-4.1-mini}, consistent with the GLM result. The decomposer force-forward gate prevents premature acceptance on multi-hop HotpotQA questions across backbones. This confirms that the routing safety structure is robust to backbone change.
+
+\paragraph{Finding 4: On a capable backbone, TCPB peer-calibration overhead does not yield F1 gains.} The F1 and cost data indicate that \texttt{peer\_calibrated} uses the same token budget as \texttt{self\_claim} (both 6{,}414/sample) but achieves lower F1. The mechanism value of TCPB on this configuration appears in route-level process metrics (MHC$=2.00$ for peer, indicating fuller chain use) rather than in final F1. For a capable backbone on HotpotQA, the simpler methods are Pareto-dominant on the F1/cost frontier. The paper contribution should therefore pivot from ``\texttt{peer\_calibrated} is best'' to ``the EDO framework explains when and why delegation overhead pays off --- and Stage-1 evidence reveals backbone-sensitive threshold effects that motivate the full theory.''
+
+\subsection{Full EDO experimental agenda (Stage-2 plan)}
+
+The full long-paper requires experiments redesigned around emergence rather than final answer quality alone, organized around five planned studies: \textbf{E1} emergent specialization from near-homogeneous start (persona-tag divergence, specialization entropy, per-agent action frequencies); \textbf{E2} value of recursive \texttt{split} (split usefulness rate, merge overhead, depth, rework delta); \textbf{E3} value of recursive audit (audit precision/recall, low-quality subcontract propagation rate, post-rework quality); \textbf{E4} sparse-graph robustness across chain, star, random sparse connected, small-world, and community-bridge families (local-discovery success, bridge utilization, quality--cost trade-offs, stability across seeds); \textbf{E5} benchmark transfer to MuSiQue and other compositional benchmarks for which recursive split and integration are central. Beyond EM/F1 and cost, this agenda will report organizational process metrics --- specialization entropy, persona-tag divergence, audit precision/recall, subcontract acceptance rate, split usefulness rate, average delegation depth, bridge utilization rate, and seed-level organization stability --- none of which are claimed by the present submission.
+
+\subsection{Current Stage-1 artifact interpretation}
+
+The current artifact directories, tables, and ablations should remain in the paper, but their framing must change. They are evidence for the restricted instantiation. Canonical source: \fpath{artifacts/round2_gpt41mini/} (backbone: \texttt{gpt-4.1-mini}); GLM-backbone results under \fpath{artifacts/round1/} are archived as Stage-1 guidance-only.
+
+In addition, two GLM-backbone observations remain valid as mechanistic context: (i) the weight-sensitivity ablations (\fpath{artifacts/round1_v3_weight_sensitivity.md}) confirm that outcome-based calibration and conservative routing structure each contribute measurable signal; and (ii) the static-path overlap analysis (\texttt{peer\_calibrated} reproducing ${\sim}52\%$ of static routes) shows stable route structure can form without a central controller. The residual error budget appears increasingly attributable to the local answer-generation layer rather than to misrouting, narrowing the Stage-2 target toward task trees, recursive audit, persona tags, and sparse-graph organization.
+
+\section{Conclusion}
+
+The central claim of this project is no longer that a fixed-role decentralized router can be calibrated slightly better than self-reflection. The stronger claim is that multi-agent language systems should be studied as \textbf{organizations}, not merely as collections of prompts. Under this view, the important scientific questions become: how does labor division emerge, how is local trust formed, when is work kept versus outsourced versus split, and how do repeated acceptance judgments shape durable social identity?
+
+We introduced \textbf{Emergent Delegation Organization (EDO)} as a framework for answering these questions. EDO moves the focus from fixed roles to socially induced personality tags, from linear routing to recursive task trees, and from terminal-only supervision to recursive acceptance-based organization. Our current \textbf{TCPB} system remains important, but only as the first restricted executable approximation of this broader idea. Its existing HotpotQA evidence already shows that decentralized outcome-based calibration improves delegation safety and stabilizes routing without centralized control. The long-paper opportunity now lies in completing the transition from calibrated routing to emergent organization.
+
+\section*{Limitations}
+\label{sec:limitations}
+
+We explicitly acknowledge that the current codebase does not implement the complete EDO method. The present runtime still relies on fixed topologies, role-prior nodes, linear packet passing, deterministic accept-or-forward routing, and terminal-only outcome updates. It therefore cannot yet establish the strongest claims of the full framework, such as recursive split value, local audit superiority, or personality-tag emergence from near-homogeneous initialization.
+
+We also acknowledge that some current routing improvements may still be partially entangled with hand-designed safety priors and answer-generation constraints. As a result, the present evidence should be interpreted as validating the Stage-1 premise that decentralized outcome-based calibration helps, not as a full proof that local interaction alone is sufficient for rich organizational emergence across arbitrary settings.
+
+These limitations are not accidental flaws in reporting. They define the boundary between the current restricted instantiation and the long-paper method it motivates. The next-stage implementation burden is therefore clear: introduce task-tree state, recursive audit, persona-tag updates, and general sparse-graph support, then test whether the stronger organizational predictions of EDO hold empirically.
+
+A fourth limitation concerns backbone-sensitive method ordering. On our current 200-sample HotpotQA chain slice, the relative ranking of Stage-1 delegation methods inverts between \texttt{glm-4-flash} and \texttt{gpt-4.1-mini}. On the stronger backbone, \texttt{fixed\_self\_claim} leads F1, while \texttt{fixed\_peer\_calibrated} trails. This indicates that the TCPB peer-calibration overhead (additional LLM calls for belief updates) does not yield F1 gains when the underlying model is already strong enough to self-evaluate accurately. This result is theoretically important: it predicts that the full EDO organizational advantage will be most visible on harder tasks, weaker individual agents, or richer topologies where single-agent self-assessment breaks down. Reporting Stage-1 results on only one backbone would conceal this sensitivity; we report both for transparency. A related data integrity note: one fullval run (\fpath{artifacts/round2_gpt41mini_fullval/run_20260414_135408/}) experienced provider-side model drift that silently substituted an unsupported model for two of the three methods; the affected \texttt{static\_roles} and \texttt{self\_claim} fullval results are being rerun under a new fail-fast runtime guard (\texttt{ModelDriftError} in \fpath{workspace/idea04_core/llm_client.py}). The \texttt{peer\_calibrated} fullval result (F1=0.7703) remains valid. This section will be updated once the repaired reruns land.
+
+% Bibliography placeholders only --- replace with real references for camera-ready.
+\nocite{Gusfield:97,Ando2005,andrew2007scalable,rasooli-tetrault-2015}
+\bibliography{custom}
+
+\end{document}

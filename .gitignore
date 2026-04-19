@@ -1,0 +1,107 @@
+# =============================================================================
+# .gitignore for idea04 (EMNLP long paper repo)
+# Created: 2026-04-19 (per U-010-decide approval)
+# Strategy: track docs / scripts / configs / core code / paper LaTeX source +
+#           PDF artifacts + figures; EXCLUDE large run logs and external clones.
+# =============================================================================
+
+# --- Large run-log directories (~2.5 GB combined) ---
+# All per-sample jsonl traces under any artifacts/.../run_*/ are excluded.
+# Keep the SUMMARY artifacts: csv/md/png/pdf/json at round-level.
+artifacts/**/run_*/**/*.jsonl
+artifacts/**/run_*/**/*.log
+artifacts/**/run_*/**/*.tmp
+
+# Forensic trace dumps
+artifacts/_*audit*/
+artifacts/_*audit_workdir/
+
+# --- HotpotQA seed datasets ---
+# Exclude the FULL HotpotQA dumps (~570 MB; re-downloadable via export_hotpot_seed.py).
+# KEEP the small slices (validation_200, validation_100) which are paper evidence.
+artifacts/seed/hotpotqa_train_full.jsonl
+artifacts/seed/hotpotqa_validation_full.jsonl
+
+# --- External reference PDFs (140 MB; we keep the index but not the PDFs themselves) ---
+references/**/*.pdf
+references/**/*.PDF
+
+# --- External code/data clones (~112 MB) ---
+data/
+workspace/autogen/
+
+# --- Python build / cache ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# --- Virtual environments ---
+.venv/
+venv/
+env/
+ENV/
+.env
+.env.local
+
+# --- LaTeX intermediate products (we keep .pdf for blame-on-PDF; exclude rest) ---
+article/build/*.aux
+article/build/*.log
+article/build/*.out
+article/build/*.bbl
+article/build/*.blg
+article/build/*.fdb_latexmk
+article/build/*.fls
+article/build/*.toc
+article/build/*.lof
+article/build/*.lot
+article/build/*.synctex.gz
+article/build/*.fff
+article/build/*.ttt
+article/build/*.idx
+article/build/*.ilg
+article/build/*.ind
+
+# --- IDE / OS ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Cursor / agent transcripts (large; auto-generated) ---
+.specstory/
+terminals/
+agent-transcripts/
+.cursor/projects/
+
+# --- Secrets ---
+*.pem
+*.key
+.env*
+!.env.example
+configs/secrets.json
+
+# --- Model checkpoints / large binaries ---
+*.ckpt
+*.pt
+*.pth
+*.h5
+*.bin
+*.safetensors
+
+# --- Misc temp ---
+*.tmp
+*.bak
+*.orig
+.cache/

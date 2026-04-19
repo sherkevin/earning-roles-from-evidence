@@ -1,0 +1,24 @@
+```json
+{
+  "reviewer_id": "R3",
+  "reviewer_profile": "Empirical NLP reviewer focused on ablations, baseline quality, evidence gaps, and whether claims can be tested",
+  "summary": "PATD proposes decentralized multi-agent delegation on fixed topologies with structured packets and terminal-outcome competence calibration. Document is unusually well-operationalized with explicit scoring functions and pseudocode. Core risk: hand-tuned routing weights and hard-coded safety priors may do the heavy lifting, making TCPB's contribution unfalsifiable without careful ablation.",
+  "scores": {
+    "novelty": 6,
+    "technical_clarity": 8,
+    "technical_soundness": 6,
+    "executability": 8,
+    "empirical_plan": 7,
+    "falsifiability": 7,
+    "overall": 7
+  },
+  "verdict": "borderline",
+  "confidence": 4,
+  "top_strengths": [
+    "Exceptional operationalization: scoring functions, pseudocode, parameters, state definitions all explicit",
+    "Honest scoping with explicit falsification conditions and clear MVP-vs-blueprint boundary"
+  ],
+  "top_weaknesses": [
+    "Hand-tuned scoring weights (0.55, 0.20, etc.) and thresholds lack justification; no sensitivity analysis planned",
+    "Hard-coded decomposer gates may be primary performance driver, making TCPB contribution unfalsifiable"
+  ],

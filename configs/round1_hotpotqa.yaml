@@ -1,0 +1,24 @@
+benchmark: hotpotqa
+# HF 镜像与 hf_force_redownload 默认见 configs/huggingface.yaml（由脚本与本报文合并）；此处可写同名键覆盖
+split: validation
+sample_size: 200
+topology: chain
+max_handoff: 4
+main_model: gpt-4.1-mini
+temperature: 0.0
+token_budget_per_sample: 2000
+shared_prompt_template: prompts/main_agent_prompt.txt
+# 论文主实验可报告的方法全集（与 workspace/idea04_core/methods.py METHOD_NAMES 对齐）。
+# 实际跑数：默认三方法链冒烟可用 run_round0_smoke.py；含扩展 baseline 时统一用
+#   python scripts/run_round1_v3.py --config configs/round1_hotpotqa.yaml \
+#     --samples-jsonl artifacts/seed/hotpotqa_validation_200.jsonl --methods <子集>
+# 见 implementation_log「round1_canonical_runners」。
+methods:
+  - single_agent
+  - central_orchestrator
+  - central_orchestrator_with_reflection
+  - fixed_static_roles
+  - fixed_self_claim
+  - fixed_random_forward
+  - fixed_peer_calibrated
+  - fixed_self_calibrated

@@ -1,0 +1,46 @@
+{
+  "topology": "chain",
+  "start_node": "decomposer",
+  "final_node": "synthesizer",
+  "final_path": [
+    "decomposer",
+    "evidence_seeker",
+    "verifier",
+    "synthesizer"
+  ],
+  "allowed_edges": [
+    [
+      "node.decomposer",
+      "node.evidence_seeker"
+    ],
+    [
+      "node.evidence_seeker",
+      "node.verifier"
+    ],
+    [
+      "node.verifier",
+      "node.synthesizer"
+    ]
+  ],
+  "observed_edges": [
+    [
+      "node.decomposer",
+      "node.evidence_seeker"
+    ],
+    [
+      "node.evidence_seeker",
+      "node.verifier"
+    ],
+    [
+      "node.verifier",
+      "node.synthesizer"
+    ]
+  ],
+  "violations": [],
+  "send_count": 4,
+  "checks": {
+    "path_non_empty": true,
+    "no_topology_violation": true,
+    "messages_intercepted": true
+  }
+}

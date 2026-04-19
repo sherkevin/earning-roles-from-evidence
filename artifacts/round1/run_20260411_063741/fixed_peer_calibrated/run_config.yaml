@@ -1,0 +1,16 @@
+hf_endpoint: https://hf-mirror.com
+hf_force_redownload: false
+benchmark: hotpotqa
+split: validation
+sample_size: 100
+topology: chain
+max_handoff: 4
+main_model: glm-4-flash
+temperature: 0.0
+token_budget_per_sample: 2000
+shared_prompt_template: prompts/main_agent_prompt.txt
+methods:
+- fixed_static_roles
+- fixed_self_claim
+- fixed_peer_calibrated
+method_name: fixed_peer_calibrated

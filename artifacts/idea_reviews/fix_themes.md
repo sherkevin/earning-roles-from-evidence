@@ -1,0 +1,22 @@
+# Fix Themes
+
+- (1) tcpb is mislabeled backpropagation: updating only final-node scalar competence is too coarse to drive meaningful specialization
+- (1) hand-tuned scoring weights (0.55, 0.20, etc.) and thresholds lack justification; no sensitivity analysis planned
+- (1) hard-coded decomposer gates may be primary performance driver, making tcpb contribution unfalsifiable
+- (1) core utility functions (fit, cost_self, risk_self, splitgain, etc.) completely undefined—cannot implement or reproduce the method
+- (1) task signature phi(z) and persona-task matching mechanism unspecified; routing foundation is a placeholder
+- (1) fit(p_i, phi(z)) computation: no formula, no llm prompt, no learning rule—central to all action selection
+- (1) task signature phi(z) extraction: 'rule features or lightweight llm' is not operationalized; dimensions listed but computation absent
+- (1) neighbor belief b_i(j) initialization and update rule: source components listed but no update equation or fusion rule
+- (1) split subtask generation: who generates subtasks, how, with what constraints on number/granularity/overlap?
+- (1) audit decision mechanism: accept/reject/reroute/resplit—how does upstream agent decide? llm call? rule? threshold?
+- (1) core update rules (persona, neighbor beliefs, utilities) remain conceptual, not yet algorithmically pinned down.
+- (1) empirical plan is broad but lacks precise protocols, metrics definitions, and ablation designs to test key claims.
+- (1) persona update equations gloss over how localvalue/terminalvalue/reworkpenalty are computed from logs.
+- (1) utility terms (splitgain, risk, costs) lack concrete estimators, normalization, and how llm queries instantiate them.
+- (1) no concrete ablation protocol to isolate contributions of split, recursive audit, and persona tags individually.
+- (1) no explicit plan for evaluating emergent specialization beyond informal entropy/divergence metrics definitions.
+- (1) specify full algorithmic pipeline: task-signature extraction, utility estimators, persona/belief updates, audit protocol, all with implementable pseudo-code.
+- (1) design a tight empirical core: concrete benchmarks, baselines, ablations, metric formulas, and tests for each falsifiable prediction in §14.4.
+- (1) key mechanisms (utility, persona updates, neighbor beliefs, audit policy) remain underspecified for implementation.
+- (1) empirical plan lists questions and ablations but lacks concrete protocols, thresholds, and measurement procedures.

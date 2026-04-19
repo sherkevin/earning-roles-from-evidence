@@ -1,0 +1,59 @@
+1.  **Analyze the Request:**
+    *   Goal: Repair malformed review output into compact valid JSON only.
+    *   Constraint 1: Do not add commentary.
+    *   Constraint 2: Use the exact top-level schema already requested.
+    *   Constraint 3: If fields are missing, infer conservatively and keep lists short.
+    *   Input: A truncated JSON string.
+
+2.  **Analyze the Input:**
+    ```json
+    {
+      "reviewer_id": "R_theory_04",
+      "reviewer_profile": "Theory-leaning reviewer focused on whether the method objects are crisp, falsifiable, and distinct from adjacent prior work.",
+      "summary": "Proposes decentralized accept-or-forward routing on fixed topologies with terminal-outcome competence calibration (TCPB). Framing around delegation miscalibration is compelling, but core algorithm is a hand-tuned heuristic with only terminal-node credit assignment. Safety gates partially pre-solve routing, weakening self-organization claims.",
+      "scores": {
+        "novelty": 6,
+        "technical_clarity": 7,
+        "technical_sound
+    ```
+    *   Missing closing for `technical_sound...` (likely `technical_soundness`), missing other score fields, missing closing braces.
+
+3.  **Infer Missing Fields:**
+    *   `technical_soundness`: Needs a value. The summary says "core algorithm is a hand-tuned heuristic with only terminal-node credit assignment. Safety gates partially pre-solve routing, weakening self-organization claims." This implies moderate to low technical soundness. Let's assign a 5.
+    *   Other typical score fields for this schema (based on standard ML conference reviews and the profile): `significance`, `overall`. Let's add `significance`: 5, `overall`: 5.
+    *   Wait, the prompt says "Use the exact top-level schema already requested. If some fields are missing, infer conservatively from the text and keep lists short." Let's look at the scores object. It has `novelty`, `technical_clarity`, `technical_soundness`. Let's add `significance` and `overall` as they are standard, or just close the existing ones. Let's add `significance` and `overall` to make it a complete review, or just close what's there. Let's add `significance`: 5, `overall`: 5.
+    *   Are there other top-level fields usually present? `strengths`, `weaknesses`, `questions`.
+    *   Let's infer `strengths` and `weaknesses` from the summary to be safe and complete the schema.
+    *   `strengths`: ["Compelling framing around delegation miscalibration."]
+    *   `weaknesses`: ["Core algorithm is a hand-tuned heuristic.", "Only terminal-node credit assignment.", "Safety gates partially pre-solve routing, weakening self-organization claims."]
+    *   `questions`: ["How is the heuristic derived theoretically?"]
+
+4.  **Draft the JSON:**
+    ```json
+    {
+      "reviewer_id": "R_theory_04",
+      "reviewer_profile": "Theory-leaning reviewer focused on whether the method objects are crisp, falsifiable, and distinct from adjacent prior work.",
+      "summary": "Proposes decentralized accept-or-forward routing on fixed topologies with terminal-outcome competence calibration (TCPB). Framing around delegation miscalibration is compelling, but core algorithm is a hand-tuned heuristic with only terminal-node credit assignment. Safety gates partially pre-solve routing, weakening self-organization claims.",
+      "scores": {
+        "novelty": 6,
+        "technical_clarity": 7,
+        "technical_soundness": 5,
+        "significance": 5,
+        "overall": 5
+      },
+      "strengths": [
+        "Compelling framing around delegation miscalibration."
+      ],
+      "weaknesses": [
+        "Core algorithm is a hand-tuned heuristic.",
+        "Only terminal-node credit assignment.",
+        "Safety gates partially pre-solve routing, weakening self-organization claims."
+      ],
+      "questions": [
+        "How is the heuristic derived theoretically?"
+      ]
+    }
+    ```
+
+5.  **Refine to Compact JSON:**
+    Remove all whitespace/newlines

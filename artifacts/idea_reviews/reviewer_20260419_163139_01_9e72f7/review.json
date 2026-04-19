@@ -1,0 +1,289 @@
+{
+  "reviewer_id": "reviewer_20260419_163139_01_9e72f7",
+  "reviewer_profile": "P5: Best-Paper-Committee chair simulating an Oral-track gatekeeper. Asks the only question that matters: would this paper be in the top 3-5% of EMNLP submissions? Defaults oral_quality_score <= 6 unless the paper presents a substantial, original, completed contribution with comprehensive evaluation and clear long-term community impact; never grants Oral-eligibility on a single-benchmark or methodology-note submission.",
+  "document_type": "partial_paper",
+  "submission_track": "EMNLP Long Paper - Oral evaluation",
+  "summary": "EDO reframes decentralized multi-agent routing as 'organizational emergence' under local interaction; full method (recursive split + audit + persona vector) is admitted-not-implemented. The actually delivered system is a Stage-1 prototype TCPB on a single benchmark (HotpotQA, n=200, single seed, no significance tests, no ablation table in body, all baselines author-internal). Author's own Finding 4 admits the proposed method (peer_calibrated F1=0.7381) loses to a simpler baseline (self_claim F1=0.7641) at equal token cost, and Finding 1 admits backbone quality dominates all method differences. Reference list contains only 4 ACL template default citations.",
+  "desk_reject_risks": [
+    "DR-1 (POSSIBLE): pdftotext output suggests §4.6 + §5 Conclusion cross to page 9; main body may exceed strict 8-page limit. Cannot confirm precisely without rendered PDF page boundaries.",
+    "DR-3 (POSSIBLE): Limitations section discusses an engineering fix in detail ('the affected static_roles and self_claim fullval results are being rerun under a new fail-fast runtime guard (ModelDriftError in workspace/idea04_core/llm_client.py)') which arguably constitutes new content describing implementation work not in main body.",
+    "DR-5 (POSSIBLE): Inline path references to project-internal files like 'workspace/idea04_core/runner.py', 'artifacts/edo_lite_executable_spec.md §4.3', 'artifacts/round2_gpt41mini/run_20260414_115739/' could be linked back to authors if the public repo is discoverable.",
+    "DR-6: Responsible NLP Checklist not visible in the extracted PDF text; cannot confirm completion.",
+    "DR-8 (POSSIBLE): References list contains only 4 entries (Ando&Zhang 2005, Andrew&Gao 2007, Gusfield 1997, Rasooli&Tetreault 2015) which are exactly the ACL template default citations - none related to multi-agent systems. This pattern strongly suggests the bibliography was never compiled and is a placeholder, which is a serious ethics-adjacent quality issue."
+  ],
+  "scores": {
+    "soundness": 5.0,
+    "significance": 4.5,
+    "novelty": 4.0,
+    "empirical_results": 4.0,
+    "reproducibility": 6.0,
+    "clarity": 6.5,
+    "responsible_research_and_limitations": 6.0,
+    "executability": 5.0,
+    "falsifiability": 5.0,
+    "empirical_plan": 5.0,
+    "technical_clarity": 6.0,
+    "technical_soundness": 5.0,
+    "statistical_rigor": 2.0,
+    "baseline_quality": 3.0,
+    "ablation_completeness": 3.0,
+    "writing_and_figures": 5.0,
+    "oral_quality_score": 2.5,
+    "overall": 4.5
+  },
+  "score_calculation": {
+    "weights": {
+      "soundness": 0.25,
+      "significance": 0.18,
+      "novelty": 0.15,
+      "empirical_results": 0.18,
+      "reproducibility": 0.10,
+      "clarity": 0.07,
+      "responsible_research_and_limitations": 0.07
+    },
+    "weighted_sum": 4.855,
+    "caps_triggered": [
+      "D4<5 (D4=4.0): cap overall to min(4.855, D4+0.5)=4.5",
+      "D3<5 (D3=4.0): cap overall to min(4.5, D3+0.5)=4.5 (already at floor)",
+      "experiments_solidity_score<=3 (score=0): cap overall to 4.5 (already at floor)",
+      "Note: D7<4, falsifiability<4, oral_quality_score<5, S6<5, S7<5 caps NOT binding because overall already at 4.5 floor"
+    ],
+    "final_overall": 4.5
+  },
+  "experiments_solidity_audit": {
+    "EXP_1_multi_dataset": {
+      "status": "fail",
+      "evidence": "§4.2 'Benchmark: HotpotQA distractor validation subset, 200 examples'. ZERO additional datasets. §4.4 lists MuSiQue as 'Benchmark transfer' future work, not executed in current submission."
+    },
+    "EXP_2_multi_seed": {
+      "status": "fail",
+      "evidence": "Table 1 reports point estimates only. No seed list given anywhere in paper. §4.3 explicitly says 'not yet confirmed with paired statistics'. fullval n=7405 mentioned for one method but is sample-count not seed-count."
+    },
+    "EXP_3_significance_test": {
+      "status": "fail",
+      "evidence": "§4.3 Finding 2: 'The gap between the best and worst Stage-1 method is 2.6 F1 points - non-trivial at n=200 but not yet confirmed with paired statistics.' No paired bootstrap, sign test, or t-test reported in paper body."
+    },
+    "EXP_4_effect_size_or_CI": {
+      "status": "fail",
+      "evidence": "Table 1 has no CI columns, no effect size column. Numbers reported as point estimates (e.g., 'F1=0.7641'). No relative improvement % or Cohen's d cited."
+    },
+    "EXP_5_ablation_coverage": {
+      "status": "partial",
+      "evidence": "§4.6 mentions 'Mechanism ablations (GLM-backbone, artifacts/round1_v3_weight_sensitivity.md) show that outcome-based calibration and conservative routing structure both contribute measurable signal' - but the ablations are referenced via external files, NOT included as a table or figure in the paper body.",
+      "claimed_essential_components": [
+        "TCPB terminal-only competence update (peer_calibrated mechanism)",
+        "Decomposer force-forward gate (multi-hop heuristic)",
+        "Utility weighting (0.55*self + 0.20*evidence + 0.10*(1-uncertainty) - penalties)",
+        "Accept margin threshold (delta=0.02)",
+        "Synthesizer evidence cap (60 lines)",
+        "Non-synthesizer evidence cap (14 lines)"
+      ],
+      "components_with_ablation": [
+        "TCPB on/off (referenced via round1_ablation_notcpb, NOT in paper)",
+        "Gate on/off (referenced via round1_ablation_nogate, NOT in paper)",
+        "Weight sensitivity (referenced via round1_v3_weight_sensitivity.md, NOT in paper)"
+      ],
+      "coverage_ratio": 0.0
+    },
+    "EXP_6_baseline_recency": {
+      "status": "fail",
+      "evidence": "§4.2 lists baselines: fixed_peer_calibrated, fixed_self_calibrated, fixed_self_claim, fixed_static_roles, plus 'centralized baselines' (vague). All are author-internal routing variants. ZERO external multi-agent baselines from 2024-2026 (e.g., MARS, SAGE, AMRO-S, AutoGen, MetaGPT, ReSo) appear in Table 1 or anywhere in §4.",
+      "oldest_baseline_year": 2024,
+      "most_recent_baseline_year": 2026,
+      "latest_sota_present": false,
+      "stale_baselines": [
+        "fixed_static_roles - author-internal, no published reference",
+        "fixed_self_claim - author-internal, no published reference",
+        "fixed_self_calibrated - author-internal, no published reference"
+      ],
+      "missing_recent_sota": [
+        "MARS (Multi-Agent Review System, 2026) - explicitly mentioned in §2.2 conceptually but not used as baseline",
+        "SAGE (Self-evolving Agents, 2026) - relevant peer-critique multi-agent system",
+        "AMRO-S (Ant Colony Multi-Agent LLM Routing, 2026) - directly comparable routing system",
+        "AutoGen / MetaGPT - obvious orchestrator baselines mentioned in §2.1 but not compared"
+      ]
+    },
+    "EXP_7_sensitivity_sweep": {
+      "status": "partial",
+      "evidence": "§4.6 mentions 'mechanism ablations (GLM-backbone, artifacts/round1_v3_weight_sensitivity.md)' demonstrating 'F1 spread 0.003pp' across +/- 2x weight perturbation, but this is a reference to an external artifact, NOT a sensitivity table in the paper body. No accept_margin / gate_threshold / momentum sweep visible in paper."
+    },
+    "EXP_8_error_analysis": {
+      "status": "partial",
+      "evidence": "§4.3 Finding 4 notes 'mechanism value of TCPB ... appears in route-level process metrics (MHC=2.00 for peer, indicating fuller chain use) rather than in final F1' - this is interpretive, not a quantitative error analysis with named failure modes. No table or breakdown of error types per method."
+    },
+    "experiments_solidity_score": 0,
+    "caps_implied_by_audit": [
+      "EXP-1 fail (single benchmark): cap D4 at 6",
+      "EXP-2 fail (single seed): cap D4 at 5 AND cap S5 at 4",
+      "EXP-3 fail (no significance test): cap D4 at 6 AND cap S5 at 5",
+      "EXP-5 coverage_ratio=0: cap D4 at 5 AND cap S7 at 2",
+      "EXP-6 fail (no recent SOTA, all baselines author-internal): cap D4 at 5 AND cap S6 at 4",
+      "experiments_solidity_score=0 (<=3): cap overall at 4.5 (results-not-solid hard floor)"
+    ]
+  },
+  "novelty_delta_audit": [
+    {
+      "prior_work_name": "AutoGen / MetaGPT (orchestrator-based multi-agent frameworks)",
+      "year": 2024,
+      "claimed_difference": "§2.1 says 'Orchestrator-based frameworks achieve strong control and interpretability, but they also impose severe token bottlenecks and create single points of failure. ... We are not trying to produce a smarter global scheduler. We ask how division of labor can emerge when no node has a global expert table.' - Differentiator is 'no global expert table, only local visibility' (architectural).",
+      "is_concrete": false,
+      "is_overlap_risk": false
+    },
+    {
+      "prior_work_name": "Reflexion / Tree-of-Thoughts / multi-agent self-critique systems",
+      "year": 2023,
+      "claimed_difference": "§2.2 says 'several multi-agent systems use self-critique or peer-critique to refine outputs. However, these approaches often assume that agents are at least moderately reliable judges of their own competence ... TCPB prototype, only terminal outcomes are used for calibration.' - Differentiator is 'terminal outcome instead of self-critique'.",
+      "is_concrete": false,
+      "is_overlap_risk": true
+    },
+    {
+      "prior_work_name": "MARS / SAGE / AMRO-S / Brain-Inspired Graph MAS (decentralized routing systems with peer feedback)",
+      "year": 2026,
+      "claimed_difference": "NOT NAMED IN PDF. Only generically referenced as 'Other lines of work introduce dynamic graph traversal or planner-controller patterns, yet many still rely on globally visible states or centralized arbitration.' No specific system named, no specific delta articulated.",
+      "is_concrete": false,
+      "is_overlap_risk": true
+    }
+  ],
+  "reference_documents_consulted": {
+    "demand_md_loaded": true,
+    "edo_paper_pdf_loaded": false,
+    "fallback_source_used": "pdftotext extraction at artifacts/idea_reviews/_edo_paper_text_for_review.txt (54 KB, 513 lines, 9 pages of layout-preserving extraction)",
+    "layout_dependent_checks_blocked": [
+      "DR-1 page count (precise main-body page boundary): pdftotext suggests §4.6 bullets and §5 Conclusion cross to page 9 left/right columns, but exact column-level page break cannot be verified without rendered PDF",
+      "DR-4 template tampering: cannot confirm acl.sty modifications or font/margin tweaks from text only",
+      "D6 figure quality: Algorithm 1 referenced in §3.7 text but no Algorithm box appears in extracted text; Figure 1 (3-action policy schematic) and Figure 2 (backbone-sensitivity bar chart) absent from extracted text - cannot tell if missing from PDF entirely or only from text extraction",
+      "S8 writing_and_figures: caption quality and figure rendering quality cannot be assessed from text only"
+    ]
+  },
+  "rule_source_disagreements": [
+    "None observed. Reviewer prompt rubric is consistent with docs/demand.md as I have read it: 8-page main body (DR-1 ↔ demand.md §2 'Page Limit'); exact 'Limitations' title (DR-2 ↔ demand.md §2 'Mandatory Section'); ARR 7-dimension scoring (D1..D7 ↔ demand.md §4 'Review Criteria'); 'substantial / original / completed / concrete evaluation' four-part test (↔ demand.md §1 'Track Core Positioning')."
+  ],
+  "verdict": "weak_reject",
+  "oral_eligible": false,
+  "confidence": 3,
+  "top_strengths": [
+    "Honest framing in §3.7 + §3.8 + §3.9: explicitly separates aspirational EDO theory from delivered TCPB prototype, with 'Prototype Scope Box' enumerating what is/isn't implemented and Stage-2 Roadmap (R1/R2/R3) marking what's missing.",
+    "Limitations section is unusually self-critical: §5 explicitly says 'current codebase does not implement the complete EDO method' and 'recursive split value, local audit superiority, or personality-tag emergence from near-homogeneous initialization' are not established.",
+    "Backbone-sensitivity finding (Finding 1 + Finding 2 + dedicated Limitations paragraph) is itself a publishable observation: method ordering inverts between glm-4-flash and gpt-4.1-mini, which is empirically interesting even if it undermines the proposed method.",
+    "Reproducibility infrastructure: concrete artifact paths (artifacts/round2_gpt41mini/run_20260414_115739/, artifacts/seed/hotpotqa_validation_200.jsonl), runtime files named (workspace/idea04_core/runner.py), and validation scripts referenced — well above average for an anonymous submission."
+  ],
+  "top_weaknesses": [
+    "FATAL: Headline empirical claim is falsified by author's own Finding 4 (§4.3): 'peer_calibrated uses the same token budget as self_claim (both 6,414/sample) but achieves lower F1' — proposed TCPB method (F1=0.7381) is Pareto-dominated by simpler self_claim (F1=0.7641) on the canonical run.",
+    "FATAL: Single benchmark (HotpotQA only) + single seed + no paired significance test in Table 1 + no ablation table in paper body. Per reviewer §2.5.1 hard rules, experiments_solidity_score=0 caps overall at 4.5.",
+    "FATAL: All baselines in Table 1 are author-internal routing variants (fixed_peer_calibrated / fixed_static_roles / fixed_self_claim). ZERO external 2024-2026 multi-agent SOTA (MARS, SAGE, AutoGen, MetaGPT, ReSo, AMRO-S) appears as a baseline. S6=3 (self-comparison only).",
+    "FATAL: Reference list contains exactly 4 ACL template default citations (Ando&Zhang 2005, Andrew&Gao 2007, Gusfield 1997, Rasooli&Tetreault 2015) — none related to multi-agent systems. Bibliography was not compiled. This is a desk-reject-adjacent quality signal.",
+    "Related Work §2.1 / §2.2 / §2.3 names ZERO specific prior systems despite the field having well-known orchestrator (AutoGen, MetaGPT) and peer-critique (MARS, SAGE) baselines. Per §2.5.2 hard rule (cannot identify 3 named prior works), D3 capped at 5; my honest score is 4 because the paper does not articulate concrete deltas.",
+    "Algorithm 1 referenced in §3.7 ('this subsection only states the operative consequence') but the actual Algorithm 1 box is NOT rendered in the extracted PDF text. Figure 1 and Figure 2 (planned per project SCIENTIST_TODO) absent from PDF. The paper has Table 1 only — zero figures and zero pseudocode boxes."
+  ],
+  "core_method_problems": [
+    "EDO is admittedly NOT implemented (§3.9 R1 split, R2 audit, R3 persona vector all marked Stage-2). The paper's main contribution exists only as a roadmap.",
+    "TCPB prototype's actual update rule (raw_delta=+0.06/-0.10, momentum=0.5, clip [0.05, 0.95]) is in external 'edo_lite_executable_spec.md' §3.2, NOT in paper body. §3.7 only narratively says 'bounded asymmetric steps with damping'.",
+    "Fit(P_i, ϕ(z)) function in §3.3 utility equation never has its functional form defined. §3.7 maps it to 'scalar competence' for prototype but the §3.2 vector persona P_i ∈ [0,1]^7 has no projection function specified.",
+    "Utility coefficients λ_c, λ_r, λ_s, λ_a, λ_m, λ_d introduced in §3.3 equations with no values given anywhere in paper body. The actual scoring formula (0.55*self + 0.20*evidence + ...) only appears narratively in §4.6 reference, not as a typeset equation."
+  ],
+  "experimental_design_problems": [
+    "Single benchmark only (HotpotQA distractor validation 200). No MuSiQue, no compositional benchmark, no second domain. §4.4 lists MuSiQue as future work.",
+    "Single seed reported in Table 1 main result. Multi-seed with paired bootstrap explicitly admitted as 'pending' in §4.3.",
+    "No paired statistical test in main Table 1. The 2.6 F1-point gap between methods is described as 'non-trivial at n=200 but not yet confirmed with paired statistics'.",
+    "No ablation table IN the paper body. All ablations referenced via external files (round1_ablation_notcpb, round1_ablation_nogate, round1_v3_weight_sensitivity.md) which a reviewer cannot verify within the submission.",
+    "All baselines are author-internal routing variants. No external 2024-2026 multi-agent SOTA included in Table 1."
+  ],
+  "implementation_or_reproducibility_gaps": [
+    "No anonymous code repository link (would risk DR-5 anonymization, but acceptable to host on anonymized 4open.science).",
+    "No compute budget reported (no GPU/CPU hours, no token budget, no wall-clock time per method).",
+    "No hyperparameter table for utility weights (0.55, 0.20, etc.), accept_margin (0.02), force-forward threshold (0.90), TCPB step sizes (+0.06/-0.10), momentum (0.5).",
+    "Heavy reliance on external 'artifacts/edo_lite_executable_spec.md' for actual implementation specs (§1.2 phi(z) extraction rules, §2.2 utility instantiation, §3.2 persona update, §4.1 termination rules) - this file is referenced 4 times but is not part of the submission.",
+    "Seed file path 'artifacts/seed/hotpotqa_validation_200.jsonl' mentioned but no anonymous hosting; replication would require running from authors' repo."
+  ],
+  "overclaims_or_risky_claims": [
+    "Conclusion (§5): 'EDO moves the focus from fixed roles to socially induced personality tags, from linear routing to recursive task trees, and from terminal-only supervision to recursive acceptance-based organization.' But the paper's TCPB prototype implements NONE of these moves (admitted in §3.9 R1/R2/R3).",
+    "Abstract: 'Each delegation creates an upstream acceptance obligation, and these obligations compose into a recursive acceptance ladder; social reputation is therefore shaped not by self-report but by whether downstream work is accepted and ultimately contributes value to the global task.' The recursive acceptance ladder is admitted not implemented; the actual TCPB only does terminal outcome update at the final accepting node.",
+    "Abstract claim: 'Existing HotpotQA evidence already shows that decentralized outcome-based calibration improves delegation safety and stabilizes routing without a central controller.' But §4.3 Finding 4 says TCPB peer-calibration overhead does NOT yield F1 gains over self_claim on capable backbone. 'Improves delegation safety' relies on PAR=0.0, which §4.3 Finding 3 attributes to the decomposer force-forward gate (not TCPB itself); the gate is a fixed safety prior, not a learned mechanism.",
+    "§3.1 calls the system 'decentralized' and 'no global expert table', but Table 1 results use only chain/star topologies with 4 hand-coded role-prior nodes (decomposer / evidence_seeker / verifier / synthesizer), which is a centralized role assignment in disguise."
+  ],
+  "ambiguous_algorithm_points": [
+    "§3.7 references 'Algorithm 1 as the full executable loop' but no Algorithm 1 box appears in the extracted PDF body — either missing from compilation or genuinely absent.",
+    "§3.6 persona-tag update equation has parameters µ, η_loc, η_trm, η_rew with no values given for either full EDO or the TCPB prototype scope.",
+    "§3.5 audit decision protocol: enumerated as {accept, reject_and_redo_self, reject_and_reroute, reject_and_resplit} but the decision rule that selects among these is not defined.",
+    "§3.9 R3 'Bit+1(j) = clip((1−ν)Bit(j) + ν · evidence_extract(ℓu→v,z))' with ν=0.2 — the function evidence_extract(·) → R^7 is undefined.",
+    "§3.3 utility equations introduce SplitGain, MergeCost, DepthPenalty, AuditLoad, SendCost, AuditCost, RejectRisk - all named but none has a functional form."
+  ],
+  "missing_definitions_or_state_variables": [
+    "Fit(·, ·) function in §3.3 — never defined despite being central to all three utility equations.",
+    "λ_c, λ_r, λ_s, λ_a, λ_m, λ_d — utility coefficients introduced in §3.3 equations, no values given.",
+    "η_loc, η_trm, η_rew, µ — persona update coefficients in §3.6, no values given.",
+    "candidate_answer_quality and audit_score in §3.9 R2 — referenced as 'rule-based on candidate-answer length, refusal patterns, and an audit_score proxy' but no formula given (deferred to external file).",
+    "evidence_extract(·) in §3.9 R3 — required to map a 6-tuple audit event to a 7-dim persona vector, never defined."
+  ],
+  "missing_or_weak_experiments": [
+    "No second benchmark (MuSiQue, ScienceQA, MMLU, GSM8K-Multihop, etc.). Single-domain evidence is insufficient for an EMNLP long paper.",
+    "No multi-seed runs. Paper admits 'not yet confirmed with paired statistics' for the headline 2.6 F1-point gap.",
+    "No paired bootstrap / sign test / permutation test in Table 1.",
+    "No ablation table IN the paper. TCPB-on/off, gate-on/off, weight-sensitivity all referenced as external artifacts but not embedded.",
+    "No comparison against external multi-agent baselines from 2024-2026 (MARS, SAGE, AMRO-S, AutoGen, MetaGPT). All baselines are own-variants — Pareto frontier is meaningless inside a single design family.",
+    "No demonstration of any EDO-specific mechanism (split / recursive audit / persona vector). The empirical section validates only the TCPB prototype, not EDO."
+  ],
+  "statistical_significance_concerns": [
+    "Table 1 reports point estimates only; no 95% CIs or standard errors.",
+    "§4.3 explicitly admits the headline 2.6 F1-point gap is 'not yet confirmed with paired statistics'.",
+    "No effect size (Cohen's d, relative improvement %) reported anywhere in §4."
+  ],
+  "baseline_completeness_concerns": [
+    "ZERO external 2024-2026 multi-agent system baselines (MARS, SAGE, AMRO-S, AutoGen, MetaGPT, ReSo).",
+    "All baselines (peer_calibrated, self_claim, self_calibrated, static_roles) are author-internal routing variants — this is essentially self-comparison.",
+    "'Centralized baselines' mentioned in §4.2 ('Existing runs compare ... and centralized baselines') but no central_orchestrator results appear in Table 1; the reader cannot verify the centralized vs decentralized comparison from paper alone."
+  ],
+  "limitations_section_assessment": {
+    "section_present": true,
+    "section_title_exact": true,
+    "contains_no_new_content": false,
+    "honesty_score_1_to_5": 4,
+    "specific_failure_modes_listed": true,
+    "issues": [
+      "Limitations §4 paragraph contains a detailed engineering description of the runtime integrity guard ('ModelDriftError in workspace/idea04_core/llm_client.py') — this is implementation work not present in the main body and arguably constitutes new content (DR-3 risk).",
+      "No demographic / societal risks discussed (only methodological limits). EMNLP demand.md §6 'High-scoring practice' explicitly expects 'potential negative societal impacts' coverage.",
+      "Responsible NLP Checklist not visible in PDF; reviewer cannot verify completeness.",
+      "Limitations correctly admits EDO is not implemented but does not also flag that TCPB itself is empirically dominated by self_claim (Finding 4) — that is a limitation of the delivered system, not just of the future EDO method."
+    ]
+  },
+  "responsible_nlp_checklist_assessment": {
+    "appears_complete": false,
+    "issues": [
+      "Checklist not visible in PDF body or appendix.",
+      "No artifact license statement for HotpotQA usage or for the runtime code.",
+      "AI assistance disclosure not visible; given the project log evidence of LLM-assisted writing, this should be explicit per ARR ethics policy."
+    ]
+  },
+  "implementation_risks": [
+    "External 'edo_lite_executable_spec.md' is the canonical implementation spec but is not part of submission — independent replication requires the spec.",
+    "Utility weights, accept margin, gate threshold, momentum all undisclosed in paper.",
+    "No compute / token budget for replication planning.",
+    "Provider 'kuaipao.ai' is a non-standard endpoint; replication on standard OpenAI / Anthropic API may yield different gpt-4.1-mini behavior (relevant given the documented ModelDrift).",
+    "fullval (n=7405) for two of three methods is admitted invalid; only one method has full validation. Reproducing ranking requires waiting for unspecified rerun."
+  ],
+  "what_to_fix_for_8_plus": [
+    "Add a second benchmark (MuSiQue strongly preferred since paper §4.4 already plans it). Rerun Table 1 on both benchmarks.",
+    "Run all main results with >=3 seeds and report 95% bootstrap CIs + paired sign test in Table 1. Replace 'pending paired statistics' with actual numbers.",
+    "Embed the actual ablation table (TCPB-on/off, gate-on/off, weight perturbation +/-2x) IN the paper body, not as external file references.",
+    "Replace at least 2 of the 4 author-internal baselines with external 2024-2026 multi-agent systems (e.g., MARS for peer-critique comparison, AutoGen for orchestrator comparison).",
+    "Compile the bibliography. Cite at least 15-20 named prior works in §2 with concrete deltas. The current 4-template-default reference list is unacceptable.",
+    "Render Algorithm 1 in §3.7 as an actual algorithm box with the (+0.06/-0.10, momentum=0.5) update rule. Render Figure 1 (3-action policy schematic) and Figure 2 (backbone-sensitivity bar chart) in PDF."
+  ],
+  "what_to_fix_for_oral": [
+    "Implement at least one of (R1) split / (R2) recursive audit / (R3) persona vector and demonstrate its empirical value (otherwise EDO remains aspirational and the paper is at best 'TCPB negative result').",
+    "Show non-trivial improvement over an external 2024-2026 SOTA on the new benchmark — the proposed method must beat something other than its own variant (currently it loses to self_claim).",
+    "Add a quantitative error analysis with named failure modes (e.g., 'X% of errors are extraction failures at evidence_seeker; Y% are aggregation failures at synthesizer'). Currently §4.3 Finding 4's interpretation is anecdotal.",
+    "Add a sensitivity sweep IN the paper body across at least 3 critical hyperparameters (accept_margin, gate threshold, TCPB momentum) with a figure or table.",
+    "Add a community-impact case study showing how EDO/TCPB changes practitioner workflow vs. orchestrator-based MAS — currently impact is asserted, not demonstrated.",
+    "Address the page-limit risk (§4.6 + §5 currently bleed onto page 9 per pdftotext analysis). Trim §4.6 bullets or fold §3.8 into §3.7 to free 0.5 page."
+  ],
+  "recommended_next_actions": [
+    "URGENT: Pivot the paper's positioning. Current empirical evidence does NOT support the 'EDO improves multi-agent routing' narrative because Finding 4 admits TCPB loses to self_claim. Either (a) reframe as 'Stage-1 backbone-sensitivity negative result + Stage-2 roadmap' and accept oral-quality_score <= 5, or (b) implement Stage-2 mechanisms before resubmission.",
+    "URGENT: Compile a real bibliography. The 4 ACL-template-default references are a desk-reject-adjacent signal. Cite at least the systems already named in the project's research-report.md (MARS, SAGE, AMRO-S, MetaGPT, AutoGen, Reflexion, ToT) and add concrete deltas in §2.",
+    "Add MuSiQue as second benchmark BEFORE any resubmission. Paper §4.4 already names it; this is the lowest-cost path to EXP-1 pass.",
+    "Move ablation tables and weight-sensitivity table from external artifacts INTO the paper body. This is the lowest-cost path to S7 >= 6 and EXP-5 pass."
+  ],
+  "is_8_plus_ready": false,
+  "estimated_score_after_fixes": 6.0,
+  "_parse_mode": "full"
+}

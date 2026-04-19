@@ -1,0 +1,32 @@
+```json
+{
+  "reviewer_id": "R_sys_04",
+  "reviewer_profile": "Systems-and-methods reviewer focused on routing logic, state definitions, robustness, and reproducibility risk.",
+  "summary": "This document proposes Position-Adaptive Thought Delegation (PATD), a decentralized multi-agent framework where agents on a fixed topology perform accept-or-forward routing guided by competence vectors updated via Terminal-Consensus Peer Backpropagation (TCPB). The problem framing—delegation miscalibration—is sharp and well-motivated. The document is unusually thorough in scope, covering state definitions, algorithm sketches, experiment design, ablations, and falsification conditions. However, the core routing logic (scoring functions) and the competence update mechanism are not operationalized: key quantities like competence_match, evidence_sufficiency, uncertainty, and loop_risk are named but never defined computationally. The multi-dimensional competence vector is defined but the update rule only touches a scalar c_accept, leaving the per-dimension update completely unspecified. Neighbor competence access—a fundamental requirement for forward scoring—is undefined. These gaps mean the method cannot be implemented as written, which is a fatal problem for a method-design document.",
+  "scores": {
+    "novelty": 6,
+    "technical_clarity": 7,
+    "technical_soundness": 5,
+    "executability": 5,
+    "empirical_plan": 7,
+    "falsifiability": 7,
+    "overall": 6
+  },
+  "verdict": "borderline",
+  "confidence": 4,
+  "top_strengths": [
+    "Delegation miscalibration is a real, clearly articulated failure mode that is under-studied compared to hallucination or reasoning errors. The problem framing alone carries significant research value.",
+    "The three-way distinction between self-claim, self-reflection, and terminal-consensus feedback is crisp and provides a clean experimental axis. Choosing terminal-consensus as the primary signal is methodologically defensible.",
+    "The document is exceptionally well-structured for a design document: it separates MVP from blueprint, specifies what NOT to do, defines falsification conditions, and plans for narrative retreat if F1 gains are marginal.",
+    "Structured handoff packet design with explicit error-localization goals (distinguishing routing failure from generation failure from information loss) is a genuine methodological contribution if validated.",
+    "The falsification conditions in Section 18.2 are unusually honest and specific for a method proposal."
+  ],
+  "top_weaknesses": [
+    "The accept/forward scoring functions (A_i, F_i->j) are the algorithmic heart of the method, but they are only named-placeholder equations. competence_match, evidence_sufficiency, uncertainty, loop_risk, neighbor_competence, task_type_match, structural_prior, congestion_or_revisit_penalty are all undefined. No implementer can code these from the document as written.",
+    "The competence vector is defined as multi-dimensional [c_self, c_type, c_len, c_bridge, c_verify] but the update rule only operates on a scalar c_accept. There is no specified mechanism for how terminal feedback updates per-dimension competence, making the vector definition decorative rather than functional.",
+    "Neighbor competence access is a fundamental architectural gap. In a decentralized system, node i needs neighbor j's competence to compute F_i->j, but no protocol for competence sharing, broadcasting, or estimation is defined. This is not a minor detail—it determines whether the system is truly decentralized or requires a hidden central state.",
+    "Forward-decision credit assignment is deferred entirely. If node A forwards to B who accepts and fails, A's routing decision receives zero update signal. Bad forwarding is as damaging as bad accepting, but the method is silent on correcting it.",
+    "The terminal-consensus signal is extremely sparse (one binary signal per task path, updating one node). No analysis of sample complexity, convergence rate, or whether the signal-to-noise ratio is sufficient for the claimed specialization emergence."
+  ],
+  "ambiguous_algorithm_points": [
+    "How is competence_match computed from C_i and packet features φ(P_t)? This is the primary term in

@@ -1,0 +1,66 @@
+1.  **Analyze the Request:**
+    *   Goal: Repair malformed review output into compact valid JSON only.
+    *   Constraint 1: No commentary.
+    *   Constraint 2: Use the exact top-level schema already requested.
+    *   Constraint 3: If fields are missing, infer conservatively and keep lists short.
+    *   Input: A truncated JSON string.
+
+2.  **Analyze the Input:**
+    ```json
+    {
+      "reviewer_id": "R_sys_v1",
+      "reviewer_profile": "Systems-and-methods reviewer focused on routing logic, state definitions, robustness, and reproducibility risk",
+      "summary": "PATD proposes fixed-topology decentralized delegation via terminal-consensus competence calibration. Document is unusually detailed in state/packet/routing definitions but suffers from hand-tuned scoring constants, hard-coded gates that contradict emergent-specialization claims, and a credit assignment gap for intermediate forwarders.",
+      "scores": {
+        "novelty": 6
+    ```
+    *   The JSON is truncated at `"novelty": 6`. I need to complete the `scores` object and any other standard fields typically found in this schema (e.g., `strengths`, `weaknesses`, `questions`, `recommendation`), keeping lists short and inferring conservatively based on the summary.
+
+3.  **Determine the Schema:**
+    Based on standard ML/systems paper review schemas and the provided partial JSON, the schema likely includes:
+    *   `reviewer_id` (provided)
+    *   `reviewer_profile` (provided)
+    *   `summary` (provided)
+    *   `scores` (needs completion: `novelty`, `soundness`, `clarity`, `reproducibility`, `recommendation` or similar. Let's use standard ones like `novelty`, `soundness`, `clarity`, `significance`, `reproducibility`).
+    *   `strengths` (list of strings)
+    *   `weaknesses` (list of strings)
+    *   `questions` (list of strings)
+
+4.  **Infer Missing Content:**
+    *   *Summary context:* PATD, fixed-topology decentralized delegation, terminal-consensus competence calibration. Detailed state/packet/routing. Hand-tuned scoring constants, hard-coded gates contradict emergent-specialization, credit assignment gap for intermediate forwarders.
+    *   *Scores:*
+        *   `novelty`: 6 (given)
+        *   `soundness`: 4 (hard-coded gates, credit assignment gap)
+        *   `clarity`: 7 (unusually detailed definitions)
+        *   `significance`: 5
+        *   `reproducibility`: 3 (hand-tuned scoring constants)
+    *   *Strengths:*
+        *   Detailed state/packet/routing definitions.
+        *   Clear decentralized delegation mechanism.
+    *   *Weaknesses:*
+        *   Hand-tuned scoring constants hurt reproducibility.
+        *   Hard-coded gates contradict emergent specialization.
+        *   Credit assignment gap for intermediate forwarders.
+    *   *Questions:*
+        *   How sensitive is the system to the hand-tuned scoring constants?
+        *   How are intermediate forwarders credited?
+
+5.  **Construct the JSON:**
+    ```json
+    {
+      "reviewer_id": "R_sys_v1",
+      "reviewer_profile": "Systems-and-methods reviewer focused on routing logic, state definitions, robustness, and reproducibility risk",
+      "summary": "PATD proposes fixed-topology decentralized delegation via terminal-consensus competence calibration. Document is unusually detailed in state/packet/routing definitions but suffers from hand-tuned scoring constants, hard-coded gates that contradict emergent-specialization claims, and a credit assignment gap for intermediate forwarders.",
+      "scores": {
+        "novelty": 6,
+        "soundness": 4,
+        "clarity": 7,
+        "significance": 5,
+        "reproducibility": 3
+      },
+      "strengths": [
+        "Detailed state, packet, and routing definitions.",
+        "Clear decentralized delegation mechanism."
+      ],
+      "weaknesses": [
+        "Hand-tuned

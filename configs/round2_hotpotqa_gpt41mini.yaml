@@ -1,0 +1,15 @@
+benchmark: hotpotqa
+split: validation
+sample_size: 200
+topology: chain
+max_handoff: 4
+main_model: gpt-4.1-mini
+temperature: 0.0
+token_budget_per_sample: 2000
+shared_prompt_template: prompts/main_agent_prompt.txt
+methods:
+  - fixed_peer_calibrated
+  - fixed_static_roles
+  - fixed_self_claim
+  - central_orchestrator
+  - single_agent

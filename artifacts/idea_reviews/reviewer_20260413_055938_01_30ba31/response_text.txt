@@ -1,0 +1,85 @@
+Let me carefully analyze this method-design document as a skeptical EMNLP reviewer focused on algorithmic precision, hidden assumptions, and operationalization.
+
+The document proposes "Position-Adaptive Thought Delegation" (PATD) with a core mechanism called "Terminal-Consensus Peer Backpropagation" (TCPB) for decentralized multi-agent delegation on fixed topologies.
+
+Let me evaluate each dimension:
+
+**Novelty**: The idea of using terminal outcome feedback to calibrate delegation in fixed-topology multi-agent systems is reasonably novel. The distinction from central orchestration and from per-hop peer critique is well-articulated. However, the core mechanism (update competence based on terminal reward) is quite simple - essentially a bandit-style update. The structured packet is somewhat novel but not groundbreaking. I'd give this around 6-7.
+
+**Technical Clarity**: The document is very detailed and explicit about definitions, parameters, and algorithms. The pseudocode is clear. The distinction between MVP and blueprint is helpful. However, there are some ambiguities:
+- How exactly is `infer_role(q)` computed? This is used in the routing but not defined.
+- How is `is_multihop(q)` determined? Is this an LLM call? A heuristic?
+- The `role_match(j, q)` function - how does the system know the preferred role for a question?
+- The momentum and EMA update for competence is mentioned but the exact formula isn't given.
+- `published_competence` in the packet - when exactly is it updated/published?
+
+**Technical Soundness**: Several concerns:
+1. The scoring function has hand-tuned weights (0.55, 0.20, 0.10, etc.) and thresholds (0.62, 0.55, 0.50). These seem arbitrary and not justified.
+2. The safety gates (decomposer multi-hop gate, decomposer bypass threshold) are hard-coded priors that do significant heavy lifting. The claim of "self-organization" is undermined by these.
+3. The competence update only updates the terminal node - this is a very sparse signal. For a chain of 3-4 agents, the intermediate nodes get no direct feedback.
+4. The `evidence_sufficiency = min(1, |evidence_so_far| / 12)` - why 12? This seems arbitrary.
+5. The claim that fixed topology is an inductive bias rather than a limitation needs stronger justification.
+6. The "published neighbor self-belief" mechanism - nodes only see neighbors' self-reported competence, which could be miscalibrated. The system doesn't have a way to verify these beliefs independently.
+
+**Executability**: The document is quite detailed and could likely be implemented from the specifications. The pseudocode helps. However, several implementation details are missing:
+- How are the LLM prompts constructed for each agent role?
+- How is the initial competence vector set?
+- What LLM backbone is used?
+- How many samples are needed for convergence?
+- The exact EMA/momentum formula for competence update.
+
+**Empirical Plan**: The experimental design is comprehensive with clear research questions, baselines, metrics, and ablations. However:
+- Only HotpotQA as primary benchmark is limiting.
+- The distinction between "routing failure" and "generation failure" is acknowledged but the ablation for this (Section 17.6) is vague.
+- No statistical significance testing mentioned.
+- No mention of how many runs or samples.
+- The "generation bottleneck ablation" is underspecified.
+
+**Falsifiability**: The document is commendably honest about falsification conditions (Section 18.2). The claims are relatively well-scoped. However:
+- The primary claim about "delegation miscalibration" being the real problem vs. generation quality is hard to falsify cleanly.
+- If F1 doesn't improve, the fallback is to claim PAR improvement - this could be seen as moving the goalposts.
+
+**Key Ambiguities**:
+1. `infer_role(q)` - undefined
+2. `is_multihop(q)` - undefined
+3. Exact EMA/momentum formula for competence update
+4. How `published_competence` gets into the packet (when is it written?)
+5. The relationship between the hard-coded safety gates and the claimed "self-organization"
+6. Whether the scoring weights are tuned on the dev set (data leakage concern)
+
+**Core Method Problems**:
+1. The scoring function is heavily hand-crafted with no learning mechanism for the weights themselves
+2. Only terminal node gets updated - very sparse credit assignment
+3. The safety gates do heavy lifting, undermining the self-organization narrative
+4. The method assumes the question type can be reliably inferred (for role matching and multihop detection)
+
+**Experiment Design Problems**:
+1. Single benchmark (HotpotQA) for main results
+2. No statistical significance testing
+3. Generation vs. routing failure ablation is underspecified
+4. No mention of LLM backbone or cost
+
+**Overclaims**:
+1. "Self-organization" when there are hard-coded safety gates
+2. The framing suggests the method learns routing, but much of the routing logic is hand-coded
+3. The document claims the method addresses "delegation hallucination" but the evidence for this being a distinct phenomenon from general LLM unreliability is not established
+
+Let me score:
+
+- Novelty: 6 (interesting framing but core mechanism is simple bandit-style update)
+- Technical Clarity: 7 (very detailed but some key functions undefined)
+- Technical Soundness: 5 (hand-crafted weights, sparse credit, safety gates undermine claims)
+- Executability: 7 (mostly implementable but missing some details)
+- Empirical Plan: 6 (comprehensive on paper but single benchmark, missing significance testing)
+- Falsifiability: 6 (good falsification conditions but hard to cleanly separate routing from generation failure)
+- Overall: 6
+
+The verdict should be "weak_reject" or "borderline" - I'll go with "borderline" since the idea is interesting but under-specified in critical ways.
+
+Actually, let me reconsider. The document is very thorough and honest about limitations. The core idea is interesting. But the technical soundness issues are significant - the hand-crafted scoring function with arbitrary weights, the sparse credit assignment, and the safety gates doing heavy lifting are real problems. I think this is a 6 overall, which maps to "interesting but under-specified or not yet convincing."
+
+Verdict: weak_reject (6/10 is below the threshold for acceptance)
+
+Wait, let me re-read the scoring guidance:
+- 6: interesting but under-specified or not yet convincing
+- 5 or below: major conceptual, algorithmic,

@@ -1,0 +1,77 @@
+---
+description: Hybrid local↔remote workflow (SSH/SCP) — APPLIES ONLY when GPU/heavy-compute experiments are launched on the remote server; dormant when all compute is via API providers
+globs:
+  - scripts/**/*.sh
+  - scripts/**/*.ps1
+alwaysApply: false
+---
+
+# SSH / Remote Server Rules
+
+> **STATUS（2026-04-19）**：本规则**当前为 dormant**。本项目所有 in-flight 实验都通过 API provider 跑（kuaipao.ai for `gpt-4.1-mini` / Zhipu for `glm-4-flash` / NVIDIA NIM for backup），**未实际触发任何 SSH / SCP 操作**。本文件规范的是"如果未来切到本地 GPU 实验"的协作约定，作为冷储备保留。
+>
+> **何时激活**：仅当 USER 在 `USER_TODO.md § A` 显式批准"切换到 GPU/local-compute 实验"（如 Stage-2 split / audit / persona vector 实现需要训 GNN router 等场景）后，本规则才进入 active 状态。在此之前，**任何角色不得擅自调用本规则中的 SSH/SCP 命令**（属 `four-role-todo-workflow.md §4` 红线"是否换 backbone provider"）。
+>
+> **未验证项**：以下配置项**从未在本项目实际验证过**，激活前必须由 USER 实跑 SSH 探测确认：
+> - SSH key `school` 是否存在于本机
+> - host `dengkw@10.103.16.12` 是否可达 / 凭据是否仍有效
+> - 远端根目录 `/media/data3/dengkw` 是否仍存在 / 是否可写
+> - 验证命令模板：`ssh -i school -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=10 dengkw@10.103.16.12 "echo OK; pwd; df -h /media/data3"`
+
+---
+
+[REMOTE ENVIRONMENT CONFIGURATION]
+
+Target Host: dengkw@10.103.16.12
+
+Remote Root: /media/data3/dengkw
+- if local workspace name is a, then remote workspace is /media/data3/dengkw/a
+
+Identity Key (Local): school (Use -i school for SSH/SCP commands)
+
+[ROLE & OBJECTIVE]
+You operate in a hybrid environment. While you edit files on the local mount (SSHFS), all compute-intensive tasks and model executions must be offloaded to the remote server. You must act autonomously to bridge the local and remote environments without manual user intervention.
+
+[RULE 1: SELECTIVE ASSET SYNCHRONIZATION]
+
+Model-Centric Sync: Only push files essential for model architecture, training logic, and environment configuration (e.g., .py, .yaml, .json, requirements.txt).
+
+Traffic Optimization: Never push datasets, heavy logs, or model checkpoints unless explicitly requested. Always assume the data already exists in the appropriate data directories within the Remote Project Root.
+
+[RULE 2: EXECUTION ROUTING & PATH MAPPING]
+
+Local Actions: Code editing, file structure analysis, and local git operations.
+
+Remote Actions: ALL model training, inference tests, and hardware-dependent scripts MUST run on the remote server.
+
+Path Mapping Logic: You must treat /media/data3/dengkw as your root directory (/ in your mental model of the project). If you are editing a file locally at [Local-SSHFS-Path]/src/model.py, the corresponding remote execution path is /media/data3/dengkw/src/model.py. Use relative paths whenever possible to avoid errors.
+
+[RULE 3: NON-INTERACTIVE SSH PROTOCOL]
+
+Single-Shot Execution: Every interaction with the remote server must use a non-interactive, batch-mode command. Do not open interactive shells.
+
+Standard Command Template: Use the following format for all remote operations. You must ALWAYS cd into the Remote Project Root first:
+ssh -i school -o BatchMode=yes -o StrictHostKeyChecking=no dengkw@10.103.16.12 "cd /media/data3/dengkw && [command]"
+
+File Transfer: Use scp for reading/writing remote files:
+scp -i school [local_path] dengkw@10.103.16.12:/media/data3/dengkw/[relative_remote_path]
+
+Fail-Fast Policy: If an SSH command prompts for a password or hangs, terminate the process immediately and report the connection or permission error. Do not attempt to "guess" passwords.
+
+[RULE 4: BACKGROUND TRAINING & LOGGING]
+
+For long-running training tasks, execute them in the background to avoid blocking the local process:
+ssh -i school ... "cd /media/data3/dengkw && nohup python train.py > train.log 2>&1 &"
+
+To check status, fetch the last few lines of the remote log:
+ssh -i school ... "cd /media/data3/dengkw && tail -n 20 train.log"
+
+[RULE 5: VERIFICATION PATTERN]
+
+After ANY SSH/SCP command, the engineer must verify success by:
+
+1. **Check exit code**: `$?` (Linux) or `$LASTEXITCODE` (PowerShell) MUST be `0`. Non-zero → fail-fast (per Rule 3).
+2. **Echo a sentinel**: append `&& echo __SSH_OK__` to the remote command and grep stdout for `__SSH_OK__` to confirm the command actually ran (vs. silent SSH-level rejection).
+3. **For file transfer (scp)**: after upload, immediately verify with `ssh ... "ls -la /media/data3/dengkw/<relative_path>"` and check size matches local file.
+4. **For background launches (nohup)**: after launch, sleep 5s then `tail -n 5 train.log` to confirm the process actually started writing log (not silently dead).
+5. **Log all SSH/SCP invocations** to `docs/coordination/implementation_log.md` with: full command, exit code, sentinel hit/miss, and stdout tail. This makes the dormant→active transition reproducible and auditable.

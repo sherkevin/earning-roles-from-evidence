@@ -1,0 +1,64 @@
+1.  **Analyze the Request:**
+    *   Goal: Repair malformed review output into compact valid JSON only.
+    *   Constraint 1: Do not add commentary.
+    *   Constraint 2: Use the exact top-level schema already requested.
+    *   Constraint 3: If fields are missing, infer conservatively and keep lists short.
+    *   Input: A partially complete JSON object.
+
+2.  **Analyze the Input:**
+    ```json
+    {
+      "reviewer_id": "R3",
+      "reviewer_profile": "Skeptical EMNLP reviewer focused on algorithmic precision, hidden assumptions, and operationalization",
+      "summary": "Proposes PATD: decentralized multi-agent delegation on fixed topologies via accept-or-forward routing, structured handoff packets, and terminal-consensus peer backpropagation (TCPB). Core claim: fixed structure + outcome-driven competence calibration yields stable delegation without central orchestrator. Document is unusually explicit about parameters and honest about limitations, but key algorithmic primitives remain undefined and hard-coded safety priors undermine self-organization claims.",
+      "scores": {
+        "novelty": 6,
+        "technical_clarity": 6,
+        "technical_soundness": 5,
+        "executability": 5,
+        "empirical_plan": 6,
+        "falsifiability": 6,
+        "overall": 6
+      },
+      "verdict": "weak_reject",
+      "confidence": 4,
+      "top_strengths": [
+        "Exceptional parameter-level specificity: scoring functions, thresholds, and update rules are numerically pinned down",
+        "
+    ```
+
+3.  **Identify the Malformation/Missing Parts:**
+    *   The JSON is truncated in the middle of the `top_strengths` array.
+    *   Missing fields based on typical review schemas (and the prompt's implication to infer if missing): `top_weaknesses`, `questions_for_authors`.
+    *   Need to complete the current string in `top_strengths` and add a second strength.
+    *   Need to add `top_weaknesses` and `questions_for_authors` conservatively based on the summary and profile.
+
+4.  **Infer Missing Content:**
+    *   *Profile*: Skeptical EMNLP reviewer focused on algorithmic precision, hidden assumptions, and operationalization.
+    *   *Summary*: Mentions "key algorithmic primitives remain undefined" and "hard-coded safety priors undermine self-organization claims".
+    *   *top_strengths* (completing):
+        1. "Exceptional parameter-level specificity: scoring functions, thresholds, and update rules are numerically pinned down"
+        2. "Honest and explicit discussion of limitations and failure modes"
+    *   *top_weaknesses* (inferring from summary):
+        1. "Key algorithmic primitives are undefined, hurting operationalization"
+        2. "Hard-coded safety priors contradict claims of self-organization"
+    *   *questions_for_authors* (inferring from summary/profile):
+        1. "How are the undefined algorithmic primitives intended to be operationalized?"
+        2. "Can the system truly self-organize if safety priors are hard-coded?"
+
+5.  **Construct the JSON:**
+    ```json
+    {
+      "reviewer_id": "R3",
+      "reviewer_profile": "Skeptical EMNLP reviewer focused on algorithmic precision, hidden assumptions, and operationalization",
+      "summary": "Proposes PATD: decentralized multi-agent delegation on fixed topologies via accept-or-forward routing, structured handoff packets, and terminal-consensus peer backpropagation (TCPB). Core claim: fixed structure + outcome-driven competence calibration yields stable delegation without central orchestrator. Document is unusually explicit about parameters and honest about limitations, but key algorithmic primitives remain undefined and hard-coded safety priors undermine self-organization claims.",
+      "scores": {
+        "novelty": 6,
+        "technical_clarity": 6,
+        "technical_soundness": 5,
+        "executability": 5,
+        "empirical_plan": 6,
+        "falsifiability": 6,
+        "overall": 6
+      },
+      "verdict": "weak

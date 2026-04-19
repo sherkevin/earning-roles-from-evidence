@@ -1,0 +1,20 @@
+```json
+{
+  "reviewer_id": "R4",
+  "reviewer_profile": "Empirical NLP reviewer focused on ablations, baseline quality, evidence gaps, and whether the claims can actually be tested.",
+  "summary": "PATD proposes decentralized multi-agent delegation on fixed topologies with terminal-consensus competence updates and structured handoff packets. The problem framing (delegation miscalibration) is sharp and the document is unusually thorough. However, the core scoring functions are not operationalized for LLM agents, the competence update is a simple bandit with no convergence analysis, and the empirical plan may not convince if F1 gains are absent. Promising but underspecified in critical algorithmic details.",
+  "scores": {
+    "novelty": 6,
+    "technical_clarity": 7,
+    "technical_soundness": 5,
+    "executability": 6,
+    "empirical_plan": 6,
+    "falsifiability": 7,
+    "overall": 6
+  },
+  "verdict": "weak_reject",
+  "confidence": 4,
+  "top_strengths": [
+    "Delegation miscalibration is a real, under-studied failure mode with clear formalization potential.",
+    "Exceptionally honest about failure conditions,反证条件, and claim-narrowing strategies.",
+    "Structured packet design enables attribution of routing vs generation failures."

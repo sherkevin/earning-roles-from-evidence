@@ -1,0 +1,8 @@
+# Hugging Face Hub（国内网络）
+# datasets / huggingface_hub 会在脚本里把 hf_endpoint 写入环境变量 HF_ENDPOINT。
+# 常用国内镜像：https://hf-mirror.com
+# 脚本内优先级：命令行 --hf-endpoint > 已存在的环境变量 HF_ENDPOINT > 合并配置中的 hf_endpoint
+# （合并顺序：先本文件，再实验 yaml，后者可覆盖镜像地址）
+hf_endpoint: https://hf-mirror.com
+# 本地缓存损坏或缺文件时，在实验 yaml 里设 true 或命令行加 --hf-force-redownload
+hf_force_redownload: false

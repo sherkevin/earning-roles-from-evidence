@@ -1,0 +1,40 @@
+# configs/round2_musique.yaml
+dataset:
+  name: "MuSiQue"
+  path: "data/musique/validation.jsonl"
+  num_samples: 200
+
+experiment:
+  round: 2
+  description: "Transfer evaluation on MuSiQue to prove Peer-Calib robustness in dynamic, highly unstructured multi-hop reasoning tasks."
+
+methods:
+  - name: "fixed_static_roles"
+    type: "static"
+    topology: "chain"
+    agent_roles: ["decomposer", "evidence_seeker", "verifier", "synthesizer"]
+
+  - name: "fixed_peer_calibrated"
+    type: "dynamic_peer_calibrated"
+    topology: "star"
+    agent_roles: ["decomposer", "evidence_seeker", "verifier", "synthesizer"]
+    competence_momentum: 0.8
+    peer_correction_factor: 0.1
+
+  - name: "central_orchestrator_with_reflection"
+    type: "centralized"
+    enable_reflection: true
+    max_routing_turns: 6
+
+logging:
+  output_dir: "artifacts/round2"
+  save_packets: true
+  save_competence_snapshots: true
+  save_raw_model_inputs: true
+
+limits:
+  max_handoffs_per_question: 10
+  ttl_per_packet: 8
+
+telemetry:
+  track_token_cost: true

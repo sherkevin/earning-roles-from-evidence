@@ -1,0 +1,19 @@
+benchmark: hotpotqa
+split: validation
+sample_size: 200
+topology: chain
+max_handoff: 4
+main_model: glm-4-flash
+temperature: 0.0
+token_budget_per_sample: 2000
+shared_prompt_template: prompts/main_agent_prompt.txt
+methods:
+  - fixed_peer_calibrated
+method_knobs:
+  non_synth_evidence_cap: 14
+  synth_evidence_cap: 60
+  forward_evidence_cap: 8
+  peer_update_enabled: true
+  decomposer_force_forward_enabled: true
+  decomposer_force_forward_threshold: 0.9
+  accept_margin: 0.04
