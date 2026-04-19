@@ -30,7 +30,7 @@
 | `U-003-decide` | S-001（双稿合并）、S-013（.md → .tex 迁移） | ✅ 隐式解决（edo_paper.tex 已单稿） |
 | `U-004-decide` | S-005、S-111（model drift 段落归属） | ⏳ 待用户 |
 | `U-005-cleanup-decide` | none（仅清洁，不影响论文） | ⏳ 待用户 |
-| `U-006-rerun-decide` | S-009（用真 fullval 数字替换 §4.3 pending 措辞） | ⏳ 待用户 + provider 恢复 + `U-EXEC-001` 充值 |
+| `U-006-rerun-decide` | S-009（用真 fullval 数字替换 §4.3 pending 措辞） | ✅ **provider 阻塞解除**（2026-04-20，U-EXEC-001 替代解决，已切到 newapi）；S-009 仅余等 engineer E-005 跑数 |
 | `U-007-cleanup-autogen` | none（仅清洁，依赖 U-010 先 init） | ⏳ 待用户 |
 | `U-008-decide` | none（暂缓 Phase 2） | ⏳ 待用户 |
 | `U-009-decide` | S-013（.md → .tex 迁移）、build 脚本封装 | ✅ 隐式解决（article/ 已采用） |
@@ -39,6 +39,7 @@
 | `U-012-decide` | E-001..E-005 工程师 Stage-2 工单 + S-115/S-116/S-117/S-118/S-119 写作 | ✅ **R1+R2+R3 全做已批准** (2026-04-20)：sprint 启动 `[stage2_sprint_kickoff_20260420]` |
 | `U-013-decide` | E-004/E-005 MuSiQue 数据 prep + 双 benchmark fullval | ✅ **MuSiQue 加入已批准** (2026-04-20) |
 | `U-EXEC-006` | E-008 newapi smoke probe + `_normalize_newapi()` | ✅ **新 newapi 通道已交付** (2026-04-20) → engineer E-008 |
+| `U-EXEC-001` | S-009（fullval 数字落 §4.3）+ E-005/E-007 跑数 | ✅ **替代解决**（2026-04-20）：从 kuaipao 切到 newapi (xh.v1api.cc)；不充 kuaipao；**E-008 升级为 sprint P0 关键路径**（先验证 newapi 再开任何 fullval）|
 
 ---
 
@@ -80,7 +81,7 @@
 
 | ID | 任务 | 阻塞 | tracking |
 |---|---|---|---|
-| S-009 | 用 fullval 真数字替换 §4.3 "pending rerun" 措辞 | 等 fullval rerun（U-006 拍板后） | tracking-S-009 |
+| S-009 | 用 fullval 真数字替换 §4.3 "pending rerun" 措辞 | 等 engineer E-005 fullval batch（provider 阻塞已于 2026-04-20 解除，切到 newapi） | tracking-S-009 |
 | S-010 | 拿到 Figure 1 PNG 后嵌入论文 + 写最终 caption（依赖用户出图） | 等用户出 Figure 1 PNG | tracking-S-010 |
 
 ### B.5 来自 reviewer_20260419_163139 (P5 oral gatekeeper) 的新 fix-TODO（S-104 ③ "诚实接受" 阶段产物）
@@ -93,6 +94,7 @@
 | **S-117** | **§4 加 Stage-2 Results 章节**：R1/R2/R3 ablation table（edo_full / edo_audit_only / edo_split_only / edo_vector_only / Stage-1 baselines 5+ 种）+ MuSiQue 4-hop 第二 benchmark 表 + 多 seed × paired bootstrap 95% CI | 120 min | 等 E-005 + E-006 + E-007 | ⏳ blocked on E-005..E-007 |
 | **S-118** | **升级 Algorithm 1 → "EDO Stage-2 execution loop"**：3 个动作 (do_self/outsource/split) + 显式 audit step + vector belief update；保持 ½ 页内 | 45 min | 等 E-001 + E-002 接口冻结 | ⏳ blocked on E-001 + E-002 |
 | **S-119** | **更新 Figure 1 prompt** 强调 Stage-2 三机制（R1 split tree / R2 audit ladder / R3 vector belief）；派 `U-EXEC-007` 让用户重出图替换当前 placeholder | 30 min | none — 可立即做 | ⏳ 待做（不阻塞编译） |
+| **S-120** | **provider 切换尾巴**（U-EXEC-001 替代解决后的写作连带）：在 `docs/paper/page_budget_audit.md` 加一行 note 说"fullval 数据来源换为 newapi 通道"；§4 Limitations 加 1 句 provider 切换发生在 sprint 中（备 reviewer 问起） | 15 min | 等 engineer E-008 done（确认 newapi 可用） | ⏳ blocked on E-008 |
 | **S-105** | 编完整 bibliography：替换 4 条 ACL 模板默认引用，加 ≥15 篇命名 prior work（按 reviewer 列表：MARS, SAGE, AutoGen, MetaGPT, AMRO-S, ReSo, Reflexion, ToT 等） | 90 min | none | ⏳ 未做 — **desk-reject 邻接，最高优先级** |
 | **S-106** | 加第二 benchmark（MuSiQue 已是 §4.4 future work，落地为现在的 EXP-1 pass） | 工程师 | 等 U-011 拍板（如选 b 才需要先做） + 工程师跑数 | tracking-S-106 |
 | **S-107** | 多 seed (≥3) + paired bootstrap CI 加入 Table 1 | 工程师 | 等工程师跑数 | tracking-S-107 |
@@ -166,6 +168,7 @@
 | 2026-04-19 | reviewer-agent (落地用户 U-011 决策) | **U-011 → ✅ (b) Stage-2 + EMNLP 2026 ARR 5/25 sprint**；§A cross-ref 状态镜像同步；新增 §B.5 三个预备写作 TODO **S-115 / S-116 / S-117**（全部 blocked on U-012/U-013/E-XXX）；明确"科学家可即刻动手项 = S-105/108/110/111/112/113/114 共 7 个不依赖二次决策"；不擅自决定 U-012 / U-013 范围 | `SCIENTIST_TODO.md §A,§B.5,§D` |
 | 2026-04-19 | scientist | **写作 Sprint 2 后处理（6 commits）**：R0 baseline (`6b22f7c`) git init + .gitignore；R1 (`e8aad98`) S-105 + S-012 bibliography + rebuttals；R2 (`1775d6e`) S-108 ablation table + S3.4 cut；R3 (`a701aaa`) S-111 + S-113 Limitations + 全文 anonymization；R4 (`8d9581c`) S-112 Responsible NLP Checklist；R5 (`7b4bfec`) S-110 Figure 1 placeholder + render verification | git history `6b22f7c..7b4bfec` |
 | 2026-04-20 | scientist (落地用户 U-012/U-013/U-EXEC-006) | **R6 commit / Stage-2 sprint 启动**：U-012 → ✅ R1+R2+R3 全做；U-013 → ✅ MuSiQue 加入；U-EXEC-006 → ✅ 新 newapi key 落入 `configs/llm.json`；§A cross-ref 同步；§B.5 重写 S-115..S-119（5 项 sprint 写作 TODO）；implementation_log 开 phase 块 `[stage2_sprint_kickoff_20260420]` 含 E-001..E-008 工程师工单；PROJECT_STRUCTURE.md §0 sprint 状态块更新为 Day 1 = 2026-04-20 / T-35 to ARR May 25 | `configs/llm.json` + `USER_TODO.md` + `SCIENTIST_TODO.md` + `implementation_log.md` + `PROJECT_STRUCTURE.md` |
+| 2026-04-20 | scientist (落地用户 U-EXEC-001 切换) | **R7 commit / provider 切换**：U-EXEC-001 → ✅ 替代解决（用户切到 newapi，不充 kuaipao）；§A U-006 provider 阻塞解除；§A 加 U-EXEC-001 cross-ref ✅；§B.3 S-009 阻塞描述更新；implementation_log 在 sprint 块末加 `[provider_switch_20260420]` 子条；E-008 升级 P0 关键路径；E-005/E-007 卸除 provider 阻塞 | `configs/llm.json` + `USER_TODO.md` + `SCIENTIST_TODO.md` + `implementation_log.md` |
 
 ---
 

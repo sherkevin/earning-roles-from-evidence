@@ -1156,3 +1156,65 @@
   - **engineer**: 立即启动 E-001 (task_tree) + E-008 (newapi probe) 两个无阻塞工单
   - **user**: 监控 U-EXEC-001 充值进度（fullval batch 强依赖）
   - **scientist**: 立即启动 S-119 (Figure 1 prompt 升级，无阻塞)；其余 S-115/S-116/S-117/S-118 全部 blocked on engineer ticket，进入"等待 + 监控 implementation_log.md"模式
+
+---
+
+#### [provider_switch_20260420] — sub-entry under [stage2_sprint_kickoff_20260420]
+
+- when: 2026-04-20 (same day, after R6 sprint kickoff)
+- who: scientist (落地用户 U-EXEC-001 状态变更)
+- intent: 用户用"换 provider"代替"充值 kuaipao"解决 U-EXEC-001；记录这件事对 sprint 的连锁影响
+
+#### 用户原话与解读
+
+- 用户原话："U-EXEC-001：现在换到新的 llm 连接上了，刚才发给你了"
+- 解读：用户没有充 kuaipao.ai；改成把所有后续 sprint 跑数迁到上一条 R6 commit 加入的 `newapi` (xh.v1api.cc) 通道。kuaipao 自此 deprecated。
+
+#### 立即影响（sprint 状态变更）
+
+| 项 | 变更前 | 变更后 |
+|---|---|---|
+| `U-EXEC-001` (kuaipao 充值) | ⏳ 待执行（high 紧急度） | ✅ **替代解决**（不再充 kuaipao） |
+| `U-EXEC-002` (kuaipao drift monitor) | ⏳ ongoing (medium) | 🟡 降级（kuaipao 已 deprecated；保留作历史 forensic） |
+| `U-006-rerun-decide` provider 阻塞 | ⏳ "等 provider 恢复 + U-EXEC-001 充值" | ✅ provider 阻塞解除 |
+| `S-009` 阻塞描述 | "等 fullval rerun（U-006 拍板后）" | "等 engineer E-005 fullval batch（provider 阻塞已解除）" |
+| `E-005` (Stage-2 fullval batch) 阻塞 | E-001..E-004 全 ✅ + 隐含 provider 健康 | E-001..E-004 全 ✅（provider 阻塞已显式解除）|
+| `E-007` (外部 baseline) 阻塞 | E-006 ✅ + U-EXEC-001 充值 ✅ | E-006 ✅（provider 阻塞已显式解除）|
+| **`E-008`** (newapi smoke probe) 优先级 | low — 0.5 d，可并行 | **P0 sprint 关键路径** — 必须**先**于任何 fullval / chain-200 跑数完成（决定 sprint 主线 viability） |
+
+#### 配置文件落地
+
+- `configs/llm.json` `newapi` block:
+  - 加 `_status: "PRIMARY_20260420_per_U-EXEC-001"`
+  - 加 `_promotion_note` 解释从 backup 升 PRIMARY 的原因 + E-008 升 P0 关键路径的指令
+  - `note` 字段保留 `LLM_BACKEND=oversea LLM_BASE_URL=https://xh.v1api.cc/v1` workaround，加要求"runtime integrity guard MUST be enabled on the first probe"
+- `configs/llm.json` `oversea` (kuaipao) block:
+  - 加 `_status: "deprecated_20260420_per_U-EXEC-001"`
+  - 加 `_deprecation_note` 解释为什么保留：reproducibility of historical (round1, round2_gpt41mini) runs only
+
+#### Sprint 时间线影响（基于 R7 commit 时刻重估）
+
+| 维度 | R6 commit 后估计 | R7 commit 后估计 |
+|---|---|---|
+| 主路径完工 | ~05-15 (Day 25) | 不变 — 主路径不依赖 U-EXEC-001 完成时点；只是阻塞类型从"等用户充值（unknown）"变为"engineer E-008 半天 + 自然走 sprint" |
+| 关键路径首项 | E-001 (task_tree, 2 d) + E-008 (newapi probe, 0.5 d) 并行 | **E-008 抢跑**（先 0.5 d，证实 newapi 可用 + 集成 `_normalize_newapi()` + `newapi_target()`），再 E-001/E-002 才能合理启动 |
+| ARR May 25 deadline | T-35 | T-35（不变）|
+| 风险 | provider unblocked 时点 unknown | newapi xh.v1api.cc 自身的 model-drift 风险 / rate-limit 风险（E-008 首要任务就是验证）|
+
+#### 派给科学家的连带任务（不阻塞当前 turn 完成）
+
+- 当 engineer 完成 E-008 后，scientist 需要在 `docs/paper/page_budget_audit.md` 加一行 note：fullval 数据来源换为 newapi 通道；§4 Limitations 提一句 provider 切换发生在 sprint 中（备 reviewer 问起）。这条挂 `S-120` 在 §B.5 等 E-008 done 后启动。
+
+#### 本条 commit 落地
+
+- files_added: none
+- files_modified:
+  - `configs/llm.json` newapi `_status` PRIMARY + oversea `_status` deprecated（带 note 说明）
+  - `docs/coordination/USER_TODO.md` §B.1 U-EXEC-001 ✅ + §A U-006 阻塞解除 + §B.1 U-EXEC-002 降级 + §C 加 done 行 + §D 加修订
+  - `docs/coordination/SCIENTIST_TODO.md` §A cross-ref U-006/U-EXEC-001 状态同步 + §B.3 S-009 阻塞描述更新 + §D 加修订
+  - `docs/coordination/implementation_log.md`（本条）
+- commit ref: R7 commit（待落地）
+- next_action:
+  - **engineer**: E-008 立即启动（0.5 d，最高优先级）；若 smoke probe 通过，立即开 E-001 (task_tree)
+  - **user**: 暂无新派工；监控 newapi 通道额度即可
+  - **scientist**: S-120 入队（待 E-008 done 后启动）；其余无变化（S-119 仍可立即做，剩余 S-115..S-118 仍 blocked on engineer）

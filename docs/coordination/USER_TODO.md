@@ -40,7 +40,7 @@
 | **U-003-decide** | `EMNLP_paper_draft.md` 双稿处理 | 合并成单稿 | S-001 / S-013（已自动消解） | ✅ 隐式解决（.tex 已是单稿） |
 | **U-004-decide** | `ModelDriftError` 故事写主文 §5 还是 appendix | 不写主文，只写 appendix | S-005 / S-111 | ✅ **已批准 appendix-only**（2026-04-19） |
 | **U-005-cleanup-decide** | 清理 `🟡 dead` 类 run dir（共 5 个目录 < 1.5 MB） | camera-ready 后再清 | 极小 | ⏳ 待拍板（不紧急） |
-| **U-006-rerun-decide** | provider 恢复后是否立即重跑 fullval `static_roles + self_claim` | 是 | S-009 替换 §4.3 数字 | ✅ **已批准**（2026-04-19）；当前**等 provider 恢复 + U-EXEC-001 充值** |
+| **U-006-rerun-decide** | provider 恢复后是否立即重跑 fullval `static_roles + self_claim` | 是 | S-009 替换 §4.3 数字 | ✅ **已批准**（2026-04-19）；**provider 阻塞已解除**（2026-04-20，U-EXEC-001 替代解决，已切到 newapi）；现在仅等工程师 E-005 跑数自然带过 |
 | **U-007-cleanup-autogen** | `workspace/autogen/` 56 MB clone 是否保留 | 保留 + `.gitignore` | 已通过 .gitignore 路径解决 | 🟡 自动消解（无需独立拍板） |
 | **U-008-decide** | Phase 2：`idea.md` + `experiment.md` 是否移入 `docs/` | 暂缓，等论文 freeze | 跨文件改 + 全仓 grep | ⏳ 待拍板（不阻塞主线） |
 | **U-009-decide** | LaTeX 模板落点 | 留 `article/` | — | ✅ 隐式解决（2026-04-19） |
@@ -59,8 +59,8 @@
 
 | ID | 任务 | 派任者 / 派任日期 | 紧急度 | 状态 |
 |---|---|---|---|---|
-| **U-EXEC-001** | **充值 kuaipao.ai endpoint**（gpt-4.1-mini API 余额，估算需支持完整 fullval n=7405 × 2 方法重跑 + 后续 reviewer batch） | scientist (2026-04-19) | high — U-006 batch rerun 的硬前置 | ⏳ 待执行 |
-| **U-EXEC-002** | **monitor kuaipao.ai 是否仍把 gpt-4.1-mini 静默路由到 gpt-5.1**（即 model drift 是否还在）；可让工程师写一次 smoke probe 然后告知 provider 状态 | scientist (2026-04-19) | medium — 每次开 batch 前必查 | ⏳ ongoing |
+| **U-EXEC-001** | **充值 kuaipao.ai endpoint**（gpt-4.1-mini API 余额，估算需支持完整 fullval n=7405 × 2 方法重跑 + 后续 reviewer batch） | scientist (2026-04-19) | high — U-006 batch rerun 的硬前置 | ✅ **替代解决** (2026-04-20)：用户切换到 newapi 通道 (xh.v1api.cc, U-EXEC-006)；不再充值 kuaipao；后续所有 sprint 跑数走 newapi |
+| **U-EXEC-002** | **monitor kuaipao.ai 是否仍把 gpt-4.1-mini 静默路由到 gpt-5.1**（即 model drift 是否还在）；可让工程师写一次 smoke probe 然后告知 provider 状态 | scientist (2026-04-19) | low — kuaipao 已切换走，不再依赖；保留 monitor 作为历史 forensic | 🟡 降级（kuaipao 已 deprecated） |
 | **U-EXEC-003** | 备用 provider 评估：NVIDIA 端 llama-3.3-70b 是否值得作为 fallback baseline 并入论文 | scientist (2026-04-19) | low — 主线 fullval 优先 | 🟡 可暂缓 |
 | **U-EXEC-006** | ✅ **新 newapi 通道已交付**（`xh.v1api.cc` + `sk-bSS5...jk`，`_type=newapi_channel_conn`）已加入 `configs/llm.json` 的 `newapi` block（2026-04-20）。下一步派给 engineer 做 **E-008 endpoint smoke probe**（`GET /v1/models` + `POST /chat/completions` smoke + 加 `_normalize_newapi()` 到 `llm_providers.py`）。短期 workaround：用 `LLM_BACKEND=oversea LLM_BASE_URL=https://xh.v1api.cc/v1 LLM_API_KEY=sk-bSS5...` 走环境变量 override | user (2026-04-20) | done (key 落地)；**待 engineer E-008** | ✅ key 已落地；E-008 在 `implementation_log.md [stage2_sprint_kickoff_20260420]` 待 engineer 执行 |
 
@@ -93,6 +93,7 @@
 | **U-012-decide** | **Stage-2 实施范围 → R1+R2+R3 全做** | 2026-04-20 | 用户原话："我全部同意"。Engineer sprint 估时 25-30 天 ≤ 36-天 deadline；解锁 implementation_log `[stage2_sprint_kickoff_20260420]` E-001..E-008 + SCIENTIST_TODO §B.5 S-115..S-119 |
 | **U-013-decide** | **MuSiQue 第二 benchmark → 加入** | 2026-04-20 | 用户原话："我全部同意"。直接关闭 reviewer EXP-1 fail 根因；4-hop 任务上 R2 audit 价值远超 HotpotQA 2-hop |
 | **U-EXEC-006** | **新 newapi 通道（xh.v1api.cc）交付** | 2026-04-20 | key 已加入 `configs/llm.json` 的 `newapi` block；engineer 后续 E-008 做 smoke probe + 扩展 `llm_providers.py` |
+| **U-EXEC-001** | **kuaipao.ai 充值 → 替代解决（切换到 newapi）** | 2026-04-20 | 用户原话："现在换到新的 llm 连接上了"。kuaipao 不再依赖；newapi (xh.v1api.cc) 升级为 PRIMARY endpoint。**E-008 (newapi smoke probe) 立即升级为 sprint 关键路径 P0**，所有后续 E-005/E-007 跑数都走 newapi。U-006 rerun 自然解锁（provider 阻塞消除） |
 
 ---
 
@@ -105,3 +106,4 @@
 | 2026-04-19 | scientist | **挂入 U-011-decide**：reviewer_20260419_163139 (P5 oral gatekeeper) 触发的 framing 走向决策（最高优先级） | §A 新增 1 行 |
 | 2026-04-19 | reviewer-agent (落地用户决策) | **U-011 → ✅ (b) 已批准**（用户原话"我选择b，但是是投递2026年的，所以要加快进度干，全力以赴"）；派生 **U-012-decide** (Stage-2 范围, 推荐 R2 单做或 R2+R3) + **U-013-decide** (MuSiQue, 推荐 是)；同步 SCIENTIST_TODO §A cross-ref + §B.5 加 S-115/S-116/S-117 + implementation_log 开 Stage-2 sprint phase 块 (`stage2_sprint_kickoff_20260419`) + PROJECT_STRUCTURE.md §0 加 sprint 状态块 + ARR 5/25 倒计时 | `USER_TODO.md §A,§C,§D` + `SCIENTIST_TODO.md §A,§B.5,§D` + `implementation_log.md` + `PROJECT_STRUCTURE.md §0` |
 | 2026-04-20 | scientist (落地用户决策) | **U-012 → ✅ R1+R2+R3 全做** + **U-013 → ✅ MuSiQue 加入**（用户原话"我全部同意"）；新 newapi 通道 (xh.v1api.cc) 落入 `configs/llm.json` 作为 `U-EXEC-006`；同步 SCIENTIST_TODO §A + §B.5 加 S-115..S-119；implementation_log 开新 phase 块 `[stage2_sprint_kickoff_20260420]` 含 E-001..E-008 工单；PROJECT_STRUCTURE.md §0 sprint 状态块更新为 Day 1 = 2026-04-20 / T-35 to ARR May 25 | `configs/llm.json` + `USER_TODO.md §A,§B.1,§C,§D` + `SCIENTIST_TODO.md §A,§B.5,§D` + `implementation_log.md` + `PROJECT_STRUCTURE.md §0` |
+| 2026-04-20 | scientist (落地用户决策) | **U-EXEC-001 → ✅ 替代解决**（用户原话"现在换到新的 llm 连接上了"）：kuaipao 充值取消，全切到 newapi (xh.v1api.cc)；U-EXEC-002 降级 (kuaipao deprecated)；U-006 provider 阻塞解除；E-008 升级为 sprint P0 关键路径（所有 sprint 跑数依赖）；E-005/E-007 卸除 provider 阻塞；llm.json 更新 newapi note 为 PRIMARY + oversea note 为 deprecated | `configs/llm.json` + `USER_TODO.md §A,§B.1,§C,§D` + `SCIENTIST_TODO.md §A,§B.3,§D` + `implementation_log.md` |

@@ -7,6 +7,8 @@
         "chat_model": "GLM-5.1"
     },
     "oversea": {
+        "_status": "deprecated_20260420_per_U-EXEC-001",
+        "_deprecation_note": "Switched away from kuaipao.ai endpoint on 2026-04-20 due to silent gpt-4.1-mini -> gpt-5.1 model drift mid-run that invalidated the static_roles/self_claim fullval batches. Block kept here for reproducibility of historical (round1, round2_gpt41mini) runs only. New sprint runs MUST go through `newapi` (xh.v1api.cc) instead.",
         "base_url": "https://kuaipao.ai/v1",
         "key": "sk-IOyLUgKywDcvceG3PkRoYrQMa5EFxgs7zaE1pms3vteUG7lE",
         "models": [
@@ -348,10 +350,12 @@
     },
     "newapi": {
         "_type": "newapi_channel_conn",
+        "_status": "PRIMARY_20260420_per_U-EXEC-001",
+        "_promotion_note": "Promoted from backup to PRIMARY on 2026-04-20: user explicitly switched away from kuaipao due to model drift. ALL Stage-2 sprint fullval / chain-200 / external-baseline runs MUST route through this endpoint. Engineer ticket E-008 (smoke probe + _normalize_newapi() + newapi_target() in llm_providers.py) is now sprint P0 critical path: must complete before any other Stage-2 batch starts.",
         "base_url": "https://xh.v1api.cc",
         "key": "sk-bSS5YkaXdUqpaC1JLztGgRDF8sqeQaI9U3ElpIjibxRnBCjk",
         "chat_model": "gpt-4.1-mini",
-        "note": "Backup OpenAI-compatible newapi channel (received 2026-04-20). Verify model echo via runtime integrity guard before relying on it for fullval batches. Short-term workaround until E-008 lands: LLM_BACKEND=oversea LLM_BASE_URL=https://xh.v1api.cc/v1 LLM_API_KEY=<this key>.",
+        "note": "Short-term workaround until E-008 ships native newapi routing in llm_providers.py: LLM_BACKEND=oversea LLM_BASE_URL=https://xh.v1api.cc/v1 LLM_API_KEY=<this key>. Runtime integrity guard (ModelDriftError) MUST be enabled on the first probe to catch any silent model substitution before opening a fullval batch.",
         "models": [
             "gpt-4.1-mini",
             "gpt-4.1",
