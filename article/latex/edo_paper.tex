@@ -180,41 +180,52 @@ P_i^{t+1} = \mathrm{clip}\Big(&(1-\mu) P_i^t + \mu \big(\eta_{\mathrm{loc}} \mat
 
 \subsection{Current restricted executable instantiation: TCPB prototype}
 
-Our current codebase implements a Stage-1 restricted instance of EDO that we call \textbf{Terminal-Consensus Peer Backpropagation (TCPB)}. The exact substitutions vis-\`a-vis the full EDO design are enumerated in the \textbf{Prototype Scope Box} below; the operative consequence is that after a routed path terminates with final answer $\hat{y}$, we compare $\hat{y}$ with the gold answer $y$ and obtain a thresholded task-quality signal. Only the final accepting node is updated, using bounded asymmetric steps with damping. The complete per-sample loop, including utility scoring, the two safety gates, and the terminal-consensus update, is given in Algorithm~\ref{alg:tcpb-loop}. This restricted mechanism already reduces premature acceptance and stabilizes routing relative to self-reflection baselines, but it does not yet instantiate recursive audit, persona-tag formation, or split-based organization.
+Algorithm~\ref{alg:edo-stage2-loop} specifies the full EDO Stage-2 execution loop, integrating the three primitive actions (\textsc{DoSelf} / \textsc{Outsource} / \textsc{Split}, R1), recursive per-handoff audit (R2), and vector-belief routing (R3) that we proposed in \S\ref{sec:methodology}. The reported empirical results in Table~\ref{tab:main-results} come from the degenerate Stage-1 instance of this loop, which we call \textbf{Terminal-Consensus Peer Backpropagation (TCPB)}: \textsc{Split} is disabled, \textsc{Audit} defaults to \textsc{Accept} on every return, and the vector belief $B_i^t(j)$ is collapsed onto a scalar $c[i]$ via mean-axis fold. The Prototype Scope Box below restates this restriction component-by-component.
 
 \begin{algorithm}[t]
-\caption{TCPB execution loop (Stage-1 prototype, single sample). Notation matches \S\ref{sec:methodology}; deterministic instantiations of $\phi$ and $b_i(j)$ are in the executable spec [Anonymous Suppl.] \S 1.2 / \S 2.2.}
-\label{alg:tcpb-loop}
+\caption{EDO Stage-2 execution loop (single sample, recursive). Algorithm specifies the full EDO mechanism integrating R1 \texttt{split}, R2 recursive audit, and R3 vector-belief routing. Table~\ref{tab:main-results} reports the degenerate Stage-1 instance (TCPB) where \textsc{Split} is disabled and \textsc{Audit} defaults to \textsc{Accept}; the Prototype Scope Box describes that restriction precisely. Deterministic instantiations of $\phi$, $\textsc{Fit}$, and $\textsc{evidence\_extract}$ are in the executable spec [Anonymous Suppl.] \S 1--3.}
+\label{alg:edo-stage2-loop}
 \small
 \begin{algorithmic}[1]
-\Require Question $q$, gold $y$; chain agents $\mathcal{A}{=}\{\textsc{dec},\textsc{evi},\textsc{ver},\textsc{syn}\}$ with adjacency $\mathcal{N}$; competence $c\!\in\![0.05,0.95]^{|\mathcal{A}|}$; constants $\delta_a{=}0.02$, $H_{\max}{=}4$, $F_\textsc{th}{=}0.5$, $\Delta^{+}{=}{+}0.06$, $\Delta^{-}{=}{-}0.10$, $\rho{=}0.5$.
-\Ensure Predicted answer $\hat{y}$; updated competence $c'$.
-\State $P \gets \textsc{HandoffPacket}(q,\emptyset,0,\emptyset)$; \  $i \gets \textsc{dec}$
-\While{$\textit{hop\_count}(P) < H_{\max}$}
-  \State $\phi \gets \textsc{extract}(P)$ \Comment{rule-based, no LLM call}
-  \State $U^\textsc{s} \gets 0.55\,c[i] + 0.20\,\phi.\textit{ev} + 0.10(1{-}\phi.\textit{unc})$
-  \Statex \quad\quad\;\;\, $- 0.10\,\phi.\textit{loop} - 0.05\,\phi.\textit{rev}$
+\Require Root task $z_0$, gold $y$; agent set $\mathcal{A}$ with sparse adjacency $\mathcal{N}$; vector belief $B_i^{t}{:}\,\mathcal{A}{\times}\mathcal{A}{\to}[0,1]^{7}$ (R3); empty task tree $\mathcal{T}$ rooted at $z_0$; constants $H_{\max}{=}4$, $F_{\textsc{th}}{=}0.5$, $\delta_a{=}0.02$, $\nu{=}0.2$, $k_{\max}{=}3$, $d_{\max}{=}3$, $n_{\max}{=}12$.
+\Ensure Predicted $\hat{y}$; updated belief $B^{t+1}$.
+\Function{Process}{$z, i, \mathcal{T}$}
+  \State $\phi \gets \textsc{extract}(z)$ \Comment{rule, no LLM call}
+  \State $U^{\textsc{s}} \gets \textsc{Fit}(P_i,\phi) - \lambda_c\textit{Cost}_{\textit{self}}$
   \For{$j \in \mathcal{N}(i)$}
-    \State $U^\textsc{o}_j \gets 0.60\,b_i(j) + 0.25\,\mathbb{1}[\textit{role}(j){=}\textit{pref}(P)]$
-    \Statex \quad\quad\quad\;\, $+ 0.05\,\textit{struct}(j) - 0.25\,\mathbb{1}[j\!\in\!\textit{vis}(P)]$
+    \State $U^{\textsc{o}}_j \gets \textsc{Fit}(B_i^{t}(j),\phi) - \lambda_a\textit{AuditCost}$
   \EndFor
-  \State $j^{\star} \gets \arg\max_{j\in\mathcal{N}(i)} U^\textsc{o}_j$;\, $\textit{acc} \gets (U^\textsc{s} \!\geq\! U^\textsc{o}_{j^{\star}}\!+\!\delta_a)$
-  \If{$i{=}\textsc{dec}$ \textbf{and} \textsc{multihop}$(q)$} $\textit{acc} \gets \textsf{F}$ \EndIf
-  \If{$i{=}\textsc{dec}$ \textbf{and not} \textsc{multihop}$(q)$ \textbf{and} $c[i]{<}0.90$} $\textit{acc} \gets \textsf{F}$ \EndIf
-  \If{$\mathcal{N}(i){=}\emptyset$} $\textit{acc} \gets \textsf{T}$ \EndIf
-  \If{$\textit{acc}$}
-    \State $\hat{y} \gets \textsc{LLM\_answer}(P)$;\;\; \textbf{break}
-  \Else
-    \State $P \gets P.\textsc{append}(\textsc{LLM\_contribute}(P))$
-    \State $\textit{vis}(P) \gets \textit{vis}(P)\!\cup\!\{j^{\star}\}$;\, $\textit{hop\_count}(P)\,{+}{=}1$;\, $i \gets j^{\star}$
+  \State $U^{\textsc{p}} \gets \textsc{SplitGain}(z) - \lambda_m\textit{MergeCost}$ \Comment{R1}
+  \If{$\textit{depth}(z){\geq}d_{\max}$ \textbf{or} $|\mathcal{T}|{\geq}n_{\max}$}
+    \State $U^{\textsc{p}} \gets {-}\infty$ \Comment{bound: SPLIT disabled}
   \EndIf
-\EndWhile
-\Statex \quad\textit{// Terminal-Consensus update (only the accepting node)}
-\State $r \gets {+}1$ \textbf{if} $F_1(\hat{y},y){\geq}F_\textsc{th}$ \textbf{else} ${-}1$
-\State $\delta \gets \Delta^{+}$ \textbf{if} $r{>}0$ \textbf{else} $\Delta^{-}$;\, $\delta \gets \textsc{clip}(\delta,{-}\Delta^{+},{+}\Delta^{+})$
-\State $\textit{tgt} \gets \textsc{clip}(c[i]{+}\delta,0.05,0.95)$
-\State $c'[i] \gets (1{-}\rho)c[i] + \rho\cdot\textit{tgt}$;\, $c'[k\!\neq\! i] \gets c[k]$
-\State \Return $\hat{y}, c'$
+  \State $a \gets \arg\max\{U^{\textsc{s}},\,\max_j U^{\textsc{o}}_j,\,U^{\textsc{p}}\}$
+  \If{$a{=}\textsc{DoSelf}$}
+    \State \Return $\textsc{LLM\_answer}(z,P_i),\,\textsc{Accept}$
+  \ElsIf{$a{=}\textsc{Outsource}(j^{\star})$}
+    \State $r,\textit{stat} \gets \textsc{Process}(z, j^{\star}, \mathcal{T})$
+    \State $e \gets \textsc{audit}(i,j^{\star},z,r)$ \Comment{R2; rule-based; no LLM call by default}
+    \State $\mathcal{T}.\textsc{apply\_audit}(z,e)$ \Comment{writes \texttt{audit\_status}; jsonl-buffered}
+    \If{$e.\textit{decision}{\in}\{\textsc{Accept},\textsc{AcceptWithNote}\}$} \Return $r, e.\textit{decision}$ \EndIf
+    \If{$e.\textit{decision}{=}\textsc{RejectReroute}$ \textbf{and} unvisited $j' \in \mathcal{N}(i)$ exists}
+      \State \Return \textsc{Process}$(z, j', \mathcal{T})$
+    \Else \, $a \gets \textsc{Split}$ \Comment{escalate to RESPLIT}
+    \EndIf
+  \EndIf
+  \If{$a{=}\textsc{Split}$}
+    \State $\{z_1,\!\dots\!,z_k\} \gets \textsc{LLM\_decompose}(z)$ with $k{\leq}k_{\max}$ \Comment{R1}
+    \State $\mathcal{T}.\textsc{add\_children}(z,\{z_l\})$
+    \State \Return $\textsc{integrate}(\{\textsc{Process}(z_l,i,\mathcal{T})\}_{l=1}^k),\,\textsc{Accept}$
+  \EndIf
+\EndFunction
+\State $\hat{y},\_ \gets \textsc{Process}(z_0, \textit{root\_agent}, \mathcal{T})$
+\Statex \quad\textit{// R3 vector-belief update (one EMA step per audit event)}
+\For{$e \in \mathcal{T}.\textit{audit\_events}$}
+  \State $B_i^{t{+}1}(j) \gets \textsc{clip}\!\big((1{-}\nu) B_i^{t}(j) + \nu\cdot \textsc{evidence\_extract}(e,\phi(z)),0.05,0.95\big)$
+\EndFor
+\Statex \quad\textit{// Stage-1 fallback: terminal scalar update on root accepting agent (TCPB)}
+\State $r \gets {+}1$ \textbf{if} $F_1(\hat{y},y){\geq}F_{\textsc{th}}$ \textbf{else} ${-}1$;\, project $B^{t{+}1} \to c$ via mean-axis fold (cf.\ Prototype Scope Box (v))
+\State \Return $\hat{y},\,B^{t+1}$
 \end{algorithmic}
 \end{algorithm}
 
@@ -371,14 +382,14 @@ The Responsible NLP Research Checklist below is filled per ARR / EMNLP submissio
 \begin{itemize}\setlength\itemsep{1pt}
 \item \textbf{Model size / parameters:} we do not train or fine-tune any model; the only model used is the API-served \texttt{gpt-4.1-mini} (size not disclosed by provider).
 \item \textbf{Compute budget:} entire experiment requires $\le 10^4$ API calls per method per chain-200 batch (i.e., 4 hops $\times$ 200 examples $\times$ 3 methods $\approx 2{,}400$ contribution calls + 600 answer calls). No GPU compute on our side.
-\item \textbf{Hyperparameters:} routing weights ($0.55, 0.20, 0.10$, etc.), accept margin ($\delta_a{=}0.02$), update step sizes ($\Delta^{+}{=}{+}0.06$, $\Delta^{-}{=}{-}0.10$), momentum ($\rho{=}0.5$), F1 threshold ($F_\textsc{th}{=}0.5$), max handoff ($H_{\max}{=}4$). All listed in Algorithm~\ref{alg:tcpb-loop}; all are hand-set priors, not searched.
+\item \textbf{Hyperparameters:} routing weights for the Stage-1 TCPB instance ($0.55, 0.20, 0.10$, etc.), accept margin ($\delta_a{=}0.02$), update step sizes ($\Delta^{+}{=}{+}0.06$, $\Delta^{-}{=}{-}0.10$), momentum ($\rho{=}0.5$), F1 threshold ($F_\textsc{th}{=}0.5$), max handoff ($H_{\max}{=}4$). The Stage-2 mechanism constants ($\nu{=}0.2$, $k_{\max}{=}3$, $d_{\max}{=}3$, $n_{\max}{=}12$) are listed in Algorithm~\ref{alg:edo-stage2-loop}; all are hand-set priors, not searched.
 \item \textbf{Reported summary statistics:} EM, F1, MHC, PAR, and per-sample API token counts (Table~\ref{tab:main-results}, Table~\ref{tab:ablations}). Confidence intervals are explicitly not reported in this submission and are flagged in \S Limitations as future Stage-2 work (\S 4.4 E1--E5).
 \item \textbf{Existing implementations used:} we use the standard HotpotQA EM/F1 evaluator (re-implemented in our codebase to match the original word-tokenisation rules); no other off-the-shelf evaluators are used.
 \end{itemize}
 
 \paragraph{B3. Human subjects / annotators.} Not applicable. No human annotation was collected for this work; the only human-curated data used is the public HotpotQA dataset.
 
-\paragraph{B4. Use of AI assistants.} The first author used a code-completion AI assistant during the development of \texttt{runner.py}, \texttt{methods.py}, and prompt templates. All AI-suggested code was reviewed line-by-line by the author before commit, and the final algorithmic design (Algorithm~\ref{alg:tcpb-loop}, Prototype Scope Box) is the author's own contribution. No AI assistant generated any prose in this paper.
+\paragraph{B4. Use of AI assistants.} The first author used a code-completion AI assistant during the development of \texttt{runner.py}, \texttt{methods.py}, and prompt templates. All AI-suggested code was reviewed line-by-line by the author before commit, and the final algorithmic design (Algorithm~\ref{alg:edo-stage2-loop}, Prototype Scope Box) is the author's own contribution. No AI assistant generated any prose in this paper.
 
 \bibliography{custom}
 

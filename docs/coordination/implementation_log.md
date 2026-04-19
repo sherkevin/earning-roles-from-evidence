@@ -2043,3 +2043,159 @@ E-014 unblocks scientist 后续 S-XXX：在论文 §4.x 加 Table 2.b（gpt-4.1-
   - 若 ❌：diagnosis + 自挂
 
 ---
+
+### [E-004_persona_model_module_20260420] (continued — verification ✅)
+
+- when: 2026-04-19 (闭合)
+- result: **✅ 31/31 tests pass in 0.22 s**；`python -m py_compile workspace/idea04_core/persona_model.py` exit 0
+- delivered files:
+  - `workspace/idea04_core/persona_model.py` (~280 行)
+    - `PERSONA_DIMS` 7-tuple (与 idea.md §9.2 phi(z) 对齐)
+    - `PersonaVector` (frozen dataclass, clip+length 校验, `fit / mean / from_scalar / to_list / from_list / as_dict`)
+    - `BeliefStore` (mutable map `agent_id -> PersonaVector`, 默认 neutral, dual-track v1/v2 双向)
+    - `evidence_extract(audit_event, task_signature)` — on-axis (`s * value_gain`) + off-axis (`(1-s) * (1-rework_cost) * 0.5`) + timeliness dampener
+    - `apply_evidence(belief, evidence, nu=0.2)` 标准 EMA
+    - `update_belief_from_audit` 一站式 helper
+    - **dual-track schema** `serialize_v2(store) -> {schema_version, competence_v1_scalar, competence_v2_vector}` + `deserialize` 接受 v1/v2/flat-v1/未知键 silent drop
+  - `workspace/idea04_core/test_persona_model.py` (~270 行 / 31 tests)
+  - `artifacts/test_results/E-004_persona_model_pytest_20260419_191412.txt` (pytest log)
+- combined Day 6 regression:
+  - `python -m pytest test_task_tree test_action_policy test_audit_runtime test_persona_model -q` → **88 passed in 0.21 s**（18+18+21+31）
+  - R0 baseline 200 samples [OK]
+  - fullval 7405 samples [OK]
+- C-3 验证：`test_serialize_v2_includes_both_tracks` + `test_deserialize_v1_scalar_broadcasts_to_v2` 两 test 实证 dual-track 正确性
+
+---
+
+### [E-010_chateval_server_clone_attempt_20260420]
+
+- when: 2026-04-19 (engineer Day 6 — E-005 之前的并行 prep)
+- who: engineer (尝试用户指示"优先用服务器上的 GPU"+"能部署到服务器上的尽量部署"的精神，把 ChatEval 提前拖到 server `/media/data3/dengkw/idea04/chateval/` 备 E-010 reproduce 用)
+- intent: SSH 到 viplabserver12, 浅克隆 ChatEval, 读 requirements.txt 评估安装风险, 不实际 pip install
+- status: ⚠ **partial-blocked** — 见下
+- 实际发生:
+  1. 第一次 ssh (clone command, 90 s timeout) → 卡住无输出 → kill PID 46248 (185 s 后 timeout)
+  2. 第二次 ssh (quick ls + nvidia-smi 探测) → 同样卡住 → kill PID 43580
+  3. 诊断发现：本机有 7 个 orphaned `ssh` 子进程（PID 312/4788/20552/25664/26508/31940/34932/41776，最早从 12:37 起），可能多次并行 ssh 把 control-master socket 状态搞乱
+  4. 第三次 ssh (BatchMode=yes, 5 s timeout, 简单 echo + ls + date) → **`Permission denied (publickey,password)`** ❌
+     - 与 E-013 ✅ probe 当时的成功连接矛盾
+     - 同一 key, 同一 user, 同一 host, 同一窗口 — 唯一变化是中间发了多次卡死的 ssh
+- diagnosis (engineer 自评):
+  - **(假设 1)** orphaned ssh 进程持有 ssh-agent 状态，新连接拿不到正确 identity → 可通过 `ssh-add -D + ssh-agent restart` 修复
+  - **(假设 2)** server 端 sshd 临时 ban 该 IP（多次失败连接触发 fail2ban/sshguard 类）→ 等 15-30 min 自动解锁，或需要用户从 server 端手动解封
+  - **(假设 3)** SSH key 文件本身权限/路径 wrong → 不太可能（之前 E-013 同 key 同路径 ✅）
+  - **(假设 4)** server 网络 → github.com 出口慢/被防火墙拦（第一次 clone 卡死 185 s 无任何输出，符合"DNS 通但连接 hang"特征）→ 即使 SSH 修复，clone 仍可能卡
+- impact:
+  - **不阻塞 E-005**（E-005 是 4-mech 整合 + fullval, 全本地工作；newapi 仍然是 PRIMARY routable endpoint, 与服务器 SSH 状态正交）
+  - 阻塞 **E-010 ChatEval reproduce 走 server 路径**；E-010 退路 = 在本地 Windows 跑 ChatEval（更脏的 venv，但可行）
+  - SSH 状态修好之后还需 verify github 出口（假设 4）
+- planned remediation (recorded as new ticket):
+  - 自挂 `U-019-server-ssh-state-decide` 到 `USER_TODO §A`：让用户从 server 端 `tail /var/log/auth.log` + `iptables -L -n` 检查是不是被 ban + `who` 查看是不是有别的活跃 session 占用
+  - 或 engineer 等 30 min 后重试（fail2ban 默认窗口）
+  - 此外 engineer 改进自身 ssh discipline：以后 SSH 命令一定加 `-o BatchMode=yes -o ConnectTimeout=10 -o ServerAliveInterval=30 -o ServerAliveCountMax=3` 防卡死
+- files added: 无（clone 未成功）
+- files modified: `docs/coordination/implementation_log.md`（本块 + E-004 闭合块）
+- pinned_cautions_acknowledged: C-1 (provider — 本块未发任何 LLM 请求, 仅 ssh+git probe), C-7 (无 key 写入 — 此外发现新风险点：orphaned ssh 进程也会消耗 server-side 连接配额, 需 cleanup 才能恢复)
+- next_action:
+  - **engineer (next session)**: 等 30 min + 清掉本机所有 orphaned ssh 后重试 E-013-style probe；如仍 fail → 触发 U-019
+  - **user**: 暂无新派工；如急需 server 路径可手动 ssh 验证
+
+---
+
+### [engineer_day6_completion_20260420]
+
+- when: 2026-04-19 (engineer Day 6 终结，R12 commit 待落地，与 reviewer R-FULL-002 + scientist R12 commit 平行不冲突)
+- who: engineer
+- intent: 把 Day 6 派的 1 个核心 ⏳ phase 块 (E-004) + 1 个并行 prep 块 (E-010 server clone attempt) 状态闭合。**Sprint 进度推到 ~Day 8 (estimated)**；C-8 队列下一 P0 = E-005 整合 + Stage-2 fullval（依赖全 4 模块 ✅）+ E-010 ChatEval reproduce（依赖 SSH 状态恢复）
+
+#### 状态汇总
+
+| phase 块 | 上次状态 | 现状态 | 备注 |
+|---|---|---|---|
+| `[E-004_persona_model_module_20260420]` | ⏳ | ✅ | `workspace/idea04_core/persona_model.py` (~280 行) + `test_persona_model.py` 31/31 tests + dual-track schema (C-3) 实证。**接口冻结**：E-005 整合阶段 4 接口齐全 (task_tree + action_policy + audit_runtime + persona_model) |
+| `[E-010_chateval_server_clone_attempt_20260420]` | ⏳ | ⚠ partial-blocked | SSH 状态退化无法 clone；自挂 U-019；不阻塞 E-005 |
+
+#### Day 6 整体 verification
+
+- `python -m py_compile workspace/idea04_core/{task_tree,action_policy,audit_runtime,persona_model}.py` exit 0（4 模块全 compile）
+- `python -m pytest workspace/idea04_core/test_*.py -q` → **88 passed in 0.21 s**（18+18+21+31）
+- R0 baseline `python scripts/validate_logs.py artifacts/round2_gpt41mini/run_20260414_115739/fixed_peer_calibrated` → [OK] (200 samples, 100%)
+- fullval `python scripts/validate_logs.py artifacts/round2_gpt41mini_fullval/run_20260414_135408/fixed_peer_calibrated` → [OK] (7405 samples, 100%)
+- 4 模块**未触及** `methods.py` / `runner.py` / `contracts.py` / `llm_client.py`（C-2 byte-id 不回归 — 实证 validate_logs no regression）
+
+#### Sprint 进度对比 (vs R10 timeline)
+
+R10 plan：
+```
+Day 1-5:  E-001 task_tree (3 d) + E-008 newapi probe (1 d, parallel)
+Day 6-10: E-003 audit (5 d) + E-009 external survey (1 d, parallel)
+Day 11-15:E-004 vector belief (3 d) + E-005 整合 (5 d, parallel start)
+```
+实际 (engineer 在 sprint Day 1 + 1.5 + 6 共 3 个 sub-windows 内完成)：
+- E-001 ✅ + E-008 ✅ + E-013 ✅ (Day 1, R10) — 完成 Day 1-5 的全部 work
+- E-002 ✅ + E-003 ✅ + E-009 ✅ (Day 1.5, R11) — 完成 Day 6-10 的全部 work + 提前完成 E-002 (原 Day 6+)
+- E-004 ✅ (Day 6, 本块, R12) — 完成 Day 11-15 第一半（E-005 整合是第二半）
+- **进度领先 ~7-9 天**；E-005 整合 (5 d 估时) 仍是下一个 critical-path bottleneck
+
+#### Files added Day 6 (engineer)
+
+- `workspace/idea04_core/persona_model.py` (E-004, ~280 行)
+- `workspace/idea04_core/test_persona_model.py` (E-004, ~270 行 / 31 tests)
+- `artifacts/test_results/E-004_persona_model_pytest_20260419_191412.txt` (pytest 31-pass log)
+
+#### Files modified Day 6 (engineer)
+
+- `docs/coordination/implementation_log.md`（本块 + E-004 ⏳→✅ + E-010 ⏳→⚠ 共 3 phase 块）
+- **未修改** `methods.py` / `runner.py` / `contracts.py` / `llm_client.py`（per E-004 spec — 整合在 E-005）
+- **未修改** `configs/llm.json`（E-010 未执行实际 install）
+
+#### Cross-file 阻塞列 sweep (per four-role rule §1 step 2 + §3)
+
+| 下游 | 上次阻塞 | 现状 |
+|---|---|---|
+| SCIENTIST_TODO §B.5 **S-118** (Algorithm 1 升级) | E-001 + E-002 接口冻结 | ✅ **fully unblocked** — 不变；persona_model 也就绪意味着 Algorithm 1 可顺便加 vector belief update line |
+| SCIENTIST_TODO §B.5 S-115/S-116/S-117 (§3 + §4 Stage-2 Results) | E-005 fullval data | 不变（E-005 仍未启动；4 接口齐全后估时 5 d → 一轮可完） |
+| SCIENTIST_TODO §B.5 S-121/S-122/S-123 (§4.x external + module-swap 写作) | E-012 swap comparison | 不变（E-012 仍 blocked on E-010 → E-011 → 本身；E-010 现在 ⚠ partial blocked on SSH 状态恢复，可能需要走 Windows 本地路径） |
+| REVIEWER_TODO R-FULL-002 | scientist S-104 4 步循环 | 不变（scientist 任务，与 engineer 无关） |
+| USER_TODO §A 新增 **U-019-server-ssh-state-decide** | 见下 | ⏳ 新增（engineer 自挂） |
+
+#### unblocks_for_engineer (sprint Day 7+ onward)
+
+- **E-005 整合 + Stage-2 fullval**：4 接口 ✅ → **fully unblocked**（5 d 估时；改 methods.py + runner.py + contracts.py + validate_logs.py + 1-sample sanity probe + 用户 gate fullval batch）
+- **E-010 reproduce baseline (server 路径)**：blocked on U-019 SSH 状态恢复
+- **E-010 reproduce baseline (Windows 本地路径 fallback)**：unblocked, 但需用 fresh venv + 接受 Windows 路径风险
+- **E-006 multi-seed CI**：依赖 E-005 → 等
+- **E-011 / E-012 swap adapter + comparison**：依赖 E-010 ✅ → 等
+
+#### 下一 Day 推荐 (per sprint timeline + 用户 "不停下" 指示)
+
+按 R10 timeline，下一步 = **E-005 整合 + Stage-2 fullval**（最大 critical-path 工单）。但 E-005 是质变性 work：
+- **改 4 个产线文件**（methods.py / runner.py / contracts.py / validate_logs.py）—— C-2 byte-id 回归风险高
+- **跑实际 fullval batch**——会消耗 newapi 真实 token（Stage-1 历史成本 ~$30/batch；Stage-2 含 R1 split + R2 audit reroute 估算 +30% → ~$40/batch）
+- **per pinned C-1 #6**：必须先用 1-sample sanity probe 验 routing_traces 'integrity' 全 OK，再 propose fullval（此 propose 应作为 USER_TODO §A 新决策让用户 gate，因为这是首个 Stage-2 真实 batch）
+
+**engineer 推荐分两步走**：
+- **Day 7 (next window) Step 1**：E-005 step 1-3 = 改 4 文件 + 1-sample sanity probe + 写 §C-005 1-sample 报告 + 在 USER_TODO §A 加 `U-020-stage2-fullval-launch-decide` 让用户 gate fullval batch（含 cost 估算 + token 估算 + risk 登记）
+- **Day 7 (next window) Step 2**：等用户 ✅ 后启动 fullval batch（estimated 1-2 hour wall time），落 `[E-005_stage2_fullval_<TS>]` ✅ + 解锁 S-115/S-116/S-117/E-006
+
+#### 风险登记 (Day 6 新增)
+
+- **Server SSH 状态退化**：单次 session 内多次卡死 ssh 后产生 7 个 orphaned 进程 + 新连接 `Permission denied`。已在 `[E-010_chateval_server_clone_attempt]` 详细诊断；engineer 改进 SSH discipline (BatchMode + ConnectTimeout + ServerAliveInterval) 已记录为 lesson learned。
+- **fail2ban 嫌疑**：若假设 (2) 成立，server 可能临时 ban 该 IP，影响后续 E-013-style 重测。U-019 让用户从 server 端协助解封 / 验证。
+- **github 出口慢嫌疑**：第一次 clone 卡死 185 s 无任何输出，符合"DNS 通但 git fetch 拉不下来"特征；E-010 即使走通 SSH 也可能卡 clone。退路 = 用户从 PC 上传 ChatEval shallow tarball 到 server（U-EXEC-XXX 派工，非 engineer 可独立做）。
+
+#### 自挂新决策 (engineer → user)
+
+加入 `USER_TODO §A`：
+
+- **U-019-server-ssh-state-decide**：server SSH/clone 状态恢复路径选择 — (a) 等 30 min 自动解锁后 engineer 重试；(b) 用户 ssh 到 server `tail /var/log/auth.log` + `iptables -L -n` 协助诊断；(c) 放弃 server 路径，E-010 走 Windows 本地 venv。**推荐 (b)**：解决根因；fallback (a)；最差 (c)。
+
+#### 本条 commit 落地
+
+- commit ref: R12 commit（engineer Day 6 闭合，待落地；与 R12 scientist S-120 commit 同名但不冲突，本块在 implementation_log 末追加）
+- next_action:
+  - **engineer (next window)**: Day 7 启动 E-005 step 1-3 (改 4 文件 + 1-sample sanity probe + 写 sanity 报告)，触发 U-020 让用户 gate fullval；同时**等 SSH 状态恢复**重试 E-010 server 路径
+  - **user**: 拍板 **U-019**（server SSH 修复路径，high — 阻塞 E-010 server 路径）；等 engineer 触发 **U-020** 后拍板 stage-2 fullval launch（high — 阻塞 E-005 ✅ 翻 ✅ + 解锁 S-115/S-116/S-117）；继续 U-FIG-001 + U-EXEC-005
+  - **scientist**: 仍 fully unblocked S-118；仍可推进 R-FULL-002 触发的 S-104 4 步循环；其余 §B.5 仍 blocked on E-005 fullval data
+
+---
