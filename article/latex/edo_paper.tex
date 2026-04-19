@@ -182,58 +182,11 @@ P_i^{t+1} = \mathrm{clip}\Big(&(1-\mu) P_i^t + \mu \big(\eta_{\mathrm{loc}} \mat
 
 \subsection{Current restricted executable instantiation: TCPB prototype}
 
-Algorithm~\ref{alg:edo-stage2-loop} specifies the full EDO Stage-2 execution loop, integrating the three primitive actions (\textsc{DoSelf} / \textsc{Outsource} / \textsc{Split}, R1), recursive per-handoff audit (R2), and vector-belief routing (R3) that we proposed in \S\ref{sec:methodology}. The reported empirical results in Table~\ref{tab:main-results} come from the degenerate Stage-1 instance of this loop, which we call \textbf{Terminal-Consensus Peer Backpropagation (TCPB)}: \textsc{Split} is disabled, \textsc{Audit} defaults to \textsc{Accept} on every return, and the vector belief $B_i^t(j)$ is collapsed onto a scalar $c[i]$ via mean-axis fold. With these collapses, the Stage-1 TCPB outsourcing utility reduces to the explicit weighted form
+The full EDO Stage-2 execution loop is a recursive \textsc{Process} function that selects among the three primitive actions (R1 \textsc{DoSelf} / \textsc{Outsource} / \textsc{Split}), performs per-handoff audit (R2) on every \textsc{Outsource} return, and updates the vector belief $B_i^{t+1}(j)$ via an EMA step (R3) for each audit event in the resulting task tree. The complete pseudocode, including the recursion bounds ($H_{\max}{=}4$, $d_{\max}{=}3$, $n_{\max}{=}12$, $k_{\max}{=}3$), the four-class \textsc{Audit} decision protocol, and the Stage-1 fallback projection, is given in Algorithm~\ref{alg:edo-stage2-loop} (Appendix~E). The reported empirical results in Table~\ref{tab:main-results} come from the degenerate Stage-1 instance of this loop, which we call \textbf{Terminal-Consensus Peer Backpropagation (TCPB)}: \textsc{Split} is disabled, \textsc{Audit} defaults to \textsc{Accept} on every return, and the vector belief $B_i^t(j)$ is collapsed onto a scalar $c[i]$ via mean-axis fold. With these collapses, the Stage-1 TCPB outsourcing utility reduces to the explicit weighted form
 \[
 U^{\text{out}}_i(z, j) \;=\; 0.55\,c[j] + 0.20\,\mathrm{accept}(j) + 0.10\,\mathrm{forward\_bias}(j) - \lambda_a\,\mathrm{audit}(z),
 \]
 where $c[j]\in[0,1]$ is the scalar competence projection of $B_i(j)$, $\mathrm{accept}(j)$ is $j$'s historical acceptance rate as upstream auditor, $\mathrm{forward\_bias}(j)$ is a topology-driven flow prior, and $\lambda_a{=}0.02$ is the accept margin. The Prototype Scope Box below restates this restriction component-by-component.
-
-\begin{algorithm}[!ht]
-\caption{EDO Stage-2 execution loop (single sample, recursive). Algorithm specifies the full EDO mechanism integrating R1 \texttt{split}, R2 recursive audit, and R3 vector-belief routing. Table~\ref{tab:main-results} reports the degenerate Stage-1 instance (TCPB) where \textsc{Split} is disabled and \textsc{Audit} defaults to \textsc{Accept}; the Prototype Scope Box describes that restriction precisely. Deterministic instantiations of $\phi$, $\textsc{Fit}$, and $\textsc{evidence\_extract}$ are in the executable spec [Anonymous Suppl.] \S 1--3.}
-\label{alg:edo-stage2-loop}
-\small
-\begin{algorithmic}[1]
-\Require Root task $z_0$, gold $y$; agent set $\mathcal{A}$ with sparse adjacency $\mathcal{N}$; vector belief $B_i^{t}{:}\,\mathcal{A}{\times}\mathcal{A}{\to}[0,1]^{7}$ (R3); empty task tree $\mathcal{T}$ rooted at $z_0$; constants $H_{\max}{=}4$, $F_{\textsc{th}}{=}0.5$, $\delta_a{=}0.02$, $\nu{=}0.2$, $k_{\max}{=}3$, $d_{\max}{=}3$, $n_{\max}{=}12$.
-\Ensure Predicted $\hat{y}$; updated belief $B^{t+1}$.
-\Function{Process}{$z, i, \mathcal{T}$}
-  \State $\phi \gets \textsc{extract}(z)$ \Comment{rule, no LLM call}
-  \State $U^{\textsc{s}} \gets \textsc{Fit}(P_i,\phi) - \lambda_c\textit{Cost}_{\textit{self}}$
-  \For{$j \in \mathcal{N}(i)$}
-    \State $U^{\textsc{o}}_j \gets \textsc{Fit}(B_i^{t}(j),\phi) - \lambda_a\textit{AuditCost}$
-  \EndFor
-  \State $U^{\textsc{p}} \gets \textsc{SplitGain}(z) - \lambda_m\textit{MergeCost}$ \Comment{R1}
-  \If{$\textit{depth}(z){\geq}d_{\max}$ \textbf{or} $|\mathcal{T}|{\geq}n_{\max}$}
-    \State $U^{\textsc{p}} \gets {-}\infty$ \Comment{bound: SPLIT disabled}
-  \EndIf
-  \State $a \gets \arg\max\{U^{\textsc{s}},\,\max_j U^{\textsc{o}}_j,\,U^{\textsc{p}}\}$
-  \If{$a{=}\textsc{DoSelf}$}
-    \State \Return $\textsc{LLM\_answer}(z,P_i),\,\textsc{Accept}$
-  \ElsIf{$a{=}\textsc{Outsource}(j^{\star})$}
-    \State $r,\textit{stat} \gets \textsc{Process}(z, j^{\star}, \mathcal{T})$
-    \State $e \gets \textsc{audit}(i,j^{\star},z,r)$ \Comment{R2; rule-based; no LLM call by default}
-    \State $\mathcal{T}.\textsc{apply\_audit}(z,e)$ \Comment{writes \texttt{audit\_status}; jsonl-buffered}
-    \If{$e.\textit{decision}{\in}\{\textsc{Accept},\textsc{AcceptWithNote}\}$} \Return $r, e.\textit{decision}$ \EndIf
-    \If{$e.\textit{decision}{=}\textsc{RejectReroute}$ \textbf{and} unvisited $j' \in \mathcal{N}(i)$ exists}
-      \State \Return \textsc{Process}$(z, j', \mathcal{T})$
-    \Else \, $a \gets \textsc{Split}$ \Comment{escalate to RESPLIT}
-    \EndIf
-  \EndIf
-  \If{$a{=}\textsc{Split}$}
-    \State $\{z_1,\!\dots\!,z_k\} \gets \textsc{LLM\_decompose}(z)$ with $k{\leq}k_{\max}$ \Comment{R1}
-    \State $\mathcal{T}.\textsc{add\_children}(z,\{z_l\})$
-    \State \Return $\textsc{integrate}(\{\textsc{Process}(z_l,i,\mathcal{T})\}_{l=1}^k),\,\textsc{Accept}$
-  \EndIf
-\EndFunction
-\State $\hat{y},\_ \gets \textsc{Process}(z_0, \textit{root\_agent}, \mathcal{T})$
-\Statex \quad\textit{// R3 vector-belief update (one EMA step per audit event)}
-\For{$e \in \mathcal{T}.\textit{audit\_events}$}
-  \State $B_i^{t{+}1}(j) \gets \textsc{clip}\!\big((1{-}\nu) B_i^{t}(j) + \nu\cdot \textsc{evidence\_extract}(e,\phi(z)),0.05,0.95\big)$
-\EndFor
-\Statex \quad\textit{// Stage-1 fallback: terminal scalar update on root accepting agent (TCPB)}
-\State $r \gets {+}1$ \textbf{if} $F_1(\hat{y},y){\geq}F_{\textsc{th}}$ \textbf{else} ${-}1$;\, project $B^{t{+}1} \to c$ via mean-axis fold (cf.\ Prototype Scope Box (v))
-\State \Return $\hat{y},\,B^{t+1}$
-\end{algorithmic}
-\end{algorithm}
 
 \subsection{Why the separation matters}
 
@@ -449,6 +402,58 @@ mean $\pm$ std & $+1.65 \pm 1.05$ & $-2.50 \pm 1.32$ & $-37.1 \pm 0.19$ \\
 \end{table}
 
 The token cost reduction is consistent across shards (cross-shard $\sigma{=}0.19$\%); the F1 lift sits inside noise at $n{=}200$ per shard, and EM trends mildly negative ($-2.50 \pm 1.32$ pp). We report this as \textbf{preliminary and not statistically demonstrated}: it suggests the action-policy menu can compress hop count without harming F1, but the headline empirical claims of the paper are deliberately not based on this preliminary evidence. The Stage-2 evaluation agenda described in \S 4.4 (E1--E5), executed at full validation scale ($n{=}7405$) with $\geq 3$ seeds and paired bootstrap CI, is required to settle whether the F1 trend is real and whether the EM regression reflects a missing synthesizer pass that future Stage-2 iterations must restore.
+
+\section*{Appendix E: EDO Stage-2 Execution Loop (Pseudocode)}
+\label{sec:appendix-e}
+
+This appendix gives the full pseudocode for the EDO Stage-2 execution loop referenced from \S 3.6, \S 3.9, and Finding~3 in \S 4.3. Section 3.6 of the main body specifies the prose semantics and the Stage-1 TCPB scoring formula; this appendix records the operational form. Empirical numbers in Section~\ref{sec:experiments} come from the degenerate Stage-1 instance only --- \textsc{Split} is disabled, \textsc{Audit} defaults to \textsc{Accept}, and the vector belief is collapsed via mean-axis fold (Prototype Scope Box, item (v)). Deterministic instantiations of $\phi$, $\textsc{Fit}$, and $\textsc{evidence\_extract}$ are given in the executable spec [Anonymous Suppl.] \S 1--3.
+
+\begin{algorithm}[!ht]
+\caption{EDO Stage-2 execution loop (single sample, recursive). The full EDO mechanism integrating R1 \texttt{split}, R2 recursive audit, and R3 vector-belief routing. Table~\ref{tab:main-results} reports the degenerate Stage-1 instance (TCPB) where \textsc{Split} is disabled and \textsc{Audit} defaults to \textsc{Accept}.}
+\label{alg:edo-stage2-loop}
+\small
+\begin{algorithmic}[1]
+\Require Root task $z_0$, gold $y$; agent set $\mathcal{A}$ with sparse adjacency $\mathcal{N}$; vector belief $B_i^{t}{:}\,\mathcal{A}{\times}\mathcal{A}{\to}[0,1]^{7}$ (R3); empty task tree $\mathcal{T}$ rooted at $z_0$; constants $H_{\max}{=}4$, $F_{\textsc{th}}{=}0.5$, $\delta_a{=}0.02$, $\nu{=}0.2$, $k_{\max}{=}3$, $d_{\max}{=}3$, $n_{\max}{=}12$.
+\Ensure Predicted $\hat{y}$; updated belief $B^{t+1}$.
+\Function{Process}{$z, i, \mathcal{T}$}
+  \State $\phi \gets \textsc{extract}(z)$ \Comment{rule, no LLM call}
+  \State $U^{\textsc{s}} \gets \textsc{Fit}(P_i,\phi) - \lambda_c\textit{Cost}_{\textit{self}}$
+  \For{$j \in \mathcal{N}(i)$}
+    \State $U^{\textsc{o}}_j \gets \textsc{Fit}(B_i^{t}(j),\phi) - \lambda_a\textit{AuditCost}$
+  \EndFor
+  \State $U^{\textsc{p}} \gets \textsc{SplitGain}(z) - \lambda_m\textit{MergeCost}$ \Comment{R1}
+  \If{$\textit{depth}(z){\geq}d_{\max}$ \textbf{or} $|\mathcal{T}|{\geq}n_{\max}$}
+    \State $U^{\textsc{p}} \gets {-}\infty$ \Comment{bound: SPLIT disabled}
+  \EndIf
+  \State $a \gets \arg\max\{U^{\textsc{s}},\,\max_j U^{\textsc{o}}_j,\,U^{\textsc{p}}\}$
+  \If{$a{=}\textsc{DoSelf}$}
+    \State \Return $\textsc{LLM\_answer}(z,P_i),\,\textsc{Accept}$
+  \ElsIf{$a{=}\textsc{Outsource}(j^{\star})$}
+    \State $r,\textit{stat} \gets \textsc{Process}(z, j^{\star}, \mathcal{T})$
+    \State $e \gets \textsc{audit}(i,j^{\star},z,r)$ \Comment{R2; rule-based; no LLM call by default}
+    \State $\mathcal{T}.\textsc{apply\_audit}(z,e)$ \Comment{writes \texttt{audit\_status}; jsonl-buffered}
+    \If{$e.\textit{decision}{\in}\{\textsc{Accept},\textsc{AcceptWithNote}\}$} \Return $r, e.\textit{decision}$ \EndIf
+    \If{$e.\textit{decision}{=}\textsc{RejectReroute}$ \textbf{and} unvisited $j' \in \mathcal{N}(i)$ exists}
+      \State \Return \textsc{Process}$(z, j', \mathcal{T})$
+    \Else \, $a \gets \textsc{Split}$ \Comment{escalate to RESPLIT}
+    \EndIf
+  \EndIf
+  \If{$a{=}\textsc{Split}$}
+    \State $\{z_1,\!\dots\!,z_k\} \gets \textsc{LLM\_decompose}(z)$ with $k{\leq}k_{\max}$ \Comment{R1}
+    \State $\mathcal{T}.\textsc{add\_children}(z,\{z_l\})$
+    \State \Return $\textsc{integrate}(\{\textsc{Process}(z_l,i,\mathcal{T})\}_{l=1}^k),\,\textsc{Accept}$
+  \EndIf
+\EndFunction
+\State $\hat{y},\_ \gets \textsc{Process}(z_0, \textit{root\_agent}, \mathcal{T})$
+\Statex \quad\textit{// R3 vector-belief update (one EMA step per audit event)}
+\For{$e \in \mathcal{T}.\textit{audit\_events}$}
+  \State $B_i^{t{+}1}(j) \gets \textsc{clip}\!\big((1{-}\nu) B_i^{t}(j) + \nu\cdot \textsc{evidence\_extract}(e,\phi(z)),0.05,0.95\big)$
+\EndFor
+\Statex \quad\textit{// Stage-1 fallback: terminal scalar update on root accepting agent (TCPB)}
+\State $r \gets {+}1$ \textbf{if} $F_1(\hat{y},y){\geq}F_{\textsc{th}}$ \textbf{else} ${-}1$;\, project $B^{t{+}1} \to c$ via mean-axis fold (cf.\ Prototype Scope Box (v))
+\State \Return $\hat{y},\,B^{t+1}$
+\end{algorithmic}
+\end{algorithm}
 
 \bibliography{custom}
 
