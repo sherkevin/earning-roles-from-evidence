@@ -1,8 +1,10 @@
 # Page Budget Audit (S-011)
 
-> Audit date: 2026-04-19
-> Source manuscript: `docs/paper/EMNLP_paper_draft.md` (EDO portion = lines 1–257; short-paper duplicate L258–365 ignored — pending U-003 merge)
-> Target: EMNLP Long Paper, **strict 8 content pages** main body (Limitations + References do **not** count). See `docs/demand.md §2 / §5`.
+> Audit date: 2026-04-19 (initial); 2026-04-20 (S-120 provider-switch note appended).
+> Source manuscript: ~~`docs/paper/EMNLP_paper_draft.md`~~ → **`article/latex/edo_paper.tex`** (writing target switched in R6 commit, 2026-04-19; the .md is now history-only).
+> Target: EMNLP Long Paper, **strict 8 content pages** main body (Limitations + References + Appendices do **not** count). See `docs/demand.md §2 / §5`.
+
+> **2026-04-20 update (S-120, provider switch)**: After R7's switch from kuaipao.ai (`oversea` block, deprecated) to xh.v1api.cc (`newapi` block, PRIMARY), all **future** Stage-2 fullval / external-baseline runs land under the new endpoint. The chain-200 numbers already in Table 1 (`fixed_self_claim` 0.7641 / `fixed_static_roles` 0.7454 / `fixed_peer_calibrated` 0.7381) and the validated `peer_calibrated` fullval (F1 = 0.7703, n = 7405) were collected under the **old** endpoint; their reproduction with the new endpoint is part of E-005 in `[stage2_sprint_kickoff_20260420]` and the cross-endpoint comparability caveat is now registered in §Limitations item (5) of `article/latex/edo_paper.tex` (added in R12). Page-budget impact: §Limitations grew by ~120 words; Appendix A grew by ~60 words. Both sections are **not counted** toward the 8-page main-body cap, so the COMPLIANT verdict is preserved.
 
 ---
 

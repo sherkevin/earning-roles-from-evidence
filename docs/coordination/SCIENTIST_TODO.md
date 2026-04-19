@@ -96,8 +96,8 @@
 | **S-116** | **§6 Conclusion 重写**：从"long-paper opportunity now lies in completing the transition"改为"we present a complete Stage-2 EDO + empirical wins on HotpotQA + MuSiQue"；保留 organizational-emergence framing 但加上 concrete deliverables | 60 min | 等 E-005 | ⏳ blocked on E-005 |
 | **S-117** | **§4 加 Stage-2 Results 章节**：R1/R2/R3 ablation table（edo_full / edo_audit_only / edo_split_only / edo_vector_only / Stage-1 baselines 5+ 种）+ MuSiQue 4-hop 第二 benchmark 表 + 多 seed × paired bootstrap 95% CI | 120 min | 等 E-005 + E-006 + E-007 | ⏳ blocked on E-005..E-007 |
 | **S-118** | **升级 Algorithm 1 → "EDO Stage-2 execution loop"**：3 个动作 (do_self/outsource/split) + 显式 audit step + vector belief update；保持 ½ 页内 | 45 min | 等 E-002 接口冻结（E-001 ✅ 2026-04-19，`workspace/idea04_core/task_tree.py` `TaskNode` + `TaskTreeState` 接口已冻结，可直接引用 16 字段 + 边界常量） | 🟡 partial unblocked: E-001 ✅；仍等 E-002 |
-| **S-119** | **更新 Figure 1 prompt** 强调 Stage-2 三机制（R1 split tree / R2 audit ladder / R3 vector belief）；派 `U-EXEC-007` 让用户重出图替换当前 placeholder | 30 min | none — 可立即做 | ⏳ 待做（不阻塞编译） |
-| **S-120** | **provider 切换尾巴**（U-EXEC-001 替代解决后的写作连带）：在 `docs/paper/page_budget_audit.md` 加一行 note 说"fullval 数据来源换为 newapi 通道"；§4 Limitations 加 1 句 provider 切换发生在 sprint 中（备 reviewer 问起） | 15 min | 等 engineer E-008 done（确认 newapi 可用） | ⏳ blocked on E-008 |
+| **S-119** | **更新 Figure 1 prompt** 强调 Stage-2 三机制（R1 split tree / R2 audit ladder / R3 vector belief）+ 新增 Panel C module-swap mini-diagrams (R3→AutoGen, R2→ChatEval) | 30 min | none | ✅ **已完成（2026-04-20，R11 commit `78d921b`）**：v2 prompt = 3 panel + R-tag 标注 + Panel C module-swap call-out；落 `docs/paper/figures_prompts/fig1_3action_policy_prompt.md`；USER_TODO §B.2 U-EXEC-004 同步加 v2 note |
+| **S-120** | **provider 切换尾巴**（U-EXEC-001 替代解决后的写作连带）：page_budget_audit.md 加 note + §5 Limitations 加 1 句 + Appendix A 补充 newapi swap 描述 | 15 min | E-008 ✅（R10 已 done） | ✅ **已完成（2026-04-20，R12 commit）**：§5 Limitations 4 项 → 5 项加 cross-endpoint comparability caveat；Appendix A 补 1 句"endpoint switched + integrity guard pre-send mode"；page_budget_audit.md 头部加 R12 update 块；编译验证 main body 仍 8 页 COMPLIANT |
 | **S-121** | **§4.x "External Baseline + Module-Swap Comparison" 子节** + 4-row 对比表（**已锁定 N=2**）：AutoGen original `select_speaker` vs +SWAP-1 (R3 vector belief)；ChatEval original `MetaReviewer.aggregate` vs +SWAP-3 (R2 audit)；含 paired-bootstrap CI + Δtoken；on HotpotQA-200 + MuSiQue-200 × ≥3 seeds。**直接关闭 reviewer R-FULL-001 fatal #3 (S6 cap)** + **直接反驳 fatal #1 (Finding 4 自证伪)** | 90 min | 等 engineer E-012 ✅ (swap 跑数完成) | ⏳ blocked on E-012（U-014/015/016 ✅ R10 解锁）|
 | **S-122** | **§4.x "Module-Swap Ablation" 表格**（**已锁定**：2 hosts × {original, +our swap} × 2 benchmarks = 8 行；如页数紧可与 S-121 同表合并） | 45 min | 同 S-121 | ⏳ blocked on E-012 |
 | **S-123** | **§2 Related Work 反向引用 actual baselines**：§2.1 加一句"我们在 §4.x module-swap 进 AutoGen `GroupChatManager`（SWAP-1）"；§2.2 加一句"我们在 §4.x module-swap 进 ChatEval `MetaReviewer`（SWAP-3）"；显式承诺 reviewer 这是 controlled 比较不是 cherry-pick | 30 min | S-121 + S-122 ✅ | ⏳ blocked on S-121 + S-122 |
@@ -232,16 +232,21 @@ S-104 是**永久强制项**，永远不会被 ✅ 关闭。
 - 阻塞字段为"用户人工活 X"且 `USER_TODO §B` 该 `U-EXEC-XXX` 仍 ⏳ → blocked
 - 否则 → 立即干
 
-### F.7 当前 sprint 自查
+### F.7 当前 sprint 自查（R12 commit 后状态）
 
 | 项 | 状态 | 我的下一步 |
 |---|---|---|
-| S-119 (Figure 1 prompt 升级) | ⏳ 无阻塞 | **可立即做**（R8 commit 后启动） |
-| S-115/S-116/S-117 | ⏳ blocked on engineer E-005 | 等 implementation_log ack |
-| S-118 | 🟡 E-001 ✅ (2026-04-19，task_tree 接口冻结)；仍等 E-002 接口冻结 | 等 implementation_log ack |
-| S-120 (provider 切换写作尾巴) | ⏳ blocked on engineer E-008 | 等 implementation_log ack |
-| S-005 (model drift 写 appendix) | ✅ 已在 R3 Appendix A 落地 | done |
+| S-119 (Figure 1 prompt v2 升级) | ✅ done in **R11** (`78d921b`) | 等用户用 v2 prompt 重出 Figure 1 (U-EXEC-004) |
+| S-120 (provider 切换写作尾巴) | ✅ done in **R12** (本轮) | 等 R-FULL-002 reviewer 验证 cross-endpoint caveat 写法 |
+| S-118 (Algorithm 1 升级) | 🟡 E-001 ✅ partial unblock；仍等 E-002 接口冻结 | 等 implementation_log ack E-002 |
+| S-115/S-116/S-117 (Stage-2 framing rewrite + §4 Stage-2 Results) | ⏳ blocked on engineer E-005 fullval data | 等 implementation_log ack E-005 |
+| S-121/S-122/S-123 (§4.x external + module-swap 写作) | ⏳ blocked on engineer E-012 swap comparison | 等 implementation_log ack E-012 |
+| S-005 (model drift Limitations) | ✅ 已在 R3 Appendix A 落地 + R12 补 cross-endpoint caveat | done |
+| S-009 (fullval 真数字替换 §4.3) | ⏳ blocked on engineer E-005 | tracking-S-009 |
+| S-010 (Figure 1 嵌入论文) | ⏳ blocked on user U-EXEC-004 出图 | tracking-S-010 |
 | 其余 §B.5 (S-105/108/110/111/112/113/114) | ✅ 全部 done in R1..R5 | done |
+
+**当前所有可立即做的 ❌ / ⏳ 项均已 ✅。下一轮启动条件**：(a) engineer 在 implementation_log ack E-002 接口冻结 → 启动 S-118 Algorithm 1 升级；或 (b) engineer ack E-005 fullval done → 启动 S-115/S-116/S-117；或 (c) engineer ack E-012 swap done → 启动 S-121/S-122/S-123；或 (d) 用户用 v2 prompt 出 Figure 1 PNG → 启动 S-010 嵌入。
 
 ---
 
@@ -267,6 +272,8 @@ S-104 是**永久强制项**，永远不会被 ✅ 关闭。
 | 2026-04-20 | scientist (per user instruction) | **R8 commit / 全角色注意事项落地**：本文件 §F 新增 7 个子节（Provider 红线 / 论文写作硬约束 / 图表分工 / 决策路由 / S-104 强制循环 / 不停问下一步 / sprint 自查表）；同步 USER_TODO §E + REVIEWER_TODO §F + implementation_log `[pinned_cautions_for_engineer_20260420]`；目标：任何角色开新窗口先重读各自 TODO 末的注意事项段，避免 R0-R7 已建立的 invariants 被无意破坏 | `SCIENTIST_TODO.md §F` + 3 个配对 TODO 文件 |
 | 2026-04-20 | scientist (per user instruction "对比实验是要补的") | **R9 commit / 外部 baseline workstream planning**：审计 .tex Table 1 (3 内部) + Table 2 (5 内部) → ZERO 外部 baseline；新文件 [`docs/paper/external_baseline_plan.md`](../paper/external_baseline_plan.md)（10 §：gap audit / why module-swap / 6 候选 / SWAP 矩阵 / E-009..E-012 派工 / 时间线 / 决策 / 验收 / 风险 / refs）；§A 加 U-014/U-015/U-016 cross-ref；§B.5 加 S-121/S-122/S-123；implementation_log append `[external_baseline_workstream_20260420]` 含 E-009..E-012；推荐配置 = 2 systems (AutoGen + ChatEval) + R2+R3 swap (SWAP-1 + SWAP-3) + drop E-007 | `docs/paper/external_baseline_plan.md` (新建) + `USER_TODO §A,§D` + `SCIENTIST_TODO §A,§B.5,§D` + `implementation_log.md` |
 | 2026-04-20 | scientist (落地用户 U-014/U-015/U-016 三决策一次性批准) | **R10 commit / 外部 baseline workstream unblocked**（用户原话"三个新决策都按照你的建议来"）：U-014 ✅ N=2 (AutoGen + ChatEval) / U-015 ✅ R2+R3 swap (SWAP-1 + SWAP-3) / U-016 ✅ drop E-007；§A cross-ref 同步；§B.5 S-121/S-122/S-123 锁定 scope；implementation_log 末加 `[external_baseline_decisions_landed_20260420]` + 标 E-007 cancelled + E-009 unblocked；PROJECT_STRUCTURE §0 sprint 状态块补充外部 workstream 已 active | `USER_TODO §A,§C,§D` + `SCIENTIST_TODO §A,§B.5,§D` + `implementation_log` + `PROJECT_STRUCTURE §0` |
+| 2026-04-20 | scientist | **R11 commit / S-119 Figure 1 prompt v2 升级**：从 2 panel 升 3 panel；Panel A 加 R1/R2/R3 italic tags；Panel B 加 Stage-2-only greyed-out placeholders；**新增 Panel C** (module-swap mini-diagrams: R3→AutoGen `select_speaker` + R2→ChatEval `MetaReviewer.aggregate`，purple #7d3aa8 swap arrows)；color palette 加 4th accent；AI prompt 重写；acceptance criteria + failure modes 各加新条；USER_TODO §B.2 U-EXEC-004 加 v2 note | `docs/paper/figures_prompts/fig1_3action_policy_prompt.md` (v1→v2) + `USER_TODO §B.2` |
+| 2026-04-20 | scientist | **R12 commit / S-120 provider 切换尾巴**（E-008 R10 已 ✅ → 此项 unblock 后立即做）：§5 Limitations 4→5 项加 cross-endpoint comparability caveat；Appendix A 补 1 句 endpoint switched + integrity guard pre-send mode；page_budget_audit.md 头部加 R12 update 块标注 fullval 数据来源切换；编译验证 main body 仍 8 页 COMPLIANT (PDF 总页 10→11，新增 1 页 Limitations + Appendix 文字) | `article/latex/edo_paper.tex §5 + Appendix A` + `docs/paper/page_budget_audit.md` + `SCIENTIST_TODO §B.5,§D` |
 
 ---
 

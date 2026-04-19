@@ -1689,3 +1689,150 @@ vs 原 plan 净增 +5-6 天用于 external baseline workstream，由 buffer 吸�
   - `PROJECT_STRUCTURE.md` §0 sprint 状态块补充外部 baseline workstream 已 unblocked
 - commit ref: R10 commit（与 engineer Day 1 closure 同 commit 落地）
 - next_action: 见上"派给 engineer / scientist 的明确指令"两节
+
+---
+
+### [E-002_action_policy_module_20260420]
+
+- when: 2026-04-19 (engineer Day 1.5, R11 commit pending)
+- who: engineer (executing R10 dispatch P0 sprint Day 1.5)
+- intent: 新建 `workspace/idea04_core/action_policy.py` 实现 EDO 三动作策略 `do_self / outsource(j) / split(z)`；`split` 走 1 次 LLM decomposition call；硬边界继承 task_tree 常量 (`MAX_SUBTASKS_PER_SPLIT=3` / `MAX_TREE_DEPTH=3` / `MAX_TOTAL_NODES=12`)。per `idea.md §10` 三动作 spec + `artifacts/edo_lite_executable_spec.md §4.3` 终止规则。
+- status: ⏳ in_progress (本块)
+- depends_on: E-001 ✅ (task_tree.py) + E-008 ✅ (newapi probe; LLM decomposition call 走 newapi)
+- unblocks_for_engineer: E-005 整合 (Stage-2 fullval batch); 部分 unblock E-003 (audit_runtime 可选用 action_policy 的 reroute 钩子)
+- unblocks_for_scientist: S-118 完全 unblock (task_tree + action_policy 双接口冻结后 Algorithm 1 可定稿)
+- planned_steps:
+  1. 创建 `workspace/idea04_core/action_policy.py`：
+     - `Action` enum: `DO_SELF` / `OUTSOURCE` / `SPLIT`
+     - `ActionDecision` dataclass: `action: Action` / `target_neighbor: str | None` (for OUTSOURCE) / `subtasks: list[TaskNode] | None` (for SPLIT) / `rationale: str` / `utility_scores: dict[str, float]`
+     - `select_action(node: TaskNode, neighbors: list[str], state: TaskTreeState, llm_callable, ...) -> ActionDecision` 主函数
+     - `_estimate_utility_self() / _estimate_utility_out() / _estimate_utility_split()`：per `idea.md §11.2` formula instantiation (用 evidence_sufficiency / uncertainty / loop_risk 等启发式 proxy)
+     - `_call_llm_split(node, llm_callable) -> list[TaskNode]`: 走 `prompts/decomposition_prompt.txt` + parse JSON 输出 → 至多 `MAX_SUBTASKS_PER_SPLIT` 个 children
+     - bound enforcement: `select_action` 拒绝 SPLIT if 当前 tree 已到 `MAX_TREE_DEPTH` / `MAX_TOTAL_NODES`；自动降级到 DO_SELF / OUTSOURCE 并写 rationale
+  2. 创建 `prompts/decomposition_prompt.txt`：system prompt 让 LLM 把 multi-hop 问题拆成 ≤ 3 个独立 subquestions，输出 strict JSON `{"subtasks": [{"task_text": "...", "task_type_guess": "..."}]}`
+  3. 创建 `workspace/idea04_core/test_action_policy.py`：
+     - test_select_action_do_self_when_high_self_utility（mock LLM 不调用）
+     - test_select_action_outsource_when_neighbor_better
+     - test_select_action_split_when_evidence_breadth_high
+     - test_split_calls_llm_with_correct_prompt（mock llm_callable, 验证 prompt 内容）
+     - test_split_parses_valid_json_response（mock returns valid JSON, 验证 children 数 ≤ 3）
+     - test_split_rejects_overflow_response（mock returns 5 children, 取前 3 + warn）
+     - test_split_rejects_at_max_tree_depth（depth=3 时 SPLIT 自动降级到 DO_SELF）
+     - test_split_rejects_at_max_total_nodes（11/12 时 SPLIT 降级；12/12 时 OUTSOURCE 也优于 SPLIT）
+     - test_utility_estimators_are_in_range（[0, 1] sanity check）
+  4. 跑 pytest，输出落 `artifacts/test_results/E-002_action_policy_pytest_<TS>.txt`
+  5. **不动** `methods.py` / `runner.py`（这些在 E-005 整合阶段才改）
+- planned_files_added:
+  - `workspace/idea04_core/action_policy.py`
+  - `workspace/idea04_core/test_action_policy.py`
+  - `prompts/decomposition_prompt.txt`
+  - `artifacts/test_results/E-002_action_policy_pytest_<TS>.txt`
+- planned_files_modified:
+  - `docs/coordination/implementation_log.md`（本块翻 ✅）
+- expected_verification:
+  - pytest 9 个 test 全绿
+  - `python -m py_compile workspace/idea04_core/action_policy.py` exit 0
+  - R0 baseline `validate_logs.py` 仍 [OK]（C-2 byte-id 不回归 — 本块不改老路径）
+- pinned_cautions_acknowledged: C-2 (Stage-1 byte-id 回归), C-3 (forward-compat — ActionDecision 含 metadata stub), C-4 #1 (R1 split 增加 ~+20-30% tokens — 本块只 implement 边界，token 监控属 E-005)
+- next_action:
+  - 若 ✅：本块翻 ✅ + sweep S-118 (Algorithm 1) full unblock + 通知 scientist 接口 ready
+  - 若 ❌：diagnosis + 自挂 `U-Rollback-XXX-decide`（如 split decomposition prompt 反复返回 invalid JSON）
+
+---
+
+### [E-003_audit_runtime_module_20260420]
+
+- when: 2026-04-19 (engineer Day 1.5, R11 commit pending; parallel with E-002)
+- who: engineer (executing R10 dispatch P0 sprint Day 1.5)
+- intent: 新建 `workspace/idea04_core/audit_runtime.py` 实现 EDO 递归 audit 机制；`AuditDecision` 枚举 4 类 (ACCEPT / ACCEPT_WITH_NOTE / REJECT_REROUTE / REJECT_RESPLIT)；上游节点 audit 下游 candidate_answer；audit 结果回写 task_tree.audit_status + 落 audit_events.jsonl。per `idea.md §12` 递归验收 + `artifacts/edo_lite_executable_spec.md §4.2` audit decision rule
+- status: ⏳ in_progress (本块)
+- depends_on: E-001 ✅ (task_tree.py)
+- unblocks_for_engineer: E-004 (R3 vector belief 需要 audit signal)、E-005 (整合 fullval batch)
+- planned_steps:
+  1. 创建 `workspace/idea04_core/audit_runtime.py`：
+     - `AuditDecision` enum: `ACCEPT` / `ACCEPT_WITH_NOTE` / `REJECT_REROUTE` / `REJECT_RESPLIT`
+     - `AuditEvent` dataclass: `event_id: str` / `upstream_id: str` / `downstream_id: str` / `task_id: str` / `decision: AuditDecision` / `rework_cost: float` / `value_gain: float` / `timeliness: float` / `decomposition_help: float` / `integration_help: float` / `rationale: str` / `timestamp: str`（per idea.md §13.1 ℓ_(u→v,z) 6-元组扩展）
+     - `audit_candidate(upstream_node, downstream_node, downstream_result, llm_callable=None) -> AuditEvent` 主函数
+     - **rule-based 主路径**（per `edo_lite_executable_spec.md §4.2`）:
+       - candidate empty/refusal → `REJECT_REROUTE`
+       - candidate 长度 < `MIN_ANSWER_LEN_CHARS` (默认 3) → `ACCEPT_WITH_NOTE`（"too short, may be incomplete"）
+       - candidate 含 refusal 模式（"I don't know" / "无法回答" / "不确定" 等）→ `ACCEPT_WITH_NOTE` 或 `REJECT_REROUTE`（取决于 hop_count）
+       - 其余 → `ACCEPT`
+     - 可选 LLM-based audit（`llm_callable` 不为 None）：用 `prompts/audit_prompt.txt` 让 LLM 给出结构化 audit JSON
+     - `apply_audit_to_tree(state: TaskTreeState, event: AuditEvent) -> None`: 回写 `state.nodes[task_id].audit_status` + append event 到 jsonl buffer
+     - `AuditEventBuffer`: 内存 buffer + `flush_to_jsonl(path)` 方法 + per-event schema 校验
+  2. 创建 `prompts/audit_prompt.txt`（可选 LLM-audit 路径用）：让 LLM 输出 strict JSON `{"decision": "...", "value_gain": ..., "rationale": "..."}`
+  3. 创建 `workspace/idea04_core/test_audit_runtime.py`：
+     - test_audit_empty_candidate_rejects_reroute
+     - test_audit_short_candidate_accept_with_note
+     - test_audit_refusal_at_shallow_hop_reroute
+     - test_audit_refusal_at_deep_hop_accept_with_note
+     - test_audit_normal_candidate_accept
+     - test_apply_audit_writes_back_to_node
+     - test_audit_event_jsonl_round_trip（write + read back byte-id）
+     - test_audit_event_buffer_flush（多 event 写入 + sequential read）
+     - test_llm_audit_path_calls_with_correct_prompt（mock llm_callable）
+     - test_audit_rejects_invalid_decision_string
+  4. 跑 pytest，输出落 `artifacts/test_results/E-003_audit_runtime_pytest_<TS>.txt`
+- planned_files_added:
+  - `workspace/idea04_core/audit_runtime.py`
+  - `workspace/idea04_core/test_audit_runtime.py`
+  - `prompts/audit_prompt.txt`
+  - `artifacts/test_results/E-003_audit_runtime_pytest_<TS>.txt`
+- planned_files_modified:
+  - `docs/coordination/implementation_log.md`（本块翻 ✅）
+- expected_verification:
+  - pytest 10 个 test 全绿
+  - `python -m py_compile workspace/idea04_core/audit_runtime.py` exit 0
+  - R0 baseline `validate_logs.py` 仍 [OK]
+  - audit_events.jsonl schema 文档化（在 module docstring 内）
+- pinned_cautions_acknowledged: C-2 (Stage-1 byte-id), C-3 (forward-compat — AuditEvent.metadata + schema_version), C-4 #2 (audit reroute 增加 max_handoff 风险 — 本块在 docstring 标注 + 文档建议 max_handoff 提到 6)
+- next_action:
+  - 若 ✅：本块翻 ✅ + 通知 E-004（vector belief evidence_extract 输入 schema 已就绪）
+  - 若 ❌：diagnosis + 自挂
+
+---
+
+### [E-009_external_baseline_survey_20260420]
+
+- when: 2026-04-19 (engineer Day 1.5, R11 commit pending; parallel with E-002 / E-003)
+- who: engineer (executing R10 dispatch — newly unblocked by U-014/U-015/U-016 ✅)
+- intent: 对用户已选定的 finalist (AutoGen + ChatEval) 做 license / freshness / OpenAI-compat / repo-size 实地核查，输出 `artifacts/external_baselines/survey_report.md`。R10 已锁定 finalist，本块无须重选只须验证 + 准备 E-010 reproduce 阶段的入场条件
+- status: ⏳ in_progress (本块)
+- depends_on: U-014/U-015/U-016 ✅ (R10) + E-008 ✅ (newapi 测试 quickstart 可走 newapi)
+- unblocks_for_engineer: E-010 (reproduce baseline) — 本块输出 finalist license + 安装可行性
+- planned_steps:
+  1. **AutoGen** (本地已有 `workspace/autogen` clone):
+     - `git log -1 --format='%h %ai %s' workspace/autogen`：last commit 时间
+     - 读 `workspace/autogen/LICENSE`：license 类型
+     - `Get-ChildItem workspace/autogen -Recurse | Measure-Object -Property Length -Sum`: repo size
+     - 检查 `workspace/autogen/python/packages/` 现有 packages
+     - 检查是否 OpenAI-compat (检查 `openai` / `httpx` 依赖)
+     - 不实际 install (避免污染本地 env)；只做 metadata check
+  2. **ChatEval** (须 fresh clone):
+     - `git ls-remote https://github.com/chanchimin/ChatEval.git`：last commit 时间
+     - WebFetch GitHub README + LICENSE
+     - 读 README 评估 OpenAI-compat 与依赖
+     - 不本地 clone (节省 disk)；记录 git URL + recommended branch
+  3. **OpenAI-compat 验证（共同）**：两个 repo 是否能透明替换 openai 客户端 base_url 到 newapi (`https://xh.v1api.cc/v1`)；这决定 E-010 reproduce 阶段是否能直接走我们的 newapi
+  4. 输出 `artifacts/external_baselines/survey_report.md`：
+     - § 1 finalist 锁定 (per U-014 ✅)
+     - § 2 AutoGen 数据 (license / last commit / size / OpenAI-compat / 推荐 swap point per U-015 = R3 → `select_speaker`)
+     - § 3 ChatEval 数据 (同上结构 + R2 → `MetaReviewer`)
+     - § 4 风险登记（external_baseline_plan.md §5 风险条目对照）
+     - § 5 next: E-010 reproduce 工单进入条件 + estimated time
+- planned_files_added:
+  - `artifacts/external_baselines/survey_report.md`
+- planned_files_modified:
+  - `docs/coordination/implementation_log.md`（本块翻 ✅）
+- expected_verification:
+  - survey_report.md 含 5 节 + 全部 metadata 字段填充
+  - finalist 锁定与 U-014 ✅ 一致 (AutoGen + ChatEval)
+  - 不污染本地 env (不跑 pip install)
+  - 不烧 newapi quota (本块只做 metadata + WebFetch，不发 chat/completions)
+- pinned_cautions_acknowledged: C-1 (provider — 仅 metadata check，不发 LLM 请求), C-7 (无 key 写入)
+- next_action:
+  - 若 ✅：本块翻 ✅ + 通知 E-010 入场条件（license + size + compat verdict）
+  - 若 ❌（如 ChatEval repo 不可达 / license 不兼容）：diagnosis + 在 USER_TODO §A 加 `U-018-external-baseline-fallback-decide`
+
+---
