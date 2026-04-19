@@ -229,41 +229,53 @@ def select_action(
             utility_scores=scores,
         )
 
-    # SPLIT branch
-    if not _can_split(node, state):
-        # Should be filtered out by u_split == -2.0, but guard defensively
+    # SPLIT branch — try; fall through to next-best on infeasibility / LLM failure
+    def _next_best_after_split(reason: str, extra_meta: Optional[dict] = None) -> ActionDecision:
+        """Pick the better of {DO_SELF, OUTSOURCE} when SPLIT gets downgraded.
+
+        Resists the temptation to always pick DO_SELF: if the OUTSOURCE score
+        was actually higher than DO_SELF, we should respect that ranking.
+        """
+        meta = {"split_downgrade": reason}
+        if extra_meta:
+            meta.update(extra_meta)
+        if u_out_max > u_self and best_nb_id is not None:
+            return ActionDecision(
+                action=Action.OUTSOURCE,
+                target_neighbor=best_nb_id,
+                rationale=(
+                    f"SPLIT was best (utility {u_split:.3f}) but downgraded ({reason}); "
+                    f"next-best OUTSOURCE to {best_nb_id!r} (utility {u_out_max:.3f})"
+                ),
+                utility_scores=scores,
+                metadata=meta,
+            )
         return ActionDecision(
             action=Action.DO_SELF,
             rationale=(
-                f"SPLIT was infeasible (depth={node.depth}/MAX={MAX_TREE_DEPTH}, "
-                f"total_nodes={state.total_nodes()}/MAX={MAX_TOTAL_NODES}); "
-                "downgraded to DO_SELF"
+                f"SPLIT was best (utility {u_split:.3f}) but downgraded ({reason}); "
+                f"next-best DO_SELF (utility {u_self:.3f})"
             ),
             utility_scores=scores,
+            metadata=meta,
+        )
+
+    if not _can_split(node, state):
+        # Should already be filtered by u_split == -2.0, but defensive
+        return _next_best_after_split(
+            f"infeasible (depth={node.depth}/MAX={MAX_TREE_DEPTH}, "
+            f"total_nodes={state.total_nodes()}/MAX={MAX_TOTAL_NODES})"
         )
     if llm_callable is None:
-        return ActionDecision(
-            action=Action.DO_SELF,
-            rationale="SPLIT was best but no llm_callable supplied; downgraded to DO_SELF",
-            utility_scores=scores,
-        )
+        return _next_best_after_split("no llm_callable supplied")
 
     try:
         subtasks = _call_llm_split(node, llm_callable, decomposition_prompt_path)
     except ActionPolicyError as e:
-        return ActionDecision(
-            action=Action.DO_SELF,
-            rationale=f"SPLIT downgraded after LLM failure: {e}",
-            utility_scores=scores,
-            metadata={"split_error": str(e)},
-        )
+        return _next_best_after_split(f"LLM failure: {e}", extra_meta={"split_error": str(e)})
 
     if not subtasks:
-        return ActionDecision(
-            action=Action.DO_SELF,
-            rationale="SPLIT produced 0 subtasks; downgraded to DO_SELF",
-            utility_scores=scores,
-        )
+        return _next_best_after_split("LLM produced 0 valid subtasks")
 
     return ActionDecision(
         action=Action.SPLIT,
@@ -332,22 +344,27 @@ def _call_llm_split(
             f"LLM split JSON 'subtasks' must be a list, got {type(subtasks_raw).__name__}"
         )
 
-    # silent cap: take at most MAX_SUBTASKS_PER_SPLIT children
-    subtasks_raw = subtasks_raw[:MAX_SUBTASKS_PER_SPLIT]
-    out: list[TaskNode] = []
-    for i, st in enumerate(subtasks_raw):
+    # Filter malformed entries FIRST, then cap; otherwise a sequence like
+    # [valid, garbage, garbage, valid] would lose the second valid item.
+    valid_entries: list[dict[str, Any]] = []
+    for st in subtasks_raw:
         if not isinstance(st, dict):
-            # skip malformed entries silently (keeps the rest of split usable)
             continue
         text = str(st.get("task_text", "")).strip()
         if not text:
             continue
+        valid_entries.append({"task_text": text, "task_type_guess": str(st.get("task_type_guess", ""))})
+
+    valid_entries = valid_entries[:MAX_SUBTASKS_PER_SPLIT]
+
+    out: list[TaskNode] = []
+    for i, st in enumerate(valid_entries):
         sub = TaskNode(
             task_id=f"{node.task_id}_sub{i+1}",
             parent_task_id=node.task_id,
             root_task_id=node.root_task_id,
-            task_text=text,
-            task_type_guess=str(st.get("task_type_guess", "")),
+            task_text=st["task_text"],
+            task_type_guess=st["task_type_guess"],
             depth=node.depth + 1,
             owner_agent=node.owner_agent,
         )

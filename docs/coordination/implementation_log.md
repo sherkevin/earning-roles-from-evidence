@@ -1836,3 +1836,210 @@ vs 原 plan 净增 +5-6 天用于 external baseline workstream，由 buffer 吸�
   - 若 ❌（如 ChatEval repo 不可达 / license 不兼容）：diagnosis + 在 USER_TODO §A 加 `U-018-external-baseline-fallback-decide`
 
 ---
+
+> **[reviewer-ack 2026-04-19 18:57]** R-FULL-002 落盘 → `artifacts/idea_reviews/reviewer_20260419_185701_02_12b911/{review.json, review.md}`；P3 Adversarial Novelty SAC，overall=4.5 (weak_reject), weighted_sum=5.925 (+22% vs R-FULL-001), experiments_solidity_score=1。Scientist 可进入 SCIENTIST_TODO §B.4 S-104 4 步循环。聚合脚本 (`scripts/summarize_idea_reviews.py` + `scripts/review_scoreboard.py`) 由 scientist 触发以刷新 `scoreboard.md` / `fix_themes.md` / `review_index.jsonl`。详见 `docs/coordination/REVIEWER_TODO.md §A/§C/§D/§F.5`。（reviewer 边界遵守：未触发 S-104，未改 USER_TODO / SCIENTIST_TODO / PROJECT_STRUCTURE；本行是 §F.4 唯一允许的 ack。）
+
+---
+
+### [engineer_day1_5_completion_20260420]
+
+- when: 2026-04-19 (engineer Day 1.5 终结，R11 commit 待落地，与 reviewer R-FULL-002 ack 平行不冲突)
+- who: engineer
+- intent: 把 Day 1.5 派的 3 个 ⏳ phase 块状态闭合：全部 ✅。**Sprint 进度推到 ~Day 5（4 d E-002 + 5 d E-003 估时合并完成；额外 E-009 1 d 也完成）**，C-8 队列下一 P0 = E-004 R3 vector belief（依赖 E-003 ✅）+ E-010 reproduce baseline（依赖 E-008 ✅ + E-009 ✅）。
+
+#### 状态汇总
+
+| phase 块 | 上次状态 | 现状态 | 备注 |
+|---|---|---|---|
+| `[E-002_action_policy_module_20260420]` | ⏳ | ✅ | `workspace/idea04_core/action_policy.py` (~280 行，3-action policy `do_self / outsource / split` + LLM-driven decomposition + next-best downgrade on infeasibility/LLM failure) + `prompts/decomposition_prompt.txt` (~50 行 strict-JSON system prompt) + `workspace/idea04_core/test_action_policy.py` **18/18 tests pass** in 0.17 s。**接口冻结**：sci 可即开 S-118 Algorithm 1。 |
+| `[E-003_audit_runtime_module_20260420]` | ⏳ | ✅ | `workspace/idea04_core/audit_runtime.py` (~400 行，`AuditDecision` 4 类 + rule-based audit (empty/refusal/length 分支) + LLM-based audit override (仅在 rule-ACCEPT 时 consult) + `AuditEventBuffer` jsonl 双向 round-trip) + `prompts/audit_prompt.txt` (~30 行 strict-JSON) + `workspace/idea04_core/test_audit_runtime.py` **21/21 tests pass** in 0.24 s。**audit_events.jsonl schema v1 文档化**于 module docstring。 |
+| `[E-009_external_baseline_survey_20260420]` | ⏳ | ✅ | `artifacts/external_baselines/survey_report.md` (~250 行 Markdown，7 节 §1..§7) 锁定 finalist roster (AutoGen + ChatEval per U-014 ✅) + 各自 metadata + OpenAI-compat 验证 + R3/R2 swap point 锁定 + 4 类 risk 整理 + E-010 entry conditions + 0-LLM-call 成本核算。 |
+
+#### Day 1.5 整体 verification
+
+- `python -m py_compile workspace/idea04_core/{task_tree,action_policy,audit_runtime}.py` exit 0（3 模块全 compile）
+- `python -m pytest workspace/idea04_core/test_task_tree.py test_action_policy.py test_audit_runtime.py -q` → **57 passed in 0.21 s**（18 + 18 + 21 = 57）
+- R0 baseline `python scripts/validate_logs.py artifacts/round2_gpt41mini/run_20260414_115739/fixed_peer_calibrated` → [OK] (200, 100%)
+- fullval `python scripts/validate_logs.py artifacts/round2_gpt41mini_fullval/run_20260414_135408/fixed_peer_calibrated` → [OK] (7405, 100%)
+- 3 模块**未触及** `methods.py` / `runner.py` / `contracts.py` / `llm_client.py`（C-2 byte-id 不回归 — 实证 validate_logs no regression）
+- E-009 survey 全程 0 LLM 请求（per scope；只 metadata + WebFetch + git ls-remote）
+
+#### Files added Day 1.5
+
+- `workspace/idea04_core/action_policy.py` (E-002, ~280 行)
+- `workspace/idea04_core/test_action_policy.py` (E-002, ~270 行 / 18 tests)
+- `prompts/decomposition_prompt.txt` (E-002, system prompt for SPLIT path)
+- `artifacts/test_results/E-002_action_policy_pytest_20260419_190055.txt` (pytest 18-pass log)
+- `workspace/idea04_core/audit_runtime.py` (E-003, ~400 行)
+- `workspace/idea04_core/test_audit_runtime.py` (E-003, ~310 行 / 21 tests)
+- `prompts/audit_prompt.txt` (E-003, system prompt for LLM-audit consultation path)
+- `artifacts/test_results/E-003_audit_runtime_pytest_20260419_190403.txt` (pytest 21-pass log)
+- `artifacts/external_baselines/survey_report.md` (E-009, ~250 行)
+
+#### Files modified Day 1.5
+
+- `docs/coordination/implementation_log.md`（本块 + 3 个上面 phase 块从 ⏳ 翻 ✅）
+- `docs/coordination/SCIENTIST_TODO.md` §B.5 S-118 fully unblock + §F mirror sweep
+- **未修改** `methods.py` / `runner.py` / `contracts.py` / `llm_client.py`（per E-002/E-003 spec — 整合在 E-005）
+- **未修改** `configs/llm.json`（E-009 不动 newapi block，仅 read-only metadata）
+
+#### Cross-file 阻塞列 sweep (per four-role rule §1 step 2 + §3)
+
+| 下游 | 上次阻塞 | 现状 |
+|---|---|---|
+| SCIENTIST_TODO §B.5 **S-118** (Algorithm 1 升级) | E-001 + E-002 接口冻结 | ✅ **fully unblocked** — E-001/E-002/E-003 三接口冻结 |
+| SCIENTIST_TODO §B.5 S-115/S-116/S-117 | E-005 fullval data | 不变（E-005 仍未启动；估时 5 d，依赖 E-004） |
+| SCIENTIST_TODO §B.5 S-121/S-122/S-123 | E-012 swap comparison | 不变（E-012 仍 blocked on E-010 → E-011 → 本身；E-009 survey 已 ✅ 解锁 E-010 入场） |
+| REVIEWER_TODO R-FULL-002 | 等 sprint Day 28 | ⚠ **意外提前**：R-FULL-002 在 18:57 由 reviewer 落盘 (`reviewer_20260419_185701_02_12b911`, overall=4.5, weighted_sum=5.925)；scientist 进 S-104；不影响 engineer |
+| USER_TODO §A U-014/U-015/U-016 | 等用户拍板 | 不变（已 ✅ R10 commit） |
+| USER_TODO §B U-FIG-001 | 用户出图 | 不变（不阻塞 engineer） |
+
+#### unblocks_for_engineer (sprint Day 6+ onward)
+
+- **E-004 R3 vector belief**：依赖 E-003 ✅ → **可立即启动**（3 d 估时；scalar competence → vector belief Bit(j) ∈ [0,1]^7 + ν=0.2 update）
+- **E-010 reproduce baseline**：依赖 E-008 ✅ + E-009 ✅ → **可立即启动**（2 d × 2 hosts = 4 d；AutoGen + ChatEval newapi quickstart smoke）
+- **E-005 整合 + Stage-2 fullval**：依赖 E-001..E-004 全部 ✅ → 等 E-004
+- **E-006 multi-seed CI**：依赖 E-005 → 等
+- **E-011 / E-012 swap adapter + comparison**：依赖 E-010 ✅ → 等
+- **E-007** ✅ cancelled per U-016（不再开）
+
+#### 下一 Day 推荐（per sprint timeline）
+
+按 R10 timeline (`Day 6-10: E-003 (R2 audit) + E-009 (external survey, parallel)`)，今天已经把 Day 6-10 的 E-003 + E-009 都完成了，进度领先。**Day 6+ 立即可启动 E-004 + E-010 双线并行**：
+
+- **E-004 R3 vector belief**：纯本地代码（mocked LLM in tests），不需 server GPU，估时 3 d → 一轮可完
+- **E-010 reproduce baseline**：会发 1-sample × 2 host quickstart 调用 newapi（cost <$0.05 total per E-009 estimate），不需 server GPU；如时间允许可同时在 server GPU 上预 clone ChatEval 到 `/media/data3/dengkw/chateval/` 备 E-011 swap adapter 用
+
+#### 风险登记 (Day 1.5 新增)
+
+- **R-FULL-002 意外提前**：原 plan 是 Day 28 触发 reviewer 复审；今天 18:57 提前一轮。Scientist 进 S-104 4 步循环后会决定是否调整 sprint 优先级（如 reviewer 指出新的 fatal flaw 需要 engineer 优先 fix）。Engineer 暂不动作，监控 SCIENTIST_TODO §B.5 是否新增 S-XXX。
+- **E-009 metadata-only 风险**：survey 没有实际 install / 跑 quickstart；E-010 第一步 ChatEval `pip install -r requirements.txt` 可能因 18-month-old 依赖锁导致版本冲突；已在 survey_report.md §3.4 标注，E-010 启动时优先 fresh venv + 复刻 commit `56b320c0`。
+- **next-best downgrade 在 SPLIT 路径上的语义偏好**：E-002 当 SPLIT 不可用时降级到 max(DO_SELF, OUTSOURCE)；这与 §A "split 是有意主动作"略有偏移，但更符合 production 防御逻辑。已在 `action_policy.py` 顶部 docstring 明示 + select_action rationale 字段透传 reason；R-PART-001 复审可触发关于此判断的探讨（如 reviewer 觉得这弱化 R1 价值）。
+
+#### 本条 commit 落地
+
+- commit ref: R11 commit（engineer Day 1.5 闭合，待落地；与 R11 scientist S-119 commit 同名但不冲突，本块在 implementation_log 末追加）
+- next_action:
+  - **engineer (next window)**: Day 6+ 启动 E-004 R3 vector belief + E-010 reproduce baseline 双线并行
+  - **user**: 暂无新派工；可继续监控 R-FULL-002 反馈（scientist S-104 处理结果会回流到 §B.5 新 S-XXX）；可继续推进 U-FIG-001 (Figure 1 prompt v2 出图，scientist S-119 ✅ 已就绪 v2 prompt)
+  - **scientist**: **fully unblocked S-118**（task_tree + action_policy + audit_runtime 三接口全冻结，可即写 Algorithm 1）；R-FULL-002 触发 S-104 4 步循环
+
+---
+
+### [reviewer_r_full_002_ack_20260420]
+
+- when: 2026-04-20 (R13 commit)
+- who: scientist (S-104 mandatory loop processing R-FULL-002)
+- intent: 把 R-FULL-002 (`reviewer_20260419_185701_02_12b911`) 的全部 12 项建议过 S-104 4-step；产生 5 NEW fix-TODO + 1 user 决策派工 + 1 engineer 工单派工 + 4 dissent log entries
+- depends_on: R-FULL-002 reviewer 落盘（autonomous trigger，时点意外提前于原 plan Day 28）
+
+#### S-104 4-step processing (per `four-role-todo-workflow.mdc §11.4`)
+
+**Step 1 通读**：reviewer 主体 6 个 "What to Fix for 8+" + 6 个 "What to Fix for Oral" + Limitations §C 3 issues + Checklist §C 3 issues = 18 items 全读完。
+
+**Step 2 不盲从分类**：
+
+| 类别 | item 数 | 说明 |
+|---|---:|---|
+| ✅ Accept (NEW actionable) | 5 | S-124 (Appendix A → Limitations) / S-125 (Abstract+Conclusion honesty) / S-126 (Limitations item 3 语气) / S-127 (B2 wall-clock+USD) / S-128 (B3 显式 no human eval) |
+| 🔁 Redundant (already in sprint scope) | 6 | MuSiQue (E-005), multi-seed CI (E-006), Implement R1/R2/R3 (E-002 ✅ E-003 ✅ E-004 in progress), AutoGen baseline (E-010), Figure 1 (S-119 ✅ + U-EXEC-004), seed-level stability (S-117 implicit) |
+| 🆕 Need user decision | 1 | U-018-decide：MAD as 3rd external baseline (`is_overlap_risk=TRUE` per reviewer) |
+| 🆕 Need engineer ticket | 1 | E-014：rerun Table 2 mechanism ablation on gpt-4.1-mini canonical backbone |
+| ❌ Reject + dissent log | 2 | "Show non-trivial improvement over external SOTA" (与 U-015 module-swap 设计冲突) / "Community-impact case study" (超出 8-page scope) |
+| 🟡 Defer (low priority next batch) | 2 | "Quantitative error analysis with named failure modes" / "Missing B5+ checklist sections (DR-6 已 PASS)" |
+
+**Step 3 诚实接受**：5 NEW S-XXX 已加 SCIENTIST_TODO §B.5；U-018 已加 USER_TODO §A；E-014 派工详见下面 §"E-014 dispatch"；REVIEWER_TODO §A + §C 已记录 R-FULL-002 done。
+
+**Step 4 dissent log**：4 entries 已加 SCIENTIST_TODO §C dissent log table。
+
+#### E-014 dispatch (engineer ticket)
+
+| ID | 工单 | 估时 | 阻塞 | 输出 |
+|---|---|---:|---|---|
+| **E-014** | **gpt-4.1-mini canonical backbone 上重跑 Table 2 mechanism ablation 4 个 method**：reviewer 指出当前 Table 2 (`refreshed baseline / +evidence / -TCPB / -gate`) 只在 `glm-4-flash` 上跑过；需要在 `gpt-4.1-mini` 上重跑全部 4 个 method 以验证 TCPB-on/off 在 strong backbone (Finding 2 inversion 所在的 backbone) 上是否仍 generalises。可用现有 `configs/round1_hotpotqa_ablation_*.yaml` 把 backbone 从 GLM 切到 gpt-4.1-mini + 走 newapi endpoint；走 chain-200 slice；输出与现有 Table 2 同 schema | 1.5 d (4 methods × ~10 min × 200 samples × parallel) | E-008 ✅ newapi probe + 现有 ablation configs 已就位；不依赖 E-002/E-003/E-004（用老 codepath 即可）| `artifacts/round2_gpt41mini_ablation/run_<TS>/{refreshed,evidence,notcpb,nogate}/metrics.json` + `round2_gpt41mini_ablation_main_table.csv` |
+
+E-014 unblocks scientist 后续 S-XXX：在论文 §4.x 加 Table 2.b（gpt-4.1-mini ablation）。本块不预先创建 scientist S-XXX，等 E-014 ✅ 后再开。
+
+#### Reviewer score 趋势
+
+| batch | reviewer profile | weighted_sum | overall (capped) | verdict | key cap reason |
+|---|---|---:|---:|---|---|
+| R-FULL-001 | P5 oral gatekeeper | 4.855 | 4.5 | weak_reject | D4<5, D3<5, experiments_solidity≤3 |
+| **R-FULL-002** | **P3 Adversarial Novelty SAC** | **5.925** | **4.5** | weak_reject | experiments_solidity_score=1/8 floor (per §6 hard rule) |
+
+**Δ weighted_sum = +1.07 (+22%)** — paper underlying quality 实质提升，但 experiments_solidity floor 仍把 overall cap 在 4.5。若 E-005 (Stage-2 fullval) + E-006 (multi-seed CI) + E-010..E-012 (external baseline swap) 全 ✅，experiments_solidity 应能从 1/8 升到 5+/8，overall cap 可解除，预期 R-FULL-003 会到 6+ (estimated_score_after_fixes = 6.5 per R-FULL-002 self-prediction)。
+
+#### 本条 commit 落地
+
+- files_added: none
+- files_modified:
+  - `docs/coordination/SCIENTIST_TODO.md` §B.5 加 S-124..S-128 + §C 加 7 行 NEW themes + dissent log 加 4 行 + §D R13 修订
+  - `docs/coordination/USER_TODO.md` §A 加 U-018-decide + §D R13 修订
+  - `docs/coordination/REVIEWER_TODO.md` §A 加 R-FULL-002 行 + §C 加 done log + §D R13 修订
+  - `docs/coordination/implementation_log.md`（本块）
+- commit ref: R13 commit（与 engineer Day 1.5 closure 同 commit 落地）
+- next_action:
+  - **engineer**: 继续 Day 6+ E-004 (R3 vector belief) + E-010 (reproduce baseline) 双线并行；E-014 不阻塞 main path（可在 idle 时跑 1.5 d，建议 Day 17-18 在 E-006 完成后做）
+  - **user**: 拍板 U-018-decide (MAD as 3rd external baseline)；继续 U-EXEC-004 (Figure 1 v2 prompt 出图)
+  - **scientist**: 立即启动 S-118 (Algorithm 1 v2)；S-118 ✅ 后做 S-124 / S-125 / S-126 / S-127 / S-128 batch
+
+---
+
+### [E-004_persona_model_module_20260420]
+
+- when: 2026-04-19 (engineer Day 6 sprint forward)
+- who: engineer
+- intent: 新建 `workspace/idea04_core/persona_model.py` 实现 R3 vector-belief 升级 — 把现 scalar `competence: dict[str, float]` 升到 vector `B_i^t(j) ∈ [0, 1]^7`（与 idea.md §9.2 task signature `phi(z)` 7 维对齐）。`evidence_extract(audit_event, task_signature)` 把 audit event 6 元组映射到 7 维 evidence，按 `B_i^(t+1)(j) = (1 - ν) * B_i^t(j) + ν * evidence` 更新（ν=0.2）。**关键 C-3 约束**：published_competence schema 升级**必须双轨保留** `competence_v1_scalar` + `competence_v2_vector`，否则 R0 baseline `routing_traces.jsonl` ~2 GB 历史无法解析。
+- status: ⏳ in_progress (本块)
+- depends_on: E-001 ✅ (TaskNode), E-003 ✅ (AuditEvent — evidence_extract 输入)
+- unblocks_for_engineer: E-005 (整合 fullval — 三机制联合 Stage-2)
+- planned_steps:
+  1. 创建 `workspace/idea04_core/persona_model.py`：
+     - `PERSONA_DIMS: tuple[str, ...]` = 7-tuple matching idea.md §9.2 phi(z) axes
+     - `DIM_COUNT: int = 7`
+     - `PersonaVector` dataclass: `values: tuple[float, ...]` (length 7); `__post_init__` 强制 clip 到 [0,1] 并校验长度；`fit(signature) -> float` 返回 dot(persona, signature) / 7
+     - `BeliefStore`: 包装 `dict[str, PersonaVector]`（一个 agent 维护对所有邻居的 belief）；`get(neighbor_id, default=PersonaVector.neutral())` / `set(neighbor_id, vec)` / `keys()` / `to_dict() / from_dict()`
+     - `evidence_extract(audit_event: AuditEvent, task_signature: tuple[float, ...]) -> PersonaVector`：把 1 条 audit event 翻译成 1 个 7 维 evidence vector
+       - 设计：good audit (`value_gain` 高) 推 evidence 沿 task_signature 强需求轴向上；bad audit 推向下；具体：`evidence[k] = task_signature[k] * value_gain + (1 - task_signature[k]) * (1 - rework_cost)`，再 clip 到 [0,1]
+     - `apply_evidence(belief, evidence, nu=0.2) -> PersonaVector`：标准 EMA 更新
+     - `EMA_NU_DEFAULT = 0.2`
+     - **dual-track schema** helpers (per C-3):
+       - `serialize_v2(store: BeliefStore) -> dict`: returns `{"schema_version": "competence_v2_vector", "competence_v1_scalar": <projected>, "competence_v2_vector": <full>}`；同时序列化两轨保留 R0 兼容
+       - `_project_v2_to_v1(store) -> dict[str, float]`: 7 维取均值作为 v1 scalar 投影
+       - `deserialize(record: dict) -> BeliefStore`：读 schema_version 判断；v1 时把 scalar broadcast 到 [s]*7；v2 时直接读
+  2. 创建 `workspace/idea04_core/test_persona_model.py`：
+     - test_persona_vector_default_neutral_at_0_5
+     - test_persona_vector_rejects_wrong_length
+     - test_persona_vector_clips_out_of_range
+     - test_persona_vector_fit_dot_product
+     - test_belief_store_get_default_returns_neutral
+     - test_belief_store_set_and_get
+     - test_evidence_extract_high_value_gain_pushes_high_signature_axes_up
+     - test_evidence_extract_low_value_gain_pushes_low
+     - test_apply_evidence_ema_with_nu_0_2
+     - test_apply_evidence_convergence_over_10_updates_with_constant_evidence
+     - test_apply_evidence_clips_to_unit_interval
+     - test_serialize_v2_includes_both_schemas (dual-track)
+     - test_deserialize_v1_scalar_broadcasts_to_v2 (backward-compat)
+     - test_deserialize_v2_vector_round_trip
+     - test_deserialize_unknown_schema_raises
+     - test_v2_to_v1_projection_uses_dim_mean
+  3. 跑 pytest，输出落 `artifacts/test_results/E-004_persona_model_pytest_<TS>.txt`
+  4. **不动** `methods.py` / `runner.py`（C-2 — Stage-1 byte-id 不能回归；整合在 E-005）
+- planned_files_added:
+  - `workspace/idea04_core/persona_model.py`
+  - `workspace/idea04_core/test_persona_model.py`
+  - `artifacts/test_results/E-004_persona_model_pytest_<TS>.txt`
+- planned_files_modified:
+  - `docs/coordination/implementation_log.md`（本块翻 ✅）
+- expected_verification:
+  - pytest 16+ 个 test 全绿
+  - `python -m py_compile workspace/idea04_core/persona_model.py` exit 0
+  - R0 baseline `validate_logs.py` 仍 [OK]
+  - dual-track schema：v1 → v2 broadcast + v2 → v1 mean 投影 round-trip 正确性已测
+- pinned_cautions_acknowledged: C-2 (Stage-1 byte-id), **C-3 (双轨 schema 强制)**, C-3 (forward-compat — schema_version + 未知字段 silent drop)
+- next_action:
+  - 若 ✅：本块翻 ✅；E-005 进入"四接口全冻结，整合 fullval"准备状态（4 接口 = task_tree + action_policy + audit_runtime + persona_model）
+  - 若 ❌：diagnosis + 自挂
+
+---

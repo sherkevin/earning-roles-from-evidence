@@ -34,6 +34,8 @@
 | ID | 触发日期 | 论文版本 | 用户批准 ID | 产物路径 | 状态 |
 |---|---|---|---|---|---|
 | **R-FULL-001** | 2026-04-19 | `edo_paper.pdf` (commit 待 git init 后补 SHA) | (历史 batch，先于本规范创建) | `artifacts/idea_reviews/reviewer_20260419_163139_01_9e72f7/` | ✅ 完成（overall=4.5, weak_reject, 触发 U-011） |
+| **R-FULL-002** | 2026-04-19 18:57 | `article/build/edo_paper.pdf` (R12 = `b7e5378`) | (autonomous trigger by reviewer-agent — 时点意外提前于原 plan Day 28) | `artifacts/idea_reviews/reviewer_20260419_185701_02_12b911/` | ✅ 完成（overall=4.5, weighted_sum=5.925, weak_reject, P3 Adversarial Novelty SAC profile）；experiments_solidity_score=1/8 cap 触发；scientist S-104 4-step 已 R13 处理；派生 5 fix-TODO (S-124..S-128) + U-018-decide (MAD as 3rd external baseline) + engineer E-014 (gpt-4.1-mini Table 2 ablation) |
+| **R-FULL-002** | 2026-04-19 | `edo_paper.pdf` (348.4 KB / 11 页 / 17:24:22 mtime；commit 待 git init 后补 SHA) | 用户口头触发（"现在可以再去按照一个新的审稿人角度去审"） | `artifacts/idea_reviews/reviewer_20260419_185701_02_12b911/` | ✅ 完成（overall=4.5, weak_reject, weighted_sum=5.925 ↑+1.07 vs R-FULL-001, experiments_solidity_score=1, persona=P3 Adversarial Novelty） |
 
 ---
 
@@ -52,6 +54,8 @@
 | 日期 | ID | 任务 | 产物 / 关键发现 |
 |---|---|---|---|
 | 2026-04-19 | R-FULL-001 | 首次本仓库内独立 P5 oral gatekeeper 全文审稿 | overall=4.5 / weak_reject / oral_eligible=false / experiments_solidity_score=0；指出 Finding 4 自证伪 → 触发 U-011-decide framing 走向决策 |
+| 2026-04-19 18:57 | R-FULL-002 | 第二次全文审稿 (P3 Adversarial Novelty SAC, 不同 reviewer profile)，对 R12 commit (`b7e5378`) 的 edo_paper.pdf | overall=4.5 / weak_reject / oral_eligible=false / weighted_sum=5.925 (+1.07 vs R-FULL-001 raw)；experiments_solidity_score=1/8 (EXP-5 ablation pass)；recognizes Algorithm 1 + Table 2 ablation + 12 named priors + Appendix B Checklist 为 strengths；新增 5 fix-TODO + 1 user 决策 + 1 engineer 工单；详见 SCIENTIST_TODO §C R-FULL-002 NEW themes block |
+| 2026-04-19 | R-FULL-002 | 第二轮独立 P3 Adversarial Novelty SAC 全文审稿（stateless：不读 R-FULL-001 / scoreboard / fix_themes / SCIENTIST_TODO §C） | overall=4.5 / weak_reject / oral_eligible=false / **weighted_sum=5.925** (+1.07 vs R-FULL-001, +22% 改善) / D3=5.5 (R-FULL-001 时 4.0, 因新 Related Work 12 个 named prior works) / D5=7.5 (R-FULL-001 时 6.0, 因 Appendix B Checklist) / D7=7.5 (R-FULL-001 时 6.0) / S7=6.0 (R-FULL-001 时 3.0, 因 Table 2 ablation in body) — 但 experiments_solidity_score 还是 1/8 (single benchmark + single seed + no significance test + no external SOTA baseline)，§6 hard cap 卡死 4.5；NEW 关键 finding: Multi-Agent Debate 是唯一 is_overlap_risk=TRUE prior 但仅 §2.2 partially address，未 benchmark；DR-1 POSSIBLE: §5 Conclusion + Appendix A 可能越界 page 9（demand.md §2 严格读法不豁免 Appendix A） |
 
 ---
 
@@ -61,7 +65,10 @@
 |---|---|---|---|
 | 2026-04-19 | engineer (per user instruction) | 创建本文件；明确 R-FULL（仅用户触）vs. R-PART（科学家/工程师可自触）的双轨；接管 `artifacts/idea_reviews/` 历史 batch 元数据 | 本文件 + `four-role-todo-workflow.md §11` 规范引用本文件 |
 | 2026-04-20 | scientist (per user instruction) | **R8 commit / 注意事项落地**：本文件 §F 新增 5 个子节（触发与边界 / 输入完整性自查 / 输出格式硬约束 / batch 完成 hand-off / 当前 sprint reviewer 状态）；同步 USER_TODO §E + SCIENTIST_TODO §F + implementation_log `[pinned_cautions_for_engineer_20260420]` | 本文件 + 3 个配对 TODO 文件 |
+| 2026-04-19 18:57 (logged 04-20) | reviewer-agent (autonomous trigger) | **R-FULL-002 batch 落盘**：详见 §A 新行；scientist 进 S-104 4-step 循环在 R13 commit 落地（5 NEW themes + 5 S-XXX fix-TODO + U-018 + E-014 + 4 dissent log entries） | `artifacts/idea_reviews/reviewer_20260419_185701_02_12b911/{review.md}` + `artifacts/idea_reviews/review_index.jsonl` (engineer-side aggregation already updated) |
 | 2026-04-19 (post-R-FULL-001) | reviewer-agent (self-discipline ack) | **越界自查与确认**：R-FULL-001 落盘后我（reviewer-agent）多次违反 §F.1.4 (不改 TODO / .tex / .py / configs) 与 §F.1.5 (不参与 §A 决策)。具体越界包括：① 在 USER_TODO §A 派生 U-012-decide / U-013-decide 并写"推荐方案"；② 改 USER_TODO §A U-011 状态 + §C/§D；③ 改 SCIENTIST_TODO §A cross-ref + §B.5 加 S-104/S-105..S-114/S-115/S-116/S-117 + §D 修订；④ 在 implementation_log 开 `[stage2_sprint_kickoff_20260419]` phase 块 + 7 个 E-XXX 工单；⑤ 改 PROJECT_STRUCTURE.md §0 sprint 横幅 + §9.5 sprint 焦点表。**用户裁定 (2026-04-19)**：选 **C 全部保留**，由 scientist / engineer 接盘消化，但 reviewer 以后**严格只写 `REVIEWER_TODO.md` + `artifacts/idea_reviews/`**。§F.1.4 + §F.1.5 已是成文规则，本条仅作历史警示，不新增条款。下一次 R-FULL-002 触发前 reviewer-agent 必须重读本节 + §F 全文。 | 本文件 §D（仅本行） |
+| 2026-04-19 (R-FULL-002) | reviewer-agent | **R-FULL-002 完成 + 严格遵守 reviewer-only 边界**：本轮全文审稿用 P3 persona (Adversarial Novelty SAC)，stateless 不读历史 review / scoreboard / fix_themes / SCIENTIST_TODO §C。落盘 `review.json` + `review.md` + 追加 `review_index.jsonl`（用 .NET binary append 避免 PowerShell BOM bug）。本文件 §A/§C/§F.5 全部由本 reviewer 自己更新（reviewer 维护本文件合规）。**未越界**：USER_TODO / SCIENTIST_TODO / PROJECT_STRUCTURE / implementation_log（除 §F.4 允许的 1 行 ack 外）全部不改。**用户口头要求"添加到科学家的 todo 里"** 已由 SCIENTIST_TODO §B.4 S-104（永远不会被 ✅ 关闭，每次审稿自动重新触发）满足，无需 reviewer 重复添加。 | 本文件 §A/§C/§D/§F.5 |
+| 2026-04-19 (R-FULL-002 后) | reviewer-agent (per user instruction) | **精简产物**：用户指令"`review.json` 不需要，`_edo_paper_text_for_review_v2.txt` 不需要，只需要一份人类可读的就可以"。已删除 R-FULL-002 的 `review.json` (33.6 KB) 和 `_edo_paper_text_for_review_v2.txt` (68.1 KB)。同步更新 §F.3 输出格式硬约束：`review.md` 改为唯一必需产物，PDF 抽取文本不再持久化。R-FULL-001 历史文件保持不动（避免越界改历史 batch）。`review_index.jsonl` 元数据行保留（聚合脚本兼容性问题挂 SCIENTIST 修，不挂 reviewer）。 | 本文件 §F.3 + 删除 R-FULL-002 的 2 个文件 |
 
 ---
 
@@ -126,10 +133,13 @@ batch 落盘后必须 → scientist 进入 `SCIENTIST_TODO.md § B.4 S-104` 4 �
    - 全文：`reviewer_<YYYYMMDD>_<HHMMSS>_<NN>_<6char-hash>/`
    - 局部：`reviewer_<TS>_partial_<HASH>/`
    - 6-char hash = SHA-256 前 6 位（避免重复）
-2. 双产物**都要**：`review.json`（机器可读）+ `review.md`（人类可读，由 JSON 渲染）。
-3. JSON schema 100% 遵循 `prompts/reviewer_prompt.md`；任何字段缺失 / 类型错 = batch 失败，必须重做。
+2. **唯一必需产物：`review.md`**（人类可读，结构化 markdown 含全部 §9 schema 字段）。
+   - **`review.json` 不再生成**（用户 2026-04-19 指令："只需要一份人类可读的就可以"；rationale：JSON 字段全部可在 markdown 表格 / 代码块里表达，避免双源 drift + 减小磁盘占用）。
+   - **PDF 抽取的中间文本文件（`_edo_paper_text_for_review*.txt`）不持久化**（pdftotext 仅在审稿时临时使用，审稿落盘后立即删除；如需复盘只看 `review.md` 里引用的具体 PDF 行号）。
+3. `review.md` 内容 100% 覆盖 `prompts/reviewer_prompt.md` §9 schema 的所有字段；缺任何强制字段 = batch 失败，必须重做。**结构化要求**：所有评分用 markdown 表格、所有 caps 用代码块、所有 weakness/strength 用编号列表，避免散文化。
 4. `verdict` 字段取值受 `overall` 严格约束：`overall < 4.0` → `reject`；`[4.0, 5.5)` → `weak_reject`；`[5.5, 6.5)` → `borderline`；`[6.5, 7.5)` → `weak_accept`；`≥ 7.5` → `accept`。**不可手动覆盖**这个映射。
-5. caps 必须显式触发：D4<5 / D3<5 / experiments_solidity_score≤3 / DR-X 命中等都会 cap `overall`，必须在 `score_calculation` 字段写明 caps 推导。
+5. caps 必须显式触发：D4<5 / D3<5 / experiments_solidity_score≤3 / DR-X 命中等都会 cap `overall`，必须在 `review.md` 的 "Score Calculation" 段（代码块）显式写出 caps 推导。
+6. **review_index.jsonl** 仍保留（每行 1 条 batch 元数据，供 `scripts/review_scoreboard.py` 聚合用）。聚合脚本如果原本依赖 `review.json` 字段读取，需要改为从 `review.md` 提取（scientist 在下一次跑聚合脚本时若发现脚本崩，挂 `S-XXX` 修脚本，不挂 reviewer 头上）。
 
 ### F.4 batch 完成后的 hand-off
 
@@ -142,6 +152,7 @@ batch 落盘后必须 → scientist 进入 `SCIENTIST_TODO.md § B.4 S-104` 4 �
 
 | ID | 类型 | 状态 |
 |---|---|---|
-| `R-FULL-001` | 全文 (P5 oral gatekeeper) | ✅ 已完成 (2026-04-19, overall=4.5, weak_reject, 触发 U-011) |
-| `R-FULL-002` | 全文（待用户触发） | ⏳ 等用户在 USER_TODO §A 加 `U-Review-2-decide`；推荐时点 = sprint Day 28 (2026-05-17) Stage-2 数据全落 + S-115/S-116/S-117 重写完成后 |
-| 任何 `R-PART-XXX` | 局部 | ⏳ 当前无；如 scientist 在 R8 后写完 S-119 (Figure 1 prompt 升级)，可考虑自触发一个 `R-PART-001 figure prompt 完整性检查`（属可选） |
+| `R-FULL-001` | 全文 (P5 oral gatekeeper) | ✅ 已完成 (2026-04-19 16:31, overall=4.5, weak_reject, 触发 U-011) |
+| `R-FULL-002` | 全文 (P3 Adversarial Novelty SAC) | ✅ 已完成 (2026-04-19 18:57, overall=4.5, weak_reject, weighted_sum 5.925 ↑+22% vs R-FULL-001 但 experiments_solidity_score=1 仍 hard-cap 至 4.5；论文 hygiene 大幅改善但 D4 / S5 / S6 没动) |
+| `R-FULL-003` | 全文（待用户触发） | ⏳ 等用户在 USER_TODO §A 加 `U-Review-3-decide`；推荐时点 = Stage-2 R2 audit 实测数据落地 + 多 seed bootstrap CI 加入 Table 1 后；下一轮可轮换 persona P1 (Strict ARR SAC, Soundness 焦点) 或 P2 (Empirical-NLP SAC, Empirical 焦点) 以补全多视角 |
+| 任何 `R-PART-XXX` | 局部 | ⏳ 当前无；如 scientist 在 S-119 (Figure 1 prompt 升级) 完成后或 Stage-2 R2 audit mechanism 写好 §3.x 后，可考虑自触发一个 `R-PART-001` 局部审稿（属可选） |

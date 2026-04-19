@@ -42,6 +42,11 @@ from workspace.idea04_core.task_tree import (
 
 def _make_state(*, evidence: list[str] | None = None, uncertainty: float = 0.5,
                 depth: int = 0) -> TaskTreeState:
+    """Build a fresh TaskTreeState whose deepest node has the requested ``depth``.
+
+    Returns the state. Use ``state.nodes['deep']`` to access the depth-d node
+    when ``depth > 0``; ``state.root`` is always at depth 0.
+    """
     root = TaskNode(
         task_id="root",
         parent_task_id=None,
@@ -50,10 +55,29 @@ def _make_state(*, evidence: list[str] | None = None, uncertainty: float = 0.5,
         task_type_guess="comparison",
         input_evidence=list(evidence or []),
         current_uncertainty=uncertainty,
-        depth=depth,
+        depth=0,
         owner_agent="decomposer",
     )
-    return TaskTreeState(root)
+    state = TaskTreeState(root)
+    if depth == 0:
+        return state
+    # chain: root -> d1 -> d2 -> ... -> deep (at requested depth)
+    parent_id = "root"
+    for d in range(1, depth + 1):
+        is_leaf = d == depth
+        nid = "deep" if is_leaf else f"chain{d}"
+        child = TaskNode(
+            task_id=nid,
+            parent_task_id=parent_id,
+            root_task_id="root",
+            task_text=f"chain-node-{d}",
+            input_evidence=list(evidence or []) if is_leaf else [],
+            current_uncertainty=uncertainty if is_leaf else 0.5,
+            depth=d,
+        )
+        state.add_subtask(parent_id, child)
+        parent_id = nid
+    return state
 
 
 def _mock_llm_returning(payload: dict | str) -> Callable[[str], str]:
@@ -91,9 +115,10 @@ def test_utility_estimators_out_decreases_with_depth() -> None:
 
 
 def test_utility_split_returns_sentinel_when_infeasible() -> None:
-    # depth at MAX_TREE_DEPTH → split infeasible
+    # the node at MAX_TREE_DEPTH cannot split (depth cap)
     state = _make_state(depth=MAX_TREE_DEPTH)
-    u = _estimate_utility_split(state.root, state)
+    deep = state.nodes["deep"]
+    u = _estimate_utility_split(deep, state)
     assert u == -2.0
 
 
@@ -178,9 +203,10 @@ def test_split_downgrades_when_no_llm_callable() -> None:
 def test_split_downgrades_at_max_depth() -> None:
     """At MAX_TREE_DEPTH the selector must not propose SPLIT regardless of LLM."""
     state = _make_state(depth=MAX_TREE_DEPTH)
+    deep = state.nodes["deep"]
     payload = {"subtasks": [{"task_text": "x", "task_type_guess": "factoid"}]}
     decision = select_action(
-        state.root,
+        deep,
         state,
         neighbors=["nb"],
         neighbor_belief_fn=lambda nb: 0.1,
@@ -348,7 +374,7 @@ def test_call_llm_split_raises_on_missing_prompt_file(tmp_path: pathlib.Path) ->
 
 def test_can_split_false_at_depth_cap() -> None:
     state = _make_state(depth=MAX_TREE_DEPTH)
-    assert not _can_split(state.root, state)
+    assert not _can_split(state.nodes["deep"], state)
 
 
 def test_can_split_false_when_near_total_nodes_cap() -> None:
