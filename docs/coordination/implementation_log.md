@@ -1073,3 +1073,86 @@
   - 等用户对 USER_TODO §A 的 U-012 + U-013 拍板（合计 2 个二次决策）
   - 不依赖二次决策的科学家 7 项 (S-105/S-108/S-110/S-111/S-112/S-113/S-114) 应被科学家**立即并行启动**（four-role rule §2 硬规则）
   - 不依赖二次决策的工程师 0 项（所有 Stage-2 工单 E-001..E-007 都被 U-012/U-013 阻塞）；工程师 sprint 启动门槛严格在用户决策后
+
+---
+
+### [stage2_sprint_kickoff_20260420]
+
+- when: 2026-04-20
+- who: scientist (落地用户 U-012=R1+R2+R3 全做 / U-013=MuSiQue 加入 / U-EXEC-006=新 newapi key 的三项批准)
+- intent: 正式启动 Stage-2 sprint，明确派工 E-001..E-008 给工程师；supersede 上一条 `[stage2_sprint_kickoff_20260419]` 的"blocked on U-012/U-013"状态
+- supersedes: `[stage2_sprint_kickoff_20260419]`（保留为历史；本块为权威）
+
+#### 用户拍板内容（USER_TODO §A 已落地）
+
+| 决策 | 选择 | 影响 |
+|---|---|---|
+| **U-012-decide** | **R1 split + R2 audit + R3 persona vector 全做**（用户原话"我全部同意"） | 解锁 E-001..E-005 全部 4 个 Stage-2 mechanism 工单 |
+| **U-013-decide** | **MuSiQue 加入** | 解锁 E-006/E-007；HotpotQA + MuSiQue 双 benchmark fullval |
+| **U-EXEC-006** | **新 newapi key 已交付** (xh.v1api.cc) | 解锁 E-008；提供 kuaipao.ai 故障时的备份通道 |
+
+#### 工程师 sprint 工单（重写自上一块的 E-001..E-007，重新编号 + 加 E-008）
+
+> 命名遵循 four-role rule §12：`E-XXX` 全局递增。**编号继承自上一块** (E-001..E-007 沿用) + 新增 E-008。每个 E-XXX 开始执行时再开独立 phase 块（如 `[E-001_task_tree_module_20260420]`）。
+>
+> Sprint Day 1 = 2026-04-20。ARR May 25 deadline = T-35。
+
+| ID | 工单 | 估时 | 阻塞 | 输出 |
+|---|---|---:|---|---|
+| **E-001** | `workspace/idea04_core/task_tree.py` 新模块：`TaskNode` dataclass (parent / children / status / candidate_result / audit_status 等 14 字段，per `idea.md §7.3`) + `TaskTreeState` 容器 + jsonl 序列化 | 2 d | none — 立即可启动 | `workspace/idea04_core/task_tree.py` + `tests/test_task_tree.py` + `artifacts/task_tree_examples.jsonl` |
+| **E-002** | `workspace/idea04_core/action_policy.py` 新模块：3-action policy `do_self / outsource(j) / split(z)`；`split` 走 1 次 LLM decomposition call (per `idea.md §10.3`)；hard bounds: `max_subtasks=3, max_depth=3, max_total_nodes=12` (per `artifacts/edo_lite_executable_spec.md §4.3`) | 4 d | E-001 ✅ | `action_policy.py` + 修改 `methods.py` + `prompts/decomposition_prompt.txt` |
+| **E-003** | `workspace/idea04_core/audit_runtime.py` 新模块：每跳产出 `AuditDecision ∈ {ACCEPT, ACCEPT_WITH_NOTE, REJECT_REROUTE, REJECT_RESPLIT}` (per `edo_lite_executable_spec.md §4.2`)；上游节点 audit 下游 candidate_answer；audit 结果回写 task_tree | 5 d | E-001 ✅ | `audit_runtime.py` + 修改 `runner.py` + `artifacts/audit_events.jsonl` schema |
+| **E-004** | `workspace/idea04_core/persona_model.py` 新模块：`scalar competence` → `vector belief Bit(j) ∈ [0,1]^7` (per `idea.md §3.9 R3`)；`evidence_extract(ℓu→v,z)` 把 audit event 6 元组映射到 7-dim persona vector；ν=0.2 update | 3 d | E-003 ✅（要先有 audit signals 再更 belief） | `persona_model.py` + 修改 `methods.py` + `published_competence` schema 升级 (backward-compat: `competence_v1_scalar` vs `competence_v2_vector`) |
+| **E-005** | `runner.py` 整合 + 兼容性回归（确保 Stage-1 老配置 `fixed_peer_calibrated/static_roles/self_claim` 仍 byte-identical 输出 metrics.json）；新方法注册 `edo_full / edo_audit_only / edo_split_only / edo_vector_only` | 5 d | E-001..E-004 全部 ✅ | 修改 `runner.py` + Stage-1 回归 smoke (用现有 `artifacts/round1_smoke_*` 做对照) + Stage-2 fullval batch on HotpotQA + MuSiQue |
+| **E-006** | 多 seed (≥3) + paired bootstrap CI：所有 §4 主结果表加 `(mean ± 95% CI, n_boot=10k)` + paired sign test；扩 `scripts/compute_paired_bootstrap.py` 支持 multi-seed | 2 d | E-005 ✅ | 修改 `compute_paired_bootstrap.py` + `artifacts/round3_*/paired_stats_*.csv` |
+| **E-007** | 外部 baseline：跑 1-2 个真实外部系统（**首推 AutoGen**，备选 ChatEval / MetaGPT）on HotpotQA + MuSiQue 200-sample slice；输出与 Stage-1/2 同 schema | 4 d | E-006 ✅ + U-EXEC-001 充值 ✅ | `artifacts/external_baselines/{autogen,chateval}/run_<TS>/` |
+| **E-008** | **新增**：`xh.v1api.cc` newapi endpoint smoke probe — `GET /v1/models` 列出可用模型 + `POST /chat/completions` 跑 1 个 gpt-4.1-mini 样本 + 加 `_normalize_newapi()` + `newapi_target()` 到 `workspace/idea04_core/llm_providers.py`（按 `oversea` / `gptplus5` 模板） | 0.5 d | none — 立即可启动 | 修改 `llm_providers.py` + `artifacts/newapi_smoke/probe_<TS>.json` + `configs/llm.json` 的 `newapi.models` 扩展为完整列表 |
+
+#### 修订后的时间线（R1+R2+R3 + MuSiQue）
+
+| Week | Day | 主要工程动作 | 主要写作动作 |
+|---|---|---|---|
+| W1 | D1-D2 | E-001 task_tree | S-119 Figure 1 prompt 升级（无依赖） |
+| W1 | D3-D5 | E-008 newapi probe (并行) + E-002 split policy 启动 | — |
+| W2 | D6-D9 | E-002 split 完成 + E-003 audit 启动 | S-118 Algorithm 1 升级（接口冻结后） |
+| W2 | D10 | E-003 audit 完成 | — |
+| W3 | D11-D13 | E-004 persona vector | — |
+| W3 | D14-D18 | E-005 runner 整合 + Stage-2 fullval batch on HotpotQA + MuSiQue | — |
+| W4 | D19-D20 | E-006 multi-seed + paired bootstrap CI | — |
+| W4 | D21-D24 | E-007 external baselines (AutoGen + 可选 ChatEval) | S-117 §4 Stage-2 Results table |
+| W5 | D25-D28 | engineer buffer / 修补 | S-115 §1 重写 + S-116 §6 重写 |
+| W5 | D29-D31 | — | 全文 polish + R-FULL-002 reviewer batch（用户在 USER_TODO 触发） |
+| W5/6 | D32-D35 | — | rebuttal-style 修补 + ARR submission prep |
+| **D35** | **2026-05-25** | — | **EMNLP 2026 ARR submission deadline** |
+
+#### 风险登记（更新自上一块）
+
+1. **R1 split 任务复杂度**：用户已批 R1+R2+R3 全做，但 R1 是最复杂的 mechanism。如 E-002 超时（>4 d），降级为 split-prompt-only（不引入 task tree depth>2），保留 mechanism gap 但减小工程量。
+2. **MuSiQue 4-hop 任务上 EDO 表现仍可能差 self_claim**：这是真实研究风险；如发生，§6 conclusion 诚实承认 + 切回 organizational-emergence framing；Limitations 加一段。
+3. **provider 健康度（继承自 4/19 块）**：U-EXEC-001 充值仍 ⏳；新 `newapi` (xh.v1api.cc) 通过 E-008 验证后可作为 backup。
+4. **deadline 紧**：26 + 5 = 31 天主路径，buffer 4 天；如 E-005 跑数延迟，pivot 到只跑 HotpotQA-only Stage-2 results（drop E-007 MuSiQue baseline）。
+
+#### 派给科学家的 sprint 写作 TODO（已挂入 SCIENTIST_TODO §B.5）
+
+| ID | 任务 | 阻塞 |
+|---|---|---|
+| S-115 | §1 Introduction 重写为 "Stage-2 mechanisms validated" framing | E-005 ✅ |
+| S-116 | §6 Conclusion 重写 | E-005 ✅ |
+| S-117 | §4 Stage-2 Results 章节（ablation + MuSiQue + paired CI） | E-005..E-007 ✅ |
+| S-118 | Algorithm 1 升级为 EDO Stage-2 execution loop | E-001 + E-002 接口冻结 |
+| S-119 | Figure 1 prompt 升级，强调 R1/R2/R3 三机制 | none — 可立即做 |
+
+#### 本条 commit 落地
+
+- files_added: none（本条仅是 sprint 计划登记，无代码改动）
+- files_modified:
+  - `configs/llm.json` 加 `newapi` block (xh.v1api.cc)
+  - `docs/coordination/USER_TODO.md` §A U-012/U-013 ✅ + §B.1 U-EXEC-006 + §C/§D 修订
+  - `docs/coordination/SCIENTIST_TODO.md` §A cross-ref + §B.5 重写 S-115..S-119 + §D 修订
+  - `docs/coordination/implementation_log.md`（本条）
+  - `PROJECT_STRUCTURE.md` §0 sprint 状态块更新
+- commit ref: R6 commit（待落地）
+- next_action:
+  - **engineer**: 立即启动 E-001 (task_tree) + E-008 (newapi probe) 两个无阻塞工单
+  - **user**: 监控 U-EXEC-001 充值进度（fullval batch 强依赖）
+  - **scientist**: 立即启动 S-119 (Figure 1 prompt 升级，无阻塞)；其余 S-115/S-116/S-117/S-118 全部 blocked on engineer ticket，进入"等待 + 监控 implementation_log.md"模式

@@ -36,8 +36,9 @@
 | `U-009-decide` | S-013（.md → .tex 迁移）、build 脚本封装 | ✅ 隐式解决（article/ 已采用） |
 | `U-010-git-decide` | S-103（commit 工作流） | ⏳ 待用户 |
 | `U-011-decide` | 解锁所有 §B.5 framing 重写 + Stage-2 工程师工单 | ✅ **(b) 已批准** (2026-04-19)：实现 Stage-2 + 仍冲 EMNLP 2026 ARR May 25（36 天 deadline） → 派生 U-012 / U-013 |
-| `U-012-decide` | E-001..E-005 工程师 Stage-2 工单 + S-115/S-116/S-117 写作 | ⏳ Stage-2 范围 (R1/R2/R3) — **推荐 R2 单做** |
-| `U-013-decide` | E-006/E-007 MuSiQue 工程师工单 | ⏳ MuSiQue 是否同步上 — **推荐 是** |
+| `U-012-decide` | E-001..E-005 工程师 Stage-2 工单 + S-115/S-116/S-117/S-118/S-119 写作 | ✅ **R1+R2+R3 全做已批准** (2026-04-20)：sprint 启动 `[stage2_sprint_kickoff_20260420]` |
+| `U-013-decide` | E-004/E-005 MuSiQue 数据 prep + 双 benchmark fullval | ✅ **MuSiQue 加入已批准** (2026-04-20) |
+| `U-EXEC-006` | E-008 newapi smoke probe + `_normalize_newapi()` | ✅ **新 newapi 通道已交付** (2026-04-20) → engineer E-008 |
 
 ---
 
@@ -87,9 +88,11 @@
 | ID | 任务 | 估计时间 | 阻塞 | 状态 |
 |---|---|---|---|---|
 | **U-011-decide** | 决定本论文 framing 走向：(a) Stage-1 negative result 重 framing（保留现状）vs. (b) 实现 Stage-2（split / audit / persona vector）后再投；reviewer 指出当前 narrative 被作者自己 Finding 4 证伪 | — | 用户拍板 | ✅ **(b) 已批准** (2026-04-19)，派生 U-012 / U-013 |
-| **S-115** | **§2 Related Work 加 Stage-2 motivation 段**（一段：明确 Stage-2 的 (R1/R2/R3) mechanism 是怎么 fill 当前 RW 列出的 gap 的；与 U-012 选择的 R 严格对应） | 30 min | **等 U-012 拍板**（决定写哪几个 R） | ⏳ blocked on U-012 |
-| **S-116** | **§3 加 Stage-2 mechanism 子节**（按 U-012 选择展开：R2 audit 走 §3.10 "Recursive audit decision protocol"；R1 split 走 §3.11；R3 persona vector 走 §3.12；含 algorithm box + LaTeX 实现细节） | 60-120 min（按 R 数） | **等 U-012 拍板** + 等 E-001..E-005 工程师把 mechanism 实测 metrics 落出来 | ⏳ blocked on U-012 + E-001..E-005 |
-| **S-117** | **§4 加 Stage-2 ablation 实验设计 + 表 2**（Stage-1 vs Stage-2 各方法；与 U-013 决定挂钩：选 MuSiQue 则 §4.3 加第二 benchmark 表；不选则在 Limitations 显式写出单 benchmark 局限） | 45 min | 等 E-001..E-005 实测 + 看 U-013 选择 | ⏳ blocked on E + U-013 |
+| **S-115** | **§1 Introduction framing 重写**：从"Stage-1 prototype + Stage-2 roadmap"切换到"Stage-2 mechanisms validated"叙事；删除 Finding 4 自证伪味道的段落，改为正面 contributions（R1 split / R2 audit / R3 vector belief 各自 empirical wins） | 90 min | 等 E-005 fullval 数据落地 | ⏳ blocked on E-005 |
+| **S-116** | **§6 Conclusion 重写**：从"long-paper opportunity now lies in completing the transition"改为"we present a complete Stage-2 EDO + empirical wins on HotpotQA + MuSiQue"；保留 organizational-emergence framing 但加上 concrete deliverables | 60 min | 等 E-005 | ⏳ blocked on E-005 |
+| **S-117** | **§4 加 Stage-2 Results 章节**：R1/R2/R3 ablation table（edo_full / edo_audit_only / edo_split_only / edo_vector_only / Stage-1 baselines 5+ 种）+ MuSiQue 4-hop 第二 benchmark 表 + 多 seed × paired bootstrap 95% CI | 120 min | 等 E-005 + E-006 + E-007 | ⏳ blocked on E-005..E-007 |
+| **S-118** | **升级 Algorithm 1 → "EDO Stage-2 execution loop"**：3 个动作 (do_self/outsource/split) + 显式 audit step + vector belief update；保持 ½ 页内 | 45 min | 等 E-001 + E-002 接口冻结 | ⏳ blocked on E-001 + E-002 |
+| **S-119** | **更新 Figure 1 prompt** 强调 Stage-2 三机制（R1 split tree / R2 audit ladder / R3 vector belief）；派 `U-EXEC-007` 让用户重出图替换当前 placeholder | 30 min | none — 可立即做 | ⏳ 待做（不阻塞编译） |
 | **S-105** | 编完整 bibliography：替换 4 条 ACL 模板默认引用，加 ≥15 篇命名 prior work（按 reviewer 列表：MARS, SAGE, AutoGen, MetaGPT, AMRO-S, ReSo, Reflexion, ToT 等） | 90 min | none | ⏳ 未做 — **desk-reject 邻接，最高优先级** |
 | **S-106** | 加第二 benchmark（MuSiQue 已是 §4.4 future work，落地为现在的 EXP-1 pass） | 工程师 | 等 U-011 拍板（如选 b 才需要先做） + 工程师跑数 | tracking-S-106 |
 | **S-107** | 多 seed (≥3) + paired bootstrap CI 加入 Table 1 | 工程师 | 等工程师跑数 | tracking-S-107 |
@@ -161,6 +164,8 @@
 | 2026-04-19 | scientist | **写作 Sprint 2 完成（LaTeX）**：用户指定写作目标切换为 `article/latex/edo_paper.tex`；S-014（build 脚本）/ S-003（Algorithm 1 入 .tex）/ S-006a in-doc 嵌入 / S-015（主体压缩到 8 页合规）/ S-016（Figure 2 in-doc 嵌入）全部 ✅；U-003 / U-009 隐式解决 | `article/latex/edo_paper.tex` (38.9 → 41.8 KB) / `article/build/edo_paper.pdf` (260 → 334 KB, **main body 8 pages COMPLIANT**) / `scripts/build_paper.ps1` |
 | 2026-04-19 | reviewer-agent | **本仓库内首次"独立审稿人 P5"完整 review 落盘**：reviewer_20260419_163139_01_9e72f7 / overall=4.5 / verdict=weak_reject / oral_eligible=false / experiments_solidity_score=0 / D3=4.0 / D4=4.0；新增 7 个 NEW fix themes 到 §C；新增 9 个 fix-TODO (S-105..S-114) 到 §B.5；新增 U-011-decide 决策项 | `artifacts/idea_reviews/reviewer_20260419_163139_01_9e72f7/{review.json,review.md}` + `SCIENTIST_TODO.md §A,§B.5,§C,§D` + `artifacts/idea_reviews/{review_index.jsonl,scoreboard.md,fix_themes.md}` |
 | 2026-04-19 | reviewer-agent (落地用户 U-011 决策) | **U-011 → ✅ (b) Stage-2 + EMNLP 2026 ARR 5/25 sprint**；§A cross-ref 状态镜像同步；新增 §B.5 三个预备写作 TODO **S-115 / S-116 / S-117**（全部 blocked on U-012/U-013/E-XXX）；明确"科学家可即刻动手项 = S-105/108/110/111/112/113/114 共 7 个不依赖二次决策"；不擅自决定 U-012 / U-013 范围 | `SCIENTIST_TODO.md §A,§B.5,§D` |
+| 2026-04-19 | scientist | **写作 Sprint 2 后处理（6 commits）**：R0 baseline (`6b22f7c`) git init + .gitignore；R1 (`e8aad98`) S-105 + S-012 bibliography + rebuttals；R2 (`1775d6e`) S-108 ablation table + S3.4 cut；R3 (`a701aaa`) S-111 + S-113 Limitations + 全文 anonymization；R4 (`8d9581c`) S-112 Responsible NLP Checklist；R5 (`7b4bfec`) S-110 Figure 1 placeholder + render verification | git history `6b22f7c..7b4bfec` |
+| 2026-04-20 | scientist (落地用户 U-012/U-013/U-EXEC-006) | **R6 commit / Stage-2 sprint 启动**：U-012 → ✅ R1+R2+R3 全做；U-013 → ✅ MuSiQue 加入；U-EXEC-006 → ✅ 新 newapi key 落入 `configs/llm.json`；§A cross-ref 同步；§B.5 重写 S-115..S-119（5 项 sprint 写作 TODO）；implementation_log 开 phase 块 `[stage2_sprint_kickoff_20260420]` 含 E-001..E-008 工程师工单；PROJECT_STRUCTURE.md §0 sprint 状态块更新为 Day 1 = 2026-04-20 / T-35 to ARR May 25 | `configs/llm.json` + `USER_TODO.md` + `SCIENTIST_TODO.md` + `implementation_log.md` + `PROJECT_STRUCTURE.md` |
 
 ---
 
