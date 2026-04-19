@@ -1,0 +1,745 @@
+                  Emergent Delegation Organization from Local Interaction
+                                 in Multi-Agent Systems
+
+
+                                       Anonymous EMNLP 2026 Submission
+
+
+
+
+001                         Abstract                              et al., 2024; Hong et al., 2024; Shen et al., 2023),    045
+
+002       Large Language Model (LLM) multi-agent                  or each agent is assigned a fixed specialist identity   046
+
+003       systems are usually built around either cen-            in advance (Qian et al., 2024; Chen et al., 2024).      047
+004       tralized orchestrators or preassigned specialist        These strategies can be effective engineering short-    048
+005       roles. Both assumptions are convenient, but             cuts, but they leave open a more basic question         049
+006       they hide a more fundamental scientific ques-           about organization. In realistic collaborative set-     050
+007       tion: how can useful division of labor emerge           tings, useful division of labor is rarely known per-    051
+008       when agents have only local visibility, no global       fectly at initialization time. Groups begin with        052
+009       expert catalog, and no predeclared identities?
+                                                                  partial knowledge, repeated interaction, local judg-    053
+010       We study this question through Emergent Del-
+011       egation Organization (EDO), a decentralized             ments, and uneven structural exposure. Over time,       054
+
+012       framework in which near-homogeneous agents              some members become recognized as better de-            055
+013       interact over sparse connected graphs and re-           composers, others as reliable integrators, others as    056
+014       peatedly choose among three primitive actions:          useful auditors or bridge-builders. In other words,     057
+015       solve the task themselves, outsource it to a vis-       organization is not only executed; it is formed.        058
+016       ible neighbor, or split it into subtasks. Each             This paper takes that organizational view se-        059
+017       delegation creates an upstream acceptance obli-
+                                                                  riously. We ask whether a society of near-              060
+018       gation, and these obligations compose into a
+019       recursive acceptance ladder; social reputation          homogeneous language agents, each with only lo-         061
+
+020       is therefore shaped not by self-report but by           cal neighbor visibility on a sparse connected graph,    062
+021       whether downstream work is accepted and ul-             can self-organize into useful task division through     063
+022       timately contributes value to the global task.          recursive delegation, recursive acceptance, and         064
+023       This yields a structured personality-tag space          value-based social updating. Our interest is there-     065
+024       that drives future local allocation decisions. We       fore not simply in improving multi-agent answer         066
+025       further position our current executable system,         quality by adding more dialogue turns or build-         067
+026       based on Terminal-Consensus Peer Back-
+                                                                  ing a stronger router. We study how tasks move          068
+027       propagation (TCPB), as a restricted Stage-1
+028       instantiation of this broader framework: fixed          through a constrained society, how local trust is       069
+
+029       topologies, role-prior nodes, linear handoff            formed, when agents decide to keep work, when           070
+030       packets, and terminal outcome calibration only.         they outsource it, when they split it, and how these    071
+031       Existing HotpotQA evidence already shows                repeated interactions induce recognizable organiza-     072
+032       that decentralized outcome-based calibration            tional structure.                                       073
+033       improves delegation safety and stabilizes rout-            The failure mode motivating our work remains         074
+034       ing without a central controller. We argue that
+                                                                  delegation miscalibration. Prior systems often          075
+035       the main long-paper contribution is therefore
+036       not another tuned router, but a general method          assume that an agent can accurately assess whether      076
+
+037       for studying how division of labor, trust, and          it should accept a task or hand it off. In practice,    077
+038       coordination emerge from local interaction in           LLMs are prone to overconfident self-assessment         078
+039       language-agent societies.                               (Guo et al., 2017; Kadavath et al., 2022): they of-     079
+                                                                  ten accept work they should not keep, delay del-        080
+040   1   Introduction
+                                                                  egation, or pass forward low-quality intermediate       081
+041   The dominant design patterns in LLM-based multi-            results. Earlier versions of our project showed         082
+042   agent systems make a strong assumption before               that replacing self-reflection (Shinn et al., 2023;     083
+043   the system has even started to work: either a cen-          Madaan et al., 2023) with terminal outcome feed-        084
+044   tral orchestrator decides who should do what (Wu            back significantly improves delegation safety on        085
+
+
+                                                              1
+086   fixed-topology benchmarks. However, we now ar-                      2. We introduce Emergent Delegation Organi-            137
+087   gue that this is only the first layer of a richer theory.              zation (EDO), a method built around sparse          138
+088   Delegation quality is not just a routing score prob-                   local graphs, recursive do / outsource /            139
+089   lem; it is a problem of organizational emergence                       split decisions, recursive upstream accep-          140
+090   under local interaction.                                               tance audits, and value-induced personality         141
+091      We therefore propose Emergent Delegation Or-                        tags.                                               142
+092   ganization (EDO) as the full long-paper method.
+093   In EDO, agents start from the same cognitive
+094   machinery and the same action grammar. The                          3. We formalize the distinction between the            143
+
+095   only allowed asymmetries arise from graph posi-                        full long-paper method and the current re-          144
+
+096   tion, local interaction history, and the task neigh-                   stricted executable instantiation, position-        145
+
+097   borhoods each agent encounters over time. Ev-                          ing TCPB as a Stage-1 prototype rather than         146
+
+098   ery task is treated as a node in a task tree, not                      the endpoint of the research line.                  147
+
+099   merely as a single linear message. Upon receiv-
+100   ing a task, an agent chooses among three primi-                     4. Using current HotpotQA evidence, we show            148
+101   tive actions: do_self, outsource(neighbor), or                         that even the restricted instantiation already      149
+102   split(subtasks). Importantly, each outsourc-                           supports the central direction: decentralized       150
+103   ing decision also creates a recursive accountability                   outcome-based calibration improves delega-          151
+104   chain: if agent a delegates to b, then a is responsi-                  tion safety and creates measurable route stabi-     152
+105   ble for accepting, revising, rerouting, or rejecting                   lization without relying on a central controller.   153
+106   b’s returned result. This recursive audit structure
+107   turns delivered value, not self-description, into the
+108   basis of social reputation.                                     2     Related Work                                         154
+109      Under this framing, an agent’s “personality” is
+110   not a stylistic prompt trait but a structured oper-             2.1    Routing and orchestration in multi-agent            155
+111   ational tag vector induced by interaction history                      systems                                             156
+112   (acceptance rate, decomposition usefulness, inte-
+113   gration quality, rework cost, solving efficiency).              Much of the LLM multi-agent literature is or-              157
+114   Future local delegation decisions compare task de-              ganized around central decomposition and rout-             158
+115   mands against these socially formed tags under lo-              ing. AutoGen (Wu et al., 2024) provides a                  159
+116   cal visibility constraints, asking the more ambitious           generic conversation framework where a manager             160
+117   question of whether useful division of labor can                agent dispatches sub-tasks to specialist agents;           161
+118   emerge from local interaction alone. We explicitly              MetaGPT (Hong et al., 2024) hard-codes a                   162
+119   separate theory from currently executed evidence:               software-engineering pipeline (PM → architect →            163
+120   our present codebase implements a restricted Stage-             engineer) where each agent’s role and order are            164
+121   1 system, Terminal-Consensus Peer Backprop-                     pre-assigned; HuggingGPT (Shen et al., 2023)               165
+122   agation (TCPB) — fixed chain and star topolo-                   uses an LLM controller to plan, select, and ex-            166
+123   gies, role-prior nodes, linear handoff packets, and             ecute models from a global tool catalog. These             167
+124   terminal-only competence updates on the final ac-               orchestrator-based frameworks achieve strong con-          168
+125   cepting node — which already provides a repro-                  trol and interpretability, but they share three prop-      169
+126   ducible, fully logged baseline showing that decen-              erties our work specifically removes: (i) a globally       170
+127   tralized outcome-based calibration reduces prema-               visible expert/role table at initialization, (ii) a cen-   171
+128   ture acceptance and stabilizes routing without cen-             tral decision node that owns all routing, and (iii)        172
+129   tralized orchestration. We reinterpret that system              a fixed task script. ChatDev (Qian et al., 2024)           173
+130   as the first executable approximation of the broader            and AgentVerse (Chen et al., 2024) extend the              174
+131   organizational framework, not as the final method.              orchestrator paradigm with richer agent commu-             175
+132      Our contributions are therefore four-fold:                   nication and emergent behaviors but still rely on          176
+                                                                      either a manager agent or globally synchronized            177
+133     1. We reframe decentralized multi-agent routing               state. Our work asks the complementary question:           178
+134        as a problem of organizational emergence                   how can division of labor emerge when no node              179
+135        under local interaction, rather than merely                has a global expert table and each node sees only          180
+136        better static role assignment or router tuning.            its local sparse-graph neighborhood?                       181
+
+
+                                                                  2
+182   2.2   Reflection, critique, and outcome-based
+183         calibration
+                                                                                       [Figure 1 placeholder]
+                                                                       Conceptual schematic of EDO (top: full sparse-graph +
+                                                                         recursive audit ladder + 3-action policy) vs. TCPB
+184   Reflection has become a common mechanism for                         Stage-1 prototype (bottom: 4-node chain with
+185   improving LLM reasoning. Reflexion (Shinn et al.,                terminal-only update). Vector asset to be inserted; full
+186   2023) introduces verbal RL where an agent cri-                    design specification in the anonymous figure-prompt
+                                                                                             supplement.
+187   tiques its own trajectory and rewrites a policy.
+188   Tree-of-Thoughts (Yao et al., 2023) backtracks
+189   across self-evaluated reasoning branches. Self-
+190   Refine (Madaan et al., 2023) iteratively rewrites            Figure 1: EDO theoretical action space (top panel) ver-
+                                                                   sus the restricted Stage-1 instantiation TCPB (bottom
+191   outputs based on the model’s own feedback. At
+                                                                   panel). Final asset will be a vector PDF; this submission
+192   the multi-agent level, Multi-Agent Debate (Liang             renders the placeholder so that all LaTeX figure num-
+193   et al., 2024; Du et al., 2024) and ChatEval (Chan            bering resolves correctly.
+194   et al., 2024) replace self-critique with explicit per-
+195   hop peer critique that a meta-reviewer aggregates.
+196   All these approaches assume that agents (or the              3     Methodology                                              228
+
+197   aggregating reviewer) are at least moderately re-            3.1     Problem formulation                                    229
+198   liable judges of competence within a single turn.
+199   Our prior work found that self-reflection is espe-           We model a multi-agent society as a sparse con-                230
+
+200   cially unreliable when the question is not “is this          nected directed graph G = (A, E), where A =                    231
+
+201   sentence better?” but “should I have handled this            {a1 , a2 , . . . , aN } is the set of agents and E de-         232
+
+202   task at all?” — a delegation, rather than generation,        fines allowed communication channels. Unlike                   233
+
+203   decision. This motivates our emphasis on terminal,           role-based systems, agents do not start with fixed             234
+
+204   outcome-grounded feedback rather than per-hop                specialist identities. They share the same base cog-           235
+
+205   peer scoring: in the restricted TCPB prototype,              nitive machinery and the same action grammar. We               236
+
+206   only terminal outcomes are used for calibration.             allow only mild structural asymmetry: graph po-                237
+
+207   In the full EDO framework, terminal outcomes                 sition, local exposure history, and differences in-            238
+
+208   are retained but augmented by recursive upstream             duced by repeated interactions.                                239
+
+209   acceptance signals that are local, structured, and              Each input instance x = (q, y, C) consists of a             240
+
+210   audit-like rather than free-form opinion exchanges.          question q, gold answer y, and optional supporting             241
+                                                                   context C. In the full method, x expands into a                242
+                                                                   task tree rather than a single linear message. Each            243
+                                                                   task node records its parent, children, current un-            244
+211   2.3   Division of labor, reputation, and local               certainty, required output, evidence state, owner              245
+212         organization                                           agent, executor agent, candidate result, and audit             246
+                                                                   status. This representation is necessary because               247
+                                                                   a task may be solved directly, outsourced intact,              248
+213   Our long-paper framing is closer to a theory of              or recursively split into subtasks that later require          249
+214   organization than to static role play. Classical             integration and audit.                                         250
+215   organization theory (Galbraith, 1973; Mintzberg,
+216   1979) establishes that stable roles in human groups          3.2     Agent state and personality                            251
+217   are outcomes of repeated coordination, evaluation,           At time t, each agent ai maintains state                       252
+218   and structural position rather than perfect advance
+219   assignment, and that reputation is socially con-                         Sit = {Pit , Bit , Mit , Hit , N (i)},             253
+220   structed through accepted contributions rather than
+221   self-claims. Local neighborhood structure also mat-          where Pit is the agent’s public personality-tag vec-           254
+222   ters: sparse connectivity creates bridge positions,          tor, Bit is its local belief state over neighbors, Mit         255
+223   clustered exposure, and bounded trust propagation.           is its private episodic memory, Hit is a summary of            256
+224   EDO imports these intuitions into language-agent             past delegation and audit interactions, and N (i) is           257
+225   systems by making local delegation, recursive ac-            its visible neighbor set.                                      258
+226   ceptance, and value-based personality formation                 The key object is Pit , the value-induced opera-            259
+227   the primary objects of study.                                tional persona. This is not a stylistic role prompt.           260
+
+
+                                                               3
+261   It is a structured vector whose components summa-             The selected action is                                   305
+262   rize socially observed capability, for example:
+                                                                      πi (z) = arg max Uiself (z), Uisplit (z),
+                                                                                         
+                                                                                                                             306
+
+263     Pi = [solve, decompose, audit, integrate,                                           maxj∈N (i) Uiout (z, j)      ,   307
+
+264                     explore, efficiency, reliability].          subject to budget, depth, and safety constraints.        308
+
+265   These components are intended to capture how                  3.4   Recursive upstream audit                           309
+266   useful the agent has been to others in the society:
+                                                                    The main departure from the current prototype            310
+267   whether its outputs are accepted, whether it reduces
+                                                                    is that delegation is not terminal at handoff time.      311
+268   or increases rework, whether its decompositions
+                                                                    Every outsourcing decision also creates an accep-        312
+269   help, whether its integrated outputs are reliable,
+                                                                    tance obligation. If a delegates a task to b, then       313
+270   and whether it achieves useful work efficiently.
+                                                                    a must later evaluate whether to accept b’s result,      314
+271      Each agent also maintains only local beliefs
+                                                                    reject it and redo the task, reject it and reroute, or   315
+272   about neighbors. There is no global competence
+                                                                    reject it and resplit.                                   316
+273   directory. For a neighbor aj , the local belief Bit (j)
+                                                                       This produces a recursive structure. If a → b →       317
+274   is constructed from interaction history with aj , re-
+                                                                    c, then b audits c before returning upward, and a        318
+275   cent publicly visible persona summaries, and local
+                                                                    audits b. The system therefore operates on a delega-     319
+276   audit outcomes involving aj . This preserves decen-
+                                                                    tion tree with a recursive acceptance ladder, not        320
+277   tralization while allowing trust and specialization
+                                                                    merely on a one-dimensional chain of messages.           321
+278   to be gradually formed.
+                                                                    This is essential because social reputation should       322
+279   3.3   Task signatures and local utility                       be grounded in accepted delivered value, not only        323
+
+280   Instead of matching tasks to fixed role names, EDO            in terminal answer correctness.                          324
+
+281   represents each task node z by a task-signature               3.5   Personality-tag update                             325
+282   vector
+                                                                    Each audit event generates a local social signal for     326
+
+283     ϕ(z) = [need_decompose, need_verification,                  the downstream executor. For a parent-upstream           327
+                                                                    node u, downstream node v, and task node z, a            328
+284          need_integration, need_exploration,
+                                                                    local audit event can be written as:                     329
+285   evidence_breadth, uncertainty, cost_sensitivity].
+                                                                      ℓu→v,z = [accepted, rework_cost,                       330
+286   This task signature can be extracted through rules,
+287   light-weight LLM judgment, or future learned mod-                           value_gain, timeliness,                    331
+
+288   ules. The key point is conceptual: routing should                      decomposition_help, integration_help].          332
+
+289   be based on the match between task demands and
+                                                                    After the root task finishes, the system also ob-        333
+290   socially formed personality tags, not on a hard-
+                                                                    serves a terminal event                                  334
+291   coded role lookup and not necessarily on a large
+292   embedding router.                                               rterminal (x) = [quality, total_cost,                  335
+293      For an agent ai receiving task node z, the three
+                                                                                           total_depth, final_accept].       336
+294   candidate utilities are:
+                                                                    The full update rule combines local accepted-value       337
+295     Uiself (z) = Fit(Pi , ϕ(z))
+                                                                    signals with slower terminal correction:                 338
+296                   − λc Costself (z)                                            
+297               − λr Riskself (z),                                  Pit+1 = clip (1 − µ)Pit + µ ηloc LocalValueti          339
+       out
+298   Ui (z, j) = Fit(Bi (j), ϕ(z))                                                  + ηtrm TerminalValueti                  340
+299                   − λs SendCost(i, j)                                                                     t
+                                                                                                                
+                                                                                     − ηrew ReworkPenaltyi           .       341
+300                   − λa AuditCost(z)
+301                   − λr RejectRisk(j, z),                        3.6   Current restricted executable                      342
+                                                                          instantiation: TCPB prototype                      343
+302     Uisplit (z) = SplitGain(z) − λm MergeCost(z)
+                                                                    Our current codebase implements a Stage-1 re-            344
+303                   − λd DepthPenalty(z)
+                                                                    stricted instance of EDO that we call Terminal-          345
+304                   − λa AuditLoad(z).                            Consensus Peer Backpropagation (TCPB). The               346
+
+
+                                                                4
+      Algorithm 1 TCPB execution loop (Stage-1 pro-                        two traps. If we write only what the code already               365
+      totype, single sample). Notation matches §3; de-                     does, the paper becomes a fixed-role routing paper              366
+      terministic instantiations of ϕ and bi (j) are in the                with limited conceptual novelty. If we write only               367
+      executable spec [Anonymous Suppl.] §1.2 / §2.2.                      the grand theory and ignore implementation limits,              368
+      Require: Question q,            gold y;         chain agents         reviewers will rightly reject the paper for overclaim-          369
+          A={DEC, EVI, VER, SYN}           with      adjacency   N;        ing. The correct scientific stance is to make EDO               370
+          competence c ∈ [0.05, 0.95]|A| ; constants δa =0.02,
+          Hmax =4, FTH =0.5, ∆+ =+0.06, ∆− =−0.10, ρ=0.5.
+                                                                           the main theory and TCPB the current restricted                 371
+      Ensure: Predicted answer ŷ; updated competence c′ .                 instantiation. The exact boundary between the two               372
+       1: P ← H ANDOFF PACKET(q, ∅, 0, ∅); i ← DEC                         is fixed by the Prototype Scope Box that follows.               373
+       2: while hop_count(P ) < Hmax do
+       3:       ϕ ← EXTRACT(P )           ▷ rule-based, no LLM call        Prototype Scope Box (single source of truth for what the
+       4:       U S ← 0.55 c[i] + 0.20 ϕ.ev + 0.10(1−ϕ.unc)                current submission instantiates).
+                    −0.10 ϕ.loop − 0.05 ϕ.rev                              The current executable system instantiates only a restricted
+       5:       for j ∈ N (i) do                                           Stage-1 subset of EDO. Concretely, the prototype replaces:
+       6:           UjO ← 0.60 bi (j) + 0.25 ⊮[role(j)=pref(P )]
+                      +0.05 struct(j) − 0.25 ⊮[j ∈ vis(P )]                   (i) arbitrary sparse graphs with fixed chain/star
+       7:       end for                                                           topologies;
+       8:       j ⋆ ← arg maxj∈N (i) UjO ; acc ← (U S ≥ UjO⋆ +δa )           (ii) near-homogeneous agents with four role-prior
+       9:       if i=DEC and MULTIHOP(q) then acc ← F                             nodes (decomposer, evidence_seeker, verifier,
+      10:       end if                                                            synthesizer);
+      11:       if i=DEC and not MULTIHOP(q) and c[i]<0.90 then
+          acc ← F                                                            (iii) task-tree state with a linear HandoffPacket;
+      12:       end if                                                       (iv) the three-action do_self /               outsource
+      13:       if N (i)=∅ then acc ← T                                           /   split EDO policy with              deterministic     374
+      14:       end if                                                            accept-or-forward;
+      15:       if acc then
+      16:           ŷ ← LLM_ ANSWER(P ); break                              (v) recursive persona-tag updates with terminal-only
+      17:       else                                                              scalar competence updates (TCPB).
+      18:           P ← P.APPEND(LLM_ CONTRIBUTE(P ))                      The deterministic instantiations of ϕ(z), the utility esti-
+      19:           vis(P ) ← vis(P ) ∪ {j ⋆ }; hop_count(P ) +=1;         mators U self , U out , and the persona update rule for this
+          i ← j⋆                                                           prototype scope are given in the anonymous executable
+      20:       end if                                                     specification supplement; that note is the canonical com-
+      21: end while                                                        panion specification for everything in this box and is refer-
+              // Terminal-Consensus update (only the accepting node)       enced by Sections 3, 4, and 5 without restating its content.
+      22: r ← +1 if F1 (ŷ, y)≥FTH else −1                                 Stage-2 work will progressively replace each of (i)–(v) with
+      23: δ ← ∆+ if r>0 else ∆− ; δ ← CLIP(δ, −∆+ , +∆+ )                  the full EDO mechanism; none of those replacements are
+      24: tgt ← CLIP(c[i]+δ, 0.05, 0.95)                                   claimed by the current submission.
+      25: c′ [i] ← (1−ρ)c[i] + ρ · tgt; c′ [k ̸= i] ← c[k]
+      26: return ŷ, c′
+                                                                           3.8 Stage-2 Roadmap (boundaries the current                     375
+                                                                               submission does not cross)                                  376
+347   exact substitutions vis-à-vis the full EDO design                    Three EDO mechanisms remain underspeci-                         377
+348   are enumerated in the Prototype Scope Box below;                     fied in the present submission and define the                   378
+349   the operative consequence is that after a routed                     Stage-2 boundary that empirical Section 4                       379
+350   path terminates with final answer ŷ, we compare                     numbers must not be read as supporting. (R1)                    380
+351   ŷ with the gold answer y and obtain a thresholded                   split subtask generation: Stage-2 introduces                    381
+352   task-quality signal. Only the final accepting node                   split(z)→{z1 , . . . , zk } via a light-weight LLM              382
+353   is updated, using bounded asymmetric steps with                      call gated by Uisplit (z)> max(Uiself , maxj Uiout )            383
+354   damping. The complete per-sample loop, includ-                       with      hard         bounds       max_subtasks=3,             384
+355   ing utility scoring, the two safety gates, and the                   max_depth=3,               max_nodes=12         (see            385
+356   terminal-consensus update, is given in Algorithm 1.                  edo_lite_executable_spec.md §4.3); the                          386
+357   This restricted mechanism already reduces prema-                     current submission contains zero split events.                  387
+358   ture acceptance and stabilizes routing relative to                   (R2) Recursive audit decision protocol:                         388
+359   self-reflection baselines, but it does not yet instanti-             Stage-2 elevates audit to a per-handoff decision                389
+360   ate recursive audit, persona-tag formation, or split-                Audit(u, v, z) returning one of ACCEPT, ACCEPT-                 390
+361   based organization.                                                  W- NOTE , REJECT- REROUTE , or REJECT- RESPLIT,                 391
+                                                                           executed by upstream u on the result returned                   392
+362   3.7   Why the separation matters
+                                                                           by downstream v, rule-based on answer length,                   393
+363   Without separating the full EDO method from the                      refusal patterns, and an audit_score proxy                      394
+364   current TCPB prototype, the paper falls into one of                  (§4.2 of the same note); each audit emits a                     395
+
+
+                                                                       5
+396   social-signal tuple ℓu→v,z that feeds (R3). The                Method             EM      F1   MHC     Tok.
+397   current submission performs no per-hop upstream                self_claim      0.635 0.7641     2.00   6,414
+398   rejection. (R3) Neighbor belief update: Stage-2                static_roles    0.610 0.7454     1.68   4,663
+                                                                     peer_calibrated 0.615 0.7381     2.00   6,414
+399   replaces the scalar self-competence with a vector
+400   belief Bit (j) ∈ [0, 1]7 updated as Bit+1 (j) =
+                                                                 Table 1: Stage-1 results on HotpotQA chain-200 with
+401   clip (1−ν)Bit (j)+ν ·evidence_extract(ℓu→v,z )             gpt-4.1-mini. MHC = mean handoff count; Tokens =
+402   with ν=0.2.          The current submission’s              mean API tokens per sample. All three methods achieve
+403   published_competence is the solve-dimension                premature-accept rate PAR = 0.0.
+404   projection only and is not updated per hop.
+
+405   4     Experiments                                             • Model: gpt-4.1-mini via an OpenAI-                  442
+                                                                      compatible API endpoint (held constant              443
+406   4.1    What current evidence already establishes                across all runs; see Appendix A on integrity-       444
+407   Our current reproducible evidence comes from the                check provenance), temperature 0, chain             445
+408   Stage-1 TCPB prototype on HotpotQA. The main                    topology unless otherwise noted.                    446
+409   benchmark slice is a fixed set of 200 HotpotQA
+410   validation questions, frozen as a versioned                   • Canonical run: a single Stage-1 batch               447
+
+411   slice in the anonymous code/data supplement.                    covering           fixed_peer_calibrated,           448
+
+412   Existing runs compare fixed_peer_calibrated,                    fixed_static_roles,                   and           449
+
+413   fixed_self_calibrated, fixed_self_claim,                        fixed_self_claim on the 200-sample                  450
+
+414   fixed_static_roles, and centralized baselines                   slice, all validated by an automated log-           451
+
+415   under shared inputs and logged execution traces.                completeness checker. Metrics consolidated          452
+
+416      These experiments do not establish the full EDO              in the per-run main_table.csv.                      453
+
+417   theory. What they do establish is narrower but still
+                                                                    • Current runtime: an asynchronous parallel           454
+418   important:
+                                                                      runner (runner.py), a method registry encod-        455
+419       • decentralized outcome-based calibration mat-              ing all baselines (methods.py), and a typed         456
+420         ters;                                                     inter-agent packet schema (contracts.py);           457
+                                                                      released in the anonymous code supplement.          458
+421       • delegation safety is measurable and improv-
+422         able;                                                   • Current method objects: fixed topology,             459
+                                                                      role-prior nodes, linear handoff packet, de-        460
+423       • structured intermediate state is necessary for            terministic local accept-or-forward policy,         461
+424         route-level auditing;                                     terminal-only outcome update.                       462
+
+425       • route preferences can stabilize without a cen-          • Current process metrics: EM, F1, mean               463
+426         tral controller;                                          handoff count, dead-end rate, premature ac-         464
+
+427       • some remaining errors are generated by lo-                cept rate, forward-after-correction rate, heuris-   465
+
+428         cal answer bottlenecks rather than by routing             tic and API token cost, and cost-normalized         466
+
+429         failure.                                                  F1.                                                 467
+
+
+430   This evidence should be presented as support for              • Note on prior GLM results: All Stage-               468
+431   the direction of the theory, not as proof of the                1 runs prior to the backbone upgrade used           469
+432   entire organizational framework.                                glm-4-flash. These are archived as Stage-           470
+                                                                      1 guidance-only artifacts (in the anonymous         471
+433   4.2    Stage-1 setup: current prototype                         supplement). They established the direction         472
+434          experiments                                              of the research but are not the final paper evi-    473
+435       • Benchmark: HotpotQA (Yang et al., 2018)                   dence.                                              474
+436         distractor validation subset, 200 examples
+437         (versioned slice in the anonymous supple-            4.3 Current main findings from the restricted            475
+
+438         ment). MuSiQue (Trivedi et al., 2022) and                instantiation                                        476
+
+439         2WikiMultiHop (Ho et al., 2020) are reserved         The canonical Stage-1 gpt-4.1-mini results (n =          477
+440         for the Stage-2 EDO benchmark transfer (§4.4         200, chain) support four main observations, sum-         478
+441         E5).                                                 marised in Table 1.                                      479
+
+
+                                                             6
+        Variant                         EM     F1     Tok.                 Backbone-sensitive Stage-1 ordering (chain-200, n=200)
+                                                                                  0.85
+        canonical anchor (old codepath) 0.475 0.5955     —
+        refreshed baseline (v3 codepath) 0.435 0.5597 6,429                       0.80              0.770                                0.764
+                                                                                                   0.738               0.745
+          + evidence window enlarged 0.465 0.5819 7,335                           0.75
+
+
+
+
+                                                                    HotpotQA F1
+          − TCPB terminal update         0.435 0.5597 6,430
+          − decomposer safety gate       0.435 0.5597 6,430                       0.70
+                                                                                  0.65
+                                                                                           0.596
+      Table 2: Mechanism ablations, HotpotQA chain-200,                           0.60                         0.580
+                                                                                                                                 0.562
+      glm-4-flash. Disabling TCPB or the decomposer gate
+                                                                                  0.55
+      exactly matches the refreshed baseline; enlarging the
+      evidence window recovers +2.2 F1. PAR = 0 for all                           0.50
+                                                                                         peer_calibrated static_roles            self_claim
+      variants. Per-variant logs in the anonymous supplement.                                              peer fullval n=7405: 0.770
+                                                                                                           glm-4-flash (chain-200)
+                                                                                                           gpt-4.1-mini (chain-200)
+480   Finding 1: Backbone quality dominates all
+481   method differences. All three Stage-1 methods                 Figure 2: Backbone-sensitive Stage-1 ordering
+482   improve by +15 to +20 F1 points when switch-                  on the chain-200 HotpotQA slice.              All three
+                                                                    methods improve by ≈+15–20 F1 points when
+483   ing from glm-4-flash to gpt-4.1-mini on the
+                                                                    the backbone is upgraded from glm-4-flash to
+484   same 200-sample slice and identical routing code.             gpt-4.1-mini, but the relative ordering inverts: GLM
+485   The routing mechanism is secondary to generation              yields peer_calibrated (0.596) > static_roles
+486   quality on this benchmark/topology combination.               (0.580) > self_claim (0.562); gpt-4.1-mini yields
+                                                                    self_claim (0.764) > static_roles (0.745) >
+487   Finding 2: Method ordering is backbone-                       peer_calibrated (0.738). The red star marks the only
+488   sensitive and must not be over-interpreted                    validated full-validation point (peer_calibrated on
+489   from a single backbone. On glm-4-flash                        gpt-4.1-mini, F1 =0.770, n=7405); the other two ful-
+490   (Stage-1 GLM), the ordering was static_roles                  lval points are pending rerun under the runtime integrity
+491   > peer_calibrated ≈ self_claim.                   On          guard (§5). Identical inputs and routing code are used
+492   gpt-4.1-mini, the ordering inverts: self_claim                across backbones.
+493   (F1=0.7641) > static_roles (0.7454) >
+494   peer_calibrated (0.7381). Figure 2 visualises
+495   the inversion under identical inputs and routing
+496   code.                                                         mature acceptance on multi-hop HotpotQA ques-                                519
+497      The gap between the best and worst Stage-1                 tions across backbones. This confirms that the rout-                         520
+498   method is 2.6 F1 points — non-trivial at n =                  ing safety structure is robust to backbone change.                           521
+499   200 but not yet confirmed with paired statistics.
+500   fixed_peer_calibrated/TCPB should not be de-
+501   scribed as the strongest Stage-1 method on the
+502   strong backbone. fixed_self_claim currently
+                                                                    Finding 4: On a capable backbone, TCPB                                       522
+503   leads F1; fixed_static_roles is the most cost-
+                                                                    peer-calibration overhead does not yield F1                                  523
+504   efficient (4,663 vs. 6,414 API tokens per sample).
+                                                                    gains. The F1 and cost data indicate that                                    524
+505   N =7405 full-validation for all three methods is re-
+                                                                    peer_calibrated uses the same token budget                                   525
+506   quired for tight confidence intervals. As of this
+                                                                    as self_claim (both 6,414/sample) but achieves                               526
+507   draft, peer_calibrated full-validation is com-
+                                                                    lower F1. The mechanism value of TCPB on                                     527
+508   pleted and valid (F1=0.7703, n=7405); the other
+                                                                    this configuration appears in route-level process                            528
+509   two full-validation runs are pending re-execution
+                                                                    metrics (MHC= 2.00 for peer, indicating fuller                               529
+510   under a new integrity guard (Appendix A). The
+                                                                    chain use) rather than in final F1. For a capa-                              530
+511   three-method ordering above is therefore supported
+                                                                    ble backbone on HotpotQA, the simpler meth-                                  531
+512   by chain-200 evidence (n=200) only and should
+                                                                    ods are Pareto-dominant on the F1/cost frontier.                             532
+513   not be presented as a finalized full-validation rank-
+                                                                    The paper contribution should therefore pivot from                           533
+514   ing.
+                                                                    “peer_calibrated is best” to “the EDO frame-                                 534
+515   Finding 3: PAR collapses to zero regardless of                work explains when and why delegation overhead                               535
+516   backbone. All three methods achieve PAR = 0.0                 pays off — and Stage-1 evidence reveals backbone-                            536
+517   on gpt-4.1-mini, consistent with the GLM result.              sensitive threshold effects that motivate the full                           537
+518   The decomposer force-forward gate prevents pre-               theory.”                                                                     538
+
+
+                                                                7
+539   4.4    Full EDO experimental agenda (Stage-2                  claim is that multi-agent language systems should        588
+540          plan)                                                  be studied as organizations, not merely as collec-       589
+
+541   The full long-paper requires experiments re-                  tions of prompts. Under this view, the important         590
+
+542   designed around emergence rather than final an-               scientific questions become: how does labor divi-        591
+
+543   swer quality alone, organized around five planned             sion emerge, how is local trust formed, when is          592
+
+544   studies: E1 emergent specialization from near-                work kept versus outsourced versus split, and how        593
+
+545   homogeneous start (persona-tag divergence, spe-               do repeated acceptance judgments shape durable           594
+
+546   cialization entropy, per-agent action frequencies);           social identity?                                         595
+
+547   E2 value of recursive split (split usefulness rate,              We introduced Emergent Delegation Organi-             596
+
+548   merge overhead, depth, rework delta); E3 value of             zation (EDO) as a framework for answering these          597
+
+549   recursive audit (audit precision/recall, low-quality          questions. EDO moves the focus from fixed roles to       598
+
+550   subcontract propagation rate, post-rework qual-               socially induced personality tags, from linear rout-     599
+
+551   ity); E4 sparse-graph robustness across chain,                ing to recursive task trees, and from terminal-only      600
+
+552   star, random sparse connected, small-world, and               supervision to recursive acceptance-based organiza-      601
+
+553   community-bridge families (local-discovery suc-               tion. Our current TCPB system remains important,         602
+
+554   cess, bridge utilization, quality–cost trade-offs, sta-       but only as the first restricted executable approxi-     603
+
+555   bility across seeds); E5 benchmark transfer to                mation of this broader idea. Its existing HotpotQA       604
+
+556   MuSiQue and other compositional benchmarks                    evidence already shows that decentralized outcome-       605
+
+557   for which recursive split and integration are cen-            based calibration improves delegation safety and         606
+
+558   tral. Beyond EM/F1 and cost, this agenda will                 stabilizes routing without centralized control. The      607
+
+559   report organizational process metrics — specializa-           long-paper opportunity now lies in completing the        608
+
+560   tion entropy, persona-tag divergence, audit preci-            transition from calibrated routing to emergent or-       609
+
+561   sion/recall, subcontract acceptance rate, split use-          ganization.                                              610
+
+562   fulness rate, average delegation depth, bridge uti-
+563   lization rate, and seed-level organization stability —        Limitations                                              611
+564   none of which are claimed by the present submis-
+565   sion.                                                         We explicitly acknowledge four scope limitations         612
+                                                                    of the present submission. (1) The current run-          613
+566   4.5    Current Stage-1 artifact interpretation                time implements only the restricted Stage-1 TCPB         614
+                                                                    prototype: fixed topologies, role-prior nodes, lin-      615
+567   The Stage-1 artifact tables and ablations remain
+                                                                    ear packet passing, deterministic accept-or-forward      616
+568   evidence for the restricted instantiation, not for
+                                                                    routing, and terminal-only outcome updates. It           617
+569   the full EDO theory. The canonical source is
+                                                                    therefore cannot yet establish the strongest claims      618
+570   the gpt-4.1-mini chain-200 batch; glm-4-flash
+                                                                    of the full EDO framework — recursive split value,       619
+571   results from earlier runs are archived as Stage-1
+                                                                    local audit superiority, or personality-tag emer-        620
+572   guidance-only. Mechanism ablations (Table 2)
+                                                                    gence from near-homogeneous initialization. (2)          621
+573   show that on the weak backbone the local answer-
+                                                                    Some current routing improvements remain par-            622
+574   generation bottleneck dominates the routing-
+                                                                    tially entangled with hand-designed safety priors        623
+575   mechanism contribution; weight-sensitivity sweeps
+                                                                    and answer-generation constraints; the present evi-      624
+576   (±2×, < 0.003 pp F1 change) rule out fine-
+                                                                    dence should be interpreted as validating the Stage-     625
+577   tuned weights; and a static-path overlap analysis
+                                                                    1 premise that decentralized outcome-based cali-         626
+578   (peer_calibrated reproducing ∼52% of static
+                                                                    bration helps, not as a full proof that local interac-   627
+579   routes) shows stable route structure can form with-
+                                                                    tion alone suffices for rich organizational emer-        628
+580   out central control. These narrow the Stage-2 target
+                                                                    gence across arbitrary settings. (3) Backbone-           629
+581   toward task trees, recursive audit, persona tags, and
+                                                                    sensitive method ordering: on our 200-sample Hot-        630
+582   sparse-graph organization rather than further fixed-
+                                                                    potQA chain slice, the relative ranking of Stage-        631
+583   route weight tuning.
+                                                                    1 delegation methods inverts between the weak            632
+
+584   5     Conclusion                                              and strong backbone (Table 1, Finding 2). The            633
+                                                                    TCPB peer-calibration overhead does not yield            634
+585   The central claim of this project is no longer that           F1 gains when the underlying model is already            635
+586   a fixed-role decentralized router can be calibrated           strong enough to self-evaluate accurately, predict-      636
+587   slightly better than self-reflection. The stronger            ing that the full EDO organizational advantage will      637
+
+
+                                                                8
+638   be most visible on harder tasks, weaker individual                terms permit benchmarking and reporting of         686
+639   agents, or richer topologies where single-agent self-             aggregate metrics, which is the entirety of our    687
+640   assessment breaks down. (4) Statistical evidence                  model use.                                         688
+641   is presently limited to point estimates with n=200:
+                                                                      • Intended-use compatibility:   our use              689
+642   paired-bootstrap confidence intervals, multi-seed
+                                                                        is non-commercial multi-hop reading-               690
+643   variance, and explicit significance tests are deferred
+                                                                        comprehension benchmarking, consistent             691
+644   to the Stage-2 evaluation agenda (§4.4 E1–E5).
+                                                                        with HotpotQA’s stated scope.                      692
+645      These limitations are not accidental flaws in re-
+646   porting. They define the boundary between the                   • Released artifacts:           runtime code         693
+647   current restricted instantiation and the long-paper               (runner.py, methods.py, contracts.py),             694
+648   method it motivates. The next-stage implementa-                   seed slice, validation scripts, and per-run        695
+649   tion burden is therefore clear: introduce task-tree               logs are released in the anonymous code/data       696
+650   state, recursive audit, persona-tag updates, and gen-             supplement under MIT license. Use is               697
+651   eral sparse-graph support, then test whether the                  restricted to research; no derived models are      698
+652   stronger organizational predictions of EDO hold                   released.                                          699
+653   empirically.
+                                                                   B2. Computational experiments.                          700
+654   Appendix A: Provider-side data integrity
+655   event                                                           • Model size / parameters: we do not train or        701
+
+656   During the full-validation pass on the strong back-               fine-tune any model; the only model used is        702
+
+657   bone, two of the three method runs were silently                  the API-served gpt-4.1-mini (size not dis-         703
+
+658   affected by an upstream provider issue in which the               closed by provider).                               704
+
+659   requested model identifier was routed to a different            • Compute budget: entire experiment requires         705
+660   (newer) underlying model for a subset of API calls.               ≤ 104 API calls per method per chain-200           706
+661   The third method’s full-validation result was not                 batch (i.e., 4 hops × 200 examples × 3 meth-       707
+662   affected. To prevent recurrence and make the issue                ods ≈ 2,400 contribution calls + 600 answer        708
+663   forensically auditable, the runtime client was ex-                calls). No GPU compute on our side.                709
+664   tended with a fail-fast integrity check that compares
+665   the model identifier echoed back in each response               • Hyperparameters:            routing weights        710
+
+666   against the requested identifier and raises an ex-                (0.55, 0.20, 0.10, etc.), accept margin            711
+
+667   plicit error on mismatch. The two affected method                 (δa =0.02), update step sizes (∆+ =+0.06,          712
+
+668   runs have been queued for re-execution under the                  ∆− =−0.10), momentum (ρ=0.5), F1 thresh-           713
+
+669   new guard; the third (unaffected) full-validation                 old (FTH =0.5), max handoff (Hmax =4). All         714
+
+670   result is preserved as-is. This appendix documents                listed in Algorithm 1; all are hand-set priors,    715
+
+671   the engineering provenance of the queued re-runs                  not searched.                                      716
+
+672   and does not introduce new methods or claims; the               • Reported summary statistics: EM, F1,               717
+673   pending re-runs are flagged in §4.3 (Finding 2).                  MHC, PAR, and per-sample API token counts          718
+                                                                        (Table 1, Table 2). Confidence intervals are       719
+674   Appendix B: Responsible NLP Research
+                                                                        explicitly not reported in this submission and     720
+675   Checklist
+                                                                        are flagged in §Limitations as future Stage-2      721
+676   The Responsible NLP Research Checklist below is                   work (§4.4 E1–E5).                                 722
+677   filled per ARR / EMNLP submission guidelines.
+                                                                      • Existing implementations used: we use              723
+678   B1. Scientific artifacts.                                         the standard HotpotQA EM/F1 evaluator (re-         724
+                                                                        implemented in our codebase to match the           725
+679      • Cited and used: HotpotQA (Yang et al.,
+                                                                        original word-tokenisation rules); no other off-   726
+680        2018) under its public Apache-2.0 license;
+                                                                        the-shelf evaluators are used.                     727
+681        gpt-4.1-mini accessed via an OpenAI-
+682        compatible API endpoint per its commercial              B3. Human subjects / annotators. Not applica-           728
+683        terms of service.                                       ble. No human annotation was collected for this         729
+684      • License/intent compatibility: HotpotQA li-              work; the only human-curated data used is the pub-      730
+685        cense permits research use. The model API               lic HotpotQA dataset.                                   731
+
+
+                                                               9
+732   B4. Use of AI assistants. The first author used               Aman Madaan, Niket Tandon, Prakhar Gupta, Skyler         786
+733   a code-completion AI assistant during the devel-               Hallinan, Luyu Gao, Sarah Wiegreffe, Uri Alon,          787
+                                                                     Nouha Dziri, Shrimai Prabhumoye, Yiming Yang,           788
+734   opment of runner.py, methods.py, and prompt
+                                                                     Shashank Gupta, Bodhisattwa Prasad Majumder,            789
+735   templates. All AI-suggested code was reviewed                  Katherine Hermann, Sean Welleck, Amir Yazdan-           790
+736   line-by-line by the author before commit, and the              bakhsh, and Peter Clark. 2023. Self-refine: Iterative   791
+737   final algorithmic design (Algorithm 1, Prototype               refinement with self-feedback. In NeurIPS.              792
+738   Scope Box) is the author’s own contribution. No               Henry Mintzberg. 1979. The Structuring of Organiza-      793
+739   AI assistant generated any prose in this paper.                 tions: A Synthesis of the Research. Prentice-Hall.     794
+
+                                                                    Chen Qian, Wei Liu, Hongzhang Liu, Nuo Chen, Yufan       795
+740   References                                                      Dang, Jiahao Li, Cheng Yang, Weize Chen, Yusheng       796
+                                                                      Su, Xin Cong, Juyuan Xu, Dahai Li, Zhiyuan Liu,        797
+741   Chi-Min Chan, Weize Chen, Yusheng Su, Jianxuan Yu,              and Maosong Sun. 2024. ChatDev: Communicative          798
+742     Wei Xue, Shanghang Zhang, Jie Fu, and Zhiyuan                 agents for software development. In ACL.               799
+743     Liu. 2024. ChatEval: Towards better LLM-based
+744     evaluators through multi-agent debate. In ICLR.             Yongliang Shen, Kaitao Song, Xu Tan, Dongsheng Li,       800
+                                                                      Weiming Lu, and Yueting Zhuang. 2023. Hugging-         801
+745   Weize Chen, Yusheng Su, Jingwei Zuo, Cheng Yang,                GPT: Solving AI tasks with ChatGPT and its friends     802
+746    Chenfei Yuan, Chen-Ming Chan, Heyang Yu, Yaxi                  in Hugging Face. NeurIPS.                              803
+747    Lu, Yi-Hsin Hung, Chen Qian, Yujia Qin, Xin
+748    Cong, Ruobing Xie, Zhiyuan Liu, Maosong Sun,                 Noah Shinn, Federico Cassano, Edward Berman, Ash-        804
+749    and Jie Zhou. 2024. AgentVerse: Facilitating multi-            win Gopinath, Karthik Narasimhan, and Shunyu Yao.      805
+750    agent collaboration and exploring emergent behav-              2023. Reflexion: Language agents with verbal rein-     806
+751    iors. ICLR.                                                    forcement learning. In NeurIPS.                        807
+
+752   Yilun Du, Shuang Li, Antonio Torralba, Joshua B.              Harsh Trivedi, Niranjan Balasubramanian, Tushar Khot,    808
+753     Tenenbaum, and Igor Mordatch. 2024. Improving                 and Ashish Sabharwal. 2022. MuSiQue: Multi-            809
+754     factuality and reasoning in language models through           hop questions via single-hop question composition.     810
+755     multiagent debate. ICML.                                      TACL, 10:539–554.                                      811
+
+756   Jay R. Galbraith. 1973. Designing Complex Organiza-           Qingyun Wu, Gagan Bansal, Jieyu Zhang, Yiran Wu,         812
+757      tions. Addison-Wesley.                                       Shaokun Zhang, Erkang Zhu, Beibin Li, Li Jiang,        813
+758   Chuan Guo, Geoff Pleiss, Yu Sun, and Kilian Q. Wein-            Xiaoyun Zhang, and Chi Wang. 2024. AutoGen:            814
+759     berger. 2017. On calibration of modern neural net-            Enabling next-gen LLM applications via multi-agent     815
+760     works. In ICML.                                               conversation. In ICLR Workshop on LLM Agents.          816
+
+761   Xanh Ho, Anh-Khoa Duong Nguyen, Saku Sugawara,                Zhilin Yang, Peng Qi, Saizheng Zhang, Yoshua Ben-        817
+762     and Akiko Aizawa. 2020. Constructing a multi-hop              gio, William W. Cohen, Ruslan Salakhutdinov, and       818
+763     QA dataset for comprehensive evaluation of reason-            Christopher D. Manning. 2018. HotpotQA: A dataset      819
+764     ing steps. COLING.                                            for diverse, explainable multi-hop question answer-    820
+                                                                      ing. In EMNLP, pages 2369–2380.                        821
+765   Sirui Hong, Mingchen Zhuge, Jonathan Chen, Xiawu
+766      Zheng, Yuheng Cheng, Ceyao Zhang, Jinlin Wang,             Shunyu Yao, Dian Yu, Jeffrey Zhao, Izhak Shafran,        822
+767      Zili Wang, Steven Ka Shing Yau, Zijuan Lin, Liyang           Thomas L. Griffiths, Yuan Cao, and Karthik             823
+768      Zhou, Chenyu Ran, Lingfeng Xiao, Chenglin Wu,                Narasimhan. 2023. Tree of thoughts: Deliberate         824
+769      and Jürgen Schmidhuber. 2024. MetaGPT: Meta pro-             problem solving with large language models. In         825
+770      gramming for a multi-agent collaborative framework.          NeurIPS.                                               826
+771      ICLR.
+772   Saurav Kadavath, Tom Conerly, Amanda Askell, Tom
+773     Henighan, Dawn Drain, Ethan Perez, Nicholas
+774     Schiefer, Zac Hatfield-Dodds, Nova DasSarma,
+775     Ethan Tran-Johnson, Scott Johnston, Sheer El-
+776     Showk, Andy Jones, Nelson Elhage, Tristan Hume,
+777     Anna Chen, Yuntao Bai, Sam Bowman, Stanislav
+778     Fort, and 17 others. 2022. Language models (mostly)
+779     know what they know. In Anthropic Technical Re-
+780     port.
+781   Tian Liang, Zhiwei He, Wenxiang Jiao, Xing Wang,
+782     Yan Wang, Rui Wang, Yujiu Yang, Zhaopeng Tu, and
+783     Shuming Shi. 2024. Encouraging divergent thinking
+784     in large language models through multi-agent debate.
+785     EMNLP.
+
+
+                                                               10
+

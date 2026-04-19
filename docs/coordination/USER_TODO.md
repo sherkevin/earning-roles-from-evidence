@@ -72,7 +72,7 @@
 
 | ID | 任务 | prompt 文件 | 落点 | 派任者 / 紧急度 | 状态 |
 |---|---|---|---|---|---|
-| **U-EXEC-004** | **Figure 1（3-action policy 概念图）** —— 双 panel：上 panel EDO 全图（5 节点稀疏图 + 三动作 + 递归 audit）；下 panel TCPB chain 退化版 | [`docs/paper/figures_prompts/fig1_3action_policy_prompt.md`](../../docs/paper/figures_prompts/fig1_3action_policy_prompt.md) | `artifacts/figures/fig1_3action_policy.{pdf,svg,png}`（vector 优先） | scientist (2026-04-19) / medium —— .tex 已加 placeholder，不阻塞编译；但 reviewer batch 前必须有真图 | ⏳ 待出图 |
+| **U-EXEC-004** | **Figure 1（3-action policy 概念图）— v2 prompt 已升级（2026-04-20，R11）**：从 2 panel 升级到 **3 panel** = Panel A (full EDO + R1/R2/R3 标注) + Panel B (TCPB chain prototype + 灰色 strikethrough Stage-2-only 占位) + **新增 Panel C** (module-swap mini-diagrams：R3 → AutoGen `select_speaker`，R2 → ChatEval `MetaReviewer.aggregate`)。Panel C 的目的是闭合 reviewer R-FULL-001 fatal #3，让 §4.x external-baseline 表格在视觉上 self-explanatory | [`docs/paper/figures_prompts/fig1_3action_policy_prompt.md`](../../docs/paper/figures_prompts/fig1_3action_policy_prompt.md) v2 | `artifacts/figures/fig1_3action_policy.{pdf,svg,png}`（vector 优先；已通过 `\graphicspath{{../../artifacts/figures/}}` 自动连进 .tex） | scientist (2026-04-19, prompt v2 升级 2026-04-20) / medium —— .tex placeholder 仍占位，不阻塞 sprint 主线；但 R-FULL-002 reviewer batch 前**必须**有真图（推荐 Day 22-26 完成） | ⏳ 待出图（v2 prompt） |
 
 ### B.3 参考文献调研（领域知识）
 
