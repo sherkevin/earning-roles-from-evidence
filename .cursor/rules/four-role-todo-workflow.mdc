@@ -98,6 +98,30 @@ When scientist or engineer needs to dispatch a fresh `U-XXX-decide` to the user,
 
 This protocol does NOT replace the requirement that every decision still be persisted as a `U-XXX` row in `USER_TODO § A` with the full context, recommendation, impact, and status fields. The plan-mode dialog is the **dispatch UX layer**; the `USER_TODO § A` row is the **persistent record**.
 
+### 4.2 Engineer-facing dispatch quality bar (user instruction, 2026-04-20)
+
+> **Source**: User instruction "在你给工程师派任务的时候，把他的疑惑顺便给他解答了，放在这条todo的注意事项里面，让他知道刚才为什么失败" (R22).
+
+When scientist (or any role) dispatches a new ticket to the engineer in `implementation_log.md`, the dispatch must **proactively pre-answer the engineer's known open questions / past confusions / past failure modes** inside the ticket's `pinned_cautions_to_acknowledge` field — so the engineer reading the ticket immediately understands "why this matters" without having to dig through unrelated history.
+
+Required behaviors when writing a ticket:
+
+1. **Scan engineer's recent open issues**: before writing a new ticket, grep `implementation_log.md` for the most recent ⚠ / partial-blocked / U-XXX-decide rows raised by the engineer; if any of those are now resolved (e.g., U-019 SSH ✅, U-020 fullval gate ✅), proactively **write a one-paragraph explanation in the new ticket's cautions** telling the engineer (a) what was happening, (b) why it failed, (c) how the resolution was reached, and (d) what the engineer should do differently next time.
+2. **Cross-reference pinned cautions blocks for permanent reference**: if the resolution involves a recurring failure mode (e.g., SSH state pollution, provider drift, byte-id regression risk), don't inline the full explanation in every ticket — instead create a **single `[pinned_cautions_for_engineer_<topic>_<YYYYMMDD>]` phase block** that holds the full explanation + recovery playbook, then cross-ref it from each affected ticket's cautions. This avoids duplication and keeps the lookup canonical.
+3. **Don't bury post-mortems in retrospective phase blocks alone**: if an engineer-facing failure was post-mortem'd (e.g., in a `[u_XXX_*_20260420]` resolution block), also retroactively add a **`#### 后补 ack (R<N>, <date>)`** sub-section to the original ⚠ phase block where the engineer first raised the issue, with: (a) status flip ⚠ → ✅, (b) one-paragraph plain-text explanation written **directly to the engineer in second person** ("你之前看到的 X 不是 Y, 而是 Z..."), (c) cross-ref to the resolution block + the pinned-cautions block, (d) explicit "下次再遇到一模一样的 X，按 [recovery playbook] 走 — 不要再挂 U-XXX-decide 阻塞用户". This makes the explanation visible to engineers re-reading the ticket they originally got stuck on.
+4. **Tone**: write engineer-facing post-mortem text as **collegial, not corrective** — e.g., "**你看这一段**：U-XXX 用户拍板 (b)，scientist 直连 server 4 秒成功 ... 你之前看到的 `Permission denied` 不是 server 拒了你的 key, 而是本机 OpenSSH 客户端状态污染" — not "你之前的诊断是错的". The engineer correctly applied Rule 3 fail-fast in `ssh-server-rules.mdc`; it's the scientist's job to close the diagnostic loop, not to assign blame.
+5. **What does NOT need this treatment**: tickets that are pure-greenfield (no prior engineer confusion to resolve), or tickets that are mechanical follow-ups in an established workflow (e.g., `validate_logs.py` invocation step in a routine fullval batch). Reserve the dispatch-quality treatment for tickets that touch a domain where the engineer has previously raised ⚠ / U-XXX-decide.
+
+Example pattern that codifies this (from R22 commit):
+
+- Engineer in `[E-010_chateval_server_clone_attempt_20260420]` raised `U-019-server-ssh-state-decide`
+- User in R21 instructed "你去登录到远程看一下吧"; scientist in `[u_019_server_ssh_recovered_20260420]` verified SSH 4 s ✅ + 6-check diagnostic table
+- In R22 (this rule's first application):
+  - Created **`[pinned_cautions_for_engineer_ssh_failure_mode_20260420]`** as the canonical SSH-recovery reference (explanation + 5-step Recovery playbook)
+  - Retroactively added `#### 后补 ack (R22, 2026-04-20)` sub-section to E-010 block (status ⚠ → ✅, plain-text engineer-facing explanation, cross-ref to pinned cautions)
+  - Added **C-7 SSH failure-mode** caution + cross-ref to all currently-active server-using tickets (E-015, E-016, E-017)
+  - This rule (§4.2) codifies the pattern so it auto-applies to all future engineer-facing dispatches.
+
 ## 5. Window-switch / new-conversation handoff protocol
 
 When opening a fresh window, each role must read the following files first (≤ 100 lines per file):

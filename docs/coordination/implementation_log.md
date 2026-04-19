@@ -2102,6 +2102,18 @@ E-014 unblocks scientist 后续 S-XXX：在论文 §4.x 加 Table 2.b（gpt-4.1-
   - **engineer (next session)**: 等 30 min + 清掉本机所有 orphaned ssh 后重试 E-013-style probe；如仍 fail → 触发 U-019
   - **user**: 暂无新派工；如急需 server 路径可手动 ssh 验证
 
+#### 后补 ack (R22, 2026-04-20)：U-019 ✅ → SSH 已通，本块 status 升级为 unblocked
+
+> **Engineer 你看这一段**：U-019-decide 用户 2026-04-20 拍板 (b)，scientist 直连 server 4 秒成功（详见 [u_019_server_ssh_recovered_20260420] 6 项诊断表）。本块 `⚠ partial-blocked` → **✅ unblocked，可以恢复 E-010 server 路径**。
+>
+> 你之前看到的 `Permission denied (publickey,password)` 不是 server 拒了你的 key，也不是 fail2ban ban 了 IP，而是 **本机 OpenSSH 客户端状态污染**（最可能是 ssh-agent 持有过期 key + ControlMaster multiplex socket 残留 + orphaned ssh client procs 占着 socket）。scientist 这次能 4 秒连成是因为 Cursor 进程是 fresh 启动，没有继承你那个 polluted shell environment。
+>
+> **下次再遇到一模一样的 `Permission denied`，按 [`pinned_cautions_for_engineer_ssh_failure_mode_20260420`](#pinned_cautions_for_engineer_ssh_failure_mode_20260420) 的 5-step Recovery playbook 走** — 不要再挂 U-XXX-decide 阻塞用户。该 pinned-cautions 块是这一类 SSH 问题的**唯一权威说明源**，所有未来 SSH-using 工单（E-010 / E-015 / E-016 / E-017 server 变体）都 cross-ref 它。
+>
+> 本块假设 (1) ssh-agent 状态污染 → ✅ 确认是根因；假设 (2) fail2ban → ❌ 排除（scientist 同一 IP 4 秒连成）；假设 (3) key 文件权限 → ❌ 排除（同 key 同路径同样有效）；假设 (4) server → github 网络 → ❌ 排除（HTTP 200 to github.com, 0.6 s）。
+>
+> **恢复 E-010 server 路径的具体步骤**：(a) 按 SSH pinned cautions Step 1 清掉本机 ssh 进程；(b) 用其中的 fresh BatchMode 命令模板 (`-o ControlMaster=no -o ControlPath=none -o IdentityAgent=none`) 验证 SSH 通；(c) 通了之后按 ssh-server-rules.mdc Rule 4 用 nohup 跑 ChatEval clone，**不要**让 ssh 命令前台 hang。
+
 ---
 
 ### [engineer_day6_completion_20260420]
@@ -2637,6 +2649,7 @@ Day 11-15:E-004 vector belief (3 d) + E-005 整合 (5 d, parallel start)
   - **C-1**: 全程走 `newapi` (不要触碰 deprecated `oversea` / kuaipao)
   - **C-3**: 如果 MAD repo 用 OpenAI 老 API，写 adapter；不要 monkeypatch `openai` 包导致 Stage-1 production 路径出问题（隔离到 `external_baselines/mad/openai_compat_shim.py`）
   - **C-5**: 50-sample budget < $5；如 cost 超过先停，写 `cost_blowout.md` upcall
+  - **C-6 SSH failure-mode (R22 NEW)**: MAD reproduce 推荐走 server (per U-019 ✅, 4× RTX 3090 + 7/8 idle, 大模型 inference 比 local 快很多)。SSH 命令遇到 `Permission denied` / hang **不是 server / fail2ban / 网络问题** — 是本机 OpenSSH 客户端状态污染（你之前 [E-010_chateval_server_clone_attempt_20260420] 看到的就是这个）。**直接按 [`pinned_cautions_for_engineer_ssh_failure_mode_20260420`](#pinned_cautions_for_engineer_ssh_failure_mode_20260420) 5-step Recovery playbook 走，不要再挂 U-XXX-decide 阻塞用户**：(a) `Get-Process ssh \| Stop-Process -Force` 清进程；(b) `rm ~/.ssh/cm-*` 清 multiplex socket 残留；(c) fresh BatchMode 命令带 `-o ControlMaster=no -o ControlPath=none -o IdentityAgent=none`；(d) ✅ 后跑 `nohup git clone ... > clone.log 2>&1 &` 不让 ssh 前台 hang。
 - if_blocked:
   - 若 MAD repo 已经过期 / install 失败 / multi-hop QA 跑不通 → diagnosis + 在 `[external_baseline_mad_repo_blocker_<TS>]` 自挂；scientist 切回 N=2 plan（external_baseline_plan.md §3.2 提供过 MVP 备选）
 
@@ -2678,6 +2691,7 @@ Day 11-15:E-004 vector belief (3 d) + E-005 整合 (5 d, parallel start)
   - **C-3**: AuditDecision enum 已在 E-003 ✅ 冻结；不要扩字段
   - **C-4 #2**: REROUTE 触发的 1 轮额外 debate **必须有上限**（单次最多 +1 round；不能递归无限重 debate 导致 token blowout）；写 unit test 验证 reroute 不会触发 ≥ 2 轮
   - **C-5**: 200×2 benchmarks × 3 seeds × 2 conditions = 2400 samples × est $0.01/sample = ~$24 budget；上限 < $40，超了停手在 `[E-016_cost_blowout_<TS>]` 自挂
+  - **C-6 SSH failure-mode (R22 NEW)**: 同 E-015 — 如选 server 跑 SWAP-4，SSH 问题按 [`pinned_cautions_for_engineer_ssh_failure_mode_20260420`](#pinned_cautions_for_engineer_ssh_failure_mode_20260420) 5-step Recovery playbook 自助处理，不要挂 U-XXX-decide。
 - if_blocked:
   - 若 SWAP-4 实际 ΔF1 < 0 (MAD + R2 swap 反而比 MAD original 差)：**这是有效的科学结果**，不是 blocker。Engineer 把数字交付 scientist；scientist 在 §4.x 诚实写"On MAD, R2 audit swap underperforms by Y; this is consistent with our Limitations item (3) — backbone-sensitivity / aggregator-protocol-sensitivity"。R-FULL-002 D3 cap 仍能 lift（reviewer 看的是是否 benchmark 了，不是是否赢），且符合我们 R16 已经定的 honesty framing。
 
@@ -2797,6 +2811,7 @@ Day 11-15:E-004 vector belief (3 d) + E-005 整合 (5 d, parallel start)
   - **C-4 #1**: R1 split tokens +20-30%，3 seeds × 2 methods × 7405 ≈ 44430 batch 个 sample 总 token 估算需准确，cost ledger 必须每个 batch 后更新
   - **C-5**: $270 budget；超 $350 立即停手，写 `[E-017_cost_blowout_<TS>]` 自挂
   - **C-6 NEW**: paired 必须 same-question-id 同 seed，**不能** `random.shuffle(samples)` 后跑 — 会破坏 paired-sample 假设；validation 时 `csv` 的 `qid` 列必须 align
+  - **C-7 SSH failure-mode (R22 NEW)**: 如选 server 跑 fullval (per C-3 选项)，遇到 `Permission denied` / SSH hang 时 **不要再挂 U-XXX-decide 阻塞用户** — 你之前 [E-010_chateval_server_clone_attempt_20260420] 看到的是 **本机 OpenSSH 客户端状态污染**（ssh-agent 持过期 key + ControlMaster multiplex socket 残留 + orphaned ssh procs），不是 server / fail2ban / 网络问题。按 [`pinned_cautions_for_engineer_ssh_failure_mode_20260420`](#pinned_cautions_for_engineer_ssh_failure_mode_20260420) 的 5-step Recovery playbook 走（清进程 → 清 socket → fresh BatchMode 命令带 `-o ControlMaster=no -o ControlPath=none -o IdentityAgent=none`）。已确认从 fresh shell process tree 4 秒就能连上 server。
 - if_blocked:
   - 若 fullval 出现 Stage-2 ΔF1 < 0 (即 7405-scale 上 Stage-2 反而比 Stage-1 差)：**这是有效科学结果**，不是 blocker；engineer 把数字交付 scientist；scientist 在 §1/§4/§6 诚实写 "preliminary 200-sample 大喜在 fullval 7405 没复现，原因 X" + 强调 confidence interval（reviewer 看的是 honesty + statistical rigor）
   - 若 newapi quota 中途耗尽：立即停手 + 用 partial-results subset (e.g., 完成 seed=42 1 个 + 其余 partial) 写 paired_stats_partial.csv + ack 用户 (U-EXEC-XXX 让用户决定是否充值)
@@ -2808,5 +2823,110 @@ Day 11-15:E-004 vector belief (3 d) + E-005 整合 (5 d, parallel start)
 - next_action:
   - engineer: pre-flight check newapi quota → 顺序跑 6 batch → paired bootstrap CI → 在本 phase 块下挂 `[E-017_done_<TS>]` ✅
   - scientist: 等 engineer ack；ack 后立即 batch S-115/S-116/S-117 写作 (R22+ commits)
+
+---
+
+### [pinned_cautions_for_engineer_ssh_failure_mode_20260420]
+
+- when: 2026-04-20 (R22 commit)
+- who: scientist (per user instruction "在你给工程师派任务的时候，把他的疑惑顺便给他解答了，放在这条todo的注意事项里面，让他知道刚才为什么失败")
+- intent: 这是 **唯一权威说明源**（single source of truth）解释 engineer 在 [E-010_chateval_server_clone_attempt_20260420] 看到的 SSH `Permission denied (publickey,password)` 是怎么回事 + 怎么 recover。所有未来 SSH-using engineer 工单 (E-010, E-015, E-016, E-017 server 变体, 任何后续 ticket) 都通过 cross-ref `→ see [pinned_cautions_for_engineer_ssh_failure_mode_20260420]` 引用本块，避免每次工单都重复全文。
+- status: ✅ permanent reference (不会被 ✅ 关闭，永久作为 SSH lookup)
+- scope:
+  - 适用场景：任何使用 `ssh -i school` 连接 `dengkw@10.103.16.12` 的 engineer 工单
+  - 不适用场景：本地 venv / API-only / newapi-only workflow（这些不走 server）
+
+#### 失败模式回顾（engineer 你看的就是这个）
+
+Engineer 在 Day 6/7 跑 [E-010_chateval_server_clone_attempt_20260420] 时观察到的现象：
+
+1. **第 1-3 次连接**：用 standard `ssh -i school dengkw@10.103.16.12 ...` 命令，没有立即失败，但**多个 ssh session 在执行 `git clone` 时卡住** → 出现 7 个 orphaned `ssh` 子进程
+2. **第 4 次以后**：`ssh -i school -o BatchMode=yes ... dengkw@10.103.16.12` 立即返回 `Permission denied (publickey,password)`
+3. **30+ min cooldown 后再试**：仍然 `Permission denied`
+4. Engineer 假设：(a) ssh-agent 状态被 orphaned 进程污染 / (b) server fail2ban 临时 ban / (c) server → github 出口被防火墙拦
+5. Engineer 没有继续盲试，挂 `U-019-server-ssh-state-decide` 给用户决定路径
+
+**这个反应是正确的**——按 [`ssh-server-rules.mdc`](../../.cursor/rules/ssh-server-rules.mdc) Rule 3 "Fail-Fast Policy: If an SSH command prompts for a password or hangs, terminate the process immediately and report the connection or permission error. Do not attempt to 'guess' passwords."
+
+#### 用户 + scientist 的诊断（2026-04-20，R21 [u_019_server_ssh_recovered_20260420]）
+
+用户 instruction: "你去登录到远程看一下吧，应该是可以连上的"。Scientist 用同样的命令模板从 local Cursor 侧直接 SSH：
+
+```text
+ssh -i ~/.ssh/school -o BatchMode=yes -o StrictHostKeyChecking=no \
+    -o ConnectTimeout=15 dengkw@10.103.16.12 "echo __SSH_OK__ && ..."
+```
+
+→ **4 秒成功**，sentinel `__SSH_OK__` 命中，exit 0。同一 session 跑 6 项诊断（GitHub HTTP 200 / GPU snapshot / fail2ban probe / etc.）全部 OK。详见 [u_019_server_ssh_recovered_20260420] 6-check table。
+
+→ 假设 (b) fail2ban ban IP **被排除**：scientist 用同一 source IP 4 秒连成。
+→ 假设 (c) server 出口防火墙 **被排除**：HTTP 200 to github.com 证明 server egress 正常。
+→ 假设 (a) ssh-agent / OpenSSH 状态污染 **是最可能的根因**。
+
+#### 真正的根因（technical explanation）
+
+OpenSSH 客户端有几种常见状态污染机制，任意一种都会触发 engineer 看到的现象：
+
+1. **ssh-agent 持有过期 key**：如果 engineer's local `ssh-agent` 缓存了 stale key entry（例如以前用其他 identity 连接同一 server 留下的），OpenSSH 客户端会优先尝试 agent 里的 keys，发完 limit 个失败 attempt 后 server 拒绝（`MaxAuthTries`，默认 6），后续 fresh connection 也会被同一 banlist 拒绝几分钟（不是 fail2ban，是 OpenSSH server 自己的 per-source-ip rate limit）。
+2. **ControlMaster / ControlPersist multiplex socket 残留**：如果 engineer 的 `~/.ssh/config` 或环境有 `ControlMaster auto` + `ControlPath ~/.ssh/cm-%r@%h:%p` + `ControlPersist 10m`，则第一次成功连接会留下一个 multiplex socket 文件；后续 ssh 命令会复用这个 socket，但如果原始 master 进程 crash（被 git clone 卡住一起 terminated），socket 文件指向死进程，复用失败 → `Permission denied` 假象（实际是 multiplex 失败而非 auth 失败）。
+3. **OpenSSH known_hosts / `~/.ssh/agent.sock` 不一致**：罕见，但有时候 macOS keychain 或 Windows Credential Manager 持有的 SSH credentials 与 `ssh-agent` 不同步，特别是在 IDE 的 sub-shell 环境（VS Code / Cursor 的 integrated terminal 经常有这个问题）。
+4. **本地有死掉的 ssh client 进程**：如果之前 ssh hang 时直接 close terminal 而不是 `Ctrl+C`，本机 ssh client 进程可能成为 zombie 占用 socket 资源，下次 `ssh` 命令在 socket binding 阶段 fail。
+
+scientist 这次能 4 秒连成，是因为 Cursor 进程是 fresh 启动，没有继承 engineer's polluted shell environment（不同 Cursor session = 不同 shell process tree = 不同 ssh-agent socket）。
+
+#### Recovery playbook（engineer 下次再遇到 SSH 卡死/拒绝时按这个走）
+
+**Step 1 — 立即清理本地僵尸 ssh 进程**：
+
+PowerShell (Windows):
+```powershell
+Get-Process ssh -ErrorAction SilentlyContinue | Stop-Process -Force
+```
+
+Bash (macOS/Linux):
+```bash
+pkill -9 -u "$USER" ssh   # 杀本用户所有 ssh 进程
+pkill -9 -u "$USER" ssh-agent  # 可选：重启 ssh-agent
+```
+
+**Step 2 — 清理 multiplex socket 残留（如果有用 ControlMaster）**：
+
+```bash
+ls -la ~/.ssh/ | grep -E '(cm-|controlmaster)'
+rm -f ~/.ssh/cm-*  # 或具体 ControlPath 指向的 socket 文件
+```
+
+**Step 3 — 用 fresh BatchMode 命令重试，明确禁用 multiplex + agent**：
+
+```bash
+# 显式禁用 ControlMaster 和 agent forwarding，强制 fresh auth
+ssh -i ~/.ssh/school \
+    -o BatchMode=yes \
+    -o StrictHostKeyChecking=no \
+    -o ConnectTimeout=15 \
+    -o ControlMaster=no \
+    -o ControlPath=none \
+    -o IdentityAgent=none \
+    dengkw@10.103.16.12 "echo __SSH_OK__"
+```
+
+如果这个**还**失败，那才考虑 (b) fail2ban ban 假设；用 `traceroute` / `mtr` 检查到 server 的网络路径，或换一个 source IP（手机热点）测试。
+
+**Step 4 — 如果 4 秒内 `__SSH_OK__` 命中**，说明 SSH 恢复，可以正常跑 standard Rule 3 命令模板。
+
+**Step 5 — 如果是 long-running task（git clone, fullval batch）**，用 `nohup` + 后台 + `tail` 监控（参考 [`ssh-server-rules.mdc`](../../.cursor/rules/ssh-server-rules.mdc) Rule 4）；**不要**让 ssh 命令前台 hang，否则 ssh client 进程的状态污染会再次触发本失败模式。
+
+#### Cross-references
+
+本块被以下工单 cross-ref，作为它们的 SSH 注意事项的唯一权威说明源：
+
+- `[E-010_chateval_server_clone_attempt_20260420]` (E-010 ChatEval clone, U-019 ✅ 后可恢复)
+- `[u_018_mad_landed_20260420]` E-015 (reproduce MAD on server) + E-016 (R2 audit swap into MAD)
+- `[u_020_stage2_fullval_3seed_launch_20260420]` E-017 C-7 (如选 server 跑 fullval)
+- 任何后续新增 SSH-using engineer 工单（请在 cautions 段落 cross-ref 本块，不要 inline 重复）
+
+#### Pinned
+
+本块 status = ✅ permanent；不会被 ✅ 关闭；任何 engineer 在 windows-switch 后开新 session 时，**先扫一眼本块再动 SSH**。如发现新型失败模式，append 到本块末尾 sub-section（不开新 phase block）。
 
 ---
