@@ -1019,3 +1019,57 @@
   - 等用户对 USER_TODO §B 的 U-EXEC-001（充值 API）/ U-EXEC-002（用 prompt 出 Figure 1）执行
   - 不依赖用户的科学家可做项 = SCIENTIST_TODO §B.5 中 S-105 / S-108 / S-110 / S-111 / S-112 / S-113 / S-114（6 项可即刻动手）；派给科学家的工作通道也已规范化
   - reviewer-agent 维度：等下一轮新审稿请求（用户主动触发）；不擅自跑额外审稿
+
+### [stage2_sprint_kickoff_20260419]
+- status: kickoff (no engineering work executed yet — awaiting U-012/U-013 from user)
+- date: 2026-04-19
+- 触发: 用户原话"我选择b，但是是投递2026年的，所以要加快进度干，全力以赴" → U-011 → ✅ (b)；目标 = **EMNLP 2026 ARR May 25 deadline (距今 36 天)**；同步派生 U-012-decide (Stage-2 R 范围) + U-013-decide (MuSiQue)
+- files_added:
+  - none（本条仅是 sprint 计划登记，无代码改动）
+- files_modified:
+  - `docs/coordination/USER_TODO.md` §A U-011 → ✅ (b) + 新增 U-012/U-013 + §C 加完成行 + §D 加修订
+  - `docs/coordination/SCIENTIST_TODO.md` §A cross-ref U-011/U-012/U-013 + §B.5 加 S-115/S-116/S-117 + §D 加修订
+  - `docs/coordination/implementation_log.md`（本条）
+
+### deadline math (ARR May 25, 2026 = 36 天)
+
+| 路径 | Stage-2 范围 | 第二 benchmark | 工程估时 | 科学家平行 | 主路径完工 | buffer | reviewer R-FULL-002 复审窗口 |
+|---|---|---|---:|---:|---|---:|---:|
+| **保守 (推荐)** | R2 audit 单做 | MuSiQue 上 | 12 + 3 = 15 天 | 7 天（S-105/S-108/S-110/S-111/S-112/S-113/S-114 + S-115/S-116/S-117） | **05-04** | **21 天** | 充裕 |
+| **平衡** | R2 audit + R3 persona vector | MuSiQue 上 | 15 + 3 = 18 天 | 7 天 | **05-07** | **18 天** | 充裕 |
+| **激进** | R1 split + R2 audit + R3 persona vector | MuSiQue 上 | 23 + 3 = 26 天 | 10 天 | **05-15** | **10 天** | 紧但可行 |
+| **最激进 (不推荐)** | R1+R2+R3 全做 | MuSiQue + 第三 benchmark | 30+ 天 | 12 天 | **05-19+** | **6 天** | 高风险，无法吸收任何 unknown |
+
+**当前推荐**：保守路径 (R2 单做 + MuSiQue)，对应 U-012=R2 / U-013=Yes。原因见 USER_TODO §A U-012 行的"强烈推荐 R2 单做"理由。
+
+### Stage-2 工程师工单总览（全部 ⏳ blocked on U-012/U-013，**用户拍板后立即解锁**）
+
+> 命名遵循 four-role rule §12：`E-XXX` 全局递增。本块 = 工程师 phase，**phase block name 仍是 `stage2_sprint_kickoff_20260419`**；具体每个 E-XXX 落地时再开独立 phase 块（如 `[E-001_task_tree_module_<date>]`）。
+
+| ID | 工单 | 估时 | 阻塞 | 输出 |
+|---|---|---:|---|---|
+| **E-001** | `workspace/idea04_core/task_tree.py` 新模块：`TaskNode` dataclass (parent / children / status / candidate_result / audit_status 等 14 字段，per `idea.md §7.3`) + `TaskTreeState` 容器 + jsonl 序列化 | 2 天 | U-012 选 R1 或 R2 | `workspace/idea04_core/task_tree.py` + `tests/test_task_tree.py` + `artifacts/task_tree_examples.jsonl` |
+| **E-002** | `workspace/idea04_core/action_policy.py` 新模块：把 `methods.py` 的 `_score_accept`/`_score_neighbors` 升级为 3-action policy（do_self / outsource(j) / split）；`split` 走 1 次 LLM decomposition call (per `idea.md §10.3`) | 4 天 | E-001 ✅ + U-012 选 R1 | `action_policy.py` + 修改 `methods.py` + `prompts/decomposition_prompt.txt` |
+| **E-003** | `workspace/idea04_core/audit_runtime.py` 新模块：每跳产出 `AuditDecision ∈ {ACCEPT, ACCEPT_WITH_NOTE, REJECT_REROUTE, REJECT_RESPLIT}` (per `artifacts/edo_lite_executable_spec.md §4.2`)；上游节点 audit 下游 candidate_answer；audit 结果回写 task_tree | 5 天 | E-001 ✅ + U-012 选 R2 | `audit_runtime.py` + 修改 `runner.py` + `artifacts/audit_events.jsonl` schema |
+| **E-004** | `workspace/idea04_core/persona_model.py` 新模块：`scalar competence` → `vector belief Bit(j) ∈ [0,1]^7` (per `idea.md §3.9 R3`)；`evidence_extract(ℓu→v,z)` 把 audit event 的 6 元组映射到 7-dim persona vector；ν=0.2 update | 3 天 | E-001 ✅ + U-012 选 R3 | `persona_model.py` + 修改 `methods.py` + `published_competence` schema 升级 |
+| **E-005** | `runner.py` 整合 + 调试 + 兼容性回归（确保 Stage-1 老配置 `fixed_peer_calibrated` 等仍 byte-identical 输出 metrics.json） | 5 天 | E-001..E-004 中 U-012 选中的全部 ✅ | 修改 `runner.py` + 全 Stage-1 回归 smoke (用现有 `artifacts/round1_smoke_*` 做对照) |
+| **E-006** | MuSiQue 数据 export：`scripts/download_musique.py` 已就位 + 写 `scripts/export_musique_seed.py` 仿 `export_hotpot_seed.py` 抽 200/2417 验证集 | 1 天 | U-013 选 是 | `data/musique/musique_validation_*.jsonl` + 校验脚本 |
+| **E-007** | MuSiQue Stage-2 全方法跑数（含 Stage-1 baseline + Stage-2 R 选中机制）：n=200 chain + 后续 fullval | 2 天 (n=200) + 1 天 (fullval) | U-013 选 是 + E-005 ✅ + U-RES-001 充值 ✅ + provider 可用 | `artifacts/round3_musique_stage2/run_<TS>/` |
+
+### 已识别的 sprint 风险
+
+1. **provider 健康度**：U-RES-001 充值 + provider model drift 监控仍 ⏳；任何 fullval 跑数前必须先 smoke probe 一下（见 `[runtime_integrity_guard_*_20260415]` 的 `ModelDriftError` 守卫）。如 provider 恢复延迟超 1 周，整个 sprint 必须切换到 NVIDIA fallback (per Agent 1 Session 7 评估，慢 ~5×，可能不可行)。
+2. **R1 split LLM 成本**：split 增加每样本 LLM 调用次数 (估 +20-30% tokens)；fullval 跑前必须 token 预算复核。
+3. **R2 audit 增加 reroute 跳数**：可能撞 max_handoff=4 上限；需要把 `max_handoff` 提到 6 或加动态深度预算（per `idea.md §11.3` Stage-2 终止规则 `max_tree_depth=3, max_total_nodes=12`）。
+4. **R3 persona vector 兼容性**：`published_competence` schema 从 `dict[str, float]` 升级到 `dict[str, list[float]]` 必须保留 backward-compat 序列化（用 dict 区分 `competence_v1_scalar` vs `competence_v2_vector`）以免 Stage-1 历史 routing_traces.jsonl 解析坏掉。
+
+- blockers:
+  - **U-012-decide** (Stage-2 R 范围) — 用户必须拍板才能开 E-001..E-005 工单；推荐 R2 单做（理由见 USER_TODO §A）
+  - **U-013-decide** (MuSiQue) — 用户必须拍板才能开 E-006/E-007 工单；推荐 是
+  - **U-RES-001** (充值 API) — 跨 sprint 全程需要；E-007 fullval 强依赖
+- blocker_type:
+  - 决策类 (U-012/U-013) + 资源类 (U-RES-001)
+- next_action:
+  - 等用户对 USER_TODO §A 的 U-012 + U-013 拍板（合计 2 个二次决策）
+  - 不依赖二次决策的科学家 7 项 (S-105/S-108/S-110/S-111/S-112/S-113/S-114) 应被科学家**立即并行启动**（four-role rule §2 硬规则）
+  - 不依赖二次决策的工程师 0 项（所有 Stage-2 工单 E-001..E-007 都被 U-012/U-013 阻塞）；工程师 sprint 启动门槛严格在用户决策后

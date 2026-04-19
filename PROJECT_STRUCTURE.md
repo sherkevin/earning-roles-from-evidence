@@ -11,6 +11,8 @@
 EMNLP long paper —— **`Emergent Delegation Organization (EDO)`**：研究近似同质 LLM agent 在稀疏图上通过递归委派与递归验收形成分工组织。
 当前可执行原型 **`Terminal-Consensus Peer Backpropagation (TCPB)`** 是 Stage-1 受限实例。
 
+> **🚀 当前 Sprint 状态（2026-04-19 起）**：用户已批 U-011 → **(b) Stage-2 实施**，目标 **EMNLP 2026 ARR May 25 deadline**（距今 36 天）。等待用户对两个二次决策拍板：**U-012-decide**（Stage-2 范围 R1/R2/R3，推荐 R2 单做）+ **U-013-decide**（MuSiQue 是否同步上，推荐 是）。详见 `docs/coordination/USER_TODO.md §A` 和 `docs/coordination/implementation_log.md` 的 `[stage2_sprint_kickoff_20260419]` phase 块。
+
 | 角色 | 文件入口 |
 |---|---|
 | **方法论 / framing** | `idea.md` |
@@ -260,6 +262,27 @@ article/
 - 用户的活（决策 / 充 API / 出概念图）：任何角色可在 `USER_TODO.md §A` 或 `§B` 挂 todo 等用户做。
 - 科学家的活（写论文 / 改 framing / 处理 reviewer 反馈细节）：在 `SCIENTIST_TODO.md §B` 加 `S-XXX`。
 - 工程师的活（跑实验 / 改 core code / 加 runtime guard）：在 `implementation_log.md` 用新 phase 块开。
+
+---
+
+## 9.5 当前 sprint 焦点（Stage-2 + ARR 5/25 deadline）
+
+> 本节是 sprint 期间所有角色的"窄焦点视图"。Sprint 结束（论文 ARR 提交后）请整体删除本节。
+
+| 角色 | 当前可即刻做 | 等待解锁 |
+|---|---|---|
+| **用户** | 拍板 **U-012**（Stage-2 范围）+ **U-013**（MuSiQue），合计 30 秒；执行 **U-RES-001**（充值 API）；可选 **U-FIG-001/U-EXEC-004**（Figure 1 出图） | — |
+| **科学家** | **7 项**不依赖二次决策的 hygiene：S-105 / S-108 / S-110 / S-111 / S-112 / S-113 / S-114（按 four-role rule §2 必须并行做完再问） | S-115/S-116/S-117 等 U-012；S-001 主体 framing rewrite 等 U-012 范围确定 |
+| **工程师** | **0 项**（所有 Stage-2 工单 E-001..E-007 阻塞在 U-012/U-013） | E-001..E-005 等 U-012；E-006/E-007 等 U-013 + U-RES-001 |
+| **审稿人** | **0 项**（reviewer 不参与 sprint 执行；下次 R-FULL-002 由用户在 Stage-2 实测数据落地后触发） | R-FULL-002 等 E-005 ✅ + S-115/S-116/S-117 ✅ |
+
+**Deadline math**（详见 `implementation_log.md [stage2_sprint_kickoff_20260419]`）：
+
+| 路径 | 主路径完工 | buffer (天) |
+|---|---|---:|
+| 保守 (R2 单做 + MuSiQue) | **05-04** | 21 |
+| 平衡 (R2+R3 + MuSiQue) | **05-07** | 18 |
+| 激进 (R1+R2+R3 + MuSiQue) | **05-15** | 10 |
 
 ---
 
