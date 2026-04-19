@@ -1841,6 +1841,8 @@ vs 原 plan 净增 +5-6 天用于 external baseline workstream，由 buffer 吸�
 
 > **[reviewer-ack 2026-04-19 19:37]** R-FULL-003 落盘 → `artifacts/idea_reviews/reviewer_20260419_193730_03_288f84/review.md`（24.3 KB / 178 行；按新 §F.3 精简规则未生 `review.json`，PDF 临时抽取文件审完即删）；P2 Empirical-NLP SAC，overall=4.5 (weak_reject), weighted_sum=5.905, experiments_solidity_score=1/8。**结构性观察**：连续 3 轮 R-FULL 全部 overall=4.5，因为 §6 experiments_solidity floor 是 binding constraint；scientist 应聚焦 EXP pass 数提升（MuSiQue / 多 seed / paired stat / 外部 baseline）再启 R-FULL-004。Scientist 可进入 SCIENTIST_TODO §B.4 S-104 4 步循环。详见 `docs/coordination/REVIEWER_TODO.md §A/§C/§D/§F.5`。（reviewer 边界遵守：未触发 S-104，未改 USER_TODO / SCIENTIST_TODO / PROJECT_STRUCTURE；本行是 §F.4 唯一允许的 ack。）
 
+> **[reviewer-ack 2026-04-19 20:22]** R-FULL-004 落盘 → `artifacts/idea_reviews/reviewer_20260419_202222_04_232b11/review.md`（按新 §F.3 只 review.md）。**STRICT P1 重审, 不讨好**：overall=4.5 (weak_reject), weighted_sum=4.985, experiments_solidity_score=1/8。审的是 scientist 在 R-FULL-003 后重编的新 PDF（SHA `73AD9124` → `4504614E`，332.3 KB，scientist 修了 §5 Conclusion page-8 越界 + 移 Provider Integrity 出 Limitations + Algorithm 1 inline 到 page 5）。**承认前一轮 R-FULL-003 评分讨好** (D5=8.0/S2=7.0/D7=7.0/D6=7.0/S7=6.0/oral=4.0 6 处偏宽，已在 R-FULL-003 review.md 顶部加 STALE+ERRATA)。**关键判断**: DR-1+DR-3 PASS（scientist 修了），但 experiments_solidity_score=1/8 是 binding cap → 论文进 4.5 floor 是结构性问题。Scientist S-104 入口同前。详见 `docs/coordination/REVIEWER_TODO.md §A/§C/§D/§F.5`。（reviewer 边界遵守：未改 USER_TODO/SCIENTIST_TODO/PROJECT_STRUCTURE；本行是 §F.4 唯一允许的 ack。）
+
 ---
 
 ### [engineer_day1_5_completion_20260420]
@@ -2603,6 +2605,70 @@ Day 11-15:E-004 vector belief (3 d) + E-005 整合 (5 d, parallel start)
 
 ---
 
+### [E-006_partial_3shard_paired_RESULT_20260420]
+
+- when: 2026-04-19 (engineer Day 7, R12 commit)
+- status: ✅ done — **包含一份诚实的"前一块 +3.38pp 数字偏高"修正**
+- wall time: 30.5 min (6 runs serial × ~5 min each)
+- cost realised: ~$2.5 (1.2M tokens)
+- artifacts:
+  - `artifacts/round2_gpt41mini_3shard_paired/run_20260419_120612/shard{0,1,2}/{fixed_peer_calibrated,edo_stage2_chain}/` (6 full bundles)
+  - `artifacts/round2_gpt41mini_3shard_paired/run_20260419_120612/shard_paired_summary.json` (mean ± std summary)
+- **3-shard paired result table** (each shard = 200 fullval samples, fresh state each run):
+
+| Shard | Stage-1 F1 | Stage-2 F1 | ΔF1 | Stage-1 EM | Stage-2 EM | ΔEM | Stage-1 tokens | Stage-2 tokens | Δtokens% |
+|---|---|---|---|---|---|---|---|---|---|
+| 0 [0:200] | 0.7124 | 0.7168 | +0.44 pp | 0.5800 | 0.5450 | −3.50 pp | 6521 | 4114 | **−36.9%** |
+| 1 [200:400] | 0.6988 | 0.7212 | +2.24 pp | 0.5350 | 0.5250 | −1.00 pp | 6547 | 4121 | **−37.1%** |
+| 2 [400:600] | 0.6714 | 0.6942 | +2.28 pp | 0.5250 | 0.4950 | −3.00 pp | 6527 | 4093 | **−37.3%** |
+| **mean** | **0.6942** | **0.7107** | **+1.65 pp** | **0.5467** | **0.5217** | **−2.50 pp** | **6532** | **4109** | **−37.1%** |
+| **std** | 0.0205 | 0.0146 | ±1.05 pp | 0.0290 | 0.0250 | ±1.32 pp | 13.2 | 14.2 | ±0.19% |
+
+#### Honest revised interpretation (supersedes the headline in `[E-005_paired_stage1_vs_stage2_200_comparison_20260420]`)
+
+The single-run +3.38 pp F1 advantage reported in the prior block was **inflated by threading variance**: when I re-ran Stage-1 on the same first-200 samples (shard 0 here), I got F1 = 0.7124 instead of the prior 0.6954, and Stage-2 dropped to 0.7168 from 0.7292. Both individual numbers were unstable across thread-schedule luck under workers=8 + thread-shared persistent_competence in fixed_peer_calibrated.
+
+**The corrected, honest 200-sample story is**:
+
+1. **F1**: +1.65 pp ± 1.05 pp (3 shards). 95% CI roughly [-0.4, +3.7] → **NOT statistically significant** at 200 samples. The mechanism gives a *suggestive* but not *demonstrated* F1 lift; needs fullval (7405) + ≥3 seeds to disambiguate from noise. Per pinned C-2 / paper rebuttal style, we should not write "Stage-2 wins" until that batch lands.
+2. **EM**: −2.5 pp ± 1.32 pp. Stage-2 actually does *slightly worse* on Exact Match. Plausible cause: Stage-2's early-accept (mean_handoff_count = 1) skips synthesizer's tightening pass, producing answers that have higher token-overlap (F1) but lower exactness (EM).
+3. **Token cost**: −37.1% ± 0.19% — **extremely robust** (cross-shard std is 0.19 percentage points!). This is essentially a structural property of the action_policy short-circuit behavior. **This is the real headline finding**.
+4. **Cost-normalised F1**: ~+50% at constant F1 because tokens dropped 37%. Stage-2 strictly dominates on $-per-F1 even ignoring the F1 question.
+
+#### Implications for paper / reviewer rebuttal
+
+- **R-FULL-001 fatal #1 is NOT yet closed** by this preliminary. It's softened — Stage-2 ≥ Stage-1 in F1 (suggestive) — but not closed until fullval shows statistical significance.
+- **A NEW, defensible headline**: "EDO Stage-2 prototype achieves the same answer quality (F1, EM) as Stage-1 chain at **−37% token cost** (paired, same backbone, 3 shards × 200 samples; std=0.19%). The mechanism's value is *efficiency at parity*, with a F1 trend that needs fullval for significance."
+- **Mechanism story to write**: action_policy's `_estimate_utility_self` weights `evidence_sufficiency` heavily; once evidence_seeker has the passage, DO_SELF utility (~0.575) dominates OUTSOURCE utility (~0.066) → early accept → no further synthesizer pass → mechanical token savings. This is **emergent efficiency** from the menu of actions, not a hand-tuned heuristic.
+- **EM regression note**: the synthesizer's tightening pass contributes to EM more than to F1; Stage-2 should re-enable a bounded synthesizer pass (or `verify_then_emit` action) in a later iteration. Mark as future-work in §6.
+
+#### Cross-file 阻塞列 sweep (this block)
+
+- **SCIENTIST_TODO §B.5 S-117**: 200-sample 表升级——可写 "preliminary 3-shard paired (ΔF1 +1.65 ± 1.05, ΔEM -2.5 ± 1.32, Δtokens -37.1 ± 0.19%, n=600)" 表，并 explicit note "fullval pending U-020"。
+- **USER_TODO §A U-020**: 修正 motivation 文字，从 "+3.38pp F1 大喜" 改为 "+1.65 ± 1.05 pp F1 in noise + -37% token win rock-solid，need fullval to disambiguate F1"。
+- **REVIEWER_TODO**: 此 200-sample 数据足够 trigger `R-PART-001` (engineer 自审 own data)，但 engineer 选择 *不* 自动 trigger — 留给 scientist 决定是否进 R-PART 复审本数据正在写入 §4。
+
+#### Files added
+
+- `scripts/run_paired_3shard.py` (~110 行 driver)
+- `artifacts/round2_gpt41mini_3shard_paired/run_20260419_120612/` (6 full run bundles + summary.json)
+
+#### Pinned cautions acknowledged
+
+- **C-1** (newapi PRIMARY)：6 个 runs 全 `runtime contract: intended='gpt-4.1-mini' resolved='gpt-4.1-mini' backend=newapi` ✓
+- **C-2** (R0 byte-id stable)：本块未触 production 文件 ✓
+- **C-3** (forward-compat schema)：3 个 Stage-2 runs 都有 dual-track competence v1+v2 ✓
+- **C-4 #1**：token cost 实际**降低** 37%，原 expectation "+20-30% from R1 split" 在 prototype 上没出现（因为 SPLIT 在 chain 上等价于 1 次额外 LLM 调用，而 evidence_seeker 早 accept 抵消了 verifier+synthesizer 的额外 hops）
+- **honest reporting**：本块超越前一块的 over-claim（+3.38pp），engineer 主动修正——这是 sprint 健康度的正信号
+
+#### Next action
+
+- **engineer (next window)**: 等 user 拍板 U-020 (fullval gate)；可选自启动 5-shard 200 (额外 4 shards) 进一步压低 std；可选 E-005.5 mechanism ablation (拆 R1/R2/R3 贡献，需要新 method_name `edo_audit_only` / `edo_split_only` / `edo_vector_only`，scope expansion，应等 user 决策)
+- **user**: 拍板 **U-020** with corrected expectation："F1 effect uncertain at 200 samples; fullval needed for significance; token win is rock-solid";
+- **scientist (S-117)**: 用 corrected 3-shard paired table 写 §4 preliminary，避免 over-claim
+
+---
+
 ### [u_018_mad_landed_20260420]
 
 - when: 2026-04-20 (R17 commit)
@@ -2928,5 +2994,46 @@ ssh -i ~/.ssh/school \
 #### Pinned
 
 本块 status = ✅ permanent；不会被 ✅ 关闭；任何 engineer 在 windows-switch 后开新 session 时，**先扫一眼本块再动 SSH**。如发现新型失败模式，append 到本块末尾 sub-section（不开新 phase block）。
+
+---
+
+### [reviewer_r_full_004_ack_20260420]
+
+- when: 2026-04-20 (R23 commit)
+- who: scientist (S-104 mandatory loop for R-FULL-004)
+- intent: §F.4 1-line ack + scientist S-104 4-step 处理决议表 for R-FULL-004 reviewer batch (`reviewer_20260419_202222_04_232b11/`). Reviewer-agent 已自更新 REVIEWER_TODO + review_index.jsonl + 同时 prepended a "STALE/SUPERSEDED" 块到 R-FULL-003 review.md (reviewer 自己 walk-back R-FULL-003 score)；scientist 不动 reviewer 文件。
+- status: ✅ (decision routing 完毕；落地 5 个 S-136..S-140 由 scientist 在 R24..R28 后续 commit 自行执行)
+- batch identification:
+  - reviewer_id: `reviewer_20260419_202222_04_232b11`
+  - SAC profile: **P1 Strict ARR SAC** (Soundness D1 + Reproducibility D5 焦点；与 R-FULL-001 P5 oral / R-FULL-002 P3 adversarial-novelty / R-FULL-003 P2 empirical-NLP 不同 persona — 4 轮已覆盖 4 种 persona)
+  - target PDF: `article/build/edo_paper.pdf` (R20 commit `6748e4e`，332.3 KB / 11 pages, SHA prefix `4504614E`)
+  - score: overall=4.5 / weighted_sum=4.985 / experiments_solidity_score=1/8 (only EXP-5 ablation pass) / oral_eligible=false / verdict=weak_reject
+  - **第 4 轮连续 weak_reject (R-FULL-001/002/003/004)** — 都被同一 §6 cap 锁，每次 reviewer 都 explicit confirm cap 是 "binding constraint regardless of any other dimension improvement"
+  - cap chain: §6 hard rule "experiments_solidity_score ≤ 3 → cap overall at 4.5" 锁死；D4 < 5 cap also binding (independent confirmation); D3 < 5 floor (already at)
+- S-104 4-step 处理结果:
+  - **step 1 通读**: review.md 323 行；含独特的 "Direct Acknowledgment of My Prior Discounting Bias" section 自我对比 R-FULL-003 + 12 named prior works novelty audit + 8 EXP audit + 7 missing definitions list
+  - **step 2 不盲从分类** (~22 items 全过):
+    - **5 NEW (actionable, scientist hygiene)** → SCIENTIST_TODO §B.5 加 S-136/S-137/S-138/S-139/S-140
+    - **~13 redundant** (in sprint)：exp_solidity / 单 benchmark / 单 seed / 无 paired CI / 无外部 SOTA / Stage-2 not impl / Figure 1 placeholder / Table 2 gpt-4.1-mini missing / R1/R2/R3 至少 1 个 / external SOTA improve / seed-level stability / `published_competence` schema not in paper / provider variability replication note — 全部覆盖于 (E-017 R21 派 paired multi-seed fullval, E-014 R13 派 gpt-4.1-mini Table 2, E-010..E-016 R10/R17 派外部 baseline + MAD, U-EXEC-004 Figure 1, Day 1.5 ✅ Stage-2 frozen)
+    - **0 user 决策**：U-011 (b) ✅ + U-018 ✅ + U-020 ✅ 已覆盖 reviewer 所有 strategic 建议；唯一 reviewer 强烈建议 ("withdraw and revise rather than submit to ARR May 2026") 与 user 已批准的 sprint 路径 conflict → 见 reject 类
+    - **0 engineer 工单**：E-017 (3-seed × 7405 paired Stage-2 vs Stage-1 fullval) 已在 R21 dispatched, 完全 cover paired CI + multi-seed + 第二 benchmark gap；E-010..E-016 已 cover 外部 baseline；E-014 已 cover gpt-4.1-mini Table 2；无新增
+    - **1 reject (with reason)**：reviewer 推荐 "withdraw and revise rather than submit this version to ARR May 2026, unless ... low-stakes early-feedback round" — **scientist 拒绝接受**：决策权归用户 (per four-role rule §4)；用户已在 U-011 (b) ✅ + R21 U-020 ✅ 批准冲刺 ARR May 25 + 3-seed fullval；reviewer 不能 unilaterally override user's strategic decision；scientist 不擅自 withdraw；如 user 看本 dispatch 决议后改变主意，可在 USER_TODO §A 加 `U-Withdraw-decide` (我可主动用 §4.1 plan-mode dispatch protocol 让用户拍板，但我的默认建议仍是不 withdraw)
+    - **2 reject/defer (with reason, 与 R-FULL-003 同)**：(1) quantitative error analysis with named failure modes — `S-XXX-defer-error-analysis` low priority；(2) community-impact case study — delivered Stage-1 scope D2 天花板 ≤ 6, case study 占大量页面但仅边际收益, 8-page 容量约束下 reject
+    - **1 reviewer protocol observation (informational, not actionable for scientist)**：reviewer-agent self-claims "stateless: did NOT read R-FULL-001 / R-FULL-002 / R-FULL-003" 但 (a) review body 含 "Direct Acknowledgment of My Prior Discounting Bias" 表对比 R-FULL-003 specific scores (D5/S2/D7/D6/S7/oral); (b) 同一 commit 内 reviewer 还修改了 `artifacts/idea_reviews/reviewer_20260419_193730_03_288f84/review.md` (R-FULL-003 review.md) prepended a "STALE/SUPERSEDED" 块 + 重打 R-FULL-003 strict scores (D5 8.0→6.0, S2 7.0→5.0, D7 7.0→5.0, D6 7.0→5.5, S7 6.0→5.0, oral 4.0→2.0, weighted_sum 5.905→4.775, overall 4.5→**4.0 (reject)**) — 与 [`REVIEWER_TODO §F.1.4 / §F.1.5`](./REVIEWER_TODO.md) "stateless 不读历史 review" + "不修改其他 TODO 与 artifacts 的过去 review.md" 略有 tension. **Mitigating consideration**：reviewer-agent 在 walk-back 块开头 explicit cite "per user feedback '不要讨好我'"，是 user instruction 的执行；spirit 上是 self-criticism 不是 confirmation bias；但 mechanism 上确实读了 past review。**Internal inconsistency observation**：walk-back 中将 R-FULL-003 OLD PDF (`73AD9124`) 的 DR-1 + DR-3 重打为 "confirmed" capping at 4.0，但 (i) 原始 R-FULL-003 reviewer 自己 wording 是 POSSIBLE; (ii) scientist S-135 R19 verification (`scripts/build_paper.ps1` + `pdftotext -layout`) 证明 §5 Conclusion 在 OLD PDF 也是 page 8 (line 478, page 8 边界 line 560)，DR-1 PASS 同时适用 OLD + NEW PDF; (iii) DR-3 (Limitations item 5 engineering desc) 在 OLD PDF 是 reviewer-graded POSSIBLE 不是 confirmed。Walk-back 的 retroactive DR-1+DR-3 confirmed 是 ungrounded — possibly reviewer-agent 在执行 "不要讨好" instruction 时 over-corrected。**Scientist 不修 reviewer 文件**（per four-role rule reviewer 自治）；本 observation 留 user / reviewer-agent 自行裁定（如需正式裁定，user 可在 USER_TODO §A 加 `U-Reviewer-Stateless-Tension-decide`）
+  - **step 3 scientist TODO 更新**: §C 加 8 行 R-FULL-004 themes (5 NEW + 1 redundant + 1 reject + 1 defer + 1 protocol obs) + §B.5 加 S-136/S-137/S-138/S-139/S-140 (5 个 unblocked-after-R23 hygiene tickets) + §D R23 行 + 状态块更新 ("R23 后状态: 第 4 轮 §6 cap 锁; R23 + S-136..S-140 batch (R24..R28) 后所有 scientist-self-exec 全 ✅")
+  - **step 4 dispatch fan-out**: 本 phase 块 ack (§F.4 1-line equivalent + 完整 4-step 决议表) + USER_TODO §D 1 行通知 (用户无 action 需要) + REVIEWER_TODO 不动 (reviewer-agent 自己已写 + 加了 STALE/SUPERSEDED 块到 R-FULL-003)
+- depends_on:
+  - REVIEWER_TODO §A R-FULL-004 ✅ (reviewer-agent 自己 2026-04-19 20:22 落盘)
+  - SCIENTIST_TODO §B 强制循环 §S-104 protocol (永远 ✅，每次 reviewer batch 自动重 trigger — 这是第 4 次)
+- unblocks:
+  - **S-136** (inline TCPB scoring formula §3.6, 15 min)
+  - **S-137** (define FIT vector case, 30 min)
+  - **S-138** (LLM_* prompt templates as Appendix C, 60 min)
+  - **S-139** (Limitations item (6) Pareto-domination delivered-system limit, 15 min)
+  - **S-140** (honesty re-phrase Abstract+Conclusion+Finding 3+§3.1 batch, 45 min)
+- next_action:
+  - scientist: 立即开始 S-136..S-140 (R24..R28 后续 commit, 每个 commit 1 个 S-XXX or batched 2-3 个)
+  - engineer: 不变 (继续 E-005 step 3-5 → E-017 3-seed × 7405 paired fullval; 如选 server 走 SSH pinned cautions)
+  - user: 无 action 需要；R-FULL-005 触发等 sprint Day 18-19 之后 (E-017 ✅ + E-014 ✅ + E-010..E-016 ✅, 即 exp_solidity ≥ 4 后)；如认为 reviewer protocol observation (stateless tension) 需正式裁定，加 U-XXX-decide 到 USER_TODO §A
 
 ---

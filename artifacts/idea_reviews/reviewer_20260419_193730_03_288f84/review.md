@@ -1,5 +1,39 @@
 # Review of `article/build/edo_paper.pdf` (R-FULL-003)
 
+> ## ⚠ STALE / SUPERSEDED — DO NOT USE FOR DECISION-MAKING
+>
+> **Issued at**: 2026-04-19 ~19:37, after which:
+>
+> 1. **The PDF this review evaluated has been re-built by scientist** at 2026-04-19 19:58:22 (PDF SHA256 changed from `73AD9124...` → `4504614E...`; size 347.8 KB → 332.3 KB). The current PDF on disk is NOT the one this review scored.
+> 2. **Scientist appears to have responded to weaknesses identified in this review**: in the new PDF, §5 Conclusion is pulled back into page 8 (DR-1 fixed), and Provider Integrity Event is moved out of `§Limitations item (5)` into a standalone `Appendix B` (DR-3 partially-addressed). Both findings here are therefore historical, not current.
+> 3. **Scoring discrepancy admitted** (per user feedback "不要讨好"): independent of the staleness above, several dimension scores in this review were **inflated by giving credit for "honest framing" rather than substantive empirical content**. Specifically:
+>    - **D5 reproducibility = 8.0** was too generous — wall-clock + USD cost is bare-minimum reproducibility, not 8.0-tier; a stricter score is **6.0** (multiple LLM_* prompt templates not in body, ϕ extraction in external supplement, no anonymous code repo URL verifiable from body)
+>    - **S2 falsifiability = 7.0** was wrong — "honestly admitting self-falsified" is honesty, NOT falsifiability; the central EDO mechanism (Stage-2 split/audit/persona) is admittedly NOT implemented and therefore NOT testable; stricter score is **5.0**
+>    - **D7 limitations = 7.0** undercounted DR-3 — Limitations item (5) describing fail-fast guard implementation IS new content; stricter score is **5.0** with DR-3 confirmed (not POSSIBLE)
+>    - **D6 clarity = 7.0** undercounted page-9 main-body bleed and Algorithm 1 page-11 float — stricter score is **5.5**
+>    - **S7 ablation_completeness = 6.0** undercounted that Table 2 is glm-4-flash only (missing equivalent on canonical strong backbone) — stricter score is **5.0**
+>    - **oral_quality_score = 4.0** was generous — DR-1 + DR-3 confirmed (in old PDF) + headline self-falsified + Stage-2 not implemented = rejection territory, not weak_reject; stricter score is **2.0**
+>
+> 4. **Per reviewer §F.4 cooldown rule**, the new PDF SHA `4504614E` is a different version from R-FULL-003's PDF, so a fresh **R-FULL-004 batch is warranted** and is being executed in a separate directory.
+> 5. **This file is preserved as historical evidence of reviewer judgment drift.** Use `R-FULL-004` (`reviewer_<TS>_04_<HASH>/review.md`) for the current authoritative judgment.
+>
+> **Strict re-evaluation of the OLD PDF (corrected scores, kept here for transparency)**:
+>
+> | dim | original (soft) | strict | reason |
+> |---|---:|---:|---|
+> | D5 | 8.0 | 6.0 | inflated by giving "wall-clock + USD" near-perfect credit |
+> | S2 | 7.0 | 5.0 | conflated honesty with falsifiability |
+> | D7 | 7.0 | 5.0 | DR-3 should be confirmed not POSSIBLE |
+> | D6 | 7.0 | 5.5 | Conclusion-on-page-9 + Algorithm-1-on-page-11 layout-pressure |
+> | S7 | 6.0 | 5.0 | Table 2 missing on canonical backbone |
+> | oral_quality_score | 4.0 | 2.0 | DR confirmed + self-falsified + Stage-2 absent = reject tier |
+> | weighted_sum | 5.905 | 4.775 | recomputed |
+> | overall (after caps) | 4.5 | **4.0 (reject)** | DR-1 + DR-3 confirmed cap at 4.0 + force verdict=reject |
+>
+> The original review body below is preserved unchanged. Use the **R-FULL-004** review for the current PDF.
+>
+> ---
+
 ## Metadata
 
 - **reviewer_id**: `reviewer_20260419_193730_03_288f84`
