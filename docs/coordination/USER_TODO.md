@@ -45,7 +45,9 @@
 | **U-008-decide** | Phase 2：`idea.md` + `experiment.md` 是否移入 `docs/` | 暂缓，等论文 freeze | 跨文件改 + 全仓 grep | ⏳ 待拍板（不阻塞主线） |
 | **U-009-decide** | LaTeX 模板落点 | 留 `article/` | — | ✅ 隐式解决（2026-04-19） |
 | **U-010-decide** | 是否 `git init` 用于本地版本管理 | 建议 init | S-103 commit 工作流 | ✅ **已批准 init**（2026-04-19） |
-| **U-011-decide** | **论文 framing 走向（reviewer 20260419 P5 oral gatekeeper 触发）**：当前论文 §4.3 Finding 4 自承认 `peer_calibrated F1=0.7381 < self_claim F1=0.7641` 同 token 成本 → 头部经验主张被作者自己证伪。两条路：**(a)** 主动重 framing 为 "Stage-1 backbone-sensitivity negative result + Stage-2 roadmap"，接受 `oral_quality_score ≤ 5`，靠 honesty + insight 拿 weak_accept（最快路径，可在 1-2 周内完工）；**(b)** 暂停投稿，先实现 Stage-2 (R1 split / R2 audit / R3 persona vector) 中至少 1 项，让 EDO 真有 empirical 优势再投（最远路径，可能 2-3 月） | **取决于你的时间预算**：若 EMNLP 2026 年底/2027 年初 deadline 紧 → 选 (a)；若可推到 ARR 后续 cycle 或换 venue → 选 (b) | **所有 §B.5 fix-TODO 的优先级 + S-001 主体 framing 重写都依赖这条**；S-105/108/109 等可独立先做（见 §B.5 标注） | ⏳ **最高优先级，等用户拍板** |
+| **U-011-decide** | **论文 framing 走向（reviewer 20260419 P5 oral gatekeeper 触发）**：当前论文 §4.3 Finding 4 自承认 `peer_calibrated F1=0.7381 < self_claim F1=0.7641` 同 token 成本 → 头部经验主张被作者自己证伪。两条路：**(a)** 主动重 framing 为 "Stage-1 backbone-sensitivity negative result + Stage-2 roadmap"，接受 `oral_quality_score ≤ 5`，靠 honesty + insight 拿 weak_accept（最快路径，可在 1-2 周内完工）；**(b)** 暂停投稿，先实现 Stage-2 (R1 split / R2 audit / R3 persona vector) 中至少 1 项，让 EDO 真有 empirical 优势再投（最远路径，可能 2-3 月） | **取决于你的时间预算**：若 EMNLP 2026 年底/2027 年初 deadline 紧 → 选 (a)；若可推到 ARR 后续 cycle 或换 venue → 选 (b) | **所有 §B.5 fix-TODO 的优先级 + S-001 主体 framing 重写都依赖这条**；S-105/108/109 等可独立先做（见 §B.5 标注） | ✅ **(b) 已批准** (2026-04-19)：实现 Stage-2 至少 1 项 + 仍冲刺 **EMNLP 2026 ARR May 25 deadline**（距今 36 天）→ 派生 **U-012-decide**（Stage-2 范围）+ **U-013-decide**（MuSiQue 是否同步上）+ 解锁工程师 Stage-2 sprint |
+| **U-012-decide** | **Stage-2 实施范围 — 36 天 deadline 下三选一/几**：**R1 split**（最复杂：新 primitive action + LLM decomposition call + 三动作 utility 选择 + task-tree state；HotpotQA 2-hop 收益小，需 MuSiQue 才显价值）；**R2 audit**（中等：每跳 audit decision + 4 类 audit 输出 + 上游 reject_reroute/resplit；**直接反驳 reviewer fatal #1**——peer 输 self_claim 是因为没 hop-level 拦截重跑）；**R3 persona vector**（最简：scalar competence → vector belief，纯表征改动；论证价值最弱） | **强烈推荐 R2 单做**：① 工程估时 ~12 天 ≤ deadline；② 直接反驳 reviewer fatal flaw（self_claim 没有重跑机制，audit 一加上就有 mechanism gap）；③ 不要求第二 benchmark；④ 改 runner.py + 加 audit_runtime.py 即可 — **可选 + R3** 把 belief vector 顺便升上去（再 +3 天） | 解锁工程师 E-001..E-005 工单 + 科学家 S-115/116/117 写作 + R-FULL-002 复审 | ⏳ **拍板后即刻启动 Stage-2 sprint** |
+| **U-013-decide** | **是否同步上 MuSiQue 第二 benchmark — reviewer EXP-1 fail 的最直接补救**：MuSiQue 已是 paper §4.4 future work；data 已下到 `data/musique/` 56 MB；`scripts/download_musique.py` 就位 | **推荐：是**（必须做 — 单 benchmark 是 reviewer experiments_solidity_score=0/8 中 5 项失败的根因之一，且对 R2 audit 有放大效应：MuSiQue 4-hop 上 hop-level audit 价值远超 HotpotQA 2-hop）。**额外工程估时 ~3 天**（数据 export 1 天 + 三方法 fullval 跑数 2 天）。如选**否**，论文必须在 Limitations 显式承认单 benchmark 局限并接受 D4 ≤ 6 上限 | E-006/E-007 MuSiQue 工单 | ⏳ **拍板后即刻启动** |
 
 ---
 
@@ -86,7 +88,7 @@
 
 | ID | 任务 | 完成日期 | 备注 |
 |---|---|---|---|
-| _(空)_ | _(空)_ | _(空)_ | _(空)_ |
+| **U-011-decide** | **论文 framing 走向 → 选 (b) Stage-2 实施 + 仍冲刺 EMNLP 2026 ARR May 25** | 2026-04-19 | 用户原话："我选择b，但是是投递2026年的，所以要加快进度干，全力以赴"。距 ARR May 25 截止 36 天。派生 U-012 (Stage-2 范围) + U-013 (MuSiQue) 两个二次决策；同步触发 SCIENTIST_TODO §B.5 + implementation_log Stage-2 sprint phase 块 |
 
 ---
 
@@ -97,3 +99,4 @@
 | 2026-04-19 | scientist | **新建本文件**：从 `SCIENTIST_TODO.md §A` 迁出决策池为权威源；新增 §B 用户专属工作（U-EXEC-001..005 按 §12 命名重整） | 本文件 + `SCIENTIST_TODO.md §A` 改为 cross-ref + 已与 `four-role-todo-workflow.md §0/§4/§12` 对齐 |
 | 2026-04-19 | scientist | 应用用户 04-19 批准（"按你的建议来"）：**U-002 ✅** / **U-004 ✅** / **U-006 ✅** / **U-010 ✅** | §A 4 行状态更新 |
 | 2026-04-19 | scientist | **挂入 U-011-decide**：reviewer_20260419_163139 (P5 oral gatekeeper) 触发的 framing 走向决策（最高优先级） | §A 新增 1 行 |
+| 2026-04-19 | reviewer-agent (落地用户决策) | **U-011 → ✅ (b) 已批准**（用户原话"我选择b，但是是投递2026年的，所以要加快进度干，全力以赴"）；派生 **U-012-decide** (Stage-2 范围, 推荐 R2 单做或 R2+R3) + **U-013-decide** (MuSiQue, 推荐 是)；同步 SCIENTIST_TODO §A cross-ref + §B.5 加 S-115/S-116/S-117 + implementation_log 开 Stage-2 sprint phase 块 (`stage2_sprint_kickoff_20260419`) + PROJECT_STRUCTURE.md §0 加 sprint 状态块 + ARR 5/25 倒计时 | `USER_TODO.md §A,§C,§D` + `SCIENTIST_TODO.md §A,§B.5,§D` + `implementation_log.md` + `PROJECT_STRUCTURE.md §0` |

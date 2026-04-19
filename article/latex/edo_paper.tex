@@ -343,6 +343,31 @@ These limitations are not accidental flaws in reporting. They define the boundar
 
 During the full-validation pass on the strong backbone, two of the three method runs were silently affected by an upstream provider issue in which the requested model identifier was routed to a different (newer) underlying model for a subset of API calls. The third method's full-validation result was not affected. To prevent recurrence and make the issue forensically auditable, the runtime client was extended with a fail-fast integrity check that compares the model identifier echoed back in each response against the requested identifier and raises an explicit error on mismatch. The two affected method runs have been queued for re-execution under the new guard; the third (unaffected) full-validation result is preserved as-is. This appendix documents the engineering provenance of the queued re-runs and does not introduce new methods or claims; the pending re-runs are flagged in \S 4.3 (Finding~2).
 
+\section*{Appendix B: Responsible NLP Research Checklist}
+
+The Responsible NLP Research Checklist below is filled per ARR / EMNLP submission guidelines.
+
+\paragraph{B1. Scientific artifacts.}
+\begin{itemize}\setlength\itemsep{1pt}
+\item \textbf{Cited and used:} HotpotQA \citep{yang2018hotpotqa} under its public Apache-2.0 license; \texttt{gpt-4.1-mini} accessed via an OpenAI-compatible API endpoint per its commercial terms of service.
+\item \textbf{License/intent compatibility:} HotpotQA license permits research use. The model API terms permit benchmarking and reporting of aggregate metrics, which is the entirety of our model use.
+\item \textbf{Intended-use compatibility:} our use is non-commercial multi-hop reading-comprehension benchmarking, consistent with HotpotQA's stated scope.
+\item \textbf{Released artifacts:} runtime code (\texttt{runner.py}, \texttt{methods.py}, \texttt{contracts.py}), seed slice, validation scripts, and per-run logs are released in the anonymous code/data supplement under MIT license. Use is restricted to research; no derived models are released.
+\end{itemize}
+
+\paragraph{B2. Computational experiments.}
+\begin{itemize}\setlength\itemsep{1pt}
+\item \textbf{Model size / parameters:} we do not train or fine-tune any model; the only model used is the API-served \texttt{gpt-4.1-mini} (size not disclosed by provider).
+\item \textbf{Compute budget:} entire experiment requires $\le 10^4$ API calls per method per chain-200 batch (i.e., 4 hops $\times$ 200 examples $\times$ 3 methods $\approx 2{,}400$ contribution calls + 600 answer calls). No GPU compute on our side.
+\item \textbf{Hyperparameters:} routing weights ($0.55, 0.20, 0.10$, etc.), accept margin ($\delta_a{=}0.02$), update step sizes ($\Delta^{+}{=}{+}0.06$, $\Delta^{-}{=}{-}0.10$), momentum ($\rho{=}0.5$), F1 threshold ($F_\textsc{th}{=}0.5$), max handoff ($H_{\max}{=}4$). All listed in Algorithm~\ref{alg:tcpb-loop}; all are hand-set priors, not searched.
+\item \textbf{Reported summary statistics:} EM, F1, MHC, PAR, and per-sample API token counts (Table~\ref{tab:main-results}, Table~\ref{tab:ablations}). Confidence intervals are explicitly not reported in this submission and are flagged in \S Limitations as future Stage-2 work (\S 4.4 E1--E5).
+\item \textbf{Existing implementations used:} we use the standard HotpotQA EM/F1 evaluator (re-implemented in our codebase to match the original word-tokenisation rules); no other off-the-shelf evaluators are used.
+\end{itemize}
+
+\paragraph{B3. Human subjects / annotators.} Not applicable. No human annotation was collected for this work; the only human-curated data used is the public HotpotQA dataset.
+
+\paragraph{B4. Use of AI assistants.} The first author used a code-completion AI assistant during the development of \texttt{runner.py}, \texttt{methods.py}, and prompt templates. All AI-suggested code was reviewed line-by-line by the author before commit, and the final algorithmic design (Algorithm~\ref{alg:tcpb-loop}, Prototype Scope Box) is the author's own contribution. No AI assistant generated any prose in this paper.
+
 \bibliography{custom}
 
 \end{document}
