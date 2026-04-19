@@ -40,6 +40,9 @@
 | `U-013-decide` | E-004/E-005 MuSiQue 数据 prep + 双 benchmark fullval | ✅ **MuSiQue 加入已批准** (2026-04-20) |
 | `U-EXEC-006` | E-008 newapi smoke probe + `_normalize_newapi()` | ✅ **新 newapi 通道已交付** (2026-04-20) → engineer E-008 |
 | `U-EXEC-001` | S-009（fullval 数字落 §4.3）+ E-005/E-007 跑数 | ✅ **替代解决**（2026-04-20）：从 kuaipao 切到 newapi (xh.v1api.cc)；不充 kuaipao；**E-008 升级为 sprint P0 关键路径**（先验证 newapi 再开任何 fullval）|
+| `U-014-decide` | S-121/S-122/S-123 + 关闭 reviewer R-FULL-001 fatal #3 (S6 cap) | ⏳ 外部 system 个数 (1/2/3)；**推荐 2 (AutoGen + ChatEval)** |
+| `U-015-decide` | E-011 swap adapter 范围 + S-121/S-122 写哪几 SWAP 进表 | ⏳ module-swap 范围；**推荐 R2+R3 (SWAP-1+SWAP-3)** |
+| `U-016-decide` | engineer 工单清单（drop E-007 vs 保留双工单）| ⏳ 是否 drop 原 E-007；**推荐 是**（被 E-009..E-012 subsume）|
 
 ---
 
@@ -95,6 +98,9 @@
 | **S-118** | **升级 Algorithm 1 → "EDO Stage-2 execution loop"**：3 个动作 (do_self/outsource/split) + 显式 audit step + vector belief update；保持 ½ 页内 | 45 min | 等 E-001 + E-002 接口冻结 | ⏳ blocked on E-001 + E-002 |
 | **S-119** | **更新 Figure 1 prompt** 强调 Stage-2 三机制（R1 split tree / R2 audit ladder / R3 vector belief）；派 `U-EXEC-007` 让用户重出图替换当前 placeholder | 30 min | none — 可立即做 | ⏳ 待做（不阻塞编译） |
 | **S-120** | **provider 切换尾巴**（U-EXEC-001 替代解决后的写作连带）：在 `docs/paper/page_budget_audit.md` 加一行 note 说"fullval 数据来源换为 newapi 通道"；§4 Limitations 加 1 句 provider 切换发生在 sprint 中（备 reviewer 问起） | 15 min | 等 engineer E-008 done（确认 newapi 可用） | ⏳ blocked on E-008 |
+| **S-121** | **§4.x "External Baseline + Module-Swap Comparison" 子节** + 4-row 对比表（host original F1 vs host + 我们 swap F1，含 paired-bootstrap CI + Δtoken）。详见 `docs/paper/external_baseline_plan.md §4`。**直接关闭 reviewer R-FULL-001 fatal #3（S6 cap）** | 90 min | 等 engineer E-012 ✅（swap 跑数完成）；上游依赖 U-014/U-015/U-016 用户拍板 | ⏳ blocked on E-012 + U-014/015/016 |
+| **S-122** | **§4.x "Module-Swap Ablation" 表格**（host original / host + our R-x swap × N hosts，N = U-014 拍板值）；与 S-121 同表合并或独立小表均可，看页数 | 45 min | 同 S-121 | ⏳ blocked on E-012 |
+| **S-123** | **§2 Related Work 反向引用 actual baselines**：现在 §2.1/§2.2/§2.3 仅 `\citep{}` AutoGen/ChatEval 等；S-121/S-122 完成后改为"在 §4.x 我们 module-swap 进 [系统名]"；显式承诺 reviewer 这是 controlled 比较不是 cherry-pick | 30 min | S-121 + S-122 ✅ | ⏳ blocked on S-121 + S-122 |
 | **S-105** | 编完整 bibliography：替换 4 条 ACL 模板默认引用，加 ≥15 篇命名 prior work（按 reviewer 列表：MARS, SAGE, AutoGen, MetaGPT, AMRO-S, ReSo, Reflexion, ToT 等） | 90 min | none | ⏳ 未做 — **desk-reject 邻接，最高优先级** |
 | **S-106** | 加第二 benchmark（MuSiQue 已是 §4.4 future work，落地为现在的 EXP-1 pass） | 工程师 | 等 U-011 拍板（如选 b 才需要先做） + 工程师跑数 | tracking-S-106 |
 | **S-107** | 多 seed (≥3) + paired bootstrap CI 加入 Table 1 | 工程师 | 等工程师跑数 | tracking-S-107 |
@@ -259,6 +265,7 @@ S-104 是**永久强制项**，永远不会被 ✅ 关闭。
 | 2026-04-20 | scientist (落地用户 U-012/U-013/U-EXEC-006) | **R6 commit / Stage-2 sprint 启动**：U-012 → ✅ R1+R2+R3 全做；U-013 → ✅ MuSiQue 加入；U-EXEC-006 → ✅ 新 newapi key 落入 `configs/llm.json`；§A cross-ref 同步；§B.5 重写 S-115..S-119（5 项 sprint 写作 TODO）；implementation_log 开 phase 块 `[stage2_sprint_kickoff_20260420]` 含 E-001..E-008 工程师工单；PROJECT_STRUCTURE.md §0 sprint 状态块更新为 Day 1 = 2026-04-20 / T-35 to ARR May 25 | `configs/llm.json` + `USER_TODO.md` + `SCIENTIST_TODO.md` + `implementation_log.md` + `PROJECT_STRUCTURE.md` |
 | 2026-04-20 | scientist (落地用户 U-EXEC-001 切换) | **R7 commit / provider 切换**：U-EXEC-001 → ✅ 替代解决（用户切到 newapi，不充 kuaipao）；§A U-006 provider 阻塞解除；§A 加 U-EXEC-001 cross-ref ✅；§B.3 S-009 阻塞描述更新；implementation_log 在 sprint 块末加 `[provider_switch_20260420]` 子条；E-008 升级 P0 关键路径；E-005/E-007 卸除 provider 阻塞 | `configs/llm.json` + `USER_TODO.md` + `SCIENTIST_TODO.md` + `implementation_log.md` |
 | 2026-04-20 | scientist (per user instruction) | **R8 commit / 全角色注意事项落地**：本文件 §F 新增 7 个子节（Provider 红线 / 论文写作硬约束 / 图表分工 / 决策路由 / S-104 强制循环 / 不停问下一步 / sprint 自查表）；同步 USER_TODO §E + REVIEWER_TODO §F + implementation_log `[pinned_cautions_for_engineer_20260420]`；目标：任何角色开新窗口先重读各自 TODO 末的注意事项段，避免 R0-R7 已建立的 invariants 被无意破坏 | `SCIENTIST_TODO.md §F` + 3 个配对 TODO 文件 |
+| 2026-04-20 | scientist (per user instruction "对比实验是要补的") | **R9 commit / 外部 baseline workstream planning**：审计 .tex Table 1 (3 内部) + Table 2 (5 内部) → ZERO 外部 baseline；新文件 [`docs/paper/external_baseline_plan.md`](../paper/external_baseline_plan.md)（10 §：gap audit / why module-swap / 6 候选 / SWAP 矩阵 / E-009..E-012 派工 / 时间线 / 决策 / 验收 / 风险 / refs）；§A 加 U-014/U-015/U-016 cross-ref；§B.5 加 S-121/S-122/S-123；implementation_log append `[external_baseline_workstream_20260420]` 含 E-009..E-012；推荐配置 = 2 systems (AutoGen + ChatEval) + R2+R3 swap (SWAP-1 + SWAP-3) + drop E-007 | `docs/paper/external_baseline_plan.md` (新建) + `USER_TODO §A,§D` + `SCIENTIST_TODO §A,§B.5,§D` + `implementation_log` |
 
 ---
 

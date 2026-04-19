@@ -1301,3 +1301,85 @@ Day 24: E-007 done → 通知 scientist 启动 S-117 §4 Stage-2 Results 写作
   - **engineer (any future window)**: 开新窗口先重读本条；任何 E-XXX 启动前 cross-check C-1 .. C-7 是否仍 valid（如失效在 `implementation_log` append 新子条覆盖，不动本条）
   - **user**: 暂无新派工
   - **scientist**: R8 commit 后立即启动 S-119 (Figure 1 prompt 升级，无阻塞)；其余仍 blocked on engineer
+
+---
+
+### [external_baseline_workstream_20260420]
+
+- when: 2026-04-20 (R9 commit)
+- who: scientist (per user instruction "对比实验是要补的；外部baseline调研、外部开源方法code拉取并跑通、替换与实验对比")
+- intent: 关闭 reviewer R-FULL-001 fatal #3（"ZERO external 2024-2026 multi-agent SOTA appears as a baseline"，S6=3）；用 module-swap 实验设计（drop-in replacement）替代 full-system 对比，避免 5 类 confound（prompt / agent count / retrieval / termination / backbone）
+- depends_on: USER_TODO §A 三项决策 **U-014-decide** (system 个数) + **U-015-decide** (swap 范围) + **U-016-decide** (是否 drop E-007)
+- planning doc: [`docs/paper/external_baseline_plan.md`](../paper/external_baseline_plan.md)（10 §，本块 E-XXX 工单细节以 plan 为准，本条仅做派工登记）
+
+#### 派给 engineer 的工单（待 U-014/U-015/U-016 拍板后启动）
+
+> 命名遵循 four-role rule §12 `E-XXX` 全局递增。本块编号继 E-008 后。
+> **估时假设 U-014=2 systems + U-015=R2+R3 + U-016=drop E-007**（推荐配置）；如改 1 system 全部 ÷2，如改 3 systems 全部 ×1.5。
+
+| ID | 工单 | 估时 | 阻塞 | 输出 |
+|---|---|---:|---|---|
+| **E-009** | **survey + selection**：scientist 在 [`external_baseline_plan.md §3.1`](../paper/external_baseline_plan.md) 列出 6 候选系统 + 评分；engineer 对 top-2-3 候选做 license / freshness / OpenAI-compat / repo-size 实地核查（`git log -1`、LICENSE 文件、`pip install` 试装、跑 quickstart 1 样本）；**输出 markdown 报告**选定 N 个 finalist (N=`U-014` 拍板值) | 1 d | U-014/U-015/U-016 用户拍板 | `artifacts/external_baselines/survey_report.md` |
+| **E-010** | **reproduce baseline**：对每个 finalist（推荐 AutoGen + ChatEval），在我们的 `newapi` (xh.v1api.cc) 端点上跑原 paper 报告的 HotpotQA / MMLU 50-sample slice；记录 reproduction error band（应 ≤ 5% F1 vs 原文）；写 `repo_<name>_smoke.md` 证 host system 在我们 infra 上能复现 | 2 d × N | E-009 ✅ + E-008 newapi probe ✅（C-1 红线）| `artifacts/external_baselines/<name>/baseline_smoke_<TS>/{metrics.json,smoke.log,repo_<name>_smoke.md}` |
+| **E-011** | **implement swap adapter**：写 `<name>_swap.py` adapter 把我们的 R-x 模块 hook 进 host 的决策点（如 `autogen_groupchatmanager_select_speaker_swap.py` 把 R3 vector belief 接到 AutoGen `GroupChatManager.select_speaker`；`chateval_metareviewer_swap.py` 把 R2 audit 接到 ChatEval `MetaReviewer.aggregate`）；unit test 通过 = adapter 对已知输入返回合法 choice | 2 d × N | E-010 ✅ + R-x 机制完成（**SWAP-1 (AutoGen R3) 需 E-004 ✅**；**SWAP-3 (ChatEval R2) 需 E-003 ✅**） | `workspace/idea04_core/external_baselines/<name>_swap.py` + `tests/test_<name>_swap.py` |
+| **E-012** | **run swap comparison**：HotpotQA-200 + MuSiQue-200 × {host original, host + 我们的 swap} × ≥3 seeds + paired-bootstrap CI；同 backbone (`gpt-4.1-mini`)、同 token budget cap、同 newapi endpoint；输出与 Stage-2 fullval 同 schema（metrics.json + paired_stats.csv）| 2 d × N | E-011 ✅ + E-006 multi-seed harness ✅ | `artifacts/external_baselines/<name>/swap_results_<TS>/{metrics.json,paired_stats.csv,swap_summary.md}` |
+
+**总工程估时**（推荐配置 N=2，不含 E-007 减免）：1 + (2+2+2)×2 = **13 d**；E-010/E-011/E-012 平行流水后 condensed 到 **9-10 d**。
+
+#### 与原 sprint 工单的相互关系
+
+| 原 sprint 工单 | 本 workstream 影响 |
+|---|---|
+| E-001 task_tree | 不变（SWAP 不依赖 task tree） |
+| E-002 split policy | 不变 |
+| E-003 audit runtime | **关键依赖** —— SWAP-3 (ChatEval R2 swap) 必须 E-003 ✅ 后才能写 adapter |
+| E-004 persona vector | **关键依赖** —— SWAP-1 (AutoGen R3 swap) 必须 E-004 ✅ 后才能写 adapter |
+| E-005 runner integ + Stage-2 fullval | 不变（SWAP 跑数走独立 batch） |
+| E-006 multi-seed CI | **共享 harness** —— `compute_paired_bootstrap.py` 的扩展同时给我们 Stage-2 + SWAP 跑数用 |
+| **E-007 外部 baseline (原 4 d)** | **如 U-016=Yes：完全 drop**（被 E-009..E-012 subsume） |
+
+#### 时间线（与 sprint timeline 合并，假设推荐配置）
+
+```
+Day 1-5:    E-001 + E-008 + E-002 (current sprint, unchanged)
+Day 6-10:   E-003 (R2 audit) + E-009 (external survey, parallel) ← R8 状态
+Day 11-13:  E-004 (R3 vector) + E-010 (reproduce 2 hosts, parallel)
+Day 14-16:  E-005 (Stage-2 fullval) + E-011 (write 2 swap adapters, parallel) ← R9 后调整
+Day 17-19:  E-006 (multi-seed CI) + E-012 (run swap comparisons, shared harness)
+Day 20-22:  scientist S-117 §4 写作 (Stage-2 results + module-swap table 一起)
+Day 23-26:  S-115 §1 + S-116 §6 framing 重写 + S-121 §4.x 外部 baseline 段
+Day 27-29:  R-FULL-002 user-triggered reviewer batch + S-104 4-step loop
+Day 30-35:  final polish + ARR submission prep
+```
+
+vs R8 时间线净增 +2 d (Day 14-16 要平行写 swap adapter)；buffer 从 7 d 缩到 5-6 d，可接受。
+
+#### 风险登记
+
+1. **U-014/U-015/U-016 拍板延迟** → engineer E-009 不能启动；本块全部 stalled。**无 fallback**：必须等用户拍板。
+2. **AutoGen / ChatEval repo 跑不通**（依赖冲突 / Python 版本 / OpenAI-API 不兼容）→ E-010 阻塞；fallback 用 OpenAI 官方 endpoint（独立预算，由用户决定）。
+3. **Reproduction error > 5% F1**（host system 在我们 infra 上跑出来的数与原 paper 差太多）→ 报告 swap-delta（within-system）而非 absolute comparison，§4.x 写明 reproduction band。
+4. **Swap 输给 host 原 mechanism** → 这是真实研究风险；§6 conclusion 诚实承认 + Limitations 加 boundary discussion。
+5. **MetaGPT (R1 swap) 太 tightly-coupled**（如 U-014=3 选了它）→ §3.1 已标 high risk；推荐留 future work。
+
+#### 派给 scientist 的写作 TODO（已挂 SCIENTIST_TODO §B.5）
+
+| ID | 任务 | 阻塞 |
+|---|---|---|
+| S-121 | 写 §4.x "External Baseline + Module-Swap Comparison" 子节 + 4-row 对比表 | E-012 ✅ |
+| S-122 | 写 §4.x "Module-Swap Ablation" 表格（host original / host + swap × N hosts） | E-012 ✅ |
+| S-123 | 重写 §2 Related Work 加一段"在 §4.x 我们 module-swap 进 [AutoGen / ChatEval]"反向引用 actual baselines | E-012 ✅ + S-121/S-122 ✅ |
+
+#### 本条 commit 落地
+
+- files_added:
+  - `docs/paper/external_baseline_plan.md`（10 §，~600 行 markdown）
+- files_modified:
+  - `docs/coordination/USER_TODO.md` §A 加 U-014/U-015/U-016 + §D R9 修订
+  - `docs/coordination/SCIENTIST_TODO.md` §B.5 加 S-121/S-122/S-123 + §A cross-ref + §D R9 修订
+  - `docs/coordination/implementation_log.md`（本条）
+- commit ref: R9 commit（待落地）
+- next_action:
+  - **user**: 拍板 U-014 (system 个数) + U-015 (swap 范围) + U-016 (是否 drop E-007)；推荐 (b)/(b)/Yes
+  - **engineer**: 暂无新派工（等用户拍板才能开 E-009）；继续 R8 已派的 E-001/E-008
+  - **scientist**: 暂无新派工（S-121..S-123 全部 blocked on E-012）；继续 R8 已派的 S-119
