@@ -1218,3 +1218,86 @@
   - **engineer**: E-008 立即启动（0.5 d，最高优先级）；若 smoke probe 通过，立即开 E-001 (task_tree)
   - **user**: 暂无新派工；监控 newapi 通道额度即可
   - **scientist**: S-120 入队（待 E-008 done 后启动）；其余无变化（S-119 仍可立即做，剩余 S-115..S-118 仍 blocked on engineer）
+
+---
+
+### [pinned_cautions_for_engineer_20260420]
+
+- when: 2026-04-20 (R8 commit)
+- who: scientist (per user instruction "把注意事项写好")
+- intent: 在 sprint 启动前，把所有非显然但 critical 的 invariants 一次性钉在工程师工作上下文里。任何**新工程师窗口** / **任何 E-XXX phase 块开始前**必须先重读本条。
+
+> 本条是 PINNED CAUTIONS（不会随 sprint 推进失效）。如发生 invariant 改动，**append 一条新 dated 子条覆盖**，不修改本条。
+
+#### C-1 Provider 红线（继承 R7 / `[provider_switch_20260420]`）
+
+1. ❌ **不要 `LLM_BACKEND=oversea`**（kuaipao.ai）跑任何新 batch。`configs/llm.json oversea._status = "deprecated_..."`，仅供历史 reproducibility（`artifacts/round1/` `artifacts/round2_gpt41mini/` 复跑）。
+2. ✅ **新跑数全走 newapi (xh.v1api.cc)**：`configs/llm.json newapi._status = "PRIMARY_..."`。
+3. ⚠ **E-008 是 sprint P0 关键路径**：必须**先**完成 newapi smoke probe (`GET /v1/models` + 1 样本 `POST /chat/completions`) + 把 `_normalize_newapi()` + `newapi_target()` 加到 `workspace/idea04_core/llm_providers.py`（按 `oversea` / `gptplus5` 模板）。E-008 ✅ 之前**禁止**开任何 chain-200 / fullval batch。
+4. ⚠ **`ModelDriftError` 必启**：`workspace/idea04_core/llm_client.py` 的 runtime integrity guard 在 newapi 首跑必须 enabled；任何 `model_resolved_runtime != requested_model` 必须 fail-fast，不要静默忽略（这是 R7 deprecate kuaipao 的根因）。
+5. workaround（仅 E-008 ship 前的过渡期可用）：环境变量 `LLM_BACKEND=oversea LLM_BASE_URL=https://xh.v1api.cc/v1 LLM_API_KEY=<newapi key>` —— 但即使走 workaround，`ModelDriftError` 仍必须启。
+
+#### C-2 Stage-1 byte-identical 回归（E-005 硬约束）
+
+1. ✅ E-005 整合 `runner.py` 时，`fixed_peer_calibrated` / `fixed_static_roles` / `fixed_self_claim` 三个老方法的 `metrics.json` 输出必须**与 R0 baseline byte-identical**（用 `artifacts/round1_smoke_*` 做 golden test）。
+2. 任何 EM/F1/MHC/PAR/cost 数字漂移 > 1e-4 → 视为回归 → 立即在 `USER_TODO §A` 挂 `U-Rollback-XXX-decide`，不要自行决定 forward-fix。
+3. 新方法注册 (`edo_full / edo_audit_only / edo_split_only / edo_vector_only`) 通过**新增 method id**实现，不复用老 id。
+
+#### C-3 backward-compat schema 升级（E-004 R3 vector belief 硬约束）
+
+1. ⚠ `published_competence` 从 `dict[str, float]` 升级到 `dict[str, list[float]]` 时**必须保留双轨序列化**：`competence_v1_scalar: dict[str, float]` 和 `competence_v2_vector: dict[str, list[float]]` 共存。
+2. 否则 R0 baseline 的 `routing_traces.jsonl` (~2 GB 历史数据) 解析会全坏。
+3. `validate_logs.py` 必须扩展为兼容两种 schema。
+
+#### C-4 token / 深度预算（E-002 R1 split 硬约束）
+
+1. ⚠ R1 `split` 增加每样本 LLM 调用次数（估 +20-30% tokens）；任何 fullval (n=7405) batch 启动**前**必须先用 `n=200` 跑一遍并核算总 token。
+2. ⚠ R2 `audit` 增加 reroute 跳数；可能撞 `max_handoff=4` 上限。Stage-2 默认提到 `max_handoff=6` + `max_tree_depth=3` + `max_total_nodes=12` (per `idea.md §11.3` 终止规则)。
+3. ⚠ newapi 通道额度由用户掌控；任何 batch 跑前估算总 cost，发现疑似耗尽立即在 `implementation_log` 报警 + 通知 scientist 派 `U-EXEC-XXX 续费` 给用户。
+
+#### C-5 log 双轨（每个 E-XXX 完成时硬约束）
+
+1. ✅ **per-sample jsonl logs** 落 `artifacts/<round>/<run_TS>/<method>/*.jsonl` —— 已 gitignore，不要 commit。
+2. ✅ **summary md** 必须 commit 一份到 `artifacts/<round>/round_<NN>_main_table.csv` + `*_metrics.md` —— 这些是论文证据，**不能只在 jsonl 里**。
+3. ✅ 完成一个 E-XXX 在 `implementation_log` append 一个独立 phase 块（如 `[E-001_task_tree_module_20260420]`），含 `files_added` / `files_modified` / `commit_ref` / `next_action` / `unblocks_for_scientist`。
+
+#### C-6 决策路由（four-role rule §4 红线）
+
+1. ❌ **不要擅自决定**：模型选型 / 跑数顺序 / GPU 预算 / 是否加新 ablation method / 是否启动 reviewer batch。
+2. ✅ 任何路线决策**先**在 `USER_TODO §A` 加 `U-XXX-decide` 行 + 推荐方案，**等用户回**再继续。
+3. ✅ 任何"只有用户能做的物理操作"（如 newapi 续费 / 上传 paper / 注册账号）**先**在 `USER_TODO §B` 加 `U-EXEC-XXX` 行。
+
+#### C-7 安全（git / API key）
+
+1. ❌ **不要 `git push`** 到任何 remote（`configs/llm.json` 含 6 个真实 API key 在 R0 baseline）。
+2. ❌ **不要在任何 .py / .tex / .md 文件里硬编码 API key**：所有 key 必须从 `configs/llm.json` 或环境变量读。
+3. ❌ **不要在 jsonl logs 里 echo API key**：`llm_client.py` 必须 mask key（保留前 8 + 后 4 字符即可）。
+
+#### C-8 当前 sprint 工程师入队顺序
+
+```
+Day 1 (04-20):
+  P0  E-008  newapi smoke probe + _normalize_newapi() + newapi_target() (0.5 d)  ← 最先
+  P1  E-001  task_tree.py (TaskNode 14 字段 + TaskTreeState + jsonl 序列化, 2 d)  ← 与 E-008 并行启动
+Day 1.5: E-008 done → 立即开 E-002 split
+Day 5:  E-001 done + E-008 done → E-002/E-003 启动
+Day 10: E-002 done → E-004 启动 (R3 vector belief)
+Day 14: E-001..E-004 全 done → E-005 整合 + Stage-2 fullval (HotpotQA + MuSiQue × 6 methods × 1+ seed)
+Day 18: E-005 done → E-006 multi-seed + paired bootstrap CI
+Day 20: E-006 done → E-007 external baseline (AutoGen / ChatEval)
+Day 24: E-007 done → 通知 scientist 启动 S-117 §4 Stage-2 Results 写作
+```
+
+#### 本条 commit 落地
+
+- files_added: none
+- files_modified:
+  - `docs/coordination/implementation_log.md`（本条）
+  - `docs/coordination/USER_TODO.md` §E
+  - `docs/coordination/SCIENTIST_TODO.md` §F
+  - `docs/coordination/REVIEWER_TODO.md` §F
+- commit ref: R8 commit（待落地）
+- next_action:
+  - **engineer (any future window)**: 开新窗口先重读本条；任何 E-XXX 启动前 cross-check C-1 .. C-7 是否仍 valid（如失效在 `implementation_log` append 新子条覆盖，不动本条）
+  - **user**: 暂无新派工
+  - **scientist**: R8 commit 后立即启动 S-119 (Figure 1 prompt 升级，无阻塞)；其余仍 blocked on engineer

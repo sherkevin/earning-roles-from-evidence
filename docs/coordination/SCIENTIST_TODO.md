@@ -150,6 +150,95 @@
 
 ---
 
+## F. 注意事项（每次开新窗口先重读这条）
+
+> 落定 2026-04-20（R8 commit）。任何后续状态变更触发本节修订。
+
+### F.1 Provider / API（继承自用户 R7 切换）
+
+1. ❌ **任何新跑数 / smoke probe / build smoke** 都 **不要走** `oversea` (kuaipao.ai) 通道——已 deprecated，仅供历史 reproducibility。
+2. ✅ **统一走** `newapi` (xh.v1api.cc) ——`configs/llm.json` `newapi._status = "PRIMARY_..."`。
+3. ⚠ **engineer E-008 是 sprint P0**：在它落地前**不要催 engineer 跑任何 fullval / chain-200 batch**；如发现 engineer 在 implementation_log 里宣布跑 batch 而 E-008 仍 ⏳，立即在 SCIENTIST_TODO §B 加 `S-9XX-blocked-on-E-008` 拦截。
+4. 短期 workaround（仅给 engineer 在 `_normalize_newapi()` 落地前用）：环境变量 `LLM_BACKEND=oversea LLM_BASE_URL=https://xh.v1api.cc/v1 LLM_API_KEY=<newapi key>`。我（科学家）**不应在 .tex / 论文中写出任何 endpoint URL** —— 已在 R3 (S-113) 全文匿名化，不要回退。
+
+### F.2 论文写作硬约束
+
+1. ✅ **写作目标只有一个**：`article/latex/edo_paper.tex`。`docs/paper/EMNLP_paper_draft.md` 是 deprecated 历史副本，**不要再改**。
+2. ✅ **每次 .tex 改完必须立即编译** `powershell -NoProfile -File scripts/build_paper.ps1`，并核对：
+   - `[OK] build succeeded` （exit 0）
+   - **Main body ends on page ≤ 8 (COMPLIANT)** —— 任何 `OVER 8-page submission cap` 都必须当场修，不能留过夜
+   - `Overfull hboxes ≤ 1` （0.81 pt 那一个可接受，>5 pt 不接受）
+   - `Underfull hboxes` 数量稳定（不要爆增）
+3. ✅ **每次"论文精细打磨"完成做一个 R-X commit**（per S-103）：
+   - commit message 格式 `R<N> / S-XXX[+S-YYY]: <一句话目标>`
+   - body 列受影响文件 ≤ 6 个
+   - 当前已用编号 R0 (`6b22f7c`) → R7 (`1a1eaac`)；下次新 commit 用 R8
+4. ⚠ **任何新 `\citep{}` 必须有 bib 条目**：在 `article/latex/custom.bib` 加完整 entry（标题/作者/年份/venue/url）；编译 log 出现 `Citation \`xxx' undefined` 视为 lint 失败。
+5. ⚠ **匿名化**（DR-5）：禁止在 .tex 出现以下任一形式：
+   - 任何 `artifacts/...` `workspace/...` `scripts/...` 内部仓库路径
+   - 真实 endpoint URL（`https://kuaipao.ai/v1` `https://xh.v1api.cc` 等）
+   - 真实 API key 任意片段
+   - 项目名 `idea04` / 任何 GitHub URL / 任何 author name
+   - 替代写法：`the anonymous code/data supplement` `the project repository (Anonymous Suppl.)` `OpenAI-compatible API endpoint`
+
+### F.3 图表分工（four-role rule §9）
+
+1. ✅ **数学统计图**（柱 / 箱 / 折 / 散点 / 热图等数据驱动图）：**我自己用 Python 实绘** → 落 `artifacts/figures/`，并 commit 一个 `*_data.md` 数据 provenance（参 `fig2_backbone_sensitivity_data.md` 模板）。
+2. ✅ **概念示意图 / 逻辑流程图**（架构 / 流程 / state machine 等）：**用户绘制**。我先写完整 prompt → `docs/paper/figures_prompts/<fig_name>_prompt.md`，并在 `USER_TODO.md §B.2` 派 `U-EXEC-XXX` 行追踪。
+3. ⚠ **vector 优先**：LaTeX 引用前必须有 `.pdf` 或 `.svg`；纯 `.png` 仅做 in-doc 预览，**不可直接 `\includegraphics{*.png}` 当 final asset**。
+4. ⚠ **figure 编号**：所有 `\begin{figure}...\end{figure}` 块的出现顺序决定 LaTeX auto-number；如要让 Figure 1 = 概念图、Figure 2 = 统计图，必须确保 §3 的 placeholder/真图块**物理排在** §4 的统计图块之前（已在 R5 确认）。
+
+### F.4 决策路由（four-role rule §4 红线）
+
+1. ❌ **我严禁**做以下决策（必须挂 `U-XXX-decide` 给用户）：
+   - paper framing 切换 / 章节级重写决策（属 U-011 类）
+   - scope 扩张 / 加新 benchmark / 加新 ablation
+   - 锁稿 / 提交 ARR / commit-to-EMNLP
+   - 触发 R-FULL 全文 reviewer batch（**R-PART 局部审稿可自触**，详见 REVIEWER_TODO §F.2）
+2. ✅ **可自做**：
+   - 论文级 lint 修复（escape / overfull / 标题 typo）
+   - 单段 / 单 figure / 单 table 的 in-place rewrite（不变 framing）
+   - 统计图实绘 + caption 草稿
+   - bibliography 补 entry + `\citep{}` 替换
+   - 文档结构整理（如本次 §F 落地）
+3. ⚠ **当我"觉得需要扩 scope"时**：先在 `§A` 加 `U-XXX-decide` + 推荐方案，**等用户回**，不要自己干。
+
+### F.5 S-104 强制循环（reviewer batch 后必做）
+
+每次 `artifacts/idea_reviews/reviewer_*` 新落盘 → 我必须立即做 4 步：
+
+1. **通读** review 的 `top_weaknesses` / `missing_or_weak_experiments` / `ambiguous_algorithm_points` / `what_to_fix_for_8_plus`
+2. **不盲从**：逐条判断"是否真有价值"（criteria：是否指向具体行/equation/缺失对象 / 是否能用现有证据反驳 / 是否与既往 fix_themes 冲突 / 是否超出 scope）
+3. **诚实接受**：通过 ①② 的意见加到 `§C 反馈追踪表` + 在 `§B.5` 创建对应 `S-XXX` 修复 TODO
+4. **dissent log**：拒绝接受的意见在 `§C` 末尾写 1 行理由
+
+S-104 是**永久强制项**，永远不会被 ✅ 关闭。
+
+### F.6 不停问下一步（four-role rule §2）
+
+- ✅ **必须**：把 `§B` 里所有不依赖别人的 ❌ / ⏳ 项**全部做完**再回报
+- ❌ **禁止**：每完成一个小项就停下问"下一步选 A 还是 B"
+- ❌ **禁止**：在 `§B` 还有 ❌ 未开始且不被 blocked 的项目时，给用户递选项
+
+判断 blocked 的硬规则：
+- 阻塞字段非空 / 指向其他角色未完成的 ID → blocked
+- 阻塞字段为"用户决策 X"且 `USER_TODO §A` 该决策仍 ⏳ → blocked
+- 阻塞字段为"用户人工活 X"且 `USER_TODO §B` 该 `U-EXEC-XXX` 仍 ⏳ → blocked
+- 否则 → 立即干
+
+### F.7 当前 sprint 自查
+
+| 项 | 状态 | 我的下一步 |
+|---|---|---|
+| S-119 (Figure 1 prompt 升级) | ⏳ 无阻塞 | **可立即做**（R8 commit 后启动） |
+| S-115/S-116/S-117 | ⏳ blocked on engineer E-005 | 等 implementation_log ack |
+| S-118 | ⏳ blocked on engineer E-001 + E-002 接口冻结 | 等 implementation_log ack |
+| S-120 (provider 切换写作尾巴) | ⏳ blocked on engineer E-008 | 等 implementation_log ack |
+| S-005 (model drift 写 appendix) | ✅ 已在 R3 Appendix A 落地 | done |
+| 其余 §B.5 (S-105/108/110/111/112/113/114) | ✅ 全部 done in R1..R5 | done |
+
+---
+
 ## D. 修订记录（日期 + 任务 ID + 关键产物）
 
 | 日期 | 谁 | 动作 | 产物 |
@@ -169,6 +258,7 @@
 | 2026-04-19 | scientist | **写作 Sprint 2 后处理（6 commits）**：R0 baseline (`6b22f7c`) git init + .gitignore；R1 (`e8aad98`) S-105 + S-012 bibliography + rebuttals；R2 (`1775d6e`) S-108 ablation table + S3.4 cut；R3 (`a701aaa`) S-111 + S-113 Limitations + 全文 anonymization；R4 (`8d9581c`) S-112 Responsible NLP Checklist；R5 (`7b4bfec`) S-110 Figure 1 placeholder + render verification | git history `6b22f7c..7b4bfec` |
 | 2026-04-20 | scientist (落地用户 U-012/U-013/U-EXEC-006) | **R6 commit / Stage-2 sprint 启动**：U-012 → ✅ R1+R2+R3 全做；U-013 → ✅ MuSiQue 加入；U-EXEC-006 → ✅ 新 newapi key 落入 `configs/llm.json`；§A cross-ref 同步；§B.5 重写 S-115..S-119（5 项 sprint 写作 TODO）；implementation_log 开 phase 块 `[stage2_sprint_kickoff_20260420]` 含 E-001..E-008 工程师工单；PROJECT_STRUCTURE.md §0 sprint 状态块更新为 Day 1 = 2026-04-20 / T-35 to ARR May 25 | `configs/llm.json` + `USER_TODO.md` + `SCIENTIST_TODO.md` + `implementation_log.md` + `PROJECT_STRUCTURE.md` |
 | 2026-04-20 | scientist (落地用户 U-EXEC-001 切换) | **R7 commit / provider 切换**：U-EXEC-001 → ✅ 替代解决（用户切到 newapi，不充 kuaipao）；§A U-006 provider 阻塞解除；§A 加 U-EXEC-001 cross-ref ✅；§B.3 S-009 阻塞描述更新；implementation_log 在 sprint 块末加 `[provider_switch_20260420]` 子条；E-008 升级 P0 关键路径；E-005/E-007 卸除 provider 阻塞 | `configs/llm.json` + `USER_TODO.md` + `SCIENTIST_TODO.md` + `implementation_log.md` |
+| 2026-04-20 | scientist (per user instruction) | **R8 commit / 全角色注意事项落地**：本文件 §F 新增 7 个子节（Provider 红线 / 论文写作硬约束 / 图表分工 / 决策路由 / S-104 强制循环 / 不停问下一步 / sprint 自查表）；同步 USER_TODO §E + REVIEWER_TODO §F + implementation_log `[pinned_cautions_for_engineer_20260420]`；目标：任何角色开新窗口先重读各自 TODO 末的注意事项段，避免 R0-R7 已建立的 invariants 被无意破坏 | `SCIENTIST_TODO.md §F` + 3 个配对 TODO 文件 |
 
 ---
 

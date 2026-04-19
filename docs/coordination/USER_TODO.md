@@ -97,6 +97,55 @@
 
 ---
 
+## E. 注意事项（每次开新窗口先重读这条）
+
+> 落定 2026-04-20（R8 commit）。任何后续状态变更触发本节修订。
+
+### E.1 Provider / API（**最高优先级**）
+
+1. ❌ **不要再用 `oversea` (kuaipao.ai) 通道**：2026-04-20 已 deprecated（`configs/llm.json` `oversea._status = "deprecated_..."`）；只保留它供历史 `round1/` `round2_gpt41mini/` 跑数复现，不开任何新 batch。
+2. ✅ **所有新跑数走 `newapi` (xh.v1api.cc)**：`configs/llm.json` `newapi._status = "PRIMARY_..."`。
+3. ⚠ **engineer E-008 是 sprint P0 关键路径**：必须在任何 chain-200 / fullval 之前完成 newapi smoke probe + 加 `_normalize_newapi()` 到 `llm_providers.py`。如 engineer 自作主张跳过 E-008 直接开 fullval，请立即拍停。
+4. 🟡 **kuaipao 的额度状态不再监控**（`U-EXEC-002` 已降级为 low）；如未来又想回 kuaipao（不推荐），先恢复 `_status` 字段并跑一次 model-drift smoke probe。
+5. 💸 **newapi 通道额度**：你掌握；如发现额度即将耗尽，立即通知 engineer 暂停下一批 fullval 不要烧光。
+
+### E.2 决策路由（four-role rule §4 红线）
+
+1. ❌ **科学家 / 工程师 / 审稿人严禁擅自做以下决策**（如发现请立即拍停）：
+   - 路线决策（a/b/c 选择）
+   - 是否锁稿 / 是否提交 ARR / 是否 commit-to-EMNLP
+   - 预算决策（GPU / API quota / provider 切换）
+   - scope 扩张（加新 benchmark / 加新 ablation）
+   - 启动新一轮 reviewer batch（**全文** R-FULL；R-PART 不需要你批）
+   - git force push / squash 历史 commit
+2. ✅ **所有以上决策**先在 `§A` 加 `U-XXX-decide` 行 + 推荐方案，等你回复后再继续。
+3. ⏳ **当前等你拍板的决策**（不阻塞主线，可慢慢回）：U-005 / U-008。
+
+### E.3 你专属可做的工作
+
+1. **概念示意图 / 逻辑流程图**（`U-EXEC-004` 等）：科学家给你 prompt，你用 AI 工具出图，落 `artifacts/figures/`。**不出统计图**（柱/箱/折/散点等数学图归科学家用 Python 实绘）。
+2. **API 充值 / provider 切换**（`U-EXEC-001/006` 等）：物理操作只你能做。
+3. **领域参考文献清单**（`U-EXEC-005`）：你脑子里"应该被引"的领域 paper 列出来（标题+作者+年份+venue+一行 why-relevant），科学家负责录入 bib。
+4. **大方向 / framing 持续判断**（§B.4）：每次 reviewer batch 完成后，判断是否要切 venue / 推迟投稿 / 改 narrative。
+
+### E.4 git / 仓库安全
+
+1. ❌ **不要 `git push` 到任何 remote**：`configs/llm.json` 含 6 个真实 API key（zhipu / oversea / nvidia / gptplus5 / asxs / newapi）；R0 baseline 已把它们提交到本地 git 历史，仅本地不 push 是安全的。如果哪天确实需要 push，先 `git filter-repo` 擦除 6 个 key。
+2. ❌ **不要在 OpenReview 投稿时上传 `configs/llm.json`**：直接违反 ARR 匿名化规则（DR-5 风险）。
+3. ✅ **每次给科学家 / 工程师新指令后**：他们会做一次 R-X commit（commit message 里写明 task-ID + 受影响文件），你可以 `git log --oneline` 随时看进度。
+
+### E.5 ARR May 25 deadline
+
+- **Day 1** = 2026-04-20（已启动），**T-35** to ARR submission window close（2026-05-25）。
+- **关键里程碑**（详见 `implementation_log.md [stage2_sprint_kickoff_20260420]` 时间线）：
+  - Day 1.5（04-20 半天后）：engineer E-008 done → 启动 E-001/E-002
+  - Day 18（05-07）：Stage-2 fullval batch 完成
+  - Day 28（05-17）：所有写作 + R-FULL-002 复审完成
+  - Day 35（05-25）：ARR submission deadline
+- 如任何关键里程碑滑掉 ≥ 2 天，scientist 会挂 `U-Rollback-XXX-decide` 让你拍板"是否切 venue / 推迟 / 砍 scope"。
+
+---
+
 ## D. 修订记录
 
 | 日期 | 谁 | 动作 | 产物 |
@@ -107,3 +156,4 @@
 | 2026-04-19 | reviewer-agent (落地用户决策) | **U-011 → ✅ (b) 已批准**（用户原话"我选择b，但是是投递2026年的，所以要加快进度干，全力以赴"）；派生 **U-012-decide** (Stage-2 范围, 推荐 R2 单做或 R2+R3) + **U-013-decide** (MuSiQue, 推荐 是)；同步 SCIENTIST_TODO §A cross-ref + §B.5 加 S-115/S-116/S-117 + implementation_log 开 Stage-2 sprint phase 块 (`stage2_sprint_kickoff_20260419`) + PROJECT_STRUCTURE.md §0 加 sprint 状态块 + ARR 5/25 倒计时 | `USER_TODO.md §A,§C,§D` + `SCIENTIST_TODO.md §A,§B.5,§D` + `implementation_log.md` + `PROJECT_STRUCTURE.md §0` |
 | 2026-04-20 | scientist (落地用户决策) | **U-012 → ✅ R1+R2+R3 全做** + **U-013 → ✅ MuSiQue 加入**（用户原话"我全部同意"）；新 newapi 通道 (xh.v1api.cc) 落入 `configs/llm.json` 作为 `U-EXEC-006`；同步 SCIENTIST_TODO §A + §B.5 加 S-115..S-119；implementation_log 开新 phase 块 `[stage2_sprint_kickoff_20260420]` 含 E-001..E-008 工单；PROJECT_STRUCTURE.md §0 sprint 状态块更新为 Day 1 = 2026-04-20 / T-35 to ARR May 25 | `configs/llm.json` + `USER_TODO.md §A,§B.1,§C,§D` + `SCIENTIST_TODO.md §A,§B.5,§D` + `implementation_log.md` + `PROJECT_STRUCTURE.md §0` |
 | 2026-04-20 | scientist (落地用户决策) | **U-EXEC-001 → ✅ 替代解决**（用户原话"现在换到新的 llm 连接上了"）：kuaipao 充值取消，全切到 newapi (xh.v1api.cc)；U-EXEC-002 降级 (kuaipao deprecated)；U-006 provider 阻塞解除；E-008 升级为 sprint P0 关键路径（所有 sprint 跑数依赖）；E-005/E-007 卸除 provider 阻塞；llm.json 更新 newapi note 为 PRIMARY + oversea note 为 deprecated | `configs/llm.json` + `USER_TODO.md §A,§B.1,§C,§D` + `SCIENTIST_TODO.md §A,§B.3,§D` + `implementation_log.md` |
+| 2026-04-20 | scientist (per user instruction) | **R8 commit / 全角色注意事项落地**：USER_TODO §E（Provider 红线 / 决策路由 / 用户专属工作 / git 安全 / ARR 时间线）；SCIENTIST_TODO §F（匿名化 / 页数预算 / 编译必验 / 图表分工 / commit-per-polish / 不擅自决策 / S-104 强制循环）；REVIEWER_TODO §F（stateless / R-FULL 仅用户触 / 6-char hash / schema 单源 / 不动别人 TODO）；implementation_log append `[pinned_cautions_for_engineer_20260420]`（E-008 P0 / ModelDriftError 必启 / 不走 kuaipao / Stage-1 byte-id 回归 / token 预算 / log 双轨） | 4 个 TODO 文件 |
