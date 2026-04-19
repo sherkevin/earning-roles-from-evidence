@@ -1,10 +1,17 @@
 # Page Budget Audit (S-011)
 
-> Audit date: 2026-04-19 (initial); 2026-04-20 (S-120 provider-switch note appended).
+> Audit date: 2026-04-19 (initial); 2026-04-20 (S-120 provider-switch note appended); 2026-04-20 (S-135 DR-1 verification appended).
 > Source manuscript: ~~`docs/paper/EMNLP_paper_draft.md`~~ → **`article/latex/edo_paper.tex`** (writing target switched in R6 commit, 2026-04-19; the .md is now history-only).
 > Target: EMNLP Long Paper, **strict 8 content pages** main body (Limitations + References + Appendices do **not** count). See `docs/demand.md §2 / §5`.
 
 > **2026-04-20 update (S-120, provider switch)**: After R7's switch from kuaipao.ai (`oversea` block, deprecated) to xh.v1api.cc (`newapi` block, PRIMARY), all **future** Stage-2 fullval / external-baseline runs land under the new endpoint. The chain-200 numbers already in Table 1 (`fixed_self_claim` 0.7641 / `fixed_static_roles` 0.7454 / `fixed_peer_calibrated` 0.7381) and the validated `peer_calibrated` fullval (F1 = 0.7703, n = 7405) were collected under the **old** endpoint; their reproduction with the new endpoint is part of E-005 in `[stage2_sprint_kickoff_20260420]` and the cross-endpoint comparability caveat is now registered in §Limitations item (5) of `article/latex/edo_paper.tex` (added in R12). Page-budget impact: §Limitations grew by ~120 words; Appendix A grew by ~60 words. Both sections are **not counted** toward the 8-page main-body cap, so the COMPLIANT verdict is preserved.
+
+> **2026-04-20 update (S-135, DR-1 verification — R-FULL-003 P2 reviewer's POSSIBLE flag closed)**: P2 Empirical-NLP SAC reviewer flagged DR-1 POSSIBLE in `reviewer_20260419_193730_03_288f84/review.md`, claiming "pdftotext suggests §5 Conclusion bleeds onto page 9 (lines 582-616)". Independent verification on R16 commit (`979faec`) PDF (re-built 2026-04-20):
+> - **`scripts/build_paper.ps1`**: reports "Main body ends on page 8 (Limitations starts here): COMPLIANT" ✅
+> - **`pdftotext -layout` direct check**: text-stream line numbers preceding bare page-number lines give true page boundaries. `5 Conclusion` heading appears at pdftotext line 478, content extends to line 546; page 8 boundary marker at line 560. `Limitations` heading at line 549 (still on page 8). **§5 Conclusion fits fully on page 8** ✅
+> - Lines 582-616 that reviewer cited are actually Appendix A's B1 Scientific artifacts + B2 Computational experiments sub-sections (page 9), not §5 Conclusion. Reviewer mis-attributed the pdftotext column-stream content to the wrong section. Per ACL/EMNLP rules, Appendix A is post-Limitations and does not count toward 8-page cap.
+> - **DR-1 status: PASS** (was POSSIBLE per reviewer P2 misread; verified PASS by build script + pdftotext direct boundary check). No emergency trim or restructure needed.
+> - Implication for S-132 (Limitations 5 trim) and S-133 (Algorithm 1 page-pressure): these remain valid hygiene tasks (DR-3 borderline + Algorithm 1 layout-pressure observation), but they are NOT operating under emergency 9-page-overflow constraint. They can be done as normal lint-grade edits with full ACL polish.
 
 ---
 
