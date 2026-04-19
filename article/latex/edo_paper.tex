@@ -349,11 +349,11 @@ refreshed baseline (v3 codepath)  & 0.435 & 0.5597 & 6{,}429 \\
 
 \subsection{Full EDO experimental agenda (Stage-2 plan)}
 
-The full long-paper requires experiments redesigned around emergence, organised around five studies: \textbf{E1} emergent specialisation from near-homogeneous start (persona-tag divergence, specialisation entropy, per-agent action frequencies); \textbf{E2} value of recursive \texttt{split} (usefulness rate, merge overhead, depth, rework delta); \textbf{E3} value of recursive audit (precision/recall, low-quality subcontract propagation, post-rework quality); \textbf{E4} sparse-graph robustness across chain, star, random sparse, small-world, and community-bridge families (local-discovery success, bridge utilisation, quality--cost, seed stability); \textbf{E5} benchmark transfer to MuSiQue and other compositional benchmarks. None of these organisational process metrics is claimed by the present submission.
+The full long-paper requires experiments redesigned around emergence, organised around five studies: \textbf{E1} emergent specialisation (persona-tag divergence, specialisation entropy, per-agent action frequencies); \textbf{E2} recursive \texttt{split} value (usefulness, merge overhead, depth, rework delta); \textbf{E3} recursive audit value (precision/recall, low-quality propagation, post-rework quality); \textbf{E4} sparse-graph robustness (chain, star, random, small-world, community-bridge); \textbf{E5} benchmark transfer to MuSiQue and other compositional tasks. None of these organisational metrics is claimed by the present submission.
 
 \subsection{Current Stage-1 artifact interpretation}
 
-Stage-1 ablations (Table~\ref{tab:ablations}) show that on the weak backbone the answer-generation bottleneck dominates the routing-mechanism contribution; $\pm 2\times$ weight-sensitivity sweeps yield $<0.003$ pp F1 change, ruling out fine-tuned weights; \texttt{peer\_calibrated} reproduces ${\sim}52\%$ of static routes, indicating stable route structure can form without central control. These observations narrow Stage-2 targets to task trees, recursive audit, persona tags, and sparse-graph organisation, not further fixed-route weight tuning.
+Stage-1 ablations (Table~\ref{tab:ablations}) show that on the weak backbone the answer-generation bottleneck dominates the routing-mechanism contribution, $\pm 2\times$ weight-sensitivity sweeps yield $<0.003$ pp F1 change, and \texttt{peer\_calibrated} reproduces ${\sim}52\%$ of static routes. These narrow Stage-2 targets to task trees, recursive audit, persona tags, and sparse-graph organisation. A preliminary 3-shard $\times$ 200-sample paired run of a degenerate-Stage-2 prototype (\texttt{edo\_stage2\_chain}) on HotpotQA, included for completeness in Appendix~D, suggests the action-policy menu can compress token cost without harming F1, but the F1 effect is inside noise at this sample size; we therefore do not include it in the main results until the deferred multi-seed bootstrap (\S Limitations item~(4)) lands.
 
 \section{Conclusion}
 
@@ -423,6 +423,32 @@ The default audit is rule-based (no LLM call) per the Algorithm~\ref{alg:edo-sta
 
 \paragraph{C.4 \textsc{Evidence\_Extract} (R3 vector-belief update mapping).}
 This is a deterministic rule-based mapping (no LLM call), not a prompt template. Given an audit event $e$ and the task signature $\phi(z)$, it projects $e$ onto the $7$-dimensional persona axes $[\text{solve}, \text{decompose}, \text{audit}, \text{integrate}, \text{explore}, \text{efficiency}, \text{reliability}]$ via a lookup-table from $e.\text{decision}$ and $e.\text{value\_gain}$ to per-axis EMA increments, weighted by $\phi(z)$'s axis prominence. The full mapping table appears in the anonymous executable specification supplement \S 4.
+
+\section*{Appendix D: Preliminary Stage-2 Prototype 3-Shard Paired Result}
+\label{sec:appendix-d}
+
+For transparency we record a small-scale paired comparison of \texttt{fixed\_peer\_calibrated} (Stage-1) versus a degenerate-Stage-2 prototype (\texttt{edo\_stage2\_chain}, in which \textsc{Split} downgrades to a single inline \textsc{Outsource} step and \textsc{Audit} defaults to \textsc{Accept}) on three disjoint 200-sample shards of the HotpotQA validation split. Same backbone (\texttt{gpt-4.1-mini}), same chain topology, same handoff cap, paired questions per shard.
+
+\begin{table}[h]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lccr@{}}
+\toprule
+\textbf{Shard} & $\Delta$F1 (pp) & $\Delta$EM (pp) & $\Delta$Tokens (\%) \\
+\midrule
+{[0:200]}     & $+0.44$ & $-3.50$ & $-36.9$ \\
+{[200:400]}   & $+2.24$ & $-1.00$ & $-37.1$ \\
+{[400:600]}   & $+2.28$ & $-3.00$ & $-37.3$ \\
+\midrule
+mean $\pm$ std & $+1.65 \pm 1.05$ & $-2.50 \pm 1.32$ & $-37.1 \pm 0.19$ \\
+\bottomrule
+\end{tabular}
+\caption{Three-shard paired Stage-1 \texttt{fixed\_peer\_calibrated} vs.\ degenerate-Stage-2 \texttt{edo\_stage2\_chain} prototype on HotpotQA-200 with \texttt{gpt-4.1-mini}. Token cost reduction is consistent across shards ($\sigma{=}0.19$\%); F1 effect is inside noise; EM trends mildly negative.}
+\label{tab:appendix-d-shard}
+\end{table}
+
+The token cost reduction is consistent across shards (cross-shard $\sigma{=}0.19$\%); the F1 lift sits inside noise at $n{=}200$ per shard, and EM trends mildly negative ($-2.50 \pm 1.32$ pp). We report this as \textbf{preliminary and not statistically demonstrated}: it suggests the action-policy menu can compress hop count without harming F1, but the headline empirical claims of the paper are deliberately not based on this preliminary evidence. The Stage-2 evaluation agenda described in \S 4.4 (E1--E5), executed at full validation scale ($n{=}7405$) with $\geq 3$ seeds and paired bootstrap CI, is required to settle whether the F1 trend is real and whether the EM regression reflects a missing synthesizer pass that future Stage-2 iterations must restore.
 
 \bibliography{custom}
 
