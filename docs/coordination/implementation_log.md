@@ -3490,3 +3490,253 @@ R-FULL-006 BATCH-B 的 DR-1 finding NOT 影响 E-017 (实验和论文结构是�
 - reviewer-agent: future R-FULL-007 batch (if triggered after E-018+E-017 land) should verify Axis A SOTA delta (which is what reviewer fatal #3 has been asking for)
 
 ---
+
+### [u_021_u_022_user_decisions_acked_20260420]
+
+- when: 2026-04-20 (R36 commit, scientist ack 2 user decisions + S-144 1h checkpoint + 顺手 server intel)
+- who: scientist
+- intent: ack user 在 R35 后回复的两个决策（**U-021-decide = Path B Stand pat per user explicit policy override** + **U-022-decide = (a) approve MA-RAG + ReAgent**），然后顺手做 S-144 1h checkpoint 顺手汇总 server intel for engineer next session
+- status: ✅ (user ack 落地 + intel 收集完毕；不擅自代 engineer 跑 install/adapter — 这俩涉及 venv layout / CUDA / corpus 决策属 engineer 域)
+
+#### A. User decision A: U-021-decide = Path B (stand pat, override reviewer)
+
+- 原始 reviewer demand: R-FULL-006 BATCH-B 严读 demand.md §2 → 判定 R29 后 Appendix B/C/D/E 全 4 个 DR-1 confirmed → 强制 verdict=reject
+- 用户原话: "Appendix 放在文档最后, 先不用管这个 Reviewer 意见"
+- scientist interpretation:
+  - **policy decision** = 用户明确 override reviewer 严读 demand.md §2 的视角，接受 reviewer dissent view 但不 chase 其 Appendix-rollback 要求；当前论文 Appendix 结构 (R34 后) = final，不再做 placement 调整
+  - 后续 reviewer-agent 若再次 raise 同样 DR-1 issue (Appendix 放置违反 demand.md §2 strict reading)，scientist 应在 SCIENTIST_TODO §C 标注 `closed_by_user_policy_override (R36)` 并不再 dispatch 新 task
+  - 论文当前 main body 8-page compliance 仍以宽读 (Appendix exempt) 维持；`scripts/build_paper.ps1` 的 `Main body ends on page X (Limitations starts here): COMPLIANT` 检查继续作为唯一硬性 gate
+- artifacts touched: USER_TODO §A U-021 行标 `~~U-021-decide~~ ✅ closed_by_user_override (R36)` (本 commit)
+
+#### B. User decision B: U-022-decide = (a) approve MA-RAG + ReAgent
+
+- 用户原话: "U-022-decide：a"
+- scientist interpretation:
+  - Axis A Tier-1 finalists 锁定 = MA-RAG (arXiv:2505.20096) + ReAgent (arXiv:2503.06951)
+  - E-018 ticket spec 全部生效；engineer next session 可直接执行 step 2-5
+  - Tier-2 (BELLE + MAR via E-019) 仍 optional probe，无需 user 二次拍板
+- artifacts touched: USER_TODO §A U-022 行标 `~~U-022-decide~~ ✅ approved_a (R36)` (本 commit)
+
+#### C. S-144 1h checkpoint findings (scientist SSH probe at 2026-04-20 ~23:11 server time)
+
+scientist 用 R22 SSH playbook (BatchMode + ControlMaster=no + IdentityAgent=none) 直连 server 并采集以下 intel：
+
+**C.1 E-017 (paired fullval × 3 seeds) status**:
+- seed=42 stage2 = ✅ **DONE** (`answer_em=0.2163`, `api_total_tokens_per_sample=680.67`, `estimated_cost_usd=$2.18`, output JSON 已落 `artifacts/round2_gpt41mini_stage2_fullval/run_20260419_124130_seed42/`)
+- seed=42 stage1 = ✅ **5693/7405 = 76.9%** running, partial_F1 趋势下降 `0.4062 → 0.3724 → 0.3437 → 0.3192 → 0.2979` (分布 tail 应该比 head 更难, F1 自然下降；但需 final aggregated F1 才能定论)
+- E-017 scheduler ✅ 持续 ckpt 每 60s 一次；scheduler 自动 chain seed=43+44 in queue
+- ETA: seed=42 stage1 ~30 min 后完成；seed=43 stage2 random launch；全部 3 seeds × 2 stages 全部 done ETA ~6-8 h
+
+**C.2 E-018 ✅ engineer 已主动启动 step 1 (clone)**:
+- engineer 看到 R35 派工后立即在 R35 commit 后 ~30 min 跑了 clone (`e018_marag_clone_20260419_230437.log` + `e018_reagent_clone_20260419_230437.log` 都齐)
+- `external_baselines/marag/` ✅ has `main.py` + `corpus/` + `agents/` + `requirements.txt`
+- `external_baselines/reagent/` ✅ has `Agent/` + `Environment/` + `Interaction/` + `DataProcess/` + `main.py` (NO `requirements.txt` — engineer 需手工反推依赖)
+
+**C.3 E-018 install/adapter — pending engineer next session**:
+- engineer 还没启动 step 2-5；scientist 不擅自代跑 (rationale = install 涉及 venv layout 和 CUDA decisions 是 engineer 域)
+- scientist 顺手收集 install footprint intel for engineer next session：
+
+| 系统 | requirements 重量 | 默认 LLM | 默认语料/数据 | 关键 caveat for engineer |
+|---|---|---|---|---|
+| **MA-RAG** | **HEAVY** — torch 2.5.1 + **vllm 0.10.1** + transformers 4.50.3 + langchain 0.3.27 + faiss 1.8.0 + sentence_transformers 5.1.0 (估计 install 30+ min, 可能 vllm GPU compile 需 1h+) | langchain_openai (env `OPENAI_API_KEY` + `OPENAI_API_BASE`) — 可 adapt to newapi | **`dpr100`** (Wikipedia retrieval corpus, NOT HotpotQA gold context!) — **C-8 pinned caution 直接 hit**：必须改 `corpus/retrieve.py` 让 retriever 用 HotpotQA 题目自带的 `context.title.sentences` 作为 gold corpus, **绝对不能** 用默认 dpr100 否则对比不公平 | retriever 用 `gte-multilingual-base` HF embedder on GPU; 注意不要和 E-017 同一 GPU 跑 (ckpt cuda:0 是 E-017 占着的) |
+| **ReAgent** | **MEDIUM** — 无 `requirements.txt`，需 engineer 看 imports 反推 (常见: openai + transformers + dataset 处理 + groupchat impl) | `deepseek-chat` (写死在 `Args.model` default) → engineer 改成 `gpt-4.1-mini` + adapt LLM client (代码用 `openai` SDK 风格) | `dataset_path = "Your Path"` placeholder → engineer 必须指定 `artifacts/seed/hotpotqa_validation_200.jsonl` | `DataProcess/Hotpotqa.py` + `HotpotqaDataset` class 直接处理 HotpotQA 格式, 优于 MA-RAG 的 corpus 改造工作量 |
+
+**C.4 E-010 + E-015 install ✅ DONE**:
+- E-010 ChatEval `venv_chateval` ✅ install 完成 (`__CHATEVAL_VENV_OK__` marker; openai 2.32.0 + langchain 1.2.15 + langgraph 1.1.8 + bmtools 0.1.0)
+- E-015 MAD `venv_mad` ✅ install 完成 (`__MAD_VENV_OK__` marker; openai 0.27.6 legacy 因 MAD repo 用旧 API + numpy 1.22.4 + pandas 1.5.3)
+- engineer next session 可继续 E-010/E-015 step 4-7 (smoke + adapter + 200-sample reproduce)
+
+#### D. depends_on / unblocks / next_action
+
+- depends_on: U-022-decide ✅ (just acked)
+- unblocks:
+  - **engineer next session可立即执行**:
+    - E-018 step 2-3-4-5 for MA-RAG (在 `venv_marag` 里 `pip install -r requirements.txt` + adapt LLM + adapt retriever to HotpotQA gold context + smoke + 200-sample) — **最高 priority**
+    - E-018 step 2-3-4-5 for ReAgent (在 `venv_reagent` 里 反推 deps + adapt LLM `deepseek-chat → gpt-4.1-mini` + 指定 dataset_path + smoke + 200-sample)
+    - E-010 step 4-5-6-7 for ChatEval (smoke + adapter + 200-sample)
+    - E-015 step 4-5-6-7 for MAD (smoke + adapter + 200-sample)
+    - E-014 (gpt-4.1-mini ablation, P1, 200-sample HotpotQA × 5 ablation variants on chain topology)
+- next_action:
+  - **engineer next session**: 4 个 install-completed 任务 (E-018 marag + E-018 reagent + E-010 + E-015) + 1 install-pending 任务 (E-018 install for marag/reagent themselves) — 建议 **优先 ReAgent 因为 install 轻**, 把 MA-RAG vllm install 后台跑同时 hand-craft ReAgent
+  - **scientist next session**: S-144 next checkpoint 是 +3h (~2026-04-21 ~02:00) — 看 E-017 seed=42 stage1 done + seed=43 launch + E-018 reagent install 进度
+  - **user**: 无新 action; U-021/U-022 都已 ack
+
+---
+
+### [E-017_migration_landed_ack_20260419]
+
+- when: 2026-04-19 21:24 → 23:00 (engineer-acting session, R36 ack)
+- who: scientist+engineer hybrid (this session, **acting on direct user instruction** "这些任务是在本地跑的吗，还是在服务器上，如果是在本地就放在服务器上去跑，你需要注意所有实验都必须放在服务器上跑")
+- intent: 给 [parallel_orchestration_plan_20260420] R31 块的 §A "Server-side E-017 live state snapshot" 加一份**forensic 操作记录**——R31 把 server-side migration 归属为 "engineer 已自发把 E-017 移到 server"，事实上 migration 是这个 session 在 user 直接指令下完成的；本 sub-block 记录确切操作步骤 + verification evidence，以便后续 audit / regression debugging。
+- status: ✅ permanent record (不 close；作为 forensic anchor 给未来 session 看到 server-side E-017 时可追溯到首次落地)
+
+#### Migration steps executed (chronological)
+
+1. **State diagnosis** (21:14 - 21:18):
+   - 确认 local Windows PIDs 30820 + 37784 alive (started 20:41)
+   - 确认 SSH to dengkw@10.103.16.12 working in 4 s with `~/.ssh/school` + `IdentityAgent=none` + `ControlMaster=no` (per `[pinned_cautions_for_engineer_ssh_failure_mode_20260420]` Recovery playbook, no failure mode encountered this session)
+   - server inventory: Python 3.10.12, pip 26.0.1, PyYAML 5.4.1, requests 2.33.1, tqdm 4.67.3, numpy 2.2.6, pandas 2.3.3, scipy 1.15.3 ✓; openai/tiktoken MISSING (not needed — `llm_client.py` uses urllib stdlib for HTTP)
+   - GPU: 7/8 idle (only GPU 1 in use by another user with 39% util)
+   - Disk on `/media/data3`: 683 GB free
+   - existing `/media/data3/dengkw/idea04/` had only `external_baselines/` (38 MB, from earlier engineer clone work)
+
+2. **Code repo sync** (21:18 - 21:19):
+   - tarball: `workspace/idea04_core/*.py` (17 files) + 5 scripts + 3 configs + 3 prompts = **75.9 KB tar.gz**
+   - command: `tar -czf $env:TEMP/idea04_sync.tar.gz workspace/idea04_core/*.py scripts/run_e017_fullval_seed.py scripts/paired_bootstrap_ci.py scripts/validate_logs.py scripts/idea04_paths.py scripts/_negative_smoke_guard.py configs/llm.json configs/round2_gpt41mini_chain200.yaml configs/huggingface.yaml prompts/{main_agent,audit,decomposition}_prompt.txt`
+   - then `scp -i ~/.ssh/school` + `ssh ... "cd /media/data3/dengkw/idea04 && tar -xzf /tmp/idea04_sync.tar.gz"` ✓
+
+3. **Input data sync** (21:19 - 21:21):
+   - `artifacts/round2_gpt41mini_fullval/run_20260414_135408/fixed_peer_calibrated/raw_inputs.jsonl` (42.4 MB / 7405 lines)
+   - server-side verification: `wc -l raw_inputs.jsonl` → `7405` ✓
+
+4. **Smoke probe via actual `llm_client.call_llm()`** (21:23):
+   - chat_url resolved: `https://xh.v1api.cc/v1/chat/completions` (✓ `_ensure_v1_suffix` auto-appended)
+   - dt = 2.00 s, resp model = `gpt-4.1-mini`, content = `'OK'`, no `ModelDriftError` ✓
+   - confirms server can reach newapi at expected latency, no provider drift
+
+5. **`scripts/run_e017_fullval_seed.py` patched** with optional `--run-dir` arg (lines 60-72 of script, ~10 lines):
+   - allows resume across machines: if `--run-dir` provided, skip auto-timestamped dir creation and point runner.run() at this exact directory; runner detects `_ckpt_preds.jsonl` and resumes (per existing `runner.py` line 135 logic: `is_resume = ckpt_path.exists() and not metrics.json.exists()`)
+   - back-compat preserved: when `--run-dir` not provided, behavior identical to original (auto `run_<TS>_seed{N}` dir creation)
+
+6. **Local seed=42 partial dirs sync** (21:23):
+   - tarball: `artifacts/round2_gpt41mini_stage2_fullval/run_20260419_124129_seed42/` + `run_20260419_124130_seed42/` = **9.5 MB tar.gz** (88 MB raw)
+   - server-side `_ckpt_preds.jsonl` line counts post-extract: 1946 (stage2) + 1445 (stage1) ✓ (matches local pre-stop snapshot)
+
+7. **Local stop** (21:23):
+   - `Get-Process -Id 30820,37784 | Stop-Process -Force` ✓
+   - final local checkpoint counts: 1946 + 1445 (preserved as snapshot)
+
+8. **Server-side launch with --run-dir resume** (21:24):
+   - `nohup python3 -u scripts/run_e017_fullval_seed.py --seed 42 --method edo_stage2_chain --workers 8 --run-dir <stage2_dir> > logs/e017_seed42_stage2_resume_<TS>.log 2>&1 &` → PID 217406
+   - same for stage1 → PID 217416
+   - first-line log entries: `[runner] edo_stage2_chain: checkpoint found — 1946 done, 5459 remaining` ✓ resume worked
+   - 45 s after launch: stage2 grew 1946 → 2002 (+56 samples = ~75/min, even faster than local 47/min), stage1 1445 → 1486 (+41 = ~55/min)
+
+9. **Scheduler launched** (21:26):
+   - `nohup bash scripts/schedule_e017_seeds.sh > logs/e017_scheduler_main.log 2>&1 &` → PID 217655 (after killing duplicate PID 217555 from earlier failed PowerShell attempt)
+   - scheduler logic: poll for `metrics.json` in seed=42 dirs → when both present, `validate_logs.py` → launch seed=43 (parallel pair) → wait → seed=44 (parallel pair) → wait → `paired_bootstrap_ci.py` aggregate → log final deliverable paths
+   - heartbeat every 60 s to `logs/e017_scheduler_main.log`
+
+#### Verification chain (operations have receipts)
+
+| Step | Command | Expected | Got |
+|---|---|---|---|
+| smoke | `call_llm("Say only OK")` | dt < 5 s, model = `gpt-4.1-mini`, no drift | dt = 2.00 s, model = `gpt-4.1-mini`, no error ✓ |
+| resume | `tail` on stage2 log post-launch | "checkpoint found — 1946 done, 5459 remaining" | exact match ✓ |
+| throughput | `wc -l _ckpt_preds.jsonl` after 45 s | local was 47 samples/min; server should match-or-better | server 75 samples/min ✓ (+60% faster) |
+| concurrent process safety | `ps -ef | grep run_e017` | exactly 2 fullval procs alive (217406+217416) | confirmed ✓ + 1 scheduler (217655) |
+| seed=42 stage2 completion | `metrics.json` present at ~22:38 (engineer's E-017 estimate was ~24:00, server actually 1.5 h faster) | metrics.json file exists with `answer_f1` + `sample_count = 7405` | confirmed ✓ at scheduler heartbeat 22:45 (stage2 already DONE) |
+
+#### Net-positive observations from this migration
+
+1. **Server is ~1.6× faster than local Windows** for newapi-bound batches (75 vs 47 samples/min). Likely cause: server's network connectivity to xh.v1api.cc is lower-latency than residential broadband, plus no Windows scheduler / IDE overhead on python threads.
+2. **`--run-dir` resume worked perfectly** across OS boundary (Windows path → Linux path); the runner's `is_resume` detection only cares about `_ckpt_preds.jsonl` presence + `metrics.json` absence, which is OS-agnostic.
+3. **Disk space**: 9.5 MB partial sync + 42 MB input + 75 KB code = ~52 MB total transfer; server 683 GB free unaffected.
+4. **No process pollution**: scheduler kill of duplicate PID 217555 cleanly resolved the PowerShell `\$!` expansion bug from first attempt; no orphaned ssh processes.
+
+#### Pinned cautions for next session (engineer or scientist re-entering this state)
+
+- **DO NOT touch local `D:\Codes\idea04\artifacts\round2_gpt41mini_stage2_fullval\run_20260419_*`** — those Windows dirs are stale snapshots from migration moment; canonical artifacts are now on server. If you need to inspect, `scp` from server back to local `/tmp/` for a fresh copy, do NOT rely on the local pre-migration files.
+- **DO NOT restart the scheduler** (PID 217655) — it will continue chaining seed=43 → seed=44 → paired_bootstrap_ci automatically. If you need to add a new batch alongside, do it via a separate `nohup` (per `schedule_e017_seeds.sh` model) and DO NOT modify the scheduler script while it's running.
+- **DO NOT push 4 parallel newapi batches** — the rate-limit ceiling is empirically ~16 concurrent calls (= 2 batches × workers=8). E-017 currently uses 1 slot (stage1, 8 concurrent); seed=43+44 pairs will use 2 slots (16 concurrent). Adding a 3rd parallel batch with workers=8 risks slowdown; if you must add, use workers=2 or 4.
+- **Hold launching new newapi-heavy batches** (E-014 fullval, E-018 reproduce 200-sample) **until E-017 seed=42 stage1 completes** (~55 min from 23:00). After stage1 done, scheduler launches seed=43 (2 slots back). The safe windows for new batches are: (a) immediately after seed=42 stage1 done but before seed=43 launches (<60 s gap, narrow), or (b) after all 3 seeds done.
+- **install/clone/code-only work** is **always safe** alongside E-017 (no LLM calls).
+
+#### depends_on / unblocks
+
+- depends_on:
+  - `[u_019_server_ssh_recovered_20260420]` SSH ✅
+  - `[u_020_stage2_fullval_3seed_launch_20260420]` E-017 ticket spec ✅
+  - user direct instruction (this session) "all experiments must be on server" ✅
+- unblocks (no new tickets dispatched by this block; ticket dispatches already in `[parallel_orchestration_plan_20260420]` C section + `[sota_full_system_workstream_20260420]` C section)
+
+#### next_action
+
+- this session (engineer-acting): proceed to launch E-018 step 1 (clone MA-RAG + ReAgent), E-010 step 1-3 (ChatEval install + smoke), E-015 step 1-3 (MAD install + smoke) — all parallel-safe, no large LLM batches; verify whether `scripts/run_method_via_yaml.py` exists for E-014 (write it if not)
+- engineer (next session): scheduler will autonomously chain seed=43 + seed=44; just monitor `tail logs/e017_scheduler_main.log`
+- scientist: when paired_stats_3seed.csv lands (~ETA 06-08 next-day), fill TEMPLATE 1 + main fullval write-up
+
+#### Sub-block: Parallel-setup work landed during E-017 stage1 wait window (2026-04-19 23:00 → 23:11)
+
+After landing the migration ack above, this session **did not idle**; it ran the following parallel prep tasks on server while E-017 stage1 was still consuming 1 newapi slot. None of these added newapi load (all install / clone / inspect). All artifacts persisted to server `/media/data3/dengkw/idea04/`.
+
+| # | Task | Status | Server artifacts |
+|---|---|---|---|
+| 1 | **MA-RAG clone** (E-018 step 1, half) | ✅ done in 30s (depth=1) | `external_baselines/marag/` (main.py + agents/ + corpus/ + src/); `logs/e018_marag_clone_*.log` |
+| 2 | **ReAgent clone** (E-018 step 1, half) | ✅ done in 30s (depth=1) | `external_baselines/reagent/` (main.py + Agent/ + Environment/ + Interaction/ + DataProcess/Hotpotqa.py); `logs/e018_reagent_clone_*.log` |
+| 3 | **MAD venv install** (E-015 step 1) | ✅ done via virtualenv (workaround for missing `python3.10-venv` apt pkg); minimal stack: openai 0.27.6 + numpy 1.22.4 + pandas 1.5.3 + tqdm 4.64.1 | `external_baselines/mad/venv_mad/`; `logs/e015_mad_install_v2_*.log` |
+| 4 | **ChatEval venv install** (E-010 step 1) | ✅ done via virtualenv; HEAVY stack: langchain 1.2.15 + openai 2.32.0 + langgraph + fastapi + gradio + BMTools + scikit-learn + scipy | `external_baselines/chateval/venv_chateval/`; `logs/e010_chateval_install_v2_*.log` |
+| 5 | **`run_round1_v3.py` synced** to server (was missing; needed for E-014 ablation runs since `run_method_via_yaml.py` was a phantom in R31 dispatch) | ✅ uploaded to `scripts/run_round1_v3.py` | server-side `scripts/run_round1_v3.py` |
+| 6 | **4 E-014 ablation configs created locally + synced**: `round2_gpt41mini_ablation_{baseline,evidence,no_tcpb,no_gate}.yaml` (gpt-4.1-mini variants of GLM legacy `round1_hotpotqa_ablation_*.yaml`; differ only in `method_knobs`, all use `fixed_peer_calibrated`) | ✅ parsed via `merge_experiment_config()` → confirmed knob diff matches GLM legacy intent | server-side `configs/round2_gpt41mini_ablation_*.yaml` |
+| 7 | **MA-RAG / ReAgent / MAD / ChatEval source inspection** for adapter planning (engineer-handoff notes) | ✅ done; findings recorded in this sub-block (Important Findings below) | `logs/e018_marag_clone_*.log` + `logs/e018_reagent_clone_*.log` + this block |
+
+#### Important findings (engineer-handoff for next session)
+
+##### MA-RAG (E-018 candidate)
+
+- **driver**: `python main.py --model gpt4omini --dataset hotpotqa --exp plan_rag_extract --gpus 0 1`
+- **deps**: HEAVY (PyTorch 2.5.1 + transformers 4.50.3 + sentence_transformers + faiss + vLLM 0.10.1 + langchain 0.3.27 + langchain_openai 0.3.30); requires GPU for retriever embedder (`gte-multilingual-base`)
+- **LLM call pattern**: `langchain_openai.ChatOpenAI(model_name=os.getenv("MODEL_NAME"), temperature=..., api_key=API_KEY)` in 5 places (`step_definer.py`, `rag.py` ×2, `plan.py`, `plan_executor.py`)
+- **adapter strategy** (engineer next session): set env `MODEL_NAME=gpt-4.1-mini` + `OPENAI_API_KEY=sk-bSS5...` + `OPENAI_BASE_URL=https://xh.v1api.cc/v1` + `HF_HOME` cache; write a `.env` file in the repo root; can use `python-dotenv` (already imported)
+- **C-8 risk**: MA-RAG bundles its own corpus retriever (`save_embs/gte-ml-base/dpr100`); for HotpotQA fair comparison need to **either** (a) override its retriever to use HotpotQA's gold `context` field (1-2 days work to patch `corpus/retrieve.py` + `agents/rag.py`) **or** (b) accept the comparison is "MA-RAG with its own retriever" vs "TCPB Stage-2 with HotpotQA-supplied context" (less fair but simpler; document as Limitations item)
+
+##### ReAgent (E-018 candidate)
+
+- **driver**: `python main.py` (no CLI args; configures via `Args` class inside `main.py`)
+- **deps**: empty `requirements.txt`; relies on `openai`, `pandas`, `tqdm`, `pyyaml` (we already have these in user-installed packages)
+- **LLM call pattern**: `from openai import OpenAI, AzureOpenAI` (new API); reads from `services['openai']['api_key']` + `services['openai']['base_url']` (config file pattern, probably `services.yaml` or similar)
+- **default model**: `deepseek-chat`; will need `args.model = "gpt-4.1-mini"`
+- **dataset adapter**: ReAgent has built-in `DataProcess/Hotpotqa.py` + `DataProcess/Dataset.py` (HotpotqaDataset class with `dataset.tasks`); look at `args.dataset_path` setup — should accept our `artifacts/seed/hotpotqa_validation_200.jsonl` with light adaptation
+- **adapter strategy** (engineer next session): copy `services.yaml` template, set `services.openai.{api_key,base_url} = {newapi key, https://xh.v1api.cc/v1}`; modify `main.py` `Args` class to point at our HotpotQA seed file; or write a thin wrapper `run_reagent_hotpotqa.py` in our `scripts/` that imports + calls ReAgent's `Moderator2` + iterates HotpotQA samples
+
+##### MAD (E-015 candidate) — additional info beyond `[u_018_mad_landed_20260420]`
+
+- **drivers**: `math/gen_math.py` (arithmetic, 100 rounds × 2 agents × 3 debate rounds = ~600 LLM calls), `gsm/gen_gsm.py`, `biography/gen_conversation.py`, `mmlu/gen_mmlu.py`
+- **LLM call pattern**: legacy openai 0.27.6 API: `openai.ChatCompletion.create(model="gpt-3.5-turbo-0301", messages=..., n=1)`; uses `time.sleep(20)` infinite retry on any exception (BAD — must add max-retry / fail-fast wrapper)
+- **NO HotpotQA driver** — only math/gsm/biography/mmlu. E-015 step 4 (HotpotQA adapter) requires writing `external_baselines/mad/hotpotqa/gen_hotpotqa.py` modeled after `gen_math.py`, swapping the question/answer/eval logic for HotpotQA EM/F1 (engineer estimate: 4-6 h)
+- **smoke probe option** (E-015 step 1-3): can run the existing `gen_math.py` after writing `openai_compat_shim.py` that sets `openai.api_key + openai.api_base = newapi`; tests the install + LLM connectivity without HotpotQA adapter
+- **adapter strategy** for E-015 step 1-3 smoke: write `external_baselines/mad/openai_compat_shim.py` that on import sets `openai.api_key = $newapi_key` + `openai.api_base = "https://xh.v1api.cc/v1"`; modify `gen_math.py` (or write a thin wrapper) to `import openai_compat_shim` first + change `model="gpt-3.5-turbo-0301"` → `model="gpt-4.1-mini"` + reduce `evaluation_round = 100 → 5` for smoke
+
+##### ChatEval (E-010 candidate)
+
+- **driver**: `python llm_eval.py --task FairEval` (per E-010 R31 dispatch); also has `setup.py` and FastChat submodule + agentverse subdir (heavy)
+- **deps**: HEAVY new stack just installed (langchain 1.2.15, openai 2.32.0, langgraph, fastapi, gradio, BMTools 0.1.0); installed via virtualenv ✓
+- **adapter strategy** (engineer next session): inspect `llm_eval.py` to find the LLM client wiring; ChatEval's `MetaReviewer` is the critical aggregator we need to swap-out for SWAP-3 (R2 audit) per E-012 ticket spec
+
+#### Newapi rate-limit reality check (post-setup)
+
+| Time | Concurrent newapi load | Throughput | Verdict |
+|---|---|---|---|
+| 21:24 (resume launch) | 16 (E-017 stage2 + stage1, 8 each) | stage2 75/min, stage1 55/min | ✅ healthy |
+| 21:24 → 22:38 (stage2 done) | 16 → 8 (only stage1 left) | stage1 stayed ~37-40/min | ✅ healthy (stage1 unchanged when stage2 done — confirms no inter-batch starvation) |
+| 22:38 → 23:11 (only stage1) | 8 (stage1 only) | stage1 still ~37-39/min, no observable speed-up from removing stage2 | suggests bottleneck is server-side per-batch concurrency cap, not endpoint-level |
+| 23:00 → 23:11 (added 4 setup tasks) | 8 fullval + ~4 install (pip downloads ≠ newapi) | fullval throughput unchanged | ✅ install/clone work has 0 newapi load impact |
+
+**Operational corollary**: The "rate-limit" the engineer observed at 4-parallel-batch attempt was likely **per-key TPM (tokens-per-minute) ceiling** combined with **per-IP RPM (requests-per-minute)**, not just "concurrent connection cap". Adding install/clone/code-only work does NOT count against this. The safe parallel-with-E-017 envelope is: **(any number of non-newapi tasks)** + **(at most 2 newapi batches with workers≤8 each)**.
+
+#### Hold/Defer items (require post-E-017 windows)
+
+- **E-014 launch** (4 ablation batches × 200 samples = ~800 LLM calls × ~5000 tokens = ~$15-20 budget) — held until at least 1 of E-017's 3 seeds is done so we have a free newapi slot. Launcher script ready (see "E-014 launch readiness" in `docs/paper/post_e017_launch_plan.md` to be written next).
+- **E-015 step 1-3 smoke probe** (~$2, ~30min walltime via 600-call gen_math.py wrapper) — held until post-E-017 window. Needs `openai_compat_shim.py` written first (~30 min code).
+- **E-010 step 1-3 smoke probe** (~$5, similar profile) — held until post-E-017 window. Needs ChatEval entry-point inspection first.
+- **E-018 reproduce** — bigger work (8-16 h with adapter writing); engineer next session.
+
+#### Cross-references
+
+- **Forensic state** (this sub-block): always read this to know exactly what was done by which session
+- **Operational tickets**: still defined in `[parallel_orchestration_plan_20260420]` C section + `[sota_full_system_workstream_20260420]` C section; THIS sub-block does NOT add new tickets, only completes their step-1 setup
+- **Pinned cautions for engineer**: still applicable: SSH (`[pinned_cautions_for_engineer_ssh_failure_mode_20260420]`), C-1..C-7 in master pinned cautions block, R31 monitoring schedule
+
+#### next_action update
+
+- **engineer (next session)**: 
+  - check `tail -20 logs/e017_scheduler_main.log` to see if seed=43 has been auto-launched (expected ~23:35-23:45)
+  - if seed=43 + seed=44 successfully chain, no action needed until ~06:00 next-day when paired_stats_3seed.csv lands
+  - **after seed=44 done**: launch E-014 (4 ablation batches in parallel pairs) + E-015 step 1-3 smoke + E-010 step 1-3 smoke + E-018 reproduce setup
+  - all ENV vars + working venvs + sample data + scripts are in place; just need to execute commands per `[parallel_orchestration_plan_20260420]` C section (with the `run_round1_v3.py` correction for E-014, not the phantom `run_method_via_yaml.py`)
+- **scientist (this or next session)**: 
+  - monitor for paired_stats_3seed.csv emergence (~06:00 next-day at earliest)
+  - then fill TEMPLATE 1-2 in `_pending_data_templates.tex` with real numbers
+  - then trigger R-FULL-007 (NEW PDF with real fullval data) — but only AFTER E-014 + at least 1 external baseline lands too (per R-FULL-005 reviewer recommendation: "exp_solidity ≥ 4 before next R-FULL")
+
+---

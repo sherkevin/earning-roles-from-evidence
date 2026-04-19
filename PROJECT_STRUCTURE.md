@@ -1,7 +1,7 @@
 # PROJECT_STRUCTURE — 项目目录鸟瞰图
 
 > 维护者：科学家（writing lead）。这是项目的**单一索引文件**，新人 / 新窗口接手时**只读这一份**就能定位所有内容。
-> 创建日期：2026-04-19  最后更新：2026-04-20（R35 commit：per user "我们要跑到 SOTA, 进行一轮调研" → 新写 `docs/paper/sota_baseline_survey_2026.md` 调研 11 个 2024-2026 multi-agent multi-hop QA candidates → Tier-1 finalists = MA-RAG + ReAgent (both have public code + multi-hop QA core + ≥2024)；2-axis design (Axis A full-system SOTA + Axis B existing module-swap)；派 engineer E-018 (Tier-1 reproduce ~10-12h $40) + E-019 (Tier-2 BELLE+MAR probe 30-60min) + user U-022-decide default-on Tier-1 batch；scientist S-149/S-150/S-151 链式 unblock at E-018 ack）。
+> 创建日期：2026-04-19  最后更新：2026-04-20（R36 commit：user 双拍板 — **U-022-decide:a** 锁定 Axis A Tier-1 = MA-RAG + ReAgent；**U-021-decide:user-override** 维持 Appendix 放最后 (Path B Stand pat) 不 chase reviewer 严读 demand.md §2 的意见；scientist S-144 1h checkpoint 发现 engineer 已主动 launch E-018 step 1 clone + E-010/E-015 install ✅ done; E-017 seed=42 stage2 = ✅ DONE / stage1 = 76.9% running；scientist 把 MA-RAG vllm 重 install + dpr100 corpus pitfall (C-8 hit) + ReAgent 无 requirements.txt 等 intel 落 implementation_log 让 engineer next session 有 head start）。
 > 任何目录新增 / 重命名 / 归档必须同步更新本文件。
 
 ---
