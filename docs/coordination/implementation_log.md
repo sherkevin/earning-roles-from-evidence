@@ -1839,6 +1839,8 @@ vs 原 plan 净增 +5-6 天用于 external baseline workstream，由 buffer 吸�
 
 > **[reviewer-ack 2026-04-19 18:57]** R-FULL-002 落盘 → `artifacts/idea_reviews/reviewer_20260419_185701_02_12b911/{review.json, review.md}`；P3 Adversarial Novelty SAC，overall=4.5 (weak_reject), weighted_sum=5.925 (+22% vs R-FULL-001), experiments_solidity_score=1。Scientist 可进入 SCIENTIST_TODO §B.4 S-104 4 步循环。聚合脚本 (`scripts/summarize_idea_reviews.py` + `scripts/review_scoreboard.py`) 由 scientist 触发以刷新 `scoreboard.md` / `fix_themes.md` / `review_index.jsonl`。详见 `docs/coordination/REVIEWER_TODO.md §A/§C/§D/§F.5`。（reviewer 边界遵守：未触发 S-104，未改 USER_TODO / SCIENTIST_TODO / PROJECT_STRUCTURE；本行是 §F.4 唯一允许的 ack。）
 
+> **[reviewer-ack 2026-04-19 19:37]** R-FULL-003 落盘 → `artifacts/idea_reviews/reviewer_20260419_193730_03_288f84/review.md`（24.3 KB / 178 行；按新 §F.3 精简规则未生 `review.json`，PDF 临时抽取文件审完即删）；P2 Empirical-NLP SAC，overall=4.5 (weak_reject), weighted_sum=5.905, experiments_solidity_score=1/8。**结构性观察**：连续 3 轮 R-FULL 全部 overall=4.5，因为 §6 experiments_solidity floor 是 binding constraint；scientist 应聚焦 EXP pass 数提升（MuSiQue / 多 seed / paired stat / 外部 baseline）再启 R-FULL-004。Scientist 可进入 SCIENTIST_TODO §B.4 S-104 4 步循环。详见 `docs/coordination/REVIEWER_TODO.md §A/§C/§D/§F.5`。（reviewer 边界遵守：未触发 S-104，未改 USER_TODO / SCIENTIST_TODO / PROJECT_STRUCTURE；本行是 §F.4 唯一允许的 ack。）
+
 ---
 
 ### [engineer_day1_5_completion_20260420]
@@ -2228,5 +2230,172 @@ Day 11-15:E-004 vector belief (3 d) + E-005 整合 (5 d, parallel start)
   - **E-005 step 1 风险显著降低**：4 模块的对接接口已经在 mini 端到端跑通，next session engineer 只需做 plumbing (在 methods.py 替换 routing block / 在 runner.py 注入 task_tree state per sample) 不再担心数据 shape 不兼容
   - 这一 smoke 也是**未来 R-PART-001 复审**的素材："工程师做了独立 integration smoke，91 个测试齐全"
 - next_action: 已无后续；下一 P0 仍是 E-005 step 1-3（改 4 个 production 文件 + 1-sample sanity probe + 触发 U-020 fullval gate）
+
+---
+
+### [E-005_stage2_integration_20260420]
+
+- when: 2026-04-19 (engineer Day 7 — 用户 instruction "不要询问做不做，如果任务清晰无阻塞你就去做")
+- who: engineer (executing Day 7 sprint forward — E-005 整合)
+- intent: 把 4 个 Stage-2 模块 (`task_tree`, `action_policy`, `audit_runtime`, `persona_model`) 整合进 production 路径 (`methods.py` + `runner.py` + `contracts.py` + `scripts/validate_logs.py`)，**新加 `edo_stage2_chain` METHOD_NAME 走独立分支**，Stage-1 八方法路径完全不动 → C-2 byte-id 零回归。
+- status: ⏳ in_progress (本块)
+- depends_on: E-001 ✅ + E-002 ✅ + E-003 ✅ + E-004 ✅ + E-008 ✅ (newapi as primary endpoint)
+- unblocks_for_engineer: E-006 (multi-seed CI), E-011/E-012 (external swap comparison after E-010 server 路径恢复)
+- unblocks_for_scientist: S-115/S-116/S-117 (Stage-2 fullval data 一旦 E-005 step 5 ✅ 落盘)
+- design (E-005 step 2 已定调):
+  - **新方法名**: `edo_stage2_chain` (chain topology 上的 Stage-2 prototype；future work = full hierarchical dispatch)
+  - **不破 Stage-1**: 保留 8 个原 method 完整路径；R0 baseline / fullval validate_logs 必须仍 [OK]
+  - **新增 contracts.py 字段**（全部 default None，forward-compat）:
+    - `HandoffPacket.task_tree_id: str | None = None`
+    - `HandoffPacket.audit_status_of_prior: str | None = None`
+    - `HandoffPacket.schema_version: str = "v1"` （Stage-2 packets bump 到 "v2"）
+    - `MethodState.task_tree_state_v2: Any = None`
+    - `MethodState.belief_store_by_agent_v2: dict[str, Any] = field(default_factory=dict)`
+  - **methods.py 新增**: `_run_edo_stage2_chain_step(...)` 函数 + 在 `run_method_step` 顶部 dispatch
+    - 每 hop 调 `select_action(node, state.task_tree_state_v2, neighbors, llm_callable=...)`:
+      - DO_SELF → `_llm_generate_answer` (复用 Stage-1 helper)
+      - OUTSOURCE → `_llm_forward_contribution` + 选 ActionDecision.target_neighbor (而非 _pick_best_neighbor 启发式)
+      - SPLIT → 把 subtask[0] 入 evidence_so_far 作为 reformulated subgoal，仍 forward 到 evidence_seeker；subtasks[1:] 暂存为 future work
+    - audit prior hop's candidate (rule-based only, llm_callable=None → 0 extra LLM cost):
+      - 第 0 hop 无 prior → 跳过
+      - 第 N hop (N>=1) 用 `audit_candidate(parent=current_node, child=prior_node, candidate=packet.candidate_answer)` 算 audit
+      - audit_status 写回 task_tree_state_v2.nodes[prior_id].audit_status
+      - `update_belief_from_audit(belief_store, prior_node_id, audit_event, task_signature)` 推 BeliefStore (用 _build_routing_features 重投到 7 维)
+    - 输出 outgoing_packet 的 published_competence 用 dual-track: `{"_topology": ..., agent: scalar, competence_v2_vector: {...}}`
+  - **runner.py 新增**: 当 `method_name == "edo_stage2_chain"` 时:
+    - per-sample 初始化: `state.task_tree_state_v2 = TaskTreeState(root=TaskNode(...))`
+    - per-sample 初始化: `state.belief_store_by_agent_v2 = {agent: BeliefStore() for agent in nodes}`
+    - 额外 jsonl: `task_tree.jsonl` (每 sample 1 record, root + descendants), `audit_events.jsonl` (每 audit 1 record), `neighbor_belief_snapshots.jsonl` (每 hop 1 record per agent)
+    - 不动 Stage-1 jsonl 写入逻辑
+  - **validate_logs.py 扩展**: 当 `run_dir/run_config.yaml` 的 method_name == "edo_stage2_chain" 时，额外验证 3 个新 jsonl 文件;否则 (Stage-1) 维持原 9 文件检查不变
+  - **scripts/run_method_via_yaml.py 路由扩展** (如必要): 让 `--method edo_stage2_chain` 透传 (已透传 via run_config.yaml；可能不用改)
+- planned_steps:
+  1. ✅ step 1: 读完 4 个 production 文件 (本块上面已记录)
+  2. ✅ step 2: 设计定调 (本块)
+  3. step 3: 实现 + 单元测试
+     - contracts.py: 加 5 字段 (3 + 2)，default None / "v1" / dict
+     - methods.py: 加 `_run_edo_stage2_chain_step` (~200 行) + 在 `run_method_step` 顶部 dispatch
+     - runner.py: 加 stage2 per-sample 初始化 + 3 个 jsonl 写入 + run_config.yaml 写 method_name
+     - validate_logs.py: 加 stage2 文件检查
+     - 写 `workspace/idea04_core/test_edo_stage2_chain_method.py`: 5+ tests with mock LLM 跑 1 个端到端 sample
+  4. step 4: 真 1-sample sanity probe 走 newapi (`scripts/run_method_via_yaml.py` --method edo_stage2_chain --n 1)
+     - 看 routing_traces 'integrity' 全 OK + 看 R0 baseline `validate_logs` 仍 [OK]
+  5. step 5: Stage-2 fullval batch (HotpotQA-200 + 可选 MuSiQue 若 step 4 ✅ + cost 估算合理)
+     - cost 预估: Stage-1 ~200 samples ~ $0.80 → Stage-2 + audit (rule-based) + split (1 extra LLM/sample) ~ $1.5 for 200 samples → 安全
+     - 若 200-sample 跑通 + F1 合理 (>0.65) → 可后续触发 fullval 7405 samples ~$45 (但本 phase 块仅做 200-sample HotpotQA + 可选 MuSiQue)
+- planned_files_added:
+  - `workspace/idea04_core/test_edo_stage2_chain_method.py`
+  - `artifacts/test_results/E-005_stage2_pytest_<TS>.txt`
+  - `artifacts/round2_gpt41mini_stage2_smoke/run_<TS>/edo_stage2_chain/` (1-sample probe)
+  - `artifacts/round2_gpt41mini_stage2/run_<TS>/edo_stage2_chain/` (200-sample HotpotQA batch)
+- planned_files_modified:
+  - `workspace/idea04_core/contracts.py` (+5 字段, 全 default 兼容)
+  - `workspace/idea04_core/methods.py` (+1 METHOD_NAME, +1 函数, +dispatch 1 行)
+  - `workspace/idea04_core/runner.py` (+stage2 init + 3 jsonl write blocks, gated by method_name)
+  - `scripts/validate_logs.py` (+stage2 optional files block)
+  - `docs/coordination/implementation_log.md`（本块翻 ✅）
+- expected_verification:
+  - **C-2 byte-id no regression**: R0 baseline `validate_logs.py artifacts/round2_gpt41mini/run_20260414_115739/fixed_peer_calibrated` 仍 [OK]
+  - **C-2 byte-id no regression**: fullval `validate_logs.py artifacts/round2_gpt41mini_fullval/run_20260414_135408/fixed_peer_calibrated` 仍 [OK]
+  - **5 module pytest 全绿**: `pytest workspace/idea04_core/test_*.py -q` 仍 90+ pass
+  - **新 stage2 method pytest 全绿**: 5+ tests pass
+  - **1-sample sanity probe**: routing_traces all integrity OK + new jsonls present
+  - **200-sample HotpotQA batch**: F1 合理 (>0.55, 若 <0.55 触发 issue 分析)
+- pinned_cautions_acknowledged: **C-1** (provider — 走 newapi as primary), **C-2** (byte-id no regression — 通过新分支隔离), **C-3** (forward-compat — contracts 字段 default None + dual-track competence), **C-4 #1** (R1 split +20-30% tokens — 监控 token_cost), **C-4 #2** (audit reroute 增加 max_handoff — 当前 Stage-2 prototype 不实施 reroute 物理 forward，只记 audit_event)
+- next_action:
+  - 若 ✅ (200-sample HotpotQA 跑通)：本块翻 ✅；触发 USER_TODO §A `U-020-stage2-fullval-launch-decide` 让 user gate 7405-sample fullval
+  - 若 ❌：diagnosis + 在 `[provider_drift]` / `[stage2_routing_bug]` 等 phase 块自挂
+
+---
+
+### [u_018_mad_landed_20260420]
+
+- when: 2026-04-20 (R17 commit)
+- who: scientist (落地用户 U-018 批准)
+- intent: 用户批准 U-018-decide → ✅ (a) 加 MAD 作为第 3 个外部 baseline。本子条 dispatch 两个新 engineer 工单 **E-015** (reproduce MAD baseline) + **E-016** (R2 audit swap into MAD `final_aggregator` = SWAP-4)，把 R-FULL-002 reviewer flag 的 MAD overlap-risk 从写作-only 升级为实证-comparison。
+- status: ✅ (decision landing 完毕；实际跑数交给 engineer)
+- depends_on:
+  - USER_TODO §A U-018-decide ✅ (用户原话 "U-018-decide：a")
+  - external_baseline_plan.md §3.2 / §4 / §5 / §6 / §7 / §10 ✅ R17 同步
+  - SCIENTIST_TODO §A U-018 cross-ref ✅ + §B.5 S-131 ✅ + §C R-FULL-002 NEW MAD 行 status 升 ✅ + §D R17 行 ✅
+- unblocks_for_engineer:
+  - **E-015** (新工单, 见下面 ticket spec)
+  - **E-016** (新工单, 见下面 ticket spec)
+- unblocks_for_scientist:
+  - **S-131** (在 SCIENTIST_TODO §B.5 已加；blocked on E-015 + E-016)：§4.x 表从 2-host (AutoGen + ChatEval) 扩为 3-host (+MAD)；§2 RW §2.2 重点强化 MAD-vs-TCPB delta；Table 1 加 MAD 行
+- design notes:
+  - **为什么 MAD ≠ ChatEval 重复**: 表面上两者都是 peer-critique 系统，但实现差异巨大 — ChatEval = round-table discussion + meta-reviewer aggregator；MAD = explicit debate-then-aggregate（Liang et al. 2024 的 final-answer aggregator 是把多轮 debate 的 critique 在终点 collapse）。R2 audit swap 进 BOTH 让我们能测试 "per-hop audit > 任何 host 的 aggregator 不论其 debate protocol"。
+  - **为什么必须实证**: R-FULL-002 reviewer 的 D3 novelty 评分明点 "TCPB 'terminal-outcome only' is essentially a degenerate case of MAD's per-hop critique aggregator with aggregator window=full trajectory"，并把 `is_overlap_risk=TRUE` flag 写入 review.md。如果只在 §2.2 加文字段落而不补实验，D3 cap ≤ 5.5；要 lift cap 到 ≥ 6.5，必须有 SWAP-4 数字证明 per-hop audit 与 debate aggregator 是 **不同的算子类**（即使 input 都是 per-hop critique）。
+  - **+5 d 时间线影响**: 见 external_baseline_plan.md §6 "Updated recommended timeline (Option C+MAD, 3 systems, R17)"。压力可控因为 Day 1.5 已经把 E-002/E-003/E-004/E-009 提前关闭，省下 3-4 d；R17 + 5 d 净延迟实际只占 1-2 d 真正 buffer。
+
+---
+
+#### 工单：E-015 — Reproduce MAD baseline (NEW R17)
+
+- ticket_id: E-015
+- assigned_to: engineer
+- priority: P1（外部 baseline 第 3 host；不阻塞 Stage-2 main pipeline 但阻塞 SWAP-4 = E-016）
+- estimate: 2 d
+- depends_on:
+  - E-009 ✅ (external baseline survey done)
+  - E-008 ✅ (newapi as primary endpoint)
+- unblocks: E-016 (R2 audit swap into MAD)
+- task spec:
+  1. **Repo selection + license check**: clone `composable-models/llm_multiagent_debate` (Du et al. 2024 是 reviewer 引用的 canonical implementation；如果 reviewer 实际指 Liang et al. 2024，搜 `Encouraging-Divergent-Thinking-MAD` 或对应 GitHub repo)。Verify MIT license (or compatible permissive)；记录 commit hash + 最近一次 `git log -1`（必须 ≥ 2024）。
+  2. **Install + dependency probe**: `pip install -r requirements.txt`（如果 OpenAI API 用 `openai==0.27.x` 老版本，写一个 thin adapter 让其调 `newapi` (xh.v1api.cc) endpoint，而不是 chatcompletion 老接口）。
+  3. **Smoke probe on 1 example**: 跑 repo 自带的 `quickstart.py` 或类似入口，1 个 input → debate output。Confirm runs without crash + cost ≤ $0.05 single example。
+  4. **Reproduce on 50-sample HotpotQA slice** (从 `artifacts/seed/hotpotqa_validation_50.jsonl` 取，已存在；engineer 不要重新下载)：跑 MAD 系统输出 50 个 final answer + 算 EM/F1。
+  5. **Error band 验证**: 与 paper Table X 的 reported HotpotQA F1 比对（如果 paper 报了；如未报，与 paper 报的 multi-hop QA 任务 F1 比对，记录 reproduction error band 在 ≤ 5% 之内 → ✅ acceptable）。
+  6. **Output**:
+     - `artifacts/external_baselines/mad/baseline_smoke_<TS>/` 含: `mad_50sample_results.jsonl`, `cost_breakdown.json`, `repro_error_band.md`
+     - `artifacts/external_baselines/mad/repo_mad_smoke.md` 含: repo URL + commit hash + license 摘要 + 5 步骤 log + 50-sample 跑数结果 + error band 与 paper 对比 + 走 newapi 的成本 estimate
+     - 在本 phase 块下追加 `[E-015_done_<TS>]` sub-entry，挂 ticket ✅
+- pinned_cautions_to_acknowledge:
+  - **C-1**: 全程走 `newapi` (不要触碰 deprecated `oversea` / kuaipao)
+  - **C-3**: 如果 MAD repo 用 OpenAI 老 API，写 adapter；不要 monkeypatch `openai` 包导致 Stage-1 production 路径出问题（隔离到 `external_baselines/mad/openai_compat_shim.py`）
+  - **C-5**: 50-sample budget < $5；如 cost 超过先停，写 `cost_blowout.md` upcall
+- if_blocked:
+  - 若 MAD repo 已经过期 / install 失败 / multi-hop QA 跑不通 → diagnosis + 在 `[external_baseline_mad_repo_blocker_<TS>]` 自挂；scientist 切回 N=2 plan（external_baseline_plan.md §3.2 提供过 MVP 备选）
+
+---
+
+#### 工单：E-016 — R2 audit swap into MAD `final_aggregator` = SWAP-4 (NEW R17)
+
+- ticket_id: E-016
+- assigned_to: engineer
+- priority: P1（直接关闭 R-FULL-002 D3 novelty cap）
+- estimate: 3 d (1 d adapter 写 + 测 + 2 d 跑 200×2 benchmarks × ≥3 seeds)
+- depends_on:
+  - E-015 ✅ (MAD repo working on 50-sample slice with newapi)
+  - E-003 ✅ (R2 audit_runtime done — `audit_candidate` + `AuditEventBuffer`)
+  - E-006 ✅ (multi-seed CI harness — paired-bootstrap CI helper)
+- unblocks: scientist S-131 (§4.x 3-host 表 + RW §2.2 MAD delta)
+- task spec:
+  1. **Identify swap point**: 定位 MAD repo 中的 `final_aggregator` 函数（Du 2024 实现里通常叫 `aggregate_responses` / `final_decision` / `vote_and_decide`；engineer 在 E-015 探查时已经熟悉 codebase，应能直接定位）。
+  2. **Implement adapter**: 写 `workspace/idea04_core/external_baselines/mad/mad_finalaggregator_r2audit_swap.py`，导出 `r2_audit_aggregator(debate_history: list[DebateRound], task: str, ...) -> FinalAnswer`：
+     - 把 MAD debate_history 的最后一轮 critique 包装成我们 `audit_runtime.audit_candidate(parent, child, candidate)` 的输入
+     - 调 R2 audit 得到 `AuditDecision (ACCEPT / ACCEPT_WITH_NOTE / REROUTE / REJECT)`
+     - 把 audit decision 翻译回 MAD 的 final answer：ACCEPT → debate consensus；ACCEPT_WITH_NOTE → consensus + footnote；REROUTE → 重新跑 1 轮 debate（**单轮上限**避免 cost blowout）；REJECT → "I don't know" / abstain
+  3. **Unit test**: `workspace/idea04_core/external_baselines/mad/test_mad_finalaggregator_r2audit_swap.py` ≥ 5 tests:
+     - test_accept: mock debate_history with high agreement → returns consensus
+     - test_accept_with_note: mock low-confidence consensus → returns consensus + caveat string
+     - test_reroute: mock contradictory debate → triggers 1 extra debate round
+     - test_reject: mock impossible task → returns abstain
+     - test_no_extra_lm_call_when_audit_rule_based: 确保 audit 默认 rule-based，不偷偷加额外 LLM 调用
+  4. **Run SWAP-4 comparison**: 200-sample HotpotQA + 200-sample MuSiQue × {MAD original, MAD + R2 swap} × ≥ 3 seeds × `gpt-4.1-mini` × same token budget → paired-bootstrap CI per (benchmark, seed) → aggregate to `paired_stats.csv`：
+     - columns: `host=mad`, `benchmark`, `seed`, `original_f1`, `swapped_f1`, `delta_f1`, `delta_token_cost`, `paired_p_value`, `bootstrap_ci_low`, `bootstrap_ci_high`
+  5. **Output**:
+     - `workspace/idea04_core/external_baselines/mad/mad_finalaggregator_r2audit_swap.py` + tests
+     - `artifacts/test_results/E-016_swap_pytest_<TS>.txt` (≥ 5 tests pass)
+     - `artifacts/external_baselines/mad/swap_results_<TS>/` 含: `paired_stats.csv` + `cost_breakdown.json` + `aggregator_swap_log.md`
+     - 在本 phase 块下追加 `[E-016_done_<TS>]` sub-entry，挂 ticket ✅；交付 paired_stats 给 scientist S-131
+- pinned_cautions_to_acknowledge:
+  - **C-1**: 全程走 newapi
+  - **C-2**: 这是新建独立 swap adapter 文件，不会触碰 Stage-1 production 路径；C-2 byte-id 自动保护
+  - **C-3**: AuditDecision enum 已在 E-003 ✅ 冻结；不要扩字段
+  - **C-4 #2**: REROUTE 触发的 1 轮额外 debate **必须有上限**（单次最多 +1 round；不能递归无限重 debate 导致 token blowout）；写 unit test 验证 reroute 不会触发 ≥ 2 轮
+  - **C-5**: 200×2 benchmarks × 3 seeds × 2 conditions = 2400 samples × est $0.01/sample = ~$24 budget；上限 < $40，超了停手在 `[E-016_cost_blowout_<TS>]` 自挂
+- if_blocked:
+  - 若 SWAP-4 实际 ΔF1 < 0 (MAD + R2 swap 反而比 MAD original 差)：**这是有效的科学结果**，不是 blocker。Engineer 把数字交付 scientist；scientist 在 §4.x 诚实写"On MAD, R2 audit swap underperforms by Y; this is consistent with our Limitations item (3) — backbone-sensitivity / aggregator-protocol-sensitivity"。R-FULL-002 D3 cap 仍能 lift（reviewer 看的是是否 benchmark 了，不是是否赢），且符合我们 R16 已经定的 honesty framing。
 
 ---

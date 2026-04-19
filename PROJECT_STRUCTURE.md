@@ -1,7 +1,7 @@
 # PROJECT_STRUCTURE — 项目目录鸟瞰图
 
 > 维护者：科学家（writing lead）。这是项目的**单一索引文件**，新人 / 新窗口接手时**只读这一份**就能定位所有内容。
-> 创建日期：2026-04-19  最后更新：2026-04-20（R10 commit：Stage-2 sprint Day 1 ✅ 闭合 + U-014/U-015/U-016 三决策落地，外部 baseline workstream 全 unblocked，T-34 to ARR May 25）。
+> 创建日期：2026-04-19  最后更新：2026-04-20（R17 commit：U-018 → ✅ 加 MAD 第 3 个外部 baseline；外部 baseline N=2→**N=3** (AutoGen + ChatEval + MAD)；派 E-015 + E-016；R-FULL-002 D3 novelty `is_overlap_risk` cap 关闭路径锁定；T-35 to ARR May 25 不变 — Day 1.5 提前关闭省下 buffer 吸收 +5 d MAD 工作量）。
 > 任何目录新增 / 重命名 / 归档必须同步更新本文件。
 
 ---
@@ -11,7 +11,25 @@
 EMNLP long paper —— **`Emergent Delegation Organization (EDO)`**：研究近似同质 LLM agent 在稀疏图上通过递归委派与递归验收形成分工组织。
 当前可执行原型 **`Terminal-Consensus Peer Backpropagation (TCPB)`** 是 Stage-1 受限实例。
 
-> **🚀 Sprint Day 1 ✅ 闭合（2026-04-20）+ Day 1.5 起 active**：用户已批 U-011 (b) + U-012 **R1+R2+R3** + U-013 **MuSiQue** + U-EXEC-006 **newapi key** + U-014 **2 hosts (AutoGen+ChatEval)** + U-015 **R2+R3 swap (SWAP-1+SWAP-3)** + U-016 **drop E-007**。Day 1 ✅ 完成 = E-001 task_tree + E-008 newapi probe + E-013 SSH server probe（详见 `[engineer_day1_completion_20260420]`）。**Day 1.5 起 P0** = 三线并行启动：(a) E-002 split policy / (b) E-003 audit runtime / (c) E-009 external baseline survey + selection。**外部 baseline workstream** `[external_baseline_workstream_20260420]` + `[external_baseline_decisions_landed_20260420]` 全 unblocked，含 E-009..E-012 (survey / reproduce / swap / compare on AutoGen + ChatEval)；planning 文档 [`docs/paper/external_baseline_plan.md`](docs/paper/external_baseline_plan.md)。目标 **EMNLP 2026 ARR May 25 deadline = T-35**（Day 1 完成后剩 34 天，buffer 5-6 天）。详见 [`docs/coordination/USER_TODO.md`](docs/coordination/USER_TODO.md) `§A` + [`docs/coordination/implementation_log.md`](docs/coordination/implementation_log.md) 末三块。
+> **🚀 Sprint Day 1.5 已闭合 + Day 2- active（2026-04-20，R17）**：用户已批
+> - U-011 (b) + U-012 **R1+R2+R3** + U-013 **MuSiQue** + U-EXEC-006 **newapi key**
+> - U-014 **2 hosts (AutoGen+ChatEval)** + U-015 **R2+R3 swap (SWAP-1+SWAP-3)** + U-016 **drop E-007**
+> - **U-018 ⚡ R17：3rd host = MAD** → 外部 baseline N=2 → **N=3 (AutoGen + ChatEval + MAD)**；SWAP-4 (R2 audit → MAD `final_aggregator`) 升为主体；新派 **E-015** (reproduce MAD) + **E-016** (R2 audit swap into MAD aggregator)
+>
+> **Day 1 ✅** = E-001 task_tree + E-008 newapi probe + E-013 SSH server probe。
+> **Day 1.5 ✅** = E-002 action_policy + E-003 audit_runtime + E-004 persona_model + E-009 external baseline survey（详见 `[engineer_day1_5_completion_20260420]` + `[E-002/E-003/E-004/E-009_done_*]` 子条；3-4 d ahead of schedule，省下的 buffer 直接吸收 R17 +5 d MAD 工作量）。
+>
+> **Day 2- active P0** = 多线并行：
+> - (a) E-005 (Stage-2 fullval HotpotQA + MuSiQue) — `[E-005_stage2_integration_20260420]` 进行中
+> - (b) E-010 (reproduce AutoGen + ChatEval × 2) → 解锁 E-011 / E-012
+> - (c) **E-015 (reproduce MAD)** ⚡ NEW — 解锁 E-016
+> - (d) E-014 (gpt-4.1-mini Table 2 ablation rerun，R-FULL-002 fix)
+>
+> **外部 baseline workstream** = `[external_baseline_workstream_20260420]` + `[external_baseline_decisions_landed_20260420]` + `[u_018_mad_landed_20260420]`（R17 子条）共同覆盖 E-009 ✅ + E-010 + E-011 + E-012 + E-015 + E-016 = 6 工单（survey ✅ + reproduce × 3 + swap adapter × 3 + comparison run × 3）。Planning 主文档：[`docs/paper/external_baseline_plan.md`](docs/paper/external_baseline_plan.md)（R17 update 含 §3.2 N=3 + §4 SWAP-4 active + §6 timeline +5 d）。
+>
+> **目标**：EMNLP 2026 ARR May 25 deadline = T-35（unchanged）。Day 1.5 提前关闭省的 3-4 d 与 R17 +5 d 净对冲后，buffer 仍 ~4-5 天。
+>
+> 详见 [`docs/coordination/USER_TODO.md`](docs/coordination/USER_TODO.md) `§A,§C` + [`docs/coordination/SCIENTIST_TODO.md`](docs/coordination/SCIENTIST_TODO.md) `§B.5` + [`docs/coordination/implementation_log.md`](docs/coordination/implementation_log.md) `[u_018_mad_landed_20260420]` 末块。
 
 | 角色 | 文件入口 |
 |---|---|

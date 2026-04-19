@@ -111,97 +111,114 @@ Bonus criteria (preferred):
 
 ### 3.2 Recommended target set (for 36-day deadline)
 
-**Recommended: 2 systems, AutoGen + ChatEval**
+> **2026-04-20 (R17 update)**: U-018-decide → ✅ (a). Roster now expanded **N=2 → N=3** to absorb R-FULL-002 reviewer's MAD overlap-risk flag (D3 novelty cap closure). MetaGPT remains future-work (deferred); MAD ≠ MetaGPT (much smaller LOC, focused on debate aggregation, NOT software-engineering pipeline) so the +5 d delta is bounded and fits within sprint buffer.
+
+**Confirmed: 3 systems, AutoGen + ChatEval + MAD**
 
 Rationale:
 
-- **AutoGen** = orchestrator-baseline anchor. Reviewer-named explicitly in fatal #3. R3 vector-belief swap is the most defensible "drop-in" comparison.
-- **ChatEval** = peer-critique-baseline anchor. R2 audit swap directly tests the mechanism that closes reviewer fatal #1 (Finding 4: "peer loses to self_claim because no per-hop intervention").
-- Two systems = two angles of attack; covers reviewer fatal #3 (zero external baselines) AND reviewer fatal #1 (Finding 4 self-falsifies).
-- Within sprint budget: ~9-10 days incremental on top of E-001..E-007 already planned (see §4 below).
+- **AutoGen** = orchestrator-baseline anchor. R-FULL-001 reviewer-named explicitly in fatal #3. R3 vector-belief swap (SWAP-1) is the most defensible "drop-in" comparison.
+- **ChatEval** = peer-critique-baseline anchor #1. R2 audit swap (SWAP-3) directly tests the mechanism that closes reviewer fatal #1 (Finding 4: "peer loses to self_claim because no per-hop intervention").
+- **MAD (Multi-Agent Debate, Liang et al. 2024)** = peer-critique-baseline anchor #2. R2 audit swap (SWAP-4) closes R-FULL-002's `is_overlap_risk=TRUE` flag — reviewer explicitly wrote "TCPB's 'terminal-outcome only' is essentially a degenerate case of MAD's per-hop critique aggregator with aggregator window=full trajectory"; without an actual MAD comparison, our D3 (novelty) is capped ≤ 5.5. Adding SWAP-4 lets us numerically demonstrate the delta (per-hop audit ≠ debate aggregator) and lift the cap.
+- Three systems = three independent angles of attack: covers (i) R-FULL-001 fatal #3 zero-external-baseline (AutoGen), (ii) R-FULL-001 fatal #1 Finding-4 self-falsification (ChatEval), (iii) R-FULL-002 D3 MAD overlap-risk (MAD).
+- ChatEval + MAD = redundant on the surface (both peer-critique systems), but they implement very different aggregation logics: ChatEval = round-table discussion + meta-reviewer; MAD = explicit debate-then-aggregate. R2 swapping into BOTH lets us test whether per-hop audit beats the aggregator regardless of host's debate protocol.
+- Within sprint budget: ~14-15 days incremental on top of E-001..E-006 (see §6 timeline); fits in original 5-6 d buffer.
 
-**MVP (1 system, AutoGen only)**: ~4-5 incremental days; closes fatal #3 partially but R2 audit value remains untested vs an external peer-critique system → reviewer can still cap S6 at ~5/10.
+**Previous MVP (1 system, AutoGen only)**: ~4-5 incremental days; closes fatal #3 partially but leaves both peer-critique angles untested. **Rejected** because it does not close R-FULL-002 D3 overlap-risk.
 
-**Aggressive (3 systems, +MetaGPT)**: ~14 incremental days; risks burning the buffer needed for reviewer R-FULL-002 + final polish.
+**Original recommendation (2 systems, AutoGen + ChatEval)**: ~9-10 incremental days; was the R10 commit choice, **superseded by R17 expansion** after R-FULL-002 reviewer batch landed.
+
+**Aggressive-3 (3 systems, +MetaGPT/SWAP-5)**: ~21+ incremental days; **rejected** — MetaGPT is too tightly coupled to software-engineering pipeline; multi-hop QA out of scope. Stays in §4 as italic _SWAP-5_.
 
 ---
 
-## 4. Module-swap design matrix (proposed)
+## 4. Module-swap design matrix (R17 update — N=3 hosts)
 
 Each row = one swap experiment. All swaps share the **same backbone (`gpt-4.1-mini`), same benchmark (HotpotQA-200 + MuSiQue-200), same seed set (≥3 seeds), same token budget cap**.
 
-| Swap ID | Host system | Original component | Replaced with | Hypothesis tested |
-|---|---|---|---|---|
-| **SWAP-1** | AutoGen `GroupChatManager` | `select_speaker()` rule (round-robin / LLM-pick / custom callable) | Our R3 vector belief routing (`compute U^out for each agent, pick argmax`) | Vector belief routing > AutoGen's default `select_speaker` |
-| **SWAP-2** | AutoGen `GroupChatManager` | `select_speaker()` rule | Our 3-action policy with R1 split fallback | 3-action > pure outsource (when allowed) |
-| **SWAP-3** | ChatEval `MetaReviewer.aggregate` | Meta-reviewer's score-aggregation logic | Our R2 audit decision protocol (4-class outcome + reroute) | Per-hop audit > meta-reviewer aggregation |
-| **SWAP-4** | MAD `final_aggregator` | Debate-result aggregator | Our R2 audit | Per-hop audit > debate aggregator (cross-check SWAP-3) |
-| _SWAP-5_ | _MetaGPT pipeline_ | _Hard PM→Architect→Engineer order_ | _R1 split + 3-action policy_ | _Out of scope unless aggressive option chosen_ |
+| Swap ID | Host system | Original component | Replaced with | Hypothesis tested | Status |
+|---|---|---|---|---|---|
+| **SWAP-1** | AutoGen `GroupChatManager` | `select_speaker()` rule (round-robin / LLM-pick / custom callable) | Our R3 vector belief routing (`compute U^out for each agent, pick argmax`) | Vector belief routing > AutoGen's default `select_speaker` | ✅ active (U-015) |
+| **SWAP-3** | ChatEval `MetaReviewer.aggregate` | Meta-reviewer's score-aggregation logic | Our R2 audit decision protocol (4-class outcome + reroute) | Per-hop audit > meta-reviewer aggregation | ✅ active (U-015) |
+| **SWAP-4** | MAD `final_aggregator` (Liang et al. 2024) | Debate-then-aggregate (per-hop debate critiques collapsed into final answer at terminal) | Our R2 audit (per-hop intervene + reroute, NOT terminal aggregation) | Per-hop audit ≠ debate aggregator; closes R-FULL-002 D3 `is_overlap_risk=TRUE` (TCPB ≠ degenerate MAD) | ✅ **active (U-018, R17)** |
+| _SWAP-2_ | _AutoGen `GroupChatManager`_ | _`select_speaker()` rule_ | _Our 3-action policy with R1 split fallback_ | _3-action > pure outsource (when allowed)_ | ⏸ deferred (would re-litigate SWAP-1; low marginal value) |
+| _SWAP-5_ | _MetaGPT pipeline_ | _Hard PM→Architect→Engineer order_ | _R1 split + 3-action policy_ | _Out of scope: MetaGPT tightly coupled to software-eng pipeline; multi-hop QA out of scope_ | ⏸ future-work |
 
-**Reporting target**: a 4-row "External Baseline + Module-Swap" table in `§4.x`:
+**Reporting target**: a 4-row "External Baseline + Module-Swap" table in `§4.x` (matches scientist S-131 ticket):
 
 ```
-| External system | Original mechanism F1 | + Our swap F1 | Δ | Token cost Δ |
+| External system + swap target  | Host F1 | Host + Our R-x F1 | ΔF1 | Δtoken cost |
 |---|---|---|---|---|
-| AutoGen (GroupChatManager) | X.XXX | X.XXX | +/− Y.YYY | +/− Z |
-| ChatEval (MetaReviewer)    | X.XXX | X.XXX | +/− Y.YYY | +/− Z |
-| (MAD if scope allows)      | X.XXX | X.XXX | +/− Y.YYY | +/− Z |
+| AutoGen (GroupChatManager.select_speaker) — SWAP-1 R3 | X.XXX | X.XXX | +/− Y.YYY | +/− Z |
+| ChatEval (MetaReviewer.aggregate)         — SWAP-3 R2 | X.XXX | X.XXX | +/− Y.YYY | +/− Z |
+| MAD (final_aggregator, Liang 2024)        — SWAP-4 R2 | X.XXX | X.XXX | +/− Y.YYY | +/− Z |
 ```
 
-Plus a single sentence in §4.3 prose: "On both AutoGen and ChatEval, swapping the host's [original mechanism] for our [Rx] yields F1 [+/−Y] and cost [+/−Z], confirming the mechanism contribution is robust across host systems."
+Plus a single paragraph in §4.3 prose: "On all three hosts (AutoGen, ChatEval, MAD), swapping the host's [original mechanism] for our [R-x] yields F1 [+/−Y] and cost [+/−Z]. Specifically, the MAD swap (SWAP-4) directly tests R-FULL-002 reviewer's overlap-risk concern that TCPB is a degenerate case of MAD with aggregator-window = full trajectory: the empirical Δ on SWAP-4 quantifies the gap between per-hop audit (intervene + reroute) and debate-aggregator (terminal-outcome collapse) — these are **not** the same operator class even when both consume per-hop peer signals."
+
+Plus a §2.2 Related Work paragraph (S-131 deliverable): explicitly write the TCPB-vs-MAD delta — "MAD aggregates per-hop critiques into a final answer at the trajectory terminal; TCPB inherits MAD's per-hop debate-critique consumption but routes the audit decision back into the trajectory (intervene + reroute, NOT collapse). The two systems share the per-hop critique consumption primitive but diverge on the audit-effect operator."
 
 ---
 
 ## 5. Workstream tickets (派给 engineer)
 
-These would be added to `implementation_log.md` as `[external_baseline_workstream_20260420]` phase block, with engineer ticket IDs continuing from E-008. Estimates assume 2-system recommendation (SWAP-1 + SWAP-3).
+These would be added to `implementation_log.md` as `[external_baseline_workstream_20260420]` phase block, with engineer ticket IDs continuing from E-008. **R17 update**: U-018 → ✅ extends the host roster from N=2 to N=3 — adds **E-015** (reproduce MAD) + **E-016** (R2 audit swap into MAD `final_aggregator` = SWAP-4) on top of E-009..E-012.
 
 | ID | Task | Days | Blocked on | Output |
 |---|---|---:|---|---|
-| **E-009** | **Survey + selection**: scientist ranks the 6 candidates in §3.1 against re-verified license / activity / repo size; engineer probes each repo (clone, install, run quickstart on 1 example). Output: short report selecting 2 (or N per `U-014`) finalists | 1 d | none | `artifacts/external_baselines/survey_report.md` |
-| **E-010** | **Reproduce baseline**: for each finalist (e.g. AutoGen + ChatEval), reproduce the original published HotpotQA / MMLU number on a 50-sample slice; record reproduction error band; write a `repo_<name>_smoke.md` proving the host system works on our `newapi` endpoint | 2 d × N | E-009 ✅; E-008 newapi probe ✅ | `artifacts/external_baselines/<name>/baseline_smoke_<TS>/` |
-| **E-011** | **Implement swap adapter**: write `<name>_swap.py` adapter that hooks our R-x module into the host's decision point (e.g. `autogen_groupchatmanager_select_speaker_swap.py`); unit test passes when adapter returns a valid choice for a known input | 2 d × N | E-010 ✅ ; (R-x mechanism done: SWAP-1 needs E-004 R3, SWAP-3 needs E-003 R2) | `workspace/idea04_core/external_baselines/` + tests |
-| **E-012** | **Run swap comparison**: 200-sample HotpotQA + 200-sample MuSiQue × {host original, host + our swap} × ≥3 seeds with paired-bootstrap CI; same backbone / token budget as our Stage-2 fullval | 2 d × N | E-011 ✅; E-006 multi-seed harness ✅ | `artifacts/external_baselines/<name>/swap_results_<TS>/` + `paired_stats.csv` |
+| **E-009** | **Survey + selection**: scientist ranks the 6 candidates in §3.1 against re-verified license / activity / repo size; engineer probes each repo (clone, install, run quickstart on 1 example). Output: short report selecting 2 (or N per `U-014`) finalists | 1 d | none | `artifacts/external_baselines/survey_report.md` (✅ done R13) |
+| **E-010** | **Reproduce baseline**: for each finalist (AutoGen + ChatEval), reproduce the original published HotpotQA / MMLU number on a 50-sample slice; record reproduction error band; write a `repo_<name>_smoke.md` proving the host system works on our `newapi` endpoint | 2 d × 2 = 4 d | E-009 ✅; E-008 newapi probe ✅ | `artifacts/external_baselines/<name>/baseline_smoke_<TS>/` |
+| **E-011** | **Implement swap adapter**: write `<name>_swap.py` adapter that hooks our R-x module into the host's decision point (e.g. `autogen_groupchatmanager_select_speaker_swap.py`, `chateval_metareviewer_aggregate_swap.py`); unit test passes when adapter returns a valid choice for a known input | 2 d × 2 = 4 d | E-010 ✅ ; (R-x mechanism done: SWAP-1 needs E-004 R3 ✅, SWAP-3 needs E-003 R2 ✅) | `workspace/idea04_core/external_baselines/` + tests |
+| **E-012** | **Run swap comparison**: 200-sample HotpotQA + 200-sample MuSiQue × {host original, host + our swap} × ≥3 seeds with paired-bootstrap CI; same backbone / token budget as our Stage-2 fullval | 2 d × 2 = 4 d | E-011 ✅; E-006 multi-seed harness ✅ | `artifacts/external_baselines/<name>/swap_results_<TS>/` + `paired_stats.csv` |
+| **E-015** ⚡ **NEW R17** | **Reproduce MAD baseline** (Multi-Agent Debate, Liang et al. 2024, `composable-models/llm_multiagent_debate`): clone repo + license check + dependency install + reproduce original HotpotQA / multi-hop QA report on 50-sample slice; record error band; write `repo_mad_smoke.md` against `newapi` endpoint | 2 d | E-009 ✅; E-008 newapi probe ✅ | `artifacts/external_baselines/mad/baseline_smoke_<TS>/` + `repo_mad_smoke.md` |
+| **E-016** ⚡ **NEW R17** | **Implement R2 audit swap into MAD `final_aggregator`** (= SWAP-4): write `mad_finalaggregator_r2audit_swap.py` adapter that replaces MAD's debate-result-aggregator with our R2 audit decision protocol (4-class outcome + reroute); unit test = adapter returns valid AuditDecision for a known per-hop input; THEN run 200-sample HotpotQA + 200-sample MuSiQue × {MAD original, MAD + R2 swap} × ≥3 seeds with paired-bootstrap CI; same backbone / token budget as Stage-2 fullval | 3 d | E-015 ✅; E-003 R2 audit ✅; E-006 multi-seed harness ✅ | `workspace/idea04_core/external_baselines/mad/mad_finalaggregator_r2audit_swap.py` + tests + `artifacts/external_baselines/mad/swap_results_<TS>/` + `paired_stats.csv` |
 
-**Total incremental engineer time** (2 systems, MVP): 1 + (2+2+2)×2 = **13 d**, condensed to ~9-10 d if E-010/E-011/E-012 are pipelined per system. Fits in the 36-day sprint by reusing the slack between E-006 (multi-seed) and Day 28 (paper polish window).
+**Total incremental engineer time** (3 systems, R17 expansion):
+- Original 2-system plan (E-009..E-012): 1 + 4 + 4 + 4 = 13 d → pipelined ~9-10 d
+- R17 MAD addition (E-015 + E-016): 2 + 3 = **+5 d** (pipelined: MAD reproduce can run parallel with AutoGen/ChatEval reproduce on separate engineer-day slots; SWAP-4 must serialise after E-003 R2 audit ✅)
+- **Net incremental**: ~14-15 d total, fits in original 36-day sprint with 4-5 d buffer remaining for polish + R-FULL-003 reviewer batch.
 
 ---
 
 ## 6. Time-line impact (vs original sprint plan)
 
-The original sprint plan has buffer Days 25-28 for engineer + Days 28-35 for scientist polish + reviewer batch. Inserting E-009..E-012 (≈9-10 d if pipelined) requires either:
+> **R17 update (2026-04-20)**: U-018 → ✅ adds E-015 + E-016 (MAD reproduce + R2 swap into MAD aggregator) on top of original Option C. Net delta from original plan = **+10-11 days** (was +5-6 d for Option C; +5 d for MAD). Fits within original 5-6 d buffer because Day 1.5 already closed E-002/E-003/E-004/E-009 ahead of estimate (gain ~3-4 d) — but tightens R-FULL-003 reviewer-batch window from 3 d to 1-2 d.
 
-- **Option A: parallel track** — engineer works on E-009..E-012 in parallel with E-006/E-007 (E-007 becomes redundant — replaced by E-010..E-012). Net delta = +5-6 days. Final sprint completion shifts from Day 28 to Day 33-34. Reviewer R-FULL-002 window shrinks from 7 days to 1-2 days. **Risky but doable.**
-- **Option B: serial track** — finish all E-001..E-007 first, then E-009..E-012. Net delta = +9-10 days. Sprint slips past Day 35 deadline. **Not viable for ARR May 25.**
-- **Option C: drop E-007 entirely** — the original "1-2 systems full-system comparison" is logically subsumed by E-010..E-012 (which does both reproduction AND swap). Net delta vs original plan = +5-6 days. **Recommended.**
+The original sprint plan has buffer Days 25-28 for engineer + Days 28-35 for scientist polish + reviewer batch. Updated allocation:
 
-**Recommended timeline** (Option C, 2 systems):
+- **Option C (R10 baseline)**: drop E-007 (subsumed); add E-009..E-012. Net delta = +5-6 d.
+- **Option C+MAD (R17, currently active)**: Option C + E-015 + E-016. Net delta = +10-11 d. Compensated by Day 1.5 ahead-of-schedule closure of E-002/E-003/E-004/E-009.
+- **Option B (serial)** and **Option D (drop AutoGen, keep MAD only)**: rejected.
+
+**Updated recommended timeline (Option C+MAD, 3 systems, R17)**:
 
 ```
-Day  1- 5: E-001 + E-008 + E-002 (current sprint)
-Day  6-10: E-003 (R2 audit) + E-009 (external survey + selection in parallel)
-Day 11-13: E-004 (R3 vector) + E-010 (reproduce 2 hosts in parallel)
-Day 14-16: E-005 (Stage-2 fullval) + E-011 (write 2 swap adapters in parallel)
-Day 17-19: E-006 (multi-seed CI, applied to BOTH our methods AND swaps) + E-012 (run swap comparisons)
-Day 20-22: scientist S-117 paper §4 with both Stage-2 results AND module-swap results
-Day 23-26: scientist S-115 / S-116 framing rewrite + S-121 §4.x external comparison subsection
-Day 27-29: R-FULL-002 user-triggered reviewer batch + S-104 loop
-Day 30-35: final polish + ARR submission
+Day  1- 1.5: E-001 ✅ + E-008 ✅ + E-002 ✅ + E-003 ✅ + E-004 ✅ + E-009 ✅ (Day 1.5 closure ahead of schedule)
+Day  2- 4 : E-013 ✅ (SSH inventory) + E-010 (reproduce AutoGen + ChatEval in parallel) + E-015 (reproduce MAD in parallel slot)
+Day  5- 7 : E-005 (Stage-2 fullval HotpotQA + MuSiQue) + E-011 (write 2 swap adapters: AutoGen.select_speaker + ChatEval.MetaReviewer)
+Day  8-10: E-006 (multi-seed CI harness, applied to BOTH our methods AND swaps) + E-012 (run SWAP-1 + SWAP-3 comparisons) + E-016 (R2 audit swap into MAD final_aggregator + run SWAP-4)
+Day 11-12: E-014 (gpt-4.1-mini Table 2 ablation rerun, R-FULL-002 fix)
+Day 13-16: scientist S-117 (§4 Stage-2 results) + S-121 (§4.x external comparison subsection) + S-122 (module-swap ablation table) + **S-131 (3-host §4.x table + RW §2.2 MAD delta)**
+Day 17-20: scientist S-115 (§1 framing rewrite) + S-116 (§6 conclusion rewrite) + S-123 (RW §2 cross-ref actual baselines)
+Day 21-23: R-FULL-003 user-triggered reviewer batch + S-104 loop
+Day 24-30: final polish + last-mile lints + ARR submission prep
+Day 31-35: buffer / 备稿 / ARR submission
 ```
 
-This leaves 5-6 days buffer for unforeseen issues, vs original plan's 7 days. Acceptable risk.
+This leaves 4-5 days buffer for unforeseen issues (down from 7 in original plan, still acceptable). Critical-path concern: E-016 SWAP-4 must serialise after E-003 R2 audit ✅ AND E-015 MAD reproduce ✅, so MAD swap can only start at Day 8 — if E-015 slips to Day 5+, E-016 starts at Day 8 still (parallelism absorbs it).
 
 ---
 
-## 7. Decisions needed from user
+## 7. Decisions needed from user (R17 update — all decided)
 
-| ID | Question | Recommended | Impact |
-|---|---|---|---|
-| **U-014-decide** | How many external systems to target? 1 (MVP, AutoGen only) / **2 (recommended, AutoGen + ChatEval)** / 3 (aggressive, +MetaGPT) | **2** | Each additional system = +5 engineer-days |
-| **U-015-decide** | Module-swap mechanism scope? **R3-only (SWAP-1)** / **R2+R3 (SWAP-1+3)** / R1+R2+R3 (full coverage incl SWAP-5) | **R2+R3 (SWAP-1+3)** to match U-012 R1+R2+R3 sprint scope while keeping engineer effort bounded | R1 swap requires MetaGPT (or HuggingGPT) reproduction = +5-7 engineer-days |
-| **U-016-decide** | Drop original E-007 in favour of E-010..E-012? | **Yes** (drop E-007; subsumed by the new tickets) | If kept, double-count of effort with no benefit |
+| ID | Question | Recommended | Impact | Status |
+|---|---|---|---|---|
+| **U-014-decide** | How many external systems to target? 1 (MVP, AutoGen only) / **2 (recommended, AutoGen + ChatEval)** / 3 (aggressive, +MetaGPT) | **2** (initially) | Each additional system = +5 engineer-days | ✅ R10: 2 (AutoGen + ChatEval) |
+| **U-015-decide** | Module-swap mechanism scope? **R3-only (SWAP-1)** / **R2+R3 (SWAP-1+3)** / R1+R2+R3 (full coverage incl SWAP-5) | **R2+R3 (SWAP-1+3)** to match U-012 R1+R2+R3 sprint scope while keeping engineer effort bounded | R1 swap requires MetaGPT (or HuggingGPT) reproduction = +5-7 engineer-days | ✅ R10: SWAP-1 + SWAP-3 |
+| **U-016-decide** | Drop original E-007 in favour of E-010..E-012? | **Yes** (drop E-007; subsumed by the new tickets) | If kept, double-count of effort with no benefit | ✅ R10: dropped |
+| **U-018-decide** | Add MAD as 3rd external baseline (SWAP-4 = R2 audit swap into MAD `final_aggregator`)? Triggered by R-FULL-002 reviewer flagging MAD `is_overlap_risk=TRUE`. (a) add / (b) skip + RW §2.2 expansion only | **(a)** add — closes D3 novelty cap; without it, paper capped at D3 ≤ 5.5 | +5 engineer-days (E-015 + E-016); fits into existing 5-6 d buffer plus Day 1.5 ahead-of-schedule margin | ✅ **R17: (a) add MAD** |
 
-If user chooses recommended (2 systems, R2+R3, drop E-007), engineer adds +5-6 days net to the sprint, which fits inside the existing buffer.
+All four decisions are now ✅. Active engineer queue (R17): E-005, E-006, E-010, E-011, E-012, E-014, **E-015, E-016**. Active scientist queue (R17): S-115, S-116, S-117, S-121, S-122, S-123, **S-131**, S-009, S-010.
 
 ---
 
@@ -237,5 +254,11 @@ When all of the following are true, this workstream is ✅:
 - Sprint kickoff: `docs/coordination/implementation_log.md` `[stage2_sprint_kickoff_20260420]`
 - Provider switch: `docs/coordination/implementation_log.md` `[provider_switch_20260420]`
 - Engineer cautions: `docs/coordination/implementation_log.md` `[pinned_cautions_for_engineer_20260420]`
-- Reviewer fatal that this closes: `artifacts/idea_reviews/reviewer_20260419_163139_01_9e72f7/review.md` (fatal #3, S6=3, D4=4)
-- Decisions to wait for: `docs/coordination/USER_TODO.md §A` U-014 / U-015 / U-016
+- External baseline workstream kickoff: `docs/coordination/implementation_log.md` `[external_baseline_workstream_20260420]`
+- External baseline survey results: `artifacts/external_baselines/survey_report.md` (E-009 ✅ R13 commit)
+- R17 MAD landing: `docs/coordination/implementation_log.md` `[u_018_mad_landed_20260420]`
+- Reviewer fatals that this closes:
+  - R-FULL-001 fatal #3 (S6=3, D4=4): `artifacts/idea_reviews/reviewer_20260419_163139_01_9e72f7/review.md`
+  - R-FULL-002 D3 `is_overlap_risk=TRUE` (MAD): `artifacts/idea_reviews/reviewer_20260419_185701_*/review.md`
+- Decisions: `docs/coordination/USER_TODO.md §A,§C` U-014 ✅ / U-015 ✅ / U-016 ✅ / U-018 ✅
+- MAD reference paper: Liang et al. 2024, "Encouraging Divergent Thinking in Large Language Models through Multi-Agent Debate" (or Du et al. 2024, "Improving Factuality and Reasoning in Language Models through Multiagent Debate") — engineer to verify in E-015 which repo we actually clone (`composable-models/llm_multiagent_debate` is the canonical implementation cited by reviewer).
