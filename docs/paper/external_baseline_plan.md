@@ -251,6 +251,7 @@ When all of the following are true, this workstream is ✅:
 ## 10. References
 
 - This plan: `docs/paper/external_baseline_plan.md` (this file)
+- **Single benchmark inventory (datasets + baselines + topologies + backbones + status table)**: [`docs/paper/benchmark_inventory.md`](benchmark_inventory.md) — see §3.3 + §3.4 there for the canonical N=3 SWAP host list (kept in sync with this file)
 - Sprint kickoff: `docs/coordination/implementation_log.md` `[stage2_sprint_kickoff_20260420]`
 - Provider switch: `docs/coordination/implementation_log.md` `[provider_switch_20260420]`
 - Engineer cautions: `docs/coordination/implementation_log.md` `[pinned_cautions_for_engineer_20260420]`
