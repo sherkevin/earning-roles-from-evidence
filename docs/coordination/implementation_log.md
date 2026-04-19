@@ -1843,6 +1843,8 @@ vs 原 plan 净增 +5-6 天用于 external baseline workstream，由 buffer 吸�
 
 > **[reviewer-ack 2026-04-19 20:22]** R-FULL-004 落盘 → `artifacts/idea_reviews/reviewer_20260419_202222_04_232b11/review.md`（按新 §F.3 只 review.md）。**STRICT P1 重审, 不讨好**：overall=4.5 (weak_reject), weighted_sum=4.985, experiments_solidity_score=1/8。审的是 scientist 在 R-FULL-003 后重编的新 PDF（SHA `73AD9124` → `4504614E`，332.3 KB，scientist 修了 §5 Conclusion page-8 越界 + 移 Provider Integrity 出 Limitations + Algorithm 1 inline 到 page 5）。**承认前一轮 R-FULL-003 评分讨好** (D5=8.0/S2=7.0/D7=7.0/D6=7.0/S7=6.0/oral=4.0 6 处偏宽，已在 R-FULL-003 review.md 顶部加 STALE+ERRATA)。**关键判断**: DR-1+DR-3 PASS（scientist 修了），但 experiments_solidity_score=1/8 是 binding cap → 论文进 4.5 floor 是结构性问题。Scientist S-104 入口同前。详见 `docs/coordination/REVIEWER_TODO.md §A/§C/§D/§F.5`。（reviewer 边界遵守：未改 USER_TODO/SCIENTIST_TODO/PROJECT_STRUCTURE；本行是 §F.4 唯一允许的 ack。）
 
+> **[reviewer-ack 2026-04-19 20:48]** R-FULL-005 落盘 → `artifacts/idea_reviews/reviewer_20260419_204827_05_5d4006/review.md`（按 §F.3 只 review.md）。**P4 Reproducibility-Ethics SAC**（唯一未用过 persona），**stateless** + **100% 重读 prompts/reviewer_prompt.md 完整规范不凭记忆** + **严格按 §8 10 步流程**：overall=4.5 (weak_reject), weighted_sum=4.910, experiments_solidity_score=1/8。审的是同 PDF SHA `4504614E`（与 R-FULL-004 同），按用户 verbal trigger "全新审稿人角度" 作 implicit U-Review-5 override §F.4 24h cooldown。**Cross-persona 一致性大验证**：连续 5 轮 R-FULL P5/P3/P2/P1/P4 五种独立 persona 全 overall=4.5 weak_reject → **4.5 floor 是 persona-invariant 的结构性结论**（不是 reviewer noise）。**P4 specialty deep audit 收益**：D5=5.5（LLM_ANSWER/LLM_DECOMPOSE/AUDIT-rule/EVIDENCE_EXTRACT prompts 不在 paper + FIT undefined for vector + TCPB 权重映射缺）+ D7=7.5（Limitations honest+specific 但 missing demographic/societal risks for band 8+），是前 4 轮 reviewer 没做的深度。**主动派工** (per R-FULL-004 已建立 dispatch pattern + 用户授权)：SCIENTIST_TODO §C 加 R-FULL-005 themes + §B.5 加 S-XXX TODO + §F.5 加 ack 块 + USER_TODO §D 加通知。详见 REVIEWER_TODO §A/§C/§D/§F.5 + 本行（§F.4 允许的唯一 ack）。
+
 ---
 
 ### [engineer_day1_5_completion_20260420]
@@ -2665,7 +2667,85 @@ The single-run +3.38 pp F1 advantage reported in the prior block was **inflated 
 
 - **engineer (next window)**: 等 user 拍板 U-020 (fullval gate)；可选自启动 5-shard 200 (额外 4 shards) 进一步压低 std；可选 E-005.5 mechanism ablation (拆 R1/R2/R3 贡献，需要新 method_name `edo_audit_only` / `edo_split_only` / `edo_vector_only`，scope expansion，应等 user 决策)
 - **user**: 拍板 **U-020** with corrected expectation："F1 effect uncertain at 200 samples; fullval needed for significance; token win is rock-solid";
-- **scientist (S-117)**: 用 corrected 3-shard paired table 写 §4 preliminary，避免 over-claim
+  - **scientist (S-117)**: 用 corrected 3-shard paired table 写 §4 preliminary，避免 over-claim
+
+---
+
+### [E-017_seed42_running_20260420]
+
+- when: 2026-04-19 (engineer Day 7 cont, R22+ commit pending)
+- who: engineer (executing R21 dispatch from `[u_020_stage2_fullval_3seed_launch_20260420]`)
+- intent: 启动 E-017 fullval × 3 seeds 第 1 seed (=42)，stage2 + stage1 paired anchor 并行 background；同时 server 端 E-010 + E-015 step-1 (clone) 完成 prep
+- status: ⏳ in_progress (本块；2 个 fullval batch 跑中, 各 ~3-4 h ETA)
+- pinned cautions ack:
+  - **C-1** ✓: 两 batch 都 `runtime contract: intended='gpt-4.1-mini' resolved='gpt-4.1-mini' backend=newapi`
+  - **C-2** ✓: production 路径 (methods/runner/contracts) 没改一行;Stage-1 ✅ 在 R22+ commit pre-run validate `[OK] (200 samples)` + `[OK] (7405 samples)`
+  - **C-3** ✓: 3 seeds 用 `random.seed(N)` 控；同 question-id 序列（head-N 文件序）
+  - **C-4 #1** ✓: token cost monitoring via cost_ledger.jsonl
+  - **C-5** ✓: $270 budget；本 seed=42 估 ~$30 (preliminary 200-sample 推算)
+  - **C-6 (R21 NEW)** ✓: 不 shuffle samples; head-N from raw_inputs.jsonl 保证 paired same-question-id
+  - **C-7 (R22 NEW)** ✓: SSH 5-step recovery playbook 已 verify 4 s 连通 (key=`~/.ssh/school` + `IdentityAgent=none` + `ControlMaster=no`)
+- launch:
+  - 新写 driver `scripts/run_e017_fullval_seed.py` (~140 行)：单 (seed, method) 一次，append cost_ledger.jsonl
+  - 新写 `scripts/paired_bootstrap_ci.py` (~190 行)：B=10000 percentile bootstrap + paired sign test + per-seed 输出 + cross-seed mean
+  - 命令 1: `python scripts/run_e017_fullval_seed.py --seed 42 --method edo_stage2_chain --workers 8` (background)
+  - 命令 2: `python scripts/run_e017_fullval_seed.py --seed 42 --method fixed_peer_calibrated --workers 8` (background)
+- progress (snapshot at 9.5 min in):
+  - stage2 seed=42: **450/7405 samples done (~47 samples/min)** — partial_F1=0.7130 at 370 (first ack); ETA full ~2.5 h more
+  - stage1 paired seed=42: **339/7405 samples done (~36 samples/min)** — first progress ack pending; ETA full ~3.3 h more
+  - 2 procs alive (PID 30820 + 37784, both 260+ CPU)
+- side-tasks done in parallel (server-side prep, ssh recovered ✓):
+  - **E-010 ChatEval clone**: `dengkw@10.103.16.12:/media/data3/dengkw/idea04/external_baselines/chateval` ✅ 37 MB, commit `56b320c` (matches survey_report.md), `Python 3.10.12` system, `requirements.txt` 含 `langchain>=0.0.155 / openai / fastapi / git+OpenBMB/BMTools`
+  - **E-015 MAD clone**: `dengkw@10.103.16.12:/media/data3/dengkw/idea04/external_baselines/mad` ✅ 1 MB, commit `9846749` (2025-04-24, fresh!), arxiv 2305.14325 = Du et al. 2024 (correct repo per E-015 ticket); subfolders math/gsm/biography/mmlu (no hotpotqa — adapter needed in E-015 step 4); `requirements.txt` 56 bytes minimal
+- next_action:
+  - **wait for seed=42 batches**: ETA ~3.3 h to last completion (stage1 paired)
+  - **then kick off seed=43**: 同样 2 batch parallel, ETA +3.3 h (or sequential if newapi rate-limit shows)
+  - **then seed=44**: same
+  - **then paired_bootstrap_ci.py**: aggregate 3 seeds × 2 methods → `paired_stats_3seed.csv`
+  - **then handoff to scientist**: append `[E-017_done_<TS>]` ✅ sub-entry in `[u_020_stage2_fullval_3seed_launch_20260420]`
+- if E-015 (MAD reproduce) is desired in this session as a side-quest:
+  - MAD repo only has math/gsm/mmlu/biography tasks — no HotpotQA. E-015 step 4 ("Reproduce on 50-sample HotpotQA slice") needs to write a HotpotQA adapter. Estimated 4-6 h work; defer to E-015 ticket execution properly (not E-017 sub-task)
+
+#### Lesson learned: newapi parallelism cap (logged for future engineer)
+
+Engineer attempted to push 4 parallel batches (seed=42 stage2 + stage1 + seed=43 stage2 + stage1, 32 concurrent newapi calls) at ~11 min into the seed=42 batch. **Result**: seed=42 throughput dropped from ~47 samples/min to ~8 samples/min (6× slowdown — newapi rate-limited the combined connection pool). seed=43 batches barely got 1 sample done in 90 s. Engineer immediately killed seed=43 procs (PIDs 4164 + 34580; the bg-tool returned the *parent* PowerShell PIDs which weren't the actual python; had to identify the python procs by `StartTime` filter); seed=42 throughput recovered to ~32-47 samples/min within 3 min.
+
+**Recommendation for E-017 / future fullval batches**:
+- **2 parallel batches max** on newapi (≈ 16 concurrent calls). 4 hits rate limit hard.
+- Sequential by seed: each seed's 2 batches in parallel, then next seed.
+- Total ETA for E-017 3-seed × 2 method = **~10 h walltime sequential by seed** (each seed = max(stage1 wall, stage2 wall) = ~3.3 h limited by Stage-1; 3 × 3.3 = 9.9 h)
+- This matches the E-017 ticket's 9 h estimate (✓) — engineer's parallel push was incorrect optimisation
+
+#### Session-end snapshot (this engineer session ending)
+
+| Item | Status |
+|---|---|
+| **E-017 seed=42 stage2** | ⏳ 1192/7405 (16%), bg PID 30820 alive, ETA ~2.5 h more |
+| **E-017 seed=42 stage1 paired** | ⏳ 892/7405 (12%), bg PID 37784 alive, ETA ~3.3 h more |
+| **E-017 seed=43 stage2 + stage1** | ⏳ pending (sequential after seed=42) |
+| **E-017 seed=44 stage2 + stage1** | ⏳ pending (sequential after seed=43) |
+| **E-017 paired_bootstrap_ci.py** | ✅ ready (self-tested on existing 200-sample data) |
+| **E-010 ChatEval clone on server** | ✅ done — `/media/data3/dengkw/idea04/external_baselines/chateval/` (37 MB, commit 56b320c) |
+| **E-015 MAD clone on server** (prep ahead) | ✅ done — `/media/data3/dengkw/idea04/external_baselines/mad/` (1 MB, commit 9846749, 2025-04-24); needs HotpotQA adapter for E-015 step 4 |
+| **SSH 5-step recovery playbook** | ✅ verified — `~/.ssh/school` + `IdentityAgent=none` + `ControlMaster=no` works in 4 s |
+
+**paired_bootstrap_ci.py self-test on existing 200-sample data**: ΔF1 = +0.0338, 95% CI = [-0.0125, +0.0810] (CI INCLUDES 0), sign-test p = 0.4966 → **mathematically confirms** the engineer's earlier "200-sample paired +3.38 pp is suggestive but NOT statistically significant" diagnosis. Vindication of the multi-shard caveat in `[E-006_partial_3shard_paired_RESULT_20260420]`.
+
+#### Background-process handoff for next session
+
+The 2 fullval batches (PIDs 30820 + 37784) will continue running after this session terminates (Windows persistent processes). **Next session**:
+
+1. **First action**: check if PIDs 30820 + 37784 are still alive (`Get-Process -Id 30820,37784`); if exited, check `_ckpt_preds.jsonl` line count; if `metrics.json` exists, batch is done
+2. **If seed=42 batches done**: 
+   - Run `python scripts/validate_logs.py <run_dir>` on each
+   - Append `[E-017_seed42_done_<TS>]` sub-entry below this block (NOT in this block; preserve append-only history)
+3. **Then start seed=43 sequentially**: `python scripts/run_e017_fullval_seed.py --seed 43 --method edo_stage2_chain --workers 8` + parallel `--method fixed_peer_calibrated` (max 2 parallel)
+4. **Then seed=44**: same pattern
+5. **After all 6 batches done**: `python scripts/paired_bootstrap_ci.py --root artifacts/round2_gpt41mini_stage2_fullval --method-a fixed_peer_calibrated --method-b edo_stage2_chain --seeds 42,43,44 --B 10000 --out artifacts/round2_gpt41mini_stage2_fullval/paired_stats_3seed.csv`
+6. **Append `[E-017_done_<TS>]` ✅ sub-entry** under `[u_020_stage2_fullval_3seed_launch_20260420]` with paired_stats summary
+7. **Update SCIENTIST_TODO §B.5**: S-115/S-116/S-117 fully unblocked
+
+**CRITICAL: don't restart the still-running batches.** Resume detection in `runner.py` reads `_ckpt_preds.jsonl` and resumes from there if `metrics.json` doesn't exist; safe to re-invoke.
 
 ---
 
@@ -3035,5 +3115,69 @@ ssh -i ~/.ssh/school \
   - scientist: 立即开始 S-136..S-140 (R24..R28 后续 commit, 每个 commit 1 个 S-XXX or batched 2-3 个)
   - engineer: 不变 (继续 E-005 step 3-5 → E-017 3-seed × 7405 paired fullval; 如选 server 走 SSH pinned cautions)
   - user: 无 action 需要；R-FULL-005 触发等 sprint Day 18-19 之后 (E-017 ✅ + E-014 ✅ + E-010..E-016 ✅, 即 exp_solidity ≥ 4 后)；如认为 reviewer protocol observation (stateless tension) 需正式裁定，加 U-XXX-decide 到 USER_TODO §A
+
+---
+
+### [reviewer_r_full_005_ack_20260420]
+
+- when: 2026-04-20 (R25 commit)
+- who: scientist (S-104 mandatory loop for R-FULL-005 + ID conflict resolve)
+- intent: §F.4 1-line ack + scientist S-104 4-step 处理决议表 for R-FULL-005 reviewer batch (`reviewer_20260419_204827_05_5d4006/`). 同时记录 reviewer-agent 派工时 ID 撞号事件 + cross-persona triple-binding cap 结构性观察。
+- status: ✅ (decision routing 完毕；落地 2 个 S-141 + S-142 由 scientist 在 R26 后续 commit 自行执行；S-117 partial unblock 由 R27 commit 自行执行)
+- batch identification:
+  - reviewer_id: `reviewer_20260419_204827_05_5d4006`
+  - SAC profile: **P4 Reproducibility-Ethics SAC** (D5 + D7 + Responsible NLP Checklist 焦点；5 personas 中**最后一个未用过**的 → R-FULL-001..005 已轮过 5 种独立 persona = P5 oral / P3 adversarial-novelty / P2 empirical-NLP / P1 strict-ARR / P4 reproducibility-ethics)
+  - target PDF: `article/build/edo_paper.pdf` (R20 commit `6748e4e`，332.3 KB / 11 pages, SHA prefix `4504614E` — 与 R-FULL-004 同 PDF；reviewer 按 user verbal trigger "全新审稿人角度" 作 implicit `U-Review-5-decide` override §F.4 24h cooldown)
+  - score: overall=4.5 / weighted_sum=4.910 / experiments_solidity_score=1/8 (only EXP-5 partial pass) / oral_eligible=false / verdict=weak_reject
+  - **第 5 轮连续 weak_reject (R-FULL-001/002/003/004/005)** — 5 personas / 5 weighted_sum (5.925 / 5.905 / 4.985 / 4.910 / + R-FULL-001 baseline) **all converge to overall=4.5 weak_reject** by §6 cap chain
+  - cap chain (triple-binding): D3<5 (D3=4.0) → cap 4.5 + D4<5 (D4=4.0) → cap 4.5 + experiments_solidity ≤ 3 → cap 4.5; **all 3 caps converge at 4.5** = 4.5 floor 是 persona-invariant 的客观结构性结论
+
+#### Cross-persona structural observation (CRITICAL FINDING from reviewer)
+
+reviewer 在 review.md `Step 7: Score Calculation` 末段明示：
+
+> "The 4.5 floor is structural and **triple-binding** (D3+D4 dimension caps + experiments_solidity floor all converge at 4.5). To break it requires improving D3 (add MAD as benchmarked baseline + 2 more concrete deltas) AND D4 (add MuSiQue + multi-seed + paired CI + external SOTA) AND experiments_solidity_score ≥ 4 (any 3 of EXP-1/2/3/4/6/7/8 newly passing). The paper's writing/framing/algorithm spec quality are NOT the bottleneck — experimental rigor is."
+
+5 R-FULL batches × 5 distinct personas → all overall=4.5 weak_reject is NOT reviewer-noise; it's a structural finding about the paper's current empirical state. Implication for scientist: **stop chasing per-batch score fluctuations**; focus 100% on unblocking experiments_solidity (E-017 + E-014 + E-010..E-016 sprint will deliver). R-FULL-006 trigger only after exp_solidity ≥ 4 actually achieved (per R-FULL-005 reviewer's own recommendation).
+
+#### S-104 4-step 处理结果
+
+  - **step 1 通读**: review.md 337 行 (P4 Reproducibility-Ethics 专家审，特别细致于 D5/D7/Responsible NLP Checklist verification)
+  - **step 2 不盲从分类** (~25 items 全过):
+    - **2 NEW (actionable, scientist hygiene)** → SCIENTIST_TODO §B.5 加 **S-141 + S-142** (reviewer-agent 派工时 ID 误用 S-139/S-140 与 R24 撞号 → scientist 在本 commit 重命名 per four-role rule §12)
+    - **~13 redundant** (in sprint)：与 R-FULL-001/002/003/004 同 — exp_solidity / 单 benchmark / 单 seed / 无 paired CI / 无外部 SOTA / Stage-2 not impl / Figure 1 placeholder / Table 2 gpt-4.1-mini missing / R1/R2/R3 至少 1 个 / external SOTA improve / seed-level stability / TCPB scoring formula / FIT vector case / LLM_* prompt templates — 全部已在 sprint workstream 派工链 (E-017 R21 派 paired multi-seed fullval, E-014 R13 派 gpt-4.1-mini Table 2, E-010..E-016 R10/R17 派外部 baseline + MAD, U-EXEC-004 Figure 1, S-136..S-138 R24 已 ✅)，不重复加 TODO
+    - **0 user 决策**：U-011 (b) ✅ 已批准 ARR May 25 sprint；reviewer 推荐 "withdraw and revise" 与 user 已批 sprint conflict, scientist 不擅自 override (与 R-FULL-004 同处理)
+    - **0 engineer 工单**：sprint workstream 已 cover；无新增
+    - **1 cross-persona meta-observation (CRITICAL)**: 5 personas / 5 weighted_sum 都 cap 到 4.5 = persona-invariant structural finding；scientist 应放弃在评分上挣扎，专注 experiments_solidity。**记录在 SCIENTIST_TODO §C 给 user 知晓**
+    - **1 reviewer protocol observation (informational)**: reviewer-agent 派工时给 R-FULL-005 NEW-1 + NEW-2 用了 ID `S-139` + `S-140`，**与 R24 scientist 已使用并 ✅ 的 S-139 (Limitations item 6) + S-140 (4 处 honesty re-phrase batch) ID 撞号**；违反 [`four-role-todo-workflow.mdc §12`](../../.cursor/rules/four-role-todo-workflow.mdc) "Once an ID is assigned, never reuse it" 原则 + §12 末段 "Before allocating a new ID, run `Grep '<prefix>-'` to find the current maximum and add 1"。**Resolution**: scientist 在本 commit 主动重命名 reviewer 的 S-139→**S-141** / S-140→**S-142**；本 observation 记录给 reviewer-agent self-improvement + user 自查
+    - **0 reject/defer items 新增** (与 R-FULL-004 同的 error analysis + community-impact case study 已 defer; 与 R-FULL-001..004 同的 redundant 已在 sprint)
+  - **step 3 scientist TODO 更新**: §C +5 行 R-FULL-005 themes (2 NEW + 1 redundant + 1 cross-persona meta-observation + 1 reviewer protocol observation) + §B.5 重命名 reviewer 派的 S-139→S-141 / S-140→S-142 + §D R25 行 + 状态块更新 ("R25 后状态: 第 5 轮 §6 cap 锁是 persona-invariant 结构性结论; R26 (S-141+S-142 batch) + R27 (S-117 partial via engineer corrected 3-shard data) 后所有 scientist-self-exec 全 ✅")
+  - **step 4 dispatch fan-out**: 本 phase 块 ack (§F.4 1-line ack equivalent + 完整 4-step 决议表 + cross-persona triple-binding cap analysis + ID conflict resolution note) + USER_TODO §D 1 行通知 (用户无 action 需要) + REVIEWER_TODO 不动 (reviewer-agent 已自更新 + 主动派工)
+
+#### Engineer-side update note (informational, not actionable for scientist S-104)
+
+Engineer 在 [E-017_seed42_running_20260420] 已正式启动 E-017 (R21 派工)：
+- seed=42 stage2 + stage1 paired 在 background 跑中 (PIDs 30820 + 37784, ETA ~3.3 h to last completion)
+- E-010 ChatEval clone + E-015 MAD clone 都已 done on server (per U-019 ✅ SSH pinned cautions verified)
+- Engineer 自己 walk-back 200-sample preliminary 数据：paired bootstrap CI [-0.0125, +0.0810] 含 0, sign-test p=0.4966 → ΔF1 +0.0338 NOT statistically significant at n=200, 但 token -37% rock-solid。这是 **engineer 自己 ack 的诚实数据**，scientist 应在 R27 commit 立即写入 §4 corrected preliminary table + 严谨标 "preliminary; F1 effect not yet significant; token win robust"
+
+#### depends_on
+
+  - REVIEWER_TODO §A R-FULL-005 ✅ (reviewer-agent 自己 2026-04-19 20:48 落盘)
+  - SCIENTIST_TODO §B 强制循环 §S-104 protocol (永远 ✅，每次 reviewer batch 自动重 trigger — 这是第 5 次)
+  - four-role-todo-workflow.mdc §12 ID 唯一性 (scientist 在本 commit 用此 rule resolve reviewer's ID conflict)
+
+#### unblocks
+
+  - **S-141** (renumbered from reviewer's S-139, Limitations societal/demographic/multilingual risk discussion, 15 min)
+  - **S-142** (renumbered from reviewer's S-140, B2 random seed disclosure, 5 min, will expand to multi-seed list after E-017 ack)
+  - **S-117 partial** (write corrected 3-shard preliminary table from engineer's E-005 paired bootstrap CI data — engineer ack'd ΔF1 +0.0338 not significant at n=200, token -37% robust; honest preliminary write-up unblocked NOW even before E-017 fullval done)
+
+#### next_action
+
+  - scientist: 立即开始 R26 (S-141 + S-142 batch hygiene, ~20 min) + R27 (S-117 partial, write corrected 3-shard preliminary table in §4, ~30 min)
+  - engineer: 不变 (E-017 seed=42 跑中, 后续 seed=43/44, ETA total ~10 h walltime; per E-017 ticket spec)
+  - user: 无 action 需要；如认为 reviewer protocol observation (R25 ID 撞号) 需正式裁定，加 U-XXX-decide 到 USER_TODO §A
+  - reviewer-agent (self-improvement note): 下次主动派工前先 `Grep "S-"` 找最大 ID +1，避免再次撞号
 
 ---
