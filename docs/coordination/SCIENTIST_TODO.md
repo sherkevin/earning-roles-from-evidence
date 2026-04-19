@@ -3,7 +3,7 @@
 > 维护者：科学家（论文撰写负责人）。
 > 创建日期：2026-04-19。
 > 当前位置：`docs/coordination/SCIENTIST_TODO.md`（Phase 1 重构后）。
-> 协作规范：[`.cursor/rules/four-role-todo-workflow.md`](../../.cursor/rules/four-role-todo-workflow.md) § 1–12（含审稿人角色 §11 + ID 命名约定 §12）。
+> 协作规范：[`.cursor/rules/four-role-todo-workflow.mdc`](../../.cursor/rules/four-role-todo-workflow.mdc) § 1–12（含审稿人角色 §11 + ID 命名约定 §12；英文版 + Cursor `.mdc` 规范）。
 > 配对文件：[`USER_TODO.md`](./USER_TODO.md)（决策池权威源 + 用户专属工作）、[`implementation_log.md`](./implementation_log.md)（工程师日志）、[`REVIEWER_TODO.md`](./REVIEWER_TODO.md)（审稿人 R-FULL/R-PART）。
 > 简化协议（2026-04-19）：每次执行入口先扫 § B 的 ⏳ / ❌ 项检测是否已 done，再开新动作。
 
@@ -41,7 +41,7 @@
 
 ## B. 我自己的写作 TODO（不依赖你 / 不依赖工程师，可以做）
 
-按 `four-role-todo-workflow.md §2` 硬规则：**所有 ❌ 且不被 blocked 的项必须连续做完再回报。**
+按 `four-role-todo-workflow.mdc §2` 硬规则：**所有 ❌ 且不被 blocked 的项必须连续做完再回报。**
 
 ### B.1 论文 hygiene（无依赖）
 

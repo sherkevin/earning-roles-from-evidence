@@ -3,7 +3,7 @@
 > 维护者：审稿人。
 > 创建日期：2026-04-19。
 > 当前位置：`docs/coordination/REVIEWER_TODO.md`。
-> 协作规范：[`.cursor/rules/four-role-todo-workflow.md`](../../.cursor/rules/four-role-todo-workflow.md) §11。
+> 协作规范：[`.cursor/rules/four-role-todo-workflow.mdc`](../../.cursor/rules/four-role-todo-workflow.mdc) §11（英文版 + Cursor `.mdc` 规范）。
 > 配对文件：[`USER_TODO.md`](./USER_TODO.md)、[`SCIENTIST_TODO.md`](./SCIENTIST_TODO.md)、[`implementation_log.md`](./implementation_log.md)；批量审稿归档：[`artifacts/idea_reviews/`](../../artifacts/idea_reviews/)。
 
 ---
@@ -93,4 +93,4 @@ batch 完成后由 scientist 触发 `scripts/summarize_idea_reviews.py` + `scrip
 
 ### E.4 hand-off：scientist S-104 强制循环
 
-batch 落盘后必须 → scientist 进入 `SCIENTIST_TODO.md § B.4 S-104` 4 步循环：通读 → 不盲从（**兼顾 `scoreboard.md` 历史趋势**，单次评分小波动不阻碍前进）→ 诚实接受 → dissent log。详见 `four-role-todo-workflow.md §11.4`。
+batch 落盘后必须 → scientist 进入 `SCIENTIST_TODO.md § B.4 S-104` 4 步循环：通读 → 不盲从（**兼顾 `scoreboard.md` 历史趋势**，单次评分小波动不阻碍前进）→ 诚实接受 → dissent log。详见 `four-role-todo-workflow.mdc §11.4`。

@@ -879,6 +879,49 @@
   - 无（请求闭环）
   - 后续若用 `E-XXX` 前缀，先 Grep 现有最大 E-XXX 编号 +1（当前是首次引入，下一次可用 E-001）
 
+### [E-rules-mdc-en-2026-04-19]
+- status: completed
+- date: 2026-04-19
+- 用户指令: "将 four-role-todo-workflow.md 写成英文，后缀改为 mdc 符合 rules 的规范，把 ssh-server-rules 的后缀也改了"
+- 解读:
+  - `four-role-todo-workflow.md` → 完整翻译为英文 + rename `.md` → `.mdc`（Cursor rule 规范要求 `.mdc`）
+  - `ssh-server-rules.md` → 仅改后缀 `.md` → `.mdc`（用户没要求翻译，且其内容已是英文为主+ STATUS 段中文，混合状态不动）
+- files_added:
+  - `.cursor/rules/four-role-todo-workflow.mdc`（约 16 KB；英文版 12 节完整 rule，从原中文版语义对等翻译；front-matter `globs` 不变；§0 history 注脚加入 "suffix changed to .mdc + body translated to English on 2026-04-19" 一句）
+  - `.cursor/rules/ssh-server-rules.mdc`（约 5 KB；与原 `.md` 100% 同字节，仅一处自指更新：L13 `four-role-todo-workflow.md §4` → `four-role-todo-workflow.mdc §4`）
+- files_deleted:
+  - `.cursor/rules/four-role-todo-workflow.md`（15,923 B）
+  - `.cursor/rules/ssh-server-rules.md`（5,194 B）
+- files_modified（活跃引用 `.md → .mdc`，共 8 处）:
+  - `README.md` L70：`four-role-todo-workflow.md` → `.mdc` + 加注 "英文版 + Cursor `.mdc` 规范"
+  - `PROJECT_STRUCTURE.md` L244 + L286：同上
+  - `docs/coordination/SCIENTIST_TODO.md` L6 + L44：同上（L44 是 §B 内对 §2 硬规则的引用）
+  - `docs/coordination/USER_TODO.md` L6：同上
+  - `docs/coordination/REVIEWER_TODO.md` L6 + L96：L6 header；L96 §E.4 hand-off 末对 §11.4 的引用
+  - `artifacts/rebuttals/README.md` L14：同上（rebuttal 流程对 S-104 的引用）
+  - `docs/coordination/implementation_log.md`（本条）
+- key_decisions（用户直接指令，非自主）:
+  - 选 Cursor 规范的 `.mdc` 后缀（与现有 `persistent-chat.mdc` 对齐）
+  - 选完整翻译四角色 rule 为英文（用户明确要求）
+  - 选**不**翻译 ssh-server-rules（用户只说"后缀也改了"），保留其 STATUS 段中文 + RULE 1-5 英文的混合现状
+  - 历史快照（`implementation_log.md` 既往 phase block + USER_TODO §D L97 + REVIEWER_TODO §D L62）的旧 `.md` 文件名引用**保持不变**（不回写历史）
+- blockers:
+  - none
+- conflicts_with_docs:
+  - none
+- verification:
+  - `Glob ".cursor/rules/*"` → 应只剩 `four-role-todo-workflow.mdc` + `ssh-server-rules.mdc` + `persistent-chat.mdc` 三份 `.mdc`，无任何 `.md` 残留
+  - `Grep "four-role-todo-workflow\.md|ssh-server-rules\.md"` → 只剩历史快照（implementation_log + USER §D L97 + REVIEWER §D L62），全部活跃引用已切换至 `.mdc`
+  - `Grep "four-role-todo-workflow\.mdc|ssh-server-rules\.mdc"` → 8 处活跃引用 + 2 处自指（rule 自身 history 注脚）= 10 处命中，全部正确路径
+  - ReadLints 全部改动文件 0 错误
+- impact_on_other_tracks:
+  - Cursor IDE 现在能正确按 `.mdc` 规范加载这两份 rule（`globs` / `alwaysApply` 字段正常生效）
+  - 英文版 rule 解锁了未来对外协作 / open-source 场景下国际人员可读
+  - 不影响任何 in-flight run / 论文 LaTeX 编译 / 现有 U-XXX 决策内容
+  - 不影响 `persistent-chat.mdc`（用户要求不动）
+- next_action:
+  - 无（请求闭环）
+
 ### [reviewer_p5_oral_gatekeeper_review_20260419]
 - status: completed
 - date: 2026-04-19

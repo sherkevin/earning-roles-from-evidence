@@ -1,0 +1,218 @@
+---
+description: EMNLP long paper — four-role TODO workflow (user / scientist / engineer / reviewer); covers role mapping, decision routing, blocked semantics, ID naming, handoff, and reviewer batch lifecycle
+globs:
+  - docs/coordination/USER_TODO.md
+  - docs/coordination/SCIENTIST_TODO.md
+  - docs/coordination/REVIEWER_TODO.md
+  - docs/coordination/implementation_log.md
+  - artifacts/idea_reviews/**
+  - PROJECT_STRUCTURE.md
+alwaysApply: true
+---
+
+# EMNLP long paper — four-role TODO collaboration rules
+
+> **History**: Before 2026-04-19 the file was `three-role-todo-workflow.md` and covered only user / scientist / engineer; on 2026-04-19 the user clarified that the collaboration is actually **four-role** (with "reviewer" added). The file was renamed to `four-role-todo-workflow.md`, and on the same day the suffix was further changed to `.mdc` for Cursor rule-format compliance and the body was translated to English. Historical references to the old filename in `implementation_log.md` are preserved verbatim and **must not be retroactively rewritten**.
+
+## 0. Role-to-state-file mapping
+
+The repository contains **four persistent TODO files + one reviewer-archive directory family + one index**, each maintained by one of the four roles:
+
+| Role | State / output file | Main content |
+|------|---------------------|--------------|
+| **User** (overall coordinator) | [`docs/coordination/USER_TODO.md`](../../docs/coordination/USER_TODO.md) | §A decision pool (`U-XXX`, **single source of truth**) + §B user-only work (API top-ups / concept-figure generation / reference research / strategic direction) + §C dispatch inbox (todos other roles assign to the user) |
+| **Scientist** (writing lead) | [`docs/coordination/SCIENTIST_TODO.md`](../../docs/coordination/SCIENTIST_TODO.md) §B–E (§A is only a cross-reference back to USER_TODO) | Writing / figure design / Limitations tuning / framing decisions / paper-level lint / **reviewer-feedback handling (§B.4 S-104 four-step loop)** |
+| **Engineer** | [`docs/coordination/implementation_log.md`](../../docs/coordination/implementation_log.md) | Append-only engineering log (run experiments / change core code / validate logs / post-process / add runtime guards) |
+| **Reviewer** | [`docs/coordination/REVIEWER_TODO.md`](../../docs/coordination/REVIEWER_TODO.md) + per-batch directory `artifacts/idea_reviews/reviewer_<YYYYMMDD>_<HHMMSS>_<NN>_<6char-hash>/` + aggregated `scoreboard.md` / `fix_themes.md` | §A full-paper reviews (user-triggered only) + §B partial reviews (scientist / engineer may self-trigger to review their own newly written content); **stateless within a batch** (does not read past reviews when producing a new one, to avoid confirmation bias) |
+
+Project-level single index (mandatory read for any role taking over a fresh window): [`PROJECT_STRUCTURE.md`](../../PROJECT_STRUCTURE.md).
+
+## 1. Per-role operating procedure (CRITICAL)
+
+Every role (user / scientist / engineer / reviewer) **must**, at the start of every new action, perform the following 2 steps. Both are required:
+
+1. **pending → done sweep**: scan **the TODO file owned by the current role** for every ⏳ item or `等 <role> 完成 <ID>` (waiting-on) row, and check whether the upstream / external precondition has been satisfied. Mark satisfied items ✅ immediately and fill the "result link" column with a pointer to the produced artifact. This sweep is the entry point of the cycle.
+2. **Update current-action TODO state**: when starting an action, add a ⏳ row in your own TODO; the moment it finishes, flip it to ✅ and fill the artifact link. If you dispatch new work to another role, also add a `tracking-XXX` row in your own TODO marked `等 <role> 完成 <ID>`.
+
+**Skipping either step = work not finished.** The next role to take over will not be able to find the state.
+
+## 2. "No nagging for the next step" protocol (HARD RULE)
+
+When executing tasks:
+
+- ✅ **Required**: complete **all** items in your TODO that do **not** depend on others before asking the user what to do next.
+- ❌ **Forbidden**: pausing after every small task to ask "should I do A or B next?".
+- ❌ **Forbidden**: handing the user options while there are still ❌ untouched and not-blocked items in your todos.
+
+Hard rules for deciding "blocked":
+
+- The task's `阻塞` (blocked-on) field is non-empty / points to an ID owned by another role and not yet ✅ → blocked.
+- The task's `阻塞` field reads "user decision X" and `USER_TODO.md § A`'s row for that decision is still ⏳ → blocked.
+- The task's `阻塞` field reads "user manual X" and the corresponding row in `USER_TODO.md § B/§C` is still ⏳ → blocked.
+- Otherwise it is not blocked → start working immediately.
+
+## 3. Cross-role coordination via the `阻塞` column
+
+Every TODO file's `阻塞` (blocked-on) column must be explicit:
+
+- Free-form: `等 <role> 完成 <ID>`, or `用户决策 <decision-ID>`, or `用户人工活 <U-XXX>`;
+- After completing your own task, walk the other TODO files and clear the `阻塞` field on every downstream task that was waiting on you.
+
+A typical four-role blocking chain looks like:
+
+```
+user (U-RES-001 top up the API)
+   → engineer (run the fullval rerun)
+   → scientist (S-009 replace the "pending" wording in §4.3 with real numbers)
+   → reviewer (R-FULL-N — only the next full-paper batch can score the real fullval framing)
+   → user (decide U-011 framing direction based on reviewer's overall score)
+```
+
+## 4. Decisions go through `USER_TODO.md § A` — never decide unilaterally
+
+Scientist / engineer / reviewer are **strictly forbidden** from making the following kinds of decisions (illustrative, **non-exhaustive**, list of route-decision categories):
+
+- **Structural**: choosing among a/b/c routes (e.g., where the LaTeX template lives, where rebuttal records go, how to merge dual drafts, directory restructures);
+- **Freeze-related**: whether to lock the manuscript / submit to ARR / commit-to-EMNLP;
+- **Budget-related**: whether to spend GPU cycles on a re-run / whether to top up an API quota / whether to switch backbone provider;
+- **Scope expansion**: whether to add a new benchmark (e.g., MuSiQue) / a new ablation / a rebuttal-only experiment;
+- **Reviewer trigger (full-paper only)**: whether to launch a new **full-paper** review batch (`R-FULL-XXX`) — partial reviews `R-PART-XXX` do **not** require user approval (scientist / engineer may self-trigger to review their own newly written content);
+- **Version control**: whether to `git init` / force-push / squash historical commits.
+
+**Every decision** is first added as a row `U-XXX` + "recommendation / awaiting user" in [`docs/coordination/USER_TODO.md`](../../docs/coordination/USER_TODO.md) `§ A` (the **authoritative source**); **at the same time** add a cross-reference row (only the ID + which downstream task it blocks + a status mirror) in `SCIENTIST_TODO.md § A` so the scientist can track their own blocked chain. **Do not proceed until the user replies in USER_TODO.**
+
+Any **physical operation that only the user can perform** (API top-ups, generating a concept figure from a prompt, uploading the paper, registering accounts, OpenReview operations) goes into `USER_TODO.md § B/§C`.
+
+## 5. Window-switch / new-conversation handoff protocol
+
+When opening a fresh window, each role must read the following files first (≤ 100 lines per file):
+
+| Role | Mandatory reads |
+|------|-----------------|
+| User | `USER_TODO.md § A` recent ⏳ items + `§ B/§ C` recent ⏳ items |
+| Scientist | `SCIENTIST_TODO.md § B` recent ⏳ / ❌ items + `USER_TODO.md § A` (to see which decisions are blocking you) + `artifacts/idea_reviews/scoreboard.md` + `fix_themes.md` (latest reviewer state) + `PROJECT_STRUCTURE.md` |
+| Engineer | `docs/coordination/implementation_log.md` recent ⏳ / ❌ items + `USER_TODO.md § A` (to see which decisions are blocking you) + `PROJECT_STRUCTURE.md` |
+| Reviewer | `REVIEWER_TODO.md § A/§B` recent ⏳ items + the current paper PDF or partial fragment under review + `idea.md` (for framing context) + `prompts/reviewer_prompt.md` (system prompt); **do not read past reviews** (keep every batch independent) |
+
+Compact handoff message (one line ≤ 80 chars per field):
+
+```
+Goal: <one sentence>
+Success criteria: <verifiable artifact>
+Relevant files: <≤ 5 paths>
+Confirmed findings: <facts already established>
+Open risks: <known blockers>
+Next step: <one sentence>
+Role: user / scientist / engineer / reviewer
+Last TODO check: <YYYY-MM-DD HH:MM>
+```
+
+## 6. Minimum quality bar
+
+- Every time you write a new `.md` / `.tex` / `.py`: after finishing, **run ReadLints on the files you just touched** and only commit if there are zero lint errors.
+- Every time you run an experiment: **cross-check the numbers against existing ground truth** (when available); a diff > 1e-4 must be explained.
+- Every time you change code: **preserve reproducibility** (script + seed + n_boot must appear in either the filename or the log).
+- Every time you produce a review: **emit it in the structured format mandated by [`prompts/reviewer_prompt.md`](../../prompts/reviewer_prompt.md)** — free-form prose is not acceptable.
+
+## 7. Failure-rollback protocol
+
+Only commit-bearing roles (user / scientist / engineer) — the moment they notice that one of their own commits has introduced a regression (e.g., a new PDF Overfull warning / a numeric drift / a script crash / the paper crossing the 8-page limit / a build failure):
+
+1. Immediately add a `U-Rollback-XXX` row in `USER_TODO.md § A` (and a cross-reference in `SCIENTIST_TODO.md § A`);
+2. In your own TODO, demote the affected ✅ item back to ⏳ and append `⚠ regressed: <reason>`;
+3. Wait for the user to decide between `git revert` / `amend` / forward-fix.
+
+> **Reviewer-score fluctuation ≠ rollback trigger.** Small overall-score swings (±0.5 / ±1.0) between reviewer batches are reviewer sampling noise and **do not trigger rollback**. The scientist, in step ② "do not blindly follow" of S-104, **must weigh the historical score trend** (consult `artifacts/idea_reviews/scoreboard.md`'s cumulative distribution); a single small dip is not allowed to stall progress. Only when **multiple consecutive batches** point to a real regression on the same fix-theme should §7 rollback be considered.
+
+## 8. Completion report and wait
+
+After completing every actionable item in your TODO:
+
+1. Send the user a concise status report;
+2. Wait for the user's instruction;
+3. While waiting, do not unilaterally launch additional experiments or new full-paper reviewer batches (partial batches are governed by §11.1).
+
+## 9. Paper-figure division of labour
+
+- **Statistical figures** (bar / box / line / scatter / heatmap — anything data-driven): **scientist** produces them in Python → `artifacts/figures/`, with a data-provenance md alongside.
+- **Conceptual schematics / logical flow charts** (architecture / process / state machine / etc.): **user** draws them; the scientist **first writes a complete prompt** and drops it under `docs/paper/figures_prompts/` as a todo dispatched to the user (a row in `USER_TODO.md § B/§C`, mirrored by a `tracking-XXX` row in `SCIENTIST_TODO.md § B.3`).
+- Any figure cited from LaTeX must have a `.pdf` or `.svg` vector version; bare `.png` is for in-document preview only.
+
+## 10. Paper polishing → local commit
+
+After every "paper polish" action (including, but not limited to: merging drafts, section-level rewrites, figure embedding, finalising numbers, copy-edit pass), **make one local commit**:
+
+- Commit-message format: `<task-ID>: <one-sentence goal>`, body listing the affected files (≤ 6);
+- Enables future revert / blame / pre-submission audit of the revision history.
+
+Dependency: the repository must already have been `git init`-ed. If not, the commit-bearing tasks remain in `等用户决策 U-010` (waiting on the user's decision) state — do not initialise the repo unilaterally.
+
+## 11. Reviewer role specification
+
+> Reviewer is the **fourth** role in idea04 collaboration. It owns its own TODO file [`REVIEWER_TODO.md`](../../docs/coordination/REVIEWER_TODO.md) with two task families: **full-paper reviews** (`R-FULL-XXX`, user-triggered only) + **partial reviews** (`R-PART-XXX`, may be self-triggered by scientist or engineer).
+
+### 11.1 Trigger-permission matrix
+
+| Task type | Who may trigger | Purpose | Drop location |
+|-----------|-----------------|---------|---------------|
+| **Full-paper review** `R-FULL-XXX` | **User only** | Simulate an independent P5 oral-gatekeeper review of the whole PDF; pre-submission compliance pass before ARR / EMNLP | `artifacts/idea_reviews/reviewer_<TS>_<NN>_<HASH>/` (full batch) |
+| **Partial review** `R-PART-XXX` | **Scientist / engineer** (self-trigger) | Review newly written / modified content (e.g., a fresh §3.7 rewrite, a newly embedded figure, a new ablation paragraph) | `artifacts/idea_reviews/reviewer_<TS>_partial_<HASH>/` (lightweight) |
+
+**Red line**: scientist / engineer **must not** unilaterally launch a **full-paper** batch (covered by §4 red line). **Partial** batches may be self-triggered, but a tracking row must be added in `REVIEWER_TODO.md § B` (capturing what was reviewed / why it was triggered / artifact path).
+
+### 11.2 Input / output contract
+
+The complete schema, field definitions, and required fields are **all defined in [`prompts/reviewer_prompt.md`](../../prompts/reviewer_prompt.md)**, which is the single source of truth (to avoid double-source drift). This rule does not restate the field details.
+
+The detailed I/O contract lives in `REVIEWER_TODO.md § E`.
+
+### 11.3 Aggregated state (auto-generated)
+
+- `artifacts/idea_reviews/scoreboard.md` — cumulative average / `latest_overall` / score distribution across all historical batches.
+- `artifacts/idea_reviews/fix_themes.md` — deduplicated fix-themes aggregated across batches (the open feedback set).
+- `artifacts/idea_reviews/review_index.jsonl` — metadata index of every batch.
+
+Aggregation scripts: `scripts/summarize_idea_reviews.py` + `scripts/review_scoreboard.py`, triggered by the scientist after every new batch lands on disk.
+
+### 11.4 Hand-off: the scientist's mandatory S-104 loop
+
+Once a batch lands, **the scientist must immediately** execute the four-step evaluation loop defined in `SCIENTIST_TODO.md § B.4 S-104`:
+
+1. **Read through** every key field of every review (the exact field set is defined by `prompts/reviewer_prompt.md`);
+2. **Do not blindly follow** — judge each comment one by one ("does this point have real value?"); **must consider the historical score trend** (consult `scoreboard.md`'s cumulative distribution); a single small score dip is not allowed to stall progress;
+3. **Honest acceptance** — comments that pass steps ① and ② are added to `SCIENTIST_TODO.md § C` (feedback-tracking table) plus a corresponding `S-XXX` fix-todo in `§ B.5`;
+4. **Dissent log** — write down "why I rejected this comment" at the end of `§ C`, preserving an auditable dissent trail.
+
+S-104 is a **permanent mandatory** item that is never closed with ✅ — every new batch re-triggers it.
+
+### 11.5 What the reviewer does not do
+
+- ❌ Do not read past reviews from inside a batch (preserves batch independence and avoids confirmation bias; `REVIEWER_TODO.md` itself only tracks batch metadata, not review content).
+- ❌ Do not modify `USER_TODO.md` / `SCIENTIST_TODO.md` / `implementation_log.md` (output goes only to `REVIEWER_TODO.md` + `artifacts/idea_reviews/`).
+- ❌ Do not unilaterally launch a **full-paper** batch (must be approved by the user; see §11.1).
+- ❌ Do not participate in `§ A` decisions (the reviewer can only suggest fixes inside a review; decision authority remains with the user).
+
+## 12. ID naming conventions (cheat sheet)
+
+**Per-role prefix assignment** (user instruction, 2026-04-19): `U-x` user / `S-x` scientist / `E-x` engineer / `R-x` reviewer. Full inventory:
+
+| ID prefix | Owning TODO file | Meaning | Example |
+|-----------|------------------|---------|---------|
+| `U-XXX` | `USER_TODO.md § A` (authoritative) + `SCIENTIST_TODO.md § A` (cross-ref) | User-owned route decisions / structural / budget / scope expansion / freeze / version control | `U-003` (dual-draft merge) / `U-011` (framing direction) |
+| `U-RES-XXX` | `USER_TODO.md § B.1` | User-only: API / provider / resource ops | `U-RES-001` (top up kuaipao.ai) |
+| `U-FIG-XXX` | `USER_TODO.md § B.2` | User-only: concept-figure drawing | `U-FIG-001` (Figure 1) |
+| `U-REF-XXX` | `USER_TODO.md § B.3` | User-only: reference-literature curation (domain memory) | `U-REF-001` |
+| `U-DIR-XXX` | `USER_TODO.md § B.4` | User-only: ongoing strategic / framing direction | `U-DIR-001` |
+| `U-Rollback-XXX` | `USER_TODO.md § A` + `SCIENTIST_TODO.md § A` (cross-ref) | Rollback decision raised by any commit-bearing role after spotting a regression (see §7) | `U-Rollback-001` |
+| `C-XXX` | `USER_TODO.md § C` | Concrete todos **dispatched to the user** by scientist / engineer (dispatch inbox) | `C-001` (dispatched to USER: produce Figure 1) |
+| `S-XXX` | `SCIENTIST_TODO.md § B` (sub-grouped B.1 / B.2 / B.3 / B.4 / B.5) | Scientist's own writing / hygiene / fix-todo items | `S-001` (dual-draft merge) / `S-104` (reviewer-feedback loop) |
+| `E-XXX` | `docs/coordination/implementation_log.md` | Engineer work item (this prefix is used for new phase blocks; historical phase blocks `[<descriptive-name>]` are not retroactively rewritten) | `E-001` (illustrative) |
+| `R-FULL-XXX` | `REVIEWER_TODO.md § A` | Reviewer **full-paper** task (user-triggered only) | `R-FULL-001` |
+| `R-PART-XXX` | `REVIEWER_TODO.md § B` | Reviewer **partial** task (scientist / engineer may self-trigger) | `R-PART-001` |
+| `tracking-XXX` | "Dispatch-tracking row" appearing in any role's TODO | After dispatching work to someone else, leave a row in your own TODO that says "waiting on X to complete Y" | `tracking-S-009` (scientist tracking the engineer's run) / `tracking-C-001` |
+
+**ID-numbering convention**:
+
+- The numeric suffix increments **globally per prefix** (`U-001` / `U-002` / ...; the section a row lives in does not reset the counter).
+- Once an ID is assigned, **never reuse it** (even if the task is cancelled, keep the row marked `❌ cancelled` for historical traceability).
+- Before allocating a new ID, run `Grep "<prefix>-"` to find the current maximum and add 1.

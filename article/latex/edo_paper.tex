@@ -140,16 +140,6 @@ The selected action is
 \end{align*}
 subject to budget, depth, and safety constraints.
 
-\subsection{Three primitive actions}
-
-The EDO action space is intentionally minimal but organizationally expressive:
-\begin{itemize}
-  \item \texttt{do\_self}: solve the task locally.
-  \item \texttt{outsource(neighbor)}: pass the task to the locally best visible neighbor.
-  \item \texttt{split(subtasks)}: decompose the task into child tasks that each re-enter the same policy.
-\end{itemize}
-These three actions correspond to the basic organizational choices of doing the work, finding someone else to do it, or restructuring the work into manageable parts. Additional behaviors such as timeout, reroute, or fallback are treated as safety policies layered on top of these primitives rather than as the conceptual center of the method.
-
 \subsection{Recursive upstream audit}
 
 The main departure from the current prototype is that delegation is not terminal at handoff time. Every outsourcing decision also creates an \textbf{acceptance obligation}. If $a$ delegates a task to $b$, then $a$ must later evaluate whether to accept $b$'s result, reject it and redo the task, reject it and reroute, or reject it and resplit.
@@ -294,6 +284,25 @@ The canonical round2 \texttt{gpt-4.1-mini} results ($n=200$, chain, run \fpath{r
 \label{tab:main-results}
 \end{table}
 
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lccr@{}}
+\toprule
+\textbf{Variant} & \textbf{EM} & \textbf{F1} & \textbf{Tok.} \\
+\midrule
+canonical anchor (old codepath)   & 0.475 & \textbf{0.5955} & --- \\
+refreshed baseline (v3 codepath)  & 0.435 & 0.5597 & 6{,}429 \\
+\;\;$+$ evidence window enlarged  & 0.465 & 0.5819 & 7{,}335 \\
+\;\;$-$ TCPB terminal update      & 0.435 & 0.5597 & 6{,}430 \\
+\;\;$-$ decomposer safety gate    & 0.435 & 0.5597 & 6{,}430 \\
+\bottomrule
+\end{tabular}
+\caption{Mechanism ablations, HotpotQA chain-200, \texttt{glm-4-flash}. Disabling TCPB or the decomposer gate exactly matches the refreshed baseline; enlarging the evidence window recovers $+2.2$ F1. PAR $=0$ for all variants. Source: \fpath{round1_ablation_\{baseline,evidence,notcpb,nogate\}/}.}
+\label{tab:ablations}
+\end{table}
+
 \paragraph{Finding 1: Backbone quality dominates all method differences.} All three Stage-1 methods improve by $+15$ to $+20$ F1 points when switching from \texttt{glm-4-flash} to \texttt{gpt-4.1-mini} on the same 200-sample slice and identical routing code. The routing mechanism is secondary to generation quality on this benchmark/topology combination.
 
 \paragraph{Finding 2: Method ordering is backbone-sensitive and must not be over-interpreted from a single backbone.} On \texttt{glm-4-flash} (Stage-1 GLM), the ordering was \texttt{static\_roles} $>$ \texttt{peer\_calibrated} $\approx$ \texttt{self\_claim}. On \texttt{gpt-4.1-mini}, the ordering inverts: \texttt{self\_claim} (F1=0.7641) $>$ \texttt{static\_roles} (0.7454) $>$ \texttt{peer\_calibrated} (0.7381). Figure~\ref{fig:backbone-sensitivity} visualises the inversion under identical inputs and routing code.
@@ -317,7 +326,7 @@ The full long-paper requires experiments redesigned around emergence rather than
 
 The current artifact directories, tables, and ablations should remain in the paper, but their framing must change. They are evidence for the restricted instantiation. Canonical source: \fpath{artifacts/round2_gpt41mini/} (backbone: \texttt{gpt-4.1-mini}); GLM-backbone results under \fpath{artifacts/round1/} are archived as Stage-1 guidance-only.
 
-In addition, two GLM-backbone observations remain valid as mechanistic context: (i) the weight-sensitivity ablations (\fpath{artifacts/round1_v3_weight_sensitivity.md}) confirm that outcome-based calibration and conservative routing structure each contribute measurable signal; and (ii) the static-path overlap analysis (\texttt{peer\_calibrated} reproducing ${\sim}52\%$ of static routes) shows stable route structure can form without a central controller. The residual error budget appears increasingly attributable to the local answer-generation layer rather than to misrouting, narrowing the Stage-2 target toward task trees, recursive audit, persona tags, and sparse-graph organization.
+Additional GLM-backbone evidence reinforces this reading. Mechanism ablations (Table~\ref{tab:ablations}) confirm that on the weak backbone the local answer-generation bottleneck dominates the routing-mechanism contribution; weight-sensitivity sweeps ($\pm 2\times$, $<0.003$ pp F1 change) rule out fine-tuned weights; and a static-path overlap analysis (\texttt{peer\_calibrated} reproducing ${\sim}52\%$ of static routes) shows stable route structure can form without central control. These narrow the Stage-2 target toward task trees, recursive audit, persona tags, and sparse-graph organization rather than further fixed-route weight tuning.
 
 \section{Conclusion}
 

@@ -11,7 +11,7 @@
 This directory holds the scientist's **rebuttal drafts and final responses** to ARR / EMNLP reviewer feedback after each reviewer batch. It is the **production-side** counterpart to `artifacts/idea_reviews/` (which holds the input reviewer reports themselves).
 
 A rebuttal record exists for two situations:
-1. **Internal mock rebuttal** — after our own reviewer-agent batch (`reviewer_<YYYYMMDD>_*`), the scientist drafts a rebuttal to show "if a reviewer raised X, what would we answer?". This is a **paper-quality rehearsal** before the real ARR submission and is required by `four-role-todo-workflow.md §11.4 (S-104 step ③)`.
+1. **Internal mock rebuttal** — after our own reviewer-agent batch (`reviewer_<YYYYMMDD>_*`), the scientist drafts a rebuttal to show "if a reviewer raised X, what would we answer?". This is a **paper-quality rehearsal** before the real ARR submission and is required by `four-role-todo-workflow.mdc §11.4 (S-104 step ③)`.
 2. **Real ARR / EMNLP rebuttal** — after a real submission cycle, when the meta-review + reviewer comments arrive, the scientist drafts the official rebuttal here, the user reviews + edits + finalizes, then submits via OpenReview.
 
 ---

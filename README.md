@@ -67,7 +67,7 @@ idea04/
 | 工程师 | [`docs/coordination/implementation_log.md`](./docs/coordination/implementation_log.md) — append-only 工程日志 | `E-x`（新 phase） |
 | 审稿人 | [`docs/coordination/REVIEWER_TODO.md`](./docs/coordination/REVIEWER_TODO.md) — `R-FULL-XXX` 全文（仅用户触）+ `R-PART-XXX` 局部（科学家/工程师可自触审自己新写内容）；batch 归档落 [`artifacts/idea_reviews/`](./artifacts/idea_reviews/) | `R-x` |
 
-协作规范硬约束：[`.cursor/rules/four-role-todo-workflow.md`](./.cursor/rules/four-role-todo-workflow.md)（4 个协作角色：用户 / 科学家 / 工程师 / 审稿人）。
+协作规范硬约束：[`.cursor/rules/four-role-todo-workflow.mdc`](./.cursor/rules/four-role-todo-workflow.mdc)（4 个协作角色：用户 / 科学家 / 工程师 / 审稿人；英文版 + Cursor `.mdc` 规范）。
 
 ---
 

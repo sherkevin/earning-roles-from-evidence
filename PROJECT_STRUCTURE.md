@@ -241,7 +241,7 @@ article/
 
 ## 9. 四角色协作文件分布
 
-> 协作规范硬约束：[`.cursor/rules/four-role-todo-workflow.md`](./.cursor/rules/four-role-todo-workflow.md)（4 个协作角色：用户 / 科学家 / 工程师 / 审稿人）。
+> 协作规范硬约束：[`.cursor/rules/four-role-todo-workflow.mdc`](./.cursor/rules/four-role-todo-workflow.mdc)（4 个协作角色：用户 / 科学家 / 工程师 / 审稿人；英文版 + Cursor `.mdc` 规范）。
 >
 > **ID 命名约定**（per cursor rule §12）：用户 `U-x` / 科学家 `S-x` / 工程师 `E-x` / 审稿人 `R-x`。
 
@@ -283,6 +283,6 @@ article/
 ## 12. 协作简化（2026-04-19）
 
 * 跨角色依赖直接通过 `SCIENTIST_TODO.md` / `implementation_log.md` 各自的 `阻塞` 列传递；不再维护任何独立的依赖追踪文档。
-* 每次执行入口先扫自己 TODO 中所有 ⏳ / ❌ 项，检测是否已 done（由上游条件已满足而触发），更新 ✅ 后才开新动作。详见 [`.cursor/rules/four-role-todo-workflow.md` §1](./.cursor/rules/four-role-todo-workflow.md)。
+* 每次执行入口先扫自己 TODO 中所有 ⏳ / ❌ 项，检测是否已 done（由上游条件已满足而触发），更新 ✅ 后才开新动作。详见 [`.cursor/rules/four-role-todo-workflow.mdc` §1](./.cursor/rules/four-role-todo-workflow.mdc)。
 * 数学统计图（柱 / 箱 / 折 / 散点 / 热图）由科学家用 Python 实绘并落 `artifacts/figures/`；概念示意图 / 逻辑流程图由用户绘制，科学家负责写完整的 prompt 文档落 `docs/paper/figures_prompts/`。
 * 论文精细打磨完成后，需做一次本地 commit（依赖 U-010-decide）。

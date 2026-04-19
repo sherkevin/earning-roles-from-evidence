@@ -10,7 +10,7 @@ alwaysApply: false
 
 > **STATUS（2026-04-19）**：本规则**当前为 dormant**。本项目所有 in-flight 实验都通过 API provider 跑（kuaipao.ai for `gpt-4.1-mini` / Zhipu for `glm-4-flash` / NVIDIA NIM for backup），**未实际触发任何 SSH / SCP 操作**。本文件规范的是"如果未来切到本地 GPU 实验"的协作约定，作为冷储备保留。
 >
-> **何时激活**：仅当 USER 在 `USER_TODO.md § A` 显式批准"切换到 GPU/local-compute 实验"（如 Stage-2 split / audit / persona vector 实现需要训 GNN router 等场景）后，本规则才进入 active 状态。在此之前，**任何角色不得擅自调用本规则中的 SSH/SCP 命令**（属 `four-role-todo-workflow.md §4` 红线"是否换 backbone provider"）。
+> **何时激活**：仅当 USER 在 `USER_TODO.md § A` 显式批准"切换到 GPU/local-compute 实验"（如 Stage-2 split / audit / persona vector 实现需要训 GNN router 等场景）后，本规则才进入 active 状态。在此之前，**任何角色不得擅自调用本规则中的 SSH/SCP 命令**（属 `four-role-todo-workflow.mdc §4` 红线"是否换 backbone provider"）。
 >
 > **未验证项**：以下配置项**从未在本项目实际验证过**，激活前必须由 USER 实跑 SSH 探测确认：
 > - SSH key `school` 是否存在于本机
