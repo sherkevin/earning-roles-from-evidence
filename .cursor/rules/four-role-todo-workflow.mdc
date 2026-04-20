@@ -153,6 +153,47 @@ Last TODO check: <YYYY-MM-DD HH:MM>
 - Every time you change code: **preserve reproducibility** (script + seed + n_boot must appear in either the filename or the log).
 - Every time you produce a review: **emit it in the structured format mandated by [`prompts/reviewer_prompt.md`](../../prompts/reviewer_prompt.md)** — free-form prose is not acceptable.
 
+### 6.1 Experiment checkpoint-resume hard rule (user instruction, 2026-04-20 post-quota-incident)
+
+After the `[quota_exhaustion_incident_20260419_2338]` (E-017 seed=42 lost ~9000 samples of F1=0 garbage before detection), the user issued a project-wide hard rule:
+
+> **每次跑实验都留断点，要可以断点重跑而不是从头跑。**
+> ("Every experiment run must checkpoint; resume-from-checkpoint MUST be supported — never rerun from scratch.")
+
+This rule is now binding on **every LLM-calling or long-running experiment script** across the repo. Concretely:
+
+**6.1.1 Per-sample checkpoint flush (runner-level, MANDATORY)**
+- Every method runner must write a `_ckpt_preds.jsonl` one JSON line per completed sample, flushed to disk BEFORE the next sample starts.
+- `runner.Runner.run()` (`workspace/idea04_core/runner.py:132-180`) already implements this; engineer must not introduce code paths that bypass it (e.g., batched flush, in-memory buffering with "flush at end").
+- Any new method added to `METHOD_NAMES` must route through `Runner.run()` or replicate the per-sample flush contract.
+
+**6.1.2 `--run-dir` resume interface (launcher-level, MANDATORY)**
+- Every fullval / multi-seed / chain-XXX launcher script must expose a `--run-dir` argument that points to an existing run directory.
+- Semantics: if `${run_dir}/_ckpt_preds.jsonl` exists AND `${run_dir}/metrics.json` does not exist, the runner resumes from that checkpoint (skips already-completed sample IDs; appends new ones).
+- `scripts/run_e017_fullval_seed.py` (see `--run-dir` flag at line 67-72) is the canonical template. Cross-machine resume (local → server migration, per R36 `[E-017_migration_landed_ack_20260420]`) uses the same interface.
+
+**6.1.3 Pre-flight quota / balance probe (launcher-level, STRONGLY RECOMMENDED)**
+- Every script that issues > 100 LLM calls in one batch must call `workspace/tmp/newapi_quota_probe.sh` (or equivalent) before launching the batch; abort with clear error if status ≠ ACTIVE.
+- For short scripts (< 100 calls), the probe is optional but best-practice.
+- This is the specific guard missing in the quota-incident; its absence allowed the batch to burn through quota silently.
+
+**6.1.4 Runtime fail-fast (runner-level, engineer E-020 ticket)**
+- `llm_client.call_llm()` must detect HTTP 403 `insufficient_user_quota` (and sibling quota errors across providers) and raise a hard exception, NOT retry-and-return-empty.
+- `runner.Runner.run()` must maintain a `consecutive_zero_F1_counter`; if counter ≥ 50 (configurable), halt the batch and emit an error log pointing to the quota probe.
+- Pre-flight balance probe in every `run_XXX_fullval_seed.py` entry point before the inner runner loop starts.
+- These guards are specified in engineer ticket **E-020** dispatched via `implementation_log.md` immediately after R37 quota-incident ack.
+
+**6.1.5 Forensic preservation on checkpoint corruption (scientist / user / engineer)**
+- If an experiment detects a corruption event (e.g., F1=0 for many samples, HTTP 403 flood), the **valid prefix** must be preserved (truncated copy kept in original run_dir) and the **corrupted portion** backed up to `artifacts/forensic/<incident_name>_<YYYYMMDD_HHMM>_incident/`.
+- `workspace/tmp/rescue_valid_data.sh` is the canonical rescue script template; adapt per incident.
+
+**6.1.6 Violation reporting**
+- Any commit that introduces a new experiment script violating 6.1.1 / 6.1.2 / 6.1.4 blocks merge; reviewer or scientist rejects the commit in `implementation_log.md` with cross-ref to this rule.
+- Exception: quick smoke-probes (< 20 samples, < 5 min total wall-time) may skip 6.1.3 but MUST still satisfy 6.1.1 + 6.1.2.
+
+**Enforcement history**:
+- 2026-04-20 R40: rule codified after quota-incident; E-017 seed=42 resume (path (a) per U-Rollback-001 ✅ (a)) is the first experiment launched under this rule; E-020 engineer ticket dispatched to implement 6.1.4 guards; `workspace/tmp/newapi_quota_probe.sh` is the first concrete quota probe artifact.
+
 ## 7. Failure-rollback protocol
 
 Only commit-bearing roles (user / scientist / engineer) — the moment they notice that one of their own commits has introduced a regression (e.g., a new PDF Overfull warning / a numeric drift / a script crash / the paper crossing the 8-page limit / a build failure):

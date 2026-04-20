@@ -3916,3 +3916,161 @@ At ~21:38 server time, the `newapi` (`xh.v1api.cc`) balance went to **~$-0.01 (o
 4. **SCIENTIST R-PART** (optional): may run partial review of the valid 2415-sample data if needed, but engineer data is minimal and partial reviews would thrash R-FULL cadence
 
 ---
+
+### [u_rollback_001_path_a_landed_20260420]
+
+- when: 2026-04-20 21:07 server time (R40 commit)
+- who: scientist (launcher + monitoring) + user (decision + recharge)
+- intent: Land user decisions U-EXEC-007 ✅ (newapi recharge) + U-Rollback-001 ✅ (a) resume-from-truncated-ckpts; restart E-017 3-seed × 7405 fullval paired pipeline from rescued checkpoints without wasting any valid prefix samples.
+- status: ✅ **E-017 seed=42 resume WORKERS ALIVE + scheduler CHAINING seed 43+44 AUTO**
+
+#### Timeline (R40 session)
+
+| T (server time) | Event |
+|---|---|
+| ~20:57 | User recharged newapi (xh.v1api.cc); posted "我已经充值xh，你继续跑吧，步骤2我选择a" |
+| 21:06:45 | Scientist `newapi_quota_probe.sh` probe → STATUS: newapi ACTIVE (`total_tokens=9` returned cleanly) |
+| 21:07:12 | `pkill -f schedule_e017_seeds.sh` + `pkill -f run_e017_fullval_seed` → 0 stale procs remain |
+| 21:07:32 | `launch_e017_seed42_resume.sh`: stage2 PID=321426 (resume from 3201) + stage1 PID=321436 (resume from 2415) |
+| 21:07:42 | Fresh `schedule_e017_seeds.sh` PID=321499 launched (monitors seed=42 completion → chain 43+44 → paired_bootstrap_ci) |
+| 21:07:42 | Scheduler log confirms: `ckpt: stage2=3201/7405 running | stage1=2415/7405 running` |
+
+#### Resume path mechanics (per `four-role-todo-workflow.mdc §6.1`)
+
+The runner's existing `Runner.run()` (`workspace/idea04_core/runner.py:132-180`) detected `_ckpt_preds.jsonl` existence + `metrics.json` absence → automatic resume mode:
+- stage2 run_dir: `artifacts/round2_gpt41mini_stage2_fullval/run_20260419_124129_seed42/edo_stage2_chain/` (3201 samples in ckpt, need to produce ~4204 more)
+- stage1 run_dir: `artifacts/round2_gpt41mini_stage2_fullval/run_20260419_124130_seed42/fixed_peer_calibrated/` (2415 samples in ckpt, need to produce ~4990 more)
+- Both workers append (not overwrite) to `_ckpt_preds.jsonl`; `metrics.json` written at end → scheduler `wait_for_metrics` unblocks.
+
+#### Expected timeline (server-rate ~75 samples/min observed R35-R36)
+
+| Stage | Remaining | ETA wall |
+|---|---|---|
+| seed=42 stage2 | ~4204 | ~56 min |
+| seed=42 stage1 | ~4990 | ~67 min |
+| seed=43 both | 7405 × 2 | ~3.3 h (parallelized; max of 2 stages) |
+| seed=44 both | 7405 × 2 | ~3.3 h |
+| paired_bootstrap_ci.py --B 10000 | — | ~10 min |
+| **Total ETA** | — | **~7-8 h wall** (done ~04:00-05:00 server time) |
+
+#### Budget estimate (per R37 scientist $235 estimate)
+
+- seed=42 remaining stage2 + stage1: ~$35
+- seed=43 stage2 + stage1: ~$100
+- seed=44 stage2 + stage1: ~$100
+- Total remaining burn: **~$235** (U-EXEC-007 ≥$500 recharge covers this + $265 buffer for E-014/E-015 smoke/E-018 + sprint buffer)
+
+#### Monitoring commands (any session can use)
+
+```bash
+# 1-line progress probe (run locally)
+ssh -i ~/.ssh/school dengkw@10.103.16.12 "tail -3 /media/data3/dengkw/idea04/logs/e017_scheduler_*.log | tail -1"
+
+# quota health (detect if quota re-depletes mid-batch)
+ssh -i ~/.ssh/school dengkw@10.103.16.12 "bash /media/data3/dengkw/idea04/workspace/tmp/newapi_quota_probe.sh | tail -3"
+
+# process liveness
+ssh -i ~/.ssh/school dengkw@10.103.16.12 "ps -ef | grep -E 'run_e017|schedule_e017' | grep -v grep"
+```
+
+#### next_action
+
+- **scientist** (this session + next 1-3 sessions):
+  - Monitor scheduler log every 1-3 h (per user's "不要等待服务器上的实验结束"—can do parallel paper work)
+  - When seed=42 metrics.json appears: validate_logs + sanity F1 within ±0.02 of R36 ~0.77 benchmark (Finding 2 comparability)
+  - When seed 43/44 done + paired_stats_3seed.csv written: fill TEMPLATE 1 in `_pending_data_templates.tex` with real numbers (ΔF1 mean / 95% CI / paired p-value / token delta) → R41 commit S-115/S-116/S-117 main fullval write-up
+  - Do NOT trigger R-FULL-008 until E-017 3-seed + E-018 ≥ 1 pipe + MuSiQue (or E-014 Table 2) land — per R-FULL-007 reviewer estimate exp_solidity ≥ 4 needed
+- **engineer** (parallel to resume):
+  - Do **E-020 fail-fast guards** per dispatch block below (~45 min; Runtime detection of HTTP 403 / consecutive F1=0 / pre-flight quota probe inside runner)
+  - After E-020 done + verified unit-tested, push to server; NO mid-batch hotswap (E-020 deploys for seed=43 start, not seed=42 resume)
+  - E-014 Table 2 gpt-4.1-mini ablation: **do NOT launch until seed=42 done** (newapi parallelism cap = 2 — avoid competing with E-017 resume workers)
+  - E-015 MAD smoke re-run + E-018 MA-RAG/ReAgent reproduce: can **do smoke probes in parallel** with E-017 resume (smoke = 50-200 samples × single method, low quota impact); full reproduce wait E-017 done to avoid parallelism overload
+- **user**: no action needed; monitor scheduler progress via any of the 1-line ssh probes above
+
+#### Cross-references
+
+- `USER_TODO §A` U-EXEC-007 ✅ + U-Rollback-001 ✅ (a) + U-meta-checkpoint ✅; `§C` 3 done log rows; `§D` R40 row
+- `.cursor/rules/four-role-todo-workflow.mdc §6.1` new 6 HARD rules (checkpoint-resume enforcement)
+- `workspace/tmp/r40_launch_resume_and_schedule.sh` (new, scp'd to server) — canonical R40 orchestrator
+- `workspace/tmp/newapi_quota_probe.sh` (new) + `_inspect_llm_json.py` (new) — probe helpers
+- E-020 dispatch block below
+
+---
+
+### [e_020_dispatch_20260420]
+
+- when: 2026-04-20 R40 (paired with U-Rollback-001 ✅ (a) landing)
+- who: scientist dispatching engineer
+- intent: Implement runtime fail-fast guards per `four-role-todo-workflow.mdc §6.1.4`; prevent recurrence of quota_exhaustion_incident_20260419_2338 class of silent-corruption events.
+- status: ⏳ **dispatched to engineer**; not blocking E-017 seed=42 resume (uses existing checkpoint machinery, no new guards needed); deploys for seed=43 launch at earliest.
+
+#### Ticket spec (E-020)
+
+**Title**: Runtime fail-fast + pre-flight guards against quota depletion / silent response corruption.
+
+**Scope (3 components, ~45 min total eng time)**:
+
+##### E-020.1 — HTTP 403 `insufficient_user_quota` detection in `llm_client.call_llm()`
+
+Location: `workspace/idea04_core/llm_client.py` (or wherever the urllib-based caller is; engineer: grep for `urllib.request.urlopen` + `retries=3`).
+
+Current broken behavior (root cause of 2026-04-19 incident): legacy `urllib` client catches broad `urllib.error.HTTPError` / `URLError` exceptions, retries N=3 times, then returns empty prediction on final failure → caller treats empty prediction as valid F1=0 sample.
+
+Required fix:
+- Before generic retry, inspect response body for 3 signatures:
+  - HTTP status 403 AND body contains `"insufficient_user_quota"` OR body contains `"code":"insufficient_user_quota"`
+  - HTTP status 429 AND body contains `"rate_limit"` (Rate limit = transient, retry OK; but log differently)
+  - HTTP status 401 AND body contains `"Invalid token"` (key rotation)
+- On quota depletion / invalid token: raise new exception class `QuotaExhausted(Exception)` (not retry) — runner catches this and halts the batch with clear log message + writes `_ckpt_meta.json` with `{"status": "halted", "reason": "quota_exhausted", "last_sample_id": <id>, "balance_snapshot": <body text>}`.
+- On rate limit: retry with exponential backoff (3× max, 2s/4s/8s).
+- On other errors: preserve existing retry-3 behavior.
+
+##### E-020.2 — Consecutive-zero-F1 counter in `Runner.run()`
+
+Location: `workspace/idea04_core/runner.py` (approximately around the per-sample loop where `partial_F1` is computed).
+
+New state: `consecutive_zero_f1_counter: int` (reset to 0 whenever a sample produces F1 > 0.0).
+
+Behavior:
+- After each sample, if F1 == 0.0 (including error-sentinel rows), increment counter.
+- If counter reaches threshold (default 50, make configurable via `--consecutive-zero-halt-threshold`), halt the batch with log message `[runner] consecutive F1=0 for 50 samples — likely silent corruption (quota / token / network); halting; run workspace/tmp/newapi_quota_probe.sh to diagnose` + write `_ckpt_meta.json` with `{"status": "halted", "reason": "consecutive_zero_f1_threshold", "counter": <N>, "last_sample_id": <id>}`.
+- Rationale (derived from incident forensic): legitimate hard samples do produce F1=0 occasionally, but legitimate F1=0 rate on HotpotQA chain-200 with `gpt-4.1-mini` is ~15-20% (per `partial_F1` curves in healthy batches); a run of 50 consecutive F1=0 has probability < 1e-35 under the null → certain corruption signal.
+
+##### E-020.3 — Pre-flight quota probe in `run_e017_fullval_seed.py` (and peers)
+
+Location: `scripts/run_e017_fullval_seed.py` + any other scripts calling > 100 LLM calls in one batch.
+
+New behavior: before the `runner.run()` invocation, call the probe:
+
+```python
+import subprocess
+result = subprocess.run(
+    ["bash", "workspace/tmp/newapi_quota_probe.sh"],
+    capture_output=True, text=True, timeout=30
+)
+if "newapi ACTIVE" not in result.stdout:
+    print("[run_e017_fullval_seed] PRE-FLIGHT FAILED: newapi quota not ACTIVE:")
+    print(result.stdout)
+    sys.exit(2)
+```
+
+Add similar probe to: `scripts/run_paired_3shard.py`, `scripts/run_stage1_pair_for_stage2_comparison.py`, `scripts/run_stage2_smoke.py`, `scripts/launch_e014_post_e017.sh`, `workspace/external_baselines/mad/hotpotqa/gen_hotpotqa.py`, `workspace/external_baselines/marag/run_marag_hotpotqa.py`.
+
+For short smoke probes (< 20 samples, < 5 min wall-time), the pre-flight probe is optional but best-practice.
+
+#### Pinned cautions for engineer
+
+- **Do NOT mid-batch hotswap E-020 into seed=42 resume** — seed=42 resume workers PID=321426 + 321436 are already running without the new guards; swapping them now requires process kill + re-launch which resets checkpoint state. The workers ARE protected against further quota incidents by the user's fresh $500 recharge, and the `_ckpt_preds.jsonl` per-sample flush already limits blast radius to single-sample granularity.
+- **Deploy E-020 guards before seed=43 launch**: scheduler `schedule_e017_seeds.sh` Step 2 `launch_seed 43` is where new runtime guards first take effect.
+- **Unit tests required**: add `workspace/idea04_core/test_e020_fail_fast_guards.py` with 3 test classes covering (1) quota exhaustion raises QuotaExhausted, (2) consecutive F1=0 halts at threshold, (3) pre-flight probe blocks launch on DEPLETED status. Target: all 3 pass before commit.
+- **Validate with existing 97-test suite** pass after edits (no regression to Stage-1 byte-id guarantee).
+- **SSH-to-server state recovery** if needed: see `[pinned_cautions_for_engineer_ssh_failure_mode_20260420]`.
+
+#### Definition of done
+
+1. `test_e020_fail_fast_guards.py` 3-test suite passes ✅
+2. Existing 97-test suite passes ✅ (no regression)
+3. Engineer commits patch locally + scp's to server before `seed=43` launch (scheduler chains after ~1 h wait)
+4. Engineer ack's in new implementation_log sub-block `[e_020_landed_<timestamp>]` with test output + commit hash
+
+---
