@@ -14,7 +14,7 @@
 | **What model (backbone) do we evaluate?** | `gpt-4.1-mini` via OpenAI-compatible API (`newapi` channel = `xh.v1api.cc`, set as PRIMARY in R7). Historical Stage-1 runs used `glm-4-flash` (still cited in Table 2 ablation). No GPU / no on-prem model in main results. |
 | **Which methods/baselines do we compare?** | (a) 8 author-internal methods registered in `workspace/idea04_core/methods.py::METHOD_NAMES` + 1 Stage-2 prototype (`edo_stage2_chain`); (b) 3 external 2024-SOTA multi-agent systems for module-swap comparison (AutoGen + ChatEval + MAD; engineer pipeline E-010..E-016). |
 | **Which topology do we use?** | Chain (canonical for all Stage-1 + Stage-2 prototype results). Star is supported by code but NOT in any Table 1 result. Sparse-graph topologies (random / small-world / community-bridge) are Stage-2 agenda E4. |
-| **What sample sizes have we run?** | (i) `chain-200` = 200 head samples for headline Tables 1+2 + Figure 2 + Appendix D; (ii) `3shard×200 = 600` paired (Appendix D preliminary); (iii) `fullval = 7405` HotpotQA validation — **⚠ 2026-04-19 quota-exhaustion incident**: E-017 seed=42 rerun partial (stage2 valid 0..3200 F1=0.6927, stage1 valid 0..2414 F1=0.6846, paired ΔF1 ≈ +0.81 pp on first 2415 samples, inside noise); full 3-seed batch blocked on `U-EXEC-007` newapi top-up; see `implementation_log.md [quota_exhaustion_incident_20260419_2338]` for forensic. |
+| **What sample sizes have we run?** | (i) `chain-200` = 200 head samples for headline Tables 1+2 + Figure 2 + Appendix D; (ii) `3shard×200 = 600` paired (Appendix D preliminary); (iii) `fullval = 7405` HotpotQA validation — **⚠ 2026-04-19 quota-exhaustion incident / ✅ 2026-04-20 R40 RESUMED**: (i-a) incident: E-017 seed=42 stage2 valid 0..3200 F1=0.6927, stage1 valid 0..2414 F1=0.6846, paired ΔF1 ≈ +0.81 pp on first 2415 samples inside noise band; (i-b) resume (R40, 2026-04-20 21:07 server time): `U-EXEC-007` ✅ user recharged newapi + `U-Rollback-001` ✅ (a) resume-from-truncated-ckpts → stage2 PID=321426 (from 3201) + stage1 PID=321436 (from 2415) + fresh scheduler PID=321499 auto-chain seed 43+44 → paired_bootstrap_ci; ETA ~10 h total wall from 21:07. See `implementation_log.md [quota_exhaustion_incident_20260419_2338]` + `[u_rollback_001_path_a_landed_20260420]` for forensic + recovery. |
 | **Have we benchmarked external 2024-2026 SOTA?** | **NOT YET** in main paper body. R-FULL-001..006 reviewer fatal #3. Engineer pipeline E-010..E-016 in progress to deliver SWAP-1 (R3 → AutoGen) + SWAP-3 (R2 → ChatEval) + SWAP-4 (R2 → MAD). Both AutoGen and ChatEval and MAD already cloned on server. |
 
 ---
@@ -74,6 +74,8 @@
 ### 2.4 Provider switch history
 
 - **R7 (2026-04-20)**: switched from `oversea` (kuaipao.ai, model-drift event 2026-04-19) → `newapi` (`xh.v1api.cc`); see Appendix B of paper for engineering description. All new fullval / multi-seed batches go through `newapi`.
+- **R37 (2026-04-19 23:42, `quota_exhaustion_incident_20260419_2338`)**: newapi balance → $-0.012696 (overdrawn); E-017 seed=42 wrote ~9000 samples of F1=0 garbage; discovered via MAD/MA-RAG smoke probes returning 403 `insufficient_user_quota`; scientist emergency rescue kept valid prefixes (3201 stage2 / 2415 stage1) + `artifacts/forensic/quota_exhaustion_20260419_2338_incident/` backup; all LLM batches blocked.
+- **R40 (2026-04-20 21:07, `u_rollback_001_path_a_landed_20260420`)**: `U-EXEC-007` ✅ user recharged + `U-Rollback-001` ✅ (a) resume-from-truncated-ckpts; scientist `r40_launch_resume_and_schedule.sh` on server → stage2+stage1 resume workers + scheduler auto-chain 43+44; newapi probe STATUS=ACTIVE. This provider block is operational again; future batches protected by (a) `four-role-todo-workflow.mdc §6.1` checkpoint-resume hard rules + (b) engineer E-020 fail-fast runtime guards (dispatched, not-yet-landed).
 
 ---
 
@@ -172,7 +174,7 @@ Engineer pipeline E-010..E-012 + E-015 + E-016 deliver paired-bootstrap CI on **
 |---|---|---|---|
 | **SS-1** | HotpotQA chain-200 | 200 | Tables 1, 2, Figure 2 (head-200 deterministic, seed=42) |
 | **SS-2** | HotpotQA 3-shard × 200 paired | 600 (3 × 200, disjoint shards [0:200] / [200:400] / [400:600]) | Appendix D preliminary Stage-2 vs Stage-1 paired |
-| **SS-3** | HotpotQA fullval | **7405** | E-017 in progress (3-seed paired Stage-2 vs Stage-1, on server) |
+| **SS-3** | HotpotQA fullval | **7405** | E-017 (3-seed paired Stage-2 vs Stage-1, on server) — seed=42 resumed 2026-04-20 R40 from truncated ckpt (3201 stage2 / 2415 stage1 kept); scheduler auto-chains seed 43+44; paired_bootstrap_ci.py --B 10000 at end; ETA ~10 h wall from 21:07 |
 | **SS-4** | HotpotQA-200 + MuSiQue-200 × ≥3 seeds | 200 × 2 benchmarks × 3 seeds = 1200 paired comparisons per SWAP × 3 SWAPs | E-012 + E-016 swap comparisons |
 
 ---
@@ -215,7 +217,7 @@ Per §4.4 E1-E5 agenda, Stage-2 will report: persona-tag divergence, specialisat
 | HotpotQA fullval × M-4 / M-5 (other 2 methods, R-FULL-001 reviewer asked for) | ❌ pending E-017 (R21 派工, in progress as of R34) | `artifacts/round2_gpt41mini_stage2_fullval/` (server) |
 | HotpotQA chain-200 × `edo_stage2_chain` (M-9) | ✅ R12 + Appendix D | `artifacts/round2_gpt41mini_stage2_200/run_20260419_114943/edo_stage2_chain/` |
 | HotpotQA 3-shard × 200 paired (M-9 vs M-7) | ✅ Appendix D Table 3 | `artifacts/round2_gpt41mini_3shard_paired/run_20260419_120612/` |
-| HotpotQA fullval × M-9 vs M-7 paired × 3 seeds (E-017) | 🟡 in progress, server-side, ~6-8 h ETA | `artifacts/round2_gpt41mini_stage2_fullval/run_20260419_124129_seed42/` etc. — see [`parallel_orchestration_plan_20260420`](../coordination/implementation_log.md) |
+| HotpotQA fullval × M-9 vs M-7 paired × 3 seeds (E-017) | 🟡 **seed=42 resumed R40 (2026-04-20 21:07)** from rescued truncated ckpt (3201 stage2 + 2415 stage1 kept); scheduler auto-chains seed 43+44 → paired_bootstrap_ci; ~10 h wall ETA | `artifacts/round2_gpt41mini_stage2_fullval/run_20260419_124129_seed42/` etc. — see [`u_rollback_001_path_a_landed_20260420`](../coordination/implementation_log.md) |
 | MuSiQue any | ❌ NOT yet (U-013 ✅ approved, engineer E-005/E-006 will execute) | — |
 | 2WikiMultiHop any | ❌ Stage-2 future (§4.4 E5) | — |
 | HotpotQA chain-200 × 4 ablation variants on `gpt-4.1-mini` (Table 2.b request) | ❌ pending E-014 (R13 派, in engineer queue) | — |
