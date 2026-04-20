@@ -234,7 +234,40 @@ On all three hosts, swapping the host's [original component] for our [R-x] yield
 %%        and discuss in §5 / Limitations item (8) [add new item]"
 %% =============================================================
 
-%% TBD — author manually fills based on actual E-017 paired_stats_3seed.csv
+%% =============================================================
+%% TEMPLATE 5 CASE-4 DRAFT (2026-04-20 R51 pre-fill) — new case
+%% surfaced by E-017 seed=42 stage2 fullval: F1 ↓ 7.57pp, Token ↓63.7%,
+%% cost-normalized F1 +146%. This is a Pareto AXIS-SWITCH not a
+%% simple positive/null/negative ΔF1 case. The following draft is
+%% ready to inline once seeds 43+44 + paired_bootstrap_ci confirm
+%% the pattern. SWAP ONLY IF seeds 43+44 F1 and Tok cluster within
+%% ±1.0pp / ±5% of seed=42 values respectively.
+%% =============================================================
+
+%% Draft §1 Intro contribution #4 replacement (current: "Using current
+%% HotpotQA evidence, we report a Stage-1 measurement that is consistent
+%% with the central direction ..."):
+%%
+%% "Using HotpotQA full-validation evidence (n=7405 × 3 seeds with
+%% paired-bootstrap CIs; see Table~\\ref{tab:fullval-stage2-vs-stage1}),
+%% the Stage-2 prototype \\texttt{edo\\_stage2\\_chain} achieves a
+%% Pareto-axis-switch on the canonical \\texttt{gpt-4.1-mini} backbone:
+%% it trades a modest F1 reduction (−X.XX pp) for a large token-cost
+%% reduction (~−63\\%) and, most importantly, dominates \\emph{all}
+%% Stage-1 methods on cost-normalised F1 (+XX\\% over the best Stage-1
+%% method, \\texttt{fixed\\_static\\_roles}). Finding~4's F1-axis
+%% Pareto-dominance by \\texttt{fixed\\_self\\_claim} (Stage-1) is thus
+%% reversed on the cost-normalised axis that matters when token budget
+%% is a first-order constraint --- which, at camera-ready inference-
+%% token prices, is the practically relevant regime for deployed
+%% multi-agent QA."
+%%
+%% IMPORTANT before inline:
+%% - Replace "−X.XX pp" and "+XX%" with actual 3-seed mean ± 95% CI
+%%   (paired_bootstrap_ci.py --B 10000 --seeds 42,43,44 output)
+%% - Decide whether to explicitly cite Figure 4 Pareto bar
+%%   (plot_fig4_cost_normalized_f1.py) in this Intro paragraph as well
+%%   as in §4.5; if main body becomes tight, defer Figure 4 to Appendix D
 
 %% =============================================================
 %% TEMPLATE 6 — S-116 §6 Conclusion rewrite (Stage-2)
@@ -245,9 +278,25 @@ On all three hosts, swapping the host's [original component] for our [R-x] yield
 %%   evaluating the Stage-2 mechanisms")
 %% =============================================================
 
-%% TBD — author manually replaces the final 1-2 sentences depending
-%% on whether E-017 produces positive / null / negative paired ΔF1
-%% at fullval scale. Use same decision tree as TEMPLATE 5.
+%% TEMPLATE 6 CASE-4 DRAFT (2026-04-20 R51 pre-fill)
+%%
+%% Draft §6 Conclusion replacement for the "long-paper opportunity
+%% lies in implementing ... Stage-2 mechanisms" last sentence:
+%%
+%% "Even the restricted Stage-2 prototype already demonstrates a
+%% Pareto-axis-switch relative to the Stage-1 instance on HotpotQA
+%% full-validation: the prototype trades a modest F1 reduction for
+%% a roughly 64\\% token-cost reduction and achieves ~2× the
+%% cost-normalised F1 of the best Stage-1 method. This demonstrates
+%% that the Stage-2 action-policy menu (R1/R2/R3) already captures
+%% non-trivial organizational value even in the degenerate chain
+%% regime; the long-paper opportunity now lies in implementing the
+%% remaining Stage-2 mechanisms (recursive split, vector-belief
+%% routing) and testing whether they close or widen the F1 axis
+%% reduction under richer topologies and harder compositional tasks."
+%%
+%% Adjust percentages / scale descriptors ("roughly 64%", "~2×")
+%% after the 3-seed paired-bootstrap CI lands.
 
 
 %% =============================================================
