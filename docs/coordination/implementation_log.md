@@ -1847,6 +1847,10 @@ vs 原 plan 净增 +5-6 天用于 external baseline workstream，由 buffer 吸�
 
 > **[reviewer-ack 2026-04-19 21:46]** R-FULL-006 落盘 → `artifacts/idea_reviews/reviewer_20260419_214636_06_c5c5ad/review.md`（按 §F.3 只 review.md）。**P5 Best-Paper-Committee Oral-track gatekeeper STRICT**，stateless（不读历史 review 评分），用户 feedback "不够严厉" 后的严格修正版。**审的是 NEW PDF SHA `8161E9D3`** (vs R-FULL-005 PDF `4504614E`)，**scientist 在 R-FULL-005 后 30-60 分钟内重新编译了新 PDF**：11→13 页，加了 9 项实质修复 — ①§3.3 explicit FIT formula (closes S-137) / ②§3.6 explicit TCPB scoring formula `0.55 c[j] + 0.20 accept(j) + 0.10 forward_bias - λ_a audit` (closes S-136) / ③Appendix C 4 LLM prompt templates (closes S-138) / ④Appendix D 3-shard preliminary Stage-2 paired (Table 3, F1 inside noise) / ⑤B2 random seed=42 (closes S-140) / ⑥Limitations 5→7 items (item 6 Pareto-domination + item 7 demographic/societal closes S-139) / ⑦§5 Conclusion 重写 honest / ⑧§3.1 加 "decentralized within fixed role-prior topology with hand-tuned safety priors" / ⑨Finding 3 加 PAR-attribution 修正 (gate not TCPB)。**评分**: overall=4.5 cap-bound / weak_reject / **weighted_sum=4.560** = R-FULL-005 soft 4.910 - 0.350 严格修正 + R-FULL-005 errata strict 4.300 + 0.260 反映 PDF 真改进；P5 严格视角下 D1=5.0 / D5=5.0 / D6=5.0 / D7=6.0 / oral=3.0；experiments_solidity_score=1/8 仍是 binding cap floor。**结构性结论**：scientist 真做了 9 项实质工作但 weight 太小 (D5=0.10, D7=0.07) 不能 break 4.5 cap；唯一 lever 是 experiments_solidity，scientist 应放弃 D5/D7 grind，全部精力转到 E-017 fullval + 外部 baseline + Stage-2 mechanism 实现。**同时承认 R-FULL-005 评分讨好** (D1=5.5/D5=5.5/D6=6.0/D7=7.5/S1-4/S7-8/oral 共 11 处偏宽)，已在 R-FULL-005 review.md 顶部加 STRICT REVISION errata 修正对照表。**主动派工**: SCIENTIST_TODO §C/§B.5/§F.5 + USER_TODO §D。详见 REVIEWER_TODO §A/§C/§D/§F.5 + 本行 (§F.4 唯一允许的 ack)。
 
+> **[reviewer-ack 2026-04-19 22:15]** R-FULL-006 **BATCH-B** 落盘 → `artifacts/idea_reviews/reviewer_20260419_221546_06_0297b0/review.md`。race-condition 与 BATCH-A (c5c5ad 21:46) 并行。**P5 STRICT NO-CHARITY** (per user "不够严厉，太过温和"), stateless + **100% 重读 docs/demand.md 实体不凭记忆**: 严格按 demand.md §2 字面 "All figures, tables, equations, **pseudocode**, and **algorithm descriptions must fit entirely within these 8 pages**" + 豁免列表 exhaustive 仅 `{references, Limitations, Ethical Considerations}` 3 项 → **判定 Appendix B/C/D/E 全 4 个不在豁免列表 → DR-1 violation CONFIRMED → forces verdict=reject (overall=4.0, weighted_sum=4.725)**。**首次 reviewer 突破前 6 轮 (含 BATCH-A) 集体 charitable-interpretation bias 的 batch**。Scientist 已在 R32+ 先看本 review.md 并 dispatched **`U-021-decide` ⚠ CRITICAL** 引用本 reviewer_id `0297b0` + scientist `S-145` + `S-146`；reviewer-agent 实例 B 不重复 dispatch。详见 REVIEWER_TODO §A R-FULL-006 BATCH-B 行 + §C/§D/§F.5。
+
+> **[reviewer-ack 2026-04-19 U-021 Path D landed]** 用户 final 决策 "U-021-decide：伪代码不该出现在正文里，你去修改demand" supersedes R36 intermediate Path B → reviewer-agent 按用户明确授权破 §11.5 默认只读边界修改 `docs/demand.md §2` **2 处**：(a) 豁免列表从 3 项 → 4 项加 **Appendices** (符合 ACL/ARR historical convention "appendices are unlimited supplementary material")；新增 §2 **Self-Contained Main Body Rule (HARD)** 子条明确 appendix 职能边界 — headline empirical claims + critical method descriptions 必须 main body 可见，appendix 允许 extended pseudocode / supplementary tables / engineering-response / prompt templates / Responsible NLP Checklist；**appendix 引入 NEW empirical claims 而 main body 依赖仍触发 DR-1 evasion** (闭合 §4.5 依赖 Appendix D Table 3 的 DR-3 POSSIBLE 子条款)；(b) 同步 Submission-Ready Checklist 行 98 新口径。**Retrospective effects**: **R-FULL-006 BATCH-B DR-1 CONFIRMED overall=4.0 reject 在新 demand.md 下 in-retrospect 变为 PASS** (Appendix 现在豁免合法); DR-3 POSSIBLE 仍生效 → scientist S-145 仍需 execute; scientist S-143 (Algorithm 1 → Appendix E per 用户 R29 editorial) **反为正确选择** 符合新 demand.md "appendix hosts extended pseudocode" 职能; future R-FULL batch 不再因 Appendix per se 触发 strict-literal DR-1 但 Self-Contained Main Body Rule 2 条 evasion 子条款仍 enforce。**用户无需任何额外 action**。详见 USER_TODO §A U-021 ✅ + §C done log + §D R37 行 + REVIEWER_TODO §D 新 permanent record。
+
 ---
 
 ### [engineer_day1_5_completion_20260420]
@@ -3738,5 +3742,177 @@ After landing the migration ack above, this session **did not idle**; it ran the
   - monitor for paired_stats_3seed.csv emergence (~06:00 next-day at earliest)
   - then fill TEMPLATE 1-2 in `_pending_data_templates.tex` with real numbers
   - then trigger R-FULL-007 (NEW PDF with real fullval data) — but only AFTER E-014 + at least 1 external baseline lands too (per R-FULL-005 reviewer recommendation: "exp_solidity ≥ 4 before next R-FULL")
+
+### [reviewer_r_full_007_ack_20260419] — R-FULL-007 S-104 四步闭环完成
+
+- when: 2026-04-19 23:38:00 (reviewer landed) → 2026-04-19 (R37 session, S-152 S-104 闭环)
+- who: reviewer-agent (batch) + scientist (S-104 closure in R37)
+- status: ✅ **S-152 closed**; 0 NEW actionable; 4 confirm-fixed verified; 1 observation-only (DR-4); 1 dissent (EXP-8 error analysis); 1 strategic meta-obs (7 连 overall=4.5 structural)
+
+#### Batch metadata
+
+| Field | Value |
+|-------|--------|
+| review_run_id | `reviewer_20260419_233800_07_53f7fb` |
+| reviewer_profile | **P2: Empirical-NLP SAC** (strict, no score inflation) |
+| target_pdf | `article/build/edo_paper.pdf` |
+| pdf_sha256 | `53F7FB9DE7A3FCB095C3C4A53D0B6D23B324E626CFF55AE921356E42C5D503BE` |
+| pdf_sha16 | `53F7FB9DE7A3FCB0` (index key; new 2026-04-19 23:20 build) |
+| rulebook | `docs/demand.md` (post–U-021 Path D: Appendices exempt + Self-Contained Main Body Rule) |
+| process_compliance | `prompts/reviewer_prompt.md` §1.5.0 mandatory full-read paths 满足（entire `demand.md` + full `pdftotext -layout` extraction end-to-end before scoring） |
+| overall | **4.5** weak_reject (cap-bound by §6 three-way: experiments_solidity≤3 / D4<5 / D3<5) |
+| weighted_sum_pre_cap | **5.105** (raw calc: 0.25·5.5 + 0.18·5.0 + 0.15·4.0 + 0.18·4.0 + 0.10·6.0 + 0.07·5.5 + 0.07·7.5) |
+| experiments_solidity_score | **1/8** (only EXP-5 ablation passes) |
+| verdict | `weak_reject` |
+| oral_eligible | `false` (oral_quality_score=3.0) |
+| confidence | 8/10 |
+
+#### S-104 4-step closure (科学家决议)
+
+**Step 1 (read fully)**: reviewer 234 行 + DR/EXP/novelty/dim/top_weaknesses/rec_actions 全部读毕。
+
+**Step 2 (classify every reviewer item)**: 28+ distinct items →
+
+| 类别 | count | items |
+|---|---|---|
+| ✅ confirm-fixed (reviewer 4 strengths 直接 verify 先前 S-XXX) | 4 | S-125 Abstract/Conclusion honesty ✅ R16 (↔ strength 1 Pareto honesty) / S-118 Algorithm 1 v2 EDO Stage-2 loop ✅ R14 (↔ strength 2 Stage-2 vs Stage-1 separation) / S-132 Appendix B Provider Integrity ✅ R19 (↔ strength 3 DR-3 hygiene) / S-145 Appendix D + §4.5 EM regression 承认 ✅ R33 (↔ strength 4 post-S-145 style observed) |
+| ⚠ redundant (与 existing ticket 100% 重复, blocked on U-EXEC-007) | 17 | weakness 1 单 benchmark ↔ U-013 ✅ MuSiQue + E-006 / weakness 2 n=200 no paired ↔ U-020 ✅ 3-seed fullval + paired bootstrap blocked by quota / weakness 3 外部 SOTA 主表缺失 ↔ E-018 MA-RAG+ReAgent install ✅ blocked by quota / weakness 4 MAD overlap ↔ U-018 ✅ SWAP-4 blocked by quota / weakness 5 Figure 1 placeholder ↔ U-EXEC-004 v2 prompt ✅ R11 / rec_action 1-5 同上 / EXP-1/2/3/4/6 failures ↔ U-020 + U-013 blocked / D3<5 MAD cap / D4<5 empirical / S5<5 single-seed / S6<5 no external / S8<7 Figure 1 (all structural echo of weakness 1-5) |
+| ❌ dissent / defer | 1 | EXP-8 error analysis / rec_action #5 quantitative error analysis → **DEFER** 理由：(a) §Limitations item (3) + §4.3 + §4.5 已 cover 方向性 error trends (safety_gate 触发率 / +evidence effect / route overlap σ); (b) rubric 要求 quantitative error taxonomy 需 ≥ 200 per-hop labeled 失败原因 × 5-7 类 + ≥ 10 h 人工 + ≥ 1 页 main body 占用, 8-page 预算不能承受; (c) R30 cross-batch summary 同条 (R-FULL-002/003/004 reviewer 反复重提) 一致 defer 处理; (d) reviewer 自己把此项列 rec_actions #5 即最低优先级 consistent with defer |
+| 🟡 observation-only | 1 | DR-4 POSSIBLE "Template tampering not audited from LaTeX sources this batch; no visible font trick in PDF text" → **不每 commit 重做**；要彻底闭合需 camera-ready 前跑 1 次 diff 对比 `article/latex/*.cls/*.sty` 与 official `acl2023.sty` release checksum; 留 `S-camera-ready-checklist` 阶段做, 不触发新 S-XXX |
+| 📊 structural meta-obs | 1 | 7 轮 R-FULL 共识：overall=4.5 floor 是 §6 三重 binding cap (D3<5 + D4<5 + experiments_solidity ≤ 3) 客观结构性结论，与 reviewer persona 无关；weighted_pre_cap 7 轮轨迹 R-FULL-002 P3=5.925 → R-FULL-003 P2=5.905 → R-FULL-004 P1=4.985 → R-FULL-005 P4=4.910 → R-FULL-006-A P5=4.560 → R-FULL-006-B=4.725 → R-FULL-007 P2=5.105 反弹证实 scientist R24..R33 hygiene 工作真升 D5/D7/S4 dimension，但 §6 cap 100% binding 无法破；**唯一 lever = experiments_solidity_score 提升 1→4+ via ≥3 EXP 项 newly pass** (E-017 resume + MuSiQue + 外部 SOTA baseline + Stage-2 真实现), 全部 block on U-EXEC-007 |
+
+**Step 3 (write to §C + §B.5 + dissent)**:
+- `SCIENTIST_TODO §C`: R-FULL-007 主行 + 4 子行 (confirm-fixed × 1 batch / redundant × 1 batch / defer × 1 / observation-only × 1 / structural × 1) 已全部落地 (line 223-226)
+- `SCIENTIST_TODO §B.5`: S-152 已 ✅ with full S-104 closure summary inline (line 135)
+- 无新 S-XXX 需创建 (0 NEW actionable)
+- dissent log: EXP-8 quantitative error analysis 已落 §C row (理由 4 条)
+
+**Step 4 (USER_TODO §D + implementation_log ack)**:
+- `USER_TODO §D`: R37 行 (R-FULL-007 + S-152 closure + quota_exhaustion + U-021 Path D 五项合体) 已落
+- `implementation_log`: 本 ack block (R37 expanded from 1-line placeholder)
+
+#### Strategic clarity takeaway for scientist (R37 后)
+
+**停做 (0% 资源)**：D1/D2/D5/D6/D7/S1-S8 所有 dimension hygiene 边际优化。7 轮 R-FULL 实证 scientist 能做的 D5/D7 hygiene 已**完全到顶**，再加 1-2 处限定词 / 公式 inline / prompt 截图不会改变任何 reviewer 的 overall (仍 4.5)。
+
+**100% 做 (全部资源)**：
+1. ⚠⚠ **U-EXEC-007 newapi 充值** — user decision, scientist 催用户 ack (每 1-3 session 提醒一次，不越权 override)
+2. **E-017 resume seed=42 from truncated ckpt** (3201 stage2 + 2415 stage1 kept) + seed=43/44 → blocked on (1)
+3. **E-018 MA-RAG + ReAgent full-system reproduce** → blocked on (1)
+4. **E-006 MuSiQue data prep + E-017 MuSiQue fullval** → blocked on engineer prep + (1)
+5. **E-014 gpt-4.1-mini Table 2 ablation** → blocked on (1)
+6. **E-015/E-016 MAD reproduce + R2 SWAP-4** → blocked on (1)
+
+**Scientist can-start-NOW (no quota needed)**：
+- Fill `_pending_data_templates.tex` TEMPLATE 1 with 2415-paired subsample rescued preliminary data (honest placeholder: "inside noise; full 7405 × 3 seeds pending quota restore")
+- Update `docs/paper/benchmark_inventory.md` §3.x with E-017 partial-completion + incident reference
+- **Do NOT trigger R-FULL-008** — per R-FULL-007 reviewer 自身建议 exp_solidity ≥ 4 后才值得 re-batch (5 personas 都用完 + hygiene 已到顶, same-PDF 再 R-FULL 边际收益接近 0)
+
+#### Cross-references
+
+- `SCIENTIST_TODO §B.5` S-152 ✅ (R37, S-104 closure)
+- `SCIENTIST_TODO §C` R-FULL-007 themes × 4 rows (redundant / defer / observation / structural)
+- `SCIENTIST_TODO §D` R37 row (本 commit aggregation detail)
+- `USER_TODO §A` + `§B.1` + `§D` R37 row
+- `REVIEWER_TODO §A`/`§C`/`§D`/`§F.4` (reviewer-agent self-update)
+- `artifacts/idea_reviews/reviewer_20260419_233800_07_53f7fb/review.md` (234 lines, read end-to-end)
+- `artifacts/idea_reviews/review_index.jsonl` (new entry 28)
+- `prompts/reviewer_prompt.md §1.5.0` (new mandatory full-read paths rule)
+
+---
+
+---
+
+### [quota_exhaustion_incident_20260419_2338]
+
+- when: 2026-04-19 ~21:38 → 23:38 (incident window) / discovered + responded 23:38-23:42 UTC+8
+- who: scientist+engineer hybrid (this session, triggered by MAD/MA-RAG smoke probes that hit 403 `insufficient_user_quota`)
+- status: ⚠ **REGRESSION** — `U-Rollback-001` raised to user per `four-role-todo-workflow.mdc §7`; valid-prefix data rescued + corrupted portion archived as forensic evidence; ALL new LLM-calling experiments blocked until user tops up newapi balance (`U-EXEC-007` dispatched to `USER_TODO §B.1`).
+
+#### Incident summary (1 paragraph)
+
+At ~21:38 server time, the `newapi` (`xh.v1api.cc`) balance went to **~$-0.01 (overdrawn)**.  E-017 continued making API calls but every response returned HTTP 403 with body `{"error":{"message":"用户额度不足, 剩余额度: ＄-0.012696", ..., "code":"insufficient_user_quota"}}`.  The legacy `urllib`-based `llm_client.call_llm()` in `workspace/idea04_core/llm_client.py` does not detect 403 responses specifically (it catches broad exceptions and retries; after `retries=3` attempts, it returns an empty prediction and the sample continues with F1=0.0).  As a result, the scheduler + running batch kept writing F1=0 garbage to `_ckpt_preds.jsonl` from ~21:38 onwards.  The symptom (monotonic F1 collapse in `partial_F1` progress lines of `logs/e017_seed42_stage1_resume_*.log`) was not triggered as a fail-fast because the runner's existing `ModelDriftError` guard only catches *model substitution*, not *empty responses*.  Incident was caught at 23:38 when MAD/MA-RAG smoke probes explicitly surfaced the 403.
+
+#### Concrete forensic breakdown (500-sample bins of corrupted ckpts)
+
+| Bin | seed=42 stage2 F1 | seed=42 stage1 F1 | quota status |
+|---|---:|---:|---|
+| 0-499 | 0.7151 | 0.6827 | ✓ healthy (pre-quota-death) |
+| 500-999 | 0.6926 | 0.6921 | ✓ healthy |
+| 1000-1499 | 0.6943 | 0.6807 | ✓ healthy |
+| 1500-1999 | 0.7073 | 0.7018 | ✓ healthy |
+| 2000-2499 | 0.6967 | **0.5492** ⚠ | stage1 dying |
+| 2500-2999 | 0.6871 | **0.0000** 💀 | stage1 dead |
+| 3000-3499 | **0.2412** ⚠ | 0.0000 | stage2 dying |
+| 3500+ | 0.0000 💀 | 0.0000 | both fully dead |
+
+**Quota death point**:
+- stage1: ~sample 2000-2400 (~21:54 server time)
+- stage2: ~sample 3000-3200 (~21:38 server time — earlier because higher throughput burned $-per-min faster)
+
+#### Post-rescue valid-prefix sanity
+
+| Batch | Valid samples | Mean F1 | Mean EM |
+|---|---:|---:|---:|
+| seed=42 stage2 | 3201 (samples 0..3200) | **0.6927** | 0.5005 |
+| seed=42 stage1 | 2415 (samples 0..2414) | **0.6846** | 0.5222 |
+
+**Paired-ΔF1 estimate on first 2415 samples**: ~**+0.81 pp** favoring Stage-2.  Directionally consistent with E-005 preliminary (+3.38 pp, unpaired small-n) and E-006 3-shard (+1.65 ± 1.05 pp).  **Not statistically significant** at this sample size; does NOT yet close R-FULL-001 fatal #1 (Finding 4 self-falsification).  Full 7405 × 3-seed paired-bootstrap CI pending quota restore.
+
+#### Rescue actions executed 23:38-23:42 UTC+8
+
+1. **Stopped E-017**: `pkill -SIGTERM` on `run_e017_fullval_seed` (PID 217416) + `schedule_e017_seeds.sh` (PID 217655); all gone ✓.
+2. **Forensic backup**: `cp` full corrupted ckpts to `artifacts/forensic/quota_exhaustion_20260419_2338_incident/` (3.3 MB stage1 `_ckpt_preds_PRE_RESCUE.jsonl` + 3.5 MB stage2 equivalent + stage2's corrupted `metrics_PRE_RESCUE.json`).
+3. **In-place truncation** of active ckpts at last-valid-sample (50-sample forward-window mean F1 ≥ 0.30 threshold): stage2 kept 0..3200 (3201 samples), stage1 kept 0..2414 (2415 samples).
+4. **Sibling jsonls truncated** to keep only lines whose `task_id` matches the kept set — preserves jsonl integrity for `validate_logs.py`: routing_traces, handoff_packets, competence_snapshots, raw_model_outputs, task_tree, audit_events, neighbor_belief_snapshots.
+5. **Deleted `metrics.json`** in both run_dirs → runner's `is_resume` detector sees `ckpt present + metrics absent` and correctly treats as resumable (not done) once quota restored.
+6. **Smoke probe artifacts** (MAD + MA-RAG test outputs at `artifacts/external_baselines/{mad,marag}/smoke_20260419_233832/`) — all F1=0 due to quota; left in place as forensic (will delete after quota-restore + re-smoke).
+
+#### Root cause + lessons
+
+1. **Root cause**: newapi balance silently went negative; no automated quota monitor in pipeline.  User had already flagged `USER_TODO §E.1.5`: "如发现额度即将耗尽，立即通知 engineer 暂停" but detection was manual only.
+2. **Contributing factor #1**: `llm_client.call_llm()` treats HTTP 403 as generic exception → retries 3× → returns empty → sample continues with F1=0.0.  No specific "quota exhausted → fail-fast" handling.
+3. **Contributing factor #2**: `RoundRunner.run()` has no per-sample F1 sanity check (e.g., "if N consecutive samples have F1=0, pause and alert").  The only runtime guard is `ModelDriftError`, which detects model substitution, not empty responses.
+4. **Lesson**: future batches must (a) pre-flight check newapi balance via `GET /v1/dashboard/billing` or equivalent before starting; (b) add consecutive-zero-F1 fail-fast guard in RoundRunner; (c) have scheduler (or separate watchdog) tail the runner log every few minutes and alert on `partial_F1` trend reversal.
+
+#### New dispatches
+
+- **USER_TODO §B.1**: `U-EXEC-007` — **top up newapi balance** (physical user action).  Scientist recommendation: at least **$500** to cover E-017 rerun (~$235) + E-014 (~$20) + E-015 smoke (~$5) + E-018 reproduce (~$40) + buffer for rest of sprint.
+- **USER_TODO §A**: `U-Rollback-001-quota-depletion` — cross-reference to this forensic block; user to acknowledge + approve rerun strategy (suggested: resume from truncated ckpts, no data re-collection needed).
+- **engineer ticket `E-020`** (new, to be formally dispatched once U-EXEC-007 ✅) — add fail-fast guards to `workspace/idea04_core/llm_client.py` (HTTP 403 specific handling + `QuotaExhaustedError` base-class) + `RoundRunner.run()` (consecutive-zero-F1 counter, fail at N=20) + `scripts/run_e017_fullval_seed.py` pre-flight balance probe; estimate ~45 min total.
+- **scientist**: do NOT use the pre-rescue stage2 `metrics.json` (0.2994 F1, quota-contaminated).  Write `_pending_data_templates.tex` TEMPLATE 1 placeholder referencing the **valid 2415-paired subsample** (ΔF1 ~+0.81 pp, still inside noise) as honest preliminary until full rerun completes.
+
+#### depends_on (blockers)
+
+- `U-EXEC-007` (user tops up newapi) ✅ required before:
+  - E-017 rerun (seed=42 remaining ~4200 stage2 + ~4990 stage1 samples, then seeds 43+44) ≈ ~$235
+  - E-014 launch (4 ablations × 200 samples) ≈ ~$20
+  - E-015 step 1-3 smoke (MAD HotpotQA adapter at `external_baselines/mad/hotpotqa/gen_hotpotqa.py` READY but blocked) ≈ ~$5
+  - E-018 step 2-4 (MA-RAG + ReAgent reproduction; MA-RAG adapter at `external_baselines/marag/run_marag_hotpotqa.py` READY; ReAgent adapter engineer-next-session) ≈ ~$40
+  - E-010 step 2-4 (ChatEval reproduction, adapter TBD) ≈ ~$5
+
+- `E-020` (engineer: fail-fast guards) ✅ **recommended** BEFORE E-017 rerun to prevent recurrence if quota depletes again.
+
+#### Cross-references
+
+- Forensic evidence: `artifacts/forensic/quota_exhaustion_20260419_2338_incident/` (6.9 MB, 3 files)
+- Rescue script: `workspace/tmp/rescue_valid_data.sh` (SCP'd to server as `/tmp/rescue_valid_data.sh`)
+- Quota-contaminated smoke probes (to delete after quota-restore + re-smoke): `artifacts/external_baselines/mad/smoke_20260419_233832/` + `artifacts/external_baselines/marag/smoke_20260419_233832/`
+- 403 example request id (for user to give provider in support ticket if needed): `202604191540396282710208268d9d6sjDNlK3d`
+
+#### next_action (ORDERED)
+
+1. **USER**: top up newapi (U-EXEC-007 in USER_TODO §B.1) — physical action, blocks everything below.
+2. **ENGINEER** (next session, ONLY after user acks U-EXEC-007 ✅):
+   - verify quota restored via `curl ... /chat/completions` probe → expect HTTP 200
+   - implement `E-020` fail-fast guards (~45 min)
+   - resume E-017 seed=42 by re-invoking `scripts/run_e017_fullval_seed.py --seed 42 --method <METHOD> --run-dir <existing_dir>` — runner auto-resumes from truncated checkpoints (3201 stage2 / 2415 stage1 kept)
+   - once seed=42 reaches 7405 both batches, re-launch scheduler for seed=43+44
+   - after all 3 seeds ✅, run `paired_bootstrap_ci.py`
+3. **SCIENTIST** (can START NOW, no quota needed): 
+   - update `_pending_data_templates.tex` TEMPLATE 1 with "valid 2415-paired subsample preliminary ΔF1 ~+0.81 pp, NOT significant, full 7405 × 3 seeds pending quota restore"
+   - update `docs/paper/benchmark_inventory.md` §3.x with E-017 partial-completion + incident reference
+   - do NOT trigger R-FULL-007 rerun — need full 3-seed fullval first
+4. **SCIENTIST R-PART** (optional): may run partial review of the valid 2415-sample data if needed, but engineer data is minimal and partial reviews would thrash R-FULL cadence
 
 ---

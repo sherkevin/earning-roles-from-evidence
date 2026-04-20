@@ -1,0 +1,18 @@
+hf_endpoint: https://hf-mirror.com
+hf_force_redownload: false
+benchmark: hotpotqa
+split: validation
+sample_size: 1
+topology: chain
+max_handoff: 4
+main_model: gpt-4.1-mini
+temperature: 0.0
+token_budget_per_sample: 2000
+shared_prompt_template: prompts/main_agent_prompt.txt
+methods:
+- fixed_peer_calibrated
+- fixed_static_roles
+- fixed_self_claim
+method_name: edo_stage2_chain
+n_workers: 1
+progress_every: 1

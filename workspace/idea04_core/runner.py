@@ -16,6 +16,11 @@ from .contracts import AgentInput, HandoffPacket, MethodState
 from .evaluation import exact_match, token_f1
 from .llm_client import ModelDriftError, _runtime as _llm_runtime, configure_runtime, resolved_model
 
+# Stage-2 (E-005). Imports are top-level but only exercised when
+# method_name == "edo_stage2_chain"; Stage-1 paths never touch these symbols.
+from .persona_model import BeliefStore, serialize_v2 as serialize_belief_v2
+from .task_tree import TaskNode, TaskTreeState
+
 
 def _runtime_backend() -> str:
     return _llm_runtime.get("backend", "unknown")
@@ -46,6 +51,10 @@ class _SampleResult:
     api_prompt: int
     api_completion: int
     api_total: int
+    # ── Stage-2 only (empty list for Stage-1 methods) ──
+    task_tree_records: list[dict[str, Any]] = field(default_factory=list)
+    audit_event_records: list[dict[str, Any]] = field(default_factory=list)
+    belief_snapshot_records: list[dict[str, Any]] = field(default_factory=list)
 
 
 @dataclass
@@ -175,6 +184,13 @@ class RoundRunner:
         f_outputs = (run_dir / "raw_model_outputs.jsonl").open(log_mode, encoding="utf-8")
         f_ckpt    = ckpt_path.open("a", encoding="utf-8")   # always append
 
+        # ── Stage-2 only: 3 additional jsonls (per pinned C-2 these are gated
+        # by method_name so Stage-1 runs never see them on disk) ──────────────
+        is_stage2 = method_name == "edo_stage2_chain"
+        f_task_tree   = (run_dir / "task_tree.jsonl").open(log_mode, encoding="utf-8") if is_stage2 else None
+        f_audit_evts  = (run_dir / "audit_events.jsonl").open(log_mode, encoding="utf-8") if is_stage2 else None
+        f_belief_snap = (run_dir / "neighbor_belief_snapshots.jsonl").open(log_mode, encoding="utf-8") if is_stage2 else None
+
         counters   = _Counters()
         id_to_orig = {s["task_id"]: i for i, s in enumerate(samples)}
 
@@ -204,6 +220,21 @@ class RoundRunner:
                 ),
                 seen_nodes=set(),
             )
+
+            # Stage-2 only: per-sample TaskTreeState + per-agent BeliefStore
+            if is_stage2:
+                root_node = TaskNode(
+                    task_id=f"{task_id}_root",
+                    parent_task_id=None,
+                    root_task_id=f"{task_id}_root",
+                    task_text=question,
+                    task_type_guess="composite",
+                    depth=0,
+                    owner_agent="decomposer",
+                    executor_agent="decomposer",
+                )
+                state.task_tree_state_v2 = TaskTreeState(root_node)
+                state.belief_store_by_agent_v2 = {n: BeliefStore() for n in self.nodes}
 
             packet = HandoffPacket(
                 task_id=task_id,
@@ -362,6 +393,28 @@ class RoundRunner:
                 "token_cost": token_cost,
             }
 
+            # ── Stage-2 per-sample artefacts: snapshot tree + audit events + beliefs ──
+            stage2_tree_records: list[dict[str, Any]] = []
+            stage2_audit_records: list[dict[str, Any]] = []
+            stage2_belief_records: list[dict[str, Any]] = []
+            if is_stage2 and state.task_tree_state_v2 is not None:
+                tt = state.task_tree_state_v2
+                # one record per task node, all tied to this sample
+                for nid, node in tt.nodes.items():
+                    rec = node.to_jsonl_record()
+                    rec["task_id"] = task_id  # sample id (carries the trace id mapping)
+                    rec["tree_node_id"] = nid
+                    stage2_tree_records.append(rec)
+                for ev in state.audit_events_buffer_v2:
+                    rec = ev.to_jsonl_record()
+                    rec["task_id"] = task_id
+                    stage2_audit_records.append(rec)
+                for agent_name, store in state.belief_store_by_agent_v2.items():
+                    rec = serialize_belief_v2(store)
+                    rec["task_id"] = task_id
+                    rec["agent_name"] = agent_name
+                    stage2_belief_records.append(rec)
+
             return _SampleResult(
                 prediction=prediction,
                 traces=sample_traces,
@@ -376,6 +429,9 @@ class RoundRunner:
                 api_prompt=sp,
                 api_completion=sc,
                 api_total=st,
+                task_tree_records=stage2_tree_records,
+                audit_event_records=stage2_audit_records,
+                belief_snapshot_records=stage2_belief_records,
             )
 
         # ----------------------------------------------------------------
@@ -424,6 +480,17 @@ class RoundRunner:
                 f_packets.flush()
                 f_snaps.flush()
                 f_outputs.flush()
+                # Stage-2 only: persist tree + audit events + belief snapshots
+                if is_stage2:
+                    for r in result.task_tree_records:
+                        f_task_tree.write(json.dumps(r, ensure_ascii=False) + "\n")
+                    for r in result.audit_event_records:
+                        f_audit_evts.write(json.dumps(r, ensure_ascii=False) + "\n")
+                    for r in result.belief_snapshot_records:
+                        f_belief_snap.write(json.dumps(r, ensure_ascii=False) + "\n")
+                    f_task_tree.flush()
+                    f_audit_evts.flush()
+                    f_belief_snap.flush()
                 f_ckpt.write(json.dumps(pred, ensure_ascii=False) + "\n")
                 f_ckpt.flush()
 
@@ -482,6 +549,10 @@ class RoundRunner:
         # Close incremental files
         for fh in (f_traces, f_packets, f_snaps, f_outputs, f_ckpt):
             fh.close()
+        if is_stage2:
+            for fh in (f_task_tree, f_audit_evts, f_belief_snap):
+                if fh is not None:
+                    fh.close()
 
         # ----------------------------------------------------------------
         # Compute final metrics (new + checkpoint samples)

@@ -2,9 +2,11 @@
 
 > **用法 (HOW TO USE)**
 >
-> 1. **准备 2 个参考文档**（提示文末 §1.5 也会强制 LLM 读它们）：
->    - **官方规则源** `docs/demand.md` — EMNLP 2027 long paper CFP + ARR 7 维评审表 + desk-reject 触发条件。本 prompt 的 rubric 全部派生于此，遇争议以 demand.md 为准。
->    - **被审论文** `article/build/edo_paper.pdf` —— 当前论文最新可编译产物（266 KB，含表格/公式/正文）。这是**论文唯一权威文本**；`docs/paper/EMNLP_paper_draft.md` 等 markdown 草稿只能作为辅助解读，不能替代 PDF。
+> 1. **准备 2 个参考文档**（提示 **§1.5.0** 要求审稿人**完整阅读**后才开始打分；不得跳读、不得仅凭摘要）：
+>    - **官方规则源（workspace 绝对路径）**：`d:\Codes\idea04\docs\demand.md` — EMNLP Long Paper 内部规则书（desk-reject、8 页正文 + Self-Contained Main Body Rule、Limitations 等）。本 prompt 的 rubric 派生于此，**任何冲突以该文件为准**。
+>    - **被审论文 PDF（workspace 绝对路径）**：`d:\Codes\idea04\article\build\edo_paper.pdf` — 由 `scripts/build_paper.ps1` 生成的**唯一权威投稿文本**（页数、图表、公式、章节顺序以该 PDF 为准）。**仓库内不存在 `main.pdf`**；若作者或协作者口头说 “main pdf”，即指本路径。
+>    - （相对路径写法，便于非 Windows 环境：`docs/demand.md`，`article/build/edo_paper.pdf` — 与上两行指向同一文件。）
+>    - `docs/paper/EMNLP_paper_draft.md` / `idea.md` 仅可作背景，**不可替代**上述 PDF。
 > 2. 从 §0 五个 reviewer 身份里挑一个（或随机抽），替换 `{{REVIEWER_PROFILE}}`。
 > 3. 把 `{{TARGET_PATH}}` 替换为目标文档的相对路径。**默认 = `article/build/edo_paper.pdf`**；只有在审 idea note 而非完整论文时才填 `idea.md`。
 > 4. 把 `{{TARGET_SCORE}}` 替换为期望 overall 阈值：`8.0` = 普通 accept，`8.5` = oral（top 3-5%）。
@@ -79,6 +81,17 @@ Failure on ANY of {substantial, original, completed, with concrete evaluation} i
 
 Before you begin scoring, locate and reference the following two documents. They are the **authoritative sources** that override any informal interpretation embedded elsewhere in this prompt or the submission itself.
 
+### §1.5.0. Mandatory full read (HARD — no scoring until complete)
+
+You **must** complete **both** full reads below **before** filling any score field (D1–D7, S1–S8, audits, DR checks). Skimming, reading only the abstract, or stopping at §1–§2 of the rulebook is a **process violation**: set `confidence <= 3` and state the violation in `rule_source_disagreements`.
+
+| Order | Document | Workspace path (canonical) | Minimum read |
+|-------|-----------|----------------------------|--------------|
+| 1 | EMNLP / ARR rulebook | `d:\Codes\idea04\docs\demand.md` | Entire file, especially **§2 Formatting** (page limit + **Self-Contained Main Body Rule** + Limitations), §4 review dimensions, §8 experimental standards |
+| 2 | Submission PDF | `d:\Codes\idea04\article\build\edo_paper.pdf` | Entire PDF from title through all appendices and references (or a **full-document** `pdftotext -layout` extraction of the same file if the model cannot ingest PDF); **not** a partial excerpt |
+
+**Affirm in the review output** (e.g. in `summary` or a bullet under `process_compliance`): that both files were read end-to-end for this batch. If either file was missing or truncated, say so explicitly.
+
 ### §1.5.1. `docs/demand.md` — Official EMNLP / ARR Rulebook
 
 This is the project-internal copy of the **EMNLP 2027 Long Paper Track requirement specification** (derived directly from the official ARR CFP). All rubric bands in §3, all desk-reject triggers in §2, all caps in §6, and all forbidden behaviors in §7 are derived from `docs/demand.md`.
@@ -96,6 +109,8 @@ The 7 ARR review dimensions you must score (D1..D7 in §3) correspond directly t
 
 This is the **canonical, build-verified PDF** of the paper being reviewed. It is the single authoritative source for the paper's text, figures, tables, equations, page count, section structure, and Limitations placement.
 
+**Canonical path:** `d:\Codes\idea04\article\build\edo_paper.pdf` (relative: `article/build/edo_paper.pdf`).
+
 Treatment rules:
 
 - If the user message provides `article/build/edo_paper.pdf` as an attachment, **read the entire PDF** before scoring. Do not rely on snippet summaries.
@@ -110,12 +125,19 @@ Treatment rules:
 
 ## §2. Desk-Reject Pre-flight (Run First, Before Any Scoring)
 
-Before scoring anything, scan the document for the following desk-reject triggers from the EMNLP / ARR official rules. Any match must be reported in `desk_reject_risks` with a precise quote or section reference. A confirmed desk-reject trigger caps `overall` at <=4 and forces `verdict` to `reject`.
+Before scoring anything, scan the document for the following desk-reject triggers. Definitions **must match** `d:\Codes\idea04\docs\demand.md` §2 (including **Self-Contained Main Body Rule**). Any match must be reported in `desk_reject_risks` with a precise quote or section reference. A confirmed desk-reject trigger caps `overall` at <=4 and forces `verdict` to `reject`.
 
 ```
-DR-1  Page-limit violation: the main body (everything before "Limitations" /
-      Conclusion) exceeds 8 pages, OR figures/tables/equations spill into
-      Limitations / References to dodge the limit.
+DR-1  Formatting / self-containment violation (per demand.md §2):
+      (i) Main body (8-page ACL content pages before References) exceeds 8 pages;
+      OR (ii) headline empirical claims in Abstract / Introduction / Conclusion
+      are supported only by appendix material with no matching table/figure/
+      equation in the main body; OR (iii) the main body relies on appendix-only
+      evidence for a claim presented as settled (page-limit / self-containment
+      evasion). Note: Appendices themselves are **not** counted toward the 8-page
+      main-body limit under the current rulebook; extended pseudocode may live
+      in an appendix if the main body already gives prose + equations sufficient
+      to understand the operational semantics (demand.md §2 bullet 2).
 DR-2  Missing or mis-titled Limitations section: a section titled exactly
       "Limitations" must appear after Conclusion and before References.
       Variants ("Limitation", "Limits", "Discussion of Limitations" without

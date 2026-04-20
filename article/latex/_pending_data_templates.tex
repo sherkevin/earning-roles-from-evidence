@@ -36,6 +36,19 @@
 %%   artifacts/round2_gpt41mini_stage2_fullval/paired_stats_3seed.csv
 %%   columns: seed, method_a, method_b, n, mean_delta_f1,
 %%            ci_low, ci_high, paired_p, mean_delta_token
+%%
+%% ⚠ 2026-04-19 23:42 INCIDENT UPDATE — newapi quota exhaustion
+%% (see implementation_log [quota_exhaustion_incident_20260419_2338]):
+%% FULL 3-seed batch is BLOCKED on U-EXEC-007 (user quota top-up).
+%% VALID PREFIX rescued from seed=42 batch:
+%%   stage2 0..3200 (3201 samples) mean F1 = 0.6927
+%%   stage1 0..2414 (2415 samples) mean F1 = 0.6846
+%%   paired ΔF1 (first 2415 samples) ≈ +0.81 pp (still inside noise)
+%%   paired Δtokens ≈ -37% (unchanged from preliminary, ROBUST)
+%% DO NOT inline this fullval template until after quota-restore +
+%% full 3-seed rerun completes.  As an INTERIM honest placeholder,
+%% the 2415-paired subsample can be disclosed in a §4.3.5 note (see
+%% TEMPLATE 1.5 below).
 %% =============================================================
 
 \paragraph{Stage-2 prototype full-validation (paired).}
@@ -57,6 +70,22 @@ On the full HotpotQA validation set ($n{=}7405$) with $\geq 3$ seeds, paired-boo
 \label{tab:fullval-stage2-vs-stage1}
 \end{table}
 
+
+%% =============================================================
+%% TEMPLATE 1.5 — INTERIM HONEST PLACEHOLDER (R37, quota incident)
+%% Source: rescued valid prefix of seed=42 fullval batch after
+%% newapi quota exhausted 2026-04-19 ~21:38 (see implementation_log
+%% [quota_exhaustion_incident_20260419_2338]).
+%%
+%% If the camera-ready deadline hits before U-EXEC-007 top-up + full
+%% rerun, scientist can inline this shortened 2415-paired-subsample
+%% disclosure as §4.3.5 honest preliminary.  Full 3-seed × 7405 table
+%% (TEMPLATE 1 above) remains the intended final version once quota
+%% restores and engineer re-runs.
+%% =============================================================
+
+\paragraph{Stage-2 prototype partial-fullval (paired, 2415 samples).}
+Due to an upstream provider quota exhaustion at sample $\sim$3200 (\texttt{edo\_stage2\_chain}) / $\sim$2400 (\texttt{peer\_calibrated}) of the first-seed $n{=}7405$ run (see Appendix~F Engineering Note), we report here the paired result on the \emph{rescued valid prefix} — the first $n'{=}2415$ paired task-IDs where both batches returned non-degenerate predictions. On this subsample, $\Delta F_1 \approx {+}0.81$ pp (point estimate, no bootstrap CI on this subsample due to insufficient paired size for the target $\pm$1 pp resolution), while $\Delta \mathrm{tokens}$ holds at $-37.1 \pm 0.19$\% (cross-shard; identical to the Appendix~D 3-shard preliminary). The F1 effect is still inside the noise band established in Appendix~D at the 200-sample paired level, and the token-cost advantage remains robust. A full-rerun table with 3 seeds $\times$ 7405 samples and paired-bootstrap CI is deferred to a cameraready revision after the provider-side quota is restored.
 
 %% =============================================================
 %% TEMPLATE 2 — S-117 Table 2.b (gpt-4.1-mini Table 2 ablation)
@@ -202,5 +231,98 @@ On all three hosts, swapping the host's [original component] for our [R-x] yield
 %% TBD — author manually replaces the final 1-2 sentences depending
 %% on whether E-017 produces positive / null / negative paired ΔF1
 %% at fullval scale. Use same decision tree as TEMPLATE 5.
+
+
+%% =============================================================
+%% TEMPLATE 7 — S-149 / S-150 / S-151: §4.x Axis A Full-System SOTA
+%%   Head-to-Head Comparison (NEW R37, per R35 sota_baseline_survey
+%%   + U-022-decide:a approval)
+%% Source tickets: E-018 (MA-RAG + ReAgent reproduce on HotpotQA-200
+%%   under integrity-guarded newapi + gpt-4.1-mini) + E-019 (Tier-2
+%%   BELLE/MAR probe — only if engineer locates code)
+%% Closes: S-149 (TEMPLATE 7 fill) + S-150 (benchmark_inventory §3.3
+%%   sync) + S-151 (§1 Introduction + §6 Conclusion framing upgrade
+%%   to "evaluated against 2024-2025 SOTA on HotpotQA")
+%% Insert location: NEW §4.x subsection BEFORE §4.4 "External Baseline
+%%   + Module-Swap Comparison" (TEMPLATE 3) — semantically the
+%%   full-system Axis A comparison should appear ahead of the
+%%   module-swap mechanism-isolation Axis B; alternatively, both
+%%   axes can share a single subsection §4.x with two side-by-side
+%%   sub-tables. Authors will decide layout when both E-017 + E-018
+%%   data land.
+%% Required engineer artifacts:
+%%   artifacts/external_baselines/marag/marag_200sample_<TS>/metrics.json
+%%   artifacts/external_baselines/reagent/reagent_200sample_<TS>/metrics.json
+%%   - keys per row: method, n, em, f1, mean_handoff_count,
+%%     api_total_tokens_per_sample, estimated_cost_usd, seed,
+%%     reproduced_or_paper_reported, backbone_actual
+%%   - if reproduce succeeds: row carries reproduced_or_paper_reported
+%%     = "reproduced" + own F1 number on HotpotQA-200 + gpt-4.1-mini
+%%   - if reproduce blocks (per E-018 if_blocked playbook): row
+%%     carries reproduced_or_paper_reported = "paper-reported" + cited
+%%     F1 + backbone_difference disclaimer in caption
+%% =============================================================
+
+\subsection{External SOTA full-system comparison}
+\label{sec:external-sota}
+
+To address whether the EDO Stage-1 instance and degenerate-Stage-2 prototype are competitive with recent 2024--2025 multi-agent systems on the same benchmark --- not just with our own internal Stage-1 baselines --- we run a head-to-head full-system comparison on two recent open-source systems that explicitly report state-of-the-art results on multi-hop QA: \textbf{MA-RAG} (a four-agent retrieval-augmented framework with Planner/Step-Definer/Extractor/QA agents and chain-of-thought collaboration) and \textbf{ReAgent} (a reversible multi-agent reasoner that supports rollback to earlier valid states upon conflict). For each system we hold the canonical backbone fixed at \texttt{gpt-4.1-mini} accessed through the same integrity-guarded endpoint used for our own runs; the host system's prompts, agent count, retrieval stack, and termination policy are otherwise unmodified. Where direct backbone replacement is not feasible without altering the host system's design (see Appendix~B for the integrity guard), we report the paper's published number on the closest comparable backbone with an explicit disclaimer.
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lcccr@{}}
+\toprule
+\textbf{System} & \textbf{Year} & \textbf{F1} & \textbf{EM} & \textbf{Tok.} \\
+\midrule
+MA-RAG~\citep{tran2025marag}        & 2025 & $\langle X.XXX \rangle\langle^{r/p}\rangle$ & $\langle X.XXX \rangle$ & $\langle X \rangle$ \\
+ReAgent~\citep{liu2025reagent}      & 2025 & $\langle X.XXX \rangle\langle^{r/p}\rangle$ & $\langle X.XXX \rangle$ & $\langle X \rangle$ \\
+MAD~\citep{du2024improving}         & 2024 & $\langle X.XXX \rangle\langle^{r}\rangle$  & $\langle X.XXX \rangle$ & $\langle X \rangle$ \\
+AutoGen~\citep{wu2023autogen}       & 2024 & $\langle X.XXX \rangle\langle^{r}\rangle$  & $\langle X.XXX \rangle$ & $\langle X \rangle$ \\
+ChatEval~\citep{chan2024chateval}   & 2024 & $\langle X.XXX \rangle\langle^{r}\rangle$  & $\langle X.XXX \rangle$ & $\langle X \rangle$ \\
+\midrule
+Our TCPB Stage-1 (M-7)              & ---  & $0.7381$                                    & $0.6150$ & $6{,}414$ \\
+Our EDO Stage-2 (M-9)               & ---  & $\langle X.XXX \rangle\langle^{r}\rangle$  & $\langle X.XXX \rangle$ & $\langle X \rangle$ \\
+\bottomrule
+\end{tabular}
+\caption{External SOTA head-to-head comparison on HotpotQA. Slice: $n{=}200$ paired sub-slice with seed $=42$ (extended to $n{=}7405$ where engineer budget permits). Backbone: \texttt{gpt-4.1-mini} on the integrity-guarded endpoint. Superscripts: $^{r}$ = reproduced under our backbone; $^{p}$ = paper-reported number on the closest comparable backbone (with disclaimer in main text). All numbers computed using the standard HotpotQA EM/F1 evaluator. Tokens are mean API tokens per sample.}
+\label{tab:external-sota}
+\end{table}
+
+\langle FILL\_INTERPRETATION: \emph{either} ``Our delivered Stage-1 instance falls within $\langle X \rangle$ pp of the strongest reproducible 2024--2025 baseline at $\langle Y \rangle\%$ of the per-sample token cost, while the degenerate-Stage-2 prototype \langle improves on / matches / falls behind \rangle the strongest baseline by $\langle X \rangle$ pp at $\langle Y \rangle\%$ of the cost.'' \emph{or} ``Both delivered prototypes fall short of the 2024--2025 SOTA frontier on F1 by $\langle X \rangle$ pp, with the cost-normalised F1 advantage \langle preserved / lost \rangle; we report this as a delivered-system limitation that the unimplemented Stage-2 R1/R2/R3 mechanisms are hypothesised to close.'' \rangle
+
+%% Author-side checklist before lifting TEMPLATE 7 into edo_paper.tex
+%%   (R##+ commit when E-018 data lands):
+%%
+%%   [ ] Verify cite keys tran2025marag + liu2025reagent are added to
+%%       custom.bib with correct arXiv id / venue (EMNLP 2025 for
+%%       ReAgent); cross-check with sota_baseline_survey_2026.md §7.
+%%   [ ] Verify caption note "computed using the standard HotpotQA
+%%       EM/F1 evaluator" matches our Appendix~A B2 evaluator
+%%       statement (no re-implementation drift between our and SOTA
+%%       row).
+%%   [ ] If MA-RAG retrieval was adapted to use HotpotQA gold context
+%%       (per E-018 C-8 caution), add a 1-line caption note: "MA-RAG
+%%       retrieval substituted question's HotpotQA context for default
+%%       dpr100 corpus to ensure comparable evidence access".
+%%   [ ] Re-run scripts/build_paper.ps1 after inlining; verify main
+%%       body still 8 pages COMPLIANT (TEMPLATE 7 sub-section + table
+%%       estimate ~12-15 lines, may displace TEMPLATE 3 sub-section
+%%       which has its own ~12-15 lines — consider inlining both into
+%%       a single §4.x with side-by-side caption).
+%%   [ ] Update §1 Introduction contributions list (currently item 4
+%%       conjecture-only) to add "we evaluate the delivered
+%%       prototype against [N=2 to 5] 2024-2025 multi-agent SOTA on
+%%       HotpotQA (Table~\ref{tab:external-sota}); the delivered
+%%       Stage-1 falls within $\langle X \rangle$ pp of the strongest
+%%       reproducible baseline at lower per-sample token cost".
+%%   [ ] Update §6 Conclusion last paragraph to reference SOTA delta:
+%%       remove "long-paper opportunity lies in implementing and
+%%       empirically evaluating Stage-2 mechanisms"; add "while the
+%%       delivered TCPB Stage-1 falls within \langle X \rangle pp of
+%%       the strongest 2024-2025 reproducible SOTA at lower cost,
+%%       closing the F1 gap on harder benchmarks (MuSiQue, 2WikiMQA)
+%%       remains the central Stage-2 evaluation question".
 
 %% END OF FILE _pending_data_templates.tex

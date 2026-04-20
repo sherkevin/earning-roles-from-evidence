@@ -7,6 +7,23 @@ from typing import Any
 from .contracts import AgentInput, AgentOutput, CompetenceUpdate, HandoffPacket, TraceEntry
 from .llm_client import call_llm, extract_text, extract_usage
 
+# Stage-2 modules (E-005 integration). Imports are top-level but the modules
+# only get *exercised* when method_name == "edo_stage2_chain"; Stage-1 paths
+# never touch these symbols.
+from .action_policy import Action, ActionDecision, select_action
+from .audit_runtime import (
+    AuditDecision,
+    AuditEvent,
+    apply_audit_to_tree,
+    audit_candidate,
+)
+from .persona_model import (
+    BeliefStore,
+    PersonaVector,
+    update_belief_from_audit,
+)
+from .task_tree import TaskNode, TaskTreeError, TaskTreeState
+
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 _DEFAULT_PROMPT_PATH = _REPO_ROOT / "prompts" / "main_agent_prompt.txt"
 
@@ -47,6 +64,9 @@ METHOD_NAMES = [
     "fixed_random_forward",
     "fixed_peer_calibrated",
     "fixed_self_calibrated",
+    # Stage-2 prototype (E-005). Chain topology, exercises all 4 R1/R2/R3 modules.
+    # See `[E-005_stage2_integration_20260420]` in implementation_log for design.
+    "edo_stage2_chain",
 ]
 
 ROLE_DESCRIPTIONS = {
@@ -601,6 +621,319 @@ def _competence_update_self_calibrated(
     return CompetenceUpdate(before=before, after=after, signal=signal)
 
 
+def _signature_from_routing_features(rf: dict[str, Any], max_handoff: int = 4) -> tuple[float, ...]:
+    """Project Stage-1 routing features into the canonical 7-dim phi(z) signature.
+
+    Mirrors the rule table in idea.md §9.2 axis-by-axis so the persona vector
+    update has the same semantics across Stage-1 and Stage-2.
+    """
+    hop = int(rf.get("hop_count", 0) or 0)
+    ev = int(rf.get("evidence_count", 0) or 0)
+    return (
+        1.0 if rf.get("question_is_multihop") and hop == 0 else 0.0,            # need_decompose
+        1.0 if hop >= 2 else 0.0,                                                # need_verification
+        1.0 if ev >= 8 else 0.0,                                                 # need_integration
+        max(0.0, 1.0 - min(1.0, ev / 10.0)),                                     # need_exploration
+        float(rf.get("evidence_sufficiency", 0.0)),                              # evidence_breadth
+        float(rf.get("packet_uncertainty", 0.5)),                                # uncertainty
+        min(1.0, hop / max(1, max_handoff)),                                     # cost_sensitivity
+    )
+
+
+def _stage2_pick_current_node(
+    tt: TaskTreeState, agent_name: str, hop_index: int
+) -> TaskNode:
+    """Chain prototype: assign each (agent_name, hop_index) a fresh tree node.
+
+    The node is attached to the deepest existing leaf so the tree grows
+    linearly, mirroring the chain. If the depth cap is reached, the agent
+    operates on the deepest leaf in place (degenerate but bounded).
+    """
+    from .task_tree import MAX_TREE_DEPTH  # local import keeps circular-safety
+
+    expected_id = f"{tt.root.task_id}_hop{hop_index}_{agent_name}"
+    if expected_id in tt.nodes:
+        return tt.nodes[expected_id]
+
+    # find deepest leaf — that's our parent
+    parent = tt.root
+    for nid, node in tt.nodes.items():
+        if not node.child_task_ids and node.depth >= parent.depth:
+            parent = node
+
+    if parent.depth >= MAX_TREE_DEPTH:
+        return parent
+
+    new_node = TaskNode(
+        task_id=expected_id,
+        parent_task_id=parent.task_id,
+        root_task_id=tt.root.task_id,
+        task_text=tt.root.task_text,
+        task_type_guess=parent.task_type_guess,
+        depth=parent.depth + 1,
+        owner_agent=agent_name,
+        executor_agent=agent_name,
+    )
+    try:
+        tt.add_subtask(parent.task_id, new_node)
+    except TaskTreeError:
+        return tt.root
+    return new_node
+
+
+def _run_edo_stage2_chain_step(
+    agent_name: str,
+    agent_input: AgentInput,
+    hop_index: int,
+    usage_accum: list[dict[str, Any]],
+) -> AgentOutput:
+    """Stage-2 prototype: 4-module integrated routing on chain topology.
+
+    Per-hop sequence:
+      1. Locate or create the current TaskNode for this (agent, hop_index).
+      2. If hop > 0: audit the prior agent's candidate via audit_runtime
+         (rule-based only — keeps token cost identical to Stage-1).
+      3. Update this agent's BeliefStore about the prior actor.
+      4. Build phi(z) signature from existing routing features.
+      5. select_action → DO_SELF / OUTSOURCE / SPLIT (with mocked split LLM).
+      6. Execute via the same _llm_generate_answer / _llm_forward_contribution
+         helpers Stage-1 uses (no separate prompt path → easy A/B comparison).
+      7. Build dual-track competence + Stage-2 fields on the outgoing packet.
+
+    Pinned C-2: this function does NOT touch any Stage-1 state outside the
+    new state.task_tree_state_v2 / state.belief_store_by_agent_v2 fields.
+    """
+    state = agent_input.method_state
+    packet = agent_input.incoming_packet
+    method_knobs = default_method_knobs("edo_stage2_chain", state.method_knobs)
+    neighbor_list = agent_input.neighbor_list
+    question = agent_input.question
+
+    # ── 0. Defensive lazy init (runner normally pre-initialises these per-sample) ──
+    if state.task_tree_state_v2 is None:
+        root = TaskNode(
+            task_id=f"{packet.task_id}_root",
+            parent_task_id=None,
+            root_task_id=f"{packet.task_id}_root",
+            task_text=question,
+            task_type_guess="composite",
+            depth=0,
+            owner_agent="decomposer",
+            executor_agent="decomposer",
+        )
+        state.task_tree_state_v2 = TaskTreeState(root)
+    tt: TaskTreeState = state.task_tree_state_v2
+
+    if not state.belief_store_by_agent_v2:
+        state.belief_store_by_agent_v2 = {}
+    if agent_name not in state.belief_store_by_agent_v2:
+        state.belief_store_by_agent_v2[agent_name] = BeliefStore()
+    belief: BeliefStore = state.belief_store_by_agent_v2[agent_name]
+
+    # ── 1. Pick / create the TaskNode this agent will operate on ──
+    current_node = _stage2_pick_current_node(tt, agent_name, hop_index)
+
+    # ── 2. Build routing features (also reused for the audit signature) ──
+    competence_score = float(
+        state.competence_by_agent.get(agent_name, default_competence(agent_name)).get(
+            agent_name, 0.5
+        )
+    )
+    routing_features = _build_routing_features(
+        agent_name=agent_name,
+        question=question,
+        packet=packet,
+        competence_score=competence_score,
+        threshold=None,
+        method_knobs=method_knobs,
+    )
+    signature = _signature_from_routing_features(routing_features, max_handoff=state.max_handoff)
+
+    # ── 3. Audit prior hop's candidate, if any ──
+    audit_event_for_log: AuditEvent | None = None
+    if hop_index > 0:
+        prior_actor = packet.last_actor or ""
+        # the prior node was registered in the previous hop with this id pattern
+        prior_node_id = f"{tt.root.task_id}_hop{hop_index - 1}_{prior_actor}"
+        prior_node = tt.nodes.get(prior_node_id)
+        if prior_node is not None:
+            audit_event_for_log = audit_candidate(
+                upstream_node=current_node,
+                downstream_node=prior_node,
+                candidate_result=packet.candidate_answer or "",
+                llm_callable=None,
+                max_handoff=state.max_handoff,
+            )
+            apply_audit_to_tree(tt, audit_event_for_log)
+            update_belief_from_audit(
+                belief, prior_actor, audit_event_for_log, signature, nu=0.2
+            )
+            # Persist for runner-level jsonl flush
+            state.audit_events_buffer_v2.append(audit_event_for_log)
+
+    # ── 4. select_action ──
+    def _split_llm_callable(prompt: str) -> str:
+        msgs = [{"role": "system", "content": prompt}]
+        try:
+            resp = call_llm(messages=msgs, temperature=0.0, max_tokens=512)
+            u = extract_usage(resp)
+            if u:
+                usage_accum.append(u)
+            return extract_text(resp)
+        except Exception:
+            return ""  # → ActionPolicyError → next-best downgrade
+
+    def _belief_fn(neighbour_id: str) -> float:
+        return belief.get(neighbour_id).fit(signature)
+
+    decision: ActionDecision = select_action(
+        node=current_node,
+        state=tt,
+        neighbors=neighbor_list,
+        llm_callable=_split_llm_callable,
+        neighbor_belief_fn=_belief_fn,
+    )
+
+    # ── 5. Execute the chosen action via Stage-1 LLM helpers ──
+    chosen_target = ""
+    llm_answer = ""
+    contribution = ""
+    raw_response = ""
+
+    if decision.action == Action.DO_SELF or not neighbor_list:
+        decision_str = "accept"
+        llm_answer = _llm_generate_answer(
+            agent_name,
+            question,
+            packet.evidence_so_far,
+            evidence_cap=int(
+                method_knobs["synth_evidence_cap"]
+                if agent_name == "synthesizer"
+                else method_knobs["non_synth_evidence_cap"]
+            ),
+            usage_accum=usage_accum,
+        )
+        raw_response = llm_answer
+        current_node.candidate_result = llm_answer
+        current_node.executor_agent = agent_name
+    elif decision.action == Action.OUTSOURCE:
+        decision_str = "forward"
+        proposed = decision.target_neighbor or ""
+        chosen_target = proposed if proposed in neighbor_list else neighbor_list[0]
+        contribution = _llm_forward_contribution(
+            agent_name,
+            question,
+            packet.evidence_so_far,
+            evidence_cap=int(method_knobs["forward_evidence_cap"]),
+            usage_accum=usage_accum,
+        )
+        raw_response = f"[outsource → {chosen_target}] {contribution}"
+        current_node.candidate_result = contribution
+    else:  # SPLIT
+        decision_str = "forward"
+        chosen_target = neighbor_list[0]
+        # register subtasks under current node (silently drop on bound)
+        for sub in decision.subtasks:
+            try:
+                tt.add_subtask(current_node.task_id, sub)
+            except TaskTreeError:
+                continue
+        sub_text = decision.subtasks[0].task_text if decision.subtasks else ""
+        ev_for_fwd = list(packet.evidence_so_far)
+        if sub_text:
+            ev_for_fwd.append(f"[split-subtask] {sub_text}")
+        contribution = _llm_forward_contribution(
+            agent_name,
+            question,
+            ev_for_fwd,
+            evidence_cap=int(method_knobs["forward_evidence_cap"]),
+            usage_accum=usage_accum,
+        )
+        raw_response = (
+            f"[split: {len(decision.subtasks)} subs → fwd {chosen_target}] {contribution}"
+        )
+        current_node.candidate_result = contribution
+
+    # ── 6. Build outgoing packet with dual-track competence + Stage-2 fields ──
+    new_evidence = list(packet.evidence_so_far)
+    if contribution:
+        new_evidence.append(f"[{agent_name}] {contribution}")
+
+    pub_competence: dict[str, Any] = {
+        "_topology": routing_features.get("topology", ""),
+        agent_name: round(competence_score, 3),
+    }
+    # dual-track: include vector belief snapshot for downstream agents to read
+    vector_snapshot: dict[str, list[float]] = {}
+    for nid in [agent_name] + list(neighbor_list):
+        vector_snapshot[nid] = list(belief.get(nid).values)
+    pub_competence["competence_v2_vector"] = vector_snapshot
+
+    outgoing = HandoffPacket(
+        task_id=packet.task_id,
+        question=packet.question,
+        current_subgoal=f"{agent_name}_step_{hop_index}",
+        evidence_so_far=new_evidence,
+        uncertainty=round(
+            max(
+                0.0,
+                packet.uncertainty - 0.08
+                if decision_str == "accept"
+                else packet.uncertainty + 0.02,
+            ),
+            3,
+        ),
+        reason_for_forward=decision.rationale if decision_str == "forward" else "",
+        recommended_next_skill=chosen_target if decision_str == "forward" else agent_name,
+        visited_nodes=list(packet.visited_nodes) + [agent_name],
+        hop_count=hop_index + 1,
+        last_actor=agent_name,
+        candidate_answer=llm_answer if decision_str == "accept" else "",
+        published_competence=pub_competence,
+        task_tree_id=tt.root.task_id,
+        audit_status_of_prior=(
+            audit_event_for_log.decision.value if audit_event_for_log else None
+        ),
+        schema_version="v2",
+    )
+
+    # ── 7. Trace + competence update (no scalar update in stage-2) ──
+    before_comp = dict(state.competence_by_agent.get(agent_name, default_competence(agent_name)))
+    competence_update = CompetenceUpdate(
+        before=before_comp,
+        after=dict(before_comp),
+        signal="stage2_no_scalar_update",
+    )
+    trace_rf = dict(routing_features)
+    trace_rf["edo_stage2_action"] = decision.action.value
+    trace_rf["edo_stage2_utility_scores"] = {
+        k: round(float(v), 4) for k, v in decision.utility_scores.items()
+    }
+    if audit_event_for_log:
+        trace_rf["edo_stage2_audit_decision"] = audit_event_for_log.decision.value
+        trace_rf["edo_stage2_audit_value_gain"] = round(audit_event_for_log.value_gain, 4)
+    trace = TraceEntry(
+        task_id=agent_input.task_id,
+        hop_index=hop_index,
+        node_name=agent_name,
+        decision=decision_str,
+        chosen_target=chosen_target,
+        reason=f"edo_stage2_chain: {decision.action.value} — {decision.rationale}",
+        routing_features=trace_rf,
+        neighbor_scores=[],
+    )
+
+    return AgentOutput(
+        decision=decision_str,
+        outgoing_packet=outgoing,
+        raw_response=raw_response,
+        competence_update=competence_update,
+        trace=trace,
+        generated_answer=llm_answer,
+        usage_calls=list(usage_accum),
+    )
+
+
 def run_method_step(
     agent_name: str,
     agent_input: AgentInput,
@@ -613,6 +946,15 @@ def run_method_step(
         raise ValueError(f"Unsupported method: {method_name}")
 
     usage_accum: list[dict[str, Any]] = []
+
+    # ── Stage-2 dispatch (E-005). Completely separate path; never falls through. ──
+    if method_name == "edo_stage2_chain":
+        return _run_edo_stage2_chain_step(
+            agent_name=agent_name,
+            agent_input=agent_input,
+            hop_index=hop_index,
+            usage_accum=usage_accum,
+        )
 
     packet = agent_input.incoming_packet
     competence_map = agent_input.method_state.competence_by_agent

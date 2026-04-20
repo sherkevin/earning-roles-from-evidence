@@ -28,6 +28,15 @@ REQUIRED_FILES = [
     "run_notes.md",
 ]
 
+# Stage-2 (E-005) optional files. Presence is detected per-run; if ANY exists,
+# ALL must exist and pass basic schema checks. Stage-1 runs (where none exist)
+# are validated exactly as before — pinned C-2 byte-id no regression.
+STAGE2_FILES = [
+    "task_tree.jsonl",
+    "audit_events.jsonl",
+    "neighbor_belief_snapshots.jsonl",
+]
+
 
 def read_jsonl(path: Path) -> list[dict]:
     with path.open(encoding="utf-8") as f:
@@ -114,6 +123,50 @@ def validate_run_dir(run_dir: Path) -> list[str]:
         uncovered = trace_hops - raw_hops
         if uncovered:
             errors.append(f"RAW_OUTPUT_MISSING_HOPS: task={sid} hops={sorted(uncovered)}")
+
+    # 10. Stage-2 (E-005) — only validated when any STAGE2_FILES is present.
+    stage2_present = [f for f in STAGE2_FILES if (run_dir / f).exists()]
+    if stage2_present:
+        # If any present, all must be present
+        missing_stage2 = [f for f in STAGE2_FILES if f not in stage2_present]
+        if missing_stage2:
+            errors.append(f"STAGE2_MISSING_FILES: {missing_stage2}")
+            return errors
+        try:
+            tree_records = read_jsonl(run_dir / "task_tree.jsonl")
+            audit_records = read_jsonl(run_dir / "audit_events.jsonl")
+            belief_records = read_jsonl(run_dir / "neighbor_belief_snapshots.jsonl")
+        except Exception as exc:
+            errors.append(f"STAGE2_JSONL_READ_FAIL: {exc}")
+            return errors
+        # 10a. every sample must have at least 1 task_tree node
+        tree_sample_ids = {r.get("task_id") for r in tree_records if "task_id" in r}
+        missing_trees = sample_id_set - tree_sample_ids
+        if missing_trees:
+            errors.append(f"STAGE2_MISSING_TASK_TREES for {len(missing_trees)} samples")
+        # 10b. every audit event has the required schema_version
+        bad_audit = [
+            r for r in audit_records if r.get("schema_version") != "audit_event_v1"
+        ]
+        if bad_audit:
+            errors.append(
+                f"STAGE2_AUDIT_SCHEMA_VERSION_MISMATCH: {len(bad_audit)} events "
+                f"missing/wrong schema_version (expected 'audit_event_v1')"
+            )
+        # 10c. every belief snapshot must contain dual-track schema (C-3)
+        for r in belief_records[:50]:  # sample first 50 for speed
+            if r.get("schema_version") != "competence_v2_vector":
+                errors.append(
+                    "STAGE2_BELIEF_SCHEMA_VERSION_WRONG: "
+                    f"task={r.get('task_id')} agent={r.get('agent_name')}"
+                )
+                break
+            if "competence_v1_scalar" not in r or "competence_v2_vector" not in r:
+                errors.append(
+                    "STAGE2_BELIEF_DUAL_TRACK_MISSING: "
+                    f"task={r.get('task_id')} agent={r.get('agent_name')}"
+                )
+                break
 
     return errors
 

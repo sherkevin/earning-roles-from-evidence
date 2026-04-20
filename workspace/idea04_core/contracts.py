@@ -15,7 +15,14 @@ class HandoffPacket:
     hop_count: int = 0
     last_actor: str = ""
     candidate_answer: str = ""
-    published_competence: dict[str, float] = field(default_factory=dict)
+    published_competence: dict[str, Any] = field(default_factory=dict)
+
+    # ── Stage-2 optional fields (forward-compat; None / "v1" for Stage-1 packets) ──
+    # Per pinned C-3: these are appended at the end with safe defaults so any
+    # historical jsonl reader (validate_logs.py R0 baseline) still parses cleanly.
+    task_tree_id: str | None = None
+    audit_status_of_prior: str | None = None
+    schema_version: str = "v1"
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -30,6 +37,14 @@ class MethodState:
     neighbor_beliefs_by_agent: dict[str, dict[str, float]] = field(default_factory=dict)
     method_knobs: dict[str, Any] = field(default_factory=dict)
     seen_nodes: set[str] = field(default_factory=set)
+    # ── Stage-2 optional state (None / empty for Stage-1 methods) ──
+    # task_tree_state_v2: workspace.idea04_core.task_tree.TaskTreeState
+    # belief_store_by_agent_v2: dict[str, workspace.idea04_core.persona_model.BeliefStore]
+    # audit_events_buffer_v2: list[workspace.idea04_core.audit_runtime.AuditEvent]
+    # Typed as Any here to avoid circular imports between contracts and stage-2 modules.
+    task_tree_state_v2: Any = None
+    belief_store_by_agent_v2: dict[str, Any] = field(default_factory=dict)
+    audit_events_buffer_v2: list[Any] = field(default_factory=list)
 
 
 @dataclass
