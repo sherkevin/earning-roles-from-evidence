@@ -363,7 +363,7 @@ This appendix documents the engineering response to the provider-side data-integ
 \section*{Appendix C: LLM Prompt Templates}
 \label{sec:appendix-c}
 
-For reproducibility (per Reviewer R-FULL-004 D5 request), this appendix lists the four LLM-call templates referenced by Algorithm~\ref{alg:edo-stage2-loop}: \textsc{LLM\_Answer} (line 13), \textsc{LLM\_Decompose} (line 26), \textsc{Audit} (line 7, optional LLM-fallback variant), and \textsc{Evidence\_Extract} (line 33). All four are released verbatim in the anonymous code/data supplement; abridged versions are reproduced below.
+For reproducibility, this appendix lists the four LLM-call templates referenced by Algorithm~\ref{alg:edo-stage2-loop}: \textsc{LLM\_Answer} (line 13), \textsc{LLM\_Decompose} (line 26), \textsc{Audit} (line 7, optional LLM-fallback variant), and \textsc{Evidence\_Extract} (line 33). All four are released verbatim in the anonymous code/data supplement; abridged versions are reproduced below.
 
 \paragraph{C.1 \textsc{LLM\_Answer} (per-agent answer/forward template).}
 A shared prefix establishes the global contract (local visibility only, plain-text output, HotpotQA short-answer style); per-role suffixes refine output for \texttt{decomposer}, \texttt{evidence\_seeker}, \texttt{verifier}, and \texttt{synthesizer} nodes. The synthesizer follows a two-stage internal protocol: (i) a brief "Key facts" recap reading all evidence lines from first to last, then (ii) deriving a single shortest answer span. The forward branch (when an agent forwards rather than answers) outputs exactly one short sentence adding one new fact or subgoal-relevant clue.

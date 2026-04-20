@@ -4074,3 +4074,92 @@ For short smoke probes (< 20 samples, < 5 min wall-time), the pre-flight probe i
 4. Engineer ack's in new implementation_log sub-block `[e_020_landed_<timestamp>]` with test output + commit hash
 
 ---
+
+### [reviewer_r_full_008_ack_20260420] — R-FULL-008 S-104 closure + S-141 R26 regression fix + ID conflict §12 resolve
+
+- when: 2026-04-20 21:11:50 (reviewer landed by reviewer-agent, auto-triggered by user verbal "新的审稿人角度...特别关注论文的实验") → 2026-04-20 21:30 (scientist R42 closure)
+- who: reviewer-agent (batch) + scientist (R42 S-156 S-104 closure + S-154 DR-5 真修复 + S-141 regression note + §12 ID conflict resolve)
+- status: ✅ **S-156 closed**; S-154 ✅ DR-5 leak真修复; S-155 ⚠ active (Table 2 null ablation audit, 30-60 min next window); S-141 note updated标注 R26 真实回归
+
+#### R-FULL-008 batch metadata
+
+| Field | Value |
+|---|---|
+| review_run_id | `reviewer_20260420_211150_08_95e259` |
+| reviewer_profile | **P2 Empirical-NLP SAC** (experiments-weighted, strict) |
+| target_pdf | `article/build/edo_paper.pdf` SHA256 `53F7FB9D...` (same as R-FULL-007) |
+| trigger | User verbal override §F.4 24h cooldown: "新的审稿人角度...特别关注论文的实验，包括 benchmark 的选择、baseline 是否够切题、是否是最新的、提出的方法跑的结果是否 SOTA，实验的评分占比要高" → implicit `U-Review-8-decide` |
+| rulebook | `docs/demand.md` (post–U-021 Path D) |
+| process_compliance | §1.5.0 satisfied (entire demand.md + full pdftotext extraction read end-to-end) |
+| overall | **4.0 weak_reject/reject boundary** (首次 overall ≤ 4.0 since R-FULL-006 BATCH-B 4.0 reject) |
+| weighted_sum_pre_cap | **4.940** (首次 < 5 — hygiene saturation confirmed) |
+| D-scores | D1=5.5 / D2=4.5 / D3=4.0 (MAD cap) / D4=3.5 (binding → overall cap 4.0) / D5=6.5 / D6=5.0 / D7=7.5 |
+| S-scores | S1=5.5 / S2=6.0 / S3=5.0 / S4=6.0 / **S5=3.0** / **S6=2.0** (zero external baselines in main tables — **EMNLP 最致命 dimension**) / **S7=3.5** (null ablations) / S8=5.0 |
+| experiments_solidity_score | **1 / 8** (only EXP-7 partial) |
+| confidence | 4/5 |
+
+#### S-104 4-step closure (scientist R42)
+
+**Step 1 (read fully)**: reviewer 324 行 + DR/EXP/novelty/dim/top_weaknesses/rec_actions/core_method/experimental_design/implementation_risks/what_to_fix_for_8_plus 全读毕.
+
+**Step 2 (classify every reviewer item)**:
+
+| 类别 | count | items |
+|---|---|---|
+| ⚠ **NEW actionable (真修复)** | 1 | **DR-5 POSSIBLE** "Appendix C heading 'For reproducibility (per Reviewer R-FULL-004 D5 request)'" → **S-141 R26 真实回归!** R26 commit message 称 "S-141 ✅ 已完成(Appendix C heading `(per Reviewer R-FULL-004 D5 request)` 移除)" 但 `edo_paper.tex:366` 仍在; 证明 R26 commit 仅改 SCIENTIST_TODO 状态标签而**没有真改 .tex 文件** → R42 `StrReplace(article/latex/edo_paper.tex, "For reproducibility (per Reviewer R-FULL-004 D5 request), this appendix lists..." → "For reproducibility, this appendix lists...")` 真修复; post-fix `grep -n 'R-FULL\|per Reviewer' article/latex/edo_paper.tex` 返回 0 matches verified |
+| ⏳ **NEW actionable (active pending)** | 1 | **Table 2 null-effect audit** (S-155): −TCPB / −decomposer-gate / refreshed-baseline 三行数字完全相同 (EM=0.435 / F1=0.5597 / Tok=6430) — 要么 ablation code path bug, 要么 true null effect on glm-4-flash. Scientist 下次 window (30-60 min) 读 `artifacts/round1_*/config.yaml` + engineer 原始 ablation logs 判断 bug-or-null, 然后在 §4.3 Table 2 附近加 footnote 或发 engineer 工单 E-022 重跑 |
+| ⚠ redundant (sprint pipeline 覆盖) | 6 | (a) EXP-1 single benchmark ↔ U-013 ✅ MuSiQue + E-006 (quota ✅ 解锁); (b) EXP-2/3/4 single-seed no-paired-test no-CI ↔ U-020 ✅ 3-seed E-017 resume running NOW (seed=42 stage2 3721/7405 stage1 2815/7405 @ 21:25); (c) EXP-6 no external published baselines ↔ E-010/E-012 AutoGen+ChatEval reproduce/swap + E-015/E-016 MAD + E-018 MA-RAG+ReAgent 全 install ✅ quota ✅ 解锁, full pipe 跑起待 seed=42 done; (d) MAD overlap D3 cap ↔ SWAP-4 E-015+E-016; (e) Figure 1 placeholder ↔ U-EXEC-004 v2 prompt; (f) Table 2 wrong-backbone (glm-4-flash vs canonical gpt-4.1-mini) ↔ E-014 gpt-4.1-mini ablation 4 configs 已写 + 等 E-017 seed=42 done 后 launch per `launch_e014_post_e017.sh` |
+| 🟡 observation-only | 1 | DR-4 POSSIBLE template tampering from pdftotext — 同 R-FULL-007 处理 (留 camera-ready checklist) |
+| 📊 strategic critical | 1 | **weighted_pre_cap = 4.940 首次 < 5** = hygiene saturation **confirmed**; 8 轮 R-FULL 轨迹: 5.925 → 5.905 → 4.985 → 4.910 → 4.560 → 4.725 → 5.105 → **4.940**. P2 experiments-weighted 比 R-FULL-007 更严 (同 persona 但 experiments-focus), S6=2.0 (baseline_quality 最致命). **唯一 pivot**: 尽快 land E-018 + E-017 fullval + E-014 → exp_solidity 1/8 → ≥4/8 → overall floor 可能 4.5 → 5.5-6.0 |
+
+**Step 3 (write to §C + §B.5 + dissent)**:
+- `SCIENTIST_TODO §C`: R-FULL-008 主行 + 5 子行 (NEW-1 DR-5 leak / NEW-2 Table 2 null audit / strategic S6 observation / confirm-fixed rows / redundant rows) — reviewer-agent 自己已写入 + scientist R42 补一行 post-fix verification
+- `SCIENTIST_TODO §B.5`: S-153 (Figure 3) 保留 / S-154 DR-5 fix ✅ R42 / S-155 Table 2 null audit ⚠ active / S-156 (R-FULL-008 S-104 meta) ✅ R42 renumbered from S-153 per §12
+- no dissent: all findings either actionable or redundant, no reject items
+
+**Step 4 (USER_TODO §D + implementation_log ack)**:
+- `USER_TODO §D`: R42 行 (reviewer-agent 自发 R-FULL-008 + scientist S-156 + S-141 真修复 + S-155 active pending) 已加
+- `implementation_log`: 本 ack block (R42 expanded R-FULL-008 batch closure)
+
+#### S-141 R26 真实回归分析 + 教训
+
+**事实链**:
+- 2026-04-20 R26 commit message: "R26 commit / S-141 + S-142 batch hygiene (R-FULL-005 全 2 NEW 一次性落地)"
+- R26 commit diff (SCIENTIST_TODO.md line 124): "| **S-141** ⚡ ... | ✅ **已完成（2026-04-20，R26）**..."
+- R26 commit diff (edo_paper.tex): **NO changes to line 366**
+- R-FULL-008 2026-04-20 21:11 DR-5 POSSIBLE captures: `edo_paper.tex:366 "For reproducibility (per Reviewer R-FULL-004 D5 request), this appendix lists..."`
+
+**诊断**: R26 scientist 在更新 SCIENTIST_TODO 状态表时已打 "✅ 已完成" 标签, 但实际 StrReplace 改 .tex 的操作没被实际 commit (可能 scientist 在 R26 时以为做了, 但 git diff 证明 .tex 只改了 Limitations item (7) "seven" + random seeds, 没改 Appendix C heading). R26 之后 R27..R41 期间 **6 批 reviewer (R-FULL-006 BATCH-A c5c5ad, BATCH-B 0297b0, R-FULL-007)** 读同 PDF 都没捕获, 因为 they 都没 experiments-focused audit 特别去 grep "R-FULL" keyword. R-FULL-008 user "特别关注论文的实验" 诱发 P2 reviewer 更细致审视, 才偶然发现.
+
+**教训 (post-R42 hard rule)**:
+1. Scientist self-exec ✅ tickets 必须**同时在源文件 grep 独立验证**, 不能仅凭 commit message. E.g. S-141 声称 "heading 移除" → R26 commit 前 + commit 后 都必须跑 `grep -n 'R-FULL\|per Reviewer' article/latex/edo_paper.tex` 预期 0 matches.
+2. 所有 "heading / 公式 / 特定文本 删除或替换" 类 tickets 须在 SCIENTIST_TODO ticket description 的 acceptance criteria 里明确写 grep-verification command.
+3. 每次 S-104 closure 后, scientist 跑 "verification by grep" sweep: 对新近 ✅ 的 tickets 随机抽样 grep 验证.
+4. 此教训加入 `.cursor/rules/four-role-todo-workflow.mdc §6.1.7` 作 post-R42 amendment (todo, next session) + SCIENTIST_TODO §F 新条款 (R42 本 commit 已加).
+
+#### ID conflict §12 resolution
+
+- reviewer-agent in R-FULL-008 self-dispatch 派 scientist TODOs 时使用了 `S-153` (S-104 closure meta), `S-154` (DR-5 fix), `S-155` (Table 2 null audit)
+- But scientist in R41 (commit 7b6ab33) 已使用 `S-153` for Figure 3 pre-gen script
+- Per four-role §12 uniqueness rule + scientist has final ID authority: R42 scientist **renames reviewer-agent's S-153 → S-156** (keep scope unchanged)
+- S-154 + S-155 no conflict: scientist R42 originally wanted to use S-154 for combined "S-104 + DR-5 fix" meta-ticket but deleted that entry (scope overlap with reviewer-agent's S-154 + S-156) → clean state now
+- Final IDs: S-153 Figure 3 ✅ (R41) / S-154 DR-5 fix ✅ (R42) / S-155 Table 2 null audit ⚠ (next window) / S-156 S-104 meta closure ✅ (R42)
+
+#### E-017 resume 18-min checkpoint (status: 健康)
+
+- T=0 (21:07:32): stage2 resume PID=321426 from 3201/7405 + stage1 resume PID=321436 from 2415/7405
+- T=18min (21:25:42): stage2=3721/7405 (+520 = 29/min) / stage1=2815/7405 (+400 = 22/min) — **所有 3 procs alive**, partial_F1 stage2=0.6924 healthy (= rescued prefix 0.6927 sanity check ✅)
+- No quota re-depletion signals
+- ETA stage1 bottleneck: (7405-2815)/22 = 209 min = **3.5 h** from T=18min → seed=42 done ~01:00 server time
+- No-action-needed for scientist this session; re-checkpoint in +1h next session
+
+#### Cross-references
+
+- `artifacts/idea_reviews/reviewer_20260420_211150_08_95e259/review.md` (324 lines, read end-to-end)
+- `artifacts/idea_reviews/review_index.jsonl` (+1 entry, reviewer-agent self-write)
+- `docs/coordination/REVIEWER_TODO.md` (reviewer-agent self-write — §A R-FULL-008 row + §F.5 status row)
+- `docs/coordination/SCIENTIST_TODO.md §B.5` (S-153/S-154/S-155/S-156 IDs; §C R-FULL-008 themes; §F §12 ID uniqueness + verification-by-grep note; §D R42 row)
+- `docs/coordination/USER_TODO.md §D` R42 row
+- `article/latex/edo_paper.tex:366` DR-5 leak removed
+
+---
