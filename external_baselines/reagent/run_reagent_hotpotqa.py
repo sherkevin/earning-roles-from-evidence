@@ -194,6 +194,116 @@ class _ReAgentArgs:
         self.dataset_path = dataset_path
 
 
+def _monkey_patch_api_call():
+    """W1 workaround for `'str' object has no attribute 'choices'` bug
+    observed in ReAgent's Moderator2 under newapi + openai 2.32.0 when
+    messages are long + response_format={"type":"json_object"}.
+
+    Replaces ``backend.api.api_call`` with a wrapper that:
+      - Always calls ``client.chat.completions.create`` WITHOUT
+        ``response_format`` (the parameter that triggers the bug when
+        combined with long HotpotQA-size prompts).
+      - For ``json_format=True``, manually parses the returned content
+        with ``json.loads`` (falls back to ``eval`` matching ReAgent's
+        original contract).
+
+    Per `docs/paper/e018_reagent_adapter_inspection.md §11.3 W1`.
+    """
+    from openai import OpenAI
+    import backend.api as _api
+    import time as _time
+    import logging
+    _log = logging.getLogger(__name__)
+
+    def _safe_api_call(
+        messages, model="deepseek", temperature=1.0, max_tokens=4096,
+        max_retries=10, json_format=False, stream=False,
+    ):
+        # Route services per ReAgent's original logic
+        if "gpt" in model or "o1" in model:
+            api_key = _api.services['openai']['api_key']
+            base_url = _api.services['openai']['base_url']
+        elif "qwen" in model:
+            api_key = _api.services['qwen']['api_key']
+            base_url = _api.services['qwen']['base_url']
+        elif "deepseek" in model:
+            api_key = _api.services['deepseek']['api_key']
+            base_url = f"{_api.services['deepseek']['base_url']}"
+        elif "claude" in model:
+            api_key = _api.services['claude']['api_key']
+            base_url = _api.services['claude']['base_url']
+        else:
+            raise ValueError(f"Unknown model identifier: {model}")
+
+        client = OpenAI(base_url=base_url, api_key=api_key)
+
+        for attempt in range(max_retries):
+            try:
+                # W1 key change: NEVER pass response_format; always plain text.
+                # If json_format=True and we need JSON shape, instruct the model
+                # via a system-prompt reminder + parse the content ourselves.
+                msgs = list(messages)
+                if json_format:
+                    has_sys = msgs and msgs[0].get("role") == "system"
+                    reminder = (
+                        " You MUST respond with ONLY a valid JSON object "
+                        "(no markdown fences, no prose before/after)."
+                    )
+                    if has_sys:
+                        msgs[0] = dict(msgs[0])
+                        msgs[0]["content"] = msgs[0].get("content", "") + reminder
+                    else:
+                        msgs = [{"role": "system", "content": reminder.strip()}] + msgs
+                response = client.chat.completions.create(
+                    model=model,
+                    messages=msgs,
+                    max_tokens=max_tokens,
+                    temperature=temperature,
+                )
+                content = response.choices[0].message.content
+                if not content:
+                    continue
+                if not json_format:
+                    return content
+                # Parse JSON ourselves; try json.loads first (proper JSON) then
+                # fall back to eval (matches ReAgent's original eval() use).
+                content_stripped = content.strip()
+                if content_stripped.startswith("```"):
+                    # Strip any markdown fences the model might still produce
+                    lines = content_stripped.splitlines()
+                    if lines and lines[0].startswith("```"):
+                        lines = lines[1:]
+                    while lines and lines[-1].strip().startswith("```"):
+                        lines.pop()
+                    content_stripped = "\n".join(lines).strip()
+                try:
+                    import json as _json
+                    return _json.loads(content_stripped)
+                except Exception:
+                    try:
+                        return eval(content_stripped)  # noqa: S307 (ReAgent legacy)
+                    except Exception as parse_exc:
+                        _log.error(
+                            f"Error parsing model JSON: {parse_exc} "
+                            f"content head: {content_stripped[:200]!r}"
+                        )
+                        _time.sleep(2 ** (attempt + 1))
+                        continue
+            except Exception as e:
+                _log.error(f"Error while calling API: {str(e)}")
+                _time.sleep(2 ** (attempt + 1))
+                continue
+        raise Exception("Max retries reached. API call failed.")
+
+    _api.api_call = _safe_api_call
+    # Also patch in any already-imported reference (Moderator2 caches it).
+    try:
+        from Agent import moderator2 as _m2
+        _m2.api_call = _safe_api_call
+    except Exception:
+        pass
+
+
 def _import_reagent() -> dict:
     """Import ReAgent modules. Must be called AFTER ``_write_env_yaml()`` +
     chdir to _REAGENT_ROOT (because ``backend.api`` reads ``config/env.yaml``
@@ -207,6 +317,10 @@ def _import_reagent() -> dict:
     from Agent.human import Human                        # noqa: E402
     from Environment.groupchat import GroupChatEnvironment  # noqa: E402
     from DataProcess.Dataset import HotpotqaDataset      # noqa: E402
+    # W1: apply monkey-patch AFTER imports (so Moderator2.api_call ref points
+    # to our safe wrapper — Moderator2 uses `from backend.api import api_call`
+    # at module import time, so we must overwrite that reference explicitly).
+    _monkey_patch_api_call()
     return {
         "Moderator2": Moderator2,
         "BaseAgent": BaseAgent,

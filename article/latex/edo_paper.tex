@@ -188,18 +188,7 @@ U^{\text{out}}_i(z, j) \;=\; 0.55\,c[j] + 0.20\,\mathrm{accept}(j) + 0.10\,\math
 \]
 where $c[j]\in[0,1]$ is the scalar competence projection of $B_i(j)$, $\mathrm{accept}(j)$ is $j$'s historical acceptance rate as upstream auditor, $\mathrm{forward\_bias}(j)$ is a topology-driven flow prior (set to $0$ for the Stage-1 chain topology; non-trivial only for Stage-2 sparse graphs), and $\lambda_a{=}0.02$ is the accept margin. The Prototype Scope Box below restates this restriction component-by-component.
 
-\textbf{Stage-1 operational collapses (symbol glossary).} The symbolic quantities in the full EDO $U^{self}/U^{out}/U^{split}$ expressions that do not appear in the TCPB reduced form above are \emph{Stage-2 hooks}: with $\textsc{Split}$ disabled (gate weight $-\infty$, Algorithm~\ref{alg:edo-stage2-loop} line~9) and $\textsc{Audit}$ defaulting to $\textsc{Accept}$, the remaining symbols take the following concrete Stage-1 functional forms:
-\begin{itemize}\setlength\itemsep{0pt}\itemsep=1pt
-  \item $\mathrm{SplitGain}(z)$, $\mathrm{MergeCost}(z)$, $\mathrm{DepthPenalty}(z)$, $\mathrm{AuditLoad}(z)$, $\mathrm{RejectRisk}(j,z)$ $\to 0$ (Stage-2 hooks; all drop out under $\textsc{Split}$-disabled $+$ $\textsc{Audit}{=}\textsc{Accept}$).
-  \item $\mathrm{AuditCost}(z) \to \lambda_a = 0.02$ (fixed constant).
-  \item $\mathrm{SendCost}(i,j) \to 0$ (Stage-1 chain topology has no variable edge cost).
-  \item $\mathrm{Cost}_{\mathit{self}}(z) \to \tau_z / 10^3$ (projected answer-token count proxy).
-  \item $\mathrm{Risk}_{\mathit{self}}(z) \to 1 - c[i]$ (projected self-incompetence).
-  \item $c[i] \to \tfrac{1}{7}\sum_{k=1}^{7}B_i(j)[k]$ (``mean-axis fold'': uniform average over the seven persona axes).
-  \item $\mathrm{forward\_bias}(j) \to 0$ (topology-driven flow prior; non-trivial only for Stage-2 sparse graphs).
-  \item Stage-1 multipliers $(\lambda_c,\lambda_r,\lambda_s,\lambda_m,\lambda_d,\lambda_a) = (0.02,\,0.10,\,0.05,\,0.05,\,0.05,\,0.02)$; persona-update rates $(\eta_{\mathrm{loc}},\eta_{\mathrm{trm}},\eta_{\mathrm{rew}},\mu) = (0.06,\,0.10,\,0.10,\,0.5)$ from \S B2 (hand-set, not searched).
-  \item Tie-breaking in $\pi_i(z)$: lexicographic order $\textsc{DoSelf}\succ\textsc{Outsource}\succ\textsc{Split}$; equally-scored neighbours by ascending index.
-\end{itemize}
+\textbf{Stage-1 operational collapses (symbol glossary).} In the TCPB reduction ($\textsc{Split}$ disabled via gate weight $-\infty$, Algorithm~\ref{alg:edo-stage2-loop} line~9; $\textsc{Audit}$ defaulting to $\textsc{Accept}$), the Stage-2 hook terms $\mathrm{SplitGain}/\mathrm{MergeCost}/\mathrm{DepthPenalty}/\mathrm{AuditLoad}/\mathrm{RejectRisk}\!\to\!0$; remaining symbols collapse to $\mathrm{AuditCost}\!=\!\lambda_a{=}0.02$ (fixed), $\mathrm{SendCost}(i,j)\!=\!0$ (chain), $\mathrm{Cost}_{\mathit{self}}(z)\!=\!\tau_z/10^3$ (token proxy), $\mathrm{Risk}_{\mathit{self}}(z)\!=\!1{-}c[i]$, $c[i]\!=\!\tfrac{1}{7}\sum_{k}B_i(j)[k]$ (``mean-axis fold''), $\mathrm{forward\_bias}(j)\!=\!0$ (non-trivial only for Stage-2 sparse graphs). Hand-set multipliers $(\lambda_c,\lambda_r,\lambda_s,\lambda_m,\lambda_d,\lambda_a){=}(0.02,0.10,0.05,0.05,0.05,0.02)$ and persona-update rates $(\eta_{\mathrm{loc}},\eta_{\mathrm{trm}},\eta_{\mathrm{rew}},\mu){=}(0.06,0.10,0.10,0.5)$ are from \S B2. Ties in $\pi_i(z)$: $\textsc{DoSelf}{\succ}\textsc{Outsource}{\succ}\textsc{Split}$; equally-scored neighbours by ascending index.
 
 \subsection{Why the separation matters}
 

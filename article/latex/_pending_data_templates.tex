@@ -87,6 +87,23 @@ On the full HotpotQA validation set ($n{=}7405$) with $\geq 3$ seeds, paired-boo
 \paragraph{Stage-2 prototype partial-fullval (paired, 2415 samples).}
 Due to an upstream provider quota exhaustion at sample $\sim$3200 (\texttt{edo\_stage2\_chain}) / $\sim$2400 (\texttt{peer\_calibrated}) of the first-seed $n{=}7405$ run (see Appendix~F Engineering Note), we report here the paired result on the \emph{rescued valid prefix} — the first $n'{=}2415$ paired task-IDs where both batches returned non-degenerate predictions. On this subsample, $\Delta F_1 \approx {+}0.81$ pp (point estimate, no bootstrap CI on this subsample due to insufficient paired size for the target $\pm$1 pp resolution), while $\Delta \mathrm{tokens}$ holds at $-37.1 \pm 0.19$\% (cross-shard; identical to the Appendix~D 3-shard preliminary). The F1 effect is still inside the noise band established in Appendix~D at the 200-sample paired level, and the token-cost advantage remains robust. A full-rerun table with 3 seeds $\times$ 7405 samples and paired-bootstrap CI is deferred to a cameraready revision after the provider-side quota is restored.
 
+
+%% =============================================================
+%% TEMPLATE 1.6 — POST-RESUME STAGE-2 SEED=42 FULLVAL n=7405 (R49)
+%% Source: E-017 seed=42 edo_stage2_chain metrics.json landed
+%% 2026-04-20 23:02 server time, post-U-EXEC-007 quota restore +
+%% U-Rollback-001(a) resume-from-truncated-ckpt strategy. Single-seed
+%% single-batch point estimate; cross-seed + paired_bootstrap_ci.py
+%% pending seed=43 + seed=44 (scheduler auto-chain, ETA ~07:30 next
+%% day server time).
+%%
+%% Use this interim single-seed disclosure until full 3-seed data
+%% lands and TEMPLATE 1 (paired bootstrap CI) can be filled.
+%% =============================================================
+
+\paragraph{Stage-2 prototype full-validation (single-seed interim, $n{=}7405$).}
+On the full HotpotQA validation set ($n{=}7405$) with \texttt{seed=42} and the canonical \texttt{gpt-4.1-mini} backbone, the Stage-2 prototype \texttt{edo\_stage2\_chain} attains $F_1=0.6884$, EM$=0.4949$, at $2{,}331.5$ API tokens per sample. Versus the chain-200 Stage-1 best F1 (\texttt{fixed\_self\_claim} $F_1=0.7641$ at $6{,}414$ tokens) the Stage-2 prototype trades approximately $-7.57$~pp F1 for a $-63.7$\% token-cost reduction, yielding cost-normalised $F_1 / 1\text{k tokens} = 0.2953$ (vs.\ Stage-1 $\max 0.1599$ for \texttt{fixed\_static\_roles}, \textbf{a $+$84\% cost-normalised efficiency gain}). Cross-seed confidence intervals across seeds $\{42,43,44\}$ and paired-bootstrap $p$-value vs.\ \texttt{fixed\_peer\_calibrated} on the same $n{=}7405$ slice are deferred to the camera-ready revision pending completion of the remaining two-seed full-validation passes (scheduler ETA end-of-day 2026-04-20 UTC+8).
+
 %% =============================================================
 %% TEMPLATE 2 — S-117 Table 2.b (gpt-4.1-mini Table 2 ablation)
 %% Source ticket: E-014 (R13 派工, 队列中)
