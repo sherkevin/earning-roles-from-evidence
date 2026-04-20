@@ -14,7 +14,30 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 
 from .contracts import AgentInput, HandoffPacket, MethodState
 from .evaluation import exact_match, token_f1
-from .llm_client import ModelDriftError, _runtime as _llm_runtime, configure_runtime, resolved_model
+from .llm_client import (
+    ModelDriftError,
+    QuotaExhaustedError,
+    _runtime as _llm_runtime,
+    configure_runtime,
+    resolved_model,
+)
+
+
+class ConsecutiveZeroF1Halt(BaseException):
+    """Raised when ``N`` consecutive samples yield F1 == 0.0.
+
+    Signals likely silent corruption (quota depletion that wasn't caught by
+    ``QuotaExhaustedError``, token rotation without 401, upstream schema
+    drift, etc.). Runner unconditionally halts + writes ``_ckpt_meta.json``
+    before propagating. Inherits from BaseException so ``except Exception``
+    handlers cannot swallow it.
+
+    Per ``four-role-todo-workflow.mdc §6.1.4`` (E-020 ticket) + the
+    quota-exhaustion-incident forensic analysis: a run of 50 consecutive
+    F1=0 has probability < 1e-35 under the null on HotpotQA chain-200 with
+    ``gpt-4.1-mini`` (healthy legit F1=0 rate ~15-20%), so it is a certain
+    corruption signal.
+    """
 
 # Stage-2 (E-005). Imports are top-level but only exercised when
 # method_name == "edo_stage2_chain"; Stage-1 paths never touch these symbols.
@@ -70,6 +93,13 @@ class _Counters:
     api_prompt: list[int] = field(default_factory=list)
     api_completion: list[int] = field(default_factory=list)
     api_total: list[int] = field(default_factory=list)
+    # E-020.2: consecutive-zero-F1 halt guard (fail-fast against silent corruption)
+    # Reset to 0 whenever a sample produces F1 > 0.0. Runner halts when this
+    # reaches the configurable threshold (default 50). Tracked in the same
+    # `_Counters` dataclass under `counters.lock` so it is atomic with the
+    # per-sample prediction append.
+    consecutive_zero_f1: int = 0
+    last_sample_id: str = ""
 
 
 class RoundRunner:
@@ -126,6 +156,11 @@ class RoundRunner:
 
         n_workers      = int(run_config.get("n_workers", 1))
         progress_every = int(run_config.get("progress_every", 50) or 50)
+        # E-020.2: configurable consecutive-zero-F1 halt threshold (default 50).
+        # Set <= 0 to disable (used by unit tests that deliberately produce all
+        # F1=0 samples for other guards). Production fullval batches inherit
+        # the default from run_config omission.
+        consec_zero_halt = int(run_config.get("consecutive_zero_halt_threshold", 50) or 0)
 
         # ----------------------------------------------------------------
         # Checkpoint detection
@@ -495,6 +530,7 @@ class RoundRunner:
                 f_ckpt.flush()
 
             # Update counters
+            halt_triggered = False
             with counters.lock:
                 counters.predictions.append(pred)
                 if result.is_dead_end:
@@ -508,6 +544,16 @@ class RoundRunner:
                 counters.api_prompt.append(result.api_prompt)
                 counters.api_completion.append(result.api_completion)
                 counters.api_total.append(result.api_total)
+                counters.last_sample_id = pred["task_id"]
+
+                # E-020.2 halt guard: reset on any F1>0, increment on F1==0
+                if consec_zero_halt > 0:
+                    if pred["answer_f1"] > 0.0:
+                        counters.consecutive_zero_f1 = 0
+                    else:
+                        counters.consecutive_zero_f1 += 1
+                        if counters.consecutive_zero_f1 >= consec_zero_halt:
+                            halt_triggered = True
 
                 done_count = len(completed_predictions) + len(counters.predictions)
                 if progress_every > 0 and done_count % progress_every == 0:
@@ -518,6 +564,41 @@ class RoundRunner:
                         f"samples complete, partial_F1={partial_f1:.4f}",
                         flush=True,
                     )
+
+            # Halt outside the counters lock (we still hold write_lock via the
+            # outer `with`; this preserves ckpt atomicity). Write a
+            # `_ckpt_meta.json` breadcrumb before raising so the diagnostics
+            # survive across the scheduler hand-off.
+            if halt_triggered:
+                meta = {
+                    "status": "halted",
+                    "reason": "consecutive_zero_f1_threshold",
+                    "threshold": consec_zero_halt,
+                    "counter": counters.consecutive_zero_f1,
+                    "last_sample_id": counters.last_sample_id,
+                    "halted_at": datetime.now(timezone.utc).isoformat(),
+                    "method_name": method_name,
+                    "samples_completed": (
+                        len(completed_predictions) + len(counters.predictions)
+                    ),
+                    "hint": (
+                        "Likely silent corruption (quota / token / schema "
+                        "drift). Diagnose: `bash workspace/tmp/newapi_quota_probe.sh`. "
+                        "Rescue + resume: see `[quota_exhaustion_incident_"
+                        "20260419_2338]` in implementation_log.md."
+                    ),
+                }
+                (run_dir / "_ckpt_meta.json").write_text(
+                    json.dumps(meta, ensure_ascii=False, indent=2),
+                    encoding="utf-8",
+                )
+                raise ConsecutiveZeroF1Halt(
+                    f"[runner] consecutive F1=0 for {consec_zero_halt} samples "
+                    f"(last_sample_id={counters.last_sample_id!r}). "
+                    "Likely silent corruption (quota / token / network / schema). "
+                    "Diagnose: bash workspace/tmp/newapi_quota_probe.sh. "
+                    f"Halted; _ckpt_meta.json written at {run_dir / '_ckpt_meta.json'}."
+                )
 
         # ----------------------------------------------------------------
         # Execute samples
@@ -531,10 +612,16 @@ class RoundRunner:
                     sample = future_map[future]
                     try:
                         _after_sample(future.result())
-                    except ModelDriftError:
+                    except (
+                        ModelDriftError,
+                        QuotaExhaustedError,
+                        ConsecutiveZeroF1Halt,
+                    ):
                         # Propagate immediately — do not swallow or continue.
                         # The checkpoint written so far is valid; only the
-                        # in-flight sample is lost.
+                        # in-flight sample is lost. All three classes inherit
+                        # from BaseException so the broad `except Exception`
+                        # below cannot swallow them even in thread pool paths.
                         executor.shutdown(wait=False, cancel_futures=True)
                         raise
                     except Exception as exc:

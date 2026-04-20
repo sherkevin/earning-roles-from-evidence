@@ -43,6 +43,26 @@ class ModelDriftError(BaseException):
     """
 
 
+class QuotaExhaustedError(BaseException):
+    """Raised when the LLM provider rejects calls due to quota / auth failure.
+
+    Specifically detects:
+      - HTTP 403 + ``insufficient_user_quota`` body  →  user balance depleted
+      - HTTP 401 + ``Invalid token``                 →  key rotated / revoked
+
+    Inherits from BaseException (not Exception) so the generic
+    ``except Exception`` handler in ``RoundRunner.run()`` cannot swallow it
+    and let the batch continue writing F1=0 garbage samples (the exact
+    failure mode that caused ``quota_exhaustion_incident_20260419_2338`` —
+    ~9000 corrupted samples on E-017 seed=42). The runner unconditionally
+    propagates this exception, shuts down its executor, and leaves the
+    per-sample ``_ckpt_preds.jsonl`` valid-prefix intact so a fresh
+    ``--run-dir`` resume can pick up after the user tops up quota.
+
+    Per ``four-role-todo-workflow.mdc §6.1.4`` (E-020 ticket).
+    """
+
+
 def _model_matches_contract(actual_model: str, intended_model: str) -> bool:
     """Return True when a provider response still honors the intended backbone.
 
@@ -257,10 +277,35 @@ def call_llm(
             result["_sent_provider"] = _runtime.get("backend", "unknown")
             return result
 
-        except ModelDriftError:
+        except (ModelDriftError, QuotaExhaustedError):
             raise  # never retry; always propagate immediately
         except urllib.error.HTTPError as e:
             body = e.read().decode("utf-8")
+
+            # ── E-020.1: quota / auth fail-fast ──────────────────────────────
+            # Detect the two signatures seen during
+            # `quota_exhaustion_incident_20260419_2338`:
+            #   - HTTP 403 + "insufficient_user_quota" (user balance depleted)
+            #   - HTTP 401 + "Invalid token" (key rotated / revoked)
+            # Legacy behavior retried 3× then returned empty → caller wrote
+            # F1=0 garbage for thousands of samples. Must raise immediately.
+            status = int(getattr(e, "code", 0) or 0)
+            if status == 403 and "insufficient_user_quota" in body:
+                raise QuotaExhaustedError(
+                    f"[QUOTA EXHAUSTED] HTTP 403 insufficient_user_quota. "
+                    f"Provider response body (first 500 chars): {body[:500]!r}. "
+                    "Aborting batch to preserve valid-prefix checkpoint; "
+                    "resume with `--run-dir <existing>` after topping up balance. "
+                    "Diagnose with `bash workspace/tmp/newapi_quota_probe.sh`."
+                ) from e
+            if status == 401 and "Invalid token" in body:
+                raise QuotaExhaustedError(
+                    f"[AUTH INVALID] HTTP 401 Invalid token. "
+                    f"Provider response body (first 500 chars): {body[:500]!r}. "
+                    "API key may have been rotated or revoked; check "
+                    "`configs/llm.json` newapi block + `LLM_API_KEY` env var."
+                ) from e
+
             # Check if the error body mentions a different model name — this is the
             # "provider rejected gpt-5.x that was silently sent" pattern.
             # Matches both "intended != sent" (caught above) and the case where

@@ -116,3 +116,90 @@ Start writing with the official template now. Would you like:
 - Or item-by-item guidance on filling the Responsible NLP Checklist?
 
 Just let me know and we will polish the manuscript to the highest possible standard.
+
+---
+
+### 11. Best-Paper Structural Template (Target = EMNLP Best Paper, User-Research Supplement, 2026-04-20)
+
+**Authoritative source**: this section is derived from direct full-PDF analysis of 3 representative **EMNLP Best Papers** (2024–2025 Main Conference Long Paper winners):
+
+1. **Infini-gram mini** — EMNLP 2025 Best Paper — <https://aclanthology.org/2025.emnlp-main.1268.pdf>
+2. **"An image speaks a thousand words, but can everyone listen? On image transcreation for cultural relevance"** — EMNLP 2024 Best Paper — <https://aclanthology.org/2024.emnlp-main.573.pdf>
+3. **"Towards Robust Speech Representation Learning for Thousands of Languages"** — EMNLP 2024 Best Paper — <https://aclanthology.org/2024.emnlp-main.570.pdf>
+
+**Operating rule**: when our submission's target is **Best Paper–adjacent** (user explicitly confirmed 2026-04-20: "我们对标的就是 best paper"), **every reviewer must score `oral_quality_score` with Best Paper bar, not generic poster bar**, and every scientist must structure-audit the manuscript against §11.1 below in addition to §2 / §5. Violations of §11.1 structure or page allocation are not desk-reject triggers but are direct `oral_quality_score ≤ 6` signals.
+
+#### §11.1 Canonical Best-Paper section layout (all 3 reference Best Papers follow this)
+
+| § | Section name (English canonical) | Typical content pages | Core content | Figure/Table habit |
+|---|----------------------------------|----------------------:|--------------|---------------------|
+| 1 | Introduction                     | 1 – 1.5               | Big-picture context → concrete gap → **bold 1–2-sentence contribution statement** → paper roadmap | **Figure 1** (system/task overview) near end of Intro is near-universal |
+| 2 | Background / Related Work / Motivation | 0.75 – 1.5      | Categorised prior-work survey + precise positional delta | **Table 1** (SOTA-comparison table: languages covered, data scale, transparency, etc.) common |
+| 3 | Method / Proposed Approach / Pipelines | 1.5 – 3        | Precise reproducible algorithm/framework description (equations, pseudocode, architecture diagrams, hyperparameters, implementation details) | **Heaviest figure zone #1**: architecture diagrams, toy examples, Algorithm boxes |
+| 4 | Experiments / Evaluation / Analysis / Case Study / Application | **2.5 – 4 (heaviest)** | Datasets (source, stats, license), baselines (latest SOTA + strong comparators), main-result tables, **full ablation matrix**, sensitivity sweeps, statistical significance, error analysis, **case studies / real-world demos** | **Heaviest figure zone #2, ≥60 % of all paper figures** — multiple Tables + multiple Figures (ablation curves, case visualisations, contamination/failure-case galleries). _Infini-gram mini uses 7 Figures in its contamination-case-study block alone._ |
+| 5 | Conclusion                       | 0.5 – 1              | Highly compressed summary + 1–2-sentence future work (do not over-expand) | Near-zero |
+| — | **Limitations** (**mandatory, unnumbered, independent**) | 0.5 – 2 | **Honest, specific** discussion of assumption failures, data bias, compute scope, scope-of-claims, failure modes, societal/demographic risks. **No new results/figures/tables.** | Near-zero (forbidden to add new evidence) |
+| — | Ethical Considerations / Broader Impact (optional but common) | 0.5 – 1 | Data privacy, potential misuse, fairness, reproducibility commitments | ~0 |
+
+**Content-page total**: strictly ≤ 8 for submission version (per §2 Page Limit); camera-ready may extend to 9. **Limitations** is unnumbered, follows Conclusion, precedes References, does not count toward the 8-page cap, and Best Papers typically invest 1–2 full pages on it (not the minimum 0.5).
+
+#### §11.2 Section-by-section Best-Paper writing conventions
+
+1. **Introduction (1 – 1.5 p)**: open from broad context → narrow to concrete pain point → contribution statement in **one bold sentence**, often itemised to 3–5 points → paper roadmap. Best Papers almost always place **Figure 1** near the end of Intro to give reviewers an immediate visual anchor.
+2. **Background / Related Work (0.75 – 1.5 p)**: categorised mini-survey + crisp positional delta; avoid long reviews. **Table 1** SOTA-comparison grid (dimensions × competing systems with ✓/✗ or numeric entries) is common.
+3. **Method (1.5 – 3 p)**: maximum-precision description with equations, pseudocode, architecture diagrams, hyperparameter tables, preprocessing steps. Figure density is heavy: architecture / toy examples / Algorithm boxes / hyperparameter tables all appear.
+4. **Experiments / Evaluation / Case Study (2.5 – 4 p; THE heaviest section)**: datasets with source + stats + license; **strong baselines** (latest SOTA + multiple competitors); multi-dataset main-result tables; **full ablation tables**; sensitivity sweeps; statistical significance; error analysis; case study or real-application demo. **Figure + Table density is highest here — 60 %+ of all paper figures**. Best Papers typically include 6–12 Figures clustered in this section (e.g., Infini-gram mini uses 7 Figures for contamination case-study).
+5. **Conclusion (0.5 – 1 p)**: highly compressed, 1–2 sentences of future work only.
+6. **Limitations (0.5 – 2 p, mandatory, no new content)**: Best Papers write this **longer and deeper** than the minimum, covering data bias, compute scope, scope-of-claims failure modes, potential societal risks. No new experiments/figures/tables permitted.
+7. **Ethical Considerations (0.5 – 1 p, strongly recommended)**: data privacy, potential misuse, fairness, reproducibility commitments.
+
+#### §11.3 Figure / table placement universal regularities (Best-Paper consensus)
+
+- **Early visualisation**: Figure 1 almost always appears in Introduction or at the very start of Method, enabling a reviewer to "understand at a glance".
+- **Concentrated burst**: Method + Experiments host **≥80 %** of all paper figures and tables.
+- **High-quality mandate**: vector figures (PDF/EPS/embedded-vector), clear labelling, each figure has {number, caption, in-text detailed explanation}.
+- **Case-study heavy**: Best Papers particularly favour **case-visualisation galleries** inside the Experiments section (Infini-gram's 7 contamination-case Figures; Image-Transcreation's before-and-after cross-cultural image pairs).
+- **Tables are minimalist-efficient**: colour-encoded good/medium/bad rows, allowing rapid scan.
+
+#### §11.4 Best-Paper vs. generic Long-Paper differentiators
+
+| Dimension | Generic Long Paper | **Best Paper** |
+|-----------|--------------------|------------------|
+| Experiments depth | 1–2 datasets, basic ablation, minimal case study | **3–5 datasets**, full ablation matrix, deep error analysis, **dedicated case study / application section** |
+| Limitations | Short, often generic | **Longer, specific, honest** (~1 page) |
+| Unique sections | Rare | Often has a distinctive **application / case-study / contamination-analysis** section |
+| Reproducibility | Code + hyperparameters | **Public code + data + model checkpoints + scripts to regenerate every table and figure** |
+| Figures | 3–6 total | **8–15 total**, clustered in Method + Experiments, including case-visualisation galleries |
+| Human evaluation / domain application | Often absent | Often present (Image-Transcreation did human cultural-relevance judgments at scale) |
+
+#### §11.5 Submission-Ready Checklist addendum (Best-Paper track)
+
+If targeting Best Paper / Oral bar, the submission must **additionally** satisfy all of:
+
+- [ ] **Experiments section occupies ≥ 2.5 content pages** (not a sub-page note squeezed by over-long Method)
+- [ ] **≥ 3 diverse datasets** used in main result tables (not one benchmark with three splits)
+- [ ] **Latest 12-month SOTA** included as a baseline in main result tables (not only in Related Work prose)
+- [ ] **Full ablation matrix**: every claimed-essential component has a targeted per-component ablation (not just a single "remove the proposed system entirely" comparison)
+- [ ] **Multi-seed runs + paired statistical tests + confidence intervals / effect sizes** reported on headline comparisons
+- [ ] **Error analysis** present with quantitative named failure modes (not a single anecdotal case)
+- [ ] **Dedicated case-study / application block** in Experiments, with visual gallery (6–10 case visualisations typical)
+- [ ] **Limitations section ≥ 0.5 page, honest, specific, covers demographic/societal scope and scope-of-claims** (not just "future work")
+- [ ] **Ethical Considerations / Broader Impact section present** (optional for accept; typical for Best Paper)
+- [ ] **Figure 1 = overall system / task schematic, placed in Introduction**, vector-quality, self-contained caption
+- [ ] **Public anonymous code/data/model release** committed in paper (not "will be released")
+- [ ] **Reviewer-visible evidence** that each claimed-essential component actually changes a metric under ablation (no null-effect ablation tables)
+
+**Enforcement note**: during R-FULL-009 onward, reviewers will apply §11.5 addendum in addition to `reviewer_prompt.md §2 / §5 / §6`. Violations of any §11.5 item cap `oral_quality_score` at the values below:
+
+| Violations of §11.5 items | `oral_quality_score` cap |
+|---------------------------|--------------------------|
+| 0 items missed             | up to 10 (Best-Paper eligible) |
+| 1–2 items missed           | ≤ 7 (strong Poster, not Oral) |
+| 3–5 items missed           | ≤ 5 (borderline; Best-Paper impossible) |
+| 6+ items missed            | ≤ 3 (clear reject for Best-Paper track) |
+
+Existing Submission-Ready Checklist items (§97–109 above) remain mandatory regardless of Best-Paper targeting; §11.5 stacks on top.
+
+---
+
+**R-FULL-009+ target bar (user directive, 2026-04-20)**: since the project explicitly targets Best Paper, subsequent full-paper reviewer batches use `{{TARGET_SCORE}}=8.5` (Oral bar) rather than `8.0` (generic accept), and must report §11.1 structural compliance + §11.5 addendum compliance in `reference_documents_consulted` or an equivalent `best_paper_structural_compliance` field.

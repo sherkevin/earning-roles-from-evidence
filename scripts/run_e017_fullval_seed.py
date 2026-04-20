@@ -53,6 +53,90 @@ ALLOWED_METHODS = ("edo_stage2_chain", "fixed_peer_calibrated")
 OUT_ROOT = _REPO_ROOT / "artifacts/round2_gpt41mini_stage2_fullval"
 COST_LEDGER = OUT_ROOT / "cost_ledger.jsonl"
 
+# E-020.3: canonical newapi pre-flight quota probe script. If present, run
+# it before launching the RoundRunner; abort on non-ACTIVE status to prevent
+# `quota_exhaustion_incident_20260419_2338`-class silent corruption.
+_QUOTA_PROBE = _REPO_ROOT / "workspace/tmp/newapi_quota_probe.sh"
+
+
+def _run_quota_preflight(timeout_s: int = 30) -> None:
+    """Run the newapi quota probe and abort if quota is not ACTIVE.
+
+    Per ``four-role-todo-workflow.mdc §6.1.3`` (pre-flight quota / balance
+    probe is STRONGLY RECOMMENDED for any script issuing > 100 LLM calls).
+
+    Exits the process with status 2 on probe failure. Raises no exception.
+
+    Allowed short-circuit: set ``SKIP_QUOTA_PREFLIGHT=1`` for unit tests
+    / smoke probes that will issue < 20 LLM calls.
+    """
+    if os.environ.get("SKIP_QUOTA_PREFLIGHT", "").strip().lower() in (
+        "1", "true", "yes",
+    ):
+        print(
+            "[run_e017_fullval_seed] WARNING: SKIP_QUOTA_PREFLIGHT set; "
+            "skipping newapi quota probe. Use only for smoke / tests.",
+            flush=True,
+        )
+        return
+    if not _QUOTA_PROBE.is_file():
+        print(
+            f"[run_e017_fullval_seed] WARNING: quota probe not found at "
+            f"{_QUOTA_PROBE}; skipping pre-flight (install the probe script "
+            "per four-role-todo-workflow.mdc §6.1.3).",
+            flush=True,
+        )
+        return
+    print(
+        f"[run_e017_fullval_seed] pre-flight: running {_QUOTA_PROBE.name} ...",
+        flush=True,
+    )
+    try:
+        result = subprocess.run(
+            ["bash", str(_QUOTA_PROBE)],
+            capture_output=True,
+            text=True,
+            timeout=timeout_s,
+        )
+    except subprocess.TimeoutExpired:
+        print(
+            f"[run_e017_fullval_seed] FATAL: quota probe timed out after "
+            f"{timeout_s}s — server unreachable?",
+            file=sys.stderr,
+            flush=True,
+        )
+        sys.exit(2)
+
+    stdout = result.stdout or ""
+    stderr = result.stderr or ""
+    if "newapi ACTIVE" in stdout:
+        # Log the probe tail so the scheduler log captures the evidence.
+        tail = "\n".join(stdout.strip().splitlines()[-5:])
+        print(
+            "[run_e017_fullval_seed] pre-flight OK: newapi ACTIVE.\n"
+            f"  probe tail: {tail}",
+            flush=True,
+        )
+        return
+    print(
+        "[run_e017_fullval_seed] FATAL PRE-FLIGHT: newapi quota not ACTIVE. "
+        "Aborting before runner launch to prevent F1=0 garbage accumulation.",
+        file=sys.stderr,
+        flush=True,
+    )
+    print(f"  probe stdout:\n{stdout}", file=sys.stderr, flush=True)
+    if stderr:
+        print(f"  probe stderr:\n{stderr}", file=sys.stderr, flush=True)
+    print(
+        "  Remediation: top up balance (see USER_TODO §B.1 U-EXEC-007) "
+        "or verify `configs/llm.json` newapi key is not rotated. Re-launch "
+        "after `bash workspace/tmp/newapi_quota_probe.sh` prints "
+        "'STATUS: newapi ACTIVE'.",
+        file=sys.stderr,
+        flush=True,
+    )
+    sys.exit(2)
+
 
 def main() -> int:
     p = argparse.ArgumentParser()
@@ -74,7 +158,20 @@ def main() -> int:
             "Path may be absolute, or relative to repo root."
         ),
     )
+    p.add_argument(
+        "--skip-preflight",
+        action="store_true",
+        help=(
+            "Skip the newapi quota pre-flight probe. Intended for smoke / "
+            "tests; production fullval batches should always run the probe. "
+            "Equivalent to setting SKIP_QUOTA_PREFLIGHT=1."
+        ),
+    )
     args = p.parse_args()
+
+    # E-020.3 pre-flight guard (after argparse so --skip-preflight works).
+    if not args.skip_preflight:
+        _run_quota_preflight()
 
     os.environ.pop("LLM_BACKEND", None)
     os.environ.pop("LLM_BASE_URL", None)

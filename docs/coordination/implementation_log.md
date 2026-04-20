@@ -4163,3 +4163,109 @@ For short smoke probes (< 20 samples, < 5 min wall-time), the pre-flight probe i
 - `article/latex/edo_paper.tex:366` DR-5 leak removed
 
 ---
+
+
+### [e_020_landed_20260420_2128]
+
+- when: 2026-04-20 ~21:25 server time (patch scp'd) → ~21:28 server time (108/108 tests pass on server)
+- who: engineer (this session, MCP-3)
+- intent: Implement + deploy E-020 fail-fast guards per `[e_020_dispatch_20260420]` ticket spec and `four-role-todo-workflow.mdc §6.1.4`. Close the silent-corruption loophole that caused `[quota_exhaustion_incident_20260419_2338]` (~9000 F1=0 garbage samples on E-017 seed=42 before detection).
+- status: ✅ **ALL 3 COMPONENTS LANDED + DEPLOYED TO SERVER**; 108/108 tests pass locally + on server (0 regression on existing 97-test suite + 11 new E-020 tests).
+
+#### Components landed
+
+##### E-020.1 — `workspace/idea04_core/llm_client.py` ✅
+
+- **New class `QuotaExhaustedError(BaseException)`** (inherits BaseException, not Exception, to bypass the broad `except Exception` swallow path in runner thread pool — mirrors the `ModelDriftError` pattern).
+- **New detection paths inside `call_llm`'s `urllib.error.HTTPError` except** (line 264-293):
+  - HTTP 403 + body contains `insufficient_user_quota` → raise `QuotaExhaustedError` **on first attempt, no retry**.
+  - HTTP 401 + body contains `Invalid token` → raise `QuotaExhaustedError` (key rotation).
+  - All other HTTP errors preserve the legacy 3-retry behavior (regression-tested).
+- **Tuple catch update** at line 260: `except (ModelDriftError, QuotaExhaustedError): raise` — ensures both fail-fast classes skip retry semantics.
+
+##### E-020.2 — `workspace/idea04_core/runner.py` ✅
+
+- **New class `ConsecutiveZeroF1Halt(BaseException)`** (top-level class in `runner.py`, not `llm_client.py`, because the threshold logic lives in the runner loop and nothing else raises it).
+- **`_Counters` dataclass** (line 62) now carries `consecutive_zero_f1: int = 0` + `last_sample_id: str = ""` (atomic under `counters.lock`).
+- **New runtime config knob** `consecutive_zero_halt_threshold` read in `RoundRunner.run()` (line 130-133). Default **50** matches E-020 spec §6.1.4; set to `0` to disable (used by unit tests that deliberately produce all-F1=0 samples).
+- **`_after_sample` wiring** (line ~522-563): on F1 > 0.0 the counter resets; on F1 == 0.0 it increments; on reaching threshold, a `halt_triggered = True` flag is lifted out of the lock (preserving ckpt atomicity), then `_ckpt_meta.json` is written with `{"status":"halted","reason":"consecutive_zero_f1_threshold","counter":N,"last_sample_id":...,"halted_at":<ISO>,"hint":<playbook ref>}` and `ConsecutiveZeroF1Halt` is raised.
+- **Executor shutdown path** (line 577-585): tuple `(ModelDriftError, QuotaExhaustedError, ConsecutiveZeroF1Halt)` now triggers `executor.shutdown(wait=False, cancel_futures=True)` + re-raise; the broad `except Exception` below still catches any other per-sample error without shutting down the batch.
+
+##### E-020.3 — `scripts/run_e017_fullval_seed.py` ✅
+
+- **New helper `_run_quota_preflight(timeout_s=30)`** (line 58-138): runs `bash workspace/tmp/newapi_quota_probe.sh` subprocess and requires `newapi ACTIVE` string in stdout. Aborts with `sys.exit(2)` on any other status, on timeout (server unreachable), or on `TimeoutExpired`. Logs the probe tail to stdout for scheduler-log capture.
+- **New `--skip-preflight` CLI flag** + honors existing `SKIP_QUOTA_PREFLIGHT=1` env var. Production fullval batches never pass the flag; smoke probes (< 20 samples) can opt out.
+- Pre-flight invocation inserted in `main()` right after `args = p.parse_args()` and before `os.environ.pop(LLM_*)` so the probe reads `configs/llm.json` canonically.
+
+#### Tests — `workspace/idea04_core/test_e020_fail_fast_guards.py` (NEW, 11 tests)
+
+| Test class | Tests | Coverage |
+|---|---|---|
+| `TestE020_1_QuotaExhaustedError` | 4 | 403+quota raises immediately (no retry), 401+invalid_token raises, BaseException inheritance guard, 500 still retries 3× (regression) |
+| `TestE020_2_ConsecutiveZeroF1Halt` | 3 | threshold=3 halts at sample #3 + writes `_ckpt_meta.json` + preserves 3-line ckpt, threshold=0 disables guard (all-F1=0 run completes), BaseException inheritance guard |
+| `TestE020_3_PreflightQuotaProbe` | 4 | DEPLETED → sys.exit(2), ACTIVE → returns, `SKIP_QUOTA_PREFLIGHT=1` short-circuits (subprocess.run NOT called), TimeoutExpired → sys.exit(2) |
+
+**Results**:
+- Local (`python -m pytest workspace/idea04_core/test_e020_fail_fast_guards.py -v`): **11 passed in 0.27s**.
+- Local full-suite (`python -m pytest workspace/idea04_core/ -v`): **108 passed in 0.52s** (97 legacy + 11 new, 0 regression).
+- Server (`python3 -m pytest workspace/idea04_core/test_e020_fail_fast_guards.py -v`): **11 passed in 0.32s**.
+- Server full-suite: **108 passed in 0.44s** (0 regression on server-side byte-id Stage-1 + Stage-2 integration + persona/task_tree tests).
+
+#### Deployment verification
+
+| Artifact | Server path | Size | mtime |
+|---|---|---:|---|
+| `workspace/idea04_core/llm_client.py` | `/media/data3/dengkw/idea04/workspace/idea04_core/llm_client.py` | 16 835 B | 4月 20 21:25 |
+| `workspace/idea04_core/runner.py` | `/media/data3/dengkw/idea04/workspace/idea04_core/runner.py` | 37 998 B | 4月 20 21:25 |
+| `workspace/idea04_core/test_e020_fail_fast_guards.py` | `/media/data3/dengkw/idea04/workspace/idea04_core/test_e020_fail_fast_guards.py` | 19 619 B | 4月 20 21:25 |
+| `scripts/run_e017_fullval_seed.py` | `/media/data3/dengkw/idea04/scripts/run_e017_fullval_seed.py` | 9 650 B | 4月 20 21:25 |
+
+Also installed: `pytest==9.0.3` into `pip install --user` on server (prior server had no pytest binary); test suite runs against system `python3` 3.10.12 matching local 3.12 runtime.
+
+#### Timing rationale (no mid-batch hotswap)
+
+Per `[e_020_dispatch_20260420]` "Pinned cautions for engineer":
+- **Do NOT hotswap into seed=42 resume workers** (PID 321426 stage2 + PID 321436 stage1) — they already run without the new guards, and re-launching to pick them up resets checkpoint state. The user's fresh newapi recharge + per-sample `_ckpt_preds.jsonl` flush already limit blast radius to single-sample granularity.
+- **Guards first activate on seed=43 launch**, which is gated by the scheduler's `wait_for_metrics` poll of `/media/data3/dengkw/idea04/artifacts/round2_gpt41mini_stage2_fullval/run_20260419_124129_seed42/edo_stage2_chain/metrics.json` (stage2 dir) + seed=42 stage1 metrics.json.
+- When scheduler launches `nohup python3 -u scripts/run_e017_fullval_seed.py --seed 43 ...` the fresh Python process re-imports `scripts/run_e017_fullval_seed.py` (pre-flight probe lands here) → `workspace/idea04_core/runner.py` (consecutive-F1 guard) → `workspace/idea04_core/llm_client.py` (QuotaExhaustedError). **All three guards auto-deploy at seed=43 launch, no scheduler edit required.**
+
+#### E-017 seed=42 resume progress snapshot (engineer session tail)
+
+| Observation time (server UTC+8) | stage2 ckpt | stage1 ckpt | quota probe |
+|---|---:|---:|---|
+| 21:07:42 (resume launch) | 3201 | 2415 | — |
+| 21:26:42 (this session read) | 3750 | 2839 | `STATUS: newapi ACTIVE (quota OK)` |
+
+Rate: stage2 ≈ 29 samples/min (550 samples / 19 min), stage1 ≈ 22 samples/min. Lower than R36's ~75/min paper estimate likely due to 16-worker rate-limit saturation; nonetheless **monotonically increasing F1 in the `partial_F1` progress lines** (no 0.0-fall-off = no recurrence of `[quota_exhaustion_incident]`). Revised ETA:
+- seed=42 stage2 done ≈ 23:10 server (remaining 3655 / 29 min/min ≈ 126 min).
+- seed=42 stage1 done ≈ 00:54 server (remaining 4566 / 22 min/min ≈ 207 min).
+- seed=43+44 (chained) ≈ 06:30-07:30 server next-day.
+- **`paired_bootstrap_ci.py --seeds 42,43,44 --B 10000` ≈ 07:40 server next-day at earliest.**
+
+#### Definition of done (per `[e_020_dispatch_20260420]`)
+
+1. ✅ `test_e020_fail_fast_guards.py` 3-test suite passes (actually 11 tests — split into 4/3/4 per component for better coverage).
+2. ✅ Existing 97-test suite passes (0 regression local + server).
+3. ✅ Patch committed locally (no git commit --trailer "Made-with: Cursor" yet — per §10 paper-polishing commit-bearing rule, engineer-code commits are left for the user to review / batch with the R41 phase block; this ack block stands as the landing record).
+4. ✅ Engineer ack'd in this `[e_020_landed_20260420_2128]` sub-block with test output + deployment verification.
+
+#### Cross-references
+
+- `[e_020_dispatch_20260420]` — scientist's original ticket spec (4 sub-sections).
+- `[quota_exhaustion_incident_20260419_2338]` — root-cause analysis that motivated E-020.
+- `[u_rollback_001_path_a_landed_20260420]` — resume orchestrator that benefits from E-020 at seed=43 launch.
+- `.cursor/rules/four-role-todo-workflow.mdc §6.1.4` — canonical rule text.
+- `workspace/idea04_core/test_e020_fail_fast_guards.py` — new test file (19 619 B, 11 tests).
+- `workspace/tmp/newapi_quota_probe.sh` — pre-flight probe script (unchanged, already in place from R40).
+
+#### next_action
+
+- **engineer (this session, continuing)**:
+  - Do E-010 ChatEval entry-point inspection (pure code, no LLM) → produce adapter spec doc under `docs/paper/external_baseline_plan.md §ChatEval` or separate note.
+  - Set up backgrounded "seed=42 completion watcher" script that auto-launches E-015 MAD smoke + E-018 ReAgent/MA-RAG smokes the moment seed=42 stage2+stage1 both done (to keep quota idle time near zero between E-017 batches).
+- **scientist (next session)**:
+  - Monitor scheduler log every 1-3 h (per `[u_rollback_001_path_a_landed_20260420]`) + fill `_pending_data_templates.tex` TEMPLATE 1 when `paired_stats_3seed.csv` appears.
+- **user**: no action needed; E-020 requires no decision.
+
+
+[reviewer_r_full_009_ack_20260420] + [demand_md_section_11_best_paper_template_landed_20260420] — two bundled events: (1) User provided research on 3 EMNLP 2024-2025 Best Papers (Infini-gram mini EMNLP 2025 / Image Transcreation EMNLP 2024 / Thousands of Languages EMNLP 2024) + explicit instruction 'write to demand.md as submission supplement, we target Best Paper'; reviewer-agent landed new section 11 in `docs/demand.md` (~85 lines): 11.1 canonical section layout (Intro 1-1.5p / RelatedWork 0.75-1.5p / Method 1.5-3p / Experiments 2.5-4p heaviest / Conclusion 0.5-1p / Limitations 0.5-2p Best-Paper 1-2p / Ethical Considerations optional-common) + 11.2 per-section conventions + 11.3 figure placement universals + 11.4 Best-Paper vs Long-Paper differentiators table + 11.5 12-item Best-Paper checklist addendum + enforcement mapping (items-missed -> oral_quality_score cap); user-authorized break from reviewer default read-only boundary per four-role 4.1. (2) R-FULL-009 landed: `artifacts/idea_reviews/reviewer_20260420_212755_09_e1858f/review.md` (P5 Best-Paper-Committee chair Oral-track gatekeeper strict, target=8.5 Best-Paper bar; stateless; same PDF SHA `53F7FB9D` as R-FULL-007/008). overall=**4.0** weak_reject at boundary, weighted_pre_cap=**4.765**, oral_quality=**2.0**, experiments_solidity=1/8. **Section 11.5 best_paper_structural_compliance**: 9 hard fails + 2 partial + 1 pass out of 12 -> oral cap 3. **Best-Paper gap**: sprint fixes estimated 5.8-6.2 borderline; Best-Paper-track 2-3 month agenda 7.0-7.5 Oral border; **still 1+ gap to 8.5 Best-Paper bar even after full agenda**. Cross-persona (P2 R-FULL-008 + P5 R-FULL-009) independent reproduction of 3 concrete findings: DR-5 Appendix C leak + Table 2 null ablations + Figure 1 placeholder (all real, not reviewer noise). SCIENTIST_TODO B.5 dispatched: S-156 (S-104 closure) + **S-157** (Ethical Considerations section, 15 min non-LLM, unblocked) + S-158 (Case Study block, blocked on E-017+E-018 data) + S-159 (Experiments expand to 3+p, blocked on full sprint chain); section C 5 rows R-FULL-009 themes. **User-level framing decision latent**: accept 6.0 borderline ARR long poster / workshop vs hold 2-3 month for Best-Paper 7.0-7.5 Oral border; scientist does not auto-decide (four-role 4 red line). No user action required this cycle.
