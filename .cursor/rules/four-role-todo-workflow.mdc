@@ -191,8 +191,25 @@ This rule is now binding on **every LLM-calling or long-running experiment scrip
 - Any commit that introduces a new experiment script violating 6.1.1 / 6.1.2 / 6.1.4 blocks merge; reviewer or scientist rejects the commit in `implementation_log.md` with cross-ref to this rule.
 - Exception: quick smoke-probes (< 20 samples, < 5 min total wall-time) may skip 6.1.3 but MUST still satisfy 6.1.1 + 6.1.2.
 
+**6.1.7 Verification-by-grep hard rule (post-R42 amendment, R44 codified)**
+
+Triggered by the `S-141 R26` real-regression discovery: R26 commit message claimed "Appendix C heading `(per Reviewer R-FULL-004 D5 request)` removed" but the commit's `edo_paper.tex` diff showed NO change to line 366. Six subsequent reviewer batches (R-FULL-006-A, R-FULL-006-B, R-FULL-007) missed this leak; R-FULL-008 P2 experiments-weighted (user: "特别关注论文的实验") incidentally caught it.
+
+**Lesson permanently codified**:
+
+1. **Every scientist self-exec `✅` ticket MUST be verified by an independent source-file grep before being marked `✅` in `SCIENTIST_TODO`**. "Commit message trust" is INSUFFICIENT evidence.
+2. **All "heading / formula / specific-text deletion or replacement" class tickets MUST have an explicit grep-verification command written in the `SCIENTIST_TODO` acceptance criteria column**. Example for DR-5 class:
+   ```
+   Acceptance: `grep -n 'R-FULL\|per Reviewer' article/latex/edo_paper.tex` returns 0 matches
+   ```
+3. **After completing an `S-104` closure, scientist MUST run a "verification-by-grep sweep"** on a random sample of recent `✅` tickets that involved source-file edits — re-grep the asserted-removed/added strings and flag any discrepancy as a **real regression** (demote ✅ → 🟡 regressed, open new ticket for true fix).
+4. **Applies recursively**: when reviewer-agent self-dispatches a ticket with "⚠ pending" marker in the status column, scientist closure MUST likewise verify by grep before marking `✅`.
+5. **Scope of rule**: scientist self-exec tickets touching `article/latex/*.tex`, `prompts/*.md`, `docs/paper/*.md`, `docs/coordination/*.md` source files. Does NOT apply to pure TODO-state changes (e.g., demoting from blocked → active) or cross-reference-only tickets.
+
 **Enforcement history**:
-- 2026-04-20 R40: rule codified after quota-incident; E-017 seed=42 resume (path (a) per U-Rollback-001 ✅ (a)) is the first experiment launched under this rule; E-020 engineer ticket dispatched to implement 6.1.4 guards; `workspace/tmp/newapi_quota_probe.sh` is the first concrete quota probe artifact.
+- 2026-04-20 R40: §6.1 rule codified after quota-incident; E-017 seed=42 resume (path (a) per U-Rollback-001 ✅ (a)) is the first experiment launched under this rule; E-020 engineer ticket dispatched to implement 6.1.4 guards; `workspace/tmp/newapi_quota_probe.sh` is the first concrete quota probe artifact.
+- 2026-04-20 R42: `S-141` real regression (R26 false-✅) discovered; `edo_paper.tex:366` DR-5 leak actually removed in R42; **§6.1.7 drafted** as commit-message-lesson.
+- 2026-04-20 R44: **§6.1.7 formally codified** as hard rule (this amendment); future scientist self-exec tickets required to pass verification-by-grep sweep before closure is accepted.
 
 ## 7. Failure-rollback protocol
 
