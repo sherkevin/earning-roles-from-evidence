@@ -112,7 +112,7 @@ Fully-Best-Paper-ready (no fails):   oral_cap up to 10 (Best-Paper eligible)
 | §11.5 pass count | 2 of 12 (+ 2 partial) | **8 of 12 pass** (E-017+E-018+E-014+MuSiQue+Figure 1+DR-5) | **11 of 12 pass** (still missing #7 by default) |
 | Main-body Figure+Table count | 4 | 6–7 (+Figure 3 + Table 3 + Table 4) | 8–10 (+Figure 4 + Case-study gallery Figures) |
 | Experiments page count | 2.5 lower bound | 3.0–3.5 (midrange) | 3.5–4.0 (upper bound) |
-| Scientist weighted_pre_cap ceiling (inferred from 12 R-FULL trajectory) | **5.240** (R-FULL-012 new 12-batch high, post-S-163 D1 unlock; R-FULL-011 reject 3.500 → R-FULL-012 5.275 jump +1.740 via pure layout restructure) | 5.8–6.5 (with E-017 fullval + E-014 ablation + E-018 external SOTA landing to unlock D4 3.5 cap) | 7.0–7.5 Oral border |
+| Scientist weighted_pre_cap ceiling (inferred from 14 R-FULL trajectory) | **5.495** (R-FULL-014 P5 BPC Oral-gatekeeper 14-batch historical high post-R50 §4.5 Stage-2 fullval inline + R49 seed=42 stage2 DONE; D4 cap lifted 4.0→4.5 first time) | 5.8–6.5 (with E-017 seed 43/44 + paired_bootstrap_ci + E-014 canonical ablation + E-018 external SOTA → D4 cap 4.5→5+ breaks overall 4.5 floor) | 7.0–7.5 Oral border |
 | ARR accept bar 6.0 | below | borderline ⚠ | comfortable ✅ |
 | Best-Paper bar 8.5 | far (−4.5) | still far (−2.5) | still −1+ (requires "original mechanistic result" — genuine Stage-2 R2 win vs MAD) |
 
