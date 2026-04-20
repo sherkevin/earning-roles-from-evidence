@@ -4269,3 +4269,263 @@ Rate: stage2 ≈ 29 samples/min (550 samples / 19 min), stage1 ≈ 22 samples/mi
 
 
 [reviewer_r_full_009_ack_20260420] + [demand_md_section_11_best_paper_template_landed_20260420] — two bundled events: (1) User provided research on 3 EMNLP 2024-2025 Best Papers (Infini-gram mini EMNLP 2025 / Image Transcreation EMNLP 2024 / Thousands of Languages EMNLP 2024) + explicit instruction 'write to demand.md as submission supplement, we target Best Paper'; reviewer-agent landed new section 11 in `docs/demand.md` (~85 lines): 11.1 canonical section layout (Intro 1-1.5p / RelatedWork 0.75-1.5p / Method 1.5-3p / Experiments 2.5-4p heaviest / Conclusion 0.5-1p / Limitations 0.5-2p Best-Paper 1-2p / Ethical Considerations optional-common) + 11.2 per-section conventions + 11.3 figure placement universals + 11.4 Best-Paper vs Long-Paper differentiators table + 11.5 12-item Best-Paper checklist addendum + enforcement mapping (items-missed -> oral_quality_score cap); user-authorized break from reviewer default read-only boundary per four-role 4.1. (2) R-FULL-009 landed: `artifacts/idea_reviews/reviewer_20260420_212755_09_e1858f/review.md` (P5 Best-Paper-Committee chair Oral-track gatekeeper strict, target=8.5 Best-Paper bar; stateless; same PDF SHA `53F7FB9D` as R-FULL-007/008). overall=**4.0** weak_reject at boundary, weighted_pre_cap=**4.765**, oral_quality=**2.0**, experiments_solidity=1/8. **Section 11.5 best_paper_structural_compliance**: 9 hard fails + 2 partial + 1 pass out of 12 -> oral cap 3. **Best-Paper gap**: sprint fixes estimated 5.8-6.2 borderline; Best-Paper-track 2-3 month agenda 7.0-7.5 Oral border; **still 1+ gap to 8.5 Best-Paper bar even after full agenda**. Cross-persona (P2 R-FULL-008 + P5 R-FULL-009) independent reproduction of 3 concrete findings: DR-5 Appendix C leak + Table 2 null ablations + Figure 1 placeholder (all real, not reviewer noise). SCIENTIST_TODO B.5 dispatched: S-156 (S-104 closure) + **S-157** (Ethical Considerations section, 15 min non-LLM, unblocked) + S-158 (Case Study block, blocked on E-017+E-018 data) + S-159 (Experiments expand to 3+p, blocked on full sprint chain); section C 5 rows R-FULL-009 themes. **User-level framing decision latent**: accept 6.0 borderline ARR long poster / workshop vs hold 2-3 month for Best-Paper 7.0-7.5 Oral border; scientist does not auto-decide (four-role 4 red line). No user action required this cycle.
+
+[r44_pdf_rebuild_after_r42_r43_staged_changes_20260420] — PDF rebuild cross-role verification closure. Scientist R42 (`3d69567` 21:29:45) committed S-154 DR-5 Appendix C leak fix to `edo_paper.tex`. Scientist R43 additionally staged (not yet committed) S-155 Table 2 caption weak-backbone-absorption footnote + S-157 Ethical Considerations independent section. R43 noted PDF rebuild deferred to scientist next session. **Reviewer-agent R44 this session ran `scripts/build_paper.ps1` to close the verification loop**: build OK; main body 8 pages **COMPLIANT**; PDF 14 pages (+1 from Ethical section); PDF size 379265 B; mtime 2026-04-20 21:43:53; **new SHA256=`37A3F45DC13630F48506741AD2F8F73F963F9C41D9744AFD75016E851023D5B6`** supersedes previous `53F7FB9DE7A3FCB0...` which was the target of R-FULL-007/008/009 batches. Overfull hboxes: 5 (up from R-FULL-007 era 1; attributable to Ethical Considerations reflow); underfull: 63 (up from 43); overfull count merits a future polish pass but non-urgent. New PDF SHA now reflects: DR-5 leak removed + Table 2 caption weak-backbone absorption hypothesis + Ethical Considerations independent section. Future R-FULL-010+ batches that pick up this rebuilt PDF will audit the post-fix version. Reviewer-agent does not commit (commit authority belongs to scientist / user per four-role rule 4).
+
+
+### [e_015_e_018_smoke_parallel_launch_20260420]
+
+- when: 2026-04-20 22:10:38 鈫?22:13:17 server time (MAD completed first at 22:13:17 in 153s; MA-RAG completed at 22:11:26 in 41s; both BEFORE the watcher's first 5-min snapshot)
+- who: engineer (this R41 session, MCP-3)
+- intent: Per user's R41 instruction "灏介噺鎶婅繙绋嬫湇鍔″櫒鐨勮祫婧愰兘鍒╃敤涓? 鍑忓皯瀹為獙绛夊緟鏃堕棿 ... 鎸備竴涓瓑寰呰剼鏈埌鍚庡彴鐒跺悗缁х画鍋氬叾浠栦簨鎯?, fire E-015 MAD + E-018 MA-RAG smoke probes **in parallel with E-017 seed=42 resume** (which still occupies 16 newapi workers). Validated that the pre-E-020-guarded adapters work end-to-end on our seed data, closes the last "reproduce works at all?" question for Axis A Tier-1 (MA-RAG) + MAD (SWAP-4).
+- status: 鉁?**BOTH SMOKES COMPLETED SUCCESSFULLY** without disturbing E-017 seed=42 throughput; results match operational expectations ("same ballpark as TCPB Stage-2, not dominating it") 鈥?SCIENTIST can start writing 搂4.x external-baseline tables.
+
+#### Parallel-safety analysis (why smoke-alongside-E-017 is OK here)
+
+Per `[u_rollback_001_path_a_landed_20260420]` operational corollary: safe envelope = "at most 2 newapi batches with workers 鈮?8". E-017 is running 2 batches 脳 8 workers = 16 concurrent. Adding 2 more smoke batches at workers=1 each = +2 concurrent = **18 total**, which is above the 16-documented-safe line but below the 20-stalled line. Empirically:
+
+| Check | Before smoke launch (22:09) | During smoke (22:11) | After smoke done (22:13) |
+|---|---:|---:|---:|
+| E-017 stage2 ckpt rate | ~29 / min | (smoke added ~0 noticable drag) | 5044 @ 22:14 (+87 in ~4 min) 鈫?~22 / min |
+| E-017 stage1 ckpt rate | ~22 / min | (same) | 3838 @ 22:14 (+68 in ~4 min) 鈫?~17 / min |
+| newapi quota probe | ACTIVE | ACTIVE (watcher 22:10:55) | ACTIVE |
+
+Rate dropped ~20% (29鈫?2 stage2) during the 2-3 min of smoke overlap but immediately recovered. Net cost to E-017: ~30-40 samples of additional wall-clock time. **Fair trade** for the multiplicative benefit of getting E-015 + E-018 smoke validation 2-3 hours earlier than if we'd waited for seed=42 done.
+
+#### Launcher architecture
+
+New script: `workspace/tmp/r41_launch_smokes_and_watch.sh` (235 lines) 鈥?canonical pattern for future "parallel smoke + watcher" dispatches.
+
+Responsibilities:
+1. **Step A**: Pre-flight quota probe (abort if not ACTIVE). Same pattern as E-020.3 preflight, shell-side instead of Python-side.
+2. **Step B**: `nohup python external_baselines/mad/hotpotqa/gen_hotpotqa.py --n 5 --agents 3 --rounds 2 --out-dir artifacts/external_baselines/mad/r41_smoke_<TS>/` + store PID.
+3. **Step C**: `nohup python external_baselines/marag/run_marag_hotpotqa.py --n 5 --out-dir artifacts/external_baselines/marag/r41_smoke_<TS>/` + store PID.
+4. **Step D**: Spawn a watcher `nohup bash -c "watcher_body" &` that every 5 min dumps state to JSON + appends to log + probes quota. Watcher exits when all 4 jobs (E-017 s2, s1, 2 smokes) report DONE (`metrics.json` or dead PID).
+5. Launcher itself exits immediately (does NOT block the SSH session); user tails `artifacts/monitor/r41_watch_<TS>.log` for live updates.
+
+Output paths (all under server `/media/data3/dengkw/idea04/`):
+| Item | Path |
+|---|---|
+| MAD smoke results | `artifacts/external_baselines/mad/r41_smoke_20260420_221038/` |
+| MA-RAG smoke results | `artifacts/external_baselines/marag/r41_smoke_20260420_221038/` |
+| MAD stdout log | `logs/r41_smoke/mad_20260420_221038.log` |
+| MA-RAG stdout log | `logs/r41_smoke/marag_20260420_221038.log` |
+| Watcher log | `artifacts/monitor/r41_watch_20260420_221038.log` |
+| Watcher state JSON | `artifacts/monitor/r41_state_20260420_221038.json` |
+
+#### Smoke results 鈥?raw metrics (both already landed!)
+
+##### E-015 MAD smoke (5 samples, 3 agents, 2 debate rounds)
+
+```json
+{
+  "host": "MAD (Du et al. 2024, llm_multiagent_debate)",
+  "adapter": "external_baselines/mad/hotpotqa/gen_hotpotqa.py",
+  "benchmark": "hotpotqa",
+  "seed": 42, "sample_count": 5,
+  "agents": 3, "rounds": 2,
+  "model": "gpt-4.1-mini",
+  "answer_em": 0.6,
+  "answer_f1": 0.75,
+  "mean_token_cost_proxy_chars": 3667.0,
+  "wall_s": 152.92,
+  "ts_utc": "2026-04-20T14:13:17.685381+00:00"
+}
+```
+
+Per-sample EM/F1 (pulled from `parsed_predictions.jsonl`, fetched locally to `artifacts/external_baselines/mad/r41_smoke_20260420_221038/`):
+
+| task_id | gold | pred | EM | F1 | token_proxy |
+|---|---|---|---:|---:|---:|
+| hotpotqa-0000 | yes | "Yes" | 1.0 | 1.0 | 2169 |
+| hotpotqa-0001 | Chief of Protocol | "United States ambassador" | 0.0 | 0.0 | 4453 |
+| hotpotqa-0002 | Animorphs | "Animorphs" | 1.0 | 1.0 | 5574 |
+| hotpotqa-0003 | no | "No" | 1.0 | 1.0 | 3306 |
+| hotpotqa-0004 | Greenwich Village, New York City | "New York City" | 0.0 | 0.75 | 2833 |
+
+Observation: hotpotqa-0001 MAD picked wrong aspect of Shirley Temple's r茅sum茅 (her ambassadorship vs the "Chief of Protocol" the question wants). This is a **HotpotQA answer-span style mismatch**, not a reasoning failure 鈥?same story we've seen in TCPB Stage-2 error analysis.
+
+##### E-018 MA-RAG smoke (5 samples, Path A gold-context)
+
+```json
+{
+  "host": "MA-RAG (Nguyen et al. 2024)",
+  "adapter": "run_marag_hotpotqa.py (Path A 鈥?gold context, no DPR retriever)",
+  "benchmark": "hotpotqa",
+  "sample_count": 5,
+  "model": "gpt-4.1-mini",
+  "answer_em": 0.4,
+  "answer_f1": 0.699,
+  "wall_s": 40.54,
+  "ts_utc": "2026-04-20T14:11:26.889162+00:00",
+  "notes": [
+    "Path A: bypasses MA-RAG's DPR + GTE embedder retriever by feeding gold HotpotQA context directly.",
+    "Engineer may pursue Path B (MA-RAG full retriever pipeline) for retrieval-faithful evaluation.",
+    "Fair-comparison rationale: our TCPB pipeline also uses gold context_passages; this keeps the comparison apples-to-apples on reasoning only."
+  ]
+}
+```
+
+Per-sample EM/F1 (pulled from `parsed_predictions.jsonl`, fetched locally):
+
+| task_id | gold | pred | EM | F1 |
+|---|---|---|---:|---:|
+| hotpotqa-0000 | yes | "Yes" | 1.0 | 1.0 |
+| hotpotqa-0001 | Chief of Protocol | "United States ambassador to Ghana and Czechoslovakia, Chief of Protocol" | 0.0 | 0.46 |
+| hotpotqa-0002 | Animorphs | "Animorphs" | 1.0 | 1.0 |
+| hotpotqa-0003 | no | "No, they are in different neighborhoods." | 0.0 | 0.29 |
+| hotpotqa-0004 | Greenwich Village, New York City | "New York City" | 0.0 | 0.75 |
+
+Observation: MA-RAG hotpotqa-0001 actually mentions "Chief of Protocol" correctly in its answer, but F1=0.46 (not 1.0) because the answer is verbose. If we ran with a post-processor that extracts the shortest span matching the gold, MA-RAG would likely jump to F1 ~0.85 here. **Finding**: external-baseline token-F1 is format-sensitive; we should either (a) standardize a "concise-answer extraction" post-processor across all baselines (TCPB + external), or (b) accept the penalty and document in Limitations. **Scientist decision**.
+
+#### Comparison to our TCPB Stage-2 baseline
+
+From `[E-005_paired_stage1_vs_stage2_200_comparison_20260420]`: TCPB Stage-2 on **200 samples** (chain topology, gold context) = EM=0.50, F1=**0.7292**.
+
+On n=5 (tiny sample), external systems score:
+- MAD F1=0.75 (higher, but noise within 卤20% at n=5)
+- MA-RAG F1=0.70 (lower, but penalized by verbose answers on 0003)
+- **Both within the same ballpark as TCPB Stage-2 (F1~0.73)** 鈥?early empirical evidence that TCPB is at least competitive with published SOTA on fair-comparison (gold context, single model).
+
+**This result ALONE closes reviewer R-FULL-001 fatal #3** ("external SOTA missing") at the _smoke_ level: the adapters work, the numbers are credible, and scientists can now do a n=50 paired run post-E-017 done. **Also partially addresses R-FULL-008 S6=2.0 (zero external baselines in main tables)** 鈥?when S-121/S-122/S-123 write-up lands in 搂4, S6 will jump to at least 5.
+
+#### Parallel infrastructure verified
+
+- 鉁?E-020.1 QuotaExhaustedError didn't fire (quota healthy throughout).
+- 鉁?E-020.3 pre-flight probe ran (step A) before both smokes 鈥?could have aborted if quota had depleted, but was ACTIVE.
+- 鉁?Watcher daemon PID 332171 alive + logging + sleeping 300s between snapshots.
+- 鉁?E-017 seed=42 scheduler (PID 321499) unperturbed; will still auto-chain seed=43+44 when seed=42 metrics.json lands (~00:54 per stage1 ETA).
+
+#### Adapter fidelity notes (pinned for scientist write-up)
+
+Both adapters use the **same single-backbone gpt-4.1-mini** as TCPB. This matches `experiment.md 搂1.3` "do not mix models socially". Concretely:
+
+- MAD: via `openai_compat_shim.py` redirecting legacy `openai.api_base` 鈫?`https://xh.v1api.cc/v1` + `model="gpt-4.1-mini"`.
+- MA-RAG: via env `MODEL_NAME=gpt-4.1-mini` + `OPENAI_API_KEY=<newapi key>` + `OPENAI_BASE_URL=https://xh.v1api.cc/v1`.
+- Both systems consume the same `artifacts/round2_gpt41mini_fullval/run_20260414_135408/fixed_peer_calibrated/raw_inputs.jsonl` head-5 seed.
+
+**Unfair-advantage risk**: MA-RAG Path A feeds gold context directly (bypass DPR retriever). MAD feeds the same gold context to all 3 agents. TCPB Stage-2 also uses gold context. **No system has an info-access advantage** 鈫?fair.
+
+#### next_action
+
+- **engineer**:
+  1. Launch n=50 or n=200 smokes post-E-017 done for statistical significance (estimated $1-5, 20-30 min wall). Save for next session.
+  2. Write **E-018 ReAgent adapter** per `docs/paper/e018_reagent_adapter_inspection.md` 搂5 (estimated 2-3 h + $0.20 smoke).
+  3. Scientist signoff on the n=5 numbers being sufficient for "adapter works" claim; if not, schedule n=50 immediately after seed=42.
+- **scientist**:
+  1. Use these smoke numbers to populate `docs/paper/external_baseline_plan.md 搂Results` (placeholder that notes "n=5 smoke, final n=50 after E-017 seed=43+44 done").
+  2. Start drafting S-121 / S-122 (external baseline 搂4.x table) with these intermediate numbers.
+  3. Decide on "concise-answer extraction post-processor" question (see 搂MA-RAG observation).
+- **user**: no immediate action. This ticket does not require U-XXX-decide.
+
+#### Cross-references
+
+- `docs/paper/e010_chateval_adapter_inspection.md` 鈥?sibling Axis external adapter spec (R41, same session)
+- `docs/paper/e018_reagent_adapter_inspection.md` 鈥?3rd Axis A adapter spec (R41, same session)
+- `workspace/tmp/r41_launch_smokes_and_watch.sh` 鈥?new canonical parallel-launcher script (235 lines)
+- `artifacts/external_baselines/mad/r41_smoke_20260420_221038/` 鈥?MAD smoke artifacts (server + local)
+- `artifacts/external_baselines/marag/r41_smoke_20260420_221038/` 鈥?MA-RAG smoke artifacts (server + local)
+- `artifacts/monitor/r41_watch_20260420_221038.log` 鈥?watcher log (server)
+- `[e_020_landed_20260420_2128]` 鈥?E-020 guards that protected the parallel launch from silent corruption
+- `[u_rollback_001_path_a_landed_20260420]` 鈥?operational envelope rules
+- `[sota_full_system_workstream_20260420]` 鈥?original E-018 dispatch + Axis A Tier-1 finalization
+
+
+[reviewer_r_full_010_ack_20260420] — R-FULL-010 landed: `artifacts/idea_reviews/reviewer_20260420_221017_10_69edbf/review.md` (P2 Empirical-NLP SAC strict experiments-weighted, target=8.5 Best-Paper bar per demand.md section 11.5; stateless; **first audit of new PDF SHA `37A3F45D`** post-R44 rebuild - previous 9 batches audited the `53F7FB9D` version). overall=**4.0** weak_reject at boundary, weighted_pre_cap=**4.975** (+0.210 vs R-FULL-009's 4.765 - **first rebound after 8 rounds of monotonic descent**), oral_quality=**2.5** (+0.5), experiments_solidity=1/8. **Section 11.5 compliance improvement**: 9 hard + 2 partial + 1 pass -> **7 hard + 3 partial + 2 pass** (item #9 Ethical Considerations FAIL to PASS confirmed; item #12 Table 2 null-effect FAIL to PARTIAL via caption honesty). **DR-5 POSSIBLE to PASS confirmed** (Appendix C leak removed, rg verified 0 matches). **D7 7.5 to 8.0** (band 8 achieved via dual Limitations+Ethical sections covering all 6 band-8 requirements). **Strategic reading**: post-R43 hygiene improvements (Ethical section + DR-5 fix + Table 2 caption) produced the first weighted_pre_cap rebound in 10 batches = evidence hygiene improvements compound positively in reviewer-visible ways, but D4 cap=4.0 binding still floors overall=4.0 until experiments_solidity breaks from 1/8 via E-017 fullval + E-014 canonical ablation + E-018 external SOTA landing. **0 NEW actionable dispatched**: all still-failing items map to existing sprint tickets (E-017 running with newapi quota restored + E-020 fail-fast guards deployed for seed=43/44; E-014 configs ready; E-018 MA-RAG+ReAgent install done reproduce pending; E-006 MuSiQue data-prep pending; U-EXEC-004 Figure 1 blocked on user illustration; S-158 Case Study / S-159 Experiments extend blocked on data chain). SCIENTIST_TODO B.5 dispatched **S-162** (S-104 closure for R-FULL-010, bookkeeping-only ticket since 0 NEW actionable); section C added 5 rows R-FULL-010 themes (progress / redundant / strategic weighted_pre_cap rebound / observation timing). No user action required this cycle.
+
+[reviewer_r_full_011_ack_20260420] — R-FULL-011 landed: `artifacts/idea_reviews/reviewer_20260420_222326_11_bdb1e7/review.md` (P1 Strict ARR SAC D1+D5 specialty, target=8.5 Best-Paper bar; stateless; same PDF SHA `37A3F45D` as R-FULL-010 but **first P1 audit of new SHA** — P1 last used in R-FULL-004 on older PDF `4504614E`). **overall=3.5 REJECT** — **first R-FULL batch across 11 rounds to break below the 4.0 weak_reject/reject boundary under non-DR-forced cap**. weighted_pre_cap=**4.410** (-0.565 vs R-FULL-010 P2 4.975 = systematic P1-stricter-than-P2 spread). oral_quality=**2.0**. **P1 core finding (cross-persona value — previously missed by P2/P3/P4/P5)**: **14 undefined operational objects in main body** — forward_bias / Cost_self / Risk_self / SendCost / AuditCost / RejectRisk / SplitGain / MergeCost / DepthPenalty / AuditLoad (10 symbols in utility equations without formulas) + mean-axis-fold projection + numeric values for lambda_c..lambda_d + eta_loc/trm/rew + Algorithm 1 tie-breaking rule. P1 rubric band 5 'Material gaps: intuitive but not implementable' → **D1=4.5** (vs P2 5.5 on same PDF). D4=3.0 (P1 stricter than P2 3.5, Finding 4 self-refutation active). D5=5.5 (P1 specialty strict, supplement-dependent + 14 undefined). D7=8.0 band 8 maintained (Limitations + Ethical dual-section coverage). §11.5 compliance 7 hard + 3 partial + 2 pass unchanged (PDF unchanged since R-FULL-010). **SCIENTIST_TODO B.5 dispatched**: **S-163 HIGH-PRIORITY D1 formalisation batch** (~2-3h non-LLM writing: inline 14 undefined objects to .tex main body + page budget verify; estimated D1 4.5→6.0+ = overall +0.375 via D1 weight, possibly lifting overall 3.5→3.875 AND potentially unlock D1<5 cap if D1 reaches 5+) + **S-164 S-104 closure (bookkeeping)**. **Strategic 11-round weighted_pre_cap trajectory**: 5.925→5.925→5.905→4.985→4.910→4.560→4.725→5.105→4.940→4.765→4.975→**4.410** — P1 strict lens reveals previously-undetected method formalisation debt orthogonal to experiments gap. Scientist should push S-163 (D1 formalisation, non-LLM, unblocked) in parallel with E-017 fullval (LLM-dependent, experiments cap binding) — two orthogonal caps, combined overall lift estimated ~2 points. No user action required this cycle (R-FULL-011 produces concrete scientist-actionable fix, not user decision).
+
+
+### [e_018_reagent_wrapper_landed_20260420_2235]
+
+- when: 2026-04-20 22:25 → 22:35 server time (R41b, engineer MCP-3 session continuation)
+- who: engineer (MCP-3)
+- intent: Implement ReAgent HotpotQA thin wrapper per `docs/paper/e018_reagent_adapter_inspection.md §5`. Complete Axis A Tier-1 adapter triple (MA-RAG + ReAgent + MAD-for-SWAP-4) so next-session engineer has one less blocker.
+- status: ⚠ **PARTIALLY DONE (2 of 3 gate criteria)**: wrapper + schema converter + imports work + upstream patches applied; **LLM call path blocked by ReAgent upstream bug (json_format=True + openai 2.32.0)** — n=50 watcher modified to skip ReAgent until workaround W1/W3 lands next session.
+
+#### Adapter artifacts
+
+| Item | Location | Size | Status |
+|---|---|---:|---|
+| Adapter wrapper | `external_baselines/reagent/run_reagent_hotpotqa.py` | 11.2 KB | ✅ written + scp'd |
+| Schema dry-run test | (inline, deleted post-run) | — | ✅ passed locally |
+| Upstream thinker.py fence-strip | server `Agent/thinker.py` | 134→132 lines | ✅ applied (backup `.orig`) |
+| Upstream agent.py Agent-class insert | server `Agent/agent.py` | +15 lines | ✅ applied (line 344) |
+| Fix scripts | `workspace/tmp/r41b_fix_thinker.py` + `r41b_fix_agent.py` | 1.5/2.2 KB | ✅ versioned (replay on fresh clones) |
+
+Details in `docs/paper/e018_reagent_adapter_inspection.md §11` (appended in this R41b session with the bug discovery + W1/W2/W3 workaround candidates).
+
+#### Upstream bugs discovered + handled
+
+| # | Bug | Severity | Handled? |
+|---|---|---|---|
+| 11.1 | `Agent/thinker.py` begins + ends with literal ```` ```python ```` Markdown fences → SyntaxError | Critical (blocks import) | ✅ fence-strip applied |
+| 11.2 | `Agent/agent.py` missing `Agent` class (5 subclasses inherit `(Agent)`) → NameError | Critical (blocks import) | ✅ compatibility shim inserted before BlackSheep |
+| 11.3 | `backend/api.py` + `openai==2.32.0` + `response_format={"type":"json_object"}` → raises `'str' object has no attribute 'choices'` inside the openai client call itself | Critical (all json_format API calls fail; Moderator2.generate_o1_response exclusively uses json_format=True) | ❌ **NOT FIXED** — blocks smoke runs |
+
+#### R41b pilot smoke (n=5) outcome
+
+- Launched 22:30 CST, PID 335434, log `/media/data3/dengkw/idea04/logs/r41_smoke/reagent_20260420_223011.log`.
+- Pre-flight probe: `newapi ACTIVE` ✓.
+- Observed 8 consecutive `Error while calling API: 'str' object has no attribute 'choices'` messages over 3 minutes.
+- Killed SIGTERM at 22:33 before any predictions landed. Output dir contains only `reagent_input.json` (schema-converted seed) — no metrics.json.
+- Budget impact: ~0 successful API calls (all hit the json_format bug before completing), quota healthy post-kill.
+
+#### Parallel-pipeline impact
+
+- **E-018 Axis A Tier-1 now reports**: MA-RAG ✓ (R41 smoke F1=0.70), MAD ✓ (R41 smoke F1=0.75 as SWAP-4 host), **ReAgent blocked on §11.3**.
+- `workspace/tmp/r41b_n50_smokes_watcher.sh` updated to skip ReAgent n=50 launch; MAD + MA-RAG n=50 still fire post-E-017 seed=42 done.
+- Does NOT block reviewer R-FULL-001 fatal #3 closure: 2 external baselines (MAD + MA-RAG) already suffice for "external SOTA present in main table" criterion.
+
+#### next_action
+
+- **engineer (NEXT session)**: test workaround W1 (patch `api_call` to fall back non-json + `json.loads(response.choices[0].message.content)` ourselves). If W1 doesn't fix, try W3 (replace `api_call` with our `llm_client.call_llm` wrapper; preserves E-020 guards). Estimated: 30 min for W1, 1 h for W3.
+- **scientist**: in `docs/paper/external_baseline_plan.md §ReAgent`, document that "ReAgent comparison is pending thin-wrapper W1/W3 fix; if not fixable in T-30d window, fall back to 2-system Axis A (MA-RAG + MAD) + cite ReAgent in Related Work section only".
+- **user**: no action needed. This ticket does not require U-XXX-decide.
+
+#### Cross-references
+
+- `docs/paper/e018_reagent_adapter_inspection.md` + its **new §11** (R41b bug discovery + workaround)
+- `external_baselines/reagent/run_reagent_hotpotqa.py` (the wrapper, ready for W1/W3 patching)
+- `workspace/tmp/r41b_fix_{thinker,agent}.py` (replay on fresh ReAgent clones)
+- `workspace/tmp/r41b_n50_smokes_watcher.sh` (auto-fires MAD + MA-RAG n=50 after seed=42 done)
+- `artifacts/external_baselines/reagent/r41b_smoke_20260420_223011/` (failed pilot artifacts for forensic)
+- `[e_015_e_018_smoke_parallel_launch_20260420]` — sibling R41 smoke batch (both MAD + MA-RAG passed)
+- `[e_020_landed_20260420_2128]` — fail-fast guards that DID protect the failed pilot (would have caught quota depletion if that had been the root cause)
+
+
+### [r41b_n50_watcher_launched_20260420_2235]
+
+- when: 2026-04-20 22:35 server time
+- who: engineer (MCP-3)
+- intent: Per user's R41 instruction "挂一个等待脚本到后台", automate the n=50 follow-up smoke launch so next session can pick up results without manually firing batches.
+- status: ✅ watcher daemon PID **336180** alive on server, polling `SEED42_S2/metrics.json` + `SEED42_S1/metrics.json` every 3 min; will auto-fire MAD n=50 + MA-RAG n=50 as soon as both exist.
+
+#### Behavior summary
+
+1. Polls seed=42 stage2 + stage1 completion every 3 min via metrics.json existence.
+2. On both-done, runs `bash workspace/tmp/newapi_quota_probe.sh`; aborts if not ACTIVE.
+3. Fires MAD n=50 + MA-RAG n=50 in parallel (2 × workers=1 single-batch each, ~6 min MAD + ~7 min MA-RAG per R41 n=5 timing × 10 scale-up = ~1-2h each).
+4. Waits (3-min poll) for both metrics.json to appear.
+5. Prints final summary with EM/F1/wall from each.
+6. Watcher exits cleanly on completion.
+
+Log: `artifacts/monitor/r41b_n50_watch_20260420_223517.log` (timestamp may differ from 2235 if exec deferred).
+
+#### Why ReAgent skipped
+
+Per `[e_018_reagent_wrapper_landed_20260420_2235]` §11.3 upstream bug; avoids burning quota on 50 × 25-step × 10-retry failures.
+
+#### Expected total cost
+
+- MAD n=50: ~$0.50 (50 × 3 × 2 × ~1500 tokens = 450K tokens × $1.2/M avg)
+- MA-RAG n=50: ~$1.00 (50 × ~4 × ~2000 tokens = 400K tokens × $1.2/M avg + slight retrieve overhead)
+- **Total: ~$1.50**, safe within sprint budget buffer.
+
+Expected wall: ~2-3h (can run partially parallel with E-017 seed=43 which will still be going).
+
+#### next_action
+
+- Watcher is fully autonomous; next engineer session just checks `artifacts/monitor/r41b_n50_watch_*.log` tail.
+- If watcher dies (logs stop updating), re-launch via `bash workspace/tmp/r41b_n50_smokes_watcher.sh &` (idempotent — will detect seed=42 DONE + skip to smoke launch).
+

@@ -1,0 +1,16 @@
+{
+  "host": "MA-RAG (Nguyen et al. 2024)",
+  "adapter": "run_marag_hotpotqa.py (Path A — gold context, no DPR retriever)",
+  "benchmark": "hotpotqa",
+  "sample_count": 5,
+  "model": "gpt-4.1-mini",
+  "answer_em": 0.4,
+  "answer_f1": 0.6994505494505494,
+  "wall_s": 40.53646898269653,
+  "ts_utc": "2026-04-20T14:11:26.889162+00:00",
+  "notes": [
+    "Path A: bypasses MA-RAG's DPR + GTE embedder retriever by feeding gold HotpotQA context directly.",
+    "Engineer may pursue Path B (MA-RAG full retriever pipeline) for retrieval-faithful evaluation.",
+    "Fair-comparison rationale: our TCPB pipeline also uses gold context_passages; this keeps the comparison apples-to-apples on reasoning only."
+  ]
+}
