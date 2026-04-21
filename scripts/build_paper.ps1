@@ -85,13 +85,28 @@ if (Test-Path $pdfFile) {
             if ($txt -match '(?m)^\s*Limitations\s*$') { $limitsPage = $p; break }
         }
         if ($null -ne $limitsPage) {
-            # main body = pages strictly before the Limitations starts ON that page
-            # (Limitations itself does not count); if Limitations starts on page N,
-            # the main body uses N-1 fully + part of N. EMNLP allows main body <= 8 pages.
-            $mainBodyPages = $limitsPage  # because Limitations starts WITHIN this page
+            # Per demand.md §2: main body <= 8 content pages; Limitations does NOT count.
+            # If Limitations appears at the TOP of page N (first content heading with <= 4 lines
+            # of preceding content on that page), the main body ended at page N-1 → COMPLIANT.
+            # Otherwise main body used all of page N-1 + part of page N → OVER.
+            # Use non-layout mode to detect Limitations heading reliably
+            $limitsPageText = & pdftotext -f $limitsPage -l $limitsPage $pdfFile - 2>$null
+            $linesBeforeLimits = 0
+            foreach ($L in ($limitsPageText -split "`r?`n")) {
+                # Limitations as section heading: exact line match (pdftotext non-layout puts headings on own lines)
+                if ($L -match '^\s*Limitations\s*$') { break }
+                if ($L.Trim().Length -gt 0 -and $L -notmatch '^\s*\d+\s*$') { $linesBeforeLimits++ }
+            }
+            # Threshold: if ≤ 3 non-empty lines precede "Limitations" on its page,
+            # treat Limitations as page-top → main body = limitsPage - 1.
+            if ($linesBeforeLimits -le 3) {
+                $mainBodyPages = $limitsPage - 1
+            } else {
+                $mainBodyPages = $limitsPage
+            }
             $color = if ($mainBodyPages -le 8) { 'Green' } else { 'Red' }
             $verdict = if ($mainBodyPages -le 8) { 'COMPLIANT' } else { 'OVER 8-page submission cap' }
-            Write-Host ("[INFO] Main body ends on page $mainBodyPages (Limitations starts here): $verdict") -ForegroundColor $color
+            Write-Host ("[INFO] Main body ends on page $mainBodyPages (Limitations on page $limitsPage, $linesBeforeLimits preceding lines): $verdict") -ForegroundColor $color
         } else {
             Write-Host "[WARN] Could not locate Limitations heading; cannot verify ACL 8-page rule." -ForegroundColor Yellow
         }

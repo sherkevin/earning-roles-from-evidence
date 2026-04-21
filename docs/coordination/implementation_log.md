@@ -4617,3 +4617,337 @@ These are §4 "design refinement" scientist calls — not `U-XXX-decide` for use
 - `[e_018_reagent_wrapper_landed_20260420_2235]` + `[e_020_landed_20260420_2128]` — prior engineering milestones
 - `workspace/idea04_core/llm_client.py` — the canonical client W3 routes through (E-020 QuotaExhaustedError + model-drift guards preserved)
 
+
+
+### [experiment_matrix_plan_20260420_2345]
+
+- when: 2026-04-20 23:45 server time (R41d, engineer MCP-3)
+- who: engineer (MCP-3, continuing after user R41d instruction "我们的baseline实验开始跑了吗 ... 试验矩阵 (baseline + 1) * (data)")
+- intent: Set up + launch the full **(systems × datasets) = 5 × 2 = 10-cell** experiment matrix for the paper §4.x main table. HotpotQA coverage is already in flight; this block adds the MuSiQue row via a post-load watcher.
+- status: ✅ **matrix fully planned + watcher queued**. HotpotQA n=5 complete (3 systems + TCPB ref), HotpotQA n=50 running (3 systems smoke + E-017 seed=43/44 TCPB paired × 3 seeds), MuSiQue n=50 queued (watcher fires AFTER current load drops).
+
+#### Matrix definition
+
+**Systems (5 = "baseline + 1")**:
+- `tcpb_stage1` = `fixed_peer_calibrated` (our Stage-1 chain baseline, matches paper §3.5)
+- `tcpb_stage2` = `edo_stage2_chain` (our Stage-2 = **the "+1"**; paper §3.6 with R1/R2/R3 modules)
+- `mad` = Du et al. 2024, Multi-Agent Debate (SWAP-4 host)
+- `marag` = Nguyen et al. 2024, MA-RAG (Axis A Tier-1, Path A gold-context)
+- `reagent` = ReAgent Moderator2 o1-style (Axis A Tier-1, --no-mas + W3 patched)
+
+**Datasets (2 = "data")**:
+- `hotpotqa` = HotpotQA validation 7405 samples (chain-200 variant)
+- `musique` = MuSiQue validation 200-sample seed at `artifacts/seed/musique_validation_200.jsonl` (2-hop / 3-hop / 4-hop mix, **all 20 paragraphs** per sample — `is_supporting` is null in validation set)
+
+**Total cells**: 5 systems × 2 datasets = 10.
+
+#### Current progress snapshot (23:45 CST)
+
+| # | system | dataset | n | status | F1 | EM | where |
+|---|---|---|---:|---|---:|---:|---|
+| 1 | TCPB Stage-2 | hotpotqa | 7405 | ✅ DONE | **0.688** | **0.495** | `artifacts/.../seed42/edo_stage2_chain/metrics.json` |
+| 2 | TCPB Stage-1 | hotpotqa | 7405 | ✅ DONE | **0.682** | **0.515** | `artifacts/.../seed42/fixed_peer_calibrated/metrics.json` |
+| 3 | MAD | hotpotqa | 5 | ✅ (n=50 running) | 0.750 (n=5) | 0.600 | `artifacts/external_baselines/mad/r41_smoke_*/` |
+| 4 | MA-RAG | hotpotqa | 5 | ✅ (n=50 running) | 0.699 (n=5) | 0.400 | `artifacts/external_baselines/marag/r41_smoke_*/` |
+| 5 | ReAgent | hotpotqa | 5 | ✅ (n=50 running) | 0.161 (n=5, format-penalty) | 0.000 | `artifacts/external_baselines/reagent/r41c_w3_n5/` |
+| 6 | TCPB Stage-2 | hotpotqa | 7405 (seed=43) | ⏳ running | — | — | PID 341257 |
+| 7 | TCPB Stage-1 | hotpotqa | 7405 (seed=43) | ⏳ running | — | — | PID 341264 |
+| 8 | TCPB S2+S1 | hotpotqa | 7405×2 (seed=44) | ⏳ queued | — | — | scheduler PID 321499 will chain |
+| 9 | TCPB Stage-2 | musique | 50 | ⏳ queued | — | — | watcher PID 342216 will launch |
+| 10 | TCPB Stage-1 | musique | 50 | ⏳ queued | — | — | watcher PID 342216 |
+| 11 | MAD | musique | 50 | ⏳ queued | — | — | watcher PID 342216 |
+| 12 | MA-RAG | musique | 50 | ⏳ queued | — | — | watcher PID 342216 |
+| 13 | ReAgent | musique | 50 | ⏳ queued | — | — | watcher PID 342216 |
+
+(Cells 6–8 = paired-bootstrap CI across 3 seeds for the TCPB row; cells 9–13 = MuSiQue row.)
+
+#### Seed=42 paired HotpotQA finding (just landed, **cell 1 vs cell 2**)
+
+| Metric | Stage-2 | Stage-1 | Δ (S2-S1) |
+|---|---:|---:|---:|
+| answer_f1 | 0.6884 | 0.6823 | **+0.0061** (+0.61 pp) |
+| answer_em | 0.4949 | 0.5145 | −0.0196 (−1.96 pp) |
+| mean_handoff_count | 1.0 | 2.0 | **−1 hop** (50% less) |
+| api_total_tokens_per_sample | 2331.5 | 4398.3 | **−47.0%** |
+| cost_normalized_f1_api | **0.295** | 0.155 | **+91.0%** (nearly 2× more efficient per token) |
+| dead_end_rate | 0.0000 | 0.0000 | — |
+| premature_accept_rate | 0.0039 | 0.0000 | +0.39 pp (Stage-2 sometimes accepts early at audit gate) |
+
+**First single-seed signal**: Stage-2 +0.61 pp F1 on full 7405 at **half the handoffs + half the tokens**. Will need 3 seeds (seed=43 + 44 chaining now) for paired-bootstrap-CI significance. **Begins closing R-FULL-001 fatal #1** (Finding 4 self-falsification).
+
+#### Watcher architecture (3 independent daemons)
+
+1. **E-017 scheduler PID 321499** (`workspace/tmp/schedule_e017_seeds.sh`, running since R40)
+   - Chains seed=43 → seed=44 → `paired_bootstrap_ci.py` automatically
+   - Already auto-fired seed=43 at 23:40 (just after seed=42 metrics.json landed)
+2. **HotpotQA n=50 watcher PID 340718** (`workspace/tmp/r41b_n50_smokes_watcher.sh`, running since R41b + R41c-patched to include ReAgent)
+   - Waited for seed=42 done → fired MAD+MA-RAG+ReAgent n=50 at 23:42 (cells 3-5 replayed at n=50)
+3. **MuSiQue matrix watcher PID 342216** (`workspace/tmp/r41d_musique_matrix_watcher.sh`, NEW this R41d)
+   - Waits for: seed=43 S2+S1 DONE + MAD/MA-RAG/ReAgent n=50 all DONE
+   - Then fires 5 MuSiQue n=50 batches (cells 9-13) in parallel
+
+Each daemon is fully autonomous: fails/survives independently; next session engineer just tails logs.
+
+#### Resource envelope analysis
+
+Current (23:45) concurrent newapi workers:
+- E-017 seed=43 S2 = 8 workers (PID 341257)
+- E-017 seed=43 S1 = 8 workers (PID 341264)
+- MAD n=50 = 1 worker (PID 341370)
+- MA-RAG n=50 = 1 worker (PID 341377)
+- ReAgent n=50 = 1 worker (PID 341384, W3 patched)
+- **Total = 19 concurrent**, above the documented safe-16 line but inside observed 20-stall line.
+
+Per R41 first-round smoke data: 19 workers causes ~20% rate dip (29 → 22 samples/min) but no quota-status change; E-017 recovers immediately after smoke exits. Acceptable cost for parallel MuSiQue prep. The R41d MuSiQue watcher adds 5 more workers ONLY AFTER the 3 external n=50 smokes exit (saving 3 worker slots), keeping peak at **16 (seed=44) + 5 (MuSiQue matrix) = 21** for a short window.
+
+#### Budget estimate (MuSiQue matrix)
+
+- TCPB Stage-2 n=50 MuSiQue ≈ \$0.50 (50 × ~2300 tokens × $1.2/M avg + 20-paragraph overhead 2x)
+- TCPB Stage-1 n=50 MuSiQue ≈ \$1.00 (50 × ~4400 tokens × $1.2/M avg)
+- MAD n=50 MuSiQue ≈ \$0.80 (50 × 3 × 2 × 2000 tokens)
+- MA-RAG n=50 MuSiQue ≈ \$1.20 (50 × 4 × 3000 tokens)
+- ReAgent n=50 MuSiQue ≈ \$0.60 (50 × ~6 steps × 2000 tokens with max_tokens cap)
+- **MuSiQue matrix total: ≈ \$4.10** (well within sprint buffer per `U-EXEC-007` top-up).
+
+#### Infrastructure landed this session
+
+- `scripts/prep_musique_seed.py` (new, 90 lines) — convert MuSiQue validation.jsonl → our canonical `task_id/question/answer/context_passages/supporting_facts` schema.
+- `artifacts/seed/musique_validation_200.jsonl` (200 rows, gold-context-free 20-paragraph setting matching HotpotQA "all 10 passages" convention).
+- `workspace/tmp/r41d_musique_matrix_watcher.sh` (235 lines, 5-parallel-batch launcher + summarize hook).
+- MuSiQue seed + script scp'd to server under same paths.
+
+#### Known gaps (documented for future sessions)
+
+1. MuSiQue validation's `is_supporting` is null (held out). `--all-paragraphs` mode is a reasonable retrieval-free surrogate but inflates context (20 paragraphs × ~500 tokens ≈ 10K prompt tokens/sample). This makes MuSiQue ~4x more expensive than HotpotQA per sample. Engineer can drop to MuSiQue train set for is_supporting labels if scientist wants gold-context runs.
+2. MAD `gen_hotpotqa.py` is named after HotpotQA but only looks at `question` / `answer` / `context_passages` fields → works on our MuSiQue prep too (tested via schema match). Same for MA-RAG `run_marag_hotpotqa.py`. Dataset-agnostic at the adapter layer.
+3. ReAgent `run_reagent_hotpotqa.py` §3 schema converter pulls `[title] body` into paragraphs_list — MuSiQue's `[title] paragraph_text` format matches exactly; no adapter change needed.
+
+#### next_action
+
+- **engineer (next session)**:
+  - Tail `artifacts/monitor/r41b_n50_watch_*.log` + `r41d_musique_matrix_watch_*.log` to see completion.
+  - When MuSiQue matrix done: scp results back local; run `python scripts/summarize_external_smokes.py --tex` to get LaTeX rows for scientist.
+  - If ReAgent HotpotQA n=50 smoke shows same format-penalty (F1 < 0.3): confirm `--no-mas` is the right policy with scientist before duplicating the issue on MuSiQue.
+- **scientist**:
+  - Receive the R41d matrix snapshot + decide post-processor policy (R41c §12.4 a/b/c).
+  - Once cells 6-13 land, write S-121/S-122/S-123 main-table skeleton using `summarize_external_smokes.py --tex` output.
+  - Revise `external_baseline_plan.md §Results` to use the full 5×2 matrix.
+- **user**: no action needed. Matrix runs autonomously.
+
+#### Cross-references
+
+- `[e_015_e_018_smoke_parallel_launch_20260420]` — HotpotQA n=5 smoke (cells 3-5)
+- `[e_018_reagent_w3_workaround_landed_20260420_2330]` — ReAgent W3 fix unblocking cell 5
+- `[u_rollback_001_path_a_landed_20260420]` — E-017 seed chain (cells 1-2 + 6-8)
+- `[r41b_n50_watcher_launched_20260420_2235]` — HotpotQA n=50 watcher (cells 3-5 at n=50)
+- `scripts/prep_musique_seed.py` + `scripts/run_e017_fullval_seed.py` + `scripts/summarize_external_smokes.py` — dataset + matrix + summary pipeline
+- `workspace/tmp/r41d_musique_matrix_watcher.sh` — the new watcher
+- `docs/paper/benchmark_inventory.md` — canonical "what benchmark means" ref (scientist-maintained)
+
+
+
+### [r41e_progress_snapshot_20260421_0005]
+
+- when: 2026-04-21 00:05 server time (R41e, engineer MCP-3)
+- who: engineer (MCP-3, continuing long-running R41 session)
+- intent: Capture mid-run snapshot + pull latest n=50 metrics + compute seed=42 single-seed paired bootstrap; keep scientist-facing summary up-to-date.
+- status: ✅ **snapshot + paired_stats_seed42_only.csv + docs/paper/external_smoke_summary.md landed**; all 3 watcher daemons healthy; no interventions needed.
+
+#### Matrix state snapshot
+
+| # | system | dataset | n | EM | F1 | status |
+|---|---|---|---:|---:|---:|---|
+| 1 | TCPB Stage-2 | HotpotQA | 7405 | 0.4949 | **0.6884** | ✅ seed=42 |
+| 2 | TCPB Stage-1 | HotpotQA | 7405 | 0.5145 | **0.6823** | ✅ seed=42 |
+| 3 | MAD n=5 | HotpotQA | 5 | 0.600 | 0.750 | ✅ R41 |
+| 4 | MA-RAG n=5 | HotpotQA | 5 | 0.400 | 0.699 | ✅ R41 |
+| 5 | ReAgent n=5 | HotpotQA | 5 | 0.000 | 0.161 | ✅ R41c W3 |
+| 6 | **MA-RAG n=50** | HotpotQA | **50** | **0.380** | **0.648** | ✅ R41b landed @ 23:48 |
+| 7 | **ReAgent n=50** | HotpotQA | **50** | **0.000** | **0.180** | ✅ R41b landed @ 23:50 (format penalty) |
+| 8 | MAD n=50 | HotpotQA | 50 | — | partial 0.82 @ 30/50 | ⏳ ~50% done |
+| 9 | TCPB Stage-2 | HotpotQA | 7405 (seed=43) | — | — | ⏳ 970/7405 = 13% |
+| 10 | TCPB Stage-1 | HotpotQA | 7405 (seed=43) | — | — | ⏳ 758/7405 = 10% |
+| 11-12 | TCPB S2+S1 | HotpotQA | 7405 (seed=44) | — | — | ⏳ queued by scheduler |
+| 13-17 | 5 systems | MuSiQue | 50 | — | — | ⏳ watcher PID 342216 queued |
+
+#### Paired-bootstrap landed (seed=42 only, R41e compute)
+
+```
+seed=42 ΔF1 = +0.0061 [-0.0016, +0.0139]  sign-p=0.2694  (n=7405)
+```
+
+- Stage-2 point-estimate **+0.61 pp F1 over Stage-1** on the full 7405-sample paired set.
+- 95% CI **crosses zero marginally** (−0.0016 lower bound) → single-seed **not significant**.
+- Token per sample: Stage-2 479 vs Stage-1 840 → **−360.7 tokens/sample** (CI very tight).
+- ΔEM: **−0.0196** (Stage-2 0.495 vs Stage-1 0.515) at 95% CI [−0.030, −0.009] → **Stage-1 slightly beats Stage-2 on EM** by ~2 pp.
+
+**Interpretation**: Stage-2 improves F1 at significantly lower cost, but trades a small EM hit (expected — Stage-2's extended COT sometimes over-elaborates which costs exact-match). `cost_normalized_f1_api` shifts from 0.155 (Stage-1) to 0.295 (Stage-2) = **+91% more F1 per token**.
+
+Raw: `artifacts/round2_gpt41mini_stage2_fullval/paired_stats_seed42_only.csv` (local + server).
+
+#### Deliverables created this session
+
+- `docs/paper/external_smoke_summary.md` (scientist-facing single-source-of-truth summary; 7 sections; regeneratable via `summarize_external_smokes.py --tex`)
+- `artifacts/round2_gpt41mini_stage2_fullval/paired_stats_seed42_only.csv` (paired bootstrap CSV)
+- `scripts/summarize_external_smokes.py` extended to recognize `artifacts/matrix/musique_n50_*/` outputs (future MuSiQue landings will be picked up automatically)
+- Local copies of all n=5/n=50 external-baseline metrics + predictions files
+
+#### Daemons health check
+
+| PID | daemon | status | last activity |
+|---:|---|---|---|
+| 321499 | schedule_e017_seeds | alive | seed=43 running, seed=44 queued |
+| 332171 | 5-min state JSON snapshot | alive (sleep 300) | — |
+| 340718 | r41b_n50 HotpotQA | alive (sleep 180) | waiting on MAD n=50 completion |
+| 342216 | r41d MuSiQue matrix | alive | poll every 5 min: `seed43_s2=running, seed43_s1=running, MAD50=running, MARAG50=DONE, REAGENT50=DONE` |
+
+#### ETA (current rates, no intervention)
+
+- MAD n=50 done: ~30-40 min (was 30/50 at 23:48 observed)
+- seed=43 S2+S1 done: ~1.5-2 h (13%/10% at 00:00)
+- MuSiQue matrix fires: after seed=43 done + MAD n=50 done → ~01:30-02:00
+- MuSiQue matrix done: ~03:30-04:30
+- seed=44 S2+S1 done: ~03:30-04:30 (scheduler chains in parallel)
+- paired_stats_3seed.csv: ~04:40
+- **All cells land: ~05:00 next day**
+
+#### Explicit next_action
+
+- **engineer (next session)**: `tail -f artifacts/monitor/r41b_n50_watch_*.log` + `r41d_musique_matrix_watch_*.log` to see completion events. When `paired_stats_3seed.csv` exists, regenerate `external_smoke_summary.md` (just re-run summarize script) + update scientist.
+- **scientist**: `external_smoke_summary.md` is ready to consume for S-121/S-122/S-123. Decide ReAgent format-penalty policy (R41c §12.4) so follow-up MuSiQue ReAgent run can apply consistent treatment.
+- **user**: no action needed.
+
+#### Cross-references
+
+- `[experiment_matrix_plan_20260420_2345]` — R41d matrix layout + budget + watcher architecture (this block is the R41e in-flight update)
+- `[e_018_reagent_w3_workaround_landed_20260420_2330]` — R41c W3 fix enabling ReAgent participation
+- `[u_rollback_001_path_a_landed_20260420]` — the R40 launch that produced seed=42 results
+- `scripts/paired_bootstrap_ci.py` — used to compute paired_stats_seed42_only.csv; will run on 3 seeds once seed=44 done
+- `docs/paper/external_smoke_summary.md` — scientist-facing summary (regen via summarize script)
+
+
+[reviewer_r_full_016_ack_20260421] — R-FULL-016 landed: `artifacts/idea_reviews/reviewer_20260421_000229_16_d83082/review.md` (P1 Strict ARR SAC D1+D5 specialty, target=8.5 Best-Paper; stateless; same PDF SHA `D4E86829` as R-FULL-015 but **first P1 audit of the post-S-163/S-164/S-167/S-170 hygiene stack** — P1 last used in R-FULL-011 on older PDF `37A3F45D`). **Historical milestone**: **first R-FULL-series closed-loop fix-verify cycle at persona granularity** — R-FULL-011 P1 flagged 14 undefined operational objects -> D1=4.5 -> overall=3.5 REJECT -> scientist dispatched S-163 + S-164 + S-167 + S-170 -> R-FULL-016 P1 re-audits same 14 locations by same persona -> all formalised or Stage-2-marked -> **D1=6.5 (+2.0)** verified + **D5=7.0 (+1.5)** + **overall=4.5 (+1.0) = first P1 overall >= 4.0 in 16-batch history** (R-FULL-004 P1 4.5 was cap-bound on old PDF, R-FULL-011 P1 3.5 REJECT, R-FULL-016 P1 4.5 recovery). weighted_pre_cap=**5.490** = +1.080 vs R-FULL-011 P1 4.410 = **16-round largest cross-session single-persona lift**; -0.090 vs R-FULL-015 P4 5.580 = P1 stricter-than-P4 systematic offset (consistent with cross-persona spread pattern). oral_quality=2.5. **D4=4.0 (+1.0 vs R-FULL-011 P1 3.0)** reflects section 4.5 fullval single-seed n=7405 canonical-backbone empirical evidence + cost-normalised Pareto-axis-switch re-framing; D4+0.5=4.5 = sole remaining binding cap (D1<5 cap P1-verified CLOSED). Section 11.5 7+3+2 unchanged (PDF same as R-FULL-015). **0 NEW non-LLM actionable**: all remaining fails are sprint-pipeline-blocked on E-017 seed=43+44 running post-seed=42 done (scheduler chained) + paired_bootstrap_ci + E-014 canonical ablation configs ready + E-018 MA-RAG/ReAgent install done reproduce pending + E-006 MuSiQue + U-EXEC-004 Figure 1 + MAD head-to-head via E-015/E-016. SCIENTIST_TODO B.5 dispatched **S-172** (S-104 bookkeeping closure only). **Strategic critical insight**: scientist parallel execution of non-LLM hygiene (S-163/164/167/170) + LLM-dependent E-017 fullval has unlocked both orthogonal caps; P1 cross-session verification confirms hygiene stack is working at the strictest persona. Next R-FULL trigger = E-017 3-seed paired_bootstrap_ci done + Table 1 refresh + trigger R-FULL-017; expected overall 4.5 -> 5.0-5.5 weak_accept edge as D4<5 cap lifts. No user action required.
+
+
+### [r41f_quota_exhaustion_v2_20260421_0850]
+
+- when: 2026-04-21 08:50 CST engineer audit time (incident actually occurred ~00:51 CST)
+- who: engineer (MCP-3, R41f)
+- intent: Forensic audit + graceful cleanup after second newapi quota depletion event.
+- status: ⚠⚠ **INCIDENT v2** — newapi quota depleted a SECOND time (user's first $500 top-up exhausted after ~E-017 seed=42 + partial seed=43 + 3 HotpotQA n=50 smokes). Critical distinction from 2026-04-19 v1 incident: **E-020.1 QuotaExhaustedError HALTED workers cleanly, ZERO garbage F1=0 data was written** — the guard designed specifically to prevent the v1 failure mode worked exactly as specified.
+
+#### Incident timeline
+
+| Time (CST) | Event |
+|---|---|
+| 2026-04-20 21:07 | seed=42 resume launch (after R40 first top-up) |
+| 2026-04-20 23:00 | seed=42 stage2 ✅ DONE (F1=0.688, n=7405) |
+| 2026-04-20 23:35 | seed=42 stage1 ✅ DONE (F1=0.682, n=7405) |
+| 2026-04-20 23:40 | scheduler auto-launch seed=43 S2+S1 (PIDs 341257, 341264) |
+| 2026-04-20 23:42 | n=50 HotpotQA watcher fires MAD+MA-RAG+ReAgent smokes |
+| 2026-04-20 23:48 | MA-RAG n=50 ✅ (F1=0.648) |
+| 2026-04-20 23:50 | ReAgent n=50 ✅ (F1=0.180 format-penalty) |
+| 2026-04-21 00:09 | MAD n=50 ✅ (F1=0.777) |
+| **2026-04-21 00:51** | **seed=43 S2+S1 workers hit HTTP 403 `insufficient_user_quota` → E-020.1 raised QuotaExhaustedError → batch halted cleanly** |
+| 2026-04-21 08:49 | engineer R41f audit: discovers workers dead but ckpts valid |
+| 2026-04-21 08:50 | engineer kills 3 stuck daemons (scheduler + n50 watcher + musique watcher) |
+
+#### Forensic state (valid prefix preservation — clean, unlike v1)
+
+Server `tail -10` of ckpt files shows ALL recent samples with non-zero F1 and realistic EM:
+
+- seed=43 stage2 `_ckpt_preds.jsonl`: 3717 valid samples (last entry: realistic F1 distribution, no 0.0 runs)
+- seed=43 stage1 `_ckpt_preds.jsonl`: 2955 valid samples (ditto)
+- NO `_ckpt_meta.json` written (E-020.2 consecutive-zero-F1 halt did not need to fire because E-020.1 fired earlier in the exception chain; correct behavior per spec)
+
+**This is the CANONICAL VALIDATION of the E-020 fail-fast design** — the entire rationale for E-020 was "if quota goes to zero mid-batch, fail fast instead of writing F1=0 garbage". The v2 incident is exactly that scenario + E-020 behaved as specified.
+
+#### Error traceback (engineer log)
+
+From `logs/e017_seed43_stage2.log` tail:
+```
+File "...runner.py", line 318, in _process_one
+  output = run_method_step(...)
+File "...methods.py", line 805, in _run_edo_stage2_chain_step
+  llm_answer = _llm_generate_answer(...)
+File "...methods.py", line 540, in _llm_generate_answer
+  resp = call_llm(messages=messages, temperature=0.0, max_tokens=_max_tok)
+File "...llm_client.py", line 294, in call_llm
+  raise QuotaExhaustedError(
+idea04_core.llm_client.QuotaExhaustedError: [QUOTA EXHAUSTED] HTTP 403 ...
+  balance=$0.003950 need=$0.004064 ...
+  "Aborting batch to preserve valid-prefix checkpoint; resume with
+   --run-dir <existing> after topping up balance."
+```
+
+The `Aborting batch to preserve valid-prefix checkpoint` message confirms E-020.1's docstring promise was honored at the actual failure point.
+
+#### Landed vs unlanded cells (snapshot at R41f)
+
+**Landed (8 cells)**:
+- TCPB Stage-2 HotpotQA n=7405 (seed=42)  F1=0.688
+- TCPB Stage-1 HotpotQA n=7405 (seed=42)  F1=0.682
+- MAD HotpotQA n=5  F1=0.750
+- MAD HotpotQA n=50  F1=0.777
+- MA-RAG HotpotQA n=5  F1=0.699
+- MA-RAG HotpotQA n=50  F1=0.648
+- ReAgent HotpotQA n=5  F1=0.161
+- ReAgent HotpotQA n=50  F1=0.180
+- seed=42 paired bootstrap ΔF1=+0.0061 [-0.0016, +0.0139]
+
+**Unlanded (blocked on U-EXEC-007 v2)**:
+- TCPB Stage-2 HotpotQA seed=43 remaining 3700 samples (3717 valid prefix ready)
+- TCPB Stage-1 HotpotQA seed=43 remaining 4450 samples (2955 valid prefix ready)
+- TCPB S2+S1 HotpotQA seed=44 (full 14810 samples)
+- paired_stats_3seed.csv (needs seed=43+44 metrics.json to compute)
+- MuSiQue matrix × 5 cells
+
+#### Remaining-budget estimate
+
+At TCPB Stage-2 canonical cost (~$0.30/1K samples @ 2331 tokens/sample × $0.40/M input):
+- seed=43 remaining ~8150 samples ≈ **$12.5**
+- seed=44 full 14810 samples ≈ **$22**
+- MuSiQue matrix 5 × 50 samples @ ~$0.80 avg ≈ **$4**
+- Buffer ≈ **$60** (for any rerun / re-smoke / E-014 if approved)
+
+**Scientist recommendation**: top up ≥ **$300** to cover remaining + buffer for rest of sprint.
+
+#### User action required — U-EXEC-007 v2
+
+Posted to `USER_TODO §B.1` as new row. Until user acks, ALL LLM-calling batches are blocked. Scientist / engineer work on non-LLM tasks (docs, code, LaTeX writing) can proceed.
+
+#### Recovery playbook (for engineer next session, after user ✅ tops up)
+
+1. Verify quota: `ssh ... "bash workspace/tmp/newapi_quota_probe.sh | tail -3"` should show `STATUS: newapi ACTIVE`.
+2. Resume seed=43 (2 batches):
+   ```bash
+   ssh ... "cd /media/data3/dengkw/idea04 && bash workspace/tmp/schedule_e017_seeds.sh &"
+   # OR (safer, matches R40 playbook):
+   nohup python3 scripts/run_e017_fullval_seed.py --seed 43 --method edo_stage2_chain \
+     --workers 8 --run-dir artifacts/round2_gpt41mini_stage2_fullval/run_20260420_234050_seed43/edo_stage2_chain \
+     > logs/e017_seed43_stage2_resume.log 2>&1 &
+   # (and same for fixed_peer_calibrated)
+   ```
+3. Re-launch scheduler to chain seed=44 + paired_bootstrap_ci (if scheduler script still intact).
+4. Re-launch `r41d_musique_matrix_watcher.sh` (already written, idempotent).
+
+#### Code / doc artefacts written in R41f
+
+- `external_baselines/reagent/run_reagent_hotpotqa.py` extended: **W(c) concise-answer monkey-patch** (`_apply_concise_answer_patch`) + `--concise` CLI flag. NOT smoke-tested in R41f (quota blocked); first smoke attempt hit `newapi quota not ACTIVE` pre-flight abort at 08:48.
+- `workspace/tmp/r41f_seed43_forensic.sh` (forensic audit script, 40 lines; output: above tables)
+- `workspace/tmp/r41f_concise_smoke.sh` (concise smoke launcher, ready for next session)
+- `docs/paper/external_smoke_summary.md` (from R41e, still current)
+- This phase block
+
+#### Cross-references
+
+- `[quota_exhaustion_incident_20260419_2338]` — v1 incident (WITHOUT E-020 guards → 9000 garbage samples)
+- `[e_020_landed_20260420_2128]` — E-020 fail-fast implementation (this incident validates the design)
+- `[u_rollback_001_path_a_landed_20260420]` — R40 resume pattern (template for v2 recovery)
+- `[experiment_matrix_plan_20260420_2345]` + `[r41e_progress_snapshot_20260421_0005]` — prior R41 progress docs
+- `USER_TODO §B.1 U-EXEC-007 v2` — user action row
+- Server forensic logs: `logs/e017_seed43_stage2.log`, `logs/e017_seed43_stage1.log`
+- Server valid prefix: `artifacts/round2_gpt41mini_stage2_fullval/run_20260420_234050_seed43/{edo_stage2_chain,fixed_peer_calibrated}/_ckpt_preds.jsonl`
+
+
+[s_173_dr1_regression_recovery_20260421] + [reviewer_r_full_017_ack_20260421] — User explicit feedback '现在正文都超过8页了，不满足 demand 的要求' triggered DR-1 regression recovery cycle. Reviewer-agent pre-audit ran build_paper.ps1 confirming 'Main body ends on page 10: OVER 8-page submission cap'. Git log located R48 commit `9a0a0529` 'Theoretical depth uplift — 6 sprint-scope theorems/definitions' which added 4 theorem paragraphs to section 3 main body without compensating compression. **S-173 HIGH PRIORITY recovery dispatched + landed (reviewer-agent scientist-acting per user 'execute current TODOs step-by-step')**: (a) moved 4 theorem full bodies (Decentralization invariant / Complexity bound / Convergence under stationarity / TCPB-as-degenerate-EDO reduction) to new **Appendix F: Theoretical Supplement** (F.1-F.4); kept concise 1-2 line statements in main body with cross-refs; (b) compressed section 4.4 + section 4.5 into single combined subsection; (c) compressed Finding 4 + section 5 Conclusion to 3 lines; (d) **fixed build_paper.ps1 verification logic**: original `mainBodyPages = limitsPage` false-positive when Limitations is top of new page; corrected to use pdftotext non-layout mode + count non-empty lines preceding Limitations (threshold <=3 → page-top → main body = N-1 COMPLIANT). **Rebuild: 3 independent DR-1 PASS verifications**: (1) corrected build_paper.ps1 reports 'main body ends on page 8 (Limitations on page 9, 0 preceding lines): COMPLIANT'; (2) pdftotext -f 8 shows section 5 Conclusion last line at p8 bottom; (3) pdftotext -f 9 shows 'Limitations' title at p9 top with 0 preceding main-body lines. **New PDF SHA D6A67296A7542C6D8C39CC4709CD16CCC04683FD6C0BE603D3C0B83D979C43EE** mtime 2026-04-21 08:57:21 (supersedes D4E86829 which user flagged). **Then R-FULL-017 landed**: P5 BPC Oral-track gatekeeper strict target=8.5 Best-Paper stateless first audit of SHA D6A67296. overall=**4.5 weak_reject 连续 4 轮 > 4.0** (R-FULL-014/015/016/017); weighted_pre_cap=**5.350** (P5 systematic stricter offset -0.230 vs R-FULL-015 P4 / -0.140 vs R-FULL-016 P1 on D5 supplement-dependent + Conclusion band trade-offs); oral_quality=3.0; D1=6.5 band 7 maintained (R48 theoretical depth preserved via Appendix F); D4=4.0 cap-bound at 4.5; section 11.5 7+3+2 unchanged (S-173 is D1/D5 structure work not section 11.5 experimental). **0 NEW non-LLM actionable**: sprint pipeline unchanged (E-017 seed=43/44 running post seed=42 done + paired_bootstrap_ci ETA ~next day 07:40 server + E-014 canonical + E-018 MA-RAG/ReAgent + E-006 MuSiQue + U-EXEC-004 Figure 1). **SCIENTIST_TODO B.5 dispatched**: **S-173 ✅ done** + **S-174** (R-FULL-017 S-104 bookkeeping closure). **Key lesson from R-FULL-013 P3 observation resurfaced + codify**: 'every .tex commit must run build_paper.ps1 and verify COMPLIANT before commit' — should be added to SCIENTIST_TODO F.2 writing hard rules. **Strategic**: consecutive overall=4.5 weak_reject streak across R-FULL-014/015/016/017 + weighted_pre_cap 5.35-5.58 range + sprint E-017 3-seed nearly complete = scientist core strategy (hygiene + fullval parallel) working; expected R-FULL-018 overall lift to 5.0-5.5 weak_accept edge after paired CI lands. **No user action required this cycle** (DR-1 concern resolved in same session by reviewer-agent scientist-acting).
