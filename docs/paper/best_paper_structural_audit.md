@@ -56,6 +56,12 @@
 
 **R43 delta**: +1 hard-fix (#9 Ethical Considerations). From 1 pass → **2 pass**, from 2 partial → 2 partial, from 9 fail → **8 fail** (net improvement 1 on Best-Paper gate).
 
+**R47-R55 cumulative delta (post-U-021 Path D rebuild cycle)**: S-163/S-164 Symbol Glossary + S-173 theorems-to-Appendix-F + §4/§5 compression + build-script logic fix. Under P1 R-FULL-016 strict audit, D1 = 6.5 (+2.0 from R-FULL-011's 4.5 sub-5 cap). Under P4 R-FULL-015 audit, weighted_pre_cap = 5.580 (15-batch historical high). §11.5 status: **2 pass / 3 partial / 7 fail**, items #1 (Experiments ≥2.5p) + #11 (regenerate scripts) + #12 (null-ablation caption mitigated) as partial.
+
+**R57 delta (S-189 T-Best-1 landed in Appendix F.5)**: Adds first provable information-theoretic lower bound (R2 audit Ω(H) credit-assignment advantage via Fano + data-processing inequality). Expected D1 lift from 6.5 → 6.8-7.0 under next P1 Strict ARR batch; D3 Novelty defense against MAD overlap now has formal Ω(H) quantification (partial address of §11.5 #3 external-SOTA-in-tables item — though empirical MAD head-to-head still required). §11.5 status **unchanged 2 pass / 3 partial / 7 fail** (S-189 is theoretical, does not flip any §11.5 item which are experimental-data-dependent).
+
+**U-023=(b) activated path** (R56): S-189/S-190/S-191 Best-Paper-track unblocked. Month 1 = S-189 landed. Month 2 = S-190 + E-021/E-022/E-023 mechanism impls + 3+ datasets. Month 3 = S-191 T-Best-3 novel mechanism ★ critical for 8.5.
+
 **R47 + R48 delta (S-163 Symbol Glossary restructure)**: R47 converted dense §3.6 prose paragraph → 9-bullet itemize list (zero new content, pure layout). R48 R-FULL-012 P4 Reproducibility-Ethics SAC cross-persona verification **confirmed**: D1 4.5 → **6.5** (+2.0 band 5+ unlocks), D5 5.5 → **7.0** (+1.5), D6 4.5 → 5.0 (+0.5), oral_quality 2.0 → 3.0. **weighted_pre_cap = 5.240 = new 12-batch high** (+1.740 vs R-FULL-011=3.500 reject). **D1<5 cap no longer triggered** first time post-S-163. D4 3.5 binding cap still pins overall at 4.0 until experiments_solidity 1/8 → ≥4/8 via E-017 fullval + E-018 external SOTA + E-014 canonical ablation + MuSiQue. §11.5 checklist **unchanged 7/3/2** (S-163 is D1/D5 internal improvement, does not touch data/evidence items).
 
 **§11.5 enforcement mapping update** (per `docs/demand.md §11.5`):

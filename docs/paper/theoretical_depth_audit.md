@@ -161,12 +161,12 @@ Prioritized by (impact on D1 cap) × (cost in page budget + eng time):
 
 | # | Fix | D1 impact | Cost | Status | Ticket |
 |---|---|---|---|---|---|
-| T-1 | **Fit range correction**: clip / non-negative constraint, 2 lines | +0.3 on D1 (closes P1-obvious sign-bug) | 5 min | ⏳ | S-165 |
-| T-2 | **Formal decentralization statement** ($k$-locality invariant), 3 lines in §3.1 | +0.3 on D1 (decentralization claim now formal) | 15 min | ⏳ | S-166 |
-| T-3 | **Personality-tag EMA convergence theorem** under stationarity: either cite Robbins-Monro stochastic-approximation result OR prove $P_i^t$ is a bounded-variation sequence with martingale-like structure, in-paper (≤ 0.25 page) or Appendix F | **+0.5 to +1.0 on D1** (single largest D1 lift) | 45-60 min (borrow from RM literature + write) | ⏳ | S-167 |
-| T-4 | **TCPB-as-EDO-reduction theorem**, 4 lines in §3.6 | +0.3 on D1 (formal reduction replaces prose) | 15 min | ⏳ | S-168 |
-| T-5 | **Process($z$) complexity bound** $\le H_{\max} \cdot k_{\max}^{d_{\max}}$ with Stage-2 restriction proof, 3 lines in §3.4 / Appendix E | +0.3 on D1 + closes complexity-theorem gap | 15 min | ⏳ | S-169 |
-| T-6 | **Symbolic Stage-2 hypothesis list** (R1/R2/R3 each with predicted sign + expected effect size), replaces §3.9 qualitative list | +0.2 on D5 + D4 (falsifiable plan) | 20 min | ⏳ | S-170 |
+| T-1 | **Fit range correction**: clip / non-negative constraint, 2 lines | +0.3 on D1 (closes P1-obvious sign-bug) | 5 min | ✅ R48 → moved to Appendix F.1 via R55/S-173 | **S-183** (renumbered from S-165 per §12) |
+| T-2 | **Formal decentralization statement** ($k$-locality invariant), 3 lines in §3.1 | +0.3 on D1 (decentralization claim now formal) | 15 min | ✅ R48 → Appendix F.1 | **S-184** |
+| T-3 | **Personality-tag EMA convergence theorem** under stationarity: Robbins-Monro stochastic-approximation result, Appendix F.3 | **+0.5 to +1.0 on D1** (single largest D1 lift) | 45-60 min | ✅ R48 → Appendix F.3 | **S-185** |
+| T-4 | **TCPB-as-EDO-reduction theorem**, Appendix F.4 | +0.3 on D1 (formal reduction replaces prose) | 15 min | ✅ R48 → Appendix F.4 | **S-186** |
+| T-5 | **Process($z$) complexity bound** $\le H_{\max} \cdot k_{\max}^{d_{\max}}$ with Stage-2 restriction proof, Appendix F.2 | +0.3 on D1 + closes complexity-theorem gap | 15 min | ✅ R48 → Appendix F.2 | **S-187** |
+| T-6 | **Symbolic Stage-2 hypothesis list** (R1/R2/R3 each with predicted sign + expected effect size), replaces §3.9 qualitative list | +0.2 on D5 + D4 (falsifiable plan) | 20 min | ✅ R48 in main body §3.9 | **S-188** |
 
 **Total sprint-scope time**: 1.5–2 hours. **Total expected D1 lift**: +1.5 to +2.0 (from current 4.5 sub-5 → 6.0–6.5 band 6, unlocks D1+0.5 cap permanently).
 
@@ -180,15 +180,34 @@ Prioritized by (impact on D1 cap) × (cost in page budget + eng time):
 
 ## 4. Best-Paper-track additional theoretical fixes (post-ARR, 2–3 month agenda)
 
-Only reachable if user elects (b) in U-023-decide. These are **not optional** for Best-Paper 8.5 bar:
+**Activated 2026-04-21 R56 per user U-023-decide = (b).** These are **not optional** for Best-Paper 8.5 bar:
 
-| # | Fix | Ticket |
-|---|---|---|
-| T-Best-1 | **Stage-2 R2 audit information-theoretic lower bound**: formal result that recursive audit provides $\Omega(H)$ bits of credit-assignment signal vs. terminal audit's $O(1)$ | S-171 (post-ARR) |
-| T-Best-2 | **Emergent-specialization entropy theorem**: under persona-tag update + $k$-local interaction, show that agent-axis specialization entropy decreases monotonically (analog of clustering in graph signal processing) | S-172 (post-ARR) |
-| T-Best-3 | **Original novel mechanism with provable advantage vs MAD / AutoGen / MA-RAG** on multi-hop QA: e.g. "R2 recursive audit is provably more sample-efficient than MAD debate for credit-assignment in $H$-hop QA by factor $\Omega(H)$, provided audit decisions are at least $1/2+\epsilon$ accurate" | S-173 (post-ARR) — **this is the missing "original mechanistic breakthrough" that 8.5 requires** |
+| # | Fix | Ticket | Status (post-R57) |
+|---|---|---|---|
+| T-Best-1 | **Stage-2 R2 audit information-theoretic lower bound**: formal result that recursive audit provides $\Omega(H)$ bits of credit-assignment signal vs. terminal audit's $O(1)$ | **S-189** | ✅ **R57 LANDED in Appendix F.5** — Fano + data-processing proof sketch; conditional on $(1/2{+}\varepsilon)$-accurate audit + per-hop failure independence; full derivation in anonymous supplement |
+| T-Best-2 | **Emergent-specialization entropy theorem**: under persona-tag update + $k$-local interaction, show that agent-axis specialization entropy decreases monotonically (analog of clustering in graph signal processing) | **S-190** | ⏳ Month 2 (needs E-023 R3 vector belief impl + Lyapunov-function derivation + multi-seed empirical validation) |
+| T-Best-3 | **Original novel mechanism with provable advantage vs MAD / AutoGen / MA-RAG** on multi-hop QA: e.g. "R2 recursive audit is provably more sample-efficient than MAD debate for credit-assignment in $H$-hop QA by factor $\Omega(H)$, provided audit decisions are at least $1/2+\epsilon$ accurate" | **S-191** ★ CRITICAL PATH | ⏳ Month 3 (Appendix F.7 + §3.10 main body + §4.x Table 6 empirical verify; initial proof sketch in §4.1 below post-R57) |
 
-Without at least one of T-Best-1/-2/-3 proven + empirically verified, Best-Paper 8.5 is **structurally unreachable** regardless of polish effort.
+Without at least one of T-Best-1/-2/-3 proven + empirically verified, Best-Paper 8.5 is **structurally unreachable** regardless of polish effort. As of R57, **T-Best-1 (S-189) is landed**, which gives us a foundational information-theoretic result we can build T-Best-3 on.
+
+### 4.1 T-Best-3 initial proof sketch (R58, Month 3 critical path)
+
+**Statement (aspirational)**: Let $\mathcal{A}_{\textsc{R2}}$ be the R2 recursive-audit learner (per-hop accept/reject-class decisions + terminal outcome) and $\mathcal{A}_{\textsc{MAD}}$ be the MAD debate aggregator learner (final-round aggregated decision over $K$ debate rounds). On $H$-hop QA where per-hop $(1/2{+}\varepsilon)$-accurate audits are available, $\mathcal{A}_{\textsc{R2}}$ achieves the same credit-assignment accuracy $\delta$ with $\Omega(H)$ fewer sample trials than $\mathcal{A}_{\textsc{MAD}}$.
+
+**Proof structure** (3 steps, to be formalised Month 3):
+
+**Step 1 (information budget from S-189).** S-189 shows $\mathcal{A}_{\textsc{R2}}$ observes $\Omega(H\varepsilon^2)$ bits of credit-assignment signal per trial. By sample-complexity / generalisation bound (e.g. PAC-Bayes lower bound on required bits for $\delta$-accurate recovery), the sample complexity is $n_{\textsc{R2}}(\delta) = \widetilde{O}(\tfrac{1}{H\varepsilon^2}\log(1/\delta))$.
+
+**Step 2 (MAD information budget).** MAD aggregator combines $K$ debate-round outputs into a single decision vector, which is then compared to the terminal gold label $y$. Even with $K{\to}\infty$ debate rounds, the aggregator's observable signal for per-hop failure attribution is bounded by the terminal label entropy $H_2(\Pr[y{=}1]) \le 1$ bit per trial (data-processing inequality: the terminal label is a Markov function of per-hop failures). Hence $n_{\textsc{MAD}}(\delta) = \Omega(\log(1/\delta))$ under an idealised aggregator that extracts maximal terminal-signal information, i.e. $n_{\textsc{MAD}}/n_{\textsc{R2}} = \Omega(H\varepsilon^2)$ → **Ω(H) sample-efficiency advantage**.
+
+**Step 3 (bounds tightness via simulation).** Requires empirical verification: on synthetic $H$-hop QA with controllable $\varepsilon$ (by seeding audit decisions from a known-accuracy auditor model) + real MAD debate on same tasks, measure sample complexity to reach target F1; expect curves $n_{\textsc{R2}}(H)$ flat vs $n_{\textsc{MAD}}(H)$ growing linearly in $H$. Completing this is the Month 3 experimental agenda dependency.
+
+**Caveats / risk**:
+- Assumption (i) audit $(1/2{+}\varepsilon)$-accurate may be overly optimistic for weak-backbone auditors (ε could be near-zero for `glm-4-flash`). Empirical calibration in Stage-2 E2 (§4.4) will quantify ε-range per backbone.
+- Assumption (ii) per-hop failures marginally independent may fail on highly correlated multi-hop tasks (e.g. where hop 2 always fails when hop 1 fails). Extension to conditionally-independent case doable but requires graph-structured info-theoretic bound (future work).
+- If empirical verification fails (Month 3 simulation shows $n_{\textsc{R2}}$ scales with H, not $1/H$), fallback claim is "empirical advantage" without the formal $\Omega(H)$ label, keeping Oral border 7.0–7.5 but losing Best Paper 8.5.
+
+**Summary**: T-Best-3 is structurally well-posed given S-189 and a standard sample-complexity framework; Month 3 writing is then assembly of these two established pieces + empirical simulation. **This is the single highest-leverage Best-Paper asset.**
 
 ---
 
