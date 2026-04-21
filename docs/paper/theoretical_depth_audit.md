@@ -209,6 +209,39 @@ Without at least one of T-Best-1/-2/-3 proven + empirically verified, Best-Paper
 
 **Summary**: T-Best-3 is structurally well-posed given S-189 and a standard sample-complexity framework; Month 3 writing is then assembly of these two established pieces + empirical simulation. **This is the single highest-leverage Best-Paper asset.**
 
+### 4.2 T-Best-2 initial sketch (R59, Month 2 critical path for D3 novelty)
+
+**Statement (aspirational)**: Under EMA persona-tag update (F.3 theorem) + 1-locality invariant (F.1) + stationarity, the cross-agent axis-specialisation entropy
+
+\[
+S(t) \;:=\; - \sum_{i=1}^{N} \sum_{k=1}^{7} p_{i,k}(t) \log p_{i,k}(t),\qquad
+p_{i,k}(t) := \frac{P_i^t[k]}{\sum_{k'=1}^{7} P_i^t[k']}
+\]
+
+is a super-martingale (i.e. $\mathbb{E}[S(t+1)\mid\mathcal{F}_t]\leq S(t)$) under a natural "value-informative" noise model, and $S(t)$ converges almost surely to a limit $S_\infty < S(0)$ for non-uniform initial signal distributions. Equivalently, agents **emergently specialise** on distinct axes without any global coordinator.
+
+**Proof structure** (4 steps, to be formalised Month 2):
+
+**Step 1 (Lyapunov candidate).** Take $V(t) := S(t)$ as the candidate Lyapunov / super-martingale. Note $V(t)\geq 0$ and $V(t) \leq N\cdot\log 7$ (uniform upper bound), so any super-martingale argument gives convergence.
+
+**Step 2 (per-agent contraction under EMA).** By F.3, $P_i^{t+1} = (1-\mu)P_i^t + \mu V_i^t$. If $V_i^t$ is drawn i.i.d.\ from a distribution with concentrated mass on some axis $k^*_i$ (the "true specialty" of agent $i$, revealed through accumulated audit signals), then by the convexity of $-x\log x$ and Jensen's inequality applied to the Dirichlet-like simplex projection $p_{i,\cdot}(t)$, the one-step entropy change satisfies $\mathbb{E}[H(p_{i,\cdot}(t+1))\mid p_{i,\cdot}(t)] \leq H(p_{i,\cdot}(t))$ whenever the signal distribution of $V_i^t$ is non-uniform over axes (KL-divergence to uniform > 0). Equality iff signal is uniform.
+
+**Step 3 (additivity under 1-locality).** By F.1 (1-locality), agents' updates depend only on local neighbour states + self, so cross-agent entropies decompose additively: $S(t) = \sum_i H(p_{i,\cdot}(t))$. Step 2 applied per-agent gives $\mathbb{E}[S(t+1)\mid\mathcal{F}_t]\leq S(t)$, with strict inequality whenever any agent's signal is non-uniform.
+
+**Step 4 (limit characterisation).** Under stationarity, as $t\to\infty$, each $P_i^t\to \bar V_i$ (F.3 fixed-point), so $p_{i,\cdot}(t)\to \bar p_{i,\cdot}$ and $H(p_{i,\cdot}(t))\to H(\bar p_{i,\cdot})$. The terminal entropy $S_\infty = \sum_i H(\bar p_{i,\cdot})$ depends on the richness of $\{\bar V_i\}$: if all agents see identical signal distributions, $\bar p_{i,\cdot}$ is identical across $i$ (no cross-agent specialisation); if signals differ (e.g. because tasks assigned to different agents via 1-local routing have different utility structure), agents specialise on distinct axes and $S_\infty < N\log 7$ strictly.
+
+**Empirical verification plan (Month 2 post E-023 R3 vector belief impl)**:
+- On a 4-agent chain topology, seed random initial $P_i^0$, run 1000 HotpotQA tasks with 1-local routing + EMA update.
+- Measure $S(t)$ per timestep; expect smooth monotone decrease + convergence.
+- Compare against "no-audit control" (Audit $\equiv$ Accept, mean-axis fold) where entropy should **not** decrease (degenerate Stage-1 case, F.4 reduction).
+
+**Caveats**:
+- (a) The "value-informative noise" assumption (step 2) requires $V_i^t$ signal distribution to be non-uniform; on weak-backbone or completely-random tasks, signals may be near-uniform → no specialisation. Empirical check on gpt-4.1-mini expected OK.
+- (b) Non-stationary settings (task distribution drift) break the super-martingale argument; fallback is "tracks sliding window" per F.3.
+- (c) If step 2 contraction is only **weak** (inequality nearly saturated), empirical $S(t)$ curve will be flat → theorem valid but vacuous → fallback to "under sufficiently value-informative signals" conditional.
+
+**Summary**: T-Best-2 is a clean Lyapunov/super-martingale argument composing F.1 (decentralisation) + F.3 (convergence) with a per-agent convexity step. Month 2 writing = Step 2 formalisation (Jensen + convexity bound) + Step 4 terminal-entropy characterisation + empirical monotone-curve confirmation post-E-023. Lower leverage than T-Best-3 but **directly addresses reviewer D3 "where is the emergent specialisation you claim?"** concern.
+
 ---
 
 ## 5. Cross-reference — which reviewer finding maps to which gap
