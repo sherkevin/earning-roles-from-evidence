@@ -233,7 +233,7 @@ Algorithm~\ref{alg:edo-stage2-loop} is the full EDO Stage-2 loop. Stage-2 work a
 \emph{H2 (R2 value on error-propagation)}: replacing \textsc{Audit}$\equiv$\textsc{Accept} by the 4-class protocol (accept / redo / reroute / resplit) reduces terminal-propagation error rate (premature-accept-rate, $\mathrm{PAR}$) by at least $1/H_{\max}$ of the error budget left unoccupied by the safety gate (\S 4.3 Finding~3 quantifies the safety-gate contribution), and yields $\Delta F_1 > 0$ pp on samples where at least one hop is auditable (i.e.\ is not pre-forwarded by the safety gate). Rejection condition: $\Delta F_1 \le 0$ pp on the auditable-hop subsample.
 
 \textbf{(R3)} the vector-belief EMA update $B_i^{t+1}(j)$ over $[0,1]^{7}$ (lines~22--24) is projected onto the scalar \texttt{solve} dimension only and updated terminally.
-\emph{H3 (R3 dimensional lift)}: replacing the scalar-competence update by the 7-axis vector update yields a non-zero axis-specialisation entropy reduction (dim-utility decomposition) while matching or exceeding scalar-TCPB mean F1. Rejection condition: entropy reduction not statistically distinguishable from random axis assignment (permutation test $p \ge 0.05$).
+\emph{H3 (R3 dimensional lift)}: replacing the scalar-competence update by the 7-axis vector update yields a non-zero axis-specialisation entropy reduction while matching or exceeding scalar-TCPB mean F1; the exact metric family (normalised persona-axis entropy + cosine persona-divergence) is formalised in Appendix~F.6. Rejection condition: entropy reduction not statistically distinguishable from random axis assignment (permutation test $p \ge 0.05$).
 
 Operational definitions (gate thresholds, rule-based audit predicates, evidence extractor) live in the executable spec [Anonymous Suppl.]~\S 4. Empirical numbers in Section~\ref{sec:experiments} therefore must \emph{not} be read as evidence for or against H1/H2/H3; they characterise only $\mathcal{E}_{\mathrm{TCPB}}$.
 
@@ -513,6 +513,21 @@ where $H_2$ denotes binary entropy, while
 I(F;y)\;\leq\;H_2(\Pr[y{=}1])\;\leq\;1.
 \]
 Thus R2 recursive audit yields $\Omega(H)$ bits of credit signal per trial versus $O(1)$ for terminal-only audit, a gap that grows linearly in chain depth. This gives the $\Omega(H)$ sample-efficiency advantage referenced in \S 3.4 (``why recursive audit dominates terminal audit''). Proof sketch: the lower bound on $I(F;\{a_h\})$ follows from Fano's inequality applied per-hop; the upper bound on $I(F;y)$ follows from the data-processing inequality along the terminal channel. Full derivation in the anonymous supplement. The theorem is conditional on (i) audit $(1/2+\varepsilon)$-accuracy and (ii) per-hop failures are marginally independent; assumption (i) is empirically measurable via a separate audit-calibration protocol (Stage-2 experimental agenda E2, \S 4.4).
+
+\paragraph{F.6 Formal metric family for H3 (specialisation entropy + persona divergence).}
+To make H3 in \S\ref{sec:stage2-roadmap} operational, let the non-negative 7-axis persona vector of agent $i$ at evaluation time be $P_i\in\mathbb{R}_{\ge 0}^{7}$, and define the normalised axis distribution
+\[
+q_i(k)\;=\;\frac{P_i(k)}{\sum_{\ell=1}^{7}P_i(\ell)},\qquad k\in\{1,\ldots,7\},
+\]
+with the convention $q_i(\cdot){=}(1/7,\ldots,1/7)$ if $\sum_{\ell}P_i(\ell){=}0$. The \emph{specialisation entropy} of agent $i$ is
+\[
+H_{\mathrm{spec}}(i)\;=\;-\sum_{k=1}^{7} q_i(k)\log q_i(k),
+\]
+and the society-level summary used by H3 is the mean $\bar H_{\mathrm{spec}}{=}\frac{1}{|\mathcal{A}|}\sum_i H_{\mathrm{spec}}(i)$. Lower values indicate sharper axis concentration (more specialised agents), while the uniform baseline gives $H_{\mathrm{spec}}(i){=}\log 7$. We pair this with a \emph{persona-divergence matrix}
+\[
+D_{ij}\;=\;1-\frac{\langle P_i,P_j\rangle}{\|P_i\|_2\|P_j\|_2},
+\]
+again treating zero vectors as divergence $0$. H3 is therefore evaluated not by one scalar alone but by the joint pattern: (i) $\Delta \bar H_{\mathrm{spec}}<0$ versus the scalar-TCPB baseline and (ii) a non-degenerate off-diagonal spread in $\{D_{ij}\}$ that exceeds a random axis-permutation null. The random-permutation baseline keeps the marginal axis mass of each $P_i$ fixed but permutes axis labels independently across agents; significance is then tested on $\Delta \bar H_{\mathrm{spec}}$ and on the mean pairwise divergence under that null.
 
 \bibliography{custom}
 
