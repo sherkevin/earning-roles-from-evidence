@@ -4951,3 +4951,222 @@ Posted to `USER_TODO §B.1` as new row. Until user acks, ALL LLM-calling batches
 
 
 [s_173_dr1_regression_recovery_20260421] + [reviewer_r_full_017_ack_20260421] — User explicit feedback '现在正文都超过8页了，不满足 demand 的要求' triggered DR-1 regression recovery cycle. Reviewer-agent pre-audit ran build_paper.ps1 confirming 'Main body ends on page 10: OVER 8-page submission cap'. Git log located R48 commit `9a0a0529` 'Theoretical depth uplift — 6 sprint-scope theorems/definitions' which added 4 theorem paragraphs to section 3 main body without compensating compression. **S-173 HIGH PRIORITY recovery dispatched + landed (reviewer-agent scientist-acting per user 'execute current TODOs step-by-step')**: (a) moved 4 theorem full bodies (Decentralization invariant / Complexity bound / Convergence under stationarity / TCPB-as-degenerate-EDO reduction) to new **Appendix F: Theoretical Supplement** (F.1-F.4); kept concise 1-2 line statements in main body with cross-refs; (b) compressed section 4.4 + section 4.5 into single combined subsection; (c) compressed Finding 4 + section 5 Conclusion to 3 lines; (d) **fixed build_paper.ps1 verification logic**: original `mainBodyPages = limitsPage` false-positive when Limitations is top of new page; corrected to use pdftotext non-layout mode + count non-empty lines preceding Limitations (threshold <=3 → page-top → main body = N-1 COMPLIANT). **Rebuild: 3 independent DR-1 PASS verifications**: (1) corrected build_paper.ps1 reports 'main body ends on page 8 (Limitations on page 9, 0 preceding lines): COMPLIANT'; (2) pdftotext -f 8 shows section 5 Conclusion last line at p8 bottom; (3) pdftotext -f 9 shows 'Limitations' title at p9 top with 0 preceding main-body lines. **New PDF SHA D6A67296A7542C6D8C39CC4709CD16CCC04683FD6C0BE603D3C0B83D979C43EE** mtime 2026-04-21 08:57:21 (supersedes D4E86829 which user flagged). **Then R-FULL-017 landed**: P5 BPC Oral-track gatekeeper strict target=8.5 Best-Paper stateless first audit of SHA D6A67296. overall=**4.5 weak_reject 连续 4 轮 > 4.0** (R-FULL-014/015/016/017); weighted_pre_cap=**5.350** (P5 systematic stricter offset -0.230 vs R-FULL-015 P4 / -0.140 vs R-FULL-016 P1 on D5 supplement-dependent + Conclusion band trade-offs); oral_quality=3.0; D1=6.5 band 7 maintained (R48 theoretical depth preserved via Appendix F); D4=4.0 cap-bound at 4.5; section 11.5 7+3+2 unchanged (S-173 is D1/D5 structure work not section 11.5 experimental). **0 NEW non-LLM actionable**: sprint pipeline unchanged (E-017 seed=43/44 running post seed=42 done + paired_bootstrap_ci ETA ~next day 07:40 server + E-014 canonical + E-018 MA-RAG/ReAgent + E-006 MuSiQue + U-EXEC-004 Figure 1). **SCIENTIST_TODO B.5 dispatched**: **S-173 ✅ done** + **S-174** (R-FULL-017 S-104 bookkeeping closure). **Key lesson from R-FULL-013 P3 observation resurfaced + codify**: 'every .tex commit must run build_paper.ps1 and verify COMPLIANT before commit' — should be added to SCIENTIST_TODO F.2 writing hard rules. **Strategic**: consecutive overall=4.5 weak_reject streak across R-FULL-014/015/016/017 + weighted_pre_cap 5.35-5.58 range + sprint E-017 3-seed nearly complete = scientist core strategy (hygiene + fullval parallel) working; expected R-FULL-018 overall lift to 5.0-5.5 weak_accept edge after paired CI lands. **No user action required this cycle** (DR-1 concern resolved in same session by reviewer-agent scientist-acting).
+
+
+### [r41g_runner_robustness_fix_20260421_0910]
+
+- when: 2026-04-21 09:10 CST
+- who: engineer (MCP-3, R41g, quota-blocked non-LLM work)
+- intent: Close a latent robustness gap in `workspace/idea04_core/runner.py` `_after_sample` identified during an auto-keepalive product-manager prompt. The gap: if a worker crashes DURING the write_lock block AFTER writing sibling jsonl rows but BEFORE writing the ckpt line, sibling jsonls end up with orphan rows whose `task_id` has no corresponding entry in `_ckpt_preds.jsonl`. On resume, `_after_sample` appends NEW rows on top, producing jsonls with [valid-pre-crash + orphans + valid-post-resume] layout. This breaks downstream `validate_logs.py` + `paired_bootstrap_ci.py` which expect 1:1 alignment between ckpt and sibling rows by order or task_id.
+- status: ✅ **FIX LANDED + 6 NEW TESTS** + no regressions (114/114 pass local + server).
+
+#### Gap analysis
+
+`_after_sample` at `workspace/idea04_core/runner.py:475-530` has this write order inside the shared `write_lock`:
+
+1. Write traces/packets/snaps/outputs rows to 4 sibling jsonls (Stage-1) + 3 extra (Stage-2).
+2. Flush all sibling handles.
+3. **Write the ckpt line.**
+4. Flush ckpt handle.
+
+The doc comment at line 499-504 explains the ordering rationale ("ckpt only written after sibling flushed so resume never skips a sample whose artefacts were lost in a buffer"). This correctly handles the **sibling-loss** failure mode (crash before sibling flush → ckpt not written → sample re-runs → sibling rewritten).
+
+But it does NOT handle the **sibling-orphan** failure mode: crash between step 2 (sibling flushed) and step 3 (ckpt written) leaves sibling rows on disk for a task_id that will not appear in ckpt. Resume then re-runs the sample (because task_id not in `completed_ids`) and appends a new sibling row → jsonl ends up with both the orphan and the re-run row for the same task_id.
+
+#### Fix design (minimal invasion)
+
+On resume (the `is_resume` branch at line 141-153), call a new helper `RoundRunner._cleanup_orphan_sibling_rows(run_dir, completed_ids, is_stage2)` that rewrites each sibling jsonl **atomically** (tmp file + `Path.replace()`), keeping only rows whose `task_id` is in the ckpt's `completed_ids` set.
+
+Properties:
+- **Idempotent**: if no orphans exist, the method does a no-op-in-effect (detects via `dropped==0` counter + skips the rewrite for that file).
+- **Order-preserving**: surviving rows keep their original line order (important for validate_logs.py which reads linearly).
+- **Malformed-line tolerant**: rows that fail `json.loads` are dropped (treated as corrupted orphans). Prevents runner startup crash on edge-case disk corruption.
+- **Missing-file tolerant**: sibling jsonls that don't exist (e.g., a Stage-1 run has only 4 sibling files, not 7) are skipped silently.
+
+Fresh runs (non-resume) use sibling file open mode `"w"` which truncates existing content, so the orphan issue doesn't apply there.
+
+#### Files changed
+
+| File | Change |
+|---|---|
+| `workspace/idea04_core/runner.py` | Added class attrs `_SIBLING_FILES_STAGE1` (4 names) + `_SIBLING_FILES_STAGE2_EXTRA` (3 names) + classmethod `_cleanup_orphan_sibling_rows`. Added call-site at resume branch line 154-166. |
+| `workspace/idea04_core/test_r41g_runner_resume_integrity.py` | NEW — 6 tests covering stage-1/stage-2/no-op/malformed/order-preserving/missing-file scenarios. |
+
+#### Test coverage
+
+| Test | What it validates |
+|---|---|
+| `test_cleanup_drops_single_orphan_across_all_stage1_sibling_files` | 4 Stage-1 sibling files with 3 committed + 1 orphan each → orphan dropped from all |
+| `test_cleanup_also_processes_stage2_extra_sibling_files` | is_stage2=True → cleanup extends to 7 total sibling jsonls |
+| `test_cleanup_is_noop_when_no_orphans` | sibling already consistent → cleanup doesn't corrupt data |
+| `test_cleanup_tolerates_malformed_lines` | non-JSON line in sibling → dropped without crash |
+| `test_cleanup_preserves_order_of_kept_rows` | interleaved orphans → surviving rows keep original order |
+| `test_cleanup_handles_missing_sibling_file_gracefully` | file missing → silent skip (no error) |
+
+**Test results**: 6/6 pass local + 6/6 pass server. Full-suite regression: **114/114** passed (was 108, now +6 new tests).
+
+#### Impact / how this helps future runs
+
+- When scheduler auto-resumes E-017 seed=43 after U-EXEC-007 v2 top-up, the resume branch will first scan existing sibling jsonls for orphans (there shouldn't be any because E-020.1 QuotaExhaustedError halts cleanly BEFORE any partial write, but this is a belt-and-suspenders guarantee).
+- If ANY future experiment uses the runner and gets SIGKILL'd or OOM'd mid-write_lock, resume will silently clean up instead of producing misaligned jsonls that would confuse `validate_logs.py` on the next batch.
+- The R41g test suite acts as a regression guard: if a future runner change reintroduces the orphan-producing pattern, tests will fail.
+
+#### Not done / follow-up candidates (non-urgent)
+
+1. The ROOT fix would be to swap the write order (ckpt first, then sibling) so orphans become "missing-sibling-for-committed-sample" which is detectable by `validate_logs.py`. However that's a larger change + may reveal other latent issues; the R41g cleanup-on-resume is sufficient for the current crash scenarios observed.
+2. An `fsync()` after ckpt flush would reduce OS-buffer-loss risk (currently `flush()` only empties Python-level buffer). Not blocking for the sprint.
+3. Could extend `_cleanup_orphan_sibling_rows` to ALSO detect "missing sibling for committed sample" (opposite direction) and flag as a WARNING in the log. Deferred.
+
+#### Cross-references
+
+- `workspace/idea04_core/runner.py:475-530` — `_after_sample` write-lock block
+- `workspace/idea04_core/runner.py:141-166` — resume branch now invoking `_cleanup_orphan_sibling_rows`
+- `workspace/idea04_core/runner.py:760-845` — new helper classmethod `_cleanup_orphan_sibling_rows`
+- `workspace/idea04_core/test_r41g_runner_resume_integrity.py` — new test file (170 lines, 6 tests)
+- `[e_020_landed_20260420_2128]` — E-020 fail-fast guards (complementary: prevents bad F1 writes; R41g handles clean-up on resume)
+- `[r41f_quota_exhaustion_v2_20260421_0850]` — the v2 incident that prompted this review
+- `[quota_exhaustion_incident_20260419_2338]` — the v1 incident; R41g would have reduced rescue complexity if it had been in place
+
+
+[reviewer_r_full_018_ack_20260421] — R-FULL-018 landed: `artifacts/idea_reviews/reviewer_20260421_091514_18_df7917/review.md` (P2 Empirical-NLP SAC STRICT experiments-weighted, target=8.5 Best-Paper; stateless; same PDF SHA `D6A67296` as R-FULL-017 but **first P2 audit on post-S-173 PDF** — P2 last used in R-FULL-010 on older PDF `37A3F45D`). **overall=4.5 weak_reject 连续 5 轮 > 4.0** (R-FULL-014/015/016/017/018 covering P1/P2/P4/P5 4 personas = sprint stable consensus); weighted_pre_cap=**5.315** (P2 systematic stricter offset -0.035 vs R-FULL-017 P5 / -0.175 vs R-FULL-016 P1 on empirical dimensions). oral_quality=2.5 (P2 stricter than P5/P4). **P2 rubric triad hit ('borderline-reject by construction')**: single-benchmark (HotpotQA only) + single-seed (seed=42, seeds 43/44 pending) + no-external-SOTA (S6=2.0 'No external baselines at all'). **P2 cross-persona cross-batch confirmation**: R-FULL-010 P2 (old PDF 37A3F45D) D1=5.5/D5=6.5/D7=7.5 → R-FULL-018 P2 (new PDF post-S-163+S-173) D1=6.5 (+1.0) / D5=6.5 (unchanged) / D7=8.0 (+0.5) — same-persona cross-batch validates S-163/S-173 hygiene work. **But D4 cap unchanged at 4.5** since experiments_solidity=1/8 unchanged. **Strategic critical insight**: post-S-173 hygiene is saturated from P2 perspective; D1/D5/D7 non-LLM work ROI is diminishing; only **quantitative error analysis (EXP-8)** remains as non-LLM hygiene work (from existing audit_events.jsonl + routing_traces.jsonl + parsed_predictions.jsonl logs). Scientist can do hop-count × failure-type matrix inline in section 4.5 or Appendix G during E-017 seeds 43/44 wait → estimated overall weighted_pre_cap +0.05-0.10 via D4/S8 bumps. **0 NEW actionable beyond suggested quantitative error analysis**. SCIENTIST_TODO B.5 dispatched **S-175** (R-FULL-018 S-104 bookkeeping closure + §C themes + suggested non-LLM error-analysis hygiene). **Key consensus across 18 R-FULL batches + 4 personas**: experiments_solidity = sole binding cap; sprint critical path = E-017 seed=43/44 + paired_bootstrap_ci + E-018 external SOTA + MuSiQue landing; all other hygiene work (14-round history) has pushed weighted_pre_cap from 5.5 to 4.4-4.9 range and back up to 5.3-5.6 healthy range, but overall stuck at 4.0-4.5 floor until experiments lands. No user action required this cycle.
+
+[reviewer_r_full_019_ack_20260421] — R-FULL-019 landed: `artifacts/idea_reviews/reviewer_20260421_092345_19_ca7877/review.md` (P3 Adversarial Novelty SAC STRICT, target=8.5 Best-Paper; stateless; same PDF SHA `D6A67296` as R-FULL-017/018 but **first valid P3 verdict on post-S-173 clean PDF** — R-FULL-013 P3 was forced REJECT by DR-1 regression on old PDF `87662BD6`, now resolved). **Historical milestone: R-FULL-019 completes P1-P5 5-persona rotation on same PDF D6A67296** — R-FULL-014 P5 / 015 P4 / 016 P1 / 017 P5 / 018 P2 / 019 P3. **overall=4.5 weak_reject 连续 6 轮 > 4.0** 覆盖全 5 persona = sprint absolute stable consensus. weighted_pre_cap=**5.260** (P3 stricter than all other personas on novelty+significance bars). 5-persona spread on same PDF: 5.260 (P3) < 5.315 (P2) < 5.350 (P5) < 5.490 (P1) < 5.580 (P4), spread 0.320 = P3 most stringent (D3 MAD cap + S2 low falsifiability). **P3 cross-persona UNIQUE findings (not in any of R-FULL-014 to 018)**: (a) TCPB = MAD with (aggregator_window=full_trajectory, aggregation_rule=terminal_F1_sign) parameter instantiation, not new mechanism; section 2.2 2-sentence prose-only insufficient; (b) framework-level novelty = framing-mostly ('organizational emergence' rhetorical re-labeling); (c) delivered Stage-1 TCPB approximately MetaGPT-minus-orchestrator (Prototype Scope Box (ii) 4 role-prior nodes self-admits); (d) MA-RAG 2025 + ReAgent EMNLP 2025 completely missing from section 2 Related Work = 2026/2027 submission presumption-of-unawareness signal; (e) no falsifiable claim prior work cannot make. **CRITICAL: P3 finds TWO non-LLM / non-quota-blocked actionable items scientist can do NOW**: **S-176 HIGH PRIORITY (rewrite section 2.2 MAD paragraph with concrete mechanistic delta, 30 min)** closes overlap-risk-unaddressed flag even without MAD empirical benchmark → potential D3 4→5 lift → **overall 4.5→5.0 weak_accept edge without waiting for E-017 seeds 43/44 + paired CI**; **S-177 MEDIUM PRIORITY (add MA-RAG + ReAgent to section 2, 15 min)** addresses 12-month SOTA absence. **This is the first R-FULL-series reviewer-identified non-wait actionable path out of the overall=4.5 floor** — R-FULL-014/015/016/017/018 consensus was 'wait E-017', P3 novelty specialty found a parallel lift without quota wait. **SCIENTIST_TODO B.5 dispatched**: **S-176** HIGH (MAD paragraph, 30 min), **S-177** MEDIUM (MA-RAG+ReAgent, 15 min), **S-178** S-104 bookkeeping (after S-176+S-177). **Strategic stance change**: sprint plan shifts from 'wait E-017 for D4 unlock' to **'parallel: S-176 + S-177 non-LLM immediate (D3 unlock) + E-017 seed=43/44 fullval continuing (D4 unlock)'**; both landing lifts overall 4.5 → 5.0-5.5 weak_accept. No user action required.
+
+
+### [r41h_emergence_pivot_proposal_20260421_0945]
+
+- when: 2026-04-21 09:25-09:45 CST
+- who: engineer (MCP-3, R41h, quota-blocked non-LLM work)
+- intent: Respond to user's R41h strategic-pivot instruction by (a) auditing server for existing local models, (b) surveying 2025-26 strong open-weight small models, (c) designing the "small-model emergence" experiment matrix + falsifiable hypothesis, (d) writing a scientist-facing 10-section decision document, (e) filing scientist + user TODO dispatches.
+- status: 鉁?**PROPOSAL LANDED** 鈥?all four subproducts in place; awaiting user A/B/C/D framing decision + scientist sign-off on primary model choice + prompt design. Engineer is **infrastructure-ready** (can start vLLM + model download within 5 min of greenlight).
+
+#### Server audit summary (R41h)
+
+- **GPUs**: 4脳 RTX 3090 (98 GB) + 4脳 RTX 2080 Ti (44 GB) = 142 GB VRAM total, 100% idle. Per `ssh-server-rules.mdc 搂E-013 probe` still fresh.
+- **Existing local models**: **ZERO**. HF cache empty; Ollama not installed; no bundled `.safetensors` / `.gguf` in workspace or external_baselines/. MA-RAG's `requirements.txt` lists `vllm==0.10.1 + torch==2.5.1 + transformers==4.50.3` but these were never installed in any venv.
+- **Storage**: /media/data3 has 662 GB free (plenty for 10+ 7B models).
+- **Install prerequisites**: python3.10 available, curl/wget available, sudo not confirmed (but uid likely ok for pip --user installs).
+
+#### Model survey (top 7 candidates, from WebSearch 2025-2026 leaderboards)
+
+| # | Model | Params | License | MMLU-Pro | HotpotQA F1 (lit) | VRAM FP16 | Priority |
+|---:|---|---:|---|---:|---:|---:|---|
+| 1 | Qwen3.5-9B | 9B | Apache 2.0 | 82.5 | est. 0.64-0.68 | ~18 GB (1脳 3090) | **PRIMARY** |
+| 2 | Qwen3.5-4B | 4B | Apache 2.0 | 79.1 | est. 0.60-0.64 | ~8 GB (1脳 2080 Ti) | **4-agent sweet spot** |
+| 3 | Qwen2.5-7B-Instruct | 7B | Apache 2.0 | 鈥?| 0.5946 (NAACL 2025) | ~14 GB | **control** (literature-comparable) |
+| 4 | OpenReasoning-Nemotron-7B | 7B | CC-BY 4.0 + Apache 2.0 | 71.9 | 鈥?| ~14 GB | reasoning-tuned variant |
+| 5 | Phi-4-mini | 3.8B | MIT | 52.8 | 0.5818 (NAACL 2025) | ~7.6 GB | small-model frontier |
+| 6 | Gemma 3 4B IT | 4B | Gemma License | 43.6 | ~0.55 est | ~8 GB | code/math edge (fallback) |
+| 7 | Llama-3.1-8B-Instruct | 8B | Llama 3 License | 鈥?| 0.6391 (NAACL 2025) | ~16 GB | Meta control (literature-comparable) |
+
+**Recommended stack**: Qwen3.5-9B (primary) + Qwen2.5-7B-Instruct (control) + (optional) Phi-4-mini (small-frontier).
+
+#### Experiment matrix design
+
+5 systems 脳 1-2 datasets 脳 3-4 backbones = **10-16 cells**:
+
+- `tcpb_stage2` 脳 {gpt-4.1-mini, Qwen3.5-9B, Qwen2.5-7B}
+- `tcpb_stage1` 脳 {gpt-4.1-mini, Qwen3.5-9B, Qwen2.5-7B}
+- **`single_agent` 脳 {gpt-4.1-mini, Qwen3.5-9B, Qwen2.5-7B}** 鈫?critical new ablation for the emergence claim
+- (optional) 脳 HotpotQA + MuSiQue
+
+Emergence hypothesis (falsifiable):
+
+```
+螖_backbone = F1_backbone_Stage-2  鈭? F1_backbone_single-agent
+Emergence 鈬?  螖_Qwen35-9B  >  螖_gpt-4.1-mini
+Strong form 鈬?螖_gpt-4.1-mini 鈮?0  AND  螖_Qwen35-9B 鈮?0
+Saturating 鈬?F1_Qwen35-9B_Stage-2  鈮? F1_gpt-4.1-mini_single-agent
+```
+
+Predicted (literature-informed): `螖_Qwen35-9B` +0.06 to +0.12 while `螖_gpt-4.1-mini` 鈮?鈭?.05 to 鈭?.10 鈫?clean emergence signal. Null hypothesis: if `螖_small 鈮?螖_large` we fall back to Pareto-token framing.
+
+#### Infrastructure plan (vLLM primary)
+
+- Install `vllm==0.10.2 + torch==2.5.1 + transformers==4.54+` in new venv `/media/data3/dengkw/venvs/vllm-qwen35` (~5 GB, ~20 min).
+- Download Qwen3.5-9B weights (~18 GB, 30-60 min over `HF_ENDPOINT=https://hf-mirror.com`).
+- Launch 4脳 vLLM OpenAI-compat servers on GPUs 1, 4, 5, 7 (ports 8001-8004) or single instance with `tensor_parallel_size=4` (simpler, chosen for smoke).
+- Add `local_qwen35` block to `configs/llm.json` 鈫?runner auto-routes.
+- Zero runner code change.
+
+#### Budget
+
+- GPU cost: $0 (server idle)
+- Engineer time: 2 days (vLLM install 2h + download 2h + smoke 2h + full matrix 8-24h wall)
+- Electricity: ~$10 (negligible vs $300+ newapi alternative)
+
+#### Deliverables
+
+| File | Purpose | Size |
+|---|---|---:|
+| `docs/paper/small_model_emergence_plan.md` | 10-section scientist-facing decision doc | ~500 lines |
+| `workspace/tmp/r41h_server_model_audit.sh` | server audit script (reusable) | 55 lines |
+| `workspace/tmp/r41h_audit2.sh` | narrower audit (after broad find killed) | 35 lines |
+| `SCIENTIST_TODO 搂B.5 +S-179` | scientist decision-maker ticket | 1 row |
+| `USER_TODO 搂D` R41h row | user dispatch notice (soft decision) | 1 row |
+| This phase block | audit trail | 鈥?|
+
+#### What scientist needs to do (S-179)
+
+1. Read `small_model_emergence_plan.md` end-to-end.
+2. Pick a recommendation among Options A/B/C/D (A = pivot to emergence; B = stay on Pareto-token; C = both; D = variant with smaller model).
+3. Confirm primary model (Qwen3.5-9B default) + control model.
+4. Draft single-agent prompt design (搂8 open Q 3) for the critical `single_agent` ablation.
+5. Re-evaluate `experiment.md 搂1.3` backbone-lock rule (may need a `搂1.3-local-ablation` sub-rule allowing local models in 搂4.x secondary table).
+6. If Option A/C 鈫?file `U-XXX-emergence-pivot-decide` via plan-mode + AskQuestion per four-role-todo-workflow.mdc 搂4.1.
+
+#### What user needs to do (USER_TODO 搂D row)
+
+- Soft decision: reply with any Option (A/B/C/D) 鈫?engineer starts vLLM install
+- Hard decision (Option B only): top up newapi 鈮?$200
+- No-op (deferred): engineer continues non-LLM work (scientist helpers, tests, docs, LaTeX polish)
+
+#### Cross-references
+
+- `docs/paper/small_model_emergence_plan.md` (new)
+- `SCIENTIST_TODO 搂B.5 S-179` (new)
+- `USER_TODO 搂D` R41h row (new)
+- `[r41f_quota_exhaustion_v2_20260421_0850]` 鈥?the v2 incident that motivated user to propose this pivot
+- `[r41g_runner_robustness_fix_20260421_0910]` 鈥?complementary robustness layer; ensures whatever backbone we choose, resume is safe
+- `experiment.md 搂1.3` 鈥?current canonical backbone-lock rule (may need amendment for Option A/C)
+- `idea.md 搂2` 鈥?original EDO emergence framing (this pivot aligns paper story with title)
+
+#### next_action
+
+- **scientist (HIGH PRIORITY)**: read + decide on S-179
+- **user (soft)**: read the USER_TODO row + pick Option
+- **engineer (ready-when-ack'd)**: bootstrap vLLM + Qwen3.5-9B within 5 min of greenlight
+
+---
+
+### [r41e_progress_snapshot_20260421]
+
+**Purpose**: R41e audit closure — baseline HotpotQA n=50 landed locally; summarizer fixed; scientist-facing export written.
+
+**Facts**
+
+1. **`scripts/summarize_external_smokes.py`**: glob `r41b_n50_*` did not match directory `r41b_n50/`; changed to `r41b_n50*` so MAD / MA-RAG / ReAgent n=50 `metrics.json` are included in CLI output.
+2. **`docs/paper/external_smoke_summary.md`**: human table + LaTeX fragment for current workspace metrics (smokes n=5, baselines n=50, TCPB seed42 fullval S1/S2).
+3. **HotpotQA external n=50 (gold context)**: MAD F1≈0.777 EM≈0.58; MA-RAG F1≈0.648 EM≈0.38; ReAgent F1≈0.18 EM=0 (format caveat unchanged).
+4. **Full experiment matrix (5 systems × 2 datasets)**: HotpotQA arm has TCPB fullval + external n=50; MuSiQue n=50 matrix still depends on server watcher + `artifacts/matrix/musique_n50_*` outputs — rows auto-attach when present.
+
+**next_action**
+
+- Engineer: poll server for MuSiQue matrix completion; re-run summarizer; append this doc if new rows appear.
+- Scientist: use `external_smoke_summary.md` / `--tex` for tables; do not treat ReAgent scalar F1 as semantic ranking without format normalization.
+
+---
+
+### [s155_table2_null_ablation_config_audit_20260421]
+
+**Purpose**: Close **S-155** (R-FULL-008 Table 2 identical-row audit) by verifying ablation YAMLs are distinct — discriminating (a) code-path bug vs (b) true null on `glm-4-flash`.
+
+**Evidence**
+
+1. `configs/round1_hotpotqa_ablation_no_tcpb.yaml`: `peer_update_enabled: false`, caps `14/60/8`, gate forced-forward on.
+2. `configs/round1_hotpotqa_ablation_no_gate.yaml`: `decomposer_force_forward_enabled: false`, caps `14/60/8`, peer update on.
+3. `configs/round1_hotpotqa_ablation_evidence.yaml`: caps `40/80/12`, both TCPB and gate on — maps to Table 2 **+ evidence window enlarged** row (different F1), not the refreshed-baseline row.
+
+**Conclusion**: Two independent knob differences vs the shared 14/60/8 regime; identical EM/F1/Tok for baseline / −TCPB / −gate is **not** explained by a single duplicated run of one config. **Favors (b)** weak-backbone absorption / true null; aligns with existing Table 2 caption in `edo_paper.tex`. E-014 remains the cross-backbone check.
+
+**next_action**: None for S-155; E-014 engineer path unchanged.
