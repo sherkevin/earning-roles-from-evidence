@@ -114,12 +114,12 @@ def load_interim_single_seed() -> pd.DataFrame:
         "ci_low": float("nan"),
         "ci_high": float("nan"),
         "paired_p": float("nan"),
-        "mean_token_a": s1.get("avg_tokens_per_sample", float("nan")),
-        "mean_token_b": s2.get("avg_tokens_per_sample", float("nan")),
+        "mean_token_a": s1.get("api_total_tokens_per_sample", s1.get("avg_tokens_per_sample", float("nan"))),
+        "mean_token_b": s2.get("api_total_tokens_per_sample", s2.get("avg_tokens_per_sample", float("nan"))),
         "mean_delta_token_pct": (
-            (s2.get("avg_tokens_per_sample", 0) - s1.get("avg_tokens_per_sample", 0))
-            / s1.get("avg_tokens_per_sample", 1) * 100.0
-            if s1.get("avg_tokens_per_sample") else float("nan")
+            (s2.get("api_total_tokens_per_sample", 0) - s1.get("api_total_tokens_per_sample", 0))
+            / s1.get("api_total_tokens_per_sample", 1) * 100.0
+            if s1.get("api_total_tokens_per_sample") else float("nan")
         ),
     }])
 
