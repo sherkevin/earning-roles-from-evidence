@@ -14,7 +14,7 @@ Reads from:
   - artifacts/external_baselines/mad/r41_smoke_*/metrics.json
   - artifacts/external_baselines/marag/r41_smoke_*/metrics.json
   - artifacts/external_baselines/reagent/r41c_w3_n5/metrics.json (R41c result)
-  - artifacts/external_baselines/{mad,marag,reagent}/r41b_n50_*/metrics.json (when watcher fires)
+  - artifacts/external_baselines/{mad,marag,reagent}/r41b_n50*/metrics.json (n=50 batches; * may be empty)
   - artifacts/round2_gpt41mini_stage2_fullval/run_*_seed42/edo_stage2_chain/metrics.json
   - artifacts/round2_gpt41mini_stage2_fullval/run_*_seed42/fixed_peer_calibrated/metrics.json
 
@@ -76,9 +76,9 @@ def collect_rows() -> list[_Row]:
         "artifacts/external_baselines/mad/r41_smoke_*/metrics.json",
         "artifacts/external_baselines/marag/r41_smoke_*/metrics.json",
         "artifacts/external_baselines/reagent/r41c_w3_n5/metrics.json",
-        "artifacts/external_baselines/mad/r41b_n50_*/metrics.json",
-        "artifacts/external_baselines/marag/r41b_n50_*/metrics.json",
-        "artifacts/external_baselines/reagent/r41b_n50_*/metrics.json",
+        "artifacts/external_baselines/mad/r41b_n50*/metrics.json",
+        "artifacts/external_baselines/marag/r41b_n50*/metrics.json",
+        "artifacts/external_baselines/reagent/r41b_n50*/metrics.json",
         # R41d MuSiQue matrix outputs (5 systems under one timestamped dir)
         "artifacts/matrix/musique_n50_*/tcpb_stage2/metrics.json",
         "artifacts/matrix/musique_n50_*/tcpb_stage1/metrics.json",

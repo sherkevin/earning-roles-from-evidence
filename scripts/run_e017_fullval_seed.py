@@ -167,6 +167,19 @@ def main() -> int:
             "Equivalent to setting SKIP_QUOTA_PREFLIGHT=1."
         ),
     )
+    p.add_argument(
+        "--consec-zero-halt",
+        type=int,
+        default=None,
+        help=(
+            "Override ``consecutive_zero_halt_threshold`` passed to the "
+            "RoundRunner (E-020.2 silent-corruption guard). Default (when "
+            "not set) inherits from yaml config or runner default (50). "
+            "Set to 0 to disable (only recommended for unit tests that "
+            "deliberately produce all-F1=0 samples). Production fullval "
+            "batches should leave this unset."
+        ),
+    )
     args = p.parse_args()
 
     # E-020.3 pre-flight guard (after argparse so --skip-preflight works).
@@ -194,6 +207,13 @@ def main() -> int:
     cfg["sample_size"] = len(rows)
     cfg["n_workers"] = args.workers
     cfg["progress_every"] = max(50, args.n // 20)
+    if args.consec_zero_halt is not None:
+        cfg["consecutive_zero_halt_threshold"] = int(args.consec_zero_halt)
+        print(
+            f"[e017] consecutive_zero_halt_threshold = "
+            f"{cfg['consecutive_zero_halt_threshold']} (CLI override)",
+            flush=True,
+        )
 
     if args.run_dir:
         method_dir = Path(args.run_dir)

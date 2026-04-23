@@ -24,6 +24,10 @@ alwaysApply: false
 > **何时调用本规则**：当 sprint 中需要 dev iteration（split prompt 调试避免烧 newapi 配额）/ open-weights ablation 上下文 / 或 Stage-2 任何 GPU-bound 推理时。**禁止**用本地 deploy model 替换 canonical `gpt-4.1-mini` 主线（per `experiment.md §1.3` 不混模型社会 — 仅可用作 supplementary appendix）。
 >
 > **未来扩展激活记录追加位置**：本节末用 dated bullet 追加（如 `> 2026-MM-DD: <event>`），不删历史。
+>
+> `> 2026-04-23`：用户规定**代码与仓库同步优先用 Git**（本地 `git push` → 远端仓库目录内 `git pull`），替代高频 SCP/SSHFS 手工拷文件；远端对 `github.com` 的 ICMP 与 HTTPS 连通已由 engineer 探活 ✅（见 **RULE 1A**）。
+>
+> `> 2026-04-23`：**数据集与模型权重**默认在**服务器本地下载**；大文件（含模型参数）**禁止进 GitHub**，须 **`.gitignore`**；**仅当**远端因网络无法拉取时，才在本地下载 → **上传到服务器** → **校验远端已有完整数据** → **删除本地副本**以节省本机磁盘（见 **RULE 1B**）。
 
 ---
 
@@ -37,13 +41,44 @@ Remote Root: /media/data3/dengkw
 Identity Key (Local): school (Use -i school for SSH/SCP commands)
 
 [ROLE & OBJECTIVE]
-You operate in a hybrid environment. While you edit files on the local mount (SSHFS), all compute-intensive tasks and model executions must be offloaded to the remote server. You must act autonomously to bridge the local and remote environments without manual user intervention.
+You operate in a hybrid environment. Edit and commit code **locally**; sync the repo to the server via **Git** (RULE 1A) before remote runs. **Datasets and model weights** follow **RULE 1B** (server-first download; GitHub only for code/small config). Optional SSHFS mount is allowed but not required. All compute-intensive tasks and model executions must be offloaded to the remote server. You must act autonomously to bridge the local and remote environments without manual user intervention.
 
 [RULE 1: SELECTIVE ASSET SYNCHRONIZATION]
 
-Model-Centric Sync: Only push files essential for model architecture, training logic, and environment configuration (e.g., .py, .yaml, .json, requirements.txt).
+**Preferred (code + tracked config):** Use **RULE 1A (Git)** — local `git push`, then remote `git pull` in the server checkout. Reserve SCP for one-off binaries or files that are intentionally outside Git.
 
-Traffic Optimization: Never push datasets, heavy logs, or model checkpoints unless explicitly requested. Always assume the data already exists in the appropriate data directories within the Remote Project Root.
+Model-Centric Sync: Only push files essential for model architecture, training logic, and environment configuration (e.g., .py, .yaml, .json, requirements.txt) — ideally as **commits** to the canonical remote, not as ad-hoc copies.
+
+Traffic Optimization: Never push datasets, heavy logs, or model checkpoints to **Git** or GitHub unless explicitly requested (they belong on the server disk per **RULE 1B**). Always assume the data already exists in the appropriate data directories within the Remote Project Root when the workflow allows. Keep large artifacts **gitignored** so `git pull` on the server stays fast and safe.
+
+[RULE 1A: GIT-BASED REPOSITORY SYNC (PREFERRED)]
+
+When the user (or sprint) needs the remote server to run the **same codebase state** as local:
+
+1. **Local**: finish edits → `git commit` → `git push` to the canonical remote (e.g. GitHub).
+2. **Remote** (non-interactive, after RULE 3 template): `cd /media/data3/dengkw/<repo_dir> && git pull && echo __SSH_OK__` (use the actual clone path, e.g. `/media/data3/dengkw/idea04` if that is where the repo lives).
+3. **Then** run training/inference commands in the same `ssh` invocation or a follow-up `ssh` with `cd` into that repo root.
+
+**Why:** One reproducible revision per experiment, fewer SCP sessions, less SSH "noise" than copying trees by hand.
+
+**Connectivity note (lab host):** As of **2026-04-23**, `viplabserver12` reached `github.com` over **ICMP** and **HTTPS** (`curl -I https://github.com` → HTTP 200). If remotes use **SSH** (`git@github.com:`), ensure a deploy key or user key is configured on the server separately; HTTPS remotes work out of the box once credentials/token are available on the server.
+
+**Discipline:** Same as RULE 1 — do not commit huge `artifacts/`, checkpoints, or datasets; rely on `.gitignore` and server-local data paths.
+
+[RULE 1B: DATASETS & MODEL WEIGHTS (SERVER-FIRST; GITIGNORE; FALLBACK LOCAL → UPLOAD → DELETE)]
+
+**Preferred:** Obtain **datasets** and **model checkpoints / parameters** by downloading **directly on the remote server** into agreed directories under `/media/data3/dengkw/` (or the project’s documented data layout). Use whatever non-interactive tools fit the source (`wget`, `curl`, `huggingface-cli`, vendor CLIs, etc.). This keeps large bytes off the laptop and out of Git.
+
+**Git / GitHub:** Model weights and large corpora MUST **not** be synced via the Git remote (including **Git LFS** on GitHub). Keep them **`.gitignore`**; version only code, prompts, and small configs. If the user later explicitly adopts LFS or another artifact store, document it in-repo; until then use server disk + RULE 1B.
+
+**Fallback when remote download fails** (server egress blocked, flaky WAN, vendor throttling, etc.):
+
+1. Download the asset **locally** to a **staging path** that is **not** tracked by Git (e.g. a gitignored scratch dir or temp folder).
+2. Upload to the server with **`scp`** or **`rsync`** into the target server path (same layout you would have used for a server-side download).
+3. **Verify on the server before deleting anything locally** (RULE 5): e.g. `ls -la`, byte size vs local, and/or `sha256sum`/`md5sum` match; append `&& echo __SSH_OK__`. If verification fails, **do not** delete the local copy; diagnose and re-transfer.
+4. **After successful verification:** delete the **local** staging copy immediately so the workstation does not hoard multi-GB files. **Do not** delete the remote files. Optionally record remote path + checksum in `docs/coordination/implementation_log.md` for audit.
+
+**Anti-pattern:** Committing or pushing large binaries to GitHub “because sync is easier” — forbidden; use this rule instead.
 
 [RULE 2: EXECUTION ROUTING & PATH MAPPING]
 
@@ -60,7 +95,7 @@ Single-Shot Execution: Every interaction with the remote server must use a non-i
 Standard Command Template: Use the following format for all remote operations. You must ALWAYS cd into the Remote Project Root first:
 ssh -i school -o BatchMode=yes -o StrictHostKeyChecking=no dengkw@10.103.16.12 "cd /media/data3/dengkw && [command]"
 
-File Transfer: Use scp for reading/writing remote files:
+File Transfer: Prefer **Git** (RULE 1A) for repo contents. Use **`scp` / `rsync`** for (a) ad-hoc small files not in Git, or (b) **RULE 1B** fallback uploads of datasets/model weights when the server cannot download them directly:
 scp -i school [local_path] dengkw@10.103.16.12:/media/data3/dengkw/[relative_remote_path]
 
 Fail-Fast Policy: If an SSH command prompts for a password or hangs, terminate the process immediately and report the connection or permission error. Do not attempt to "guess" passwords.
@@ -82,3 +117,4 @@ After ANY SSH/SCP command, the engineer must verify success by:
 3. **For file transfer (scp)**: after upload, immediately verify with `ssh ... "ls -la /media/data3/dengkw/<relative_path>"` and check size matches local file.
 4. **For background launches (nohup)**: after launch, sleep 5s then `tail -n 5 train.log` to confirm the process actually started writing log (not silently dead).
 5. **Log all SSH/SCP invocations** to `docs/coordination/implementation_log.md` with: full command, exit code, sentinel hit/miss, and stdout tail. This makes the dormant→active transition reproducible and auditable.
+6. **For RULE 1B fallback (local download → upload):** require successful remote verification (item 3) **before** deleting the local staging file; after deletion, confirm the local path is gone (or size is zero) so disk is actually reclaimed.

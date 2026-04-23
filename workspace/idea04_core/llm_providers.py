@@ -125,6 +125,22 @@ def normalize_llm_config(raw: dict[str, Any]) -> dict[str, Any]:
     out["newapi_model"] = list(nam) if isinstance(nam, list) else []
     out["newapi_status"] = str(na.get("_status", "")).strip()
 
+    # local_vllm (R42 E-6: R41h emergence pivot backbone) — vLLM OpenAI-compat
+    # server running on the lab server's idle RTX 3090s hosting
+    # Phi-4-mini-instruct + SmolLM3-3B. Base URL is typically
+    # http://localhost:8001/v1; vllm accepts any key by default so 'EMPTY' is
+    # the conventional placeholder. Routing: handled by _is_local_vllm_model
+    # match against the models list in llm.json.
+    lv_block = raw.get("local_vllm")
+    lv = lv_block if isinstance(lv_block, dict) else {}
+    base_lv_raw = (lv.get("base_url") or lv.get("url") or "").strip().rstrip("/")
+    out["local_vllm_url"] = _ensure_v1_suffix(base_lv_raw)
+    out["local_vllm_key"] = lv.get("key", "EMPTY")
+    out["local_vllm_chat_model"] = lv.get("chat_model", "phi4-mini")
+    lvm = lv.get("models")
+    out["local_vllm_model"] = list(lvm) if isinstance(lvm, list) else []
+    out["local_vllm_status"] = str(lv.get("_status", "")).strip()
+
     return out
 
 
@@ -162,6 +178,25 @@ def _is_newapi_routable(model_name: str, cfg: dict[str, Any]) -> bool:
     if isinstance(listed, list) and len(listed) > 0:
         return model_name in listed
     return False
+
+
+def _is_local_vllm_routable(model_name: str, cfg: dict[str, Any]) -> bool:
+    """True iff local_vllm block is present (url set) and model is in its catalogue.
+
+    R42 E-6: local_vllm routes phi4-mini / smollm3-3b etc. to the server-side
+    vLLM OpenAI-compatible API. The key is conventionally 'EMPTY' (vllm
+    accepts any); the URL must be set in llm.json or LLM_BASE_URL env.
+    """
+    if not cfg.get("local_vllm_url"):
+        return False
+    listed = cfg.get("local_vllm_model", [])
+    if isinstance(listed, list) and len(listed) > 0:
+        return model_name in listed
+    # Fallback: route any model name starting with 'phi4' or 'smollm' or 'qwen25'
+    # when no explicit catalogue is provided (defensive default; should rarely fire
+    # because llm.json always populates the models list).
+    ml = (model_name or "").lower()
+    return ml.startswith(("phi4", "smollm", "qwen25", "qwen3"))
 
 
 def _newapi_is_primary(cfg: dict[str, Any]) -> bool:
@@ -271,6 +306,17 @@ def resolve_llm_chat_target(model_name: str, cfg: dict[str, Any] | None = None) 
             model = str(cfg.get("newapi_chat_model") or "gpt-4.1-mini")
         return LLMChatTarget("newapi", chat_url, api_key, model, None)
 
+    def local_vllm_target(m: str) -> LLMChatTarget:
+        """R42 E-6: route to on-server vllm OpenAI-compat endpoint."""
+        env_base = os.environ.get("LLM_BASE_URL")
+        base_url = _ensure_v1_suffix(env_base) if env_base else cfg.get("local_vllm_url", "")
+        api_key = os.environ.get("LLM_API_KEY") or cfg.get("local_vllm_key", "EMPTY") or "EMPTY"
+        chat_url = f"{base_url.rstrip('/')}/chat/completions"
+        model = m
+        if not model or not _is_local_vllm_routable(model, cfg):
+            model = str(cfg.get("local_vllm_chat_model") or "phi4-mini")
+        return LLMChatTarget("local_vllm", chat_url, api_key, model, None)
+
     def nvidia_target(m: str) -> LLMChatTarget:
         base_url = (os.environ.get("LLM_BASE_URL") or cfg.get("nvidia_url", "")).rstrip("/")
         api_key = os.environ.get("LLM_API_KEY") or cfg.get("nvidia_key", "")
@@ -307,9 +353,16 @@ def resolve_llm_chat_target(model_name: str, cfg: dict[str, Any] | None = None) 
         return gptplus5_target(effective_model)
     if force_backend == "newapi":
         return newapi_target(effective_model)
+    if force_backend == "local_vllm":
+        return local_vllm_target(effective_model)
     if force_backend == "zhipu":
         return zhipu_target(effective_model)
 
+    # R42 E-6: local_vllm is checked BEFORE nvidia/oversea/newapi so that
+    # an on-server vllm deployment (Phi-4-mini / SmolLM3) wins even when
+    # the same cached model name could also match another provider.
+    if _is_local_vllm_routable(effective_model, cfg):
+        return local_vllm_target(effective_model)
     if _is_nvidia_routable(effective_model, cfg):
         return nvidia_target(effective_model)
     # Auto-route oversea-style ids to newapi when newapi has been promoted to

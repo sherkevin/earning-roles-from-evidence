@@ -83,24 +83,32 @@ MARAG_PID=$!
 echo "${MARAG_PID}" > "${MARAG_OUT}/.pid"
 log "  MA-RAG PID=${MARAG_PID}"
 
-# E-018 ReAgent smoke DISABLED in this watcher run.
-# Reason: upstream api_call() in backend/api.py has `'str' object has no
-# attribute 'choices'` bug when json_format=True is used with the newapi
-# endpoint + openai==2.32.0 (observed in R41b pilot PID 335434 at 22:30).
-# Moderator2.generate_o1_response exclusively uses json_format=True so
-# every step fails. Needs upstream patch (either pin older openai or
-# rewrite the json_format path).
-# See `docs/paper/e018_reagent_adapter_inspection.md` §11 (added in R41b).
-REAGENT_PID="disabled"
-log "  ReAgent: DISABLED (upstream json_format bug; see e018_reagent_adapter_inspection.md §11)"
+# E-018 ReAgent smoke RE-ENABLED in R41c after W3 workaround landed
+# (replaces ReAgent's openai-SDK-based api_call with our urllib-based
+# llm_client.call_llm). R41c n=5 pilot passed: 5/5 samples, F1=0.16
+# (format-penalized but semantically correct). See `e018_reagent_adapter_inspection.md`
+# §11.3 W3 + implementation_log.md [e_018_reagent_w3_workaround_20260420].
+log "launching ReAgent n=50 (W3 patched, --no-mas)"
+nohup external_baselines/reagent/venv_reagent/bin/python \
+    external_baselines/reagent/run_reagent_hotpotqa.py \
+      --samples-jsonl artifacts/round2_gpt41mini_fullval/run_20260414_135408/fixed_peer_calibrated/raw_inputs.jsonl \
+      --n 50 \
+      --out-dir "${REAGENT_OUT}" \
+      --model gpt-4.1-mini \
+      --no-mas \
+    > logs/r41_smoke/reagent_n50_${TS}.log 2>&1 &
+REAGENT_PID=$!
+echo "${REAGENT_PID}" > "${REAGENT_OUT}/.pid"
+log "  ReAgent PID=${REAGENT_PID}"
 
-# Step 4: wait for the 2 live smokes (MAD + MA-RAG) metrics.json
-log "waiting for 2 n=50 smokes (MAD + MA-RAG) to produce metrics.json..."
+# Step 4: wait for the 3 live smokes metrics.json
+log "waiting for 3 n=50 smokes (MAD + MA-RAG + ReAgent) to produce metrics.json..."
 while true; do
   MAD_DONE=$([ -f "${MAD_OUT}/metrics.json" ] && echo DONE || echo running)
   MR_DONE=$([ -f "${MARAG_OUT}/metrics.json" ] && echo DONE || echo running)
-  log "  MAD=${MAD_DONE} MA-RAG=${MR_DONE} (ReAgent disabled)"
-  if [ "${MAD_DONE}" = DONE ] && [ "${MR_DONE}" = DONE ]; then
+  RA_DONE=$([ -f "${REAGENT_OUT}/metrics.json" ] && echo DONE || echo running)
+  log "  MAD=${MAD_DONE} MA-RAG=${MR_DONE} ReAgent=${RA_DONE}"
+  if [ "${MAD_DONE}" = DONE ] && [ "${MR_DONE}" = DONE ] && [ "${RA_DONE}" = DONE ]; then
     break
   fi
   sleep 180
@@ -108,8 +116,8 @@ done
 
 # Step 5: final summary
 log "========================================================"
-log "2 n=50 smokes COMPLETE. Summary:"
-for dir_name in "${MAD_OUT}" "${MARAG_OUT}"; do
+log "3 n=50 smokes COMPLETE. Summary:"
+for dir_name in "${MAD_OUT}" "${MARAG_OUT}" "${REAGENT_OUT}"; do
   if [ -f "${dir_name}/metrics.json" ]; then
     python3 -c "
 import json

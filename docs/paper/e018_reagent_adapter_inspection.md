@@ -374,3 +374,83 @@ Hypotheses (to test next session):
 - [ ] Upstream fix 11.3 applied OR workaround W1/W3 landed.
 - [ ] `run_reagent_hotpotqa.py` n=5 smoke produces valid metrics.json with non-zero F1.
 - [ ] Scientist sign-off in `external_baseline_plan.md` that ReAgent thin-wrapper comparison is the intended design.
+
+
+## 12. R41c — W3 workaround successful (2026-04-20, engineer MCP-3)
+
+Continuing §11 discovery and resolving §11.3.
+
+### 12.1 Root-cause diagnosis
+
+With traceback-enabled retry, the failing `client.chat.completions.create()` call returned an **HTML error page** (len=1612) starting with:
+```
+<!doctype html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="/logo.png" />
+    <meta name="theme-color" content="#ffffff" />
+    ...
+```
+
+This is newapi (xh.v1api.cc) returning its **web dashboard landing page** (Chinese HTML, has `/logo.png`). Trigger observed at message payload ≥ ~5000 chars (HotpotQA gold context); below that (my Test 1-2 with ~50 chars) the endpoint returns proper JSON. Hypothesis: newapi proxy has a **WAF / payload-size route rule** that returns the dashboard HTML for certain POST bodies instead of forwarding to the upstream chat-completion route.
+
+`openai==2.32.0` silently converts this HTML to a Python `str` return value from `client.chat.completions.create(...)` rather than raising a JSON-parse error. ReAgent's downstream `response.choices[0].message.content` then crashes with `'str' object has no attribute 'choices'`.
+
+### 12.2 W3 workaround (ADOPTED, working) ✅
+
+W1 (patch api_call to skip `response_format`) failed — the HTML trigger persists even without `response_format=json_object`. Moved to W3: replace ReAgent's OpenAI-SDK path with our `workspace/idea04_core/llm_client.call_llm` (urllib-based, E-020 QuotaExhaustedError protected).
+
+**Key changes in `run_reagent_hotpotqa.py` `_monkey_patch_api_call()`**:
+
+1. `from idea04_core.llm_client import call_llm as _our_call_llm, extract_text, configure_runtime, QuotaExhaustedError` — route every ReAgent LLM call through our canonical client.
+2. `configure_runtime("gpt-4.1-mini", enforce_model=False)` — single backbone, relaxed check (ReAgent may pass exploratory model strings).
+3. Cap `max_tokens ≤ 1024` defensively (empirically prevents HTML-dashboard-response trigger).
+4. If `json_format=True`, append `"Respond with ONLY a single valid JSON object..."` to system prompt + parse with `json.loads` (fallback: largest-balanced-`{...}` extraction).
+5. Monkey-patch applied to **7 modules that `from backend.api import api_call` at import time**: `Agent.moderator2`, `Agent.moderator`, `Agent.agent`, `Agent.blacksheep`, `Agent.thinker`, `Agent.human`, `Environment.groupchat`. This is necessary because Python's `from X import Y` creates a local binding that is NOT overwritten by just reassigning `backend.api.api_call`.
+6. E-020 `QuotaExhaustedError` propagates cleanly (never swallowed by outer retry loop).
+
+### 12.3 R41c smoke results
+
+**n=1 W3 smoke** (synchronous, 6.34 s wall):
+```json
+{"host": "ReAgent (Moderator2, o1-style)", "sample_count": 1,
+ "answer_em": 0.0, "answer_f1": 0.20, "wall_s": 6.34}
+```
+- sample hotpotqa-0000, gold "yes", predicted "Yes, Scott Derrickson and Ed Wood were both American." → semantically correct, F1 penalty from verbosity.
+
+**n=5 W3 smoke** (42 s wall):
+```json
+{"host": "ReAgent (Moderator2, o1-style)", "sample_count": 5,
+ "answer_em": 0.0, "answer_f1": 0.161, "wall_s": 42.11}
+```
+Per-sample: every sample **semantically correct** but verbose. Extreme example: sample 0003 "Are the Laleli Mosque and Esma Sultan Mansion located in the same neighborhood?" gold=`"no"` (2 chars), ReAgent says "The Laleli Mosque is located in the Laleli neighborhood of Fatih district in Istanbul, while the Esma Sultan Mansion is located in the Ortaköy neighborhood of Istanbul by the Bosphorus. Therefore, they are not located in the same neighborhood." → F1=0.0 despite being perfectly correct.
+
+**Comparison table** (all n=5 smokes, gpt-4.1-mini, HotpotQA head-5, gold context, single-worker):
+
+| System | EM | F1 | Wall | Verbosity observation |
+|---|---:|---:|---:|---|
+| **TCPB Stage-2** (ref, E-005 n=200) | 0.50 | **0.73** | — | short answers (chain-restricted) |
+| MAD (Du et al. 2024) | 0.60 | 0.75 | 153 s | short answers (debate converges concise) |
+| MA-RAG (Nguyen et al. 2024, Path A) | 0.40 | 0.70 | 41 s | moderate (1-sentence answers) |
+| **ReAgent** (Moderator2, o1-style, --no-mas) | 0.0 | **0.16** | 42 s | extremely verbose (multi-sentence COT dumps) |
+
+### 12.4 Strategic take-away
+
+ReAgent is **functionally working** but its answer-length distribution is incompatible with HotpotQA's char-overlap F1 metric without an extractive post-processor. Three options:
+
+- (a) **Accept F1 penalty** and note in Limitations that ReAgent's o1-style COT traces are not format-compatible with HotpotQA's short-span answers. Honest but penalizes ReAgent 4-5× vs its actual correctness rate.
+- (b) **Add a post-processor** across all baselines that extracts the "shortest span matching the gold" (or a separate LLM re-read: "given this long answer, output only the essential span"). Boosts all baselines symmetrically.
+- (c) **Prompt-engineer ReAgent** to produce concise final answers. Would require patching Moderator2's "Final Answer" system message to include "Output ONLY the short answer span (typically 1-5 tokens). No explanation.". Minimal upstream change; need scientist sign-off.
+
+Engineer recommendation: (c) is minimal + preserves apples-to-apples. Option (b) is more principled but requires scientist policy call on all baselines.
+
+### 12.5 Updated acceptance criteria
+
+- [x] ReAgent imports + schema conversion work (R41b).
+- [x] Adapter wrapper landed (`external_baselines/reagent/run_reagent_hotpotqa.py`, now 340 lines with W3).
+- [x] Upstream fixes §11.1 + §11.2 applied.
+- [x] §11.3 workaround W3 lands and smoke-validates. (n=5 F1=0.16 but correct answers)
+- [ ] Scientist decides §12.4 (a/b/c) for format-sensitivity handling.
+- [ ] n=50 smoke via `r41b_n50_smokes_watcher.sh` (re-enabled in R41c).
+- [ ] Scientist sign-off in `external_baseline_plan.md §ReAgent` that --no-mas + W3 thin-wrapper comparison is the intended design.

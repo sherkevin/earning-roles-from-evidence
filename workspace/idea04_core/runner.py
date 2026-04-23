@@ -1,5 +1,6 @@
 import csv
 import json
+import os
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
@@ -186,6 +187,20 @@ class RoundRunner:
                 f"{len(completed_ids)} done, "
                 f"{len(samples) - len(completed_ids)} remaining",
                 flush=True,
+            )
+            # R41g robustness fix: rewrite sibling jsonls to drop any orphan
+            # rows whose task_id is NOT in the ckpt. An orphan appears when
+            # the process crashes AFTER writing a sibling row but BEFORE the
+            # corresponding ckpt line (the ordering in `_after_sample` writes
+            # sibling first, then ckpt). Without cleanup, resume would append
+            # new rows yielding a jsonl with [valid pre-crash rows + orphans +
+            # valid post-resume rows], breaking downstream paired-stats
+            # alignment (validate_logs + paired_bootstrap_ci ingest by
+            # line-order and assume 1:1 with ckpt).
+            self._cleanup_orphan_sibling_rows(
+                run_dir=run_dir,
+                completed_ids=completed_ids,
+                is_stage2=(method_name == "edo_stage2_chain"),
             )
 
         # ----------------------------------------------------------------
@@ -528,6 +543,26 @@ class RoundRunner:
                     f_belief_snap.flush()
                 f_ckpt.write(json.dumps(pred, ensure_ascii=False) + "\n")
                 f_ckpt.flush()
+                # R42 robustness: fsync the ckpt handle so the kernel commits
+                # the line to disk BEFORE we return. flush() alone only empties
+                # the Python-level buffer; without fsync, a kernel panic / OS
+                # crash could lose a ckpt line that was "flushed" but still in
+                # the OS write-back cache. Since ckpt is the single source of
+                # truth for resume (`_after_sample` reads `_ckpt_preds.jsonl`
+                # to build `completed_ids`), any ckpt loss re-runs already-done
+                # samples + produces orphan sibling rows. Cost: ~1-5 ms per
+                # sample on SSD; for 7405 × 8 workers wall-time impact is well
+                # below 1 min. Sibling jsonl fsyncs are intentionally omitted —
+                # a sibling loss merely triggers R41g `_cleanup_orphan_sibling
+                # _rows` on the next resume (sample will re-run and re-emit).
+                try:
+                    os.fsync(f_ckpt.fileno())
+                except OSError:
+                    # Not all platforms / filesystems support fsync on the
+                    # specific handle (e.g., some NFS mounts, some Windows
+                    # edge cases). Fall through: flush() has still been
+                    # called; this is best-effort not fatal.
+                    pass
 
             # Update counters
             halt_triggered = False
@@ -728,6 +763,139 @@ class RoundRunner:
     # ------------------------------------------------------------------
     # Helpers
     # ------------------------------------------------------------------
+
+    # ------------------------------------------------------------------
+    # R41g: orphan-sibling-row cleanup on resume
+    # ------------------------------------------------------------------
+    _SIBLING_FILES_STAGE1: tuple[str, ...] = (
+        "routing_traces.jsonl",
+        "handoff_packets.jsonl",
+        "competence_snapshots.jsonl",
+        "raw_model_outputs.jsonl",
+    )
+    _SIBLING_FILES_STAGE2_EXTRA: tuple[str, ...] = (
+        "task_tree.jsonl",
+        "audit_events.jsonl",
+        "neighbor_belief_snapshots.jsonl",
+    )
+
+    @classmethod
+    def _cleanup_orphan_sibling_rows(
+        cls,
+        run_dir: Path,
+        completed_ids: set[str],
+        is_stage2: bool,
+    ) -> None:
+        """Rewrite sibling jsonls on resume to drop rows whose ``task_id`` is
+        not in ``completed_ids``.
+
+        Purpose: before R41g, `_after_sample` wrote sibling rows BEFORE the
+        ckpt line inside the same write_lock; a mid-write crash would leave
+        orphan sibling rows with no corresponding ckpt entry. Resume would
+        then append new rows producing a jsonl with orphans interleaved,
+        breaking `validate_logs.py` + `paired_bootstrap_ci.py` which expect
+        1:1 alignment between ckpt and sibling rows (by task_id).
+
+        Strategy: rewrite each sibling jsonl atomically (tmp file + replace),
+        keeping only rows whose task_id is in the ckpt completed_ids set.
+        Idempotent: if no orphans exist, the rewrite is a no-op-in-effect.
+
+        Called from `run()` during the `is_resume` branch only; fresh runs
+        skip this path because sibling files are opened in write-mode ("w").
+        """
+        files = list(cls._SIBLING_FILES_STAGE1)
+        if is_stage2:
+            files += list(cls._SIBLING_FILES_STAGE2_EXTRA)
+
+        n_orphans_total = 0
+        n_missing_sibling_warnings = 0
+        for fname in files:
+            fpath = run_dir / fname
+            if not fpath.is_file():
+                continue
+            kept: list[str] = []
+            kept_ids: set[str] = set()
+            dropped = 0
+            with fpath.open(encoding="utf-8") as fh:
+                for line in fh:
+                    stripped = line.strip()
+                    if not stripped:
+                        continue
+                    try:
+                        obj = json.loads(stripped)
+                    except Exception:
+                        # Malformed line (unlikely; but keep paranoid) — drop.
+                        dropped += 1
+                        continue
+                    task_id = obj.get("task_id", "")
+                    if task_id in completed_ids:
+                        kept.append(stripped)
+                        kept_ids.add(task_id)
+                    else:
+                        dropped += 1
+
+            # R42 FU-3: bidirectional detection. Under the current write-order
+            # (sibling → ckpt) a missing-sibling for a committed sample SHOULD
+            # NOT occur: if the sibling was never written, ckpt never advanced
+            # because ckpt writes happen AFTER sibling flush in the same
+            # write_lock. Any missing-sibling is therefore a symptom of a
+            # future write-order change OR a latent bug (e.g., sibling file
+            # truncated by external tool between runs). Emit WARNING + counter
+            # so operators can diagnose; do NOT fail the resume — sample is
+            # already committed in ckpt and metrics will still compute.
+            missing_ids = completed_ids - kept_ids
+            if missing_ids:
+                n_missing_sibling_warnings += len(missing_ids)
+                preview = ", ".join(sorted(missing_ids)[:3])
+                print(
+                    f"[runner._cleanup_orphan_sibling_rows] WARNING: "
+                    f"{fname}: {len(missing_ids)}/{len(completed_ids)} "
+                    f"committed samples have no sibling rows (likely "
+                    f"write-order bug or external truncation). Preview: "
+                    f"{preview}",
+                    flush=True,
+                )
+
+            if dropped == 0:
+                continue   # no orphans → no rewrite needed
+            n_orphans_total += dropped
+            tmp = fpath.with_suffix(fpath.suffix + ".r41g_tmp")
+            with tmp.open("w", encoding="utf-8") as fh:
+                for line in kept:
+                    fh.write(line + "\n")
+                fh.flush()
+                # R42 FU-2: fsync the tmp file BEFORE the atomic rename so
+                # any crash between rename-to-fpath and the final disk flush
+                # does not leave fpath with empty OS-buffered content. rename
+                # is atomic at the inode level but content is only durable
+                # once fsynced. Without this, an engineer-level SIGKILL right
+                # after the rename could leave an empty file masquerading as
+                # the cleaned sibling.
+                try:
+                    os.fsync(fh.fileno())
+                except OSError:
+                    # Best-effort — NFS / some Windows paths don't support
+                    # fsync on arbitrary handles. flush() is still called.
+                    pass
+            tmp.replace(fpath)
+            print(
+                f"[runner._cleanup_orphan_sibling_rows] {fname}: "
+                f"kept {len(kept)} / dropped {dropped} orphan rows",
+                flush=True,
+            )
+        if n_orphans_total:
+            print(
+                f"[runner._cleanup_orphan_sibling_rows] total orphan rows "
+                f"dropped across sibling jsonls: {n_orphans_total}",
+                flush=True,
+            )
+        if n_missing_sibling_warnings:
+            print(
+                f"[runner._cleanup_orphan_sibling_rows] total missing-"
+                f"sibling task_id-entries across sibling jsonls: "
+                f"{n_missing_sibling_warnings} (see WARNINGs above)",
+                flush=True,
+            )
 
     def _replay_competence(
         self,

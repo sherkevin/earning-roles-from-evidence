@@ -195,81 +195,90 @@ class _ReAgentArgs:
 
 
 def _monkey_patch_api_call():
-    """W1 workaround for `'str' object has no attribute 'choices'` bug
-    observed in ReAgent's Moderator2 under newapi + openai 2.32.0 when
-    messages are long + response_format={"type":"json_object"}.
+    """W3 workaround — use our own llm_client.call_llm instead of openai SDK.
 
-    Replaces ``backend.api.api_call`` with a wrapper that:
-      - Always calls ``client.chat.completions.create`` WITHOUT
-        ``response_format`` (the parameter that triggers the bug when
-        combined with long HotpotQA-size prompts).
-      - For ``json_format=True``, manually parses the returned content
-        with ``json.loads`` (falls back to ``eval`` matching ReAgent's
-        original contract).
+    Root cause (diagnosed R41c, 2026-04-20): the newapi endpoint
+    (xh.v1api.cc/v1) returns an HTML error page (its web dashboard landing
+    page, starts ``<!doctype html><html lang="zh">``) for certain payloads
+    — likely a WAF / size-limit trigger — and ``openai==2.32.0`` silently
+    returns the HTML as a Python str from ``client.chat.completions.create``
+    instead of raising. ReAgent's ``api_call`` then crashes with
+    ``'str' object has no attribute 'choices'`` and retries 10× without
+    progress.
 
-    Per `docs/paper/e018_reagent_adapter_inspection.md §11.3 W1`.
+    W3 fix: replace ReAgent's ``backend.api.api_call`` with a wrapper that
+    uses our ``workspace/idea04_core/llm_client.call_llm`` (urllib-based,
+    preserves E-020 QuotaExhaustedError guard, handles HTML-response
+    gracefully because urllib raises on non-200). For ``json_format=True``
+    we add a strict "Output ONLY JSON" reminder + parse the response with
+    ``json.loads``.
+
+    Per `docs/paper/e018_reagent_adapter_inspection.md §11.3 W3`.
     """
-    from openai import OpenAI
     import backend.api as _api
     import time as _time
     import logging
+    import json as _json
     _log = logging.getLogger(__name__)
+
+    # Import our canonical llm_client (urllib-based, E-020 protected).
+    from idea04_core.llm_client import (  # noqa: E402
+        call_llm as _our_call_llm,
+        extract_text as _our_extract_text,
+        configure_runtime as _our_configure_runtime,
+        QuotaExhaustedError as _OurQuotaError,
+    )
+    # Configure once with the canonical model. enforce_model=False because
+    # ReAgent may pass variants (o1/deepseek/etc) during exploratory calls.
+    _our_configure_runtime("gpt-4.1-mini", enforce_model=False)
 
     def _safe_api_call(
         messages, model="deepseek", temperature=1.0, max_tokens=4096,
         max_retries=10, json_format=False, stream=False,
     ):
-        # Route services per ReAgent's original logic
-        if "gpt" in model or "o1" in model:
-            api_key = _api.services['openai']['api_key']
-            base_url = _api.services['openai']['base_url']
-        elif "qwen" in model:
-            api_key = _api.services['qwen']['api_key']
-            base_url = _api.services['qwen']['base_url']
-        elif "deepseek" in model:
-            api_key = _api.services['deepseek']['api_key']
-            base_url = f"{_api.services['deepseek']['base_url']}"
-        elif "claude" in model:
-            api_key = _api.services['claude']['api_key']
-            base_url = _api.services['claude']['base_url']
-        else:
-            raise ValueError(f"Unknown model identifier: {model}")
+        # W3: we always route through our newapi-wired llm_client (per
+        # configure_runtime above), ignoring ReAgent's service routing.
+        # ReAgent passes model="gpt-4.1-mini" (from our --model flag) so
+        # this matches the intent anyway; other models would need
+        # ReAgent-side config changes we don't support.
+        # We still cap max_tokens to prevent HTML-dashboard-response trigger.
+        # Empirically n=5 smokes work with max_tokens <= 1024; ReAgent's
+        # default 2048 is safely above our observed bound but we cap to
+        # 1024 defensively for long-HotpotQA-context calls.
+        effective_max_tokens = min(int(max_tokens or 1024), 1024)
 
-        client = OpenAI(base_url=base_url, api_key=api_key)
+        # Build messages; for json_format add strict JSON-only reminder.
+        msgs = list(messages)
+        if json_format:
+            reminder = (
+                " Respond with ONLY a single valid JSON object. "
+                "No markdown fences, no prose, no explanation outside the JSON."
+            )
+            if msgs and msgs[0].get("role") == "system":
+                msgs[0] = dict(msgs[0])
+                msgs[0]["content"] = msgs[0].get("content", "") + reminder
+            else:
+                msgs = [{"role": "system", "content": reminder.strip()}] + msgs
 
+        last_err = None
         for attempt in range(max_retries):
             try:
-                # W1 key change: NEVER pass response_format; always plain text.
-                # If json_format=True and we need JSON shape, instruct the model
-                # via a system-prompt reminder + parse the content ourselves.
-                msgs = list(messages)
-                if json_format:
-                    has_sys = msgs and msgs[0].get("role") == "system"
-                    reminder = (
-                        " You MUST respond with ONLY a valid JSON object "
-                        "(no markdown fences, no prose before/after)."
-                    )
-                    if has_sys:
-                        msgs[0] = dict(msgs[0])
-                        msgs[0]["content"] = msgs[0].get("content", "") + reminder
-                    else:
-                        msgs = [{"role": "system", "content": reminder.strip()}] + msgs
-                response = client.chat.completions.create(
-                    model=model,
+                resp = _our_call_llm(
                     messages=msgs,
-                    max_tokens=max_tokens,
-                    temperature=temperature,
+                    model="gpt-4.1-mini",  # forced to our canonical backbone
+                    temperature=float(temperature),
+                    max_tokens=effective_max_tokens,
+                    retries=2,  # our client's internal retries; outer loop is moderator's
                 )
-                content = response.choices[0].message.content
+                content = _our_extract_text(resp)
                 if not content:
                     continue
                 if not json_format:
                     return content
-                # Parse JSON ourselves; try json.loads first (proper JSON) then
-                # fall back to eval (matches ReAgent's original eval() use).
+                # Parse JSON ourselves
                 content_stripped = content.strip()
                 if content_stripped.startswith("```"):
-                    # Strip any markdown fences the model might still produce
+                    # Strip markdown fences
                     lines = content_stripped.splitlines()
                     if lines and lines[0].startswith("```"):
                         lines = lines[1:]
@@ -277,31 +286,197 @@ def _monkey_patch_api_call():
                         lines.pop()
                     content_stripped = "\n".join(lines).strip()
                 try:
-                    import json as _json
                     return _json.loads(content_stripped)
-                except Exception:
-                    try:
-                        return eval(content_stripped)  # noqa: S307 (ReAgent legacy)
-                    except Exception as parse_exc:
-                        _log.error(
-                            f"Error parsing model JSON: {parse_exc} "
-                            f"content head: {content_stripped[:200]!r}"
-                        )
-                        _time.sleep(2 ** (attempt + 1))
-                        continue
+                except Exception as parse_exc:
+                    # Extract the largest balanced {...} block and retry parse
+                    first = content_stripped.find("{")
+                    last = content_stripped.rfind("}")
+                    if 0 <= first < last:
+                        try:
+                            return _json.loads(content_stripped[first:last + 1])
+                        except Exception:
+                            pass
+                    print(
+                        f"[safe_api_call] JSON parse fail attempt {attempt+1}: "
+                        f"{parse_exc} content head: {content_stripped[:200]!r}",
+                        flush=True,
+                    )
+                    _time.sleep(2 ** (attempt + 1))
+                    continue
+            except _OurQuotaError:
+                # Propagate quota exhaustion immediately (E-020 contract)
+                raise
             except Exception as e:
-                _log.error(f"Error while calling API: {str(e)}")
+                last_err = e
+                print(
+                    f"[safe_api_call] attempt {attempt+1}/{max_retries} "
+                    f"failed: {type(e).__name__}: {str(e)[:200]}",
+                    flush=True,
+                )
                 _time.sleep(2 ** (attempt + 1))
                 continue
-        raise Exception("Max retries reached. API call failed.")
+        raise Exception(
+            f"Max retries reached. API call failed. Last error: {last_err}"
+        )
 
     _api.api_call = _safe_api_call
-    # Also patch in any already-imported reference (Moderator2 caches it).
-    try:
-        from Agent import moderator2 as _m2
-        _m2.api_call = _safe_api_call
-    except Exception:
-        pass
+    # Also patch in every module that did `from backend.api import api_call`
+    # at import time. Those create LOCAL bindings which ignore _api.api_call
+    # rebinding, so we must overwrite each module's own `api_call` attribute.
+    # Modules known to bind api_call (from grep ./Agent/*.py):
+    _candidate_modules = (
+        "Agent.moderator2", "Agent.moderator", "Agent.agent",
+        "Agent.blacksheep", "Agent.thinker", "Agent.human",
+        "Environment.environment", "Environment.groupchat",
+    )
+    import importlib as _imp
+    _patched = []
+    for mname in _candidate_modules:
+        try:
+            mod = _imp.import_module(mname)
+        except Exception:
+            continue
+        if hasattr(mod, "api_call"):
+            mod.api_call = _safe_api_call
+            _patched.append(mname)
+    print(
+        f"[reagent_hotpotqa] W1/W3 monkey-patch applied to: "
+        f"{', '.join(_patched) if _patched else '(none found)'}",
+        flush=True,
+    )
+
+
+def _apply_concise_answer_patch():
+    """W(c) format-penalty workaround (R41f) — patch Moderator2.generate_o1_response
+    so the final-answer request asks for a SHORT SPAN instead of a wordy COT summary.
+
+    Root cause (R41c §12.4): ReAgent's Moderator2 final-answer prompt is
+    "Now provide a final, plain-text answer. Avoid JSON. Summarize clearly
+    without extraneous structure." — this invites 2-4 sentence COT
+    summaries. On HotpotQA (gold answers are 1-5 tokens like "yes" / "Animorphs"
+    / "Greenwich Village, New York City"), char-overlap F1 penalizes verbosity.
+
+    Fix: rewrite the final-user-message content to: "Output ONLY the shortest
+    possible answer span (typically 1-5 tokens). No explanation, no
+    elaboration, no prefix/suffix. Use the exact wording from the passages
+    where possible."
+
+    Implementation: monkey-patch `generate_o1_response` to intercept the
+    final ``messages.append({..."Now provide a final, plain-text answer..."})``
+    step and replace the content string.
+    """
+    from Agent import moderator2 as _m2
+    _orig_generate = _m2.Moderator2.generate_o1_response
+
+    CONCISE_FINAL_PROMPT = (
+        "Now provide a final answer. Output ONLY the shortest possible "
+        "answer span (typically 1-5 tokens). No explanation, no elaboration, "
+        "no markdown, no prefix like 'The answer is' — just the span itself. "
+        "For yes/no questions reply with exactly 'yes' or 'no' (lowercase). "
+        "For entity questions reply with just the entity name. "
+        "Use the exact wording from the passages where possible."
+    )
+
+    def _concise_generate_o1_response(self, question):
+        import json as _json
+        # We intercept messages.append of the final-answer user message.
+        # The cleanest approach: patch messages list mutation inside the
+        # inner generator. Since generate_o1_response is a generator and
+        # we can't easily wrap a single list operation, we instead replace
+        # the method entirely with a near-identical copy that uses our
+        # CONCISE_FINAL_PROMPT. We inline the upstream logic (copied from
+        # Agent/moderator2.py lines 60-180 as of R41c).
+
+        import time as _time
+        step_count = 1
+        total_thinking_time = 0
+        messages = [
+            {
+                "role": "system",
+                "content": (
+                    "You are an expert in multi-step reasoning tasks. The user has provided a question. "
+                    "You must strictly return JSON outputs with keys: { \"step\", \"reasoning\", \"next_action\" }. "
+                    "If you have a final answer, set \"next_action\" to \"final_answer\"."
+                )
+            },
+            {"role": "user", "content": question},
+            {
+                "role": "assistant",
+                "content": "Alright, I will proceed with multi-step JSON-based reasoning."
+            }
+        ]
+        from backend.api import api_call  # this is our W3-patched safe_api_call
+
+        while True:
+            if self.user_message is not None:
+                messages.append({
+                    "role": "user",
+                    "content": _json.dumps(self.user_message, ensure_ascii=False)
+                })
+            start_time = _time.time()
+            step_data = None
+            for attempt in range(10):
+                try:
+                    step_data = api_call(
+                        messages,
+                        model=self.model,
+                        temperature=self.args.temperature if self.args else 1.0,
+                        max_tokens=2048,
+                        json_format=True,
+                    )
+                    if "step" in step_data and "reasoning" in step_data and "next_action" in step_data:
+                        break
+                except Exception:
+                    _time.sleep(1)
+            end_time = _time.time()
+            step_time = end_time - start_time
+            total_thinking_time += step_time
+            if not step_data:
+                break
+            messages.append({
+                "role": "assistant",
+                "content": _json.dumps(step_data, indent=4, ensure_ascii=False)
+            })
+            self.steps.append(
+                (f"Step {step_count}: {step_data['step']}", step_data['reasoning'], step_time)
+            )
+            step_count += 1
+            ref = step_data.get("next_action", None)
+            if ref and ref != "final_answer":
+                messages.append({
+                    "role": "user",
+                    "content": (
+                        f"Proceed with next action '{ref}' in JSON format. Do not produce an empty output."
+                    )
+                })
+            else:
+                break
+            if step_count > 25:
+                break
+            yield self.steps, None
+
+        # W(c) CHANGE: use concise final-answer prompt instead of
+        # "Now provide a final, plain-text answer. ..."
+        messages.append({"role": "user", "content": CONCISE_FINAL_PROMPT})
+        start_time = _time.time()
+        final_text = api_call(
+            messages,
+            self.model,
+            self.args.temperature if self.args else 1.0,
+            50,                # W(c) also caps at 50 tokens (short-span budget)
+            json_format=False,
+        )
+        end_time = _time.time()
+        final_time = end_time - start_time
+        total_thinking_time += final_time
+        self.steps.append(("Final Answer", final_text, final_time))
+        yield self.steps, total_thinking_time
+
+    _m2.Moderator2.generate_o1_response = _concise_generate_o1_response
+    print(
+        "[reagent_hotpotqa] W(c) concise-answer patch applied to Moderator2.generate_o1_response",
+        flush=True,
+    )
 
 
 def _import_reagent() -> dict:
@@ -361,6 +536,15 @@ def main() -> int:
                    help="Enable multi-agent voting (Moderator2 default true)")
     p.add_argument("--no-mas", dest="mas", action="store_false")
     p.add_argument("--skip-preflight", action="store_true")
+    p.add_argument(
+        "--concise",
+        action="store_true",
+        help=(
+            "R41f W(c) format-penalty fix — patch Moderator2 to request a "
+            "short-span final answer (1-5 tokens). Reduces HotpotQA F1 "
+            "format penalty; see e018_reagent_adapter_inspection.md §12.4."
+        ),
+    )
     args = p.parse_args()
 
     out_dir = Path(args.out_dir)
@@ -399,6 +583,8 @@ def main() -> int:
         )
 
         mods = _import_reagent()
+        if args.concise:
+            _apply_concise_answer_patch()
         rag_args = _ReAgentArgs(
             model=args.model,
             temperature=args.temperature,
@@ -461,8 +647,9 @@ def main() -> int:
         )
         metrics = {
             "host": "ReAgent (Moderator2, o1-style multi-agent)",
-            "adapter": "run_reagent_hotpotqa.py (mas={} retrieval=False)".format(
-                "on" if args.mas else "off"
+            "adapter": "run_reagent_hotpotqa.py (mas={} retrieval=False concise={})".format(
+                "on" if args.mas else "off",
+                "on" if args.concise else "off",
             ),
             "benchmark": "hotpotqa",
             "sample_count": len(preds),

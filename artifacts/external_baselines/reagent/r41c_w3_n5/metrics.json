@@ -1,0 +1,17 @@
+{
+  "host": "ReAgent (Moderator2, o1-style multi-agent)",
+  "adapter": "run_reagent_hotpotqa.py (mas=off retrieval=False)",
+  "benchmark": "hotpotqa",
+  "sample_count": 5,
+  "answer_em": 0.0,
+  "answer_f1": 0.16116550116550116,
+  "wall_s": 42.11,
+  "model": "gpt-4.1-mini",
+  "ts_utc": "2026-04-20T15:29:43.234499+00:00",
+  "notes": [
+    "Thin wrapper invokes Moderator2.o1think(task, knowledges, group, args).",
+    "mas=True enables BlackSheep/Thinker/Human voting per round; mas=False = pure o1 single-agent.",
+    "retrieval=False: HotpotQA gold context is fed via get_knowledge() directly (no DPR).",
+    "Per docs/paper/e018_reagent_adapter_inspection.md."
+  ]
+}

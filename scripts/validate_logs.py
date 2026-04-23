@@ -124,6 +124,66 @@ def validate_run_dir(run_dir: Path) -> list[str]:
         if uncovered:
             errors.append(f"RAW_OUTPUT_MISSING_HOPS: task={sid} hops={sorted(uncovered)}")
 
+    # 9.5 R42 E-3: per-sample row-count symmetry (ckpt ↔ sibling strict check)
+    #     Detects orphan / missing rows beyond what #4-6 coverage checks catch.
+    #     Per runner._after_sample invariants (after R41g cleanup):
+    #       - traces rows per sample  == hop_count
+    #       - packets rows per sample == hop_count
+    #       - raw_outs rows per sample == hop_count
+    #       - snaps rows per sample in {hop_count, hop_count+1}
+    #         (+1 for fixed_self_calibrated / fixed_peer_calibrated post_sample row)
+    #     A mismatch flags latent orphan (sibling has extra) or missing-sibling
+    #     (ckpt committed but sibling row never made it to disk).
+    pred_hops_by_id = {p["task_id"]: p.get("hop_count", 0) for p in predictions}
+
+    def _count_by_id(rows: list[dict]) -> dict[str, int]:
+        out: dict[str, int] = {}
+        for r in rows:
+            tid = r.get("task_id")
+            if tid is None:
+                continue
+            out[tid] = out.get(tid, 0) + 1
+        return out
+
+    traces_count = _count_by_id(traces)
+    packets_count = _count_by_id(packets)
+    raw_count = _count_by_id(raw_outs)
+    snaps_count = _count_by_id(snaps)
+
+    def _collect_mismatches(
+        counts: dict[str, int],
+        expected_fn,
+        label: str,
+    ) -> tuple[str, list[tuple[str, int, int]]] | None:
+        mismatches: list[tuple[str, int, int]] = []
+        for sid, hop_count in pred_hops_by_id.items():
+            actual = counts.get(sid, 0)
+            if not expected_fn(actual, hop_count):
+                mismatches.append((sid, hop_count, actual))
+        if not mismatches:
+            return None
+        preview = ", ".join(
+            f"{sid}(exp={e},got={a})" for sid, e, a in mismatches[:3]
+        )
+        return (
+            f"ROW_COUNT_MISMATCH_{label}: {len(mismatches)}/"
+            f"{len(pred_hops_by_id)} samples — preview: {preview}",
+            mismatches,
+        )
+
+    strict_eq = lambda actual, expected: actual == expected
+    snaps_eq = lambda actual, expected: actual in (expected, expected + 1)
+
+    for counts, fn, label in (
+        (traces_count, strict_eq, "TRACES"),
+        (packets_count, strict_eq, "PACKETS"),
+        (raw_count, strict_eq, "RAW_OUTPUTS"),
+        (snaps_count, snaps_eq, "SNAPS"),
+    ):
+        mis = _collect_mismatches(counts, fn, label)
+        if mis is not None:
+            errors.append(mis[0])
+
     # 10. Stage-2 (E-005) — only validated when any STAGE2_FILES is present.
     stage2_present = [f for f in STAGE2_FILES if (run_dir / f).exists()]
     if stage2_present:
