@@ -2,7 +2,7 @@
 
 > **Single authoritative source** for "what benchmarks are we using". Compiled per user instruction (R34 commit, 2026-04-20).
 > Owner: scientist (writing lead); engineer keeps `methods.py` + `external_baselines/*` actually runnable.
-> Cross-references: [`external_baseline_plan.md`](external_baseline_plan.md) (module-swap design + external baseline survey), [`page_budget_audit.md`](page_budget_audit.md) (page count), [`PROJECT_STRUCTURE.md`](../../PROJECT_STRUCTURE.md) §0 (sprint state), [`docs/coordination/implementation_log.md`](../coordination/implementation_log.md) (engineer execution log).
+> Cross-references: [`external_baseline_plan.md`](external_baseline_plan.md) (module-swap design + external baseline survey), [`page_budget_audit.md`](page_budget_audit.md) (page count), [`PROJECT_STRUCTURE.md`](../../PROJECT_STRUCTURE.md) §0 (sprint state), [`docs/coordination/ENGINEER_TODO.md`](../coordination/ENGINEER_TODO.md) (engineer execution log).
 
 ---
 
@@ -14,7 +14,7 @@
 | **What model (backbone) do we evaluate?** | `gpt-4.1-mini` via OpenAI-compatible API (`newapi` channel = `xh.v1api.cc`, set as PRIMARY in R7). Historical Stage-1 runs used `glm-4-flash` (still cited in Table 2 ablation). No GPU / no on-prem model in main results. |
 | **Which methods/baselines do we compare?** | (a) 8 author-internal methods registered in `workspace/idea04_core/methods.py::METHOD_NAMES` + 1 Stage-2 prototype (`edo_stage2_chain`); (b) 3 external 2024-SOTA multi-agent systems for module-swap comparison (AutoGen + ChatEval + MAD; engineer pipeline E-010..E-016); (c) 2 recent full-system SOTA finalists for Axis A (MA-RAG + ReAgent; engineer E-018). **Current status**: external systems have smoke / partial numbers, but the paper still lacks formal external main-table rows. |
 | **Which topology do we use?** | Chain (canonical for all Stage-1 + Stage-2 prototype results). Star is supported by code but NOT in any Table 1 result. Sparse-graph topologies (random / small-world / community-bridge) are Stage-2 agenda E4. |
-| **What sample sizes have we run?** | (i) `chain-200` = 200 head samples for headline Tables 1+2 + Figure 2 + Appendix D; (ii) `3shard×200 = 600` paired (Appendix D preliminary); (iii) `fullval = 7405` HotpotQA validation — **⚠ 2026-04-19 quota-exhaustion incident / ✅ 2026-04-20 R40 RESUMED**: (i-a) incident: E-017 seed=42 stage2 valid 0..3200 F1=0.6927, stage1 valid 0..2414 F1=0.6846, paired ΔF1 ≈ +0.81 pp on first 2415 samples inside noise band; (i-b) resume (R40, 2026-04-20 21:07 server time): `U-EXEC-007` ✅ user recharged newapi + `U-Rollback-001` ✅ (a) resume-from-truncated-ckpts → stage2 PID=321426 (from 3201) + stage1 PID=321436 (from 2415) + fresh scheduler PID=321499 auto-chain seed 43+44 → paired_bootstrap_ci; ETA ~10 h total wall from 21:07. See `implementation_log.md [quota_exhaustion_incident_20260419_2338]` + `[u_rollback_001_path_a_landed_20260420]` for forensic + recovery. |
+| **What sample sizes have we run?** | (i) `chain-200` = 200 head samples for headline Tables 1+2 + Figure 2 + Appendix D; (ii) `3shard×200 = 600` paired (Appendix D preliminary); (iii) `fullval = 7405` HotpotQA validation — **⚠ 2026-04-19 quota-exhaustion incident / ✅ 2026-04-20 R40 RESUMED**: (i-a) incident: E-017 seed=42 stage2 valid 0..3200 F1=0.6927, stage1 valid 0..2414 F1=0.6846, paired ΔF1 ≈ +0.81 pp on first 2415 samples inside noise band; (i-b) resume (R40, 2026-04-20 21:07 server time): `U-EXEC-007` ✅ user recharged newapi + `U-Rollback-001` ✅ (a) resume-from-truncated-ckpts → stage2 PID=321426 (from 3201) + stage1 PID=321436 (from 2415) + fresh scheduler PID=321499 auto-chain seed 43+44 → paired_bootstrap_ci; ETA ~10 h total wall from 21:07. See `ENGINEER_TODO.md [quota_exhaustion_incident_20260419_2338]` + `[u_rollback_001_path_a_landed_20260420]` for forensic + recovery. |
 | **Have we benchmarked external 2024-2026 SOTA?** | **NOT YET in main paper body.** R-FULL-001..006 reviewer fatal #3 still stands at submission level. However, there is now **smoke / partial unblock evidence**: MA-RAG / MAD / ReAgent all ran on HotpotQA-50 under `gpt-4.1-mini` with gold context adapters, and MAD has the strongest current smoke F1 (`0.777`), while ReAgent is format-sensitive and underperforms in the current wrapper. These numbers are useful for planning, but not yet publication-grade comparisons. |
 
 ---
@@ -31,7 +31,12 @@
 
 ### 1.2 Held-out / cited but not used
 
-(none currently)
+| ID | Name | Why not in the current core matrix yet |
+|---|---|---|
+| **DS-X1** | **MultiAgentBench** | Strong 2025 collaboration benchmark, but not yet in the current near-term execution matrix; recommended next after the HotpotQA + MuSiQue core matrix is materially complete. |
+| **DS-X2** | **Collab-Overcooked** | Strong EMNLP-2025 collaboration benchmark with natural-language coordination, but currently outside the near-term QA-first execution scope. |
+| **DS-X3** | **GAIA** | High-recognition agent benchmark; valuable for broader agentic-generalisation claims, but not yet in the current QA-controlled matrix. |
+| **DS-X4** | **ESConv** | NLP-friendly multi-agent extension candidate; currently secondary to the core QA benchmarks. |
 
 ### 1.3 Versioned seed slices (artifacts/)
 
@@ -142,6 +147,9 @@ External baselines NOT included (rejected paths):
 - HuggingGPT — HF model selection not multi-hop QA target; passed over.
 - Reflexion — redundant with AutoGen swap; deprioritized.
 
+**Most valuable still-missing baseline family representative**:
+- **AgentNet** — recommended next-add baseline if we want a stronger decentralized-dynamic-routing comparison family. It is not yet in the current core matrix, but it is the highest-value conceptual expansion candidate; see [`benchmark_expansion_addendum_20260423.md`](benchmark_expansion_addendum_20260423.md).
+
 ### 3.4 Module-swap comparison design
 
 (verbatim from `external_baseline_plan.md §4`, summarised here for inventory)
@@ -247,9 +255,11 @@ Per §4.4 E1-E5 agenda, Stage-2 will report: persona-tag divergence, specialisat
 
 ## 9. Cross-references
 
+- **Final baseline × datasize execution target**: [`final_experiment_matrix.md`](final_experiment_matrix.md)
+- **Claim scope + benchmark expansion guidance**: [`benchmark_expansion_addendum_20260423.md`](benchmark_expansion_addendum_20260423.md)
 - **External-baseline design + module-swap matrix**: [`external_baseline_plan.md`](external_baseline_plan.md)
 - **Page budget audit (8-page main body)**: [`page_budget_audit.md`](page_budget_audit.md)
-- **Engineer execution log (E-005 / E-014 / E-017 / E-010..E-016)**: [`docs/coordination/implementation_log.md`](../coordination/implementation_log.md)
+- **Engineer execution log (E-005 / E-014 / E-017 / E-010..E-016)**: [`docs/coordination/ENGINEER_TODO.md`](../coordination/ENGINEER_TODO.md)
 - **Sprint state + role mapping**: [`PROJECT_STRUCTURE.md`](../../PROJECT_STRUCTURE.md) §0
 - **Scientist writing TODOs (S-115..S-146)**: [`docs/coordination/SCIENTIST_TODO.md`](../coordination/SCIENTIST_TODO.md) §B.5
 - **User decision pool (U-XXX)**: [`docs/coordination/USER_TODO.md`](../coordination/USER_TODO.md) §A
@@ -266,4 +276,6 @@ This file is the single authoritative source. **Any change to**:
 - New benchmark dataset added — update §1
 - New batch ✅ done — update §7 status table
 
-**Owner**: scientist. Engineer ack via `implementation_log.md` triggers scientist to update this file.
+**Owner**: scientist. Engineer ack via `ENGINEER_TODO.md` triggers scientist to update this file.
+
+This file defines the roster / benchmark facts. The execution-target view of "which rows × datasizes still need filling" lives in [`final_experiment_matrix.md`](final_experiment_matrix.md).

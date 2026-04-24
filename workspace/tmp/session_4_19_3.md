@@ -125,7 +125,7 @@ Now let me check the current state of engineer tasks and find out where experime
 _**Agent (claude-opus-4-7)**_
 
 <tool-use data-tool-type="read" data-tool-name="read_file_v2">
-<details><summary>Tool use: **read_file_v2** • Read file: d:\Codes\idea04\docs\coordination\implementation_log.md</summary>
+<details><summary>Tool use: **read_file_v2** • Read file: d:\Codes\idea04\docs\coordinatioENGINEER_TODOog.md</summary>
 
 </details>
 </tool-use>
@@ -153,7 +153,7 @@ dir "d:\Codes\idea04\docs\coordination"
 Mode                 LastWriteTime         Length Name                                                                 
 ----                 -------------         ------ ----                                                                 
 -a----         2026/4/15     15:49            550 COORDINATION_AGENT1_AGENT2.md                                        
--a----         2026/4/19     21:13         279650 implementation_log.md                                                
+-a----         2026/4/19     21:13         279650 ENGINEER_TODO.md                                                
 -a----         2026/4/19     20:55          29158 REVIEWER_TODO.md                                                     
 -a----         2026/4/19     21:11          93406 SCIENTIST_TODO.md                                                    
 -a----         2026/4/19     21:12          39252 USER_TODO.md                                                         
@@ -192,7 +192,7 @@ Now let me look at the most recent engineer activity to understand where current
 _**Agent (claude-opus-4-7)**_
 
 <tool-use data-tool-type="read" data-tool-name="read_file_v2">
-<details><summary>Tool use: **read_file_v2** • Read file: d:\Codes\idea04\docs\coordination\implementation_log.md</summary>
+<details><summary>Tool use: **read_file_v2** • Read file: d:\Codes\idea04\docs\coordinatioENGINEER_TODOog.md</summary>
 
 </details>
 </tool-use>
@@ -214,7 +214,7 @@ Let me check the current status of the running experiments and the actual engine
 _**Agent (claude-opus-4-7)**_
 
 <tool-use data-tool-type="read" data-tool-name="read_file_v2">
-<details><summary>Tool use: **read_file_v2** • Read file: d:\Codes\idea04\docs\coordination\implementation_log.md</summary>
+<details><summary>Tool use: **read_file_v2** • Read file: d:\Codes\idea04\docs\coordinatioENGINEER_TODOog.md</summary>
 
 </details>
 </tool-use>
@@ -290,7 +290,7 @@ Result:
       "status": "pending"
     },
     {
-      "content": "Update implementation_log + USER_TODO + SCIENTIST_TODO with the migration",
+      "content": "Update ENGINEER_TODO + USER_TODO + SCIENTIST_TODO with the migration",
       "id": "t8",
       "status": "pending"
     }
@@ -1523,7 +1523,7 @@ Result:
       "status": "pending"
     },
     {
-      "content": "Update implementation_log + USER_TODO with the migration as new phase block",
+      "content": "Update ENGINEER_TODO + USER_TODO with the migration as new phase block",
       "id": "t8",
       "status": "pending"
     },
@@ -1590,7 +1590,7 @@ Result:
       "status": "pending"
     },
     {
-      "content": "Update implementation_log + USER_TODO + SCIENTIST_TODO with the migration",
+      "content": "Update ENGINEER_TODO + USER_TODO + SCIENTIST_TODO with the migration",
       "id": "t8",
       "status": "pending"
     }
@@ -2031,7 +2031,7 @@ Result:
       "status": "pending"
     },
     {
-      "content": "Update implementation_log + USER_TODO with the migration as new phase block",
+      "content": "Update ENGINEER_TODO + USER_TODO with the migration as new phase block",
       "id": "t8",
       "status": "pending"
     },
@@ -2098,7 +2098,7 @@ Result:
       "status": "pending"
     },
     {
-      "content": "Update implementation_log + USER_TODO with the migration as new phase block",
+      "content": "Update ENGINEER_TODO + USER_TODO with the migration as new phase block",
       "id": "t8",
       "status": "pending"
     },
@@ -2681,12 +2681,12 @@ Actually, the partial directories are useful snapshots of where we were at migra
 
 _**Agent (claude-opus-4-7)**_
 
-Now let me update the implementation_log with this migration as a new phase block.
+Now let me update the ENGINEER_TODO with this migration as a new phase block.
 
 _**Agent (claude-opus-4-7)**_
 
 <tool-use data-tool-type="read" data-tool-name="read_file_v2">
-<details><summary>Tool use: **read_file_v2** • Read file: d:\Codes\idea04\docs\coordination\implementation_log.md</summary>
+<details><summary>Tool use: **read_file_v2** • Read file: d:\Codes\idea04\docs\coordinatioENGINEER_TODOog.md</summary>
 
 </details>
 </tool-use>
@@ -2699,7 +2699,7 @@ _**Agent (claude-opus-4-7)**_
 _**Agent (claude-opus-4-7)**_
 
 <tool-use data-tool-type="read" data-tool-name="read_file_v2">
-<details><summary>Tool use: **read_file_v2** • Read file: d:\Codes\idea04\docs\coordination\implementation_log.md</summary>
+<details><summary>Tool use: **read_file_v2** • Read file: d:\Codes\idea04\docs\coordinatioENGINEER_TODOog.md</summary>
 
 </details>
 </tool-use>
@@ -2743,7 +2743,7 @@ But I need to reconsider the user's emphasis on quality and rigor—that means I
   - E-010 (reproduce AutoGen + ChatEval) - LLM calls, HOLD on running but can prep code
   - Code/test/doc work - no conflict, can do anytime
 
-So my plan is to first handle the documentation updates—implementation_log, USER_TODO, and SCIENTIST_TODO—then set up the HotpotQA adapter code without running it, and keep checking on E-017's progress. Once E-017 finishes its batches, I'll validate and run the paired bootstrap analysis. I can also tackle some quick scientist hygiene tasks like the limitations discussion and seed disclosure notes.
+So my plan is to first handle the documentation updates�ENGINEER_TODOog, USER_TODO, and SCIENTIST_TODO—then set up the HotpotQA adapter code without running it, and keep checking on E-017's progress. Once E-017 finishes its batches, I'll validate and run the paired bootstrap analysis. I can also tackle some quick scientist hygiene tasks like the limitations discussion and seed disclosure notes.
 
 But I'm also thinking about whether I can leverage the server's GPU capacity more effectively. The canonical backbone is gpt-4.1-mini per the experiment spec, but I could potentially deploy an open-weights model like Llama-3.1-8B as a supplementary ablation in the appendix to show TCPB works across different backbones—that's allowed under the server rules and wouldn't conflict with the main pipeline.
 
@@ -2751,7 +2751,7 @@ That said, launching a new experiment unilaterally isn't appropriate without use
 
 While E-017 runs in the background, I can prepare E-015 step 4 (the 50-sample HotpotQA validation) by staging the adapter code, but I shouldn't execute it yet—the engineer's notes show that 4 parallel batches cause severe rate-limiting, and we're already at 2 with E-017. I'll wait until E-017 finishes before running anything else.
 
-My immediate plan: update the implementation log with E-017's server migration phase, add notes to the USER_TODO and SCIENTIST_TODO sections, pre-stage the E-015 HotpotQA adapter code without executing it, and set up a watcher to trigger the next batch once E-017 completes. Then I'll expand the broader todo list to map out what comes next for the paper sprint. I need to be methodical here—update the TODO list to reflect what's done and what's blocked, then write the implementation_log entry for the E-017 server migration phase. After that I'll tackle the USER_TODO and SCIENTIST_TODO updates, check on the status of those open engineer tickets, and set up the polling cadence to monitor scheduler progress without accidentally re-triggering the seed=43 job.</details></think>
+My immediate plan: update the implementation log with E-017's server migration phase, add notes to the USER_TODO and SCIENTIST_TODO sections, pre-stage the E-015 HotpotQA adapter code without executing it, and set up a watcher to trigger the next batch once E-017 completes. Then I'll expand the broader todo list to map out what comes next for the paper sprint. I need to be methodical here—update the TODO list to reflect what's done and what's blocked, then write thENGINEER_TODOog entry for the E-017 server migration phase. After that I'll tackle the USER_TODO and SCIENTIST_TODO updates, check on the status of those open engineer tickets, and set up the polling cadence to monitor scheduler progress without accidentally re-triggering the seed=43 job.</details></think>
 
 _**Agent (claude-opus-4-7)**_
 
@@ -2792,7 +2792,7 @@ Result:
       "status": "completed"
     },
     {
-      "content": "Document E-017 server migration as new phase block in implementation_log.md (R26 commit)",
+      "content": "Document E-017 server migration as new phase block in ENGINEER_TODO.md (R26 commit)",
       "id": "d1",
       "status": "in_progress"
     },
@@ -2889,7 +2889,7 @@ Result:
       "status": "pending"
     },
     {
-      "content": "Update implementation_log + USER_TODO with the migration as new phase block",
+      "content": "Update ENGINEER_TODO + USER_TODO with the migration as new phase block",
       "id": "t8",
       "status": "pending"
     },
@@ -2936,16 +2936,16 @@ Status: **completed**
 _**Agent (claude-opus-4-7)**_
 
 <think><details><summary>Thought Process</summary>
- Now I'm adding a detailed implementation_log entry to document this phase thoroughly, so I'll check the end of the file first to make sure I'm appending in the right spot.</details></think>
+ Now I'm adding a detailed ENGINEER_TODO entry to document this phase thoroughly, so I'll check the end of the file first to make sure I'm appending in the right spot.</details></think>
 
 _**Agent (claude-opus-4-7)**_
 
-Now let me append a new phase block to implementation_log documenting the E-017 server migration.
+Now let me append a new phase block to ENGINEER_TODO documenting the E-017 server migration.
 
 _**Agent (claude-opus-4-7)**_
 
 <tool-use data-tool-type="read" data-tool-name="read_file_v2">
-<details><summary>Tool use: **read_file_v2** • Read file: d:\Codes\idea04\docs\coordination\implementation_log.md</summary>
+<details><summary>Tool use: **read_file_v2** • Read file: d:\Codes\idea04\docs\coordinatioENGINEER_TODOog.md</summary>
 
 </details>
 </tool-use>
@@ -3117,7 +3117,7 @@ Result:
       "status": "in_progress"
     },
     {
-      "content": "Audit currently-active engineer tickets in implementation_log: E-014/E-010/E-015/E-018/E-019 — what's runnable in parallel WITH E-017 stage1 still consuming 1 newapi slot (8 concurrent)",
+      "content": "Audit currently-active engineer tickets in ENGINEER_TODO: E-014/E-010/E-015/E-018/E-019 — what's runnable in parallel WITH E-017 stage1 still consuming 1 newapi slot (8 concurrent)",
       "id": "p1",
       "status": "pending"
     },
@@ -3179,7 +3179,7 @@ Result:
       "status": "completed"
     },
     {
-      "content": "Document E-017 server migration as new phase block in implementation_log.md (R26 commit)",
+      "content": "Document E-017 server migration as new phase block in ENGINEER_TODO.md (R26 commit)",
       "id": "d1",
       "status": "in_progress"
     },
@@ -3260,13 +3260,13 @@ _**Agent (claude-opus-4-7)**_
 
 _**Agent (claude-opus-4-7)**_
 
-Let me append a short forensic ack to implementation_log and then audit/launch parallel tickets.
+Let me append a short forensic ack to ENGINEER_TODO and then audit/launch parallel tickets.
 
 _**Agent (claude-opus-4-7)**_
 
 <tool-use data-tool-type="write" data-tool-name="edit_file_v2">
 
-<details><summary>Tool use: **edit_file_v2** • Edit file: d:\Codes\idea04\docs\coordination\implementation_log.md</summary>
+<details><summary>Tool use: **edit_file_v2** • Edit file: d:\Codes\idea04\docs\coordinatioENGINEER_TODOog.md</summary>
 
 </details>
 
@@ -3289,7 +3289,7 @@ Parameters:
 ```json
 {
   "paths": [
-    "d:\\Codes\\idea04\\docs\\coordination\\implementation_log.md"
+    "d:\\Codes\\idea04\\docs\\coordination\\ENGINEER_TODO.md"
   ]
 }
 ```
@@ -3299,7 +3299,7 @@ Result:
 {
   "linterErrorsByFile": [
     {
-      "relativeWorkspacePath": "d:\\Codes\\idea04\\docs\\coordination\\implementation_log.md"
+      "relativeWorkspacePath": "d:\\Codes\\idea04\\docs\\coordination\\ENGINEER_TODO.md"
     }
   ]
 }
@@ -3365,7 +3365,7 @@ Result:
       "status": "completed"
     },
     {
-      "content": "Audit currently-active engineer tickets in implementation_log: E-014/E-010/E-015/E-018/E-019 — what's runnable in parallel WITH E-017 stage1 still consuming 1 newapi slot (8 concurrent)",
+      "content": "Audit currently-active engineer tickets in ENGINEER_TODO: E-014/E-010/E-015/E-018/E-019 — what's runnable in parallel WITH E-017 stage1 still consuming 1 newapi slot (8 concurrent)",
       "id": "p1",
       "status": "in_progress"
     },
@@ -3442,7 +3442,7 @@ Result:
       "status": "in_progress"
     },
     {
-      "content": "Audit currently-active engineer tickets in implementation_log: E-014/E-010/E-015/E-018/E-019 — what's runnable in parallel WITH E-017 stage1 still consuming 1 newapi slot (8 concurrent)",
+      "content": "Audit currently-active engineer tickets in ENGINEER_TODO: E-014/E-010/E-015/E-018/E-019 — what's runnable in parallel WITH E-017 stage1 still consuming 1 newapi slot (8 concurrent)",
       "id": "p1",
       "status": "pending"
     },
@@ -5243,13 +5243,13 @@ Actually, I'm jumping ahead. The user wants me to review todos, eliminate blocke
 
 _**Agent (claude-opus-4-7)**_
 
-Let me now consolidate the parallel-setup work into the implementation_log forensic ack and update USER_TODO.
+Let me now consolidate the parallel-setup work into the ENGINEER_TODO forensic ack and update USER_TODO.
 
 _**Agent (claude-opus-4-7)**_
 
 <tool-use data-tool-type="write" data-tool-name="edit_file_v2">
 
-<details><summary>Tool use: **edit_file_v2** • Edit file: d:\Codes\idea04\docs\coordination\implementation_log.md</summary>
+<details><summary>Tool use: **edit_file_v2** • Edit file: d:\Codes\idea04\docs\coordinatioENGINEER_TODOog.md</summary>
 
 </details>
 
@@ -5272,7 +5272,7 @@ Parameters:
 ```json
 {
   "paths": [
-    "d:\\Codes\\idea04\\docs\\coordination\\implementation_log.md"
+    "d:\\Codes\\idea04\\docs\\coordination\\ENGINEER_TODO.md"
   ]
 }
 ```
@@ -5282,7 +5282,7 @@ Result:
 {
   "linterErrorsByFile": [
     {
-      "relativeWorkspacePath": "d:\\Codes\\idea04\\docs\\coordination\\implementation_log.md"
+      "relativeWorkspacePath": "d:\\Codes\\idea04\\docs\\coordination\\ENGINEER_TODO.md"
     }
   ]
 }
@@ -5348,7 +5348,7 @@ Result:
       "status": "completed"
     },
     {
-      "content": "Audit currently-active engineer tickets in implementation_log: E-014/E-010/E-015/E-018/E-019 — what's runnable in parallel WITH E-017 stage1 still consuming 1 newapi slot (8 concurrent)",
+      "content": "Audit currently-active engineer tickets in ENGINEER_TODO: E-014/E-010/E-015/E-018/E-019 — what's runnable in parallel WITH E-017 stage1 still consuming 1 newapi slot (8 concurrent)",
       "id": "p1",
       "status": "completed"
     },
@@ -5440,7 +5440,7 @@ Result:
       "status": "completed"
     },
     {
-      "content": "Audit currently-active engineer tickets in implementation_log: E-014/E-010/E-015/E-018/E-019 — what's runnable in parallel WITH E-017 stage1 still consuming 1 newapi slot (8 concurrent)",
+      "content": "Audit currently-active engineer tickets in ENGINEER_TODO: E-014/E-010/E-015/E-018/E-019 — what's runnable in parallel WITH E-017 stage1 still consuming 1 newapi slot (8 concurrent)",
       "id": "p1",
       "status": "in_progress"
     },
@@ -5915,7 +5915,7 @@ Looking at the command structure, `--resume-run-dir` tells the script to use tha
 
 _**Agent (claude-opus-4-7)**_
 
-Now let me update USER_TODO with a one-line session ack and append the ChatEval MetaReviewer finding to implementation_log.
+Now let me update USER_TODO with a one-line session ack and append the ChatEval MetaReviewer finding to ENGINEER_TODO.
 
 _**Agent (claude-opus-4-7)**_
 
@@ -6195,7 +6195,7 @@ Result:
       "status": "completed"
     },
     {
-      "content": "Audit currently-active engineer tickets in implementation_log: E-014/E-010/E-015/E-018/E-019 — what's runnable in parallel WITH E-017 stage1 still consuming 1 newapi slot (8 concurrent)",
+      "content": "Audit currently-active engineer tickets in ENGINEER_TODO: E-014/E-010/E-015/E-018/E-019 — what's runnable in parallel WITH E-017 stage1 still consuming 1 newapi slot (8 concurrent)",
       "id": "p1",
       "status": "completed"
     },
@@ -6302,7 +6302,7 @@ Result:
       "status": "completed"
     },
     {
-      "content": "Audit currently-active engineer tickets in implementation_log: E-014/E-010/E-015/E-018/E-019 — what's runnable in parallel WITH E-017 stage1 still consuming 1 newapi slot (8 concurrent)",
+      "content": "Audit currently-active engineer tickets in ENGINEER_TODO: E-014/E-010/E-015/E-018/E-019 — what's runnable in parallel WITH E-017 stage1 still consuming 1 newapi slot (8 concurrent)",
       "id": "p1",
       "status": "completed"
     },
@@ -6484,7 +6484,7 @@ Result:
       "status": "completed"
     },
     {
-      "content": "Audit currently-active engineer tickets in implementation_log: E-014/E-010/E-015/E-018/E-019 — what's runnable in parallel WITH E-017 stage1 still consuming 1 newapi slot (8 concurrent)",
+      "content": "Audit currently-active engineer tickets in ENGINEER_TODO: E-014/E-010/E-015/E-018/E-019 — what's runnable in parallel WITH E-017 stage1 still consuming 1 newapi slot (8 concurrent)",
       "id": "p1",
       "status": "completed"
     },
@@ -6591,7 +6591,7 @@ Result:
       "status": "completed"
     },
     {
-      "content": "Audit currently-active engineer tickets in implementation_log: E-014/E-010/E-015/E-018/E-019 — what's runnable in parallel WITH E-017 stage1 still consuming 1 newapi slot (8 concurrent)",
+      "content": "Audit currently-active engineer tickets in ENGINEER_TODO: E-014/E-010/E-015/E-018/E-019 — what's runnable in parallel WITH E-017 stage1 still consuming 1 newapi slot (8 concurrent)",
       "id": "p1",
       "status": "completed"
     },
@@ -6708,14 +6708,14 @@ All my actionable TODOs are complete. The remaining work is **blocked on externa
 | `external_baselines/mad/openai_compat_shim.py` | ✅ | MAD 老 openai 0.27 → newapi 重定向 (E-015/E-016 prep) |
 | `scripts/launch_e014_post_e017.sh` | ✅ | engineer 在 E-017 done 后一键启动 4 ablation |
 
-### 3. 关键 engineer-handoff 发现（已写入 implementation_log）
+### 3. 关键 engineer-handoff 发ENGINEER_TODOplementation_log）
 - **MA-RAG**: HEAVY (vLLM + sentence_transformers + faiss); 用 `langchain_openai.ChatOpenAI` + env vars `MODEL_NAME` + `OPENAI_API_KEY` + `OPENAI_BASE_URL`; **C-8 风险**：自带 retriever，HotpotQA 公平性需要 patch
 - **ReAgent**: 用新 openai SDK，built-in `DataProcess/Hotpotqa.py` ✓ → 适配最简单
 - **MAD**: NO HotpotQA driver (只有 math/gsm/biography/mmlu)，E-015 step 4 需写新 adapter
 - **⚠ ChatEval `MetaReviewer` 是 phantom**：R31's E-012 ticket 引用的类**不存在**于 ChatEval 源码！实际 aggregation 在 `agentverse/agents/llm_eval_multi_agent.py` 的 `final_prompt` verbal protocol — `external_baseline_plan.md §4 + §5` 已更新 R36 correction
 
 ### 4. 文档落地
-- `implementation_log.md`: 新 sub-block `[E-017_migration_landed_ack_20260420]`（forensic record + 9-step migration log + verification chain + parallel-setup table + engineer-handoff findings + hold/defer items）
+- `ENGINEER_TODO.md`: 新 sub-block `[E-017_migration_landed_ack_20260420]`（forensic record + 9-step migration log + verification chain + parallel-setup table + engineer-handoff findings + hold/defer items）
 - `USER_TODO.md §D`: R36 session ack 1 行
 - `external_baseline_plan.md §4 + §5`: ChatEval phantom MetaReviewer 修正
 - `workspace/external_baselines/mad/openai_compat_shim.py`: 新建（同步到 server）
@@ -7050,7 +7050,7 @@ Result:
       "status": "completed"
     },
     {
-      "content": "Audit currently-active engineer tickets in implementation_log: E-014/E-010/E-015/E-018/E-019 — what's runnable in parallel WITH E-017 stage1 still consuming 1 newapi slot (8 concurrent)",
+      "content": "Audit currently-active engineer tickets in ENGINEER_TODO: E-014/E-010/E-015/E-018/E-019 — what's runnable in parallel WITH E-017 stage1 still consuming 1 newapi slot (8 concurrent)",
       "id": "p1",
       "status": "completed"
     },
@@ -9083,7 +9083,7 @@ Let me write the forensic phase block and update the user todo list.</details></
 
 _**Agent (claude-opus-4-7)**_
 
-Rescue successful. Now let me document the incident in implementation_log and flag user decision U-EXEC-007.
+Rescue successful. Now let me document the incident in ENGINEER_TODO and flag user decision U-EXEC-007.
 
 _**Agent (claude-opus-4-7)**_
 
@@ -9106,7 +9106,7 @@ Someone appended another phase block during this session. Let me adjust.
 _**Agent (claude-opus-4-7)**_
 
 <tool-use data-tool-type="read" data-tool-name="read_file_v2">
-<details><summary>Tool use: **read_file_v2** • Read file: d:\Codes\idea04\docs\coordination\implementation_log.md</summary>
+<details><summary>Tool use: **read_file_v2** • Read file: d:\Codes\idea04\docs\coordinatioENGINEER_TODOog.md</summary>
 
 </details>
 </tool-use>
@@ -9120,7 +9120,7 @@ _**Agent (claude-opus-4-7)**_
 
 <tool-use data-tool-type="write" data-tool-name="edit_file_v2">
 
-<details><summary>Tool use: **edit_file_v2** • Edit file: d:\Codes\idea04\docs\coordination\implementation_log.md</summary>
+<details><summary>Tool use: **edit_file_v2** • Edit file: d:\Codes\idea04\docs\coordinatioENGINEER_TODOog.md</summary>
 
 </details>
 
@@ -9143,7 +9143,7 @@ Parameters:
 ```json
 {
   "paths": [
-    "d:\\Codes\\idea04\\docs\\coordination\\implementation_log.md"
+    "d:\\Codes\\idea04\\docs\\coordination\\ENGINEER_TODO.md"
   ]
 }
 ```
@@ -9153,7 +9153,7 @@ Result:
 {
   "linterErrorsByFile": [
     {
-      "relativeWorkspacePath": "d:\\Codes\\idea04\\docs\\coordination\\implementation_log.md"
+      "relativeWorkspacePath": "d:\\Codes\\idea04\\docs\\coordination\\ENGINEER_TODO.md"
     }
   ]
 }
@@ -9907,7 +9907,7 @@ All docs updated. Here's the comprehensive incident report:
 
 | 文档 | 更新内容 |
 |---|---|
-| `implementation_log.md` | 新 phase 块 `[quota_exhaustion_incident_20260419_2338]` (forensic + rescue + dispatch) |
+| `ENGINEER_TODO.md` | 新 phase 块 `[quota_exhaustion_incident_20260419_2338]` (forensic + rescue + dispatch) |
 | `USER_TODO.md §A` | 加 `U-Rollback-001-quota-depletion` ⚠⚠ CRITICAL |
 | `USER_TODO.md §B.1` | 加 `U-EXEC-007` ⚠⚠ CRITICAL 充值 newapi |
 | `USER_TODO.md §D` | R37 commit 行 |

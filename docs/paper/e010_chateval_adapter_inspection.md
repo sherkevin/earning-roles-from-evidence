@@ -2,7 +2,7 @@
 
 **When**: 2026-04-20 R41 engineer session (MCP-3).
 **Who**: engineer.
-**Intent**: Per `implementation_log.md [external_baseline_decisions_landed_20260420]` E-010 ticket, inspect the ChatEval repo at `external_baselines/chateval/` on server and produce an adapter spec that makes it runnable on our HotpotQA seed data, with the SWAP-3 (R2 audit → MetaReviewer) integration point identified.
+**Intent**: Per `ENGINEER_TODO.md [external_baseline_decisions_landed_20260420]` E-010 ticket, inspect the ChatEval repo at `external_baselines/chateval/` on server and produce an adapter spec that makes it runnable on our HotpotQA seed data, with the SWAP-3 (R2 audit → MetaReviewer) integration point identified.
 
 ## 1. Upstream repo layout (observed on server)
 
@@ -122,8 +122,8 @@ Expected total cost ≈ $0.20 (5 samples × 4 turns × 3 agents × ~500 tokens i
 
 ## 7. Cross-references
 
-- `implementation_log.md` [external_baseline_decisions_landed_20260420] — E-010 original dispatch
-- `implementation_log.md` [E-017_migration_landed_ack_20260420] — round-2 setup that cloned ChatEval + built venv
+- `ENGINEER_TODO.md` [external_baseline_decisions_landed_20260420] — E-010 original dispatch
+- `ENGINEER_TODO.md` [E-017_migration_landed_ack_20260420] — round-2 setup that cloned ChatEval + built venv
 - `docs/paper/external_baseline_plan.md` §ChatEval / SWAP-3 — scientist's SWAP-3 narrative
 - `external_baselines/chateval/llm_eval.py` — entry point (80-sample loop)
 - `external_baselines/chateval/agentverse/tasks/config.yaml` + `tasks/llm_eval/config.yaml` — debate config (referees, turns, prompts)

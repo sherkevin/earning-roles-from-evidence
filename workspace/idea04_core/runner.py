@@ -620,7 +620,7 @@ class RoundRunner:
                         "Likely silent corruption (quota / token / schema "
                         "drift). Diagnose: `bash workspace/tmp/newapi_quota_probe.sh`. "
                         "Rescue + resume: see `[quota_exhaustion_incident_"
-                        "20260419_2338]` in implementation_log.md."
+                        "20260419_2338]` in ENGINEER_TODO.md."
                     ),
                 }
                 (run_dir / "_ckpt_meta.json").write_text(

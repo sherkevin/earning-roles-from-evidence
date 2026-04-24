@@ -162,7 +162,7 @@ Plus a §2.2 Related Work paragraph (S-131 deliverable): explicitly write the TC
 
 ## 5. Workstream tickets (派给 engineer)
 
-These would be added to `implementation_log.md` as `[external_baseline_workstream_20260420]` phase block, with engineer ticket IDs continuing from E-008. **R17 update**: U-018 → ✅ extends the host roster from N=2 to N=3 — adds **E-015** (reproduce MAD) + **E-016** (R2 audit swap into MAD `final_aggregator` = SWAP-4) on top of E-009..E-012.
+These would be added to `ENGINEER_TODO.md` as `[external_baseline_workstream_20260420]` phase block, with engineer ticket IDs continuing from E-008. **R17 update**: U-018 → ✅ extends the host roster from N=2 to N=3 — adds **E-015** (reproduce MAD) + **E-016** (R2 audit swap into MAD `final_aggregator` = SWAP-4) on top of E-009..E-012.
 
 | ID | Task | Days | Blocked on | Output |
 |---|---|---:|---|---|
@@ -251,14 +251,15 @@ When all of the following are true, this workstream is ✅:
 ## 10. References
 
 - This plan: `docs/paper/external_baseline_plan.md` (this file) — **module-swap (Axis B) design**
+- **Final execution target (baseline × datasize)**: [`docs/paper/final_experiment_matrix.md`](final_experiment_matrix.md) — the long-term matrix that all reproduce / scale-up runs now aim to fill
 - **Single benchmark inventory (datasets + baselines + topologies + backbones + status table)**: [`docs/paper/benchmark_inventory.md`](benchmark_inventory.md) — see §3.3 + §3.4 there for the canonical N=3 SWAP host list (kept in sync with this file)
 - **NEW (R35) — Full-system SOTA survey (Axis A)**: [`docs/paper/sota_baseline_survey_2026.md`](sota_baseline_survey_2026.md) — per user instruction "我们是要把算法跑到 SOTA". Identifies MA-RAG (arXiv:2505.20096) + ReAgent (arXiv:2503.06951) as Tier-1 finalists for direct full-system F1 comparison on HotpotQA. **Axis A (full-system head-to-head F1) and Axis B (module-swap mechanism isolation) are complementary**; the paper's §4.x will contain both — Axis A answers "do we beat SOTA?", Axis B answers "is OUR mechanism causing the win?".
-- Sprint kickoff: `docs/coordination/implementation_log.md` `[stage2_sprint_kickoff_20260420]`
-- Provider switch: `docs/coordination/implementation_log.md` `[provider_switch_20260420]`
-- Engineer cautions: `docs/coordination/implementation_log.md` `[pinned_cautions_for_engineer_20260420]`
-- External baseline workstream kickoff: `docs/coordination/implementation_log.md` `[external_baseline_workstream_20260420]`
+- Sprint kickoff: `docs/coordination/ENGINEER_TODO.md` `[stage2_sprint_kickoff_20260420]`
+- Provider switch: `docs/coordination/ENGINEER_TODO.md` `[provider_switch_20260420]`
+- Engineer cautions: `docs/coordination/ENGINEER_TODO.md` `[pinned_cautions_for_engineer_20260420]`
+- External baseline workstream kickoff: `docs/coordination/ENGINEER_TODO.md` `[external_baseline_workstream_20260420]`
 - External baseline survey results: `artifacts/external_baselines/survey_report.md` (E-009 ✅ R13 commit)
-- R17 MAD landing: `docs/coordination/implementation_log.md` `[u_018_mad_landed_20260420]`
+- R17 MAD landing: `docs/coordination/ENGINEER_TODO.md` `[u_018_mad_landed_20260420]`
 - Reviewer fatals that this closes:
   - R-FULL-001 fatal #3 (S6=3, D4=4): `artifacts/idea_reviews/reviewer_20260419_163139_01_9e72f7/review.md`
   - R-FULL-002 D3 `is_overlap_risk=TRUE` (MAD): `artifacts/idea_reviews/reviewer_20260419_185701_*/review.md`

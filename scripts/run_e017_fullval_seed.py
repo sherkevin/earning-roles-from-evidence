@@ -48,7 +48,7 @@ DEFAULT_SAMPLES_JSONL = (
 )
 DEFAULT_CONFIG = _REPO_ROOT / "configs/round2_gpt41mini_chain200.yaml"
 
-ALLOWED_METHODS = ("edo_stage2_chain", "fixed_peer_calibrated")
+ALLOWED_METHODS = ("edo_stage2_chain", "fixed_peer_calibrated", "single_agent")
 
 OUT_ROOT = _REPO_ROOT / "artifacts/round2_gpt41mini_stage2_fullval"
 COST_LEDGER = OUT_ROOT / "cost_ledger.jsonl"
@@ -186,9 +186,21 @@ def main() -> int:
     if not args.skip_preflight:
         _run_quota_preflight()
 
-    os.environ.pop("LLM_BACKEND", None)
-    os.environ.pop("LLM_BASE_URL", None)
-    os.environ.pop("LLM_API_KEY", None)
+    # Default E-017 fullval runs must use the repository's canonical provider
+    # routing, but local open-weight smoke runs intentionally override the
+    # backend with LLM_BACKEND=local_vllm. Preserve that explicit route so
+    # server-only GPU experiments do not accidentally fall back to newapi.
+    explicit_backend = os.environ.get("LLM_BACKEND", "").strip().lower()
+    if explicit_backend != "local_vllm":
+        os.environ.pop("LLM_BACKEND", None)
+        os.environ.pop("LLM_BASE_URL", None)
+        os.environ.pop("LLM_API_KEY", None)
+    else:
+        print(
+            "[e017] preserving explicit LLM_BACKEND=local_vllm route "
+            f"(base={os.environ.get('LLM_BASE_URL', '')})",
+            flush=True,
+        )
 
     random.seed(args.seed)
 

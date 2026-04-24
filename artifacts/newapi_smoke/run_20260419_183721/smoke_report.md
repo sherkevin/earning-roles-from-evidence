@@ -1,6 +1,6 @@
 # E-008 newapi smoke report — 2026-04-19 18:37 (engineer Day 1)
 
-> Phase block: `[E-008_newapi_smoke_20260420]` in `docs/coordination/implementation_log.md`.
+> Phase block: `[E-008_newapi_smoke_20260420]` in `docs/coordination/ENGINEER_TODO.md`.
 > Triggered by user 04-20 instruction "审查目前 todo + 一步一步严谨科学的去做下去" + R6/R7 sprint kickoff E-008 P0 critical-path ticket.
 > All sprint chain-200 / fullval batches must wait until this report exists per pinned cautions C-1 #3.
 

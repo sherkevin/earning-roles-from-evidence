@@ -2,7 +2,7 @@
 
 > **Created**: 2026-04-20 (R35 commit, scientist S-148 per user instruction "我们是要把算法跑到 SOTA，而不是跟自己对比，是要跟同赛道的其他解决相同问题的公开模型对比")
 > **Owner**: scientist (this survey doc) + engineer (reproduce work) + user (final 选 N 个)
-> **Companion docs**: [`benchmark_inventory.md`](benchmark_inventory.md) §3.3 (will sync after user picks finalists), [`external_baseline_plan.md`](external_baseline_plan.md) (existing module-swap design — this survey is a **second parallel comparison axis**, not a replacement)
+> **Companion docs**: [`benchmark_inventory.md`](benchmark_inventory.md) §3.3 (authoritative roster), [`external_baseline_plan.md`](external_baseline_plan.md) (existing module-swap design — this survey is a **second parallel comparison axis**, not a replacement), [`final_experiment_matrix.md`](final_experiment_matrix.md) (execution-target matrix that combines baseline roster × recognised datasizes)
 
 ---
 
@@ -216,5 +216,5 @@ The combined design lets us claim:
 ## 8. Maintenance
 
 - This file is updated when: (a) E-018 reports back with reproduce numbers (R36+); (b) E-019 finds Tier 2 code (R36+); (c) any new SOTA paper drops on arXiv that should be considered (manual scientist update).
-- Ownership: scientist for content; engineer ticket spec lives in `implementation_log.md` `[external_baseline_workstream_20260420]` (or new `[sota_full_system_workstream_20260420]` if user prefers separate phase block).
+- Ownership: scientist for content; engineer ticket spec lives in `ENGINEER_TODO.md` `[external_baseline_workstream_20260420]` (or new `[sota_full_system_workstream_20260420]` if user prefers separate phase block).
 - Cross-link from `benchmark_inventory.md` §3.3 once user picks finalists (U-022-decide).

@@ -8,7 +8,7 @@ alwaysApply: false
 
 # SSH / Remote Server Rules
 
-> **STATUS（2026-04-19 → 2026-04-20 ACTIVE）**：本规则**已激活**。激活由用户 2026-04-20 instruction "优先用服务器上的 gpu 跑实验 + 对于模型，能部署到服务器上的尽量部署" 默认批准；engineer E-013 SSH probe 已 ✅ 验证可达（详见 `artifacts/server_probe/E-013_ssh_probe_20260419_183124.json` + `docs/coordination/implementation_log.md [E-013_ssh_server_probe_20260420]`）。
+> **STATUS（2026-04-19 → 2026-04-20 ACTIVE）**：本规则**已激活**。激活由用户 2026-04-20 instruction "优先用服务器上的 gpu 跑实验 + 对于模型，能部署到服务器上的尽量部署" 默认批准；engineer E-013 SSH probe 已 ✅ 验证可达（详见 `artifacts/server_probe/E-013_ssh_probe_20260419_183124.json` + `docs/coordination/ENGINEER_TODO.md [E-013_ssh_server_probe_20260420]`）。
 >
 > **服务器 inventory（E-013 probe 落定）**：
 > - host: `dengkw@10.103.16.12` (viplabserver12, Ubuntu 22.04, kernel 6.8.0-40)
@@ -76,7 +76,7 @@ When the user (or sprint) needs the remote server to run the **same codebase sta
 1. Download the asset **locally** to a **staging path** that is **not** tracked by Git (e.g. a gitignored scratch dir or temp folder).
 2. Upload to the server with **`scp`** or **`rsync`** into the target server path (same layout you would have used for a server-side download).
 3. **Verify on the server before deleting anything locally** (RULE 5): e.g. `ls -la`, byte size vs local, and/or `sha256sum`/`md5sum` match; append `&& echo __SSH_OK__`. If verification fails, **do not** delete the local copy; diagnose and re-transfer.
-4. **After successful verification:** delete the **local** staging copy immediately so the workstation does not hoard multi-GB files. **Do not** delete the remote files. Optionally record remote path + checksum in `docs/coordination/implementation_log.md` for audit.
+4. **After successful verification:** delete the **local** staging copy immediately so the workstation does not hoard multi-GB files. **Do not** delete the remote files. Optionally record remote path + checksum in `docs/coordination/ENGINEER_TODO.md` for audit.
 
 **Anti-pattern:** Committing or pushing large binaries to GitHub “because sync is easier” — forbidden; use this rule instead.
 
@@ -116,5 +116,5 @@ After ANY SSH/SCP command, the engineer must verify success by:
 2. **Echo a sentinel**: append `&& echo __SSH_OK__` to the remote command and grep stdout for `__SSH_OK__` to confirm the command actually ran (vs. silent SSH-level rejection).
 3. **For file transfer (scp)**: after upload, immediately verify with `ssh ... "ls -la /media/data3/dengkw/<relative_path>"` and check size matches local file.
 4. **For background launches (nohup)**: after launch, sleep 5s then `tail -n 5 train.log` to confirm the process actually started writing log (not silently dead).
-5. **Log all SSH/SCP invocations** to `docs/coordination/implementation_log.md` with: full command, exit code, sentinel hit/miss, and stdout tail. This makes the dormant→active transition reproducible and auditable.
+5. **Log all SSH/SCP invocations** to `docs/coordination/ENGINEER_TODO.md` with: full command, exit code, sentinel hit/miss, and stdout tail. This makes the dormant→active transition reproducible and auditable.
 6. **For RULE 1B fallback (local download → upload):** require successful remote verification (item 3) **before** deleting the local staging file; after deletion, confirm the local path is gone (or size is zero) so disk is actually reclaimed.

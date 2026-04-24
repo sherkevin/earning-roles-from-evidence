@@ -87,7 +87,7 @@ log "  MA-RAG PID=${MARAG_PID}"
 # (replaces ReAgent's openai-SDK-based api_call with our urllib-based
 # llm_client.call_llm). R41c n=5 pilot passed: 5/5 samples, F1=0.16
 # (format-penalized but semantically correct). See `e018_reagent_adapter_inspection.md`
-# §11.3 W3 + implementation_log.md [e_018_reagent_w3_workaround_20260420].
+# §11.3 W3 + ENGINEER_TODO.md [e_018_reagent_w3_workaround_20260420].
 log "launching ReAgent n=50 (W3 patched, --no-mas)"
 nohup external_baselines/reagent/venv_reagent/bin/python \
     external_baselines/reagent/run_reagent_hotpotqa.py \

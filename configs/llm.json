@@ -363,5 +363,18 @@
             "gpt-5",
             "gpt-5.1"
         ]
+    },
+    "local_vllm": {
+        "_type": "local_vllm_openai_compat",
+        "_status": "R42_EMERGENCE_PIVOT_BACKBONE_20260421_per_R41h_user_ack",
+        "_note": "R42 E-6: user approved R41h emergence pivot. vLLM serves Phi-4-mini-instruct (primary, MIT, 3.8B, 2026 <7B reasoning leader) and SmolLM3-3B (control, Apache 2.0, HF fully-open recipe) on the server's idle RTX 3090 GPUs. Routing: when main_model startswith('phi4') or ('smollm'), llm_providers auto-routes here. Keys are 'EMPTY' because vllm server accepts any string by default; set --api-key on vllm server side if security is needed. NOT for canonical gpt-4.1-mini Stage-1/2 sprint — those still route to newapi above.",
+        "base_url": "http://localhost:8001/v1",
+        "key": "EMPTY",
+        "chat_model": "phi4-mini",
+        "models": [
+            "phi4-mini",
+            "smollm3-3b"
+        ],
+        "_deployment_hint": "Launch command (on server): nohup /media/data3/dengkw/venvs/vllm-py310/bin/python3 -m vllm.entrypoints.openai.api_server --model /media/data3/dengkw/models/phi4_mini_instruct --served-model-name phi4-mini --port 8001 --tensor-parallel-size 1 --dtype bfloat16 --gpu-memory-utilization 0.85 --trust-remote-code > logs/vllm_phi4_mini_$(date +%Y%m%d_%H%M%S).log 2>&1 &"
     }
 }

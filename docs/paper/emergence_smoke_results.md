@@ -85,8 +85,8 @@ SmolLM3-3B control run fires after Phi-4-mini n=50 lands.
 ## 5. Cross-references
 
 - Plan document: [`docs/paper/small_model_emergence_plan.md`](./small_model_emergence_plan.md)
-- R41h pivot proposal: `implementation_log.md` `[r41h_emergence_pivot_proposal_20260421_0945]`
-- R42b pivot execution: `implementation_log.md` `[r42b_r41h_pivot_execution_20260421]` (forthcoming)
+- R41h pivot proposal: `ENGINEER_TODO.md` `[r41h_emergence_pivot_proposal_20260421_0945]`
+- R42b pivot execution: `ENGINEER_TODO.md` `[r42b_r41h_pivot_execution_20260421]` (forthcoming)
 - vLLM env setup: `workspace/tmp/r42_vllm_env_setup_v2.sh`
 - Parallel model download: `workspace/tmp/r42_download_models_parallel.sh`
 - Auto-watcher: `workspace/tmp/r42_auto_watcher_emergence.sh`

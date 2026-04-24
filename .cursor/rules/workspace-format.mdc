@@ -1,0 +1,349 @@
+---
+description: Generic workspace format — enforce clear root entrypoints, layered directories, explicit ownership, generated-artifact boundaries, and a single index file for handoff/onboarding
+alwaysApply: true
+---
+
+# Workspace Format Rules
+
+This rule defines the **preferred workspace structure** for long-lived coding / research / automation projects.
+
+It is intentionally **generic**: it captures the reusable structural strengths of this repository without baking in project-specific names like `idea04`, `EDO`, or paper-only semantics.
+
+The goal is:
+
+- maximum clarity for fresh-window onboarding;
+- low-ambiguity ownership of documents, code, scripts, and generated artifacts;
+- strong traceability from source intent → execution entrypoint → generated outputs;
+- minimal user intervention when agents hand off work;
+- stable long-term growth without root-directory sprawl.
+
+---
+
+## 0. Core judgment standard
+
+A workspace is considered **clear enough to serve as a standard template** only if all of the following are true:
+
+1. A newcomer can understand the project from **one root entrypoint** in under 2 minutes.
+2. There is exactly **one root index file** that explains directory responsibilities and onboarding paths.
+3. Human-authored source, execution scripts, generated artifacts, coordination state, and external/vendor code are **visibly separated**.
+4. Each important directory answers a different question:
+   - what the project is,
+   - how it is run,
+   - where active docs live,
+   - where code lives,
+   - where generated outputs live,
+   - where coordination / TODO state lives.
+5. A fresh agent can tell which files are **authoritative**, which are **derived**, and which are **historical**.
+
+If any of the above is not true, the workspace is not yet a reusable format standard.
+
+---
+
+## 1. Preferred top-level shape
+
+The root should stay intentionally small. Prefer a structure of this form:
+
+```text
+<repo>/
+├── README.md
+├── PROJECT_STRUCTURE.md
+├── <small number of root-level source-of-truth docs>
+├── docs/
+├── configs/
+├── prompts/          # optional
+├── scripts/
+├── workspace/        # or src/, for implementation code
+├── artifacts/
+├── data/             # optional, if raw/seed inputs are checked in
+├── references/       # optional, if literature/reference corpus is part of workflow
+└── .cursor/rules/
+```
+
+Hard rules:
+
+1. Root-level files must remain **few and legible**. Treat the root as a project control panel, not a dumping ground.
+2. If many root files accumulate, move them into a typed directory unless they are true project entrypoints.
+3. Every top-level directory must have a **single dominant responsibility**.
+
+---
+
+## 2. Root-level entrypoints
+
+The root should contain only project-wide entrypoints or single-source-of-truth files.
+
+Recommended roles:
+
+- `README.md`:
+  the 1-minute entry for humans and agents.
+- `PROJECT_STRUCTURE.md`:
+  the authoritative workspace map.
+- a **small number** of project-defining root docs:
+  e.g. methodology, experiment policy, architecture note, or product brief.
+
+Hard rules:
+
+1. If a root-level document is referenced by many other files and acts as a project-wide source of truth, it may remain at root.
+2. If a root-level document becomes task-specific, historical, or local to one subsystem, move it under `docs/`.
+3. `README.md` and `PROJECT_STRUCTURE.md` should never compete; they must serve different scopes:
+   - `README.md` = quick start;
+   - `PROJECT_STRUCTURE.md` = full map.
+
+---
+
+## 3. Single index file requirement
+
+Every serious workspace must maintain exactly one root index file, usually:
+
+- `PROJECT_STRUCTURE.md`
+
+This file must answer:
+
+1. what the repository is;
+2. what each top-level directory is for;
+3. which files are the main entrypoints for each role / workflow;
+4. which paths are authoritative vs generated vs archived;
+5. what must not be moved casually.
+
+Hard rules:
+
+1. Any significant directory addition, rename, or archival move must update `PROJECT_STRUCTURE.md` in the same change pass.
+2. `PROJECT_STRUCTURE.md` must reflect **actual current structure**, not aspirational future structure.
+3. Avoid duplicating the full directory manual elsewhere.
+
+---
+
+## 4. Directory responsibility model
+
+Top-level directories should be semantically clean:
+
+- `docs/`:
+  human-authored documents, plans, requirements, audits, coordination docs, and historical archive.
+- `configs/`:
+  runtime config, experiment config, model config, environment-independent settings.
+- `prompts/`:
+  prompt assets, prompt schemas, reviewer prompts, task prompts.
+- `scripts/`:
+  executable orchestration / validation / post-processing / build entrypoints.
+- `workspace/` or `src/`:
+  actual implementation code.
+- `artifacts/`:
+  generated outputs, run directories, figures, reviews, derived summaries.
+- `data/`:
+  checked-in raw inputs / small datasets / seeds only.
+- `references/`:
+  read-only literature or external reference corpus.
+
+Hard rules:
+
+1. Do not mix generated outputs into `docs/` or source code directories.
+2. Do not place active source code under `artifacts/`.
+3. Do not place coordination state under `artifacts/` unless the state itself is generated metadata.
+4. External/vendor clones must live in clearly marked subtrees and must not be mistaken for first-party source.
+
+---
+
+## 5. `docs/` structure
+
+`docs/` should be subdivided by function, not by author.
+
+Preferred pattern:
+
+```text
+docs/
+├── coordination/   # TODOs, logs, role handoff state
+├── paper/          # active writing / analyses / figure prompts / audits
+├── archive/        # inactive or historical docs
+└── <project-specific typed subdirs as needed>
+```
+
+Hard rules:
+
+1. Active docs and archive docs must be separated.
+2. Coordination docs must be in one obvious place.
+3. Historical docs should not visually compete with live docs.
+4. If a document is no longer operationally relevant, move it to `docs/archive/` instead of leaving it beside active files.
+
+---
+
+## 6. `scripts/` discipline
+
+`scripts/` must hold execution entrypoints and utility scripts, not arbitrary scratch files.
+
+Recommended grouping:
+
+- main run scripts;
+- validation scripts;
+- post-processing scripts;
+- plotting / figure-generation scripts;
+- build scripts;
+- archival/report aggregation scripts.
+
+Hard rules:
+
+1. A script should have a clear workflow role, not just an ad-hoc temporary purpose.
+2. Temporary one-off diagnostics should live in a clearly marked scratch area (for example `workspace/tmp/`), not in the main `scripts/` surface.
+3. Script names should communicate whether they are:
+   - run,
+   - validate,
+   - collect,
+   - build,
+   - plot,
+   - summarize,
+   - audit,
+   - watch.
+
+---
+
+## 7. `artifacts/` boundary
+
+`artifacts/` is for **generated** outputs only.
+
+Typical contents:
+
+- experiment run directories;
+- figures;
+- reviewer outputs;
+- merged tables/statistics;
+- generated reports;
+- forensic rescue copies.
+
+Hard rules:
+
+1. Anything under `artifacts/` should be reproducible, regenerated, or clearly derived from upstream source/config.
+2. Human-authored policy/spec docs do **not** belong in `artifacts/`.
+3. If a directory mixes generated and hand-edited content, split it.
+4. If a generated artifact becomes long-term authoritative, promote the source definition into `docs/` or `configs/`, not the artifact itself.
+
+---
+
+## 8. Source vs generated vs historical
+
+Every important file path should be mentally classifiable as one of:
+
+- **source-of-truth**
+- **generated artifact**
+- **historical archive**
+
+Hard rules:
+
+1. Source-of-truth files must be easy to locate and should not hide inside generated-output trees.
+2. Generated files should not masquerade as source-of-truth.
+3. Historical files should be visibly marked as archive / stale / legacy where ambiguity exists.
+
+Recommended signals:
+
+- `archive/`
+- `historical`
+- `legacy`
+- `stale`
+- explicit notes in file headers or index docs
+
+---
+
+## 9. Ownership visibility
+
+The workspace format should make ownership legible.
+
+Examples of good ownership surfaces:
+
+- coordination TODOs with explicit owning role;
+- append-only engineering log;
+- reviewer archive directory family;
+- root index file that says who maintains what.
+
+Hard rules:
+
+1. Important state files must have obvious owners.
+2. If a file is cross-role but authoritative, say so explicitly.
+3. Ownership metadata should be written in docs, not inferred from tribal knowledge.
+
+---
+
+## 10. Entry-by-question design
+
+An excellent workspace lets a newcomer navigate by question:
+
+- "What is this project?" → `README.md`
+- "Where is everything?" → `PROJECT_STRUCTURE.md`
+- "What is the current coordination state?" → `docs/coordination/...`
+- "What code actually runs?" → `workspace/...` or `src/...`
+- "How do I execute / validate / build?" → `scripts/...`
+- "Where are outputs?" → `artifacts/...`
+
+Hard rule:
+
+If a newcomer cannot answer those questions in one hop, the format is not clear enough.
+
+---
+
+## 11. Anti-patterns
+
+The following patterns are signs that a workspace format is degrading:
+
+1. Root directory sprawl with many unrelated files.
+2. Active docs mixed with archives.
+3. Generated outputs mixed into source directories.
+4. No single index file.
+5. Multiple directories trying to serve as "the real entrypoint".
+6. Scratch scripts mixed into long-term execution entrypoints.
+7. Vendor/external code indistinguishable from first-party code.
+8. Artifact paths used as if they were human-authored specs.
+9. Naming that encodes only history, not responsibility.
+
+When these appear, fix structure before adding more content.
+
+---
+
+## 12. Evaluation of the current repository as a template
+
+This repository's current workspace is a **strong structural base**, but not a directly reusable generic template without abstraction.
+
+What is already strong enough to emulate:
+
+- root has clear control-panel entrypoints (`README.md`, `PROJECT_STRUCTURE.md`, a few core root docs);
+- `PROJECT_STRUCTURE.md` is real and useful, not decorative;
+- `docs/`, `scripts/`, `workspace/`, and `artifacts/` are meaningfully separated;
+- coordination state has a dedicated home;
+- generated reviewer outputs are isolated from source docs;
+- implementation code is not mixed with high-level documentation.
+
+What is good locally but too project-specific to copy literally:
+
+- paper-centric naming and workflow assumptions;
+- role/TODO semantics tightly tied to this collaboration model;
+- some historical/project-specific directories (for example vendor clones, scratch tmp workflows, literature corpus) that are useful here but should be optional in a generic template;
+- very dense project-specific status narrative inside `PROJECT_STRUCTURE.md`.
+
+Therefore:
+
+- Treat this repository as a **good exemplar of layered structure**.
+- Do **not** treat it as a copy-paste directory schema without adapting names and scope.
+
+---
+
+## 13. Recommended generic template rule
+
+When creating or refactoring a workspace, prefer this decision order:
+
+1. keep the root small and legible;
+2. maintain one authoritative index file;
+3. separate source / docs / scripts / artifacts / coordination state;
+4. isolate external/vendor code;
+5. move stale material into archive;
+6. make ownership and entrypoints explicit;
+7. make generated outputs obviously generated.
+
+If a structural choice improves all seven, it is usually the right choice.
+
+---
+
+## 14. Applicability
+
+This rule is intended to be reusable across:
+
+- research repos;
+- engineering repos with coordination-heavy workflows;
+- agent-operated codebases;
+- hybrid doc/code/experiment workspaces.
+
+It is not limited to paper-writing projects.

@@ -15,14 +15,16 @@ TS="$(date +%Y%m%d_%H%M%S)"
 LOG_DIR="/media/data3/dengkw/idea04/logs"
 mkdir -p "${LOG_DIR}" "${MODELS_ROOT}"
 
-if [ ! -x "${VENV}/bin/huggingface-cli" ]; then
-  echo "ABORT: huggingface-cli not in venv ${VENV}/bin/. Wait for pip install huggingface_hub to finish."
+# R43 (2026-04-23): huggingface-cli is deprecated in huggingface_hub >= 1.0,
+# switched to new `hf download REPO_ID --local-dir DIR` CLI.
+if [ ! -x "${VENV}/bin/hf" ]; then
+  echo "ABORT: hf CLI not in venv ${VENV}/bin/. venv huggingface_hub must be >= 1.0."
   exit 1
 fi
 
-echo "launching parallel downloads:"
-echo "  (a) microsoft/Phi-4-mini-instruct  → ${MODELS_ROOT}/phi4_mini_instruct"
-echo "  (b) HuggingFaceTB/SmolLM3-3B       → ${MODELS_ROOT}/smollm3_3b"
+echo "launching parallel downloads (using new-style hf CLI):"
+echo "  (a) microsoft/Phi-4-mini-instruct  -> ${MODELS_ROOT}/phi4_mini_instruct"
+echo "  (b) HuggingFaceTB/SmolLM3-3B       -> ${MODELS_ROOT}/smollm3_3b"
 
 # Clean empty qwen25 dir (v1 leftover)
 if [ -d "${MODELS_ROOT}/qwen25_7b_instruct" ] && [ -z "$(ls -A "${MODELS_ROOT}/qwen25_7b_instruct" 2>/dev/null)" ]; then
@@ -35,12 +37,11 @@ LOG_SMOL="${LOG_DIR}/r42_download_smollm3_${TS}.log"
 
 mkdir -p "${MODELS_ROOT}/phi4_mini_instruct" "${MODELS_ROOT}/smollm3_3b"
 
-# Phi-4-mini (primary)
-HF_ENDPOINT="${HF_ENDPOINT}" HF_HOME="${HF_HOME}" \
-  nohup "${VENV}/bin/huggingface-cli" download \
+# Phi-4-mini (primary) - via new hf CLI, HF mirror
+HF_ENDPOINT="${HF_ENDPOINT}" HF_HOME="${HF_HOME}" HF_HUB_ENABLE_HF_TRANSFER=0 \
+  nohup "${VENV}/bin/hf" download \
     microsoft/Phi-4-mini-instruct \
     --local-dir "${MODELS_ROOT}/phi4_mini_instruct" \
-    --local-dir-use-symlinks False \
   > "${LOG_PHI4}" 2>&1 &
 PHI4_PID=$!
 disown || true
@@ -49,11 +50,10 @@ echo "  Phi-4-mini PID=${PHI4_PID} log=${LOG_PHI4}"
 sleep 1
 
 # SmolLM3 (control)
-HF_ENDPOINT="${HF_ENDPOINT}" HF_HOME="${HF_HOME}" \
-  nohup "${VENV}/bin/huggingface-cli" download \
+HF_ENDPOINT="${HF_ENDPOINT}" HF_HOME="${HF_HOME}" HF_HUB_ENABLE_HF_TRANSFER=0 \
+  nohup "${VENV}/bin/hf" download \
     HuggingFaceTB/SmolLM3-3B \
     --local-dir "${MODELS_ROOT}/smollm3_3b" \
-    --local-dir-use-symlinks False \
   > "${LOG_SMOL}" 2>&1 &
 SMOL_PID=$!
 disown || true

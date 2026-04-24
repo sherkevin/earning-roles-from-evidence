@@ -6,7 +6,7 @@
 
 | 方法 | 采用目录 | 说明 |
 |------|-----------|------|
-| `fixed_peer_calibrated` | `artifacts/round1/run_20260411_102202/fixed_peer_calibrated/` | v3 主实验锚点 run（与 `implementation_log` 中 `round1_v3_F1_optimization` 一致）。 |
+| `fixed_peer_calibrated` | `artifacts/round1/run_20260411_102202/fixed_peer_calibrated/` | v3 主实验锚点 run（与 `ENGINEER_TODO` 中 `round1_v3_F1_optimization` 一致）。 |
 | `fixed_self_calibrated` | `artifacts/round1/run_20260411_132631/fixed_self_calibrated/` | 与 peer **同一条** `raw_inputs.jsonl`（由 `run_round1_v3.py` 显式指定 `run_20260411_102202/.../raw_inputs.jsonl` 复跑），同 `glm-4-flash`、同 `prompts/main_agent_prompt.txt` 版本。 |
 
 汇总表 `artifacts/round1/round1_main_table.csv` 中 `fixed_self_calibrated` 行已与 **`132631` 的 `metrics.json`** 对齐；若历史草稿仍引用同 run 内另一份 self 目录，请以本脚注为准。

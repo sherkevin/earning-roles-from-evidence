@@ -26,13 +26,13 @@ If a script passes a stale ``model="gpt-3.5-turbo-..."``, the optional helper
 canonical-backbone rule (per ``experiment.md §1.3``: gpt-4.1-mini for mainline).
 
 This shim is **isolated to ``external_baselines/mad/``**; it does NOT touch the
-production code path under ``workspace/idea04_core/``.  Per implementation_log
+production code path under ``workspace/idea04_core/``.  Per ENGINEER_TODO
 [u_018_mad_landed_20260420] E-016 ticket spec C-3, MAD adapter work must NOT
 monkeypatch the global ``openai`` package in a way that pollutes our
 ``llm_client.py`` Stage-1 pipeline (which uses ``urllib`` directly, not the
 ``openai`` package, so this shim is doubly safe).
 
-Forensic dispatch source: implementation_log [E-017_migration_landed_ack_20260420]
+Forensic dispatch source: ENGINEER_TODO [E-017_migration_landed_ack_20260420]
 sub-block "Hold/Defer items".
 """
 

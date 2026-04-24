@@ -1,6 +1,6 @@
 # E-009 — External Baseline Survey Report
 
-> Phase block: `[E-009_external_baseline_survey_20260420]` in `docs/coordination/implementation_log.md`.
+> Phase block: `[E-009_external_baseline_survey_20260420]` in `docs/coordination/ENGINEER_TODO.md`.
 > Triggered by R10 commit (U-014 ✅ 2 systems = AutoGen + ChatEval, U-015 ✅ R2+R3 swap, U-016 ✅ drop E-007).
 > Probe date: 2026-04-19.
 
@@ -157,7 +157,7 @@ E-010 well under the `[E-API-budget-check]` $100/batch threshold; **no new `U-EX
 - **Added**:
   - `artifacts/external_baselines/survey_report.md` (this file)
 - **Modified**:
-  - `docs/coordination/implementation_log.md` (E-009 phase block ⏳ → ✅ in `[engineer_day1_5_completion_20260420]`)
+  - `docs/coordination/ENGINEER_TODO.md` (E-009 phase block ⏳ → ✅ in `[engineer_day1_5_completion_20260420]`)
 - **Not touched** (per E-009 scope — no install / no LLM call / no key write):
   - `configs/llm.json`
   - `workspace/idea04_core/`

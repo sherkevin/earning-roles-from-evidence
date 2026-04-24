@@ -317,6 +317,6 @@ I recommend the authors **withdraw and revise** rather than submit this version 
 - ✅ Did NOT participate in §A decisions (this `recommended_next_actions` field is suggestion-only; decision authority remains with user)
 - ✅ Did NOT read past reviews / scoreboard / fix_themes / SCIENTIST_TODO §C (stateless)
 - ✅ Did NOT trigger S-104 (scientist's responsibility per §11.4)
-- Will leave §F.4 1-line ack in `implementation_log.md` as the only allowed exception
+- Will leave §F.4 1-line ack in `ENGINEER_TODO.md` as the only allowed exception
 - Temporary PDF text extraction (in system temp) deleted post-review per §F.3
 - This `review.md` is the only required product per §F.3 (no `review.json` generated)

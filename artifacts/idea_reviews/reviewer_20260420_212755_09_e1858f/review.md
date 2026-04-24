@@ -344,7 +344,7 @@ overall = 4.0
 ## `recommended_next_actions`
 
 1. Immediately fix the Appendix C DR-5 POSSIBLE leak (5-minute edit).
-2. Re-run Table 2 ablations on canonical `gpt-4.1-mini` backbone to resolve the null-effect signal (blocked on quota; but the 4 new gpt-4.1-mini ablation configs already exist in the anonymous supplement per `implementation_log` cross-refs).
+2. Re-run Table 2 ablations on canonical `gpt-4.1-mini` backbone to resolve the null-effect signal (blocked on quota; but the 4 new gpt-4.1-mini ablation configs already exist in the anonymous supplement per `ENGINEER_TODO` cross-refs).
 3. Land the 3-seed × 7405 full-validation paired-bootstrap pipeline; update Table 1 once all three methods settle.
 4. Benchmark AutoGen + ChatEval + MAD + MA-RAG + ReAgent head-to-head on HotpotQA (and, if possible, MuSiQue); include in a main-body external-baseline table.
 5. Replace Figure 1 placeholder with final vector asset.

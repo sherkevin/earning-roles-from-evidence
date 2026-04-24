@@ -1,0 +1,12 @@
+benchmark: hotpotqa
+split: validation
+sample_size: 5
+topology: chain
+max_handoff: 4
+main_model: phi4-mini
+temperature: 0.0
+token_budget_per_sample: 2000
+shared_prompt_template: prompts/main_agent_prompt.txt
+methods:
+  - single_agent
+  - edo_stage2_chain

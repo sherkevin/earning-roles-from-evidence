@@ -2,7 +2,7 @@
 
 **When**: 2026-04-20 R41 engineer session (MCP-3).
 **Who**: engineer.
-**Intent**: Per `implementation_log.md [sota_full_system_workstream_20260420]` E-018 ticket (Axis A Tier-1: MA-RAG + ReAgent), inspect the ReAgent repo at `external_baselines/reagent/` on server and produce an adapter spec so the next engineer session can write `run_reagent_hotpotqa.py` without repeating the discovery work.
+**Intent**: Per `ENGINEER_TODO.md [sota_full_system_workstream_20260420]` E-018 ticket (Axis A Tier-1: MA-RAG + ReAgent), inspect the ReAgent repo at `external_baselines/reagent/` on server and produce an adapter spec so the next engineer session can write `run_reagent_hotpotqa.py` without repeating the discovery work.
 
 **Status of the sibling Axis A finalist**: MA-RAG adapter (`external_baselines/marag/run_marag_hotpotqa.py`, Path A gold-context) is already written (R2) + smoke-probed in R41 (see `[e_015_e_018_smoke_parallel_launch_20260420]`). ReAgent is the only Axis A system that still lacks a smoke adapter; this doc closes that gap as pure analysis (no LLM / no code execution in this session).
 
@@ -298,8 +298,8 @@ Estimated cost: 5 samples × ~6 agents × ~3 rounds × ~800 tokens/call ≈ 72 K
 
 ## 8. Cross-references
 
-- `implementation_log.md` [sota_full_system_workstream_20260420] §Axis A — original E-018 dispatch
-- `implementation_log.md` [E-017_migration_landed_ack_20260420] `##### ReAgent (E-018 candidate)` — R2 setup notes (venv + clone)
+- `ENGINEER_TODO.md` [sota_full_system_workstream_20260420] §Axis A — original E-018 dispatch
+- `ENGINEER_TODO.md` [E-017_migration_landed_ack_20260420] `##### ReAgent (E-018 candidate)` — R2 setup notes (venv + clone)
 - `external_baselines/reagent/main.py` — ReAgent's canonical entry point (don't invoke directly; use the thin wrapper)
 - `external_baselines/marag/run_marag_hotpotqa.py` — sibling Axis A adapter (same pattern, already smoke-probed R41)
 - `workspace/tmp/newapi_quota_probe.sh` — E-020.3 pre-flight probe (reused)
@@ -315,7 +315,7 @@ Estimated cost: 5 samples × ~6 agents × ~3 rounds × ~800 tokens/call ≈ 72 K
 When this ticket is opened next, engineer should:
 1. Implement the thin wrapper from §5 (expected 2-3h including stub cleanup).
 2. Run the smoke from §6 (≤ 10 min + $0.20).
-3. Append `[e_018_reagent_smoke_landed_<TS>]` phase block in `implementation_log.md` with the metrics + a comparison row vs our stage2 baseline F1 on the same 5 samples.
+3. Append `[e_018_reagent_smoke_landed_<TS>]` phase block in `ENGINEER_TODO.md` with the metrics + a comparison row vs our stage2 baseline F1 on the same 5 samples.
 4. If smoke F1 < 0.4 (flag), investigate before scaling to 50-sample full smoke.
 
 

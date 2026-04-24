@@ -14,7 +14,7 @@
 
 若后续工程实现、工程师任务文件、口头讨论与本文件冲突：
 
-- 先把冲突记入 `implementation_log.md`
+- 先把冲突记入 `ENGINEER_TODO.md`
 - 再由 coordinator 明确覆盖
 - 未被明确覆盖前，以本文件为准
 

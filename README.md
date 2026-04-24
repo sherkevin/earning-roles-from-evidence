@@ -1,84 +1,48 @@
-# idea04 — Emergent Delegation Organization (EDO)
+# idea04 - Emergent Delegation Organization (EDO)
 
-EMNLP long paper 仓库。研究**近似同质 LLM agent 在稀疏图上通过递归委派与递归验收形成分工组织**。
-当前可执行原型 `Terminal-Consensus Peer Backpropagation (TCPB)` 是 Stage-1 受限实例。
+EMNLP long paper collaboration repository for EDO. The repo is organized to let four roles (user, scientist, engineer, reviewer) keep moving with minimal user intervention.
 
 ---
 
-## 1 分钟入口
+## 1-minute Entry
 
-| 你想做的事 | 应该读 |
+| Need | Read |
 |---|---|
-| **理解项目全貌** | [`PROJECT_STRUCTURE.md`](./PROJECT_STRUCTURE.md) |
-| **理解方法论** | [`idea.md`](./idea.md) |
-| **跑实验前必读规范** | [`experiment.md`](./experiment.md) |
-| **看当前论文稿** | [`docs/paper/EMNLP_paper_draft.md`](./docs/paper/EMNLP_paper_draft.md) |
-| **看 EMNLP 2027 投稿要求** | [`docs/demand.md`](./docs/demand.md) |
-| **看用户的 TODO + 决策池**（**权威源**） | [`docs/coordination/USER_TODO.md`](./docs/coordination/USER_TODO.md) |
-| **看科学家的写作 TODO** | [`docs/coordination/SCIENTIST_TODO.md`](./docs/coordination/SCIENTIST_TODO.md) |
-| **看工程实现日志（append-only）** | [`docs/coordination/implementation_log.md`](./docs/coordination/implementation_log.md) |
-| **看审稿人 TODO**（R-FULL/R-PART） | [`docs/coordination/REVIEWER_TODO.md`](./docs/coordination/REVIEWER_TODO.md) |
-| **看每个 run 的状态标签** | [`artifacts/RUN_INDEX.md`](./artifacts/RUN_INDEX.md) |
-| **看可执行 spec** | [`artifacts/edo_lite_executable_spec.md`](./artifacts/edo_lite_executable_spec.md) |
-| **看 8-page 预算审计** | [`docs/paper/page_budget_audit.md`](./docs/paper/page_budget_audit.md) |
-| **看论文图（Figure 2）** | [`artifacts/figures/fig2_backbone_sensitivity.pdf`](./artifacts/figures/fig2_backbone_sensitivity.pdf) |
-| **看 Figure 1 概念图绘制 prompt** | [`docs/paper/figures_prompts/fig1_3action_policy_prompt.md`](./docs/paper/figures_prompts/fig1_3action_policy_prompt.md) |
+| Project map and storage rules | [`PROJECT_STRUCTURE.md`](./PROJECT_STRUCTURE.md) |
+| Role startup prompts | [`prompts/ROLE_PROMPTS.md`](./prompts/ROLE_PROMPTS.md) |
+| Collaboration hard rules | [`.cursor/rules/collaboration-workflow.mdc`](./.cursor/rules/collaboration-workflow.mdc) |
+| Method idea and claims | [`idea.md`](./idea.md) |
+| Experiment rules | [`experiment.md`](./experiment.md) |
+| EMNLP/ARR requirement spec | [`docs/demand.md`](./docs/demand.md) |
+| User decisions | [`docs/coordination/USER_TODO.md`](./docs/coordination/USER_TODO.md) |
+| Scientist tasks | [`docs/coordination/SCIENTIST_TODO.md`](./docs/coordination/SCIENTIST_TODO.md) |
+| Engineer tasks | [`docs/coordination/ENGINEER_TODO.md`](./docs/coordination/ENGINEER_TODO.md) |
+| Legacy engineering log | [`docs/coordination/implementation_log.md`](./docs/coordination/implementation_log.md) |
+| Reviewer tasks | [`docs/coordination/REVIEWER_TODO.md`](./docs/coordination/REVIEWER_TODO.md) |
+| Reviewer schema/template | [`prompts/reviewer_template.md`](./prompts/reviewer_template.md) |
+| Current paper source | [`article/latex/edo_paper.tex`](./article/latex/edo_paper.tex) |
+| Current paper PDF | [`article/build/edo_paper.pdf`](./article/build/edo_paper.pdf) |
 
 ---
 
-## 顶层目录
+## Storage Rule
 
-```
-idea04/
-├── README.md              ← 你正在看这个
-├── PROJECT_STRUCTURE.md   详细目录说明
-├── idea.md                方法论（理论主对象）
-├── experiment.md          实验执行规范（单一事实源）
-│
-├── docs/                  所有文档
-│   ├── demand.md            EMNLP 投稿要求
-│   ├── paper/               论文稿
-│   ├── coordination/        协作 / TODO / 日志
-│   └── archive/             历史文档（不再活跃）
-│
-├── configs/               所有实验 yaml + llm.json
-├── prompts/               runtime prompt（被 methods.py 调用）
-├── scripts/               跑数 / 校验 / 后处理 / reviewer loop
-├── workspace/
-│   ├── idea04_core/         真正的方法实现
-│   └── autogen/             AutoGen 完整 clone（历史依赖）
-│
-├── artifacts/             所有跑数 + 论文资产 + reviewer 归档（2.5 GB）
-├── data/                  MuSiQue Stage-2 备料
-└── .cursor/               协作硬约束（必读）
-    └── rules/
-```
+- `docs/coordination/` stores task state only.
+- `docs/<role>/` stores durable role-authored handoffs, logs, results, runbooks, and decision briefs.
+- `docs/chats/<role>/` stores lightweight cross-role memos.
+- `artifacts/` stores experiment, figure, statistics, forensic, and reviewer evidence.
+- `article/` stores only buildable paper sources and build outputs.
 
-详细每个子目录的内容、状态标签、归档约定见 [`PROJECT_STRUCTURE.md`](./PROJECT_STRUCTURE.md)。
+See [`PROJECT_STRUCTURE.md`](./PROJECT_STRUCTURE.md) for the full convention.
 
 ---
 
-## 角色与协作
+## Role Loop
 
-| 角色 | 入口文件 | 主 ID 前缀 |
-|---|---|---|
-| 用户（总协调） | [`docs/coordination/USER_TODO.md`](./docs/coordination/USER_TODO.md) — §A 决策池（权威源）+ §B 用户专属工作 + §C dispatch inbox | `U-x` / `C-x` |
-| 科学家（writing lead） | [`docs/coordination/SCIENTIST_TODO.md`](./docs/coordination/SCIENTIST_TODO.md) — §B–E 写作 TODO（§A 仅 cross-reference 到 USER_TODO） | `S-x` |
-| 工程师 | [`docs/coordination/implementation_log.md`](./docs/coordination/implementation_log.md) — append-only 工程日志 | `E-x`（新 phase） |
-| 审稿人 | [`docs/coordination/REVIEWER_TODO.md`](./docs/coordination/REVIEWER_TODO.md) — `R-FULL-XXX` 全文（仅用户触）+ `R-PART-XXX` 局部（科学家/工程师可自触审自己新写内容）；batch 归档落 [`artifacts/idea_reviews/`](./artifacts/idea_reviews/) | `R-x` |
+Every role should start by reading its prompt in [`prompts/ROLE_PROMPTS.md`](./prompts/ROLE_PROMPTS.md), then:
 
-协作规范硬约束：[`.cursor/rules/four-role-todo-workflow.mdc`](./.cursor/rules/four-role-todo-workflow.mdc)（4 个协作角色：用户 / 科学家 / 工程师 / 审稿人；英文版 + Cursor `.mdc` 规范）。
-
----
-
-## 论文资产约定
-
-- **figure 最终交付** (`.pdf` / `.tex`)：`workspace/autogen/dotnet/website/articles/paper/`（用户指定，加 `paper/` 子目录避免污染 autogen 上游）
-- **figure 工作区**（科学家实绘 + 数据 provenance）：`artifacts/figures/`
-- **figure prompt**（用户出概念图前科学家先写 prompt）：`docs/paper/figures_prompts/`
-- **rebuttal 记录**：⏳ 待 U-002 拍板（候选位置见 `SCIENTIST_TODO.md § A`）
-
-### 谁画哪种图
-
-- **数学统计图**（柱 / 箱 / 折 / 散点 / 热图）：科学家用 Python 实绘 → `artifacts/figures/`
-- **概念示意图 / 逻辑流程图**：用户绘制；科学家先写完整 prompt → `docs/paper/figures_prompts/`
+1. Read the project structure and own TODO/log.
+2. Run pending -> done sweep.
+3. Execute the highest-priority unblocked task (`P0 > P1 > P2 > P3`).
+4. Write substantial cross-role context to `docs/<author-role>/...`, not into chat memory.
+5. Stop only when the current highest-priority chain is complete and the remaining frontier is blocked.

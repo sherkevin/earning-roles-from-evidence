@@ -2,7 +2,7 @@
 
 > **⚠ RACE-CONDITION NOTE — System reconciliation: this batch is R-FULL-006 BATCH-B**
 >
-> A parallel reviewer-agent instance (reviewer_id `c5c5ad`) completed R-FULL-006 BATCH-A at 2026-04-19 21:46 (29 min before this batch's 22:15 timestamp), gave overall=4.5 weak_reject with weighted_sum=4.560 by **charitably interpreting Appendix B/C/D/E as supplementary material exempt from the demand.md §2 8-page cap**. That BATCH-A landed `REVIEWER_TODO §A` + `SCIENTIST_TODO §C/§B.5` + `USER_TODO §D` + `implementation_log §F.4 ack` and was processed by scientist in R25/R29/R30/R31 commits.
+> A parallel reviewer-agent instance (reviewer_id `c5c5ad`) completed R-FULL-006 BATCH-A at 2026-04-19 21:46 (29 min before this batch's 22:15 timestamp), gave overall=4.5 weak_reject with weighted_sum=4.560 by **charitably interpreting Appendix B/C/D/E as supplementary material exempt from the demand.md §2 8-page cap**. That BATCH-A landed `REVIEWER_TODO §A` + `SCIENTIST_TODO §C/§B.5` + `USER_TODO §D` + `ENGINEER_TODO §F.4 ack` and was processed by scientist in R25/R29/R30/R31 commits.
 >
 > **This batch (R-FULL-006 BATCH-B, reviewer_id `0297b0`) is the strict-DR-1 complementary perspective**: same NEW PDF SHA `8161E9D3`, but enforcing `docs/demand.md §2` literal text instead of charitable-interpretation. This is the **first reviewer batch (in 7 cumulative R-FULL batches: P5/P3/P2/P1/P4/P5-c5c5ad/P5-strict-0297b0) to break the systematic charitable-interpretation bias** by reading demand.md §2 word-for-word.
 >
@@ -11,7 +11,7 @@
 >   - dispatched **S-145** (R-FULL-006 BATCH-B honesty re-phrase: Appendix D + §4.5 narrative EM regression) in SCIENTIST_TODO §B.5
 >   - dispatched **S-146** (R-FULL-006 BATCH-B Abstract/§3.1 near-homogeneous consistency) in SCIENTIST_TODO §B.5
 >
-> Reviewer-agent therefore should NOT re-dispatch any of {U-021, S-145, S-146} — they already exist. Reviewer-agent's only remaining job: ensure REVIEWER_TODO §A/§C/§D/§F.5 reflects this BATCH-B + leave 1-line implementation_log §F.4 ack.
+> Reviewer-agent therefore should NOT re-dispatch any of {U-021, S-145, S-146} — they already exist. Reviewer-agent's only remaining job: ensure REVIEWER_TODO §A/§C/§D/§F.5 reflects this BATCH-B + leave 1-line ENGINEER_TODO §F.4 ack.
 
 > **Reviewing standard**: EMNLP 2026 Long Paper Track. **Strict P5 mode, NO charitable interpretation, no flattery.**
 >
@@ -371,7 +371,7 @@ The cross-persona consistency observation from prior batches (5 personas all con
 - ✅ Did NOT participate in §A decisions
 - ✅ Did NOT read past R-FULL-001/002/003/004/005 reviews (stateless)
 - ✅ Did NOT trigger S-104 (scientist's responsibility)
-- Will leave §F.4 1-line ack in `implementation_log.md` (only allowed exception)
+- Will leave §F.4 1-line ack in `ENGINEER_TODO.md` (only allowed exception)
 - Will dispatch new S-XXX TODOs to scientist per user's standing instruction
 - Temporary PDF text extraction at `$env:TEMP\edo_paper_r6_strict.txt` deleted post-review per §F.3
 - This `review.md` is the only required product per §F.3 (no `review.json` generated)

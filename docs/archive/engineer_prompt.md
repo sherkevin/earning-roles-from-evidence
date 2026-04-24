@@ -14,7 +14,7 @@
 - `idea.md` 负责说明当前论文的核心问题、方法对象与 short paper 边界
 - `experiment.md` 负责说明当前唯一有效的 benchmark、baseline、目录规范、实验步骤、验收标准和止损条件
 
-如果两者发生冲突，以 `experiment.md` 为准，并把冲突记录到 `implementation_log.md`。
+如果两者发生冲突，以 `experiment.md` 为准，并把冲突记录到 `ENGINEER_TODO.md`。
 
 ## 你的角色和目标
 
@@ -59,7 +59,7 @@
 
 然后创建并维护：
 
-- `implementation_log.md`
+- `ENGINEER_TODO.md`
 
 要求：
 
@@ -78,7 +78,7 @@
 - 确认可限制 speaker / 邻接关系
 - 确认可拦截每次消息用于写日志
 
-如果半天内做不到，再 fallback 到 `LangGraph`，但必须先在 `implementation_log.md` 中写清 blocker。
+如果半天内做不到，再 fallback 到 `LangGraph`，但必须先在 `ENGINEER_TODO.md` 中写清 blocker。
 
 ### Step 2：实现统一 agent contract
 

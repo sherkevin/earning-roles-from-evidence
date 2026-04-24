@@ -1,6 +1,6 @@
 #!/bin/bash
 # E-014 launcher (gpt-4.1-mini Table 2 ablation) — RUN AFTER E-017 fully done.
-# Per implementation_log [E-017_migration_landed_ack_20260420] sub-block "Hold/Defer items":
+# Per ENGINEER_TODO [E-017_migration_landed_ack_20260420] sub-block "Hold/Defer items":
 # this script holds until paired_stats_3seed.csv lands, then launches 4 ablation batches
 # in 2 parallel pairs (workers=8 each, total 16 concurrent — within newapi safe ceiling).
 #

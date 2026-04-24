@@ -384,7 +384,7 @@ I recommend the authors **withdraw and revise** before ARR May 2026 to include t
 - ✅ Did NOT participate in §A decisions
 - ✅ Did NOT read past R-FULL-001/002/003/004/005 review.md / scoreboard.md / fix_themes.md / SCIENTIST_TODO §C content during scoring (used only persona-rotation fact)
 - ✅ Did NOT trigger S-104 (scientist's responsibility per §11.4)
-- Will leave §F.4 1-line ack in `implementation_log.md`
+- Will leave §F.4 1-line ack in `ENGINEER_TODO.md`
 - Will dispatch new S-XXX TODOs to scientist per user's standing instruction "你不要忘了给科学家下任务"
 - Will add R-FULL-005 STRICT REVISION errata acknowledgment per user feedback "不够严厉" — done
 - Temporary PDF text extraction at `$env:TEMP\edo_paper_r6_strict_audit.txt` deleted post-review per §F.3

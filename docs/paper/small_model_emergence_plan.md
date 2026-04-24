@@ -288,8 +288,8 @@ ETA to land all 12 cells: ~48-72 h wall-clock, mostly GPU-bound.
 - `.cursor/rules/ssh-server-rules.mdc §E-013 probe` — server GPU inventory
 - `docs/paper/sota_baseline_survey_2026.md` — Tier-1 survey (MA-RAG + ReAgent = API-based systems; local-model ablation is orthogonal)
 - `docs/paper/benchmark_inventory.md` — datasets + methods map; would add a "local 7B" row
-- `docs/coordination/implementation_log.md [r41f_quota_exhaustion_v2_20260421_0850]` — the quota incident that motivated this pivot
-- `docs/coordination/implementation_log.md [r41g_runner_robustness_fix_20260421_0910]` — robustness baseline
+- `docs/coordination/ENGINEER_TODO.md [r41f_quota_exhaustion_v2_20260421_0850]` — the quota incident that motivated this pivot
+- `docs/coordination/ENGINEER_TODO.md [r41g_runner_robustness_fix_20260421_0910]` — robustness baseline
 
 ---
 

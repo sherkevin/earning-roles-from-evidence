@@ -65,7 +65,7 @@ METHOD_NAMES = [
     "fixed_peer_calibrated",
     "fixed_self_calibrated",
     # Stage-2 prototype (E-005). Chain topology, exercises all 4 R1/R2/R3 modules.
-    # See `[E-005_stage2_integration_20260420]` in implementation_log for design.
+    # See `[E-005_stage2_integration_20260420]` in ENGINEER_TODO for design.
     "edo_stage2_chain",
 ]
 

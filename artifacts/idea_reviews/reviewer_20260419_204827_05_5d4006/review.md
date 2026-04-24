@@ -358,7 +358,7 @@ I recommend the authors either (i) **withdraw and revise** before ARR May 2026 t
 - ✅ Did NOT participate in §A decisions (`recommended_next_actions` is suggestion only; decision authority remains with user)
 - ✅ Did NOT read past R-FULL-001/002/003/004 reviews / scoreboard.md / fix_themes.md / SCIENTIST_TODO §C (stateless)
 - ✅ Did NOT trigger S-104 (scientist's responsibility per §11.4)
-- Will leave §F.4 1-line ack in `implementation_log.md` as the only allowed exception
+- Will leave §F.4 1-line ack in `ENGINEER_TODO.md` as the only allowed exception
 - Will dispatch new S-XXX TODOs to scientist per user's standing instruction "你不要忘了给科学家下任务" (R-FULL-004 established the pattern)
 - Temporary PDF text extraction at `$env:TEMP\edo_paper_r5_strict_audit.txt` deleted post-review per §F.3
 - This `review.md` is the only required product per §F.3 (no `review.json` generated; matches user's 2026-04-19 instruction)
