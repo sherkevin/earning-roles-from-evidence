@@ -1,51 +1,184 @@
-# Best-Paper Figure Prompt Index
+# EDO Paper Figure Prompt Index
 
 > Created: 2026-04-24
+> Revised: 2026-04-27 v4 after prompt cleanup and Claude typography pass
 > Owner: scientist
-> Purpose: collect AI-renderable prompts for the Best-Paper methodology / evidence route.
+> Governing style: `docs/paper/figures_prompts/claude_warm_minimalism_style_20260427.md`
+> Scope: AI-rendered conceptual / architecture figures only. Quantitative result plots must be generated from engineer-validated artifacts.
 
 ---
 
-## Recommended rendering order
+## 1. Revised Figure Budget
 
-1. `fig3_r2_information_advantage_prompt.md`
-   - Highest scientific value.
-   - Supports R2 recursive audit and T-Best-1 / T-Best-3.
-   - Can be used before new experiments land.
+Use **three coordinated paper-facing figures**, not seven independent diagrams.
 
-2. `fig5_small_model_capability_boundary_prompt.md`
-   - Highest narrative value if Phi-4 / SmolLM3 results arrive.
-   - Must remain placeholder until real metrics land.
+The old prompt set was too fragmented: it separated R2, R3, small-model capability, evidence map, and trace into too many figures before the paper had enough validated evidence to justify them. The revised plan follows a tighter EMNLP-style sequence:
 
-3. `fig4_r3_specialization_entropy_prompt.md`
-   - Strong for emergence / specialization, but should ideally wait for E-023 or at least be labeled as theoretical template.
+1. **Figure 1: Single-column paradigm comparison** - compact teaser showing what EDO adds over common agent-system paradigms.
+2. **Figure 2: Two-column overall EDO-Frame pipeline** - the main method architecture figure showing how a task flows through local agents, memory, tools, audit, and reproducible logs.
+3. **Figure 3: Key detail mechanism** - the one-hop governed action loop: note board memory, tag-gated tools, recursive delegation, audit, and tag-drift reselection.
 
-4. `fig6_best_paper_evidence_map_prompt.md`
-   - Useful for internal planning and possibly appendix.
-   - Main-body insertion only if page budget allows.
+Width policy:
 
-Existing prompt:
+```text
+Figure 1: single-column compact comparison.
+Figure 2: two-column primary method architecture.
+Figure 3: single-column or appendix-front mechanism zoom-in, depending on page budget.
+```
 
-- `fig1_3action_policy_prompt.md` remains the core system schematic.
-- The new Figure 3 prompt should not replace Figure 1; it explains the theorem-level advantage of R2.
+If page budget becomes tight, keep Figure 2 first. Figure 1 can remain a compact single-column teaser. Figure 3 can move to appendix only if Figure 2 absorbs enough mechanism detail cleanly.
+
+## 1.1 First-Render QA And Fix Direction
+
+The first render pass showed that the three-figure plan is reasonable, but the
+agent identities and typography were not visually locked:
+
+```text
+Figure 1: readable comparison, but baseline and EDO agents use slightly different sprite conventions.
+Figure 2: good pipeline structure, but local agents became different characters and one node label drifted into a stray "k".
+Figure 3: strong layout, but Agent i became a smooth vector avatar and Peer j was duplicated.
+Typography: close to Claude, but too generic; prompt should push Styrene B / Styrene UI labels and optional Tiempos / Anthropic Serif title accents.
+```
+
+For the next render pass, use `claude_warm_minimalism_style_20260427.md`. The user specifically requested a Claude.ai-like warm premium paper aesthetic, with Figure 1 converted to a single-column comparison and Figure 2 promoted to a detailed two-column pipeline. `docs/references/架构图/image4.png` is the closest local structural reference for Figure 2: a large warm workbench plus repeated mini-mechanism diagrams.
 
 ---
 
-## Suggested user rendering batch
+## 2. Active Prompts
 
-Ask the AI image tool to render:
+### Figure 1: Paradigm Comparison
 
-```text
-1. fig3_r2_information_advantage as SVG/PDF
-2. fig5_small_model_capability_boundary as SVG/PDF
-3. fig4_r3_specialization_entropy as SVG/PDF
-4. fig6_best_paper_evidence_map as SVG/PDF only if time remains
-```
-
-Place final assets under:
+File:
 
 ```text
-artifacts/figures/
+docs/paper/figures_prompts/fig1_paradigm_comparison_pixel_prompt.md
 ```
 
-Keep any raster previews alongside the vector file, but the paper should prefer `.pdf` or `.svg`.
+Role:
+
+```text
+intro / related-method contrast
+```
+
+Reader takeaway:
+
+```text
+EDO differs from single calls, fixed role chains, and planner/debate patterns because organization forms locally.
+```
+
+Render priority:
+
+```text
+P1 compact visual hook; single-column only.
+```
+
+### Figure 2: Overall Pipeline
+
+File:
+
+```text
+docs/paper/figures_prompts/fig2_edo_frame_pipeline_pixel_prompt.md
+```
+
+Role:
+
+```text
+main method architecture
+```
+
+Reader takeaway:
+
+```text
+An input task becomes local agent actions, note-board memory, tag-gated tools, recursive audit, and a reproducible evidence package inside a warm workbench-style architecture.
+```
+
+Render priority:
+
+```text
+P0 main-body two-column figure.
+```
+
+### Figure 3: Key Detail Mechanism
+
+File:
+
+```text
+docs/paper/figures_prompts/fig3_action_detail_pixel_prompt.md
+```
+
+Role:
+
+```text
+method detail / mechanism zoom-in
+```
+
+Reader takeaway:
+
+```text
+At each hop, an agent uses local task tags, profile tags, memory, and tool cards to choose an auditable action, then updates state through audit feedback.
+```
+
+Render priority:
+
+```text
+P0 main-body or appendix-front figure. Do not drop unless Figure 2 absorbs its content cleanly.
+```
+
+---
+
+## 3. Prompt Cleanup
+
+Only the three paper-facing figure prompt files remain active:
+
+```text
+fig1_paradigm_comparison_pixel_prompt.md
+fig2_edo_frame_pipeline_pixel_prompt.md
+fig3_action_detail_pixel_prompt.md
+```
+
+The old fragmented prompt files were deleted from the active prompt directory because they are not planned as main-body figures. Their ideas are folded into the three-figure system:
+
+```text
+R2 audit intuition -> Figure 3
+R3 state / specialization intuition -> Figure 3
+small-model capability boundary -> not AI-rendered until validated data exists
+best-paper evidence map -> internal planning only
+qualitative trace -> appendix only after a real trace is selected
+```
+
+---
+
+## 4. What Not To Draw With AI Prompts
+
+Do not ask an image model to invent or render:
+
+```text
+F1 / EM / token values
+confidence intervals
+leaderboard bars
+baseline result tables
+error-taxonomy counts
+dataset-specific numeric matrices
+```
+
+These must come from scripts and validated artifacts.
+
+The Figure 1 "comparison" is a **conceptual paradigm comparison**, not an empirical performance chart.
+
+---
+
+## 5. Rendering Order
+
+1. Render `fig2_edo_frame_pipeline_pixel_prompt.md` first as the two-column main method figure.
+2. Render `fig1_paradigm_comparison_pixel_prompt.md` second as the compact single-column teaser.
+3. Render `fig3_action_detail_pixel_prompt.md` third only if the paper still needs a separate mechanism zoom-in after Figure 2 is revised.
+
+Recommended final asset paths:
+
+```text
+artifacts/figures/fig1_paradigm_comparison_claude.{svg,pdf,png}
+artifacts/figures/fig2_edo_frame_pipeline_claude.{svg,pdf,png}
+artifacts/figures/fig3_action_detail_claude.{svg,pdf,png}
+```
+
+Prefer `.svg` or `.pdf` as the paper source. Keep `.png` only as a preview.
