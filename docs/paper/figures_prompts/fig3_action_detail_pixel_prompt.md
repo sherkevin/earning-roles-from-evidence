@@ -92,8 +92,8 @@ answer
 delegate
 split
 audit
-call_tool
-update_memory
+call tool
+update memory
 ```
 
 Highlight one path:
@@ -102,7 +102,7 @@ Highlight one path:
 delegate -> Peer j -> evidence
 ```
 
-Show `call_tool` as an available governed action through a tag gate, but keep `delegate` as the primary highlighted path so the diagram is not overloaded.
+Show "call tool" as an available governed action through a tag gate, but keep "delegate" as the primary highlighted path so the diagram is not overloaded.
 
 ### Audit And Update Loop
 
@@ -111,7 +111,7 @@ Elements:
 ```text
 Peer j returns evidence
 audit badge: accept / revise / reroute
-accepted evidence writes to NoteBoard memory
+evidence bundle writes to NoteBoard memory
 tag drift chip
 reselect tools arrow back to tag-gated selector
 ```
@@ -121,8 +121,9 @@ reselect tools arrow back to tag-gated selector
 Use the same Claude Warm Minimalism family as Figures 1 and 2:
 
 ```text
-background: #F4F3EE or #FAF9F5
-cards: #FFFFFF
+A4 page / outer background: #FFFFFF
+warm main card interior: #F4F3EE or #FAF9F5
+white sub-cards: #FFFFFF
 borders: #B1ADA1
 dividers: #E8E6DC
 main text: #191817
@@ -131,12 +132,14 @@ soft highlight: #F1DFCC
 soft tan: #D6B083
 ```
 
-Typography should follow the current Claude/Anthropic look:
+Typography should follow the current Claude.ai website figure look:
 
 ```text
-primary UI labels: Styrene B / Styrene
+only font family inside the figure: Styrene
+titles and headings: Styrene Medium or Styrene Bold
+labels and chips: Styrene Regular or Styrene Book
 fallbacks: Neue Haas Grotesk, Suisse Int'l, Helvetica Neue, Arial
-optional tiny serif title accent: Tiempos Text or Anthropic Serif
+no serif fonts anywhere in the figure
 avoid Inter/Roboto/Google-Sans-looking generic SaaS typography
 ```
 
@@ -145,23 +148,23 @@ Agent nodes should be simple and consistent. Use identical small warm agent dots
 ## 5. Drop-In AI Image Prompt
 
 ```text
-Create a self-contained single-column academic mechanism figure. Do not rely on any external style guide. Use Claude.ai / Anthropic warm minimalism: warm off-white paper background #F4F3EE or #FAF9F5, pure white cards #FFFFFF, thin warm-grey borders #B1ADA1, subtle divider lines #E8E6DC, deep warm-black text #191817, primary terracotta accent #C15F3C, soft pale terracotta highlight #F1DFCC, and occasional soft tan #D6B083. Use soft rounded corners with 8-12 px radius, extremely subtle shadows, generous whitespace, precise grid alignment, and calm product-architecture spacing. The figure should feel premium, quiet, human-centered, paper-like, and consistent with modern Claude/Anthropic website visuals.
+Create a self-contained single-column academic mechanism figure. Do not rely on any external style guide. The figure should look like a pure white A4 / ACL paper page containing one Claude-style warm mechanism card. The outer canvas/background must be pure white #FFFFFF, not beige or cream, so it blends with the paper. Put the Claude warmth inside the card: use a warm off-white or very light cream main-card interior #F4F3EE or #FAF9F5, pure white sub-cards #FFFFFF, thin warm-grey borders #B1ADA1, subtle divider lines #E8E6DC, deep warm-black text #191817, primary terracotta accent #C15F3C, soft pale terracotta highlight #F1DFCC, and occasional soft tan #D6B083 inside the card only. Use soft rounded corners with 8-12 px radius, extremely subtle shadows, generous whitespace, precise grid alignment, and calm product-architecture spacing. The figure should feel premium, quiet, human-centered, paper-like, warm-inside-card, and consistent with modern Claude.ai website visuals.
 
-Typography must be closer to Claude/Anthropic than generic SaaS. Use Styrene B / Styrene as the preferred sans-serif for headings, chips, and UI labels. If unavailable, use a close grotesk fallback such as Neue Haas Grotesk, Suisse Int'l, Helvetica Neue, or Arial. Optional: use a very small Tiempos Text / Anthropic Serif accent for the main title only, but keep diagram labels in Styrene-like sans. Avoid Inter, Roboto, Google Sans, overly rounded startup fonts, condensed tech fonts, and decorative display fonts. Text should have tight but readable tracking, medium/semibold headings, regular/medium labels, and generous line spacing.
+Typography must match Claude.ai website figure typography exactly: use Styrene as the only font family for all figure titles, panel headings, labels, chips, and diagram text. Use Styrene Medium or Styrene Bold for the main title and panel headings. Use Styrene Regular or Styrene Book for content labels, chips, and small text. If Styrene is unavailable, use a close grotesk fallback such as Neue Haas Grotesk, Suisse Int'l, Helvetica Neue, or Arial. Do not use serif fonts anywhere in the graphic: no Tiempos, no Anthropic Serif, no Galaxie Copernicus, no editorial serif title accent. Avoid Inter, Roboto, Google Sans, overly rounded startup fonts, condensed tech fonts, and decorative display fonts. Text should have tight but readable tracking, medium/semibold headings, regular/book labels, and generous line spacing.
 
 Figure purpose: show one local EDO decision hop. This is a conceptual mechanism diagram, not a performance chart. It must be readable as a single-column figure in a two-column NLP paper. Do not include empirical numbers, F1/EM/token values, confidence intervals, plots, axes, legends, baseline names, citations, or long paragraphs.
 
-Draw one rounded outer card titled "One-hop governed action loop". Inside it, use four zones with one clear reading path: left = "Local inputs", center = "Agent i", right = "Action menu", bottom = "Audit and update". Keep all zones visually connected with thin lines and terracotta highlights.
+Draw one rounded warm outer card titled exactly "One-hop governed action loop" on the pure white A4 page background, with comfortable white margins around the card. Do not add any subtitle, parenthetical note, font note, style note, or microcopy next to the title. Inside it, use four semantic panels with one clear reading path: "Local inputs", "Agent i", "Action menu", and "Audit and update". Keep all panels visually connected with thin lines and terracotta highlights. Do not write any layout-scaffold zone labels in the visible figure.
 
-LEFT ZONE. Title: "Local inputs". Draw five small white cards labeled exactly: "task packet", "agent profile", "neighbor belief", "NoteBoard memory", and "tool cards". Add small chips only where space permits: "tags", "budget", "history", "trust", "facts", "failures", "cost", "risk", and "schema". Use neutral grey for inactive input lines. Use a subtle terracotta accent for the inputs currently selected by Agent i.
+Panel title: "Local inputs". Draw five small white cards labeled exactly: "task packet", "agent profile", "neighbor belief", "NoteBoard memory", and "tool cards". Add small chips only where space permits: "tags", "budget", "history", "trust", "facts", "failures", "cost", "risk", and "schema". Use neutral grey for inactive input lines. Use a subtle terracotta accent for the inputs currently selected by Agent i.
 
-CENTER ZONE. Title: "Agent i". Draw one simple warm agent node: a white circular node with a thin #B1ADA1 outline, a minimal identical human glyph or dot, and a small terracotta active accent. Do not use blue pixel art. Do not create a smooth full-body avatar. Next to Agent i, draw a card labeled "action envelope" and a card labeled "tag-gated selector". Under the selector, show four tiny score chips labeled exactly "tag fit", "history", "cost", and "risk". Make it clear that the selector belongs locally to Agent i; do not draw a central controller, manager, router, or global planner.
+Panel title: "Agent i". Draw one simple warm agent node: a white circular node with a thin #B1ADA1 outline, a minimal identical human glyph or dot, and a small terracotta active accent. Do not use blue pixel art. Do not create a smooth full-body avatar. Next to Agent i, draw a card labeled "action envelope" and a card labeled "tag-gated selector". Under the selector, show four tiny score chips labeled exactly "tag fit", "history", "cost", and "risk". Make it clear that the selector belongs locally to Agent i; do not draw a central controller, manager, router, or global planner.
 
-RIGHT ZONE. Title: "Action menu". Draw six rounded action chips labeled exactly: "answer", "delegate", "split", "audit", "call_tool", and "update_memory". Keep chips compact and readable. Highlight "delegate" in terracotta as the selected path. Draw a terracotta arrow from Agent i to one peer node labeled "Peer j". Peer j must use the same agent-node style as Agent i, smaller but visually identical. Show "call_tool" as an available governed action through a tiny "tag gate" chip connected to a small "tool" card, but do not make it the primary path.
+Panel title: "Action menu". Draw six rounded action chips labeled exactly: "answer", "delegate", "split", "audit", "call tool", and "update memory". Keep chips compact and readable. Highlight "delegate" in terracotta as the selected path. Draw a terracotta arrow from Agent i to one peer node labeled "Peer j". Peer j must appear exactly once in the entire figure, in the action-menu area only. Peer j must use the same agent-node style as Agent i, smaller but visually identical. Show "call tool" as an available governed action through a tiny "tag gate" chip connected to a small "tool" card, but do not make it the primary path.
 
-BOTTOM ZONE. Title: "Audit and update". From the single Peer j node, draw a returned evidence card labeled "evidence". Do not draw a second Peer j. Route the evidence through an audit badge labeled "accept / revise / reroute". Draw a dotted terracotta or warm-grey line from accepted evidence back to "NoteBoard memory". Draw a small chip labeled "tag drift" and a curved terracotta arrow back to "tag-gated selector" labeled "reselect tools". Keep the bottom loop compact and calm.
+Panel title: "Audit and update". From the single existing Peer j node, draw a returned evidence card labeled "evidence". Do not draw a second Peer j node, second peer avatar, or repeated peer label in the bottom panel. Route the evidence through an audit badge labeled "accept / revise / reroute". Draw a dotted terracotta or warm-grey line from the evidence bundle back to "NoteBoard memory". Draw a small chip labeled "tag drift" and a curved terracotta arrow back to "tag-gated selector" labeled "reselect tools". Keep the bottom loop compact and calm.
 
-Visible text labels must be limited to the labels specified above. Do not invent extra labels. Do not add "compact chips", stray letters such as "k", duplicate "Peer j", duplicated agents, typo labels, fake tool names, or extra method names. Do not vary agent hairstyles, outfits, genders, poses, icon styles, or colors. All figure elements should match the same visual grammar as Figures 1 and 2: warm paper, white rounded cards, thin warm-grey borders, terracotta active paths, simple consistent nodes, and Styrene-like typography.
+Visible text labels must be limited to the labels specified above. Do not invent extra labels, layout-scaffold zone labels, font notes, style notes, parenthetical typography notes, stray letters, duplicate peer labels, duplicated agents, typo labels, fake tool names, or extra method names. Do not include the words "Tiempos", "Anthropic Serif", "optional", "font", or "style" anywhere in the visible figure. Do not vary agent hairstyles, outfits, genders, poses, icon styles, or colors. All figure elements should match the same visual grammar as Figures 1 and 2: white paper background, warm internal card, white rounded sub-cards, thin warm-grey borders, terracotta active paths, simple consistent nodes, and Styrene-only typography.
 
 Output should look like a clean SVG/PDF vector diagram, not a raster poster or screenshot. It should be publication-ready, aligned, minimalist, warm, and readable at academic paper scale.
 ```

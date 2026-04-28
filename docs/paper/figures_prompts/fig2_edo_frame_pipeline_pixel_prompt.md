@@ -42,17 +42,18 @@ Do not copy `image4.png` literally. Translate its structure into the EDO-Frame p
 Use a two-column landscape architecture layout with two major regions:
 
 ```text
-Left 60%: "Local EDO society" large warm workbench
-Right 40%: "Governed action cycle" stacked mini-mechanisms
-Bottom full width: "Reproducible evidence trail"
+Left 60%: "(a) Local EDO society" large warm workbench
+Right 40%: "(b) Governed action cycle" stacked mini-mechanisms
+Bottom full width: "(c) Logged evidence trail"
 ```
 
 Canvas:
 
 ```text
 wide two-column paper figure
-warm off-white background #F4F3EE
-white / pale warm rounded panels
+pure white A4 page background #FFFFFF
+warm rounded card interiors #F4F3EE or #FAF9F5
+white sub-cards / chips #FFFFFF
 terracotta accent #C15F3C
 neutral grey #B1ADA1
 deep text #191817
@@ -168,7 +169,7 @@ avoid dense text
 Panel title:
 
 ```text
-(c) Reproducible evidence trail
+(c) Logged evidence trail
 ```
 
 Draw a thin full-width rail under both main regions.
@@ -188,7 +189,7 @@ Final output cards on the right end:
 
 ```text
 answer
-accepted evidence
+evidence bundle
 caveats
 run provenance
 ```
@@ -226,28 +227,30 @@ If the model cannot render tiny text correctly, leave reserved label space and r
 ## 8. Drop-In AI Image Prompt
 
 ```text
-Create a self-contained two-column academic architecture figure. Do not rely on any external style guide. Use Claude.ai / Anthropic warm minimalism: warm off-white paper background #F4F3EE (or very light #FAF9F5), pure white containers #FFFFFF, thin warm-grey borders #B1ADA1, subtle divider lines #E8E6DC, deep warm-black text #191817, and one primary accent color #C15F3C (warm terracotta orange). Optional warm supporting fills: pale terracotta #F1DFCC, soft tan #D6B083, and very light cream #FAF9F5. Use soft rounded corners with 8-12 px border radius, extremely subtle soft shadows, generous whitespace, precise alignment, and Claude/Anthropic-like typography. Use Styrene B / Styrene as the preferred sans-serif for headings, chips, and UI labels; if unavailable, use a close grotesk fallback such as Neue Haas Grotesk, Suisse Int'l, Helvetica Neue, or Arial. Optional: use a small Tiempos Text / Anthropic Serif / Galaxie Copernicus-like accent for the main title only, but keep all diagram labels in Styrene-like sans. Avoid Inter, Roboto, Google Sans, overly rounded startup fonts, cold technical display fonts, 3D effects, glossy gradients, dark dashboards, decorative textures, busy backgrounds, product logos, fake numeric results, leaderboard bars, dense paragraphs, and tiny unreadable text. The feeling should be premium, calm, warm, human-centered, paper-like, and suitable for an EMNLP/ACL academic paper.
+Create a self-contained two-column academic architecture figure. Do not rely on any external style guide. The figure should look like a pure white A4 / ACL paper page containing several Claude-style warm cards. The outer canvas/background must be pure white #FFFFFF, not beige or cream, so it blends with the paper. Put the Claude warmth inside the cards and panels: use warm off-white or very light cream card interiors #F4F3EE or #FAF9F5, pure white sub-cards/chips #FFFFFF, thin warm-grey borders #B1ADA1, subtle divider lines #E8E6DC, deep warm-black text #191817, and one primary accent color #C15F3C (warm terracotta orange). Optional warm supporting fills inside cards only: pale terracotta #F1DFCC and soft tan #D6B083. Use soft rounded corners with 8-12 px border radius, extremely subtle soft shadows, generous whitespace, and precise alignment.
+
+Typography must match Claude.ai website figure typography exactly: use Styrene as the only font family for all figure titles, panel headings, mini-card titles, chips, labels, and diagram text. Use Styrene Medium or Styrene Bold for the main title and panel headings. Use Styrene Regular or Styrene Book for content labels, chips, and small text. If Styrene is unavailable, use a close grotesk fallback such as Neue Haas Grotesk, Suisse Int'l, Helvetica Neue, or Arial. Do not use serif fonts anywhere in the graphic: no Tiempos, no Anthropic Serif, no Galaxie Copernicus, no editorial serif title accent. Avoid Inter, Roboto, Google Sans, overly rounded startup fonts, cold technical display fonts, 3D effects, glossy gradients, dark dashboards, decorative textures, busy backgrounds, product logos, fake numeric results, leaderboard bars, dense paragraphs, and tiny unreadable text. The feeling should be premium, calm, warm-inside-cards, human-centered, paper-like, and suitable for an EMNLP/ACL academic paper.
 
 Structural inspiration: use the same kind of composition as a warm architecture diagram with a large rounded workbench on the left and repeated small mechanism diagrams on the right. Do not copy any existing image literally; create an original EDO-Frame pipeline figure. The figure must be detailed enough to justify two-column width in a paper, but it must still feel spacious, aligned, and calm.
 
-Main title: "EDO-Frame pipeline: local organization, governed tools, auditable evidence". Use a wide landscape two-column layout with three regions:
+Main title: "EDO-Frame pipeline: local organization, governed tools, auditable evidence". Place the full figure on a white page with comfortable white margins. Use a wide landscape two-column layout made of warm Claude-style cards with three regions:
 
 1. Left 60%: large rounded workbench panel titled "(a) Local EDO society".
 2. Right 40%: stacked or 2x2 mini-card panel titled "(b) Governed action cycle".
-3. Bottom full width: thin artifact rail titled "(c) Reproducible evidence trail".
+3. Bottom full width: thin artifact rail titled "(c) Logged evidence trail".
 
-LEFT REGION DETAILS. Draw a large rounded warm workbench card, paper-like and calm, with a pale tan top accent or soft terracotta border. On the far left inside the panel, place an input document card labeled "question + context". Add four small chips near it: "decompose", "verify", "integrate", and "hop budget". The task card flows into a sparse local society of exactly four tiny identical EDO agent nodes labeled only "i", "j", "m", and "r". Put each agent in a white circular node with a thin #B1ADA1 outline and a terracotta active accent #C15F3C. Use the same tiny human-agent icon or the same simple agent dot for all four nodes: same silhouette, same pose, same scale, same clothing/style, no variation. Arrange the four nodes as a sparse graph, not all-to-all. Use solid terracotta arrows for delegation / forward action. Use dashed terracotta arrows for audit return. Add small pale local-view halos around agents.
+LEFT REGION DETAILS. Draw a large rounded warm workbench card, paper-like and calm, with a pale tan top accent or soft terracotta border. The only visible title for this panel is "(a) Local EDO society"; do not add any design-scaffold label. On the far left inside the panel, place an input document card labeled "question + context". Add four small chips near it: "decompose", "verify", "integrate", and "hop budget". The task card flows into a sparse local society of exactly four tiny identical EDO agent nodes labeled only "i", "j", "m", and "r". Put each agent in a white circular node with a thin #B1ADA1 outline and a terracotta active accent #C15F3C. Use the same tiny human-agent icon or the same simple agent dot for all four nodes: same silhouette, same pose, same scale, same clothing/style, no variation. Arrange the four nodes as a sparse graph, not all-to-all. Use solid terracotta arrows for delegation / forward action. Use dashed terracotta arrows for audit return. Add small pale local-view halos around agents.
 
 Around the local graph perimeter, place exactly four module cards: "NoteBoard memory", "Tag-gated tools", "Action schema", and "Audit". The module cards should be white or pale warm cards with thin grey borders and small terracotta icons. They are not agents and must not look like a central commander. Place them around the graph perimeter, not above everything as a manager. There must be no large controller node, no global planner, and no all-seeing orchestrator. The message of the left region is: local organization forms inside a constrained workbench.
 
-RIGHT REGION DETAILS. Draw four small white rounded mini-diagram cards in a stacked column or 2x2 grid, visually like repeated mechanism diagrams. Each card uses the same tiny agent icon/dot style as the left region. Use neutral grey #B1ADA1 for inactive paths and terracotta #C15F3C for selected/active paths.
+RIGHT REGION DETAILS. Draw one right-side panel titled "(b) Governed action cycle"; do not repeat this title elsewhere above, below, or inside the panel. Inside it, draw four small white rounded mini-diagram cards in a stacked column or 2x2 grid, visually like repeated mechanism diagrams. Each card uses the same tiny agent icon/dot style as the left region. Use neutral grey #B1ADA1 for inactive paths and terracotta #C15F3C for selected/active paths.
 
 Mini-card 1 title: "Read local state". Show one agent reading task tags plus note-board memory.
 Mini-card 2 title: "Choose action". Show three small action chips labeled "do", "outsource", and "split"; highlight one selected chip in terracotta.
 Mini-card 3 title: "Use governed tools". Show the agent connected to a tool card only through a small tag gate. The visible labels should be "tag gate" and "tools".
 Mini-card 4 title: "Audit and update". Show a downstream response returning through an audit shield, then updating a small "persona tag" chip.
 
-BOTTOM RAIL DETAILS. Draw a thin rail spanning the full width under both the workbench and the action-cycle panel. Title it "(c) Reproducible evidence trail". Place six small log cards on the rail labeled exactly: "routing traces", "handoff packets", "memory events", "tool events", "audit events", and "metrics". At the far right end, show four output cards labeled "answer", "accepted evidence", "caveats", and "run provenance". Connect the left workbench and right action-cycle panel down to the rail with thin neutral vertical lines. The message of the bottom rail is that every action creates an auditable artifact trail.
+BOTTOM RAIL DETAILS. Draw a thin rail spanning the full width under both the workbench and the action-cycle panel. Title it "(c) Logged evidence trail". Place six small log cards on the rail labeled exactly: "routing traces", "handoff packets", "memory events", "tool events", "audit events", and "metrics". At the far right end, show four output cards labeled "answer", "evidence bundle", "caveats", and "run provenance". Connect the left workbench and right action-cycle panel down to the rail with thin neutral vertical lines. The message of the bottom rail is that every action creates an auditable artifact trail, not that the mechanism has already produced positive empirical validation.
 
 Visible text labels should be short and limited to the labels listed above. Do not add empirical numbers, F1/EM/token values, confidence intervals, axes, plots, legends, baseline names, paper citations, product names, or long explanatory text. Do not include method names such as MA-RAG, ReAgent, MAD, AutoGen, or ChatEval. Do not add fake leaderboard bars or any result chart. This is a conceptual method architecture figure.
 

@@ -31,9 +31,10 @@ The closest local reference is `image4.png`: a large rounded warm stage/workbenc
 ## 3. Core Palette
 
 ```text
-Background / paper base: #F4F3EE
-Very light alternate background: #FAF9F5
-Pure white containers: #FFFFFF
+A4 page / outer background: #FFFFFF
+Warm card interior: #F4F3EE
+Very light warm card interior: #FAF9F5
+Pure white sub-cards / chips: #FFFFFF
 Primary accent: #C15F3C
 Neutral grey: #B1ADA1
 Main text: #191817
@@ -42,28 +43,22 @@ Soft warm tan fill: #D6B083
 Soft pale highlight: #F1DFCC
 ```
 
-Use the terracotta accent `#C15F3C` for key routing lines, highlighted nodes, stage markers, active bars, and important callouts. Use neutral grey for inactive or comparison flows. Avoid cold blues, neon colors, saturated purple, and bright green unless there is a strong semantic reason.
+Use a pure white outer canvas so the figure sits naturally on an A4 / ACL paper page. Put the Claude warmth inside rounded cards and panels, not in the page background. Use the terracotta accent `#C15F3C` for key routing lines, highlighted nodes, stage markers, active bars, and important callouts. Use neutral grey for inactive or comparison flows. Avoid cold blues, neon colors, saturated purple, and bright green unless there is a strong semantic reason.
 
 ## 4. Typography
 
-Public typography references for Claude / Anthropic converge on this pattern:
+Claude.ai website figures / illustrations use a consistent Styrene typography system:
 
 ```text
-Interface labels / headings: Styrene / Styrene B.
-Reading text: Tiempos Text or Anthropic Serif.
-Large editorial title accents: sometimes Galaxie Copernicus-like.
-```
-
-For paper figures, prioritize the UI-label side of the identity because labels must stay readable at paper scale.
-
-```text
-Primary figure sans: Styrene B / Styrene.
-Fallbacks if the renderer cannot use Styrene: Neue Haas Grotesk, Suisse Int'l, Helvetica Neue, Arial.
-Optional serif accent for a short title only: Tiempos Text / Anthropic Serif / Galaxie Copernicus-like transitional serif.
+Primary font family for all figure titles, labels, chips, and diagram text: Styrene.
+Figure titles / headings: Styrene Medium or Styrene Bold.
+Figure content / labels / chip text / axis text: Styrene Regular or Styrene Book.
+Fallbacks only if Styrene is unavailable: Neue Haas Grotesk, Suisse Int'l, Helvetica Neue, Arial.
+No serif fonts inside figures: do not use Tiempos, Anthropic Serif, Galaxie Copernicus, or editorial serif title accents.
 Avoid generic Inter/Roboto/Google-Sans-looking typography when trying to match Claude.
-Headings: Styrene-like, semibold, tight but readable tracking, dark #191817.
-Labels and chips: Styrene-like regular or medium weight, high readability.
-Line height: generous, around 1.45-1.6.
+Headings: Styrene Medium/Bold, tight but readable tracking, dark #191817.
+Labels and chips: Styrene Regular/Book, high readability.
+Line height: generous, around 1.35-1.5.
 Labels: short and crisp.
 No dense paragraphs inside figures.
 ```
@@ -129,7 +124,7 @@ Figure 2 should use tiny consistent agents because it is the method pipeline.
 Paste this at the beginning of Figure 1 / Figure 2 render prompts:
 
 ```text
-Create a clean academic architecture figure in Claude Warm Minimalism style: warm off-white paper background #F4F3EE, white rounded cards, thin warm-grey borders #B1ADA1, deep warm-black text #191817, primary terracotta accent #C15F3C, subtle dividers #E8E6DC, generous whitespace, soft rounded corners (8-12 px), extremely subtle shadows, and Claude/Anthropic-like typography. Use Styrene B / Styrene as the preferred sans-serif for headings, chips, and UI labels; if unavailable, use a close grotesk fallback such as Neue Haas Grotesk, Suisse Int'l, Helvetica Neue, or Arial. Optional: use Tiempos Text / Anthropic Serif / Galaxie Copernicus-like transitional serif for a tiny title accent only. Avoid generic Inter/Roboto/Google-Sans-looking typography, overly rounded startup fonts, and cold technical display fonts. The figure should feel premium, calm, human-centered, and paper-like, similar to Claude.ai official visual identity. Avoid cold blues/purples, neon, 3D, dark dashboard styling, heavy gradients, decorative textures, fake numbers, and crowded text. Use short readable labels only. Output as a clean SVG/PDF-style vector diagram suitable for an academic paper.
+Create a clean academic architecture figure that looks like a white A4 paper page containing one or more Claude-style warm cards. The outer canvas/background must be pure white #FFFFFF so it blends with an ACL/EMNLP paper page. Put warmth inside the cards: warm card interiors #F4F3EE or #FAF9F5, pure white sub-cards #FFFFFF, thin warm-grey borders #B1ADA1, subtle dividers #E8E6DC, deep warm-black text #191817, primary terracotta accent #C15F3C, generous whitespace, soft rounded corners (8-12 px), and extremely subtle shadows. Typography must be fully consistent with Claude.ai figure typography: use Styrene for all figure titles, headings, labels, chips, and diagram text. Use Styrene Medium/Bold for titles and headings; use Styrene Regular/Book for labels and content. If Styrene is unavailable, use a close grotesk fallback such as Neue Haas Grotesk, Suisse Int'l, Helvetica Neue, or Arial. Do not use serif fonts anywhere inside the figure: no Tiempos, Anthropic Serif, Galaxie Copernicus, or editorial serif title accent. Avoid generic Inter/Roboto/Google-Sans-looking typography, overly rounded startup fonts, and cold technical display fonts. The figure should feel premium, calm, human-centered, and paper-like, similar to Claude.ai official visual identity. Avoid cold blues/purples, neon, 3D, dark dashboard styling, heavy gradients, decorative textures, fake numbers, and crowded text. Use short readable labels only. Output as a clean SVG/PDF-style vector diagram suitable for an academic paper.
 ```
 
 ## 9. Drop-In Prompt Rule
