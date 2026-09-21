@@ -1,0 +1,150 @@
+{
+  "status": "B1_530B157_EXPOSURE_CONTRACT_V3_FROZEN_BEFORE_ANY_TARGET_MODEL_RUN",
+  "created_on_canonical_machine": "Shervin",
+  "purpose": "Development-only test of whether different private task histories create measurable scoped capability differences under the same qwen3.8-max backbone.",
+  "benchmark": {
+    "name": "AppWorld",
+    "commit": "42b5bcf3cd334fee33f0c37c02070a9f5807add5",
+    "data_version": "0.2.0",
+    "split": "dev",
+    "target_family": "530b157",
+    "target_tasks": ["530b157_1", "530b157_2", "530b157_3"],
+    "target_api_signature": [
+      "phone.get_current_date_and_time",
+      "phone.search_contacts",
+      "phone.search_text_messages",
+      "phone.send_text_message",
+      "venmo.create_transaction"
+    ]
+  },
+  "backbone": {
+    "model": "qwen3.8-max",
+    "same_model_all_workers": true,
+    "temperature": 0.0,
+    "max_steps": 30,
+    "max_output_tokens_per_turn": 2048,
+    "transport": "Mac AppWorld -> project SSE-to-JSON adapter -> existing local router",
+    "evaluator_private_truth_visible_to_policy": false
+  },
+  "pre_exposure_dynamic_range_gate": {
+    "condition": "control_none",
+    "tasks": ["530b157_1", "530b157_2", "530b157_3"],
+    "reuse_if_usable": "These exact runs become the none-condition rows of the later exposure matrix; they are not rerun selectively.",
+    "ceiling_rule": "If all 3 tasks achieve official success, stop this qwen3.8-max exposure experiment before donor acquisition and version a new backbone contract.",
+    "floor_rule": "If all 3 tasks fail, mean official passed-test fraction is <= 0.30, and none issues complete_task, stop before donor acquisition and version a new backbone contract.",
+    "usable_rule": "Otherwise the target has sufficient development headroom and donor acquisition proceeds.",
+    "no_adaptive_prompting": true
+  },
+  "donor_roles": {
+    "C_common_temporal": {
+      "family": "d0b1f43",
+      "acquisition_tasks": ["d0b1f43_1", "d0b1f43_2"],
+      "target_overlap_actions": [
+        "phone.get_current_date_and_time",
+        "phone.search_contacts"
+      ],
+      "role": "common temporal/contact scaffold held fixed across A/B treatment contrasts"
+    },
+    "A_phone_text": {
+      "family": "29caf6f",
+      "acquisition_tasks": ["29caf6f_1", "29caf6f_2"],
+      "target_overlap_actions": [
+        "phone.search_contacts",
+        "phone.search_text_messages",
+        "phone.send_text_message"
+      ],
+      "role": "context recovery and acknowledgement messaging"
+    },
+    "B_payment": {
+      "family": "60d0b5b",
+      "acquisition_tasks": ["60d0b5b_1", "60d0b5b_2"],
+      "target_overlap_actions": [
+        "phone.search_contacts",
+        "venmo.create_transaction"
+      ],
+      "role": "payment execution"
+    }
+  },
+  "worker_conditions": {
+    "none": [],
+    "C": ["C_common_temporal"],
+    "CA": ["C_common_temporal", "A_phone_text"],
+    "CB": ["C_common_temporal", "B_payment"],
+    "CAB": ["C_common_temporal", "A_phone_text", "B_payment"]
+  },
+  "acquisition_protocol": {
+    "worker_initialization": "Each condition is an independent clone with the same model, prompt, tools, and empty private state.",
+    "private_provenance": "Each non-none worker executes its own assigned train tasks; no realized trace or memory is copied from another condition.",
+    "memory_during_acquisition": "disabled; all assigned exposure tasks use the common base policy so acquisition-task performance is not recursively changed by earlier consolidated memory.",
+    "world_reset": "fresh independent AppWorld world for every acquisition task",
+    "promotion_source": "worker-own environment_io trace and public runtime execution status only",
+    "evaluator_truth_for_promotion": false,
+    "concrete_values_retained": false,
+    "promotion_support_rule": "An interface enters a donor-role memory only if that worker executes it successfully in both 2/2 acquisition tasks for that donor family.",
+    "failed_support_behavior": "Do not manually add or repair a missing interface; record the missing support and continue with only earned evidence."
+  },
+  "target_probe_protocol": {
+    "fresh_world_per_run": true,
+    "no_learning_on_target": true,
+    "target_order_within_condition": ["530b157_1", "530b157_2", "530b157_3"],
+    "blocked_condition_order_by_task": {
+      "530b157_1": ["C", "CA", "CB", "CAB"],
+      "530b157_2": ["CA", "CB", "CAB", "C"],
+      "530b157_3": ["CB", "CAB", "C", "CA"]
+    },
+    "none_rows": "reuse pre-exposure dynamic-range runs if the gate is usable",
+    "prompt_change": "Only the frozen private-experience section differs across conditions; base AppWorld prompt and model/runtime settings stay fixed."
+  },
+  "primary_measurements": {
+    "content": [
+      "official evaluator success",
+      "official passed-test fraction",
+      "payment-slot assertion success",
+      "acknowledgement-slot assertion success"
+    ],
+    "behavioral_secondary": [
+      "complete_task call",
+      "LLM interaction count",
+      "API call count",
+      "invalid or invented API call count",
+      "input/output token use"
+    ],
+    "slot_audit_boundary": "Evaluator-private values are used only offline after execution; never inserted into prompts, memories, binders, or action selection."
+  },
+  "predeclared_contrasts": {
+    "common_scaffold_effect": "C - none",
+    "phone_text_effect": "CA - C",
+    "payment_effect": "CB - C",
+    "combined_effect": "CAB - C",
+    "complementarity": "CAB - CA - CB + C"
+  },
+  "development_capability_difference_gate": {
+    "positive_content_effect_required": true,
+    "rule": "At least one of phone_text_effect, payment_effect, or combined_effect must improve a predeclared content endpoint on at least 2 of 3 paired target siblings, with non-negative mean direction for that contrast.",
+    "efficiency_only": "Efficiency/token/API-call improvements without a content-endpoint improvement are recorded as procedural-efficiency evidence but do not satisfy the capability-difference gate.",
+    "statistical_scope": "n=3 sibling tasks is development feasibility only; no confirmatory significance claim is made."
+  },
+  "boundaries": [
+    "No test_normal or test_challenge task is used for development selection.",
+    "No target evaluator result may change prompt text, memory extraction, donor whitelist, treatment conditions, condition order, or promotion threshold.",
+    "No evaluator-private truth may enter acquisition memory or execution policy.",
+    "No worker may receive another worker's realized trace or memory.",
+    "All target conditions use the same qwen3.8-max model route and runtime settings.",
+    "If the pre-exposure gate declares ceiling or floor, stop before donor acquisition rather than manufacturing headroom by changing step budgets or prompts."
+  ],
+  "storage_ownership": {
+    "canonical_machine": "Shervin",
+    "execution_machine": "U-CGPCVWR0-0024.local",
+    "sync_required_before_next_stage": [
+      "manifest/contract",
+      "compact result",
+      "run log",
+      "environment_io",
+      "lm_calls",
+      "api_calls",
+      "evaluator report",
+      "usage",
+      "version metadata"
+    ]
+  }
+}
