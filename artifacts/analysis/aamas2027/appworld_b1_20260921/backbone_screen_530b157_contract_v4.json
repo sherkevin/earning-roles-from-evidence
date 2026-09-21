@@ -1,0 +1,50 @@
+{
+  "status": "B1_530B157_BACKBONE_SCREEN_V4_FROZEN_BEFORE_ALTERNATIVE_MODEL_RUNS",
+  "canonical_machine": "Shervin",
+  "reason": "qwen3.8-max hit the v3 preregistered 3/3 ceiling on 530b157 before donor acquisition.",
+  "benchmark": {
+    "name": "AppWorld",
+    "commit": "42b5bcf3cd334fee33f0c37c02070a9f5807add5",
+    "data_version": "0.2.0",
+    "split": "dev",
+    "target_family": "530b157",
+    "tasks": ["530b157_1", "530b157_2", "530b157_3"]
+  },
+  "candidate_order": [
+    "MiniMax-M3",
+    "bailian/glm-5.2",
+    "moonshot/kimi-k3"
+  ],
+  "order_basis": "Pre-existing local router catalog order after excluding qwen3.8-max; fixed before any alternative-candidate benchmark outcome is observed.",
+  "shared_runtime": {
+    "temperature": 0.0,
+    "max_steps": 30,
+    "max_output_tokens_per_turn": 2048,
+    "private_experience": false,
+    "evaluator_private_truth_visible_to_policy": false,
+    "base_prompt": "unchanged official AppWorld simplified ReAct prompt",
+    "transport": "Mac AppWorld -> project SSE-to-JSON adapter -> existing local router"
+  },
+  "candidate_gate": {
+    "run_all_three_tasks": true,
+    "ceiling_rule": "3/3 official success => CEILING_REJECT",
+    "floor_rule": "0/3 official success AND mean official passed-test fraction <= 0.30 AND no task issues complete_task => FLOOR_REJECT",
+    "usable_rule": "Any other complete benchmark outcome => USABLE_SELECT",
+    "infrastructure_failure": "Transport/API/harness failure before a valid task outcome is not a scientific score; record it, keep parameters fixed, and continue to the next candidate only if the failure cannot be repaired without changing benchmark/policy semantics."
+  },
+  "selection_rule": {
+    "policy": "Select the first candidate in candidate_order with USABLE_SELECT.",
+    "stop_after_selection": true,
+    "no_best_result_selection": true,
+    "no_prompt_or_budget_tuning_between_candidates": true,
+    "selected_model_then_reuses_v3_exposure_design": true
+  },
+  "provenance_rules": [
+    "Each candidate starts with no private experience and fresh independent AppWorld worlds.",
+    "No donor acquisition is run until a candidate is selected.",
+    "No target outcome changes candidate order, task set, max steps, prompt, memory policy, or ceiling/floor rules.",
+    "Each candidate run is synchronized to Shervin with compact result, run log, environment_io, lm_calls, api_calls, evaluator report, usage, and version metadata before the next scientific decision is recorded.",
+    "test_normal and test_challenge remain untouched."
+  ],
+  "terminal_rule": "If all three candidates are rejected as ceiling/floor or invalid after semantic-preserving transport repair, stop A-T03 and version a new development design rather than selecting by favorable outcome."
+}
