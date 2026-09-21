@@ -1,0 +1,161 @@
+{
+  "parsed_predictions.jsonl": [
+    {
+      "task_id": "hotpotqa-0000",
+      "question": "Were Scott Derrickson and Ed Wood of the same nationality?",
+      "gold_answer": "yes",
+      "final_answer": "no",
+      "accepted_node": "evidence_seeker",
+      "hop_count": 2,
+      "answer_em": 0.0,
+      "answer_f1": 0.0,
+      "termination_reason": "accepted",
+      "token_cost": 480
+    }
+  ],
+  "routing_traces.jsonl": [
+    {
+      "task_id": "hotpotqa-0000",
+      "hop_index": 0,
+      "node_name": "decomposer",
+      "decision": "forward",
+      "chosen_target": "evidence_seeker",
+      "reason": "edo_frame_chain[edo_full]: edo_stage2_chain: split — SPLIT utility 0.350 best; produced 2 subtasks",
+      "routing_features": {
+        "agent_name": "decomposer",
+        "preferred_role": "verifier",
+        "question_is_multihop": true,
+        "evidence_count": 10,
+        "evidence_sufficiency": 0.833,
+        "packet_uncertainty": 0.6,
+        "hop_count": 0,
+        "visited_nodes": [],
+        "revisit_risk": 0.0,
+        "loop_risk": 0.0,
+        "self_competence": 0.7,
+        "accept_threshold": null,
+        "accept_margin_to_threshold": null,
+        "accept_margin_knob": 0.02,
+        "topology": "chain",
+        "is_star_leaf": false,
+        "edo_stage2_action": "split",
+        "edo_stage2_utility_scores": {
+          "self": 0.35,
+          "out_max": -0.1029,
+          "split": 0.35
+        },
+        "edo_stage2_inline_split_registered": 2,
+        "edo_stage2_inline_split_accepted": 0,
+        "edo_stage2_inline_split_rejected": 0,
+        "edo_stage2_inline_split_child_answers": [],
+        "edo_frame_ablation": "edo_full",
+        "edo_frame_selector_mode": "tag_gated",
+        "edo_frame_selected_tools": [
+          "read_task_packet",
+          "write_note",
+          "retrieval.search",
+          "verifier.consistency_check"
+        ],
+        "edo_frame_drift_score": 0.0,
+        "edo_frame_reselected": false,
+        "edo_frame_memory_event_id": "mem-000001",
+        "edo_frame_memory_scope": "task_public",
+        "edo_frame_retrieved_count": 0,
+        "edo_frame_evidence_cap_narrowed": false,
+        "edo_frame_evidence_cap_non_synth": 14,
+        "edo_frame_evidence_cap_synth": 60
+      },
+      "neighbor_scores": []
+    },
+    {
+      "task_id": "hotpotqa-0000",
+      "hop_index": 1,
+      "node_name": "evidence_seeker",
+      "decision": "accept",
+      "chosen_target": "",
+      "reason": "edo_frame_chain[edo_full]: edo_stage2_chain: do_self — DO_SELF utility 0.350 highest",
+      "routing_features": {
+        "agent_name": "evidence_seeker",
+        "preferred_role": "verifier",
+        "question_is_multihop": true,
+        "evidence_count": 12,
+        "evidence_sufficiency": 1.0,
+        "packet_uncertainty": 0.62,
+        "hop_count": 1,
+        "visited_nodes": [
+          "decomposer"
+        ],
+        "revisit_risk": 0.0,
+        "loop_risk": 0.0,
+        "self_competence": 0.7,
+        "accept_threshold": null,
+        "accept_margin_to_threshold": null,
+        "accept_margin_knob": 0.02,
+        "topology": "chain",
+        "is_star_leaf": false,
+        "edo_stage2_action": "do_self",
+        "edo_stage2_utility_scores": {
+          "self": 0.35,
+          "out_max": -0.327,
+          "split": -2.0
+        },
+        "edo_stage2_audit_decision": "REJECT_REROUTE",
+        "edo_stage2_audit_value_gain": 0.0,
+        "edo_frame_ablation": "edo_full",
+        "edo_frame_selector_mode": "tag_gated",
+        "edo_frame_selected_tools": [
+          "read_task_packet",
+          "write_note",
+          "retrieval.search",
+          "verifier.consistency_check"
+        ],
+        "edo_frame_drift_score": 0.5,
+        "edo_frame_reselected": true,
+        "edo_frame_memory_event_id": "mem-000002",
+        "edo_frame_memory_scope": "task_public",
+        "edo_frame_retrieved_count": 1,
+        "edo_frame_evidence_cap_narrowed": false,
+        "edo_frame_evidence_cap_non_synth": 14,
+        "edo_frame_evidence_cap_synth": 60
+      },
+      "neighbor_scores": []
+    }
+  ],
+  "raw_model_outputs.jsonl": [
+    {
+      "task_id": "hotpotqa-0000",
+      "hop_index": 0,
+      "node_name": "decomposer",
+      "raw_response": "[split: 2 subs -> fwd evidence_seeker] Scott Derrickson is American, born in California. Ed Wood is American, but his nationality isn't mentioned in detail.",
+      "generated_answer": "",
+      "usage_calls": [
+        {
+          "prompt_tokens": 732,
+          "completion_tokens": 54,
+          "total_tokens": 786
+        },
+        {
+          "prompt_tokens": 1283,
+          "completion_tokens": 25,
+          "total_tokens": 1308
+        }
+      ],
+      "runtime_model": "qwen2.5-3b-instruct"
+    },
+    {
+      "task_id": "hotpotqa-0000",
+      "hop_index": 1,
+      "node_name": "evidence_seeker",
+      "raw_response": "no",
+      "generated_answer": "no",
+      "usage_calls": [
+        {
+          "prompt_tokens": 1728,
+          "completion_tokens": 2,
+          "total_tokens": 1730
+        }
+      ],
+      "runtime_model": "qwen2.5-3b-instruct"
+    }
+  ]
+}

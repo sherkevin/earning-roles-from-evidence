@@ -1,5 +1,7 @@
 # Idea 04: 局部交互驱动的涌现组织
 
+> HISTORICAL METHOD DESIGN as of the AAMAS redirection on 2026-09-16. The active scientific contract is [REQUIREMENTS.md](docs/paper/aamas2027/REQUIREMENTS.md); gaps, B/M locks and execution are in [AAMAS_TASKS.md](docs/coordination/AAMAS_TASKS.md). Prior role-emergence, scalar-reduction and convergence claims below must not override the new evidence audit. Preserved for provenance, not as an additional active method plan.
+
 ## 0. 文档定位
 
 这不是摘要，也不是短提案，而是本项目的主方法设计说明书。

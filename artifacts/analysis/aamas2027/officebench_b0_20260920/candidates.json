@@ -1,0 +1,2804 @@
+[
+  {
+    "child": "3-1",
+    "parent": "2-38",
+    "eligible": false,
+    "score": 0.3696,
+    "contain": 0.6667,
+    "cosine": 0.1373,
+    "jaccard": 0.3077,
+    "parent_preserved": false,
+    "added_ops": [
+      "excel.read",
+      "excel.write",
+      "pdf.write"
+    ],
+    "child_ops": [
+      "excel.read",
+      "excel.write",
+      "pdf.read",
+      "pdf.write"
+    ],
+    "parent_ops": [
+      "email.read",
+      "email.send",
+      "pdf.read"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Convert Excel spreadsheet containing project tasks to task.pdf and email Alice.eml containing pdf file for review",
+    "parent_text": "read notification pdf file and send email notification.eml to Alice"
+  },
+  {
+    "child": "3-2",
+    "parent": "2-19",
+    "eligible": false,
+    "score": 0.3593,
+    "contain": 0.5,
+    "cosine": 0.2376,
+    "jaccard": 0.3077,
+    "parent_preserved": true,
+    "added_ops": [
+      "excel.write",
+      "pdf.read",
+      "word.read"
+    ],
+    "child_ops": [
+      "excel.read",
+      "excel.write",
+      "pdf.read",
+      "reason.summarize",
+      "word.read",
+      "word.write"
+    ],
+    "parent_ops": [
+      "excel.read",
+      "reason.summarize",
+      "word.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Extract data from a PDF financial report, analyze it in report.xlsx, and create a summary in summary.docx",
+    "parent_text": "Analyze Excel data of students' grade and generate a teaching report in teaching.docx"
+  },
+  {
+    "child": "3-3",
+    "parent": "2-38",
+    "eligible": false,
+    "score": 0.3712,
+    "contain": 0.6667,
+    "cosine": 0.1477,
+    "jaccard": 0.2857,
+    "parent_preserved": false,
+    "added_ops": [
+      "pdf.write",
+      "word.read"
+    ],
+    "child_ops": [
+      "email.send",
+      "pdf.write",
+      "word.read"
+    ],
+    "parent_ops": [
+      "email.read",
+      "email.send",
+      "pdf.read"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Convert Word document containing employee training manuals to manual.pdf and distribute it to Alice via email Alice.eml",
+    "parent_text": "read notification pdf file and send email notification.eml to Alice"
+  },
+  {
+    "child": "3-4",
+    "parent": "2-35",
+    "eligible": false,
+    "score": 0.2835,
+    "contain": 0.2857,
+    "cosine": 0.381,
+    "jaccard": 0.125,
+    "parent_preserved": false,
+    "added_ops": [
+      "excel.read",
+      "excel.write",
+      "fs.folder",
+      "pdf.read",
+      "pdf.write"
+    ],
+    "child_ops": [
+      "excel.read",
+      "excel.write",
+      "fs.folder",
+      "pdf.read",
+      "pdf.write",
+      "reason.summarize"
+    ],
+    "parent_ops": [
+      "reason.aggregate",
+      "reason.summarize"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Convert Excel spreadsheet containing financial data to report.pdf for archival purposes, and save pdf file under folder financial",
+    "parent_text": "what is 2024 total revenue from annual financial report?"
+  },
+  {
+    "child": "3-5",
+    "parent": "2-36",
+    "eligible": false,
+    "score": 0.3683,
+    "contain": 0.6,
+    "cosine": 0.195,
+    "jaccard": 0.2308,
+    "parent_preserved": false,
+    "added_ops": [
+      "excel.read",
+      "excel.write",
+      "pdf.read",
+      "pdf.write"
+    ],
+    "child_ops": [
+      "excel.read",
+      "excel.write",
+      "pdf.read",
+      "pdf.write",
+      "reason.summarize",
+      "word.write"
+    ],
+    "parent_ops": [
+      "reason.summarize",
+      "word.read",
+      "word.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Convert PDF invoices to invoices.xlsx, analyze payment trends, and generate a report.docx for financial review",
+    "parent_text": "Read grade in transcripts and generate a grade report report.docx"
+  },
+  {
+    "child": "3-6",
+    "parent": "2-13",
+    "eligible": false,
+    "score": 0.4832,
+    "contain": 0.5556,
+    "cosine": 0.5316,
+    "jaccard": 0.2778,
+    "parent_preserved": false,
+    "added_ops": [
+      "email.send"
+    ],
+    "child_ops": [
+      "calendar.create",
+      "calendar.read",
+      "email.send"
+    ],
+    "parent_ops": [
+      "calendar.create",
+      "calendar.read",
+      "excel.read",
+      "excel.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Schedule a team training as calendar event training.ics for next week and send out emails training.eml to all team members from an excel file",
+    "parent_text": "Schedule a team training session for all participants from excel file, create calendar events for each member in their name"
+  },
+  {
+    "child": "3-7",
+    "parent": "2-38",
+    "eligible": false,
+    "score": 0.3522,
+    "contain": 0.6667,
+    "cosine": 0.1008,
+    "jaccard": 0.2667,
+    "parent_preserved": true,
+    "added_ops": [
+      "fs.folder",
+      "pdf.write"
+    ],
+    "child_ops": [
+      "email.read",
+      "email.send",
+      "fs.folder",
+      "pdf.read",
+      "pdf.write"
+    ],
+    "parent_ops": [
+      "email.read",
+      "email.send",
+      "pdf.read"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Extract admitted applicant's name and email, write Graduate Program Admission Letter with applicant's name in admission.pdf, and send it to applicant's email admission.eml under folder using their last name",
+    "parent_text": "read notification pdf file and send email notification.eml to Alice"
+  },
+  {
+    "child": "3-8",
+    "parent": "2-36",
+    "eligible": false,
+    "score": 0.3919,
+    "contain": 0.6,
+    "cosine": 0.2765,
+    "jaccard": 0.2,
+    "parent_preserved": true,
+    "added_ops": [
+      "excel.read",
+      "excel.write",
+      "reason.filter"
+    ],
+    "child_ops": [
+      "excel.read",
+      "excel.write",
+      "reason.filter",
+      "reason.summarize",
+      "word.read",
+      "word.write"
+    ],
+    "parent_ops": [
+      "reason.summarize",
+      "word.read",
+      "word.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "read company revenues, delete years that revenues are lower than $2000000 and save in new.xlsx, generate reports report.docx",
+    "parent_text": "Read grade in transcripts and generate a grade report report.docx"
+  },
+  {
+    "child": "3-9",
+    "parent": "2-43",
+    "eligible": false,
+    "score": 0.3585,
+    "contain": 0.25,
+    "cosine": 0.5661,
+    "jaccard": 0.1333,
+    "parent_preserved": false,
+    "added_ops": [
+      "image.read",
+      "image.write"
+    ],
+    "child_ops": [
+      "image.read",
+      "image.write",
+      "reason.summarize"
+    ],
+    "parent_ops": [
+      "email.read",
+      "email.send",
+      "reason.summarize"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "read company revenues, describe revenues in a report. I want the report converted into an image named report.jpg",
+    "parent_text": "read company revenues and send a email revenues.eml containing all years' revenues to Bob for reporting"
+  },
+  {
+    "child": "3-10",
+    "parent": "2-41",
+    "eligible": false,
+    "score": 0.2915,
+    "contain": 0.1429,
+    "cosine": 0.5038,
+    "jaccard": 0.0769,
+    "parent_preserved": false,
+    "added_ops": [
+      "fs.folder",
+      "pdf.read",
+      "pdf.write"
+    ],
+    "child_ops": [
+      "email.read",
+      "fs.folder",
+      "pdf.read",
+      "pdf.write"
+    ],
+    "parent_ops": [
+      "calendar.create",
+      "calendar.read",
+      "email.read",
+      "fs.rename"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "read all emails, create folders for each recipients using their names and save their emails in pdf file using original names into their own folders",
+    "parent_text": "read work overtime email, save as recipient's calendar event using their names as file names"
+  },
+  {
+    "child": "3-11",
+    "parent": "2-38",
+    "eligible": false,
+    "score": 0.5733,
+    "contain": 0.6667,
+    "cosine": 0.6486,
+    "jaccard": 0.3077,
+    "parent_preserved": false,
+    "added_ops": [
+      "fs.folder"
+    ],
+    "child_ops": [
+      "email.read",
+      "email.send",
+      "fs.folder"
+    ],
+    "parent_ops": [
+      "email.read",
+      "email.send",
+      "pdf.read"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "read notification, send email to people mentioned in post, create folders using their own names for each person and save email notification.eml in it",
+    "parent_text": "read notification pdf file and send email notification.eml to Alice"
+  },
+  {
+    "child": "3-12",
+    "parent": "2-1",
+    "eligible": true,
+    "score": 0.8396,
+    "contain": 1.0,
+    "cosine": 0.933,
+    "jaccard": 0.4615,
+    "parent_preserved": true,
+    "added_ops": [
+      "email.read",
+      "email.send"
+    ],
+    "child_ops": [
+      "email.read",
+      "email.send",
+      "image.read",
+      "image.write",
+      "pdf.read",
+      "pdf.write"
+    ],
+    "parent_ops": [
+      "image.read",
+      "image.write",
+      "pdf.read",
+      "pdf.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "extract text from power failure notification image, save in power_failure.pdf, send email power_failure.eml to notify workers Bob and Tom",
+    "parent_text": "extract text from power failure notification image and save in power_failure.pdf"
+  },
+  {
+    "child": "3-13",
+    "parent": "2-1",
+    "eligible": false,
+    "score": 0.3692,
+    "contain": 0.5,
+    "cosine": 0.2443,
+    "jaccard": 0.2727,
+    "parent_preserved": false,
+    "added_ops": [
+      "fs.folder",
+      "reason.summarize"
+    ],
+    "child_ops": [
+      "fs.folder",
+      "image.write",
+      "pdf.write",
+      "reason.summarize"
+    ],
+    "parent_ops": [
+      "image.read",
+      "image.write",
+      "pdf.read",
+      "pdf.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "summarize content from meeting notification image and save in meeting.pdf, save pdf file in folder named schedule",
+    "parent_text": "extract text from power failure notification image and save in power_failure.pdf"
+  },
+  {
+    "child": "3-14",
+    "parent": "2-12",
+    "eligible": false,
+    "score": 0.3332,
+    "contain": 0.3333,
+    "cosine": 0.3942,
+    "jaccard": 0.1765,
+    "parent_preserved": false,
+    "added_ops": [
+      "calendar.read",
+      "image.write",
+      "pdf.write",
+      "reason.summarize"
+    ],
+    "child_ops": [
+      "calendar.create",
+      "calendar.read",
+      "image.write",
+      "pdf.write",
+      "reason.summarize"
+    ],
+    "parent_ops": [
+      "calendar.create",
+      "image.read"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "summarize content from meeting notification image and save in meeting.pdf, create calendar event Bob.ics and Tom.ics about meeting for Bob and Tom",
+    "parent_text": "Scan handwritten notes from a meeting agenda, convert them to text, and add them to a calendar file meeting.ics"
+  },
+  {
+    "child": "3-15",
+    "parent": "2-2",
+    "eligible": false,
+    "score": 0.4671,
+    "contain": 0.4444,
+    "cosine": 0.5896,
+    "jaccard": 0.2222,
+    "parent_preserved": false,
+    "added_ops": [
+      "email.read",
+      "email.send"
+    ],
+    "child_ops": [
+      "email.read",
+      "email.send",
+      "fs.rename",
+      "image.read",
+      "image.write",
+      "pdf.read",
+      "pdf.write"
+    ],
+    "parent_ops": [
+      "fs.rename",
+      "image.read",
+      "image.write",
+      "pdf.read",
+      "pdf.write",
+      "word.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "scan resume pdf file, extract name and contact information saved it as contact card in image file named contact.jpg, email contact.eml containing contact information to manager Bob",
+    "parent_text": "scan Concert Announcement pdf file, extract name and date saved it as contact card in doc file named contact.docx"
+  },
+  {
+    "child": "3-16",
+    "parent": "1-18",
+    "eligible": false,
+    "score": 0.6397,
+    "contain": 0.8,
+    "cosine": 0.6273,
+    "jaccard": 0.4444,
+    "parent_preserved": false,
+    "added_ops": [
+      "word.write"
+    ],
+    "child_ops": [
+      "image.read",
+      "image.write",
+      "word.write"
+    ],
+    "parent_ops": [
+      "image.read",
+      "image.write",
+      "pdf.read",
+      "pdf.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "scan concert post file, save as notification image named notification.jpg, convert image into a concert_activaty.docx file",
+    "parent_text": "extract concert post from pdf file and save as image named 'concert_post.jpg'"
+  },
+  {
+    "child": "3-17",
+    "parent": "2-3",
+    "eligible": true,
+    "score": 0.8037,
+    "contain": 1.0,
+    "cosine": 0.7635,
+    "jaccard": 0.6364,
+    "parent_preserved": true,
+    "added_ops": [
+      "email.read"
+    ],
+    "child_ops": [
+      "email.read",
+      "image.read",
+      "image.write",
+      "pdf.read"
+    ],
+    "parent_ops": [
+      "image.read",
+      "image.write",
+      "pdf.read"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "read pdf google form file, make an image post welcome.jpg, email corresponding person with welcome image in welcome.eml",
+    "parent_text": "read a pdf file google_form.pdf, make an image post welcome.jpg"
+  },
+  {
+    "child": "3-18",
+    "parent": "2-2",
+    "eligible": false,
+    "score": 0.4659,
+    "contain": 0.4444,
+    "cosine": 0.5511,
+    "jaccard": 0.25,
+    "parent_preserved": false,
+    "added_ops": [
+      "excel.write"
+    ],
+    "child_ops": [
+      "excel.write",
+      "fs.rename",
+      "image.read",
+      "image.write",
+      "pdf.read",
+      "pdf.write"
+    ],
+    "parent_ops": [
+      "fs.rename",
+      "image.read",
+      "image.write",
+      "pdf.read",
+      "pdf.write",
+      "word.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "scan resume pdf file, extract name and contact information saved it as contact card in image file named contact.jpg, save basic information in cotact.xlsx",
+    "parent_text": "scan Concert Announcement pdf file, extract name and date saved it as contact card in doc file named contact.docx"
+  },
+  {
+    "child": "3-19",
+    "parent": "2-5",
+    "eligible": true,
+    "score": 0.673,
+    "contain": 0.7778,
+    "cosine": 0.7562,
+    "jaccard": 0.3684,
+    "parent_preserved": true,
+    "added_ops": [
+      "email.send",
+      "reason.check",
+      "word.write"
+    ],
+    "child_ops": [
+      "email.send",
+      "pdf.read",
+      "reason.check",
+      "word.write"
+    ],
+    "parent_ops": [
+      "pdf.read"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Check if the submitted fellowship application PDF material satisfies the school policy, write yes or no in result.docx, and email application to officer in application.eml",
+    "parent_text": "Does the submitted fellowship application PDF material satisfie the school policy?"
+  },
+  {
+    "child": "3-20",
+    "parent": "2-5",
+    "eligible": true,
+    "score": 0.6292,
+    "contain": 0.7778,
+    "cosine": 0.6917,
+    "jaccard": 0.2917,
+    "parent_preserved": true,
+    "added_ops": [
+      "calendar.create",
+      "pdf.write",
+      "reason.check",
+      "word.write"
+    ],
+    "child_ops": [
+      "calendar.create",
+      "pdf.read",
+      "pdf.write",
+      "reason.check",
+      "word.write"
+    ],
+    "parent_ops": [
+      "pdf.read"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Check if the submitted fellowship application PDF material satisfies the school policy, write yes or no in result.docx, and schedule a meeting with officer at 1:00 p.m 5/31/2024, save in meeting.ics",
+    "parent_text": "Does the submitted fellowship application PDF material satisfie the school policy?"
+  },
+  {
+    "child": "3-21",
+    "parent": "2-5",
+    "eligible": false,
+    "score": 0.6875,
+    "contain": 0.7778,
+    "cosine": 0.7694,
+    "jaccard": 0.4118,
+    "parent_preserved": true,
+    "added_ops": [
+      "fs.folder",
+      "pdf.write",
+      "reason.check",
+      "word.write"
+    ],
+    "child_ops": [
+      "fs.folder",
+      "pdf.read",
+      "pdf.write",
+      "reason.check",
+      "word.write"
+    ],
+    "parent_ops": [
+      "pdf.read"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Check if the submitted fellowship application PDF material satisfies the school policy, write yes or no in result.docx, save application into folder named application",
+    "parent_text": "Does the submitted fellowship application PDF material satisfie the school policy?"
+  },
+  {
+    "child": "3-22",
+    "parent": "2-6",
+    "eligible": false,
+    "score": 0.9013,
+    "contain": 1.0,
+    "cosine": 0.9278,
+    "jaccard": 0.8333,
+    "parent_preserved": true,
+    "added_ops": [
+      "fs.folder",
+      "image.write",
+      "pdf.write",
+      "word.write"
+    ],
+    "child_ops": [
+      "fs.folder",
+      "image.read",
+      "image.write",
+      "pdf.read",
+      "pdf.write",
+      "word.write"
+    ],
+    "parent_ops": [
+      "image.read",
+      "pdf.read"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Scan PDF homework and save as homework.docx for editing, save homework file into folder named homework",
+    "parent_text": "Scan PDF homework to homework.docx for editing"
+  },
+  {
+    "child": "3-23",
+    "parent": "2-6",
+    "eligible": true,
+    "score": 0.7417,
+    "contain": 1.0,
+    "cosine": 0.7819,
+    "jaccard": 0.3333,
+    "parent_preserved": true,
+    "added_ops": [
+      "calendar.create",
+      "calendar.read"
+    ],
+    "child_ops": [
+      "calendar.create",
+      "calendar.read",
+      "image.read",
+      "pdf.read"
+    ],
+    "parent_ops": [
+      "image.read",
+      "pdf.read"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Scan PDF homework to homework.docx for editing, make a calendar event due.ics to remind that homework is due on 5/31/2024 at 11:59 p.m",
+    "parent_text": "Scan PDF homework to homework.docx for editing"
+  },
+  {
+    "child": "3-24",
+    "parent": "2-7",
+    "eligible": true,
+    "score": 0.7454,
+    "contain": 1.0,
+    "cosine": 0.7062,
+    "jaccard": 0.4286,
+    "parent_preserved": true,
+    "added_ops": [
+      "calendar.create"
+    ],
+    "child_ops": [
+      "calendar.create",
+      "pdf.read",
+      "pdf.write",
+      "reason.summarize",
+      "word.read",
+      "word.write"
+    ],
+    "parent_ops": [
+      "pdf.read",
+      "pdf.write",
+      "reason.summarize",
+      "word.read",
+      "word.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Extract key points from PDF research papers, summarize them in abstract.docx, and save it for reference, schedule a meeting saved in meeting.ics with professor Dan at 5/31/2024 at 11:00 a.m to talk about paper",
+    "parent_text": "Extract key points from PDF research papers, summarize them in paper.docx, and save it for reference"
+  },
+  {
+    "child": "3-25",
+    "parent": "2-6",
+    "eligible": true,
+    "score": 0.8916,
+    "contain": 1.0,
+    "cosine": 0.9461,
+    "jaccard": 0.7143,
+    "parent_preserved": true,
+    "added_ops": [
+      "image.write",
+      "pdf.write",
+      "word.write"
+    ],
+    "child_ops": [
+      "image.read",
+      "image.write",
+      "pdf.read",
+      "pdf.write",
+      "word.write"
+    ],
+    "parent_ops": [
+      "image.read",
+      "pdf.read"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Scan PDF homework to homework.docx for editing, save homework word file to new_homework.pdf",
+    "parent_text": "Scan PDF homework to homework.docx for editing"
+  },
+  {
+    "child": "3-26",
+    "parent": "2-7",
+    "eligible": true,
+    "score": 0.7675,
+    "contain": 0.8889,
+    "cosine": 0.7509,
+    "jaccard": 0.5714,
+    "parent_preserved": true,
+    "added_ops": [
+      "email.read"
+    ],
+    "child_ops": [
+      "email.read",
+      "pdf.read",
+      "pdf.write",
+      "reason.summarize",
+      "word.read",
+      "word.write"
+    ],
+    "parent_ops": [
+      "pdf.read",
+      "pdf.write",
+      "reason.summarize",
+      "word.read",
+      "word.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Extract key points from PDF research papers, summarize them in abstract.docx, and save it in email to professor Dan named paper.eml",
+    "parent_text": "Extract key points from PDF research papers, summarize them in paper.docx, and save it for reference"
+  },
+  {
+    "child": "3-27",
+    "parent": "2-8",
+    "eligible": true,
+    "score": 0.5471,
+    "contain": 0.5455,
+    "cosine": 0.6446,
+    "jaccard": 0.3333,
+    "parent_preserved": true,
+    "added_ops": [
+      "email.read",
+      "email.send"
+    ],
+    "child_ops": [
+      "email.read",
+      "email.send",
+      "excel.write",
+      "image.read"
+    ],
+    "parent_ops": [
+      "excel.write",
+      "image.read"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Use OCR to extract text from Bob's card and convert them into contact.xlsx with contact information, email excel file to manager Alice named Bob.eml to introduce contact information about Bob",
+    "parent_text": "Use OCR to extract text from business cards and convert them into an Excel sheet with contact information, called 'contacts.xlsx'."
+  },
+  {
+    "child": "3-28",
+    "parent": "2-8",
+    "eligible": true,
+    "score": 0.4788,
+    "contain": 0.4545,
+    "cosine": 0.6025,
+    "jaccard": 0.2273,
+    "parent_preserved": true,
+    "added_ops": [
+      "calendar.create"
+    ],
+    "child_ops": [
+      "calendar.create",
+      "excel.write",
+      "image.read"
+    ],
+    "parent_ops": [
+      "excel.write",
+      "image.read"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Use OCR to extract text from Bob's card and convert them into contact.xlsx with contact information, schedule a meeting with manager Alice at 1:00 p.m 5/21/2024 named meeting.ics",
+    "parent_text": "Use OCR to extract text from business cards and convert them into an Excel sheet with contact information, called 'contacts.xlsx'."
+  },
+  {
+    "child": "3-29",
+    "parent": "2-8",
+    "eligible": false,
+    "score": 0.3742,
+    "contain": 0.3636,
+    "cosine": 0.5112,
+    "jaccard": 0.1905,
+    "parent_preserved": false,
+    "added_ops": [
+      "email.send"
+    ],
+    "child_ops": [
+      "email.send",
+      "excel.write"
+    ],
+    "parent_ops": [
+      "excel.write",
+      "image.read"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Collect all contact cards except Tom's, save their information in contact.xlsx, first header is name, save in alphabetic order by name, send contact.xlsx to Tom via contact.eml for information",
+    "parent_text": "Use OCR to extract text from business cards and convert them into an Excel sheet with contact information, called 'contacts.xlsx'."
+  },
+  {
+    "child": "3-30",
+    "parent": "2-8",
+    "eligible": false,
+    "score": 0.4072,
+    "contain": 0.4545,
+    "cosine": 0.4583,
+    "jaccard": 0.2778,
+    "parent_preserved": false,
+    "added_ops": [
+      "fs.folder"
+    ],
+    "child_ops": [
+      "excel.write",
+      "fs.folder"
+    ],
+    "parent_ops": [
+      "excel.write",
+      "image.read"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Collect all contact cards, save their information in contact.xlsx, save in alphabetic order by name, first header is name, save in folder named contacts",
+    "parent_text": "Use OCR to extract text from business cards and convert them into an Excel sheet with contact information, called 'contacts.xlsx'."
+  },
+  {
+    "child": "3-32",
+    "parent": "2-49",
+    "eligible": false,
+    "score": 0.2512,
+    "contain": 0.4,
+    "cosine": 0.1236,
+    "jaccard": 0.1429,
+    "parent_preserved": false,
+    "added_ops": [
+      "fs.folder",
+      "image.read",
+      "image.write",
+      "pdf.read",
+      "pdf.write"
+    ],
+    "child_ops": [
+      "excel.write",
+      "fs.folder",
+      "image.read",
+      "image.write",
+      "pdf.read",
+      "pdf.write"
+    ],
+    "parent_ops": [
+      "email.read",
+      "excel.read",
+      "excel.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Scan printed car inventory lists from PDF, convert them to Excel file car_inventory.xlsx using OCR, save in folder named cars",
+    "parent_text": "extract score table from email, save as excel file score.xlsx"
+  },
+  {
+    "child": "3-33",
+    "parent": "1-1",
+    "eligible": false,
+    "score": 0.364,
+    "contain": 0.5455,
+    "cosine": 0.2414,
+    "jaccard": 0.2609,
+    "parent_preserved": true,
+    "added_ops": [
+      "calendar.create",
+      "excel.write",
+      "image.read",
+      "pdf.read"
+    ],
+    "child_ops": [
+      "calendar.create",
+      "excel.write",
+      "image.read",
+      "pdf.read"
+    ],
+    "parent_ops": [],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Scan printed car inventory lists from PDF, convert them to Excel file car_inventory.xlsx, create a meeting.ics to schedule meeting for Bob with the first driver in car_inventory.xlsx at 6/1/2024 10:00 a.m",
+    "parent_text": "Add a meeting to Bob's calendar at 5/17/2024 10:30 a.m to 11:00 a.m"
+  },
+  {
+    "child": "3-34",
+    "parent": "1-1",
+    "eligible": false,
+    "score": 0.3568,
+    "contain": 0.5455,
+    "cosine": 0.2695,
+    "jaccard": 0.2,
+    "parent_preserved": true,
+    "added_ops": [
+      "calendar.create",
+      "excel.write",
+      "image.read",
+      "image.write",
+      "pdf.read",
+      "pdf.write",
+      "reason.filter"
+    ],
+    "child_ops": [
+      "calendar.create",
+      "excel.write",
+      "image.read",
+      "image.write",
+      "pdf.read",
+      "pdf.write",
+      "reason.filter"
+    ],
+    "parent_ops": [],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Scan printed car inventory lists from PDF, save cars that milage is lower than 40000 to Excel file good_car.xlsx using OCR, create a meeting.ics to schedule meeting for Bob with the first driver in good_car.xlsx at 6/1/2024 10:00 a.m",
+    "parent_text": "Add a meeting to Bob's calendar at 5/17/2024 10:30 a.m to 11:00 a.m"
+  },
+  {
+    "child": "3-35",
+    "parent": "2-10",
+    "eligible": true,
+    "score": 0.7153,
+    "contain": 0.875,
+    "cosine": 0.6619,
+    "jaccard": 0.5833,
+    "parent_preserved": true,
+    "added_ops": [
+      "reason.aggregate"
+    ],
+    "child_ops": [
+      "excel.read",
+      "excel.write",
+      "image.read",
+      "pdf.read",
+      "reason.aggregate"
+    ],
+    "parent_ops": [
+      "excel.read",
+      "excel.write",
+      "image.read",
+      "pdf.read"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Put student scores from scanned PDF file to scores.xlsx, email student with highest score for reward named reward.eml",
+    "parent_text": "Put first 5 student scores from scanned PDF file to score.xlsx"
+  },
+  {
+    "child": "3-36",
+    "parent": "2-10",
+    "eligible": true,
+    "score": 0.6641,
+    "contain": 0.875,
+    "cosine": 0.6518,
+    "jaccard": 0.3889,
+    "parent_preserved": true,
+    "added_ops": [
+      "calendar.create",
+      "reason.aggregate"
+    ],
+    "child_ops": [
+      "calendar.create",
+      "excel.read",
+      "excel.write",
+      "image.read",
+      "pdf.read",
+      "reason.aggregate"
+    ],
+    "parent_ops": [
+      "excel.read",
+      "excel.write",
+      "image.read",
+      "pdf.read"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Put student scores from scanned PDF file to scores.xlsx, schedule a meeting meeting.ics with student who has the lowest score at 6/1/2024 10:30 a.m",
+    "parent_text": "Put first 5 student scores from scanned PDF file to score.xlsx"
+  },
+  {
+    "child": "3-37",
+    "parent": "2-10",
+    "eligible": false,
+    "score": 0.7899,
+    "contain": 0.8571,
+    "cosine": 0.8016,
+    "jaccard": 0.6667,
+    "parent_preserved": true,
+    "added_ops": [
+      "fs.folder",
+      "image.write",
+      "pdf.write"
+    ],
+    "child_ops": [
+      "excel.read",
+      "excel.write",
+      "fs.folder",
+      "image.read",
+      "image.write",
+      "pdf.read",
+      "pdf.write"
+    ],
+    "parent_ops": [
+      "excel.read",
+      "excel.write",
+      "image.read",
+      "pdf.read"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Put student scores from scanned PDF file to scores.xlsx, save it in folder scores",
+    "parent_text": "Put first 5 student scores from scanned PDF file to score.xlsx"
+  },
+  {
+    "child": "3-38",
+    "parent": "2-49",
+    "eligible": false,
+    "score": 0.302,
+    "contain": 0.4,
+    "cosine": 0.2148,
+    "jaccard": 0.2,
+    "parent_preserved": false,
+    "added_ops": [
+      "fs.folder"
+    ],
+    "child_ops": [
+      "excel.write",
+      "fs.folder"
+    ],
+    "parent_ops": [
+      "email.read",
+      "excel.read",
+      "excel.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "extract students and their IDs, collect in excel file SIDs.xlsx, save in folder IDs",
+    "parent_text": "extract score table from email, save as excel file score.xlsx"
+  },
+  {
+    "child": "3-39",
+    "parent": "1-6",
+    "eligible": false,
+    "score": 0.2831,
+    "contain": 0.2222,
+    "cosine": 0.4484,
+    "jaccard": 0.1053,
+    "parent_preserved": true,
+    "added_ops": [
+      "excel.write",
+      "fs.folder"
+    ],
+    "child_ops": [
+      "excel.write",
+      "fs.folder"
+    ],
+    "parent_ops": [],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "extract students and their IDs, split them in two excel files SID_Class_1.xlsx and SID_Class_2.xlsx, save in two folders Class1 and Class2 respectively",
+    "parent_text": "add a new header Class, randomly assign each student to class 1 to class 5 in class member excel file"
+  },
+  {
+    "child": "3-40",
+    "parent": "2-11",
+    "eligible": true,
+    "score": 0.5556,
+    "contain": 0.6667,
+    "cosine": 0.605,
+    "jaccard": 0.3,
+    "parent_preserved": true,
+    "added_ops": [
+      "calendar.create"
+    ],
+    "child_ops": [
+      "calendar.create",
+      "excel.read",
+      "excel.write"
+    ],
+    "parent_ops": [
+      "excel.read",
+      "excel.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Collect car trading records and organize them into car_records.xlsx, schedule a meeting meeting.ics between the first case buyer and seller at 6/1/2024 1:00 p.m",
+    "parent_text": "Collect car trading records and only organize the information about the car I bought into car_records.xlsx"
+  },
+  {
+    "child": "3-41",
+    "parent": "2-11",
+    "eligible": false,
+    "score": 0.3968,
+    "contain": 0.6,
+    "cosine": 0.2594,
+    "jaccard": 0.2727,
+    "parent_preserved": true,
+    "added_ops": [
+      "fs.folder"
+    ],
+    "child_ops": [
+      "excel.read",
+      "excel.write",
+      "fs.folder"
+    ],
+    "parent_ops": [
+      "excel.read",
+      "excel.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "collect company trading and save in company_trading.xlsx, save it in folder trading",
+    "parent_text": "Collect car trading records and only organize the information about the car I bought into car_records.xlsx"
+  },
+  {
+    "child": "3-42",
+    "parent": "2-11",
+    "eligible": false,
+    "score": 0.348,
+    "contain": 0.5,
+    "cosine": 0.2302,
+    "jaccard": 0.25,
+    "parent_preserved": true,
+    "added_ops": [
+      "email.send"
+    ],
+    "child_ops": [
+      "email.send",
+      "excel.read",
+      "excel.write"
+    ],
+    "parent_ops": [
+      "excel.read",
+      "excel.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "collect company trading and save in company_trading.xlsx, email it to president",
+    "parent_text": "Collect car trading records and only organize the information about the car I bought into car_records.xlsx"
+  },
+  {
+    "child": "3-43",
+    "parent": "2-12",
+    "eligible": true,
+    "score": 0.8844,
+    "contain": 1.0,
+    "cosine": 0.8888,
+    "jaccard": 0.6923,
+    "parent_preserved": true,
+    "added_ops": [
+      "email.send"
+    ],
+    "child_ops": [
+      "calendar.create",
+      "email.send",
+      "image.read"
+    ],
+    "parent_ops": [
+      "calendar.create",
+      "image.read"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Scan handwritten notes from a meeting agenda, convert them to text using OCR, and add them to a calendar file meeting.ics, email it to Alice for record",
+    "parent_text": "Scan handwritten notes from a meeting agenda, convert them to text, and add them to a calendar file meeting.ics"
+  },
+  {
+    "child": "3-44",
+    "parent": "2-17",
+    "eligible": false,
+    "score": 0.2681,
+    "contain": 0.3333,
+    "cosine": 0.243,
+    "jaccard": 0.1818,
+    "parent_preserved": false,
+    "added_ops": [
+      "fs.folder",
+      "image.read",
+      "image.write"
+    ],
+    "child_ops": [
+      "fs.folder",
+      "image.read",
+      "image.write"
+    ],
+    "parent_ops": [
+      "calendar.create",
+      "calendar.read"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "read daily schedule from image, save all events in file daily_schedule.txt, save it in folder daily_schedule",
+    "parent_text": "Schedule meetings for students in each class seperately, create calendar events for them"
+  },
+  {
+    "child": "3-45",
+    "parent": "2-13",
+    "eligible": false,
+    "score": 1.0,
+    "contain": 1.0,
+    "cosine": 1.0,
+    "jaccard": 1.0,
+    "parent_preserved": true,
+    "added_ops": [],
+    "child_ops": [
+      "calendar.create",
+      "calendar.read",
+      "excel.read",
+      "excel.write"
+    ],
+    "parent_ops": [
+      "calendar.create",
+      "calendar.read",
+      "excel.read",
+      "excel.write"
+    ],
+    "exact_cross_level_duplicate": true,
+    "op_signature_seen_lower": true,
+    "child_text": "Schedule a team training session for all participants from excel file, create calendar events for each member in their name",
+    "parent_text": "Schedule a team training session for all participants from excel file, create calendar events for each member in their name"
+  },
+  {
+    "child": "3-46",
+    "parent": "2-14",
+    "eligible": false,
+    "score": 0.6766,
+    "contain": 0.8,
+    "cosine": 0.6972,
+    "jaccard": 0.5,
+    "parent_preserved": false,
+    "added_ops": [
+      "email.send"
+    ],
+    "child_ops": [
+      "calendar.create",
+      "calendar.read",
+      "email.send",
+      "reason.filter"
+    ],
+    "parent_ops": [
+      "calendar.create",
+      "calendar.read",
+      "excel.read",
+      "excel.write",
+      "reason.filter"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "schedule a reward meeting to the top-three students in midterm 2, create calendar event reward for them with their score in midterm 2. email to top-three students separately with the same details in the calendar event.",
+    "parent_text": "schedule a reward meeting for the top-three students in score excel file and create calendar events for each of them."
+  },
+  {
+    "child": "3-47",
+    "parent": "2-14",
+    "eligible": false,
+    "score": 0.6082,
+    "contain": 0.75,
+    "cosine": 0.5282,
+    "jaccard": 0.5,
+    "parent_preserved": false,
+    "added_ops": [
+      "pdf.write"
+    ],
+    "child_ops": [
+      "pdf.write",
+      "reason.filter"
+    ],
+    "parent_ops": [
+      "calendar.create",
+      "calendar.read",
+      "excel.read",
+      "excel.write",
+      "reason.filter"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "schedule a reward meeting to the top-three students, write reward statement in statement.pdf",
+    "parent_text": "schedule a reward meeting for the top-three students in score excel file and create calendar events for each of them."
+  },
+  {
+    "child": "3-48",
+    "parent": "2-13",
+    "eligible": false,
+    "score": 0.817,
+    "contain": 0.8889,
+    "cosine": 0.7815,
+    "jaccard": 0.7273,
+    "parent_preserved": true,
+    "added_ops": [
+      "reason.filter"
+    ],
+    "child_ops": [
+      "calendar.create",
+      "calendar.read",
+      "excel.read",
+      "excel.write",
+      "reason.filter"
+    ],
+    "parent_ops": [
+      "calendar.create",
+      "calendar.read",
+      "excel.read",
+      "excel.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": true,
+    "child_text": "Schedule a team training session for members in section A from excel file, create calendar events file for each member in their name",
+    "parent_text": "Schedule a team training session for all participants from excel file, create calendar events for each member in their name"
+  },
+  {
+    "child": "3-49",
+    "parent": "2-17",
+    "eligible": false,
+    "score": 0.4083,
+    "contain": 0.5714,
+    "cosine": 0.3338,
+    "jaccard": 0.2222,
+    "parent_preserved": true,
+    "added_ops": [
+      "reason.filter"
+    ],
+    "child_ops": [
+      "calendar.create",
+      "calendar.read",
+      "reason.filter"
+    ],
+    "parent_ops": [
+      "calendar.create",
+      "calendar.read"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "schedule a helping section, pair one student whose score is in section A/B and one student in section C, create calendar events for each of them using their names, email those students for notification",
+    "parent_text": "Schedule meetings for students in each class seperately, create calendar events for them"
+  },
+  {
+    "child": "3-50",
+    "parent": "2-15",
+    "eligible": true,
+    "score": 0.8988,
+    "contain": 1.0,
+    "cosine": 0.9242,
+    "jaccard": 0.7,
+    "parent_preserved": true,
+    "added_ops": [
+      "image.write"
+    ],
+    "child_ops": [
+      "calendar.read",
+      "excel.read",
+      "excel.write",
+      "image.write"
+    ],
+    "parent_ops": [
+      "calendar.read",
+      "excel.read",
+      "excel.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Convert meeting agenda from calendar into Excel file meeting_agenda.xlsx for further analysis, create an image post agenda.jpg",
+    "parent_text": "Convert meeting agenda from calendar into Excel file meeting_agenda.xlsx for further analysis"
+  },
+  {
+    "child": "3-51",
+    "parent": "2-15",
+    "eligible": true,
+    "score": 0.8974,
+    "contain": 1.0,
+    "cosine": 0.9123,
+    "jaccard": 0.7,
+    "parent_preserved": true,
+    "added_ops": [
+      "email.send"
+    ],
+    "child_ops": [
+      "calendar.read",
+      "email.send",
+      "excel.read",
+      "excel.write"
+    ],
+    "parent_ops": [
+      "calendar.read",
+      "excel.read",
+      "excel.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Convert meeting agenda from calendar into Excel file meeting_agenda.xlsx for further analysis, email it to manager Rena",
+    "parent_text": "Convert meeting agenda from calendar into Excel file meeting_agenda.xlsx for further analysis"
+  },
+  {
+    "child": "3-52",
+    "parent": "2-16",
+    "eligible": true,
+    "score": 0.7299,
+    "contain": 1.0,
+    "cosine": 0.5811,
+    "jaccard": 0.5455,
+    "parent_preserved": true,
+    "added_ops": [
+      "calendar.create",
+      "email.send"
+    ],
+    "child_ops": [
+      "calendar.create",
+      "email.send",
+      "excel.read",
+      "excel.write"
+    ],
+    "parent_ops": [
+      "excel.read",
+      "excel.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Create meeting agenda from Excel data and add it to my calendar and email to the participants emails as reminders, separately.",
+    "parent_text": "Create meeting agenda from Excel data and add it to my calendar"
+  },
+  {
+    "child": "3-53",
+    "parent": "2-17",
+    "eligible": false,
+    "score": 0.5404,
+    "contain": 0.7143,
+    "cosine": 0.5361,
+    "jaccard": 0.2941,
+    "parent_preserved": true,
+    "added_ops": [
+      "fs.folder",
+      "fs.rename"
+    ],
+    "child_ops": [
+      "calendar.create",
+      "calendar.read",
+      "fs.folder",
+      "fs.rename"
+    ],
+    "parent_ops": [
+      "calendar.create",
+      "calendar.read"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "For students in each class seperately, create calendar events for them, create different folders by class numbers (folder name should have the format class_x) and save the student name as a file [NAME].txt in the corresponding folder",
+    "parent_text": "Schedule meetings for students in each class seperately, create calendar events for them"
+  },
+  {
+    "child": "3-54",
+    "parent": "2-18",
+    "eligible": true,
+    "score": 0.5838,
+    "contain": 0.7143,
+    "cosine": 0.6352,
+    "jaccard": 0.2778,
+    "parent_preserved": true,
+    "added_ops": [
+      "email.send"
+    ],
+    "child_ops": [
+      "email.send",
+      "reason.aggregate",
+      "word.write"
+    ],
+    "parent_ops": [
+      "reason.aggregate",
+      "word.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Write a statement in reward.docx to the student who got the highest score on midterm1, email this to student's parents (the name of the email file is student_name.eml). Student's parents' email have the form student_name@mail.com.",
+    "parent_text": "Write a statement in docx file to the student with the highest score in the class, use the student's name as filename"
+  },
+  {
+    "child": "3-55",
+    "parent": "2-18",
+    "eligible": false,
+    "score": 0.5565,
+    "contain": 0.7143,
+    "cosine": 0.4786,
+    "jaccard": 0.3571,
+    "parent_preserved": false,
+    "added_ops": [
+      "reason.filter"
+    ],
+    "child_ops": [
+      "reason.filter",
+      "word.write"
+    ],
+    "parent_ops": [
+      "reason.aggregate",
+      "word.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Write a statement in reward.docx to the student who got the best midterm1 score in the class, make a post reward.jpg",
+    "parent_text": "Write a statement in docx file to the student with the highest score in the class, use the student's name as filename"
+  },
+  {
+    "child": "3-56",
+    "parent": "2-6",
+    "eligible": false,
+    "score": 0.3586,
+    "contain": 0.4,
+    "cosine": 0.3859,
+    "jaccard": 0.1818,
+    "parent_preserved": false,
+    "added_ops": [
+      "word.read",
+      "word.write"
+    ],
+    "child_ops": [
+      "word.read",
+      "word.write"
+    ],
+    "parent_ops": [
+      "image.read",
+      "pdf.read"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "assign homework \"read book and write essay\" in hw1.docx for students in class 1.",
+    "parent_text": "Scan PDF homework to homework.docx for editing"
+  },
+  {
+    "child": "3-57",
+    "parent": "2-6",
+    "eligible": false,
+    "score": 0.3075,
+    "contain": 0.4,
+    "cosine": 0.3024,
+    "jaccard": 0.1333,
+    "parent_preserved": false,
+    "added_ops": [
+      "email.read",
+      "email.send",
+      "word.read",
+      "word.write"
+    ],
+    "child_ops": [
+      "email.read",
+      "email.send",
+      "word.read",
+      "word.write"
+    ],
+    "parent_ops": [
+      "image.read",
+      "pdf.read"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "assign homework \"read book and write essay\" in hw1.docx for students in class 1, email hw1.docx to Carol and Anna in class1",
+    "parent_text": "Scan PDF homework to homework.docx for editing"
+  },
+  {
+    "child": "3-58",
+    "parent": "2-21",
+    "eligible": false,
+    "score": 0.255,
+    "contain": 0.5,
+    "cosine": 0.0608,
+    "jaccard": 0.1429,
+    "parent_preserved": false,
+    "added_ops": [],
+    "child_ops": [
+      "word.write"
+    ],
+    "parent_ops": [
+      "excel.write",
+      "word.read",
+      "word.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": true,
+    "child_text": "write all shopping item in shopping.docx from shopping list",
+    "parent_text": "Extract Bill's previous courses from Bill_course_list.xlsx, and put the course in classes_taken.docx. Each course should be on a seperate line."
+  },
+  {
+    "child": "3-59",
+    "parent": "2-19",
+    "eligible": true,
+    "score": 0.9552,
+    "contain": 1.0,
+    "cosine": 0.9649,
+    "jaccard": 0.9,
+    "parent_preserved": true,
+    "added_ops": [
+      "excel.write",
+      "pdf.read",
+      "pdf.write"
+    ],
+    "child_ops": [
+      "excel.read",
+      "excel.write",
+      "pdf.read",
+      "pdf.write",
+      "reason.summarize",
+      "word.write"
+    ],
+    "parent_ops": [
+      "excel.read",
+      "reason.summarize",
+      "word.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Analyze Excel data of students' grade and generate a teaching report in teaching.docx, convert to teaching.pdf",
+    "parent_text": "Analyze Excel data of students' grade and generate a teaching report in teaching.docx"
+  },
+  {
+    "child": "3-60",
+    "parent": "2-20",
+    "eligible": false,
+    "score": 0.8163,
+    "contain": 0.9,
+    "cosine": 0.8185,
+    "jaccard": 0.6923,
+    "parent_preserved": true,
+    "added_ops": [
+      "fs.folder"
+    ],
+    "child_ops": [
+      "fs.folder",
+      "word.write"
+    ],
+    "parent_ops": [
+      "word.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Find all students who are taking CS161 and put the name and student ID of students into students.docx, save in folder CS161",
+    "parent_text": "Find all students who are taking CS161 and put the name and Student ID of students into students.docx. Each student should be on seperate lines, with the format `Student ID, name`."
+  },
+  {
+    "child": "3-61",
+    "parent": "2-21",
+    "eligible": false,
+    "score": 0.4353,
+    "contain": 0.4167,
+    "cosine": 0.5448,
+    "jaccard": 0.2174,
+    "parent_preserved": true,
+    "added_ops": [
+      "email.read",
+      "email.send",
+      "excel.read",
+      "reason.predict"
+    ],
+    "child_ops": [
+      "email.read",
+      "email.send",
+      "excel.read",
+      "excel.write",
+      "reason.predict",
+      "word.read",
+      "word.write"
+    ],
+    "parent_ops": [
+      "excel.write",
+      "word.read",
+      "word.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Extract a student's previous courses from Excel, suggest four courses he should take this quarter and put it in classes.docx, email classes.docx to student. The email file should have the name thomas.eml.",
+    "parent_text": "Extract Bill's previous courses from Bill_course_list.xlsx, and put the course in classes_taken.docx. Each course should be on a seperate line."
+  },
+  {
+    "child": "3-62",
+    "parent": "2-22",
+    "eligible": true,
+    "score": 0.8033,
+    "contain": 0.8571,
+    "cosine": 0.8798,
+    "jaccard": 0.6,
+    "parent_preserved": true,
+    "added_ops": [
+      "pdf.read",
+      "pdf.write"
+    ],
+    "child_ops": [
+      "pdf.read",
+      "pdf.write",
+      "reason.summarize",
+      "word.write"
+    ],
+    "parent_ops": [
+      "reason.summarize",
+      "word.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Generate a file report.docx based on midterm1 and midterm2 scores, convert to report.pdf",
+    "parent_text": "Generate a word report based on midterm1 and midterm2 scores, the filename is 'midterm_report.docx'."
+  },
+  {
+    "child": "3-63",
+    "parent": "2-22",
+    "eligible": false,
+    "score": 0.8031,
+    "contain": 0.8571,
+    "cosine": 0.8709,
+    "jaccard": 0.6,
+    "parent_preserved": true,
+    "added_ops": [
+      "fs.folder"
+    ],
+    "child_ops": [
+      "fs.folder",
+      "reason.summarize",
+      "word.write"
+    ],
+    "parent_ops": [
+      "reason.summarize",
+      "word.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Generate a file report.docx based on midterm1 and midterm2 scores, save in folder named report",
+    "parent_text": "Generate a word report based on midterm1 and midterm2 scores, the filename is 'midterm_report.docx'."
+  },
+  {
+    "child": "3-64",
+    "parent": "2-34",
+    "eligible": false,
+    "score": 0.3083,
+    "contain": 0.3333,
+    "cosine": 0.3603,
+    "jaccard": 0.1333,
+    "parent_preserved": false,
+    "added_ops": [
+      "reason.predict"
+    ],
+    "child_ops": [
+      "reason.predict"
+    ],
+    "parent_ops": [
+      "reason.aggregate"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "give some instruction and prediction in file house_price.docx based on house price index, convert to a post housing.jpg",
+    "parent_text": "Analyze housing price and print the lowest price in lowest.txt"
+  },
+  {
+    "child": "3-65",
+    "parent": "1-22",
+    "eligible": false,
+    "score": 0.3536,
+    "contain": 0.6,
+    "cosine": 0.2151,
+    "jaccard": 0.2,
+    "parent_preserved": false,
+    "added_ops": [
+      "reason.predict"
+    ],
+    "child_ops": [
+      "email.read",
+      "reason.predict"
+    ],
+    "parent_ops": [
+      "email.read",
+      "email.send"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "give some instruction and prediction in file house_price.docx based on house price index, email to Bob for reference. The subject of email should be Housing_Instruction",
+    "parent_text": "what is the subject of the email I sent to Bob?"
+  },
+  {
+    "child": "3-66",
+    "parent": "1-22",
+    "eligible": false,
+    "score": 0.2602,
+    "contain": 0.4,
+    "cosine": 0.2107,
+    "jaccard": 0.1111,
+    "parent_preserved": false,
+    "added_ops": [
+      "excel.read",
+      "excel.write",
+      "reason.predict",
+      "word.write"
+    ],
+    "child_ops": [
+      "email.send",
+      "excel.read",
+      "excel.write",
+      "reason.predict",
+      "word.write"
+    ],
+    "parent_ops": [
+      "email.read",
+      "email.send"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "suggest cars and save in cars.docx for people whose budget is 50000$ based on car trading excel file, email to Tom for reference with subject 'Cars for you'",
+    "parent_text": "what is the subject of the email I sent to Bob?"
+  },
+  {
+    "child": "3-67",
+    "parent": "2-6",
+    "eligible": false,
+    "score": 0.2124,
+    "contain": 0.4,
+    "cosine": 0.0539,
+    "jaccard": 0.1333,
+    "parent_preserved": false,
+    "added_ops": [
+      "excel.read",
+      "excel.write",
+      "pdf.write",
+      "reason.predict",
+      "word.write"
+    ],
+    "child_ops": [
+      "excel.read",
+      "excel.write",
+      "pdf.write",
+      "reason.predict",
+      "word.write"
+    ],
+    "parent_ops": [
+      "image.read",
+      "pdf.read"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "suggest cars and save in cars.docx for people whose budget is 50000$ based on car trading excel file, convert to suggesting.pdf",
+    "parent_text": "Scan PDF homework to homework.docx for editing"
+  },
+  {
+    "child": "3-68",
+    "parent": "2-23",
+    "eligible": false,
+    "score": 0.4492,
+    "contain": 0.5,
+    "cosine": 0.5024,
+    "jaccard": 0.2105,
+    "parent_preserved": false,
+    "added_ops": [
+      "email.read"
+    ],
+    "child_ops": [
+      "email.read",
+      "pdf.read",
+      "reason.aggregate"
+    ],
+    "parent_ops": [
+      "excel.write",
+      "pdf.read",
+      "reason.aggregate"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Extract data from PDF invoices from sales and sum all the costs in file costs.xlsx, if cost in larger than 1300$, email to Bob with subject 'Costs'",
+    "parent_text": "Extract data from PDF invoice (Invoice.pdf) and put the total due in file costs.xlsx"
+  },
+  {
+    "child": "3-69",
+    "parent": "2-24",
+    "eligible": true,
+    "score": 0.8004,
+    "contain": 0.8333,
+    "cosine": 0.8723,
+    "jaccard": 0.625,
+    "parent_preserved": true,
+    "added_ops": [
+      "excel.write",
+      "pdf.read",
+      "word.read"
+    ],
+    "child_ops": [
+      "excel.read",
+      "excel.write",
+      "pdf.read",
+      "reason.aggregate",
+      "word.read"
+    ],
+    "parent_ops": [
+      "excel.read",
+      "reason.aggregate"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Extract the score and name from pdf then calculate the score in excel score.xlsx, convert to score.docx",
+    "parent_text": "Extract the score and name then calculate the average score in excel score.xlsx"
+  },
+  {
+    "child": "3-70",
+    "parent": "2-25",
+    "eligible": false,
+    "score": 0.9365,
+    "contain": 1.0,
+    "cosine": 0.9252,
+    "jaccard": 0.8889,
+    "parent_preserved": true,
+    "added_ops": [],
+    "child_ops": [
+      "fs.rename",
+      "pdf.write",
+      "word.write"
+    ],
+    "parent_ops": [
+      "fs.rename",
+      "pdf.write",
+      "word.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": true,
+    "child_text": "Convert student homework word documents to PDF and rename them into same name with .pdf suffix, convert to images with same name",
+    "parent_text": "Convert student homework word documents to PDF and rename them into same name with .pdf suffix"
+  },
+  {
+    "child": "3-71",
+    "parent": "2-27",
+    "eligible": true,
+    "score": 0.7195,
+    "contain": 1.0,
+    "cosine": 0.5795,
+    "jaccard": 0.5,
+    "parent_preserved": true,
+    "added_ops": [
+      "pdf.write"
+    ],
+    "child_ops": [
+      "calendar.create",
+      "calendar.read",
+      "pdf.read",
+      "pdf.write"
+    ],
+    "parent_ops": [
+      "calendar.create",
+      "calendar.read",
+      "pdf.read"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Extract schedule from PDF and add it to a calendar meeting_agenda.ics, also save it as agenda.jpg",
+    "parent_text": "Extract schedule from PDF and add it to my calendar."
+  },
+  {
+    "child": "3-72",
+    "parent": "2-27",
+    "eligible": false,
+    "score": 0.5352,
+    "contain": 0.75,
+    "cosine": 0.4387,
+    "jaccard": 0.3,
+    "parent_preserved": false,
+    "added_ops": [
+      "fs.folder",
+      "pdf.write",
+      "text.write"
+    ],
+    "child_ops": [
+      "fs.folder",
+      "pdf.read",
+      "pdf.write",
+      "text.write"
+    ],
+    "parent_ops": [
+      "calendar.create",
+      "calendar.read",
+      "pdf.read"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Extract schedule from PDF and add it to a text file meeting_agenda.txt, also save it in folder named meetings",
+    "parent_text": "Extract schedule from PDF and add it to my calendar."
+  },
+  {
+    "child": "3-73",
+    "parent": "2-29",
+    "eligible": false,
+    "score": 0.7081,
+    "contain": 0.9,
+    "cosine": 0.694,
+    "jaccard": 0.4286,
+    "parent_preserved": true,
+    "added_ops": [],
+    "child_ops": [
+      "calendar.create",
+      "image.read",
+      "image.write",
+      "pdf.read",
+      "pdf.write"
+    ],
+    "parent_ops": [
+      "calendar.create",
+      "image.read",
+      "image.write",
+      "pdf.read",
+      "pdf.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": true,
+    "child_text": "Scan Conference Invitation PDF and search for conference date (If no time is specified, use 6:00 am as default start time), add event to that date on calender, save as invitation.ics, make an invitation post named invitation.jpg",
+    "parent_text": "Scan Conference Invitation PDF and search for conference date, add event to that date on calender, save in my calendar."
+  },
+  {
+    "child": "3-74",
+    "parent": "2-29",
+    "eligible": true,
+    "score": 0.8123,
+    "contain": 0.9,
+    "cosine": 0.8926,
+    "jaccard": 0.5625,
+    "parent_preserved": true,
+    "added_ops": [
+      "excel.write"
+    ],
+    "child_ops": [
+      "calendar.create",
+      "excel.write",
+      "image.read",
+      "image.write",
+      "pdf.read",
+      "pdf.write"
+    ],
+    "parent_ops": [
+      "calendar.create",
+      "image.read",
+      "image.write",
+      "pdf.read",
+      "pdf.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Scan Conference Invitation PDF and search for conference date, add event to that date on calender, save as invitation.ics, record date, location, conference name, etc. in excel conference.xlsx",
+    "parent_text": "Scan Conference Invitation PDF and search for conference date, add event to that date on calender, save in my calendar."
+  },
+  {
+    "child": "3-75",
+    "parent": "2-30",
+    "eligible": true,
+    "score": 0.5157,
+    "contain": 0.6667,
+    "cosine": 0.4472,
+    "jaccard": 0.3636,
+    "parent_preserved": true,
+    "added_ops": [
+      "email.read",
+      "pdf.read"
+    ],
+    "child_ops": [
+      "email.read",
+      "fs.rename",
+      "pdf.read",
+      "word.read"
+    ],
+    "parent_ops": [
+      "fs.rename",
+      "word.read"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Extract the student name from docx then rename this pdf to {name}.pdf in shell, email teacher Alice with pdf file",
+    "parent_text": "Extract the student ID from docx then rename this docx file to {ID}.docx where the ID is the student ID."
+  },
+  {
+    "child": "3-76",
+    "parent": "2-31",
+    "eligible": true,
+    "score": 0.8385,
+    "contain": 1.0,
+    "cosine": 0.8391,
+    "jaccard": 0.6,
+    "parent_preserved": true,
+    "added_ops": [
+      "email.send"
+    ],
+    "child_ops": [
+      "email.send",
+      "reason.aggregate"
+    ],
+    "parent_ops": [
+      "reason.aggregate"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "What is the maximum prices of the cars sold in March, send it via email to the buyer Tom",
+    "parent_text": "What is the maximum prices of the cars sold in March?"
+  },
+  {
+    "child": "3-77",
+    "parent": "2-34",
+    "eligible": false,
+    "score": 0.1945,
+    "contain": 0.1667,
+    "cosine": 0.2736,
+    "jaccard": 0.0667,
+    "parent_preserved": false,
+    "added_ops": [
+      "image.read",
+      "reason.predict",
+      "word.write"
+    ],
+    "child_ops": [
+      "image.read",
+      "reason.predict",
+      "word.write"
+    ],
+    "parent_ops": [
+      "reason.aggregate"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Predict house price index in year 2030 based on house price index image, write your answer in prediction.docx",
+    "parent_text": "Analyze housing price and print the lowest price in lowest.txt"
+  },
+  {
+    "child": "3-78",
+    "parent": "2-32",
+    "eligible": true,
+    "score": 0.5495,
+    "contain": 0.5,
+    "cosine": 0.7141,
+    "jaccard": 0.2857,
+    "parent_preserved": true,
+    "added_ops": [
+      "reason.summarize"
+    ],
+    "child_ops": [
+      "reason.check",
+      "reason.summarize"
+    ],
+    "parent_ops": [
+      "reason.check"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Identify whether the reimbursement amount exceeds the company budget, report to manager Tom about reimbursement",
+    "parent_text": "Does the reimbursement amount exceed the company budget? Yes or No?"
+  },
+  {
+    "child": "3-79",
+    "parent": "2-32",
+    "eligible": true,
+    "score": 0.5169,
+    "contain": 0.5,
+    "cosine": 0.6641,
+    "jaccard": 0.25,
+    "parent_preserved": true,
+    "added_ops": [
+      "calendar.create"
+    ],
+    "child_ops": [
+      "calendar.create",
+      "reason.check"
+    ],
+    "parent_ops": [
+      "reason.check"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Identify whether the reimbursement amount exceeds the company budget, schedule a meeting as meeting.ics for staff to talk about reimbursement",
+    "parent_text": "Does the reimbursement amount exceed the company budget? Yes or No?"
+  },
+  {
+    "child": "3-80",
+    "parent": "1-18",
+    "eligible": false,
+    "score": 0.2483,
+    "contain": 0.4,
+    "cosine": 0.1294,
+    "jaccard": 0.1333,
+    "parent_preserved": false,
+    "added_ops": [
+      "fs.folder",
+      "reason.aggregate"
+    ],
+    "child_ops": [
+      "fs.folder",
+      "reason.aggregate"
+    ],
+    "parent_ops": [
+      "image.read",
+      "image.write",
+      "pdf.read",
+      "pdf.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Compare income and expenditure based on company trading record, write a short analysis and save it as trading_record_post.jpg in folder named trading_account",
+    "parent_text": "extract concert post from pdf file and save as image named 'concert_post.jpg'"
+  },
+  {
+    "child": "3-81",
+    "parent": "2-38",
+    "eligible": false,
+    "score": 0.2238,
+    "contain": 0.3333,
+    "cosine": 0.1358,
+    "jaccard": 0.1176,
+    "parent_preserved": false,
+    "added_ops": [],
+    "child_ops": [
+      "email.send"
+    ],
+    "parent_ops": [
+      "email.read",
+      "email.send",
+      "pdf.read"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Compare income and expenditure based on company trading record, email a short analysis to manager Alice (Alice@abc.com)",
+    "parent_text": "read notification pdf file and send email notification.eml to Alice"
+  },
+  {
+    "child": "3-82",
+    "parent": "2-33",
+    "eligible": false,
+    "score": 0.4404,
+    "contain": 0.5,
+    "cosine": 0.4535,
+    "jaccard": 0.25,
+    "parent_preserved": false,
+    "added_ops": [
+      "word.write"
+    ],
+    "child_ops": [
+      "reason.filter",
+      "word.write"
+    ],
+    "parent_ops": [
+      "fs.rename",
+      "reason.filter"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Check student grade in midterm1, write top-5 students' names in list.docx",
+    "parent_text": "Print the top 3 students in midterm1 into a file named top3.txt. "
+  },
+  {
+    "child": "3-83",
+    "parent": "1-6",
+    "eligible": true,
+    "score": 0.3734,
+    "contain": 0.25,
+    "cosine": 0.5978,
+    "jaccard": 0.1333,
+    "parent_preserved": true,
+    "added_ops": [
+      "pdf.write",
+      "reason.filter"
+    ],
+    "child_ops": [
+      "pdf.write",
+      "reason.filter"
+    ],
+    "parent_ops": [],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "which class has the least students, save all students' names in this class in Class_member.pdf",
+    "parent_text": "add a new header Class, randomly assign each student to class 1 to class 5 in class member excel file"
+  },
+  {
+    "child": "3-84",
+    "parent": "2-36",
+    "eligible": false,
+    "score": 0.2826,
+    "contain": 0.4,
+    "cosine": 0.2196,
+    "jaccard": 0.1333,
+    "parent_preserved": false,
+    "added_ops": [],
+    "child_ops": [
+      "reason.summarize",
+      "word.write"
+    ],
+    "parent_ops": [
+      "reason.summarize",
+      "word.read",
+      "word.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": true,
+    "child_text": "Analyze relationship between sleeping hours and age, weight, gender from survey result, convert report to report.docx file",
+    "parent_text": "Read grade in transcripts and generate a grade report report.docx"
+  },
+  {
+    "child": "3-85",
+    "parent": "2-19",
+    "eligible": false,
+    "score": 0.2074,
+    "contain": 0.2222,
+    "cosine": 0.1807,
+    "jaccard": 0.1053,
+    "parent_preserved": false,
+    "added_ops": [],
+    "child_ops": [
+      "reason.summarize"
+    ],
+    "parent_ops": [
+      "excel.read",
+      "reason.summarize",
+      "word.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Analyze relationship between sleeping hours and age, weight, gender from survey result, save report as report.jpg",
+    "parent_text": "Analyze Excel data of students' grade and generate a teaching report in teaching.docx"
+  },
+  {
+    "child": "3-86",
+    "parent": "2-36",
+    "eligible": false,
+    "score": 0.8378,
+    "contain": 1.0,
+    "cosine": 0.8579,
+    "jaccard": 0.625,
+    "parent_preserved": true,
+    "added_ops": [
+      "pdf.read",
+      "pdf.write"
+    ],
+    "child_ops": [
+      "pdf.read",
+      "pdf.write",
+      "reason.summarize",
+      "word.read",
+      "word.write"
+    ],
+    "parent_ops": [
+      "reason.summarize",
+      "word.read",
+      "word.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": true,
+    "child_text": "Read grade in transcripts and generate a grade report called transcripts_report.docx, also save the report as transcripts_report_pdf_version.pdf",
+    "parent_text": "Read grade in transcripts and generate a grade report report.docx"
+  },
+  {
+    "child": "3-87",
+    "parent": "1-12",
+    "eligible": false,
+    "score": 0.2185,
+    "contain": 0.3333,
+    "cosine": 0.1392,
+    "jaccard": 0.125,
+    "parent_preserved": true,
+    "added_ops": [
+      "reason.filter"
+    ],
+    "child_ops": [
+      "reason.aggregate",
+      "reason.filter"
+    ],
+    "parent_ops": [
+      "reason.aggregate"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "if Dean's list requires term average gpa to be higher than 3.9, how many terms can this students be awarded on Dean's list? Email to student about this result",
+    "parent_text": "what is total number of students in class CS161, and how many of them are senior?"
+  },
+  {
+    "child": "3-88",
+    "parent": "1-18",
+    "eligible": false,
+    "score": 0.3729,
+    "contain": 0.6,
+    "cosine": 0.1986,
+    "jaccard": 0.25,
+    "parent_preserved": false,
+    "added_ops": [],
+    "child_ops": [
+      "image.write"
+    ],
+    "parent_ops": [
+      "image.read",
+      "image.write",
+      "pdf.read",
+      "pdf.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Analyze relationship between revenues and sales unit, regions, save as an image post named analyze.jpg",
+    "parent_text": "extract concert post from pdf file and save as image named 'concert_post.jpg'"
+  },
+  {
+    "child": "3-89",
+    "parent": "2-34",
+    "eligible": false,
+    "score": 0.2222,
+    "contain": 0.3333,
+    "cosine": 0.144,
+    "jaccard": 0.1176,
+    "parent_preserved": false,
+    "added_ops": [
+      "fs.folder",
+      "reason.summarize"
+    ],
+    "child_ops": [
+      "fs.folder",
+      "reason.summarize"
+    ],
+    "parent_ops": [
+      "reason.aggregate"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Analyze relationship between revenues and sales unit, regions, save your results in the analysis.txt and put it in a folder named report",
+    "parent_text": "Analyze housing price and print the lowest price in lowest.txt"
+  },
+  {
+    "child": "3-90",
+    "parent": "2-16",
+    "eligible": false,
+    "score": 0.3387,
+    "contain": 0.5,
+    "cosine": 0.2718,
+    "jaccard": 0.2727,
+    "parent_preserved": false,
+    "added_ops": [
+      "calendar.read",
+      "pdf.read",
+      "pdf.write",
+      "reason.summarize"
+    ],
+    "child_ops": [
+      "calendar.read",
+      "pdf.read",
+      "pdf.write",
+      "reason.summarize"
+    ],
+    "parent_ops": [
+      "excel.read",
+      "excel.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "for calendar data, find frequency of meeting, generate a file report.pdf about meeting frequency",
+    "parent_text": "Create meeting agenda from Excel data and add it to my calendar"
+  },
+  {
+    "child": "3-91",
+    "parent": "2-27",
+    "eligible": false,
+    "score": 0.3261,
+    "contain": 0.5,
+    "cosine": 0.2708,
+    "jaccard": 0.1429,
+    "parent_preserved": false,
+    "added_ops": [
+      "reason.check",
+      "word.write"
+    ],
+    "child_ops": [
+      "calendar.create",
+      "calendar.read",
+      "reason.check",
+      "word.write"
+    ],
+    "parent_ops": [
+      "calendar.create",
+      "calendar.read",
+      "pdf.read"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Do these calendar events have time conflicts? write confliction on schedule.docx, or combine all schedules in that docx file",
+    "parent_text": "Extract schedule from PDF and add it to my calendar."
+  },
+  {
+    "child": "3-92",
+    "parent": "2-3",
+    "eligible": false,
+    "score": 0.3203,
+    "contain": 0.4286,
+    "cosine": 0.274,
+    "jaccard": 0.1667,
+    "parent_preserved": false,
+    "added_ops": [
+      "email.send"
+    ],
+    "child_ops": [
+      "email.send"
+    ],
+    "parent_ops": [
+      "image.read",
+      "image.write",
+      "pdf.read"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "Bob was invited to party hold by Jane Doe, send an email from Jane to Bob to notify Bob, make a post welcome.jpg for Bob",
+    "parent_text": "read a pdf file google_form.pdf, make an image post welcome.jpg"
+  },
+  {
+    "child": "3-93",
+    "parent": "2-40",
+    "eligible": true,
+    "score": 0.8434,
+    "contain": 0.8571,
+    "cosine": 0.9073,
+    "jaccard": 0.75,
+    "parent_preserved": true,
+    "added_ops": [
+      "pdf.read",
+      "pdf.write"
+    ],
+    "child_ops": [
+      "calendar.create",
+      "calendar.read",
+      "email.read",
+      "email.send",
+      "pdf.read",
+      "pdf.write"
+    ],
+    "parent_ops": [
+      "calendar.create",
+      "calendar.read",
+      "email.read",
+      "email.send"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "read Bob's calendar event and send email to Bob for all events in calendar, save all events in event.pdf",
+    "parent_text": "read Bob's calendar event and send email using event names to Bob for all events in calendar"
+  },
+  {
+    "child": "3-94",
+    "parent": "2-40",
+    "eligible": false,
+    "score": 0.4731,
+    "contain": 0.5714,
+    "cosine": 0.4473,
+    "jaccard": 0.3077,
+    "parent_preserved": false,
+    "added_ops": [],
+    "child_ops": [
+      "calendar.read",
+      "email.read",
+      "email.send"
+    ],
+    "parent_ops": [
+      "calendar.create",
+      "calendar.read",
+      "email.read",
+      "email.send"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "read Bob's and Tom's calendars, find their common events and send email to them, make a post common_events.jpg",
+    "parent_text": "read Bob's calendar event and send email using event names to Bob for all events in calendar"
+  },
+  {
+    "child": "3-95",
+    "parent": "2-42",
+    "eligible": true,
+    "score": 0.7173,
+    "contain": 0.7692,
+    "cosine": 0.7345,
+    "jaccard": 0.5556,
+    "parent_preserved": true,
+    "added_ops": [
+      "reason.summarize"
+    ],
+    "child_ops": [
+      "email.read",
+      "email.send",
+      "excel.read",
+      "excel.write",
+      "reason.aggregate",
+      "reason.summarize"
+    ],
+    "parent_ops": [
+      "email.read",
+      "email.send",
+      "excel.read",
+      "excel.write",
+      "reason.aggregate"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "make a table email_counting.xlsx to show how many emails for each people in the email list, summarize it in email_stat.pdf",
+    "parent_text": "make a table email_counting.xlsx to show how many emails for each people in the email list, first row is Alice, second row is Bob"
+  },
+  {
+    "child": "3-96",
+    "parent": "2-43",
+    "eligible": true,
+    "score": 0.8045,
+    "contain": 0.8889,
+    "cosine": 0.8462,
+    "jaccard": 0.6154,
+    "parent_preserved": true,
+    "added_ops": [
+      "word.read",
+      "word.write"
+    ],
+    "child_ops": [
+      "email.read",
+      "email.send",
+      "reason.summarize",
+      "word.read",
+      "word.write"
+    ],
+    "parent_ops": [
+      "email.read",
+      "email.send",
+      "reason.summarize"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "read company revenues and send a email revenues.eml containing data to Bob for reporting, also write a revenue.docx to summarize it",
+    "parent_text": "read company revenues and send a email revenues.eml containing all years' revenues to Bob for reporting"
+  },
+  {
+    "child": "3-97",
+    "parent": "2-48",
+    "eligible": true,
+    "score": 0.6437,
+    "contain": 0.75,
+    "cosine": 0.5862,
+    "jaccard": 0.5,
+    "parent_preserved": true,
+    "added_ops": [
+      "pdf.read",
+      "pdf.write",
+      "reason.summarize"
+    ],
+    "child_ops": [
+      "calendar.read",
+      "excel.write",
+      "fs.rename",
+      "pdf.read",
+      "pdf.write",
+      "reason.aggregate",
+      "reason.summarize"
+    ],
+    "parent_ops": [
+      "calendar.read",
+      "excel.write",
+      "fs.rename",
+      "reason.aggregate"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "extract Bob's and Tom's calendar and count their sleeping time, class time length, saved to excel file named events.xlsx, write summarization in daily_event.pdf",
+    "parent_text": "extract Bob's and Tom's calendar and count their sleeping time, saved to excel file named events.xlsx, first row is Bob, second row is Tom"
+  },
+  {
+    "child": "3-98",
+    "parent": "2-49",
+    "eligible": false,
+    "score": 0.9139,
+    "contain": 1.0,
+    "cosine": 0.918,
+    "jaccard": 0.8333,
+    "parent_preserved": true,
+    "added_ops": [
+      "fs.folder"
+    ],
+    "child_ops": [
+      "email.read",
+      "excel.read",
+      "excel.write",
+      "fs.folder"
+    ],
+    "parent_ops": [
+      "email.read",
+      "excel.read",
+      "excel.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "extract score table from email, save as excel file score.xlsx, save excel file in folder named score",
+    "parent_text": "extract score table from email, save as excel file score.xlsx"
+  },
+  {
+    "child": "3-99",
+    "parent": "2-50",
+    "eligible": false,
+    "score": 0.7302,
+    "contain": 0.75,
+    "cosine": 0.8061,
+    "jaccard": 0.5455,
+    "parent_preserved": false,
+    "added_ops": [
+      "word.write"
+    ],
+    "child_ops": [
+      "excel.read",
+      "excel.write",
+      "word.write"
+    ],
+    "parent_ops": [
+      "email.read",
+      "excel.read",
+      "excel.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "extract revenue data and save as a table in excel file revenues.xlsx, write statements in revenues.docx",
+    "parent_text": "extract revenue data from my email and save it as a table in excel file revenues.xlsx, headers are year and revenues"
+  },
+  {
+    "child": "3-100",
+    "parent": "2-50",
+    "eligible": true,
+    "score": 0.5999,
+    "contain": 0.6667,
+    "cosine": 0.6325,
+    "jaccard": 0.4,
+    "parent_preserved": true,
+    "added_ops": [
+      "email.send"
+    ],
+    "child_ops": [
+      "email.read",
+      "email.send",
+      "excel.read",
+      "excel.write"
+    ],
+    "parent_ops": [
+      "email.read",
+      "excel.read",
+      "excel.write"
+    ],
+    "exact_cross_level_duplicate": false,
+    "op_signature_seen_lower": false,
+    "child_text": "extract revenue numbers and save as a table in excel file revenues.xlsx, email the info to manager Tom (Tom@gmail.com)",
+    "parent_text": "extract revenue data from my email and save it as a table in excel file revenues.xlsx, headers are year and revenues"
+  }
+]

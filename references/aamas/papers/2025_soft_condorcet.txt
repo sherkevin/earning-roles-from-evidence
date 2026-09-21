@@ -1,0 +1,1430 @@
+Soft Condorcet Optimization for Ranking of General Agents
+Marc Lanctot
+Google DeepMind
+Montreal, Canada
+Kate Larson
+Google DeepMind,
+University of Waterloo
+Waterloo, Canada
+Michael Kaisers
+Google DeepMind
+Paris, France
+Quentin Berthet
+Google DeepMind
+Paris, France
+Ian Gemp
+Google DeepMind
+London, United Kingdom
+Manfred Diaz
+Mila, University of Montreal
+Montreal, Canada
+Roberto-Rafael Maura-Rivero
+Google DeepMind, LSE
+London, United Kingdom
+Yoram Bachrach
+Meta1
+London, United Kingdom
+Anna Koop
+Google DeepMind
+Montreal, Canada
+Doina Precup
+Google DeepMind
+Montreal, Canada
+ABSTRACT
+Driving progress of AI models and agents requires comparing their
+performance on standardized benchmarks; for general agents, indi-
+vidual performances must be aggregated across a potentially wide
+variety of different tasks. In this paper, we describe a novel ranking
+scheme inspired by social choice frameworks, called Soft Condorcet
+Optimization (SCO), to compute the optimal ranking of agents: the
+one that makes the fewest mistakes in predicting the agent compar-
+isons in the evaluation data. This optimal ranking is the maximum
+likelihood estimate when evaluation data (which we view as votes)
+are interpreted as noisy samples from a ground truth ranking, a
+solution to Condorcet’s original voting system criteria. SCO ratings
+are maximal for Condorcet winners when they exist, which we
+show is not necessarily true for the classical rating system Elo. We
+propose three optimization algorithms to compute SCO ratings and
+evaluate their empirical performance. When serving as an approxi-
+mation to the Kemeny-Young voting method, SCO rankings are on
+average 0 to 0.043 away from the optimal ranking in normalized
+Kendall-tau distance across 865 preference profiles from the PrefLib
+open ranking archive. In a simulated noisy tournament setting,
+SCO achieves accurate approximations to the ground truth ranking
+and the best among several baselines when 59% or more of the
+preference data is missing. Finally, SCO ranking provides the best
+approximation to the optimal ranking, measured on held-out test
+sets, in a problem containing 52,958 human players across 31,049
+games of the classic seven-player game of Diplomacy.
+KEYWORDS
+agent evaluation; social choice theory; ranking
+This work is licensed under a Creative Commons Attribution Inter-
+national 4.0 License.
+Proc. of the 24th International Conference on Autonomous Agents and Multiagent Systems
+(AAMAS 2025), Y. Vorobeychik, S. Das, A. Nowé (eds.), May 19 – 23, 2025, Detroit, Michigan,
+USA. © 2025 International Foundation for Autonomous Agents and Multiagent Systems
+(www.ifaamas.org).
+ACM Reference Format:
+Marc Lanctot, Kate Larson, Michael Kaisers, Quentin Berthet, Ian Gemp,
+Manfred Diaz, Roberto-Rafael Maura-Rivero, Yoram Bachrach, Anna Koop,
+and Doina Precup. 2025. Soft Condorcet Optimization for Ranking of General
+Agents. In Proc. of the 24th International Conference on Autonomous Agents
+and Multiagent Systems (AAMAS 2025), Detroit, Michigan, USA, May 19 – 23,
+2025, IFAAMAS, 16 pages.
+1
+INTRODUCTION
+Progress in the field of artificial intelligence has been driven by
+measuring the performance of agents on common benchmarks and
+challenge problems [15, 33, 66, 69, 75, 76, 79]. In machine learning,
+common benchmarks like the UCI data set repository allowed direct
+comparisons of supervised learning algorithms [41]. Competitions,
+such as ImageNet, led to breakthroughs in deep learning [44].
+All of these examples require comparing agents (or models). Orig-
+inal success stories such as DeepBlue, TD-Gammon, and AlphaGo
+focused on a single domain. In the past ten years, agents have be-
+come increasingly more generally capable. AlphaZero extended
+application of AlphaGo to chess and Shogi [70]. The Arcade Learn-
+ing Environment [6], which steered much of the agent development
+in deep reinforcement learning, evaluated agents across 57 differ-
+ent Atari games. Recently, language models have been evaluated
+across suites of tasks such as in HELM [49], BIG-bench [7] Agent-
+Bench [51], and via a public leaderboard such as Chatbot Arena
+driven by human voting [17]. Answering simple questions for these
+generally capable agents, such as “Which is the best agent?” or
+“Is agent 𝑋better than agent 𝑌?” or “What is the relative ranking
+of agents 𝑋, 𝑌, and 𝑍?” become increasingly more difficult when
+aggregating over many different contexts: how agents are scored
+may vary wildly across tasks, data collected for evaluation may
+not be balanced evenly across tasks (or agents), and classical rating
+systems were simply not designed for this use case.
+To address these problems, recent ranking methods such as
+Vote’N’Rank [65] and Voting-as-Evaluation (VasE) [46] use vot-
+ing methods to aggregate results across tasks. Using computational
+1Work performed while at Google DeepMind.
+Research Paper Track
+AAMAS 2025, May 19 – 23, 2025, Detroit, Michigan, USA
+1253
+social choice as a basis for ranking agents has several benefits: well-
+studied consistency properties of the voting methods are inherited,
+they do no require score normalization, and are less sensitive to
+score values and agent population than game-theoretic evalua-
+tion schemes [5]. However, classic voting schemes, and related
+tournament solutions, typically assume that the data (e.g. agent
+comparisons) is complete. This assumption is not necessarily valid
+in the agent evaluation setting. While there has been research on
+identifying “necessary and possible winners” when there is incom-
+plete voting or comparison data, the results are mixed [3, 61, 82]
+and most of the findings are focused on identifying top-ranked
+agents, not ranking all agents as is our focus.
+In this paper, we introduce a new ranking scheme for general
+agents inspired by the interpretation of voting rules as maximum
+likelihood estimators [20]. Starting with Condorcet’s original model
+of voting [14, Chapter 8], Young showed that the maximum likeli-
+hood estimate (MLE) of the true ranking is the one that minimizes
+the sum of Kendall-tau distances to all the votes. Soft Condorcet
+Optimization (SCO) solves an optimization problem that assigns a
+numerical rating (score) 𝜃𝑎to each agent (alternative) 𝑎. SCO then
+treats these ratings as a parameter vector, the votes as a data set,
+and defines a differentiable loss function as the objective, which
+can be optimized in several different ways. The final ranking of
+agents is obtained by sorting the ratings.
+In summary, this paper makes the following contributions.
+1. SCO ranking scheme with the following properties: (1a) Three
+optimization methods to find ratings and corresponding rankings:
+gradient descent applied to a soft Kendall-tau distance (“sigmoid
+loss”), or a Fenchel-Young loss (perturbed optimization) [8]; or
+solving a sigmoidal program with a branch-and-bound method [78].
+(1b) Online form that can update ratings, and thus rankings, from
+individual outcomes as evaluation data arrives. (1c) Theorem 1
+guarantees that the top-ranked agent by SCO ratings according to
+the sigmoid loss is the Condorcet winner when one exists.
+2. Empirical evaluations that demonstrate the following: (2a)
+SCO ranking using sigmoid loss solves a failure mode of classi-
+cal Elo rating system which may top-rank an agent that is not a
+Condorcet winner even when one exists. (2b) SCO can serve as
+an approximation to the Kemeny-Young voting method, indeed
+empirically finding low approximation error to the optimal rank-
+ing: on average 0 to 0.043 away in normalized Kendall-tau distance
+across 865 preference profiles from the PrefLib [55]. (2c) In a noisy
+tournament setting with sparse data, SCO approximates the true
+ranking best when a large proportion (59% or more) of the data is
+missing. (2d) SCO ratings are closer to optimal rankings than Elo
+and voting-as-evaluation methods on held out test sets over 31,049
+human Diplomacy games played by 52,958 players.
+2
+BACKGROUND
+In this section, we describe the building blocks and introduce some
+basic terminology required to understand our method.
+2.1
+Evaluation of General Agents
+We first paraphrase several key descriptions from [5, 46]. The prob-
+lem of evaluating agents is that of ranking agents according to their
+skill. Skill can be determined in several ways. In the Agent-versus-
+Task (AvT) setting, agents compete individually in different tasks
+and compare outcomes (scores) to each other in each task (e.g., lan-
+guage models and the various metrics for assessing their abilities).
+In the Agent-versus-Agent (AvA) setting, agents directly compete
+against each other (e.g., online games such as chess or Diplomacy).
+2.1.1
+Classical Evaluation. Elo is a classic rating system that uses
+a simple logistic model learned from win/loss/draw outcomes [32].
+A rating, 𝑟𝑖, is assigned to each player 𝑖such that the probability of
+player 𝑖beating player 𝑗is predicted as ˆ𝑝𝑖𝑗=
+1
+1+10(𝑟𝑗−𝑟𝑖)/400 . While
+Elo was designed specifically to rate players in the two-player
+zero-sum, perfect information game of Chess, it has been widely
+applied to other domains, including in evaluation of large language
+models [84]. TrueSkill [38] and bayeselo [22] are rating systems
+based on similar foundations (Bradley-Terry models of skill) that
+also model uncertainty over ratings using Bayesian methods.
+Elo has a number of positive qualities. First, it is a simple rule.
+Second, it can be used to estimate win rates between any two
+agents. Third, it can be easily employed online, i.e., to modify players’
+ratings from the result of a single game. It is also a special case of
+logistic regression (for details, see Appendix D.2). Hence, Elo has
+been widely applied and is a common default choice for evaluation
+of agents. However, Elo has a number of well-known drawbacks [5,
+9, 46]. Of particular interest is the incompatibility of Elo with the
+concept of a Condorcet winner from social choice theory; examples
+are summarized in Section 4.1.
+2.1.2
+Voting as Evaluation of General Agents. Another way to evalu-
+ate agents is to use social choice theory, called Voting-as-Evaluation
+(VasE) recently proposed in [46]. In VasE, the alternatives corre-
+spond to general agents and votes to assessments of their perfor-
+mance. In the AvT setting, agents are ordered based on their perfor-
+mance on different tasks (such as each game in the Atari Learning
+Environment [6] or on different benchmarks for large language
+models [51]). In the AvA setting, agents compete directly in a multi-
+agent environment, such as multiplayer games (like chess or poker),
+and each game outcome corresponds to a ranking over a subset
+of agents. Chatbot Arena [84], where language models compete
+head-to-head to provide the best answer to the same question, is
+another instance of the AvA setting. Casting agent evaluation as an
+application of computational social choice provides the benefit of ro-
+bustness in the form of Condorcet consistency, clone/composition
+consistency, agenda consistency, and/or population consistency
+depending on the choice of voting rule used to evaluate agents.
+However, it is unclear how well these methods perform when the
+data is missing or unevenly distributed, which often occurs in the
+agent evaluation setting. SCO is motivated similarly to VasE and, as
+such, will be empirically assessed mainly for agent evaluation. To
+make the connection to ideas from the social choice literature, we
+will often use voting language when discussing SCO and its use in
+evaluation. Relevant terminology is introduced later in the paper.
+2.2
+Permutation and Ranking Distances
+We now define distance metrics over rankings that will play a key
+role when describing our method and loss function. Informally, the
+Research Paper Track
+AAMAS 2025, May 19 – 23, 2025, Detroit, Michigan, USA
+1254
+Figure 1: An example calculation of the Kendall-tau distances
+of each vote in the preference profile from Table 1 to the
+optimal ranking 𝑅= 𝐶≻𝐴≻𝐵. The sum of the distances is
+5. This sum for any other ranking 𝑅′ ≠𝑅is greater than 5.
+Kendall-tau distance counts the number of pairwise disagreements
+between permutations.
+Definition 1. Let 𝑆1,𝑆2 be finite sets of elements such that 𝑆1 ⊆
+𝑆2. Let 𝜋1, 𝜋2 be permutations over elements in 𝑆1 and 𝑆2, respectively.
+The Kendall-tau distance between two permutations is defined as
+𝐾𝑑(𝜋1, 𝜋2) =
+∑︁
+{𝑖,𝑗}∈C2(𝑆1)
+¯𝐾𝑖,𝑗(𝜋1, 𝜋2),
+(1)
+where C2(𝑆) is the set of unordered pairs of 𝑆(combinations of size
+2), ¯𝐾𝑖,𝑗(𝜋1, 𝜋2) = 0 if 𝑖and 𝑗are in the same order in 𝜋1 and 𝜋2, and
+¯𝐾𝑖,𝑗(𝜋1, 𝜋2) = 1 otherwise.
+Note that this definition allows one set to be a subset of the other,
+which is more general than the standard definition; this distinction
+is necessary for the evaluation metric used in Section 4.4, and
+corresponds to the standard definition when 𝑆1 = 𝑆2.
+Since the maximum distance is  |𝑆1|
+2
+ = |𝑆1| (|𝑆1|−1)
+2
+, this can be
+easily normalized to be in [0, 1]:
+Definition 2. Let 𝑆1,𝑆2 be finite sets of elements such that 𝑆1 ⊆
+𝑆2. Let 𝜋1, 𝜋2 be permutations over elements in 𝑆1 and 𝑆2, respectively.
+The normalized Kendall-tau distance 𝜋1 and 𝜋2 is defined as
+𝐾𝑛(𝜋1, 𝜋2) = 2𝐾𝑑(𝜋1, 𝜋2)
+|𝑆1|(|𝑆1| −1) .
+(2)
+2.3
+Social Choice Theory
+A voting scheme is defined as ⟨𝐴,𝑉, 𝑓⟩where 𝐴= {𝑎1, . . . ,𝑎𝑚}
+is the set of alternatives (agents), 𝑉= {𝑣1, . . . , 𝑣𝑛} is the set of
+voters, and 𝑓is the voting rule that determines how votes are
+aggregated. Voters have preferences over alternatives: 𝑎1 ≻𝑣𝑖𝑎2
+indicates voter 𝑣𝑖strictly prefers alternative 𝑎1 over alternative 𝑎2.
+In this paper, we assume strict preferences only, however the ideas
+can easily be extended to the case that allow weak preference (in-
+cluding ties/indifference between alternatives, e.g., 𝑎1 ⪰𝑠2). These
+preferences induce total orders over alternatives, which we denote
+by L. A preference profile, [≻] ∈L𝑛, is a vector specifying
+the preferences of each voter in 𝑉. It can be useful to summarize
+the preference profile in a voter preference matrix N or vote
+1:
+𝐴≻𝐵≻𝐶
+1:
+𝐴≻𝐶≻𝐵
+2:
+𝐶≻𝐴≻𝐵
+1:
+𝐵≻𝐶≻𝐴
+𝐴
+𝐵
+𝐶
+𝐴
+0
+4
+2
+𝐵
+1
+0
+2
+𝐶
+3
+3
+0
+𝐴
+𝐵
+𝐶
+𝐴
+0
+3
+-1
+𝐵
+-3
+0
+-1
+𝐶
+1
+1
+0
+Table 1: Left: an example preference profile with five
+votes [46, Figure 1]. The number on the left of the colon rep-
+resents the number of votes of that type. Middle: the voter
+preference matrix, N. Right: the voter margin matrix, M.
+margin matrix M. The preference count 𝑁(𝑥,𝑦), 𝑥,𝑦∈𝐴is the
+number of voters in [≻] that strictly prefer 𝑥to 𝑦. The vote margin
+is the difference in preference count: 𝛿(𝑥,𝑦) = 𝑁(𝑥,𝑦)−𝑁(𝑦,𝑥). Ta-
+ble 1 shows a preference profile and its resulting preference matrix,
+N = (𝑁(𝑖, 𝑗))𝑖,𝑗, and margin matrix M = (𝛿(𝑖, 𝑗))𝑖,𝑗= N −N𝑇.
+The central problem of social choice theory is how to aggregate
+preferences of a population so as to reach some collective decision.
+A voting rule that determines the “winner” (a non-empty subset,
+possibly with ties), is a social choice function (SCF). A voting
+rule that returns an aggregate ranking (total order) over all the
+alternatives is a social welfare function (SWF). Much of the
+social choice literature focuses on understanding what properties
+different voting rules support.
+The Condorcet winner defines a fairly intuitive concept: 𝐴
+is the (strong) Condorcet winner if the number of votes where
+𝐴is ranked higher than 𝐵is greater than vice versa for all other
+alternatives 𝐵. A weak Condorcet winner wins or ties in every
+head-to-head pairing. Formally, given a preference profile, [≻], a
+weak Condorcet winner is an alternative 𝑎∗∈𝐴such that ∀𝑎′ ∈
+𝐴,𝛿(𝑎∗,𝑎′) ≥0. If the inequality is strict for all pairs except (𝑎∗,𝑎∗)
+then we call it a strong Condorcet winner. In the example shown in
+Table 1, alternative 𝐶is the strong Condorcet winner. It dominates
+𝐴since three out of the five voters prefer 𝐶to 𝐴. A similar situation
+holds when𝐶is compared to alternative 𝐵. While many have argued
+that this definition captures the essence of the correct collective
+choice [27], in practice preference profiles may have no Condorcet
+winner. Condorcet-consistent voting schemes (e.g., Kemeny-Young
+introduced next) return a Condorcet winner when it exists, but
+differ on how they handle settings with no Condorcet winners.
+2.3.1
+Kemeny-Young Voting Method. The voting method was ini-
+tially proposed by Kemeny [42]. Later, its properties were char-
+acterized by Young & Levenglick [83]. Let each ranking (total or-
+der) be represented as a permutation 𝜋over |𝐴| alternatives. De-
+fine the Kemeny score of permutation 𝜋as KemenyScore(𝜋) =
+Í
+(𝑖,𝑗),𝑖<𝑗𝑁(𝜋[𝑖], 𝜋[𝑗]). The Kemeny rule returns the ranking that
+maximizes this Kemeny score: argmax𝜋∈Π(|𝐴|) KemenyScore(𝜋).
+Kemeny-Young is Condorcet-consistent: if a Condorcet winner exists,
+it will be top-ranked by Kemeny-Young. It also satisfies the majority
+criterion, the Smith criterion [71], and monotonicity. The Kemeny
+rule always returns an optimal ranking, i.e., one whose sum of
+Kendall-tau distances to the votes is minimal, but its computational
+complexity is prohibitively expensive when 𝑚is large.
+Research Paper Track
+AAMAS 2025, May 19 – 23, 2025, Detroit, Michigan, USA
+1255
+2.4
+Learning-to-Rank
+Another related field is that of learning-to-rank [50]. The canonical
+example is that a user enters a keyword (query) and the problem is
+to retrieve the most relevant documents in a database, ranked by
+relevance to the keyword. There are several algorithms that learn to
+rank; Google’s PageRank, which powers their search engine, is one
+example. Our setting can be characterized by a learning-to-rank
+problem with a constant keyword (or no keyword) as there is no
+query. An important class of statistical models in this setting is
+random utility models [81]. In random utility models, assessments
+are perceived as some ground truth assessment plus some noise.
+Perturbed optimizers [8, 11] transform non-differentiable func-
+tions (such as sorting and ranking) into smoothed versions by
+adding noise; these perturbed functions can then be optimized by
+gradient descent. This is part of a growing effort to allow end-to-
+end training through discrete operators, using classical stochastic
+smoothing and perturbation approaches [35, 37]. Included are opti-
+mal transport, clustering, dynamic time-warping and other dynamic
+programs [25, 26, 57, 60, 67, 73, 80] applied in fields such as com-
+puter vision, audio processing, biology, and physical simulators
+[4, 16, 21, 45, 48, 52] and other optimization algorithms [30].
+3
+SOFT CONDORCET OPTIMIZATION
+Soft Condorcet Optimization (SCO) is a ranking scheme for evalu-
+ation of general agents inspired by social choice theory. An SCO
+ranking is derived from and represented by SCO ratings, 𝜃𝑎, for
+each alternative 𝑎∈𝐴. The rating 𝜃𝑎∈[𝜃min,𝜃max] serves only
+to determine 𝑎’s relative order compared to other alternatives in
+the ranking, such that 𝑎≻𝑏if and only if 𝜃𝑎> 𝜃𝑏. The ranking is
+induced by numerically sorting these ratings (e.g., see Figure 1). We
+then formulate an optimization problem by carefully constructing a
+loss function that that penalizes discrepancies or misclassifications
+in the ordinal relationships between alternatives.
+An SCO rating is a numerical value representing an agent’s
+level of skill. SCO is closely related to several prior works: Elo [32],
+probabilistic ranking [2, 28, 54], and perturbed optimizers [8, 11].
+We elaborate on these relationships in Appendix D.
+3.1
+SCO Ratings and the Sigmoid Loss
+In this section, we first explain the sigmoid loss function. For some
+set of ratings 𝜽, this loss function quantifies the amount of error: the
+level of disagreement between the specific values of each rating and
+the data (preference profiles obtained through agent evaluation).
+The goal is then to find an assignment of ratings that minimizes
+this loss, i.e., the set of ratings that best explain the preference data.
+Let Π(𝐴) denote the set of permutations over alternatives 𝐴.
+We will call the data we work with “votes” to emphasize that we
+are working with (partial) rankings over alternatives, and borrow
+terminology from preferences and social choice. In particular, we
+view the entire dataset to be a collection of votes and so will refer
+to it as preference profile, [≻]. Let 𝑣∈[≻] refer to each vote in the
+profile, where 𝑣is a permutation over subsets of 𝐴, with length |𝑣|.
+For a vote 𝑣, denote 𝑣[𝑖] as the alternative in position 𝑖such that
+vote 𝑣is represented as: 𝑣[0] ≻𝑣[1] ≻· · · ≻𝑣[|𝑣| −1].
+The ultimate goal is to find an optimal ranking 𝑅:
+Definition 3. Given some a profile [≻] (i.e., set of votes), an
+optimal ranking minimizes the sum of the Kendall-tau distances
+𝑅= 𝑎𝑟𝑔𝑚𝑖𝑛𝑅∈Π(𝐴)
+∑︁
+𝑣∈[≻]
+𝐾𝑑(𝑣, 𝑅).
+Let index pairs 𝐼2(𝑣) = {(𝑖, 𝑗) | 𝑖, 𝑗∈{0, 1, · · · , |𝑣| −1} and 𝑖< 𝑗}.
+Given a preference profile and ratings 𝜽, we define a discrete loss:
+𝐿([≻],𝐴,𝑉, 𝜽) =
+∑︁
+𝑣∈[≻]
+∑︁
+(𝑖,𝑗)∈𝐼2(𝑣)
+𝐷𝑣(𝜃𝑣[𝑖],𝜃𝑣[𝑗]),
+(3)
+where 𝐷𝑣(𝜃𝑎,𝜃𝑏) is a function that measures the discrepancy be-
+tween the positions of alternatives 𝑎and 𝑏:
+𝐷𝑣(𝜃𝑎,𝜃𝑏) =
+ 1
+if 𝜃𝑏−𝜃𝑎> 0 in 𝑣;
+0
+otherwise,
+,
+(4)
+then the minimum of the discrete loss function corresponds to a
+ratings assignment 𝜽such that ranking induced by 𝜽minimizes
+the sum of the Kendall-tau distances to all the votes.
+Example 1. Recall the example from Figure 1 showed the com-
+putation of the sum of Kendall-tau distances from the ranking 𝑅=
+𝐶≻𝐴≻𝐵to votes depicted in preference profile in Table 1. In this
+example, we show how the value is computed under rating vector:
+𝜽= (𝜃𝐴,𝜃𝐵,𝜃𝐶) = (20, 10, 30).
+Let [≻] be the preference profile depicted in Table 1. We now show
+that the main loss function (Equation (3)) leads to same value as in
+Figure 1. The outer sum of Equation 3 enumerates the votes, which we
+will assume is in the same order as listed in Figure 1. The inner sum
+computes the Kendall-tau distance from the vote 𝑣to the ranking 𝑅
+induced by 𝜽(red exes in Figure 1). For the first vote 𝑣= 𝐴≻𝐵≻
+𝐶, the discrepancy function 𝐷outputs 1 two times: once with pair
+(𝑖, 𝑗) = (0, 2) and once with pair (𝑖, 𝑗) = (1, 2) because the preferences
+between agents (𝐴,𝐶) and agents (𝐵,𝐶) disagree between 𝜽and 𝑣, so
+the inner sum for the first vote is 2. Similarly for the other votes: they
+correspond precisely to the same values as in Figure 1. Hence, the loss
+function (Equation (3)) is simply computing the sum of Kendall-tau
+distances between the ranking induced by 𝜽and all the votes.
+Since 𝐷is a step function discontinuous at 𝜃𝑎= 𝜃𝑏, it is not
+differentiable in 𝜽. To solve this, we replace 𝐷with a smooth ap-
+proximation, i.e., the logistic function
+˜𝐷𝑣(𝜃𝑎,𝜃𝑏) = 𝜎(𝜃𝑏−𝜃𝑎) =
+1
+1 + 𝑒(𝜃𝑎−𝜃𝑏)/𝜏,
+(5)
+leading to a soft Kendall-tau (differentiable) sigmoid loss:
+˜𝐿([≻],𝐴,𝑉, 𝜽) =
+∑︁
+𝑣∈[≻]
+∑︁
+(𝑖,𝑗)∈𝐼2(𝑣)
+˜𝐷𝑣(𝜃𝑣[𝑖],𝜃𝑣[𝑗]).
+(6)
+The sigmoid loss is a differentiable version of the Kendall-tau dis-
+tance sum and acts as a smooth approximation to the discrete loss.
+Note that while we focus on the sigmoid loss as a soft approxi-
+mation to Kendall-tau distance in this paper, the same approach can
+be used for other ranking distances that can be approximated by
+differentiable functions, such as Spearman’s footrule distance [29].
+3.2
+Sigmoid Loss Minimization
+SCO ratings can be computed using the sigmoid loss in two ways.
+Research Paper Track
+AAMAS 2025, May 19 – 23, 2025, Detroit, Michigan, USA
+1256
+Algorithm 1: Learning SCO ratings by gradient descent
+Input: A preference profile [≻]
+Input: An initial parameter vector 𝜽0 =
+𝜃𝑚𝑎𝑥−𝜃𝑚𝑖𝑛
+2
+
+1,
+where 1 is a vector of ones of length |𝐴|
+Input: Learning rates for each step 𝛼𝑡
+Input: Batch size 𝐾
+1 for 𝑡∈{1, 2, · · · ,𝑇} do
+2
+𝐵←𝐾votes sampled uniformly from [≻]
+3
+Define ∇𝜽˜𝐿(𝐵, 𝜽) based on equation (7).
+4
+𝜽𝑡= Proj(𝜽𝑡−1 −𝛼𝑡∇𝜽˜𝐿(𝐵))
+5 return 𝜽𝑇
+3.2.1
+Gradient Descent. The most straight-forward way is to apply
+gradient descent [36]: update ratings by following the gradient of
+the sigmoid loss, as shown in Algorithm 1. After applying the gra-
+dient to the ratings on line 4, the ratings may escape the bounded
+constraint space so we project them back. This is a straight-forward
+application of standard gradient descent [36, Chapter 2]. A common
+variant is stochastic gradient descent (SGD) which estimates the
+gradient by sampling subsets, i.e., “batches”, of the data set, com-
+puting the gradient using the sampled batch only. The standard ℓ2
+projection step, Proj, projects the ratings back to the hypercube by
+clipping any ratings that fall outside the valid range [𝜃𝑚𝑖𝑛,𝜃𝑚𝑎𝑥].
+We compute the gradient for a subset of the votes (i.e., batch
+𝐵⊆[≻]), ∇𝜽˜𝐿(𝐵, 𝜽), from the batch loss ˜𝐿(𝐵, 𝜽), which resem-
+bles equation (6) but summed only over the votes in 𝐵using the
+continuous ˜𝐷𝑣from equation (5):
+˜𝐿(𝐵, 𝜽) =
+∑︁
+𝑣∈𝐵
+∑︁
+(𝑖,𝑗)∈𝐼2(𝑣)
+˜𝐷𝑣(𝜃𝑣[𝑖],𝜃𝑣[𝑗]).
+(7)
+This allows an online form of the algorithm, similar to Elo, where
+ratings for players can be updated in a decentralized fashion after
+receiving the outcome of a single game (|𝐵| = 1).
+3.2.2
+Sigmoidal Programming. A different way to compute SCO
+ratings is via sigmoidal programming [78]: solve for the (soft) opti-
+mum directly, i.e., find 𝜽∗that minimizes ˜𝐿defined in equation 6.
+Note the ˜𝐿can be rewritten in terms of the number of pairwise
+interactions between agents, quantified in the N matrix:
+˜𝐿([≻],𝐴,𝑉, 𝜽)
+=
+∑︁
+𝑎,𝑏∈𝐴×𝐴
+𝑁(𝑎,𝑏)𝜎(𝜃𝑏−𝜃𝑎)
+(8)
+which is a sum of sigmoidal functions 𝜎defined as functions which
+are strictly convex on domain 𝜃𝑏−𝜃𝑎≤𝑧and then strictly concave
+on 𝜃𝑏−𝜃𝑎≥𝑧(i.e., 𝑧= 0). With a variable per difference in
+pair of ratings and appropriate constraints on variables and their
+feasible regions, the resulting optimization problem is known as a
+sigmoidal program which can be solved using a branch-and-bound
+algorithm [78]. A detailed construction is presented in Appendix C1
+3.3
+Fenchel-Young Loss Optimization
+Here, we give an overview of the implementation of Fenchel-Young
+loss optimization; for more detail on the precise formulation and
+relationship perturbed optimizers, please see Appendix B.
+1All appendices are available in the technical report version of the paper [47].
+In practice, Fenchel-Young loss optimization follows Algorithm 1,
+with a different definition of the loss and hence gradient on line 3.
+For a single vote 𝑣, a stochastic version of the gradient ˆ𝑔𝑣can be
+computed: let 𝜽𝑣be the ratings for agents compared in 𝑣. Let X be
+a vector of Gumbel-distributed random variables of size |𝑣|. Then
+˜𝜽𝑣= 𝜽𝑣+ 𝜎𝑋is the perturbed ratings and let ArgSort(−˜𝜽𝑣) be
+the the indices of the elements that would sort the values. The
+Fenchel-Young gradient is then:
+ˆ𝑔𝑣= ArgSort(−˜𝜽𝑣) −(0, 1, · · · , |𝑣| −1),
+(9)
+for all agents in 𝑣, and 0 otherwise. Inuitively, if the perturbed rank-
+ing obtained by sorting ˜𝜽𝑣would yield the same order of agents
+as in 𝑣, then the gradient for this vote would be zero. Otherwise,
+it is nonzero and each element of the gradient corresponds to the
+difference in rank position between the vote and perturbed rank-
+ing. Similarly to standard gradient descent, these gradients can be
+accumulated over batches |𝐵| ≥1 as ∇𝜽˜𝐿𝐹𝑌(𝐵, 𝜽) = Í
+𝑣∈𝐵ˆ𝑔𝑣.
+3.4
+Theoretical Properties
+Given the SCO framework, defined through the loss function in-
+troduced in equation 6, the first question to ask is whether its
+solution does lead to rankings with desired properties. We answer
+this question in the affirmative.
+Theorem 1. Given the sum of soft Kendall-tau distances:
+˜𝐿([≻],𝐴,𝑉, 𝜽)
+=
+∑︁
+𝑎,𝑏∈𝐴×𝐴
+𝑁(𝑎,𝑏)𝜎(𝜃𝑏−𝜃𝑎) ,
+(10)
+if for preference profile [≻], voters 𝑉, there exists a candidate 𝑐∈𝐴
+that is a Condorcet winner, the loss is monotonically decreasing with
+𝜃𝑐. As a consequence, if 𝜽∗is a global minimum of ˜𝐿on the ℓ∞ball
+of radius 𝜃max, then 𝜃∗𝑐= 𝜃max.
+Proof (sketch – for a full proof, please see Appendix A).
+Let 𝑐∈𝐴be the Condorcet winner. The loss ˜𝐿as expressed in equa-
+tion 8 is expressable in terms of a constant 𝐾(that does not depend
+on 𝜽) and a sum of sigmoids multiplied by coefficients from M, by
+symmetry of the logistic function: 𝜎(𝑥) = 1 −𝜎(−𝑥). The second
+term is decomposable into contributions from comparisons to agent
+𝑐, which is monotonically decreasing in 𝜃𝑐, and a sum which does
+not depend on 𝜃𝑐. As a result, increasing 𝜃𝑐always decreases the
+loss, hence the minimum must correspond to 𝜃∗𝑐= 𝜃𝑚𝑎𝑥.
+□
+Theorem 1 assumes that it is possible to find 𝜽∗. The challenge
+is ˜𝐿is nonconvex in its parameters, 𝜽, and thus standard gradient
+descent is not guaranteed to find a global minimum. However, the
+sigmoidal programming approach described in Section 3.2.2 is guar-
+anteed to find a point that approximately minimizes ˜𝐿within a
+specified tolerance region, though the problem may take exponen-
+tial time in the number (Ω(𝑚2)) of variables. Furthermore, as we
+will show in Section 4, stochastic gradient descent, while without
+any guarantees, tends to perform very well in practice.
+The ranking loss used by Fenchel-Young optimization method
+described in Section 3.3 is convex and Lipschitz with respect to its
+parameters. Since the parameters correspond to the ratings them-
+selves, the loss is also convex with respect to the parameters. Hence,
+assuming we restrict the ratings to a compact, convex set, there
+exists a global minimum that gradient descent via Fenchel-Young
+Research Paper Track
+AAMAS 2025, May 19 – 23, 2025, Detroit, Michigan, USA
+1257
+gradients is guaranteed to approach assuming standard learning
+rate conditions (e.g., square-summable, not summable).
+4
+EMPIRICAL EVALUATION
+We run experiments to demonstrate a number of properties of in-
+terest. In particular, we are interested in understanding how closely
+the rankings obtained from SCO approximate those obtained via
+Kemeny-Young, compare to outcomes returned by perturbed opti-
+mizers and Elo using several sources of data:
+Example data. This is a preference profile used in Section 4.1,
+example similar to the one from Table 1. PrefLib data. These are
+examples from the voting literature on Wikipedia and on real data
+from elections, sports analytics, and others from PrefLib [55]. Note
+that we restrict ourselves to the strictly-ordered incomplete (SOI)
+and strictly-ordered complete (SOC) data types in PrefLib, yielding
+a total of 12,680 preference profiles.
+Synthetic evaluation data. The synthetic data is generated to
+resemble those coming from online matching data, such as from a
+gaming site or tournament, based on TrueSkill [38]. Agents’ true
+skill values are normally distributed and contests (matches) between
+them are generated such that each agent’s individual performance
+is stochastic with mean centered at their skill level. The outcome
+of each match-up is then a sorted list of each player’s performance
+in the match-up, equal to their true skill plus normally-distributed
+noise. Generated data allows us to mimic the structured sparsity
+present in real online game-play data but also to compare results
+to actual ground truth rankings.
+Diplomacy game data. This is our largest challenge problem: an
+anonymized agent-vs-agent data set of 7-player Diplomacy games
+played on the webDiplomacy web site (webdiplomacy.net) between
+2008 and 2019 [46] with𝑚= 52, 958 agents (players) and 𝑛= 31, 049
+votes (games). Each game outcome is a strict order between seven
+players; the goal is to find a ranking over agents that minimizes the
+average Kendall-tau distance to all the votes. Consequently, only
+0.0011% of the margin matrix entries are nonzero.
+We chose these data sets to show specific properties of SCO
+ratings: top-ranking Condorcet winners, PrefLib ranking data cap-
+turing real human preferences, the online game regime evaluation
+systems are commonly deployed but with ground truth ratings, and
+finally a very large challenge human evaluation problem.
+For Elo ratings, the majorization-minorization algorithm of Hunter
+(used by bayeselo [22]) is used to efficiently compute the best fit
+to the evaluation data [39], and the SigmoidalProgramming pack-
+age [77] to solve sigmoidal programs. By default we use gradient
+descent to minimize the sigmoid loss (Algorithm 1) to compute
+the SCO ratings, but also compare Fenchel-Young gradients and
+sigmoidal programming. Unless otherwise noted, 𝜃𝑚𝑖𝑛= 0 and
+𝜃𝑚𝑎𝑥= 100. Full details such as specific hyperparameter values,
+please see Appendix E. We also show two additional experiments in
+Appendix E: one which shows SCO used to approximate a Bayesian
+posterior over rating and one that shows SCO’s online performance.
+4.1
+Warmup: Top-Ranking Condorcet Winners
+Lanctot et al. showed that Elo assigns the same rating to agent 𝐴
+and 𝐶in the example in Table 1, despite 𝐴not being a Condorcet
+winner [46]. In contrast, SCO is designed to find the optimal ranking
+𝑚⊥
+𝑚⊤
+size
+¯𝑚
+¯𝑛
+𝐶𝑔𝑑
+𝐶𝑠𝑝
+¯𝐾𝑔𝑑
+𝑛
+¯𝐾𝑠𝑝
+𝑛
+2
+2
+11
+2.00
+29
+1.00
+1.00
+0
+0
+3
+3
+115
+3.00
+1878
+1.00
+1.00
+0
+0
+4
+4
+162
+4.00
+7189
+1.00
+0.99
+0.005
+0.009
+5
+5
+135
+5.00
+34666
+1.00
+0.66
+0.024
+0.039
+6
+6
+109
+6.00
+33266
+0.99
+0.043
+7
+7
+92
+7.00
+28755
+0.97
+0.029
+8
+8
+73
+8.00
+18336
+0.96
+0.032
+9
+9
+88
+9.00
+4190
+0.94
+0.027
+10
+10
+80
+10.00
+3289
+0.97
+0.023
+11
+20
+1721
+16.48
+127
+0.99
+21
+50
+1465
+30.75
+34
+0.98
+51
+100
+567
+71.50
+40
+0.92
+101
+200
+2989
+124.00
+25
+0.99
+201
+500
+4540
+302.81
+65
+0.98
+501
+–
+533
+2190.04
+50
+0.56
+Table 2: Kemeny-Young approximation quality on 12,680
+PrefLib instances, grouped by number of alternatives where
+𝑚⊥≤|𝐴| ≤𝑚⊤. Each row corresponds to a group, size to the
+number of instances in each group, ¯𝑚and ¯𝑛are the average
+number of alternatives and votes in each group. 𝐶𝑔𝑑and
+𝐶𝑠𝑝refer to the Condorcet match proportions for gradient
+descent and sigmoidal programming, respectively. Similarly,
+¯𝐾𝑛refers to normalized Kendall-tau distance to the Kemeny
+ranking, averaged over all instances in the group.
+according to Definition 3, which top-ranks Condorcet winners when
+they exist. Consider the following 5-vote preference profile:
+2 : 𝐴≻𝐵≻𝐶,
+3 : 𝐶≻𝐴≻𝐵.
+(11)
+Note that 𝛿(𝐶,𝐴) = 𝛿(𝐶, 𝐵) = 3 −2 > 0, hence agent 𝐶is a strong
+Condorcet winner. However, the win rate of 𝐴( 7
+15) is higher than
+𝐶( 6
+15), hence Elo assigns strictly higher rating to agent A. Since
+there are only six possible rankings, it is easy to verify that ˜𝐿is
+minimized for the optimal ranking 𝐶≻𝐴≻𝐵. Since 𝑛= 5, we
+use full gradient descent (no batching) and compare to stochastic
+gradient descent with a batch size of 2. In all cases, Algorithm 1
+using the sigmoid loss converges to the optimal ranking, and so
+does sigmoidal programming.
+We also find that Fenchel-Young gradient descent top-ranks
+agent 𝐴. This is because the gradient of a rating using the Fenchel-
+Young loss is weighted by the difference in ranks rather than just
+order misclassifications like the soft Kendall-tau distance. We elab-
+orate on this in Section 5. Full results are shown in Appendix E.1.
+4.2
+Kemeny-Young Approximation Quality
+We evaluate approximation quality (compared to the Kemeny-
+Young ranking) of Algorithm 1 on PrefLib instances [55]. We run Al-
+gorithm 1 with a batch size |𝐵| = 32, learning rates 𝛼∈{0.01, 0.1},
+iterations 𝑇∈{104, 105}, and temperature 𝜏∈{1, 1
+2 } averaged
+across 3 seeds per instance on all 12,680 PrefLib data instances.
+On the instances where |𝐴| ≤10 we also run the Kemeny-Young
+method. Denote an instance by 𝑖∈{1, 2, · · · , 12680}. Each produces
+a ranking which we denote 𝑅𝑖,SCO and 𝑅𝑖,Kem.
+Research Paper Track
+AAMAS 2025, May 19 – 23, 2025, Detroit, Michigan, USA
+1258
+We compute two metrics: (i) Condorcet Match Proportion: this is
+the proportion of instances that top-ranks a Condorcet winner when
+one exists. (ii) Normalized Kendall-tau Distance: For all instances 𝑖
+with |𝐴| ≤10, the average value of 𝐾𝑛(𝑅𝑖,SCO, 𝑅𝑖,Kem).
+We show the aggregated metrics for 15 groupings of alternatives
+(𝑚= |𝐴|) that partition the 12,680 preference profiles in Table 2.
+Generally, when using gradient descent (Algorithm 1, Section 3.2.1)
+the Condorcet winner is top-rated when it exists 92% - 100% of
+the time when |𝐴| ≤500 and the average normalized Kendall-
+tau distance to the Kemeny solution is low ( ¯𝐾𝑛(𝑅𝑖,SCO, 𝑅𝑖,Kem) ≤
+0.043). We found that sigmoidal programming worked as well as
+Algorithm 1 for instances where 𝑚≤4. On instances with five
+or more alternatives, there were numerical instabilities with the
+sigmoidal programming approach leading to a high number of
+failures. Hence, we run only gradient descent when 𝑚≥6.
+4.3
+Sparse Data Regime
+In this subsection, we generate synthetic data by simulating evalua-
+tions from match-ups played in an online game setting. We do this
+in two ways: one that is uniform (reflecting a round-robin style tour-
+nament), and one that leads to a structured form of sparsity often
+encountered in competitive gaming (i.e., skill-matching platforms).
+We use |𝐴| = 20 agents where for each agent 𝑖: 𝜃𝑖∼𝑁(100, 30),
+and contests between 4 agents (i.e., four-player games). To gen-
+erate contests, two separate distributions are used: the uniform
+distribution samples agents uniformly at random, and the skill-
+matched distribution which incrementally builds each contest,
+drawing 3 new candidates at random and choosing the one whose
+true rating is closest to the average of the set of agents so far. Then,
+for each contest 𝑐, we simulate the performance of agent 𝑖in that
+contest, 𝑃𝑖(𝑐) = 𝜃𝑖+ 𝜖𝑐,𝑖, where each 𝜖𝑐,𝑖∼𝑁(0, 5.0). The outcome
+of the contest (vote among contestants) is then obtained by sorting
+the performances of all the agents in that contest.
+We run Algorithm 1, Elo, and several VasE methods across many
+simulated 𝑛-contest tournaments, where each value of 𝑛corre-
+sponds to a proportion of missing data 𝑝∅(alternative pairs that
+have not been evaluated in a contest together), with 𝑝𝑢
+∅and 𝑝𝑠
+∅re-
+ferring the the uniform and skill-match distributions respectively:
+𝑛
+5
+10
+20
+30
+50
+75
+100
+200
+𝑝𝑢
+∅
+0.85
+0.72
+0.52
+0.38
+0.20
+0.09
+0.04
+0.001
+𝑝𝑠
+∅
+0.88
+0.75
+0.59
+0.49
+0.36
+0.28
+0.23
+0.15
+For each value of 𝑛we run 200 instances using different seeds and
+report average values. For each run, we used 10000 iterations with
+batch size 16. We show two different metrics. First, the Kendall-tau
+distance between the final ranking found by Algorithm 1 and the
+true ranking given the true ratings (maximum value of 20·19
+2
+= 190).
+This first metric identifies the pairs of agents whose relative order
+disagree between SCO and the true ranking; we denote these dis-
+cordant pairs 𝐷𝑆𝐶𝑂,𝑡𝑟𝑢𝑒. The second metric, which we call “mean
+true ratings distance” (MTRD), is then defined to be the average ab-
+solute difference in true ratings between all pairs of agents in these
+disagreements Í
+(𝑖,𝑗)∈𝐷SCO,true |𝜃𝑖−𝜃𝑗|/|𝐷SCO,true|, which allows us
+to take a nuanced look at the optimized parameters in addition to
+the associated ranking. The results are shown in Fig. 2.
+0
+25
+50
+75
+100
+125
+150
+175
+200
+0
+20
+40
+Kendall tau distance
+0
+25
+50
+75
+100
+125
+150
+175
+200
+Number of contests
+0
+10
+20
+MTRD of misranked pairs
+elo
+copeland
+fenchel_young
+borda
+sigmoid
+approval
+ranked_pairs
+maximal_lotteries
+0
+25
+50
+75
+100
+125
+150
+175
+200
+0
+25
+50
+75
+Kendall tau distance
+0
+25
+50
+75
+100
+125
+150
+175
+200
+Number of contests
+0
+10
+20
+30
+MTRD of misranked pairs
+ranked_pairs
+copeland
+elo
+approval
+sigmoid
+borda
+fenchel_young
+maximal_lotteries
+Figure 2: Kendall-tau distance (KTD) of ranking to true rank-
+ing, and Mean True Rating Distance (MTRD) of misranked
+pairs for ranking methods in tournament settings. Top: uni-
+form distribution, Bottom: skill-matched distribution. Error
+bars represent 95% confidence intervals.
+Of the VasE voting methods: approval, Borda, and maximal lot-
+teries have the highest KTD and MRTD, and struggle especially in
+the skill-matched distribution. This is unsurprising; for example,
+approval and Borda will naturally weight alternatives according
+to their representation in the data. Under both distributions, when
+59% or more of the match-ups are missing, SCO ratings (computed
+using both sigmoid and Fenchel-Young losses) achieve the lowest
+KTD and MRTD. Under the uniform distribution, SCO achieves
+the lowest when 38% or more of the data is missing. Under the
+skill-matched distribution, ranked pairs achieves comparable KTD
+to SCO ratings, and lower MRTD when the amount of missing data
+is less than 50%. Elo values are comparable to SCO in the uniform
+distribution and higher in the skill-matched distribution.
+4.4
+Diplomacy Game Outcome Prediction
+In this subsection we investigate the question of how well SCO
+rankings predict human game outcomes. Recall that this data set
+consists of all human-played seven-player games taken from the
+webDiplomacy.net spanning 11 years, resulting in a data set of
+size 𝑚= 52, 958 and 𝑛= 31, 049. As a result, less than 0.01% of
+Research Paper Track
+AAMAS 2025, May 19 – 23, 2025, Detroit, Michigan, USA
+1259
+* = [1.051, -0.725,  0.674]
+Fenchel-Young loss
+* = [1.394, -1.5,  1.5]
+Sigmoid loss
+1
+2
+3
+4
+5
+6
+Figure 4: Loss landscapes for the Fenchel-Young (left) and
+sigmoid (right), with minimizer (red star) over [−1.5, 1.5]3.
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Total number of iterations
+1e6
+8.0
+8.1
+8.2
+8.3
+8.4
+Kendall tau distance
+fenchel_young(alpha=0.1, sigma=10.0, B=32)
+fenchel_young(alpha=0.1, sigma=20.0, B=32)
+sigmoid(alpha=0.1, temperature=0.5, B=32)
+sigmoid(alpha=0.1, temperature=1.0, B=32)
+Elo
+VasE(Copeland)
+Figure 3: Average KTD𝑡𝑒𝑠𝑡(𝑡) between rankings and Diplo-
+macy game outcomes across 50 seeds and train/test splits. All
+runs use batch size 32. Error bars depict 95% conf. intervals.
+the unique player combinations are observed in the data. Finding
+a single ranking that sufficiently predicts the unseen test data is a
+difficult due to the extreme sparsity of the preference data.
+We reflect the evaluation used in [46] with a small modification
+to adopt common practice in the supervised learning setting . First,
+we create 50 random splits of the data into training sets D𝑅and
+testing sets D𝑇, with |D𝑅| = 28049 game outcomes (votes) and
+|D𝑇| = 3000 game outcomes. The random splits are such that each
+alternative in the test set is seen at least once on the training set, but
+no game outcomes (data points) are shared across train / test split.
+At each iteration 𝑡the method has a ranking denoted 𝑅𝑡learned
+from data in D𝑅; we then compute and report the average Kendall-
+tau distance over the test set: KTD𝑡𝑒𝑠𝑡(𝑡) =
+1
+3000
+Í
+𝑔∈D𝑇𝐾𝑑(𝑔, 𝑅𝑡).
+The resulting KTD𝑡𝑒𝑠𝑡(𝑡) is shown in Figure 3. We found that
+batch size had a minor effect on the results, so we show results
+for batch size 32 only. SCO with sigmoid loss reaches an average
+Kendall-tau distance of 8.10 after roughly 190000 iterations, and
+Fenchel-Young loss reaches 8.05 at 600000 iterations. There is an
+effect of increasing error after reaching this low point, likely due
+to overfitting; this could be reduced with early stopping, anneal-
+ing learning rates, or other forms of regularization. As a point
+of comparison, Elo and the best VasE method on this data set,
+VasE(Copeland), achieve a value of 8.34. The next best VasE method
+was plurality, achieving a value of 8.57. The more complex Con-
+dorcet methods, such as ranked pairs and maximal lotteries, cannot
+be run on this dataset due to their complexity, since 𝑚= 52, 958.
+5
+DISCUSSION
+Which algorithm should be used to compute SCO ratings? In our ex-
+perience, sigmoidal programming produced similar results to stan-
+dard gradient descent using the sigmoid loss; however, it sometimes
+suffered from numerical instability and was hard to scale to large
+number of agents due to programs requiring 𝑚2 variables. Hence,
+we recommend using the sigmoidal programming approach only
+when there are a relatively low number of alternatives. The Fenchel-
+Young loss is convex and hence gradient descent is guaranteed to
+converge to a global minimum; however, Condorcet winners (when
+they exist) are not necessarily top-ranked at that global minimum.
+The practical performance of Fenchel-Young loss minimization is
+comparable to sigmoid loss minimization and slightly better in
+the large Diplomacy problem. Both the sigmoid and Fenchel-Young
+losses are minimized by gradient descent so can be optimized online
+(batch size |𝐵| = 1) and work particularly well in approximating
+the optimal rankings when a large portion of the evaluation data is
+missing.
+The differences between sigmoid and Fenchel-Young loss mini-
+mization is further illustrated in Figure 4, where we plot two land-
+scapes of the Fenchel-Young and sigmoid losses for the same data
+over three agents, using the example of vote profiles in Equation 11.
+Since both losses are invariant by adding a constant, we plot over a
+2D slice, for all values of 𝜃with the same sum. As discussed above,
+the Fenchel-Young loss is strictly convex, its global minimizer exists
+is found by gradient descent. Like Elo, it favours the win rate and
+assigns the highest rating not to the Condorcet winner 𝐶, but to 𝐴.
+In contrast, the sigmoid loss is nonconvex, and has no global mini-
+mizer (it keeps decreasing at infinity). Optimizing over constrained
+rating, it assigns the highest rating to the Condorcet winner 𝐶.
+If Condorcet-consistency or distance to the optimal ranking is
+important, we recommend using the sigmoid loss as it optimizes
+to minimize the distance to it directly; despite being non-convex,
+in practice it finds the Condorcet winner when it exists ≥96% of
+the time when the number of alternatives 𝑚≤500 and returns
+almost-optimal rankings on instances where it can be compared
+(Section 4.2). Whereas, if assured convergence or weighting the loss
+functions by win rates (like Elo) is more important, we recommend
+using the Fenchel-Young loss optimization.
+For future work, we would like to compare the performance of
+SCO to faster methods for finding Kemeny rankings (or approxima-
+tions thereof) [1, 40, 43, 63, 64] or other ranking methods inspired
+by tournament solutions [62], or alternatives [18]. Considering sim-
+ilar differential approximations to other ranking distance functions
+such as Spearman’s footrule distance [29] as well as other ways to
+aggregate rankings [31] could be worthwhile. Finally, we would
+like to investigate using SCO and social choice theory for driving
+post-training for alignment of language models [19, 56, 74].
+Research Paper Track
+AAMAS 2025, May 19 – 23, 2025, Detroit, Michigan, USA
+1260
+REFERENCES
+[1] Alnur Ali and Marina Meilˇa. 2012. Experiments with Kemeny Ranking: What
+Works When? Mathematical Social Sciences 64, 1 (2012), 28–40.
+[2] Mayer Alvo and Philip L H Yu. 2014. Statistical Methods for Ranking Data. Springer
+New York.
+[3] Haris Aziz, Markus Brill, Felix Fischer, Paul Harrenstein, Jérôme Lang, and
+Hans Georg Seedig. 2015. Possible and necessary winners of partial tourna-
+ments. Journal of Artificial Intelligence Research 54 (2015), 493–534.
+[4] Gunjan Baid, Daniel E Cook, Kishwar Shafin, Taedong Yun, Felipe Llinares-López,
+Quentin Berthet, Anastasiya Belyaeva, Armin Töpfer, Aaron M Wenger, William J
+Rowell, et al. 2023. DeepConsensus improves the accuracy of sequences with a
+gap-aware sequence transformer. Nature Biotechnology 41, 2 (2023), 232–238.
+[5] David Balduzzi, Karl Tuyls, Julien Perolat, and Thore Graepel. 2018. Re-evaluating
+evaluation. In Advances in Neural Information Processing Systems, S. Bengio,
+H. Wallach, H. Larochelle, K. Grauman, N. Cesa-Bianchi, and R. Garnett (Eds.),
+Vol. 31. Curran Associates, Inc.
+[6] M. G. Bellemare, Y. Naddaf, J. Veness, and M. Bowling. 2013. The Arcade Learning
+Environment: An Evaluation Platform for General Agents. Journal of Artificial
+Intelligence Research 47 (jun 2013), 253–279.
+[7] BIG bench authors. 2023. Beyond the Imitation Game: Quantifying and extrap-
+olating the capabilities of language models. Transactions on Machine Learning
+Research (2023). https://openreview.net/forum?id=uyTL5Bvosj
+[8] Quentin Berthet, Mathieu Blondel, Olivier Teboul, Marco Cuturi, Jean-Philippe
+Vert, and Francis Bach. 2020. Learning with Differentiable Pertubed Optimizers.
+In Advances in Neural Information Processing Systems, H. Larochelle, M. Ran-
+zato, R. Hadsell, M.F. Balcan, and H. Lin (Eds.), Vol. 33. Curran Associates,
+Inc., 9508–9519.
+https://proceedings.neurips.cc/paper_files/paper/2020/file/
+6bb56208f672af0dd65451f869fedfd9-Paper.pdf
+[9] Quentin Bertrand, Wojciech Marian Czarnecki, and Gauthier Gidel. 2023. On
+the Limitations of the Elo, Real-World Games are Transitive, not Additive. In
+Proceedings of The 26th International Conference on Artificial Intelligence and
+Statistics (Proceedings of Machine Learning Research, Vol. 206), Francisco Ruiz,
+Jennifer Dy, and Jan-Willem van de Meent (Eds.). PMLR, 2905–2921.
+[10] Mathieu Blondel, André FT Martins, and Vlad Niculae. 2020. Learning with
+Fenchel-Young losses. The Journal of Machine Learning Research 21, 1 (2020),
+1314–1382.
+[11] Mathieu Blondel, Olivier Teboul, Quentin Berthet, and Josip Djolonga. 2020.
+Fast Differentiable Sorting and Ranking. In Proceedings of the 37th Interna-
+tional Conference on Machine Learning (Proceedings of Machine Learning Re-
+search, Vol. 119), Hal Daumé III and Aarti Singh (Eds.). PMLR, 950–959. https:
+//proceedings.mlr.press/v119/blondel20a.html
+[12] Meriem Boubdir, Edward Kim, Beyza Ermis, Sara Hooker, and Marzieh Fadaee.
+2023. Elo Uncovered: Robustness and Best Practices in Language Model Evalua-
+tion. (Nov. 2023). arXiv:2311.17295 [cs.CL]
+[13] R. A. Bradley and M. E. Terry. 1952. Rank analysis of incomplete block designs I:
+The method of paired comparisons. Biometrika 39 (1952), 324–345.
+[14] Felix Brandt, Vincent Conitzer, Ulle Endriss, Jérôme Lang, and Ariel D. Procaccia
+(Eds.). 2016. Handbook of Computational Social Choice. Cambridge University
+Press.
+[15] Murray Campbell, Jr. Hoane, A. Joseph, and Feng-hsiung Hsu. 2002. Deep Blue.
+Artificial Intelligence 134, 1–2 (2002), 57–83.
+[16] Andrew N Carr, Quentin Berthet, Mathieu Blondel, Olivier Teboul, and Neil
+Zeghidour. 2021. Self-supervised learning of audio representations from per-
+mutations with differentiable ranking. IEEE Signal Processing Letters 28 (2021),
+708–712.
+[17] Wei-Lin Chiang, Lianmin Zheng, Ying Sheng, Anastasios Nikolas Angelopoulos,
+Tianle Li, Dacheng Li, Banghua Zhu, Hao Zhang, Joseph E. Gonzalez Michael Jor-
+dan, and Ion Stoica. 2024. Chatbot Arena: An Open Platform for Evaluating
+LLMs by Human Preference. In Proceedings of the 41st International Conference
+on Machine Learning (PLMR, Vol. 235).
+[18] Ari Conati, Andreas Niskanen, and Matti Järvisalo. 2022. SAT-based Judgment
+Aggregation. In International Conference on Autonomous Agents and Multiagent
+Systems (AAMAS).
+[19] Vincent Conitzer, Rachel Freedman, Jobst Heitzig, Wesley H. Holliday, Bob M. Ja-
+cobs, Nathan Lambert, Milan Mosse, Eric Pacuit, Stuart Russell, Hailey Schoelkopf,
+Emanuel Tewolde, and William S. Zwicker. 2024. Position: Social Choice Should
+Guide AI Alignment in Dealing with Diverse Human Feedback. In Proceedings of
+the 41st International Conference on Machine Learning (Proceedings of Machine
+Learning Research, Vol. 235), Ruslan Salakhutdinov, Zico Kolter, Katherine Heller,
+Adrian Weller, Nuria Oliver, Jonathan Scarlett, and Felix Berkenkamp (Eds.).
+PMLR, 9346–9360. https://proceedings.mlr.press/v235/conitzer24a.html
+[20] V. Conitzer and T. Sandholm. 2005. Common Voting Rules as Maximum Like-
+lihood Estimators. In Proceedings of the Conference on Uncertainty in Artificial
+Intelligence (UAI). 145–152.
+[21] Jean-Baptiste Cordonnier, Aravindh Mahendran, Alexey Dosovitskiy, Dirk Weis-
+senborn, Jakob Uszkoreit, and Thomas Unterthiner. 2021. Differentiable patch
+selection for image recognition. In Proceedings of the Conference on Computer
+Vision and Pattern Recognition. 2351–2360.
+[22] Rémi Coulom. 2005. Bayesian Elo Rating. https://www.remi-coulom.fr/Bayesian-
+Elo.
+[23] J.S. Cramer. 2002. The origins of logistic regression. Technical Report. 167–178
+pages.
+[24] Douglas E Critchlow, Michael A Fligner, and Joseph S Verducci. 1991. Probability
+models on rankings. Journal of mathematical psychology 35, 3 (Sept. 1991), 294–
+318.
+[25] Marco Cuturi. 2013. Sinkhorn distances: Lightspeed computation of optimal
+transport. Advances in Neural Information Processing Systems 26 (2013).
+[26] Marco Cuturi and Mathieu Blondel. 2017. Soft-DTW: a differentiable loss function
+for time-series. In International Conference on Machine Learning. 894–903.
+[27] Marquis de Condorcet. 1785. Essai sur l’application de l’analyse à la probabilité
+des décisions rendues à la pluralité des voix.
+[28] Persi Diaconis. 1988. Group representations in probability and statistics. Lecture
+Notes-Monograph Series, Vol. 11. Institute of Mathematical Statistics. i–192
+pages.
+[29] P. Diaconis and R. Graham. 1977. Spearman’s footrule as a measure of disarray.
+Royal Statistical Society. Series B (Methodological) 39, 2 (1977), 262–268.
+[30] Benjamin Dubois-Taine, Francis Bach, Quentin Berthet, and Adrien Taylor. 2022.
+Fast Stochastic Composite Minimization and an Accelerated Frank-Wolfe Algo-
+rithm under Parallelization. In Advances in Neural Information Processing Systems.
+[31] Cynthia Dwork, Ravi Kumar, Moni Naor, and D. Sivakumar. 2001. Rank aggrega-
+tion methods for the Web. In Proceedings of the 10th international conference on
+World Wide Web. 613–622.
+[32] Arpad E. Elo. 1978. The Ratings of Chess Players, Past and Present (2nd ed.). Arco
+Publishing, Inc.
+[33] Meta Fundamental AI Research Diplomacy Team (FAIR)†, Anton Bakhtin, Noam
+Brown, Emily Dinan, Gabriele Farina, Colin Flaherty, Daniel Fried, Andrew Goff,
+Jonathan Gray, Hengyuan Hu, Athul Paul Jacob, Mojtaba Komeili, Karthik Konath,
+Minae Kwon, Adam Lerer, Mike Lewis, Alexander H. Miller, Sasha Mitts, Adithya
+Renduchintala, Stephen Roller, Dirk Rowe, Weiyan Shi, Joe Spisak, Alexander
+Wei, David Wu, Hugh Zhang, and Markus Zijlstra. 2022. Human-level play in
+the game of Diplomacy by combining language models with strategic reasoning.
+Science 378, 6624 (2022), 1067–1074.
+https://doi.org/10.1126/science.ade9097
+arXiv:https://www.science.org/doi/pdf/10.1126/science.ade9097
+[34] M A Fligner and J S Verducci. 1986. Distance Based Ranking Models. Journal of
+the Royal Statistical Society. Series B, Statistical methodology 48, 3 (1986), 359–369.
+[35] Emil Julius Gumbel. 1954. Statistical Theory of Extreme Values and some Practical
+Applications: A Series of Lectures. Number 33. US Govt. Print. Office.
+[36] Elad Hazan. 2015. Introduction to online convex optimization. Now Publishers Inc.
+Foundations and Trends in Optimization, Volume 2, Issue 3-4.
+[37] Tamir Hazan, George Papandreou, and Daniel Tarlow. 2016. Perturbations, Opti-
+mization, and Statistics. MIT Press.
+[38] Ralf Herbrich, Tom Minka, and Thore Graepel. 2006. TrueSkill™: A Bayesian Skill
+Rating System. In Advances in Neural Information Processing Systems, B. Schölkopf,
+J. Platt, and T. Hoffman (Eds.), Vol. 19. MIT Press.
+[39] David R. Hunter. 2004. MM Algorithms for Generalized Bradley-Terry Models.
+The Annals of Statistics 32, 1 (2004), 384–406.
+[40] M. Karpinski and W. Schudy. 2010. Faster Algorithms for Feedback Arc Set
+Tournament, Kemeny Rank Aggregation and Betweenness Tournament. ISAAC
+6506 (2010), 3–14.
+[41] Markelle Kelly, Rachel Longjohn, and Kolby Nottingham. [n.d.]. The UCI Machine
+Learning Repository. https://archive.ics.uci.edu.
+[42] J. Kemeny. 1959. Mathematics Without Numbers. Daedalus 88, 4 (1959), 577–591.
+[43] Claire Kenyon-Mathieu and Warren Schudy. 2007. How to rank with few errors. In
+Proceedings of the Thirty-Ninth Annual ACM Symposium on Theory of Computing
+(San Diego, California, USA) (STOC ’07). Association for Computing Machinery,
+New York, NY, USA, 95–103. https://doi.org/10.1145/1250790.1250806
+[44] Alex Krizhevsky, Ilya Sutskever, and Geoffrey E. Hinton. 2012. ImageNet clas-
+sification with deep convolutional neural networks. In Proceedings of the 25th
+International Conference on Neural Information Processing Systems. 1097–1105.
+[45] Abhinav Kumar, Garrick Brazil, and Xiaoming Liu. 2021. Groomed-nms: Grouped
+mathematically differentiable nms for monocular 3d object detection. In Proceed-
+ings of the Conference on Computer Vision and Pattern Recognition. 8973–8983.
+[46] Marc Lanctot, Kate Larson, Yoram Bachrach, Luke Marris, Zun Li, Avishkar
+Bhoopchand, Thomas Anthony, Brian Tanner, and Anna Koop. 2023. Evaluating
+Agents using Social Choice Theory. arXiv:2312.03121 [cs.AI]
+[47] Marc Lanctot, Kate Larson, Michael Kaisers, Quentin Berthet, Ian Gemp, Manfred
+Diaz, Roberto-Rafael Maura-Rivero, Yoram Bachrach, Anna Koop, and Doina
+Precup. 2024. Soft Condorcet Optimization for Ranking of General Agents.
+arXiv:2411.00119 [cs.MA] https://arxiv.org/abs/2411.00119
+[48] Quentin Le Lidec, Ivan Laptev, Cordelia Schmid, and Justin Carpentier. 2021. Dif-
+ferentiable rendering with perturbed optimizers. Advances in Neural Information
+Processing Systems 34 (2021), 20398–20409.
+[49] Percy Liang, Rishi Bommasani, Tony Lee, Dimitris Tsipras, Dilara Soylu, Michi-
+hiro Yasunaga, Yian Zhang, Deepak Narayanan, Yuhuai Wu, Ananya Kumar,
+Benjamin Newman, Binhang Yuan, Bobby Yan, Ce Zhang, Christian Cosgrove,
+Christopher D. Manning, Christopher Ré, Diana Acosta-Navas, Drew A. Hudson,
+Research Paper Track
+AAMAS 2025, May 19 – 23, 2025, Detroit, Michigan, USA
+1261
+Eric Zelikman, Esin Durmus, Faisal Ladhak, Frieda Rong, Hongyu Ren, Huaxiu
+Yao, Jue Wang, Keshav Santhanam, Laurel Orr, Lucia Zheng, Mert Yuksekgonul,
+Mirac Suzgun, Nathan Kim, Neel Guha, Niladri Chatterji, Omar Khattab, Peter
+Henderson, Qian Huang, Ryan Chi, Sang Michael Xie, Shibani Santurkar, Surya
+Ganguli, Tatsunori Hashimoto, Thomas Icard, Tianyi Zhang, Vishrav Chaud-
+hary, William Wang, Xuechen Li, Yifan Mai, Yuhui Zhang, and Yuta Koreeda.
+2022. Holistic Evaluation of Language Models. CoRR abs/2211.09110 (2022).
+arXiv:2211.09110 [cs.CL] See latest results at: https://crfm.stanford.edu/helm/
+latest/.
+[50] Tie-Yan Liu. 2011. Learning to Rank for Information Retrieval. Springer.
+[51] Xiao Liu, Hao Yu, Hanchen Zhang, Yifan Xu, Xuanyu Lei, Hanyu Lai, Yu Gu,
+Hangliang Ding, Kaiwen Men, Kejuan Yang, Shudan Zhang, Xiang Deng, Aohan
+Zeng, Zhengxiao Du, Chenhui Zhang, Sheng Shen, Tianjun Zhang, Yu Su, Huan
+Sun, Minlie Huang, Yuxiao Dong, and Jie Tang. 2023. AgentBench: Evaluating
+LLMs as Agents. arXiv:2308.03688 [cs.AI]
+[52] Felipe Llinares-López, Quentin Berthet, Mathieu Blondel, Olivier Teboul, and
+Jean-Philippe Vert. 2023. Deep embedding and alignment of protein sequences.
+Nature Methods 20, 1 (2023), 104–111.
+[53] Stephan Mandt, Matthew Hoffman, and David Blei. 2016. A variational analysis
+of stochastic gradient algorithms. In International conference on machine learning.
+PMLR, 354–363.
+[54] John I Marden. 1995. Analyzing and Modeling Rank Data. Chapman and Hall.
+[55] Nicholas Mattei and Toby Walsh. 2013. PrefLib: A Library of Preference Data
+http://preflib.org. In Proceedings of the 3rd International Conference on Al-
+gorithmic Decision Theory (ADT 2013) (Lecture Notes in Artificial Intelligence).
+Springer.
+[56] Roberto-Rafael Maura-Rivero, Marc Lanctot, Francesco Visin, and Kate Larson.
+2025. Jackpot! Alignment as a Maximal Lottery.
+arXiv:2501.19266 [cs.AI]
+https://arxiv.org/abs/2501.19266
+[57] Arthur Mensch and Mathieu Blondel. 2018. Differentiable dynamic programming
+for structured prediction and attention. In Proc. of ICML.
+[58] Steven Morse. 2019. Elo as a Statistical Learning Model. https://stmorse.github.
+io/journal/Elo.html. Retrieved January 2024.
+[59] Kevin P. Murphy. 2022. Probabilistic Machine Learning: An introduction. MIT
+Press. probml.ai
+[60] Max Paulus, Dami Choi, Daniel Tarlow, Andreas Krause, and Chris J Maddison.
+2020. Gradient estimation with stochastic softmax tricks. Advances in Neural
+Information Processing Systems 33 (2020), 5691–5704.
+[61] Maria Silvia Pini, Francesca Rossi, Kristen Brent Venable, and Toby Walsh. 2011.
+Possible and necessary winners in voting trees: majority graphs vs. profiles. In
+The 10th International Conference on Autonomous Agents and Multiagent Systems-
+Volume 1. 311–318.
+[62] Arun Rajkumar, Suprovat Ghoshal, Lek-Heng Lim, and Shivani Agarwal. 2015.
+Ranking from Stochastic Pairwise Preferences: Recovering Condorcet Winners
+and Tournament Solution Sets at the Top. In Proceedings of the 32nd Interna-
+tional Conference on Machine Learning (Proceedings of Machine Learning Research,
+Vol. 37). 665–673.
+[63] Noelia Rico, Camino R. Vela, and Irene Diaz. 2023. Kemeny ranking aggregation
+meets the GPU. Journal of Supercomputing 79 (2023), 10335–10352.
+[64] Noelia Rico, Camino R. Vela, and Irene Diaz. 2023. Reducing the time required to
+find the Kemeny ranking by exploiting a necessary condition for being a winner.
+European Journal of Operational Research 305, 3 (2023).
+[65] Mark Rofin, Vladislav Mikhailov, Mikhail Florinsky, Andrey Kravchenko, Tatiana
+Shavrina, Elena Tutubalina, Daniel Karabekyan, and Ekaterina Artemova. 2023.
+Vote’n’Rank: Revision of Benchmarking with Social Choice Theory. In Proceedings
+of the 17th Conference of the European Chapter of the Association for Computational
+Linguistics, Andreas Vlachos and Isabelle Augenstein (Eds.). Association for
+Computational Linguistics, Dubrovnik, Croatia, 670–686.
+https://doi.org/10.
+18653/v1/2023.eacl-main.48
+[66] Arthur L. Samuel. 1959. Some Studies in Machine Learning Using the Game of
+Checkers. IBM Journal of Research and Development 44 (1959), 206–226.
+[67] Michael E Sander, Joan Puigcerver, Josip Djolonga, Gabriel Peyré, and Math-
+ieu Blondel. 2023. Fast, Differentiable and Sparse Top-k: a Convex Analysis
+Perspective. arXiv preprint arXiv:2302.01425 (2023).
+[68] Nihar B Shah and Martin J Wainwright. 2018. Simple, Robust and Optimal
+Ranking from Pairwise Comparisons. Journal of machine learning research: JMLR
+18, 199 (2018), 1–38.
+[69] David Silver, Aja Huang, Chris J. Maddison, Arthur Guez, Laurent Sifre, George
+van den Driessche, Julian Schrittwieser, Ioannis Antonoglou, Veda Panneershel-
+vam, Marc Lanctot, Sander Dieleman, Dominik Grewe, John Nham, Nal Kalch-
+brenner, Ilya Sutskever, Timothy Lillicrap, Madeleine Leach, Koray Kavukcuoglu,
+Thore Graepel, and Demis Hassabis. 2016. Mastering the game of Go with deep
+neural networks and tree search. Nature 529 (2016), 484–489.
+[70] David Silver, Thomas Hubert, Julian Schrittwieser, Ioannis Antonoglou, Matthew
+Lai, Arthur Guez, Marc Lanctot, Laurent Sifre, Dharshan Kumaran, Thore Grae-
+pel, Timothy Lillicrap, Karen Simonyan, and Demis Hassabis. 2018. A general
+reinforcement learning algorithm that masters chess, shogi, and Go through
+self-play. Science 632, 6419 (2018), 1140–1144.
+[71] J. H. Smith. 1973. Aggregation of preferences with variable electorate. Economet-
+rica 41 (1973), 1027–1041.
+[72] Mandt Stephan, Matthew D Hoffman, David M Blei, et al. 2017. Stochastic
+gradient descent as approximate bayesian inference. Journal of Machine Learning
+Research 18, 134 (2017), 1–35.
+[73] Lawrence Stewart, Francis S Bach, Felipe Llinares López, and Quentin Berthet.
+2022. Differentiable Clustering with Perturbed Spanning Forests, In Advances in
+Neural Information Processing Systems. arXiv preprint arXiv:2305.16358.
+[74] Gokul Swamy, Christoph Dann, Rahul Kidambi, Zhiwei Steven Wu, and Alekh
+Agarwal. 2024. A Minimaximalist Approach to Reinforcement Learning from
+Human Feedback.
+[75] Aamir Syed, Omar; Syed. [n.d.]. Arimaa – a New Game Designed to be Difficult
+for Computers. International Computer Games Association Journal 26 ([n. d.]),
+138–139.
+[76] Gerald Tesauro. 1995. Temporal Difference Learning and TD-Gammon. Commun.
+ACM 38, 3 (1995), 58–68.
+[77] Madaleine Udell. 2020. SigmoidalProgramming (Julia package). https://github.
+com/madeleineudell/SigmoidalProgramming.jl. Retrieved August 2024.
+[78] Madeleine Udell and Stephen P. Boyd. 2014. Maximizing a Sum of Sigmoids.
+https://api.semanticscholar.org/CorpusID:18061910
+[79] Oriol Vinyals, Igor Babuschkin, Wojciech M. Czarnecki, Michaël Mathieu, An-
+drew Dudzik, Junyoung Chung, David H. Choi, Richard Powell, Timo Ewalds,
+Petko Georgiev, Junhyuk Oh, Dan Horgan, Manuel Kroiss, Ivo Danihelka, Aja
+Huang, Laurent Sifre, Trevor Cai, John P. Agapiou, Max Jaderberg, Alexander S.
+Vezhnevets, Rémi Leblond, Tobias Pohlen, Valentin Dalibard, David Budden,
+Yury Sulsky, James Molloy, Tom L. Paine, Caglar Gulcehre, Ziyu Wang, Tobias
+Pfaff, Yuhuai Wu, Roman Ring, Dani Yogatama, Dario Wünsch, Katrina McKin-
+ney, Oliver Smith, Tom Schaul, Timothy Lillicrap, Koray Kavukcuoglu, Demis
+Hassabis, Chris Apps, and David Silver. 2019. Grandmaster level in StarCraft
+II using multi-agent reinforcement learning. Nature 575, 7782 (2019), 350–354.
+https://doi.org/10.1038/s41586-019-1724-z
+[80] Marin Vlastelica, Anselm Paulus, Vít Musil, Georg Martius, and Michal Rolínek.
+2019.
+Differentiation of blackbox combinatorial solvers.
+arXiv preprint
+arXiv:1912.02175 (2019).
+[81] Lirong Xia. 2019. Learning and Decision-Making from Rank Data. Springer.
+[82] Lirong Xia and Vincent Conitzer. 2011. Determining possible and necessary
+winners given partial orders. Journal of Artificial Intelligence Research 41 (2011),
+25–67.
+[83] H. P. Young and A. Levenglick. 1978. A consistent extension of Condorcet’s
+election principle. SIAM Journal of Applied Mathematics 35, 2 (1978), 285–300.
+[84] Lianmin Zheng, Wei-Lin Chiang, Ying Sheng, Siyuan Zhuang, Zhanghao Wu,
+Yonghao Zhuang, Zi Lin, Zhuohan Li, Dacheng Li, Eric. P Xing, Hao Zhang,
+Joseph E. Gonzalez, and Ion Stoica. 2023. Judging LLM-as-a-judge with MT-
+Bench and Chatbot Arena. arXiv:2306.05685 [cs.CL] See also https://lmsys.org/
+blog/2023-05-03-arena/ and https://huggingface.co/spaces/lmsys/chatbot-arena-
+leaderboard. Accessed August 13th, 2023.
+Research Paper Track
+AAMAS 2025, May 19 – 23, 2025, Detroit, Michigan, USA
+1262

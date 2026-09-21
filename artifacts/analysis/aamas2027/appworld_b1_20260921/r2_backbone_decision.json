@@ -1,0 +1,26 @@
+{
+  "run": "b1_qwen25_3b_16k_noexp_6c2c621_1_r2",
+  "status": "B1_BACKBONE_REJECT_QWEN25_3B",
+  "infrastructure_clean": true,
+  "server_http_errors": 0,
+  "official_evaluator": {
+    "passed_tests": 1,
+    "failed_tests": 7,
+    "total_tests": 8,
+    "success": false
+  },
+  "max_steps": 20,
+  "max_tokens_per_turn": 1024,
+  "usage": {
+    "input_cache_miss_tokens": 78941,
+    "output_tokens": 12250
+  },
+  "failure_characterization": [
+    "Repeated nonexistent API invention across supervisor, simple_note and file_system.",
+    "Repeated prohibited host-file operations despite explicit environment feedback.",
+    "Failed to recover by inspecting and following AppWorld API specifications.",
+    "No requested file-system state change was produced."
+  ],
+  "decision": "Do not prompt-tune Qwen2.5-3B further. Move B1 to a stronger open-weight backbone.",
+  "next_candidate": "Qwen/Qwen3-14B"
+}

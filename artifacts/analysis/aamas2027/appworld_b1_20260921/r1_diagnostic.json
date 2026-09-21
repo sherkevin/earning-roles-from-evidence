@@ -1,0 +1,26 @@
+{
+  "run": "b1_qwen25_3b_16k_noexp_6c2c621_1_r1",
+  "status": "DIAGNOSTIC_INVALID_FOR_CAPABILITY",
+  "infrastructure_clean": true,
+  "official_evaluator": {
+    "passed_tests": 1,
+    "failed_tests": 7,
+    "total_tests": 8,
+    "success": false
+  },
+  "task_marked_complete": true,
+  "completion_answer": 3,
+  "observed_failures": [
+    "Repeatedly invented nonexistent supervisor note APIs.",
+    "Attempted prohibited host os/open style file operations instead of AppWorld APIs.",
+    "Invented three sample notes rather than retrieving actual notes.",
+    "Several Python snippets were truncated at the 256-token generation cap, causing syntax errors."
+  ],
+  "why_not_capability_evidence": "The 256-token per-turn cap visibly truncated generated code, so this run contains an avoidable runtime-generation confound even though it also shows substantial grounding failures.",
+  "next_run_only_change": {
+    "max_tokens_per_turn": {
+      "from": 256,
+      "to": 1024
+    }
+  }
+}

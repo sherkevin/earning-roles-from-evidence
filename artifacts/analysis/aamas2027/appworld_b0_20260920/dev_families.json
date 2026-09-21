@@ -1,0 +1,855 @@
+[
+  {
+    "family": "50e1ac9",
+    "instances": [
+      "50e1ac9_1",
+      "50e1ac9_2",
+      "50e1ac9_3"
+    ],
+    "instructions": [
+      "Give me a comma-separated list of top 4 most played r&b song titles from across my Spotify song, album and playlist libraries.",
+      "Give me a comma-separated list of top 6 most played edm song titles from across my Spotify song, album and playlist libraries.",
+      "Give me a comma-separated list of top 3 most played indie song titles from across my Spotify song, album and playlist libraries."
+    ],
+    "api_intersection": [
+      "spotify.show_album",
+      "spotify.show_album_library",
+      "spotify.show_playlist",
+      "spotify.show_playlist_library",
+      "spotify.show_song",
+      "spotify.show_song_library"
+    ],
+    "api_union": [
+      "spotify.show_album",
+      "spotify.show_album_library",
+      "spotify.show_playlist",
+      "spotify.show_playlist_library",
+      "spotify.show_song",
+      "spotify.show_song_library"
+    ],
+    "signature_invariant": true,
+    "difficulty": [
+      2
+    ],
+    "num_apps": [
+      1
+    ],
+    "required_apps": [
+      "spotify"
+    ],
+    "no_op_fail_min": 1,
+    "no_op_fail_max": 1,
+    "all_primitives_seen_in_train": false,
+    "exact_family_signature_seen_in_train": false,
+    "single_train_family_contains_target": false,
+    "best_cover": null,
+    "strict_composition_candidate": false
+  },
+  {
+    "family": "fac291d",
+    "instances": [
+      "fac291d_1",
+      "fac291d_2",
+      "fac291d_3"
+    ],
+    "instructions": [
+      "How many unique songs are there across my Spotify song library, albums library and all playlists?",
+      "How many unique songs are there across my Spotify song library, albums library and all playlists?",
+      "How many unique songs are there across my Spotify song library, albums library and all playlists?"
+    ],
+    "api_intersection": [
+      "spotify.show_album_library",
+      "spotify.show_playlist_library",
+      "spotify.show_song_library"
+    ],
+    "api_union": [
+      "spotify.show_album_library",
+      "spotify.show_playlist_library",
+      "spotify.show_song_library"
+    ],
+    "signature_invariant": true,
+    "difficulty": [
+      2
+    ],
+    "num_apps": [
+      1
+    ],
+    "required_apps": [
+      "spotify"
+    ],
+    "no_op_fail_min": 1,
+    "no_op_fail_max": 1,
+    "all_primitives_seen_in_train": true,
+    "exact_family_signature_seen_in_train": false,
+    "single_train_family_contains_target": true,
+    "best_cover": {
+      "donors": [
+        "27e1026"
+      ],
+      "num_donors": 1,
+      "extra_api_count": 1
+    },
+    "strict_composition_candidate": false
+  },
+  {
+    "family": "530b157",
+    "instances": [
+      "530b157_1",
+      "530b157_2",
+      "530b157_3"
+    ],
+    "instructions": [
+      "Kristin paid for my grocery recently as my payment cards were not working at the time. Send them the owed money with a description note \"Groceries\" as per my phone text conversation, and then send them a phone text message, \"It is done.\".",
+      "Joseph paid for my grocery recently as my payment cards were not working at the time. Send them the owed money with a description note \"Grocery Bill\" as per my phone text conversation, and then send them a phone text message, \"Done.\".",
+      "Robert paid for my grocery recently as my payment cards were not working at the time. Send them the owed money with a description note \"Thanks for the groceries!\" as per my phone text conversation, and then send them a phone text message, \"Done. Thanks!\"."
+    ],
+    "api_intersection": [
+      "phone.get_current_date_and_time",
+      "phone.search_contacts",
+      "phone.search_text_messages",
+      "phone.send_text_message",
+      "venmo.create_transaction"
+    ],
+    "api_union": [
+      "phone.get_current_date_and_time",
+      "phone.search_contacts",
+      "phone.search_text_messages",
+      "phone.send_text_message",
+      "venmo.create_transaction"
+    ],
+    "signature_invariant": true,
+    "difficulty": [
+      3
+    ],
+    "num_apps": [
+      2
+    ],
+    "required_apps": [
+      "phone",
+      "venmo"
+    ],
+    "no_op_fail_min": 9,
+    "no_op_fail_max": 9,
+    "all_primitives_seen_in_train": true,
+    "exact_family_signature_seen_in_train": false,
+    "single_train_family_contains_target": false,
+    "best_cover": {
+      "donors": [
+        "29caf6f",
+        "d0b1f43",
+        "60d0b5b"
+      ],
+      "num_donors": 3,
+      "extra_api_count": 4
+    },
+    "strict_composition_candidate": true
+  },
+  {
+    "family": "4ec8de5",
+    "instances": [
+      "4ec8de5_1",
+      "4ec8de5_2",
+      "4ec8de5_3"
+    ],
+    "instructions": [
+      "How many songs from across my spotify song and album libraries were released in this or last year?",
+      "How many songs from across my spotify song and album libraries were released in this year?",
+      "How many songs from across my spotify song and album libraries were released before this year?"
+    ],
+    "api_intersection": [
+      "phone.get_current_date_and_time",
+      "spotify.show_album_library",
+      "spotify.show_song",
+      "spotify.show_song_library"
+    ],
+    "api_union": [
+      "phone.get_current_date_and_time",
+      "spotify.show_album_library",
+      "spotify.show_song",
+      "spotify.show_song_library"
+    ],
+    "signature_invariant": true,
+    "difficulty": [
+      1
+    ],
+    "num_apps": [
+      1
+    ],
+    "required_apps": [
+      "spotify"
+    ],
+    "no_op_fail_min": 1,
+    "no_op_fail_max": 1,
+    "all_primitives_seen_in_train": true,
+    "exact_family_signature_seen_in_train": false,
+    "single_train_family_contains_target": false,
+    "best_cover": {
+      "donors": [
+        "27e1026",
+        "76f2c72"
+      ],
+      "num_donors": 2,
+      "extra_api_count": 3
+    },
+    "strict_composition_candidate": true
+  },
+  {
+    "family": "b119b1f",
+    "instances": [
+      "b119b1f_1",
+      "b119b1f_2",
+      "b119b1f_3"
+    ],
+    "instructions": [
+      "Keep going to the previous song on Spotify until you reach a song by Luna Starlight.",
+      "Keep going to the next song on Spotify until you reach a song by Lily Moon.",
+      "Keep going to the previous song on Spotify until you reach a song by Silent Thunder."
+    ],
+    "api_intersection": [
+      "spotify.search_artists",
+      "spotify.show_current_song"
+    ],
+    "api_union": [
+      "spotify.next_song",
+      "spotify.previous_song",
+      "spotify.search_artists",
+      "spotify.show_current_song"
+    ],
+    "signature_invariant": false,
+    "difficulty": [
+      2
+    ],
+    "num_apps": [
+      1
+    ],
+    "required_apps": [
+      "spotify"
+    ],
+    "no_op_fail_min": 6,
+    "no_op_fail_max": 6,
+    "all_primitives_seen_in_train": false,
+    "exact_family_signature_seen_in_train": false,
+    "single_train_family_contains_target": false,
+    "best_cover": null,
+    "strict_composition_candidate": false
+  },
+  {
+    "family": "d4e9306",
+    "instances": [
+      "d4e9306_1",
+      "d4e9306_2",
+      "d4e9306_3"
+    ],
+    "instructions": [
+      "Follow artists of all the songs and albums I have ever liked on Spotify.",
+      "Follow artists of all the songs and albums I have ever liked on Spotify.",
+      "Follow artists of all the songs and albums I have ever liked on Spotify."
+    ],
+    "api_intersection": [
+      "spotify.follow_artist",
+      "spotify.show_album",
+      "spotify.show_liked_albums",
+      "spotify.show_liked_songs",
+      "spotify.show_song"
+    ],
+    "api_union": [
+      "spotify.follow_artist",
+      "spotify.show_album",
+      "spotify.show_liked_albums",
+      "spotify.show_liked_songs",
+      "spotify.show_song"
+    ],
+    "signature_invariant": true,
+    "difficulty": [
+      1
+    ],
+    "num_apps": [
+      1
+    ],
+    "required_apps": [
+      "spotify"
+    ],
+    "no_op_fail_min": 5,
+    "no_op_fail_max": 5,
+    "all_primitives_seen_in_train": false,
+    "exact_family_signature_seen_in_train": false,
+    "single_train_family_contains_target": false,
+    "best_cover": null,
+    "strict_composition_candidate": false
+  },
+  {
+    "family": "0d8a4ee",
+    "instances": [
+      "0d8a4ee_1",
+      "0d8a4ee_2",
+      "0d8a4ee_3"
+    ],
+    "instructions": [
+      "Send the following phone message to my parents and siblings, who do not have a venmo account, \"Please get on venmo.\".",
+      "Send the following phone message to my siblings and roommates, who do not have a venmo account, \"Get on venmo please!\".",
+      "Send the following phone message to my roommates and friends, who do not have a venmo account, \"Make an account on venmo please.\"."
+    ],
+    "api_intersection": [
+      "phone.search_contacts",
+      "phone.send_text_message",
+      "venmo.show_profile"
+    ],
+    "api_union": [
+      "phone.search_contacts",
+      "phone.send_text_message",
+      "venmo.show_profile"
+    ],
+    "signature_invariant": true,
+    "difficulty": [
+      2
+    ],
+    "num_apps": [
+      2
+    ],
+    "required_apps": [
+      "phone",
+      "venmo"
+    ],
+    "no_op_fail_min": 4,
+    "no_op_fail_max": 4,
+    "all_primitives_seen_in_train": false,
+    "exact_family_signature_seen_in_train": false,
+    "single_train_family_contains_target": false,
+    "best_cover": null,
+    "strict_composition_candidate": false
+  },
+  {
+    "family": "37a8675",
+    "instances": [
+      "37a8675_1",
+      "37a8675_2",
+      "37a8675_3"
+    ],
+    "instructions": [
+      "Send $91 privately on Venmo to the person with this phone number 2192158297.",
+      "Send $100 publicly on Venmo to the person with this phone number 5734599766.",
+      "Send $68 privately on Venmo to the person with this phone number 2114992604."
+    ],
+    "api_intersection": [
+      "phone.get_current_date_and_time",
+      "phone.search_contacts",
+      "venmo.create_transaction",
+      "venmo.show_payment_cards"
+    ],
+    "api_union": [
+      "phone.get_current_date_and_time",
+      "phone.search_contacts",
+      "venmo.create_transaction",
+      "venmo.show_payment_cards"
+    ],
+    "signature_invariant": true,
+    "difficulty": [
+      2
+    ],
+    "num_apps": [
+      2
+    ],
+    "required_apps": [
+      "phone",
+      "venmo"
+    ],
+    "no_op_fail_min": 6,
+    "no_op_fail_max": 6,
+    "all_primitives_seen_in_train": false,
+    "exact_family_signature_seen_in_train": false,
+    "single_train_family_contains_target": false,
+    "best_cover": null,
+    "strict_composition_candidate": false
+  },
+  {
+    "family": "3ab5b8b",
+    "instances": [
+      "3ab5b8b_1",
+      "3ab5b8b_2",
+      "3ab5b8b_3"
+    ],
+    "instructions": [
+      "Download all the songs from my Spotify playlists that I have liked.",
+      "Download all the songs from my Spotify song library that I have liked.",
+      "Download all the songs from my Spotify album library that I have liked."
+    ],
+    "api_intersection": [
+      "spotify.download_song",
+      "spotify.show_liked_songs"
+    ],
+    "api_union": [
+      "spotify.download_song",
+      "spotify.show_album_library",
+      "spotify.show_liked_songs",
+      "spotify.show_playlist_library",
+      "spotify.show_song_library"
+    ],
+    "signature_invariant": false,
+    "difficulty": [
+      1
+    ],
+    "num_apps": [
+      1
+    ],
+    "required_apps": [
+      "spotify"
+    ],
+    "no_op_fail_min": 5,
+    "no_op_fail_max": 5,
+    "all_primitives_seen_in_train": false,
+    "exact_family_signature_seen_in_train": false,
+    "single_train_family_contains_target": false,
+    "best_cover": null,
+    "strict_composition_candidate": false
+  },
+  {
+    "family": "df61dc5",
+    "instances": [
+      "df61dc5_1",
+      "df61dc5_2",
+      "df61dc5_3"
+    ],
+    "instructions": [
+      "Like all the venmo transactions of the ongoing year to and from my roommates.",
+      "Like all the venmo transactions of the ongoing month to and from my friends.",
+      "Like all the venmo transactions of the ongoing year to and from my coworkers."
+    ],
+    "api_intersection": [
+      "phone.get_current_date_and_time",
+      "phone.search_contacts",
+      "venmo.like_transaction",
+      "venmo.show_transactions"
+    ],
+    "api_union": [
+      "phone.get_current_date_and_time",
+      "phone.search_contacts",
+      "venmo.like_transaction",
+      "venmo.show_transactions"
+    ],
+    "signature_invariant": true,
+    "difficulty": [
+      1
+    ],
+    "num_apps": [
+      2
+    ],
+    "required_apps": [
+      "phone",
+      "venmo"
+    ],
+    "no_op_fail_min": 5,
+    "no_op_fail_max": 5,
+    "all_primitives_seen_in_train": true,
+    "exact_family_signature_seen_in_train": false,
+    "single_train_family_contains_target": true,
+    "best_cover": {
+      "donors": [
+        "afc0fce"
+      ],
+      "num_donors": 1,
+      "extra_api_count": 1
+    },
+    "strict_composition_candidate": false
+  },
+  {
+    "family": "383cbac",
+    "instances": [
+      "383cbac_1",
+      "383cbac_2",
+      "383cbac_3"
+    ],
+    "instructions": [
+      "I went on dinner with my coworkers yesterday at Azure Harbor Bistro. My manager paid for food and everyone venmoed them. Everyones' transactions except mine should be on my social feed. My share was $38. How much did my manager pay for the others, including me, yesterday?",
+      "I went on lunch with my coworkers yesterday at Enchanted Eats. My manager paid for food and everyone venmoed them. Everyones' transactions except mine should be on my social feed. My share was $20. How much did my manager pay for the others, including me, yesterday?",
+      "I went on dinner with my coworkers yesterday at Whimsical Bites. My manager paid for food and everyone venmoed them. Everyones' transactions except mine should be on my social feed. My share was $34. How much did my manager pay for the others, including me, yesterday?"
+    ],
+    "api_intersection": [
+      "phone.get_current_date_and_time",
+      "phone.search_contacts",
+      "venmo.show_social_feed"
+    ],
+    "api_union": [
+      "phone.get_current_date_and_time",
+      "phone.search_contacts",
+      "venmo.show_social_feed"
+    ],
+    "signature_invariant": true,
+    "difficulty": [
+      1
+    ],
+    "num_apps": [
+      2
+    ],
+    "required_apps": [
+      "phone",
+      "venmo"
+    ],
+    "no_op_fail_min": 1,
+    "no_op_fail_max": 1,
+    "all_primitives_seen_in_train": true,
+    "exact_family_signature_seen_in_train": false,
+    "single_train_family_contains_target": true,
+    "best_cover": {
+      "donors": [
+        "2a163ab"
+      ],
+      "num_donors": 1,
+      "extra_api_count": 1
+    },
+    "strict_composition_candidate": false
+  },
+  {
+    "family": "23cf851",
+    "instances": [
+      "23cf851_1",
+      "23cf851_2",
+      "23cf851_3"
+    ],
+    "instructions": [
+      "How many likes did all Venmo transactions, I sent this month, have in total?",
+      "How many likes did all Venmo transactions, I received this year, have in total?",
+      "How many likes did all Venmo transactions, I sent or received this month, have in total?"
+    ],
+    "api_intersection": [
+      "phone.get_current_date_and_time",
+      "venmo.show_transactions"
+    ],
+    "api_union": [
+      "phone.get_current_date_and_time",
+      "venmo.show_transactions"
+    ],
+    "signature_invariant": true,
+    "difficulty": [
+      1
+    ],
+    "num_apps": [
+      1
+    ],
+    "required_apps": [
+      "venmo"
+    ],
+    "no_op_fail_min": 1,
+    "no_op_fail_max": 1,
+    "all_primitives_seen_in_train": true,
+    "exact_family_signature_seen_in_train": false,
+    "single_train_family_contains_target": true,
+    "best_cover": {
+      "donors": [
+        "d0b1f43"
+      ],
+      "num_donors": 1,
+      "extra_api_count": 1
+    },
+    "strict_composition_candidate": false
+  },
+  {
+    "family": "57c3486",
+    "instances": [
+      "57c3486_1",
+      "57c3486_2",
+      "57c3486_3"
+    ],
+    "instructions": [
+      "Like all the songs from the artists I follow on Spotify.",
+      "Like all the songs from the artists I follow on Spotify.",
+      "Like all the songs from the artists I follow on Spotify."
+    ],
+    "api_intersection": [
+      "spotify.like_song",
+      "spotify.search_songs",
+      "spotify.show_artist",
+      "spotify.show_following_artists"
+    ],
+    "api_union": [
+      "spotify.like_song",
+      "spotify.search_songs",
+      "spotify.show_artist",
+      "spotify.show_following_artists"
+    ],
+    "signature_invariant": true,
+    "difficulty": [
+      1
+    ],
+    "num_apps": [
+      1
+    ],
+    "required_apps": [
+      "spotify"
+    ],
+    "no_op_fail_min": 4,
+    "no_op_fail_max": 4,
+    "all_primitives_seen_in_train": true,
+    "exact_family_signature_seen_in_train": false,
+    "single_train_family_contains_target": false,
+    "best_cover": null,
+    "strict_composition_candidate": false
+  },
+  {
+    "family": "68ee2c9",
+    "instances": [
+      "68ee2c9_1",
+      "68ee2c9_2",
+      "68ee2c9_3"
+    ],
+    "instructions": [
+      "In my file system, add the prefix \"YYYY-MM-DD_\" to all file names in the ~/downloads/ directory, based on their creation dates, and then move all files not from this year to ~/trash/.",
+      "In my file system, add the prefix \"YYYY_MM_DD-\" to all file names in the ~/downloaded_files/ directory, based on their creation dates, and then move all files not from this year to ~/recycle_bin/.",
+      "In my file system, add the prefix \"YYYY_MM_DD_\" to all file names in the ~/my_downloads/ directory, based on their creation dates, and then move all files not from this year to ~/archive/."
+    ],
+    "api_intersection": [
+      "file_system.move_file",
+      "file_system.show_directory",
+      "file_system.show_file",
+      "phone.get_current_date_and_time"
+    ],
+    "api_union": [
+      "file_system.move_file",
+      "file_system.show_directory",
+      "file_system.show_file",
+      "phone.get_current_date_and_time"
+    ],
+    "signature_invariant": true,
+    "difficulty": [
+      1
+    ],
+    "num_apps": [
+      1
+    ],
+    "required_apps": [
+      "file_system"
+    ],
+    "no_op_fail_min": 4,
+    "no_op_fail_max": 4,
+    "all_primitives_seen_in_train": true,
+    "exact_family_signature_seen_in_train": true,
+    "single_train_family_contains_target": true,
+    "best_cover": {
+      "donors": [
+        "34d9492"
+      ],
+      "num_donors": 1,
+      "extra_api_count": 0
+    },
+    "strict_composition_candidate": false
+  },
+  {
+    "family": "6bdbc26",
+    "instances": [
+      "6bdbc26_1",
+      "6bdbc26_2",
+      "6bdbc26_3"
+    ],
+    "instructions": [
+      "How many people follow the artist of the currently playing song on Spotify?",
+      "How many people follow the artist of the currently playing song on Spotify?",
+      "How many people follow the artist of the currently playing song on Spotify?"
+    ],
+    "api_intersection": [
+      "spotify.show_artist",
+      "spotify.show_current_song"
+    ],
+    "api_union": [
+      "spotify.show_artist",
+      "spotify.show_current_song"
+    ],
+    "signature_invariant": true,
+    "difficulty": [
+      1
+    ],
+    "num_apps": [
+      1
+    ],
+    "required_apps": [
+      "spotify"
+    ],
+    "no_op_fail_min": 1,
+    "no_op_fail_max": 1,
+    "all_primitives_seen_in_train": true,
+    "exact_family_signature_seen_in_train": false,
+    "single_train_family_contains_target": false,
+    "best_cover": {
+      "donors": [
+        "287e338",
+        "ccb4494"
+      ],
+      "num_donors": 2,
+      "extra_api_count": 4
+    },
+    "strict_composition_candidate": true
+  },
+  {
+    "family": "6171bbc",
+    "instances": [
+      "6171bbc_1",
+      "6171bbc_2",
+      "6171bbc_3"
+    ],
+    "instructions": [
+      "Make me a Spotify playlist called \"My Most Played Album Songs\" containing only the most-played song from each album in my album library.",
+      "Make me a Spotify playlist called \"My Highest Rated Playlist Songs\" containing only the highest-rated song from each of my playlists.",
+      "Make me a Spotify playlist called \"Most Listened Playlist Songs\" containing only the most-played song from each of my playlists."
+    ],
+    "api_intersection": [
+      "spotify.add_song_to_playlist",
+      "spotify.create_playlist",
+      "spotify.show_song"
+    ],
+    "api_union": [
+      "spotify.add_song_to_playlist",
+      "spotify.create_playlist",
+      "spotify.show_album",
+      "spotify.show_album_library",
+      "spotify.show_playlist",
+      "spotify.show_playlist_library",
+      "spotify.show_song"
+    ],
+    "signature_invariant": false,
+    "difficulty": [
+      2
+    ],
+    "num_apps": [
+      1
+    ],
+    "required_apps": [
+      "spotify"
+    ],
+    "no_op_fail_min": 6,
+    "no_op_fail_max": 6,
+    "all_primitives_seen_in_train": false,
+    "exact_family_signature_seen_in_train": false,
+    "single_train_family_contains_target": false,
+    "best_cover": null,
+    "strict_composition_candidate": false
+  },
+  {
+    "family": "6c2c621",
+    "instances": [
+      "6c2c621_1",
+      "6c2c621_2",
+      "6c2c621_3"
+    ],
+    "instructions": [
+      "Export all my Simple Note notes to \"~/backups/simple_note/\" directory in my file system. The files should be named according to the note title, replacing white space with \"_\", and the extension should be \".md\".",
+      "Export all my Simple Note notes to \"~/backups/notes/\" directory in my file system. The files should be named according to the note title, replacing white space with \"_\", and the extension should be \".md\".",
+      "Export all my Simple Note notes to \"~/backups/simple_notes/\" directory in my file system. The files should be named according to the note title, replacing white space with \"_\", and the extension should be \".md\"."
+    ],
+    "api_intersection": [
+      "file_system.create_file",
+      "simple_note.search_notes",
+      "simple_note.show_note"
+    ],
+    "api_union": [
+      "file_system.create_file",
+      "simple_note.search_notes",
+      "simple_note.show_note"
+    ],
+    "signature_invariant": true,
+    "difficulty": [
+      2
+    ],
+    "num_apps": [
+      2
+    ],
+    "required_apps": [
+      "file_system",
+      "simple_note"
+    ],
+    "no_op_fail_min": 7,
+    "no_op_fail_max": 7,
+    "all_primitives_seen_in_train": true,
+    "exact_family_signature_seen_in_train": false,
+    "single_train_family_contains_target": false,
+    "best_cover": {
+      "donors": [
+        "6104387",
+        "cf6abd2"
+      ],
+      "num_donors": 2,
+      "extra_api_count": 7
+    },
+    "strict_composition_candidate": true
+  },
+  {
+    "family": "396c5a2",
+    "instances": [
+      "396c5a2_1",
+      "396c5a2_2",
+      "396c5a2_3"
+    ],
+    "instructions": [
+      "Add all the songs from Lily Moon that have been played over 980 times to my Spotify player queue.",
+      "Add all the songs from Aria Sterling that have been played over 990 times to my Spotify player queue.",
+      "Add all the songs from Astrid Nightshade that have been played over 980 times to my Spotify player queue."
+    ],
+    "api_intersection": [
+      "spotify.add_to_queue",
+      "spotify.search_artists",
+      "spotify.search_songs"
+    ],
+    "api_union": [
+      "spotify.add_to_queue",
+      "spotify.search_artists",
+      "spotify.search_songs"
+    ],
+    "signature_invariant": true,
+    "difficulty": [
+      1
+    ],
+    "num_apps": [
+      1
+    ],
+    "required_apps": [
+      "spotify"
+    ],
+    "no_op_fail_min": 6,
+    "no_op_fail_max": 6,
+    "all_primitives_seen_in_train": false,
+    "exact_family_signature_seen_in_train": false,
+    "single_train_family_contains_target": false,
+    "best_cover": null,
+    "strict_composition_candidate": false
+  },
+  {
+    "family": "4fab96f",
+    "instances": [
+      "4fab96f_1",
+      "4fab96f_2",
+      "4fab96f_3"
+    ],
+    "instructions": [
+      "Send a reminder on Venmo for all my payment requests to my roommates which have not been approved or denied for 30 or more days.",
+      "Send a reminder on Venmo for all my payment requests to my coworkers which have not been approved or denied for 40 or more days.",
+      "Send a reminder on Venmo for all my payment requests to my roommates which have not been approved or denied for 50 or more days."
+    ],
+    "api_intersection": [
+      "phone.get_current_date_and_time",
+      "phone.search_contacts",
+      "venmo.remind_payment_request",
+      "venmo.show_sent_payment_requests"
+    ],
+    "api_union": [
+      "phone.get_current_date_and_time",
+      "phone.search_contacts",
+      "venmo.remind_payment_request",
+      "venmo.show_sent_payment_requests"
+    ],
+    "signature_invariant": true,
+    "difficulty": [
+      2
+    ],
+    "num_apps": [
+      2
+    ],
+    "required_apps": [
+      "phone",
+      "venmo"
+    ],
+    "no_op_fail_min": 7,
+    "no_op_fail_max": 7,
+    "all_primitives_seen_in_train": false,
+    "exact_family_signature_seen_in_train": false,
+    "single_train_family_contains_target": false,
+    "best_cover": null,
+    "strict_composition_candidate": false
+  }
+]

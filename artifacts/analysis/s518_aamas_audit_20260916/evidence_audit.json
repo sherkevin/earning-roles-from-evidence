@@ -1,0 +1,929 @@
+{
+  "kind": "Offline reanalysis, no new model runs",
+  "scorer": "Existing project token F1 and exact match; official scorer equivalence is a separate open check",
+  "headline": [
+    {
+      "dataset": "HotpotQA",
+      "n": 7405,
+      "f1": 0.4324030909511026,
+      "em": 0.32545577312626606,
+      "baseline": "edo_adaptive_protocol_router_backbone_minus_single_agent_fullval",
+      "baseline_predictions_verified": false,
+      "delta": 0.004469621458142727,
+      "ci95": [
+        0.0024855578062870443,
+        0.006547806608576358
+      ],
+      "tokens_per_example": 2616.42,
+      "mean_outer_handoffs": 0.0,
+      "total_calls": null,
+      "wall_seconds": null,
+      "raw_metrics": {
+        "answer_em": 0.3255,
+        "answer_f1": 0.4324,
+        "mean_handoff_count": 0.0,
+        "dead_end_rate": 0.0,
+        "premature_accept_rate": 1.0,
+        "forward_after_correction_rate": 0.0,
+        "token_cost_per_sample": 300,
+        "api_prompt_tokens_per_sample": 2549.55,
+        "api_completion_tokens_per_sample": 66.87,
+        "api_total_tokens_per_sample": 2616.42,
+        "cost_normalized_f1": 1.441344,
+        "cost_normalized_f1_api": 0.165265,
+        "first_accept_success_rate": 0.4324,
+        "sample_count": 7405
+      },
+      "baseline_metrics": {
+        "answer_em": 0.3211,
+        "answer_f1": 0.4279,
+        "mean_handoff_count": 0.0,
+        "dead_end_rate": 0.0,
+        "premature_accept_rate": 0.0,
+        "forward_after_correction_rate": 0.0,
+        "token_cost_per_sample": 300,
+        "api_prompt_tokens_per_sample": 1841.2,
+        "api_completion_tokens_per_sample": 4.92,
+        "api_total_tokens_per_sample": 1846.13,
+        "cost_normalized_f1": 1.426445,
+        "cost_normalized_f1_api": 0.231801,
+        "first_accept_success_rate": 0.4279,
+        "sample_count": 7405
+      }
+    },
+    {
+      "dataset": "MuSiQue",
+      "n": 4834,
+      "f1": 0.3388765110024842,
+      "em": 0.24244931733553993,
+      "baseline": "agentverse_mas",
+      "baseline_predictions_verified": true,
+      "delta": 0.012980076728623266,
+      "ci95": [
+        0.002994691701252238,
+        0.02278542118977006
+      ],
+      "tokens_per_example": 4380.14,
+      "mean_outer_handoffs": 1,
+      "total_calls": null,
+      "wall_seconds": null,
+      "raw_metrics": {
+        "answer_em": 0.2424,
+        "answer_f1": 0.3389,
+        "mean_handoff_count": 1,
+        "dead_end_rate": 0.0,
+        "premature_accept_rate": 0.1839,
+        "forward_after_correction_rate": 0.0,
+        "token_cost_per_sample": 446.9,
+        "api_prompt_tokens_per_sample": 4178.81,
+        "api_completion_tokens_per_sample": 201.32,
+        "api_total_tokens_per_sample": 4380.14,
+        "cost_normalized_f1": 0.758288,
+        "cost_normalized_f1_api": 0.077367,
+        "first_accept_success_rate": 0.3012,
+        "sample_count": 4834
+      }
+    },
+    {
+      "dataset": "2Wiki",
+      "n": 12576,
+      "f1": 0.554536742685445,
+      "em": 0.49650127226463103,
+      "baseline": "mad_final",
+      "baseline_predictions_verified": true,
+      "delta": 0.08566829683130822,
+      "ci95": [
+        0.07631095585647175,
+        0.095393178125644
+      ],
+      "tokens_per_example": 2747.77,
+      "mean_outer_handoffs": 0.0,
+      "total_calls": null,
+      "wall_seconds": null,
+      "raw_metrics": {
+        "answer_em": 0.4965,
+        "answer_f1": 0.5545,
+        "mean_handoff_count": 0.0,
+        "dead_end_rate": 0.0,
+        "premature_accept_rate": 1.0,
+        "forward_after_correction_rate": 0.0,
+        "token_cost_per_sample": 300,
+        "api_prompt_tokens_per_sample": 2634.23,
+        "api_completion_tokens_per_sample": 113.54,
+        "api_total_tokens_per_sample": 2747.77,
+        "cost_normalized_f1": 1.848456,
+        "cost_normalized_f1_api": 0.201813,
+        "first_accept_success_rate": 0.5545,
+        "sample_count": 12576
+      }
+    }
+  ],
+  "components": [
+    {
+      "label": "single_agent",
+      "f1": 0.4346,
+      "em": 0.334,
+      "comparisons": {
+        "vs_stage2_chain_f1": {
+          "n": 500,
+          "mean": 0.019194611140493496,
+          "ci95": [
+            -0.018508261150614096,
+            0.05814767454767457
+          ],
+          "wins": 85,
+          "losses": 74,
+          "ties": 341
+        },
+        "vs_stage2_chain_em": {
+          "n": 500,
+          "mean": 0.024,
+          "ci95": [
+            -0.014,
+            0.064
+          ],
+          "wins": 56,
+          "losses": 44,
+          "ties": 400
+        },
+        "vs_frame_full_f1": {
+          "n": 500,
+          "mean": -0.050732007992008006,
+          "ci95": [
+            -0.09024659340659344,
+            -0.01301388167388167
+          ],
+          "wins": 66,
+          "losses": 96,
+          "ties": 338
+        },
+        "vs_frame_full_em": {
+          "n": 500,
+          "mean": -0.042,
+          "ci95": [
+            -0.08,
+            -0.004
+          ],
+          "wins": 39,
+          "losses": 60,
+          "ties": 401
+        }
+      },
+      "logged_usage_records": 500,
+      "logged_total_tokens": 926631,
+      "raw_event_rows": 500,
+      "accounting_boundary": "Observed usage records only; failed or unlogged calls may be absent."
+    },
+    {
+      "label": "stage2_chain",
+      "f1": 0.4154,
+      "em": 0.31,
+      "comparisons": {
+        "vs_single_agent_f1": {
+          "n": 500,
+          "mean": -0.019194611140493496,
+          "ci95": [
+            -0.05854157659334132,
+            0.020164353946706876
+          ],
+          "wins": 74,
+          "losses": 85,
+          "ties": 341
+        },
+        "vs_single_agent_em": {
+          "n": 500,
+          "mean": -0.024,
+          "ci95": [
+            -0.064,
+            0.016
+          ],
+          "wins": 44,
+          "losses": 56,
+          "ties": 400
+        },
+        "vs_frame_full_f1": {
+          "n": 500,
+          "mean": -0.06992661913250149,
+          "ci95": [
+            -0.09901682761682762,
+            -0.04132437823614295
+          ],
+          "wins": 28,
+          "losses": 73,
+          "ties": 399
+        },
+        "vs_frame_full_em": {
+          "n": 500,
+          "mean": -0.066,
+          "ci95": [
+            -0.096,
+            -0.036
+          ],
+          "wins": 13,
+          "losses": 46,
+          "ties": 441
+        }
+      },
+      "logged_usage_records": 1473,
+      "logged_total_tokens": 2084208,
+      "raw_event_rows": 973,
+      "accounting_boundary": "Observed usage records only; failed or unlogged calls may be absent."
+    },
+    {
+      "label": "stage2_split_disabled",
+      "f1": 0.4334,
+      "em": 0.332,
+      "comparisons": {
+        "vs_single_agent_f1": {
+          "n": 500,
+          "mean": -0.0012,
+          "ci95": [
+            -0.0035999999999999995,
+            0.0
+          ],
+          "wins": 0,
+          "losses": 1,
+          "ties": 499
+        },
+        "vs_single_agent_em": {
+          "n": 500,
+          "mean": -0.002,
+          "ci95": [
+            -0.006,
+            0.0
+          ],
+          "wins": 0,
+          "losses": 1,
+          "ties": 499
+        },
+        "vs_stage2_chain_f1": {
+          "n": 500,
+          "mean": 0.017994611140493496,
+          "ci95": [
+            -0.021498874458874464,
+            0.056210110673640075
+          ],
+          "wins": 84,
+          "losses": 74,
+          "ties": 342
+        },
+        "vs_stage2_chain_em": {
+          "n": 500,
+          "mean": 0.022,
+          "ci95": [
+            -0.016,
+            0.06
+          ],
+          "wins": 55,
+          "losses": 44,
+          "ties": 401
+        },
+        "vs_frame_full_f1": {
+          "n": 500,
+          "mean": -0.05193200799200801,
+          "ci95": [
+            -0.09103634143634143,
+            -0.015303387723387718
+          ],
+          "wins": 66,
+          "losses": 97,
+          "ties": 337
+        },
+        "vs_frame_full_em": {
+          "n": 500,
+          "mean": -0.044,
+          "ci95": [
+            -0.084,
+            -0.006
+          ],
+          "wins": 39,
+          "losses": 61,
+          "ties": 400
+        }
+      },
+      "logged_usage_records": 500,
+      "logged_total_tokens": 926634,
+      "raw_event_rows": 500,
+      "accounting_boundary": "Observed usage records only; failed or unlogged calls may be absent."
+    },
+    {
+      "label": "stage2_audit_active",
+      "f1": 0.4073,
+      "em": 0.302,
+      "comparisons": {
+        "vs_single_agent_f1": {
+          "n": 500,
+          "mean": -0.027330745594275,
+          "ci95": [
+            -0.0663650290885585,
+            0.010395123177476118
+          ],
+          "wins": 72,
+          "losses": 88,
+          "ties": 340
+        },
+        "vs_single_agent_em": {
+          "n": 500,
+          "mean": -0.032,
+          "ci95": [
+            -0.07,
+            0.006
+          ],
+          "wins": 42,
+          "losses": 58,
+          "ties": 400
+        },
+        "vs_stage2_chain_f1": {
+          "n": 500,
+          "mean": -0.008136134453781512,
+          "ci95": [
+            -0.01706470588235294,
+            -0.0010714285714285717
+          ],
+          "wins": 1,
+          "losses": 6,
+          "ties": 493
+        },
+        "vs_stage2_chain_em": {
+          "n": 500,
+          "mean": -0.008,
+          "ci95": [
+            -0.016,
+            -0.002
+          ],
+          "wins": 0,
+          "losses": 4,
+          "ties": 496
+        },
+        "vs_frame_full_f1": {
+          "n": 500,
+          "mean": -0.07806275358628299,
+          "ci95": [
+            -0.10764233087174262,
+            -0.04868467871997285
+          ],
+          "wins": 24,
+          "losses": 75,
+          "ties": 401
+        },
+        "vs_frame_full_em": {
+          "n": 500,
+          "mean": -0.074,
+          "ci95": [
+            -0.102,
+            -0.046
+          ],
+          "wins": 10,
+          "losses": 47,
+          "ties": 443
+        }
+      },
+      "logged_usage_records": 1476,
+      "logged_total_tokens": 2088431,
+      "raw_event_rows": 976,
+      "accounting_boundary": "Observed usage records only; failed or unlogged calls may be absent."
+    },
+    {
+      "label": "frame_full",
+      "f1": 0.4853,
+      "em": 0.376,
+      "comparisons": {
+        "vs_single_agent_f1": {
+          "n": 500,
+          "mean": 0.050732007992008006,
+          "ci95": [
+            0.012820603840603842,
+            0.09013446775446775
+          ],
+          "wins": 96,
+          "losses": 66,
+          "ties": 338
+        },
+        "vs_single_agent_em": {
+          "n": 500,
+          "mean": 0.042,
+          "ci95": [
+            0.002,
+            0.08
+          ],
+          "wins": 60,
+          "losses": 39,
+          "ties": 401
+        },
+        "vs_stage2_chain_f1": {
+          "n": 500,
+          "mean": 0.06992661913250149,
+          "ci95": [
+            0.04148463889052124,
+            0.09926833166833168
+          ],
+          "wins": 73,
+          "losses": 28,
+          "ties": 399
+        },
+        "vs_stage2_chain_em": {
+          "n": 500,
+          "mean": 0.066,
+          "ci95": [
+            0.038,
+            0.096
+          ],
+          "wins": 46,
+          "losses": 13,
+          "ties": 441
+        }
+      },
+      "logged_usage_records": 1477,
+      "logged_total_tokens": 2109373,
+      "raw_event_rows": 977,
+      "accounting_boundary": "Observed usage records only; failed or unlogged calls may be absent."
+    },
+    {
+      "label": "frame_no_memory",
+      "f1": 0.4073,
+      "em": 0.302,
+      "comparisons": {
+        "vs_single_agent_f1": {
+          "n": 500,
+          "mean": -0.027330745594275,
+          "ci95": [
+            -0.06580194158782393,
+            0.010119794584500469
+          ],
+          "wins": 72,
+          "losses": 88,
+          "ties": 340
+        },
+        "vs_single_agent_em": {
+          "n": 500,
+          "mean": -0.032,
+          "ci95": [
+            -0.072,
+            0.006
+          ],
+          "wins": 42,
+          "losses": 58,
+          "ties": 400
+        },
+        "vs_stage2_chain_f1": {
+          "n": 500,
+          "mean": -0.008136134453781512,
+          "ci95": [
+            -0.01706470588235294,
+            -0.000836974789915967
+          ],
+          "wins": 1,
+          "losses": 6,
+          "ties": 493
+        },
+        "vs_stage2_chain_em": {
+          "n": 500,
+          "mean": -0.008,
+          "ci95": [
+            -0.016,
+            -0.002
+          ],
+          "wins": 0,
+          "losses": 4,
+          "ties": 496
+        },
+        "vs_frame_full_f1": {
+          "n": 500,
+          "mean": -0.07806275358628299,
+          "ci95": [
+            -0.10703785169079287,
+            -0.04980895313836489
+          ],
+          "wins": 24,
+          "losses": 75,
+          "ties": 401
+        },
+        "vs_frame_full_em": {
+          "n": 500,
+          "mean": -0.074,
+          "ci95": [
+            -0.104,
+            -0.046
+          ],
+          "wins": 10,
+          "losses": 47,
+          "ties": 443
+        }
+      },
+      "logged_usage_records": 1476,
+      "logged_total_tokens": 2088446,
+      "raw_event_rows": 976,
+      "accounting_boundary": "Observed usage records only; failed or unlogged calls may be absent."
+    },
+    {
+      "label": "frame_all_tools",
+      "f1": 0.4858,
+      "em": 0.378,
+      "comparisons": {
+        "vs_single_agent_f1": {
+          "n": 500,
+          "mean": 0.051243119103119114,
+          "ci95": [
+            0.01307613497613497,
+            0.0894831013431013
+          ],
+          "wins": 93,
+          "losses": 64,
+          "ties": 343
+        },
+        "vs_single_agent_em": {
+          "n": 500,
+          "mean": 0.044,
+          "ci95": [
+            0.004,
+            0.082
+          ],
+          "wins": 59,
+          "losses": 37,
+          "ties": 404
+        },
+        "vs_stage2_chain_f1": {
+          "n": 500,
+          "mean": 0.07043773024361258,
+          "ci95": [
+            0.04087736838325074,
+            0.09952636383224621
+          ],
+          "wins": 72,
+          "losses": 28,
+          "ties": 400
+        },
+        "vs_stage2_chain_em": {
+          "n": 500,
+          "mean": 0.068,
+          "ci95": [
+            0.04,
+            0.098
+          ],
+          "wins": 47,
+          "losses": 13,
+          "ties": 440
+        },
+        "vs_frame_full_f1": {
+          "n": 500,
+          "mean": 0.0005111111111111113,
+          "ci95": [
+            -0.006822222222222221,
+            0.008644444444444444
+          ],
+          "wins": 4,
+          "losses": 3,
+          "ties": 493
+        },
+        "vs_frame_full_em": {
+          "n": 500,
+          "mean": 0.002,
+          "ci95": [
+            -0.004,
+            0.01
+          ],
+          "wins": 2,
+          "losses": 1,
+          "ties": 497
+        }
+      },
+      "logged_usage_records": 1479,
+      "logged_total_tokens": 2112676,
+      "raw_event_rows": 979,
+      "accounting_boundary": "Observed usage records only; failed or unlogged calls may be absent."
+    },
+    {
+      "label": "frame_static_tools",
+      "f1": 0.3627,
+      "em": 0.286,
+      "comparisons": {
+        "vs_single_agent_f1": {
+          "n": 500,
+          "mean": -0.07194836718836718,
+          "ci95": [
+            -0.11321255189255189,
+            -0.03195799089799089
+          ],
+          "wins": 63,
+          "losses": 102,
+          "ties": 335
+        },
+        "vs_single_agent_em": {
+          "n": 500,
+          "mean": -0.048,
+          "ci95": [
+            -0.088,
+            -0.008
+          ],
+          "wins": 41,
+          "losses": 65,
+          "ties": 394
+        },
+        "vs_stage2_chain_f1": {
+          "n": 500,
+          "mean": -0.05275375604787368,
+          "ci95": [
+            -0.09341345190756957,
+            -0.012654066848184493
+          ],
+          "wins": 69,
+          "losses": 103,
+          "ties": 328
+        },
+        "vs_stage2_chain_em": {
+          "n": 500,
+          "mean": -0.024,
+          "ci95": [
+            -0.066,
+            0.016
+          ],
+          "wins": 49,
+          "losses": 61,
+          "ties": 390
+        },
+        "vs_frame_full_f1": {
+          "n": 500,
+          "mean": -0.12268037518037515,
+          "ci95": [
+            -0.16250109890109887,
+            -0.08335754245754244
+          ],
+          "wins": 48,
+          "losses": 126,
+          "ties": 326
+        },
+        "vs_frame_full_em": {
+          "n": 500,
+          "mean": -0.09,
+          "ci95": [
+            -0.13,
+            -0.048
+          ],
+          "wins": 35,
+          "losses": 80,
+          "ties": 385
+        }
+      },
+      "logged_usage_records": 1475,
+      "logged_total_tokens": 1543689,
+      "raw_event_rows": 975,
+      "accounting_boundary": "Observed usage records only; failed or unlogged calls may be absent."
+    },
+    {
+      "label": "frame_random_tools",
+      "f1": 0.4863,
+      "em": 0.376,
+      "comparisons": {
+        "vs_single_agent_f1": {
+          "n": 500,
+          "mean": 0.051724071484071515,
+          "ci95": [
+            0.012802442002442004,
+            0.088506085026085
+          ],
+          "wins": 95,
+          "losses": 64,
+          "ties": 341
+        },
+        "vs_single_agent_em": {
+          "n": 500,
+          "mean": 0.042,
+          "ci95": [
+            0.004,
+            0.08
+          ],
+          "wins": 60,
+          "losses": 39,
+          "ties": 401
+        },
+        "vs_stage2_chain_f1": {
+          "n": 500,
+          "mean": 0.07091868262456498,
+          "ci95": [
+            0.041749028749028756,
+            0.10031034521034517
+          ],
+          "wins": 72,
+          "losses": 26,
+          "ties": 402
+        },
+        "vs_stage2_chain_em": {
+          "n": 500,
+          "mean": 0.066,
+          "ci95": [
+            0.036,
+            0.096
+          ],
+          "wins": 46,
+          "losses": 13,
+          "ties": 441
+        },
+        "vs_frame_full_f1": {
+          "n": 500,
+          "mean": 0.0009920634920634916,
+          "ci95": [
+            -0.004,
+            0.00696031746031746
+          ],
+          "wins": 2,
+          "losses": 2,
+          "ties": 496
+        },
+        "vs_frame_full_em": {
+          "n": 500,
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "wins": 0,
+          "losses": 0,
+          "ties": 500
+        }
+      },
+      "logged_usage_records": 1478,
+      "logged_total_tokens": 2110909,
+      "raw_event_rows": 978,
+      "accounting_boundary": "Observed usage records only; failed or unlogged calls may be absent."
+    },
+    {
+      "label": "frame_no_tool_history",
+      "f1": 0.4882,
+      "em": 0.378,
+      "comparisons": {
+        "vs_single_agent_f1": {
+          "n": 500,
+          "mean": 0.05355740481740483,
+          "ci95": [
+            0.01604622710622711,
+            0.09152491952491952
+          ],
+          "wins": 95,
+          "losses": 64,
+          "ties": 341
+        },
+        "vs_single_agent_em": {
+          "n": 500,
+          "mean": 0.044,
+          "ci95": [
+            0.008,
+            0.082
+          ],
+          "wins": 60,
+          "losses": 38,
+          "ties": 402
+        },
+        "vs_stage2_chain_f1": {
+          "n": 500,
+          "mean": 0.0727520159578983,
+          "ci95": [
+            0.04427003388768095,
+            0.10263590984179219
+          ],
+          "wins": 73,
+          "losses": 27,
+          "ties": 400
+        },
+        "vs_stage2_chain_em": {
+          "n": 500,
+          "mean": 0.068,
+          "ci95": [
+            0.04,
+            0.098
+          ],
+          "wins": 47,
+          "losses": 13,
+          "ties": 440
+        },
+        "vs_frame_full_f1": {
+          "n": 500,
+          "mean": 0.002825396825396825,
+          "ci95": [
+            -0.0017777777777777779,
+            0.008857142857142857
+          ],
+          "wins": 2,
+          "losses": 1,
+          "ties": 497
+        },
+        "vs_frame_full_em": {
+          "n": 500,
+          "mean": 0.002,
+          "ci95": [
+            0.0,
+            0.006
+          ],
+          "wins": 1,
+          "losses": 0,
+          "ties": 499
+        }
+      },
+      "logged_usage_records": 1478,
+      "logged_total_tokens": 2111027,
+      "raw_event_rows": 978,
+      "accounting_boundary": "Observed usage records only; failed or unlogged calls may be absent."
+    }
+  ],
+  "inputs": [
+    {
+      "path": "artifacts/emergence/e155_qwen_hotpotqa_fullval_adaptive_20260510_auto/hotpotqa/seed_42/edo_adaptive_protocol_router_backbone/metrics.json",
+      "sha256": "3167b68361b9d79aed7254103a38c4f3a931307f8b1dde3b04a93bef0eb5e9a0"
+    },
+    {
+      "path": "artifacts/emergence/e155_qwen_hotpotqa_fullval_adaptive_20260510_auto/hotpotqa/seed_42/edo_adaptive_protocol_router_backbone/parsed_predictions.jsonl",
+      "sha256": "56d125602613fb4c1389cc34fa228d20160a49421f287824f9b53e491507753f"
+    },
+    {
+      "path": "artifacts/emergence/e155_qwen_hotpotqa_fullval_adaptive_20260510_auto/e155_qwen_fullval_bootstrap/paired_bootstrap.json",
+      "sha256": "a294bb2a5d6b5ca3f64ea91d100825dd18d445424c61ad150cd3b39ca9c74831"
+    },
+    {
+      "path": "artifacts/external_baselines/e165_e166_qwen_cross_dataset_mas_20260511_213132/fullval/musique/agentverse_mas/seed_42/parsed_predictions.jsonl",
+      "sha256": "d8b13ea27bf72e66a3d0caf551e0ea3960945753bce787ad19cc32704a76e793"
+    },
+    {
+      "path": "artifacts/emergence/e170_qwen_musique_role_pool_guarded_fullval_20260512_0030/musique_role_pool_guarded/seed_42/edo_adaptive_protocol_router_musique_role_pool_guarded/metrics.json",
+      "sha256": "c25d9f62b6b2da540bbe029c13886f106eacfd2d371bca4b9f3a89006b5d9842"
+    },
+    {
+      "path": "artifacts/emergence/e170_qwen_musique_role_pool_guarded_fullval_20260512_0030/musique_role_pool_guarded/seed_42/edo_adaptive_protocol_router_musique_role_pool_guarded/parsed_predictions.jsonl",
+      "sha256": "9f95163f29f5e91c8da5d301dfc3e6bc13f1c85ef075ecf80bc3f75079ef3d15"
+    },
+    {
+      "path": "artifacts/emergence/e170_qwen_musique_role_pool_guarded_fullval_20260512_0030/posthoc_baseline_compare/e170_musique_qwen_baseline_bootstrap.json",
+      "sha256": "7c049c37253b9dc4e7fecf6ff73badc4943dc2071452462c33000fede50ce4f7"
+    },
+    {
+      "path": "artifacts/external_baselines/e165_e166_qwen_cross_dataset_mas_20260511_213132/fullval/2wiki/mad/seed_42/parsed_predictions.jsonl",
+      "sha256": "3492bb2b47f4a386a2b80dc8a8343643b4d2117c0514c2bf5fbcac3dc4ffec36"
+    },
+    {
+      "path": "artifacts/emergence/e182_qwen_2wiki_bridge_tool_v6_fullval_20260514_1310/2wiki_fullval/seed_42/edo_adaptive_protocol_router_tool_pool_bridge_gated_v6/metrics.json",
+      "sha256": "4e59597ed59eb73fb074626865019f22582da4d4d933d99940289c348881dad8"
+    },
+    {
+      "path": "artifacts/emergence/e182_qwen_2wiki_bridge_tool_v6_fullval_20260514_1310/2wiki_fullval/seed_42/edo_adaptive_protocol_router_tool_pool_bridge_gated_v6/parsed_predictions.jsonl",
+      "sha256": "b5bd82ab9ebd88dbe7424154b93e3093dd0b1133af1bbc9576e14f1380dea945"
+    },
+    {
+      "path": "artifacts/emergence/e182_qwen_2wiki_bridge_tool_v6_fullval_20260514_1310/posthoc_final_mad_compare_20260515_110641/e179_2wiki_qwen_baseline_bootstrap.json",
+      "sha256": "e17a338cd2b8cc274b68f48648e3990b7e0dde0034c173aaae516c9a5c8aa9bb"
+    },
+    {
+      "path": "artifacts/emergence/e432_qwen_hotpotqa_component_matrix_20260524/hotpotqa/seed_42/single_agent/parsed_predictions.jsonl",
+      "sha256": "13a494651e9005089c594f3cf378522e7616f9314f4afd59f2c895ebd4194d47"
+    },
+    {
+      "path": "artifacts/emergence/e432_qwen_hotpotqa_component_matrix_20260524/hotpotqa/seed_42/stage2_chain/parsed_predictions.jsonl",
+      "sha256": "b34145119a93eee40f9366cb23286a1becdc0aa50059fe75b47596dd1c566fd7"
+    },
+    {
+      "path": "artifacts/emergence/e432_qwen_hotpotqa_component_matrix_20260524/hotpotqa/seed_42/stage2_split_disabled/parsed_predictions.jsonl",
+      "sha256": "981fcbfcb3174d35a5d56903c284cea2463999eaafe8b606c6d7ec3623d7ec82"
+    },
+    {
+      "path": "artifacts/emergence/e432_qwen_hotpotqa_component_matrix_20260524/hotpotqa/seed_42/stage2_audit_active/parsed_predictions.jsonl",
+      "sha256": "a8d886d0765ff40a5493e29a7f495b38d271d06c7af0b0fe152e204e305d1264"
+    },
+    {
+      "path": "artifacts/emergence/e432_qwen_hotpotqa_component_matrix_20260524/hotpotqa/seed_42/frame_full/parsed_predictions.jsonl",
+      "sha256": "101c3fdc92bb2a4dff1e1a02eddc236eb39b49eeec26a05ca00cb57ab8a4c666"
+    },
+    {
+      "path": "artifacts/emergence/e432_qwen_hotpotqa_component_matrix_20260524/hotpotqa/seed_42/frame_no_memory/parsed_predictions.jsonl",
+      "sha256": "26c47a26722fb6c6cce2cd5dc60a0cf835075bb335132b40ee7ddf87fc4a482c"
+    },
+    {
+      "path": "artifacts/emergence/e432_qwen_hotpotqa_component_matrix_20260524/hotpotqa/seed_42/frame_all_tools/parsed_predictions.jsonl",
+      "sha256": "ef4e459b16fee820c2b051b58b96116237f8583760e146ea515aa1ada066e67d"
+    },
+    {
+      "path": "artifacts/emergence/e432_qwen_hotpotqa_component_matrix_20260524/hotpotqa/seed_42/frame_static_tools/parsed_predictions.jsonl",
+      "sha256": "721a3b1e40a44547df48f44b1f08fa6dc75cc73bb9bce3e379e3b7c35b079ac3"
+    },
+    {
+      "path": "artifacts/emergence/e432_qwen_hotpotqa_component_matrix_20260524/hotpotqa/seed_42/frame_random_tools/parsed_predictions.jsonl",
+      "sha256": "e20e582478e3e08bfd4055417cdceca2d3cc6709b68b9b51bd676adb6e2e1938"
+    },
+    {
+      "path": "artifacts/emergence/e432_qwen_hotpotqa_component_matrix_20260524/hotpotqa/seed_42/frame_no_tool_history/parsed_predictions.jsonl",
+      "sha256": "88f73f59d88dcb4927e0c68a2a04d3e366304e2cd351d4838f8173a71cf1f539"
+    },
+    {
+      "path": "artifacts/emergence/e432_qwen_hotpotqa_component_matrix_20260524/e432_component_matrix_summary.json",
+      "sha256": "998a48f99e0a9315e3029ec59e7c4b072f329a35cc56b74765cde35f62208347"
+    },
+    {
+      "path": "artifacts/emergence/e432_qwen_hotpotqa_component_matrix_20260524/hotpotqa/seed_42/frame_full/parsed_predictions.jsonl",
+      "sha256": "101c3fdc92bb2a4dff1e1a02eddc236eb39b49eeec26a05ca00cb57ab8a4c666"
+    },
+    {
+      "path": "artifacts/emergence/e432_qwen_hotpotqa_component_matrix_20260524/hotpotqa/seed_42/frame_full/routing_traces.jsonl",
+      "sha256": "7c96f46b8fc9af48b0e931bd7c7ed28b862bbd37118e14b090838d1056269aad"
+    },
+    {
+      "path": "artifacts/emergence/e432_qwen_hotpotqa_component_matrix_20260524/hotpotqa/seed_42/frame_full/raw_model_outputs.jsonl",
+      "sha256": "4b1e223480d572941d436fc8531f0f9bd47d88e690c1cbf3300a86f7dc86855b"
+    }
+  ]
+}

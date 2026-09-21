@@ -1,6 +1,12 @@
-# idea04 - Emergent Delegation Organization (EDO)
+# Evidence-Derived Organization (EDO): AAMAS revision
 
-EMNLP long paper collaboration repository for EDO. The repo is organized to let four roles (user, scientist, engineer, reviewer) keep moving with minimal user intervention.
+Current target (2026-09-16): **AAMAS 2027 Main Track** following the EMNLP/ARR rejection. Read these two documents in order: [paper requirements](docs/paper/aamas2027/REQUIREMENTS.md), then [current gaps and executable tasks](docs/coordination/AAMAS_TASKS.md). They are the sole active AAMAS specification and task ledger. The [AAMAS manuscript](article/aamas2027/README.md) remains an internal design/reanalysis with outstanding empirical gates.
+
+Build: `python scripts/build_aamas2027.py`. Read-only evidence reanalysis: `python scripts/aamas_audit_evidence.py`.
+
+The original ACL sources and historical coordination records below are preserved for provenance.
+
+Research collaboration repository for EDO, originally submitted to EMNLP. Four roles (user, scientist, engineer, reviewer) share the active AAMAS task ledger; older role TODO entries remain historical evidence.
 
 ---
 
@@ -11,17 +17,17 @@ EMNLP long paper collaboration repository for EDO. The repo is organized to let 
 | Project map and storage rules | [`PROJECT_STRUCTURE.md`](./PROJECT_STRUCTURE.md) |
 | Role startup prompts | [`prompts/ROLE_PROMPTS.md`](./prompts/ROLE_PROMPTS.md) |
 | Collaboration hard rules | [`.cursor/rules/collaboration-workflow.mdc`](./.cursor/rules/collaboration-workflow.mdc) |
-| Method idea and claims | [`idea.md`](./idea.md) |
-| Experiment rules | [`experiment.md`](./experiment.md) |
-| EMNLP/ARR requirement spec | [`docs/demand.md`](./docs/demand.md) |
+| Active AAMAS scientific and venue requirements | [`REQUIREMENTS.md`](docs/paper/aamas2027/REQUIREMENTS.md) |
+| Active gap audit, tasks, dependencies and execution evidence | [`AAMAS_TASKS.md`](docs/coordination/AAMAS_TASKS.md) |
+| Historical method / experiment / EMNLP specification | [`idea.md`](idea.md), [`experiment.md`](experiment.md), [`docs/demand.md`](docs/demand.md) |
 | User decisions | [`docs/coordination/USER_TODO.md`](./docs/coordination/USER_TODO.md) |
 | Scientist tasks | [`docs/coordination/SCIENTIST_TODO.md`](./docs/coordination/SCIENTIST_TODO.md) |
 | Engineer tasks | [`docs/coordination/ENGINEER_TODO.md`](./docs/coordination/ENGINEER_TODO.md) |
 | Legacy engineering log | [`docs/coordination/implementation_log.md`](./docs/coordination/implementation_log.md) |
 | Reviewer tasks | [`docs/coordination/REVIEWER_TODO.md`](./docs/coordination/REVIEWER_TODO.md) |
 | Reviewer schema/template | [`prompts/reviewer_template.md`](./prompts/reviewer_template.md) |
-| Current paper source | [`article/latex/edo_paper.tex`](./article/latex/edo_paper.tex) |
-| Current paper PDF | [`article/build/edo_paper.pdf`](./article/build/edo_paper.pdf) |
+| Current internal paper source | [`article/aamas2027/main.tex`](article/aamas2027/main.tex) |
+| Current internal paper PDF | [`article/aamas2027/build/main.pdf`](article/aamas2027/build/main.pdf) |
 
 ---
 
@@ -39,7 +45,7 @@ See [`PROJECT_STRUCTURE.md`](./PROJECT_STRUCTURE.md) for the full convention.
 
 ## Role Loop
 
-Every role should start by reading its prompt in [`prompts/ROLE_PROMPTS.md`](./prompts/ROLE_PROMPTS.md), then:
+For the AAMAS revision, start with REQUIREMENTS.md and AAMAS_TASKS.md. Role TODO files point to that shared queue; update execution status there once, under the assigned owner. The following older role loop remains useful for historical/non-AAMAS work:
 
 1. Read the project structure and own TODO/log.
 2. Run pending -> done sweep.

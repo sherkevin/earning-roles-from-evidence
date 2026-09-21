@@ -1,0 +1,314 @@
+[
+  {
+    "task": "1-1",
+    "subtask": "0",
+    "run": "qwen2.5-3b-instruct_b1_qwen_simple_1_1",
+    "eval_ok": true,
+    "eval_error": null,
+    "steps": 6,
+    "invalid_obs": 0,
+    "final_action": {
+      "app": "system",
+      "action": "got_stuck"
+    },
+    "changed_files": [
+      "calendar/Bob.ics"
+    ],
+    "removed_files": [],
+    "eval_log_tail": "Evaluating 1-1 0 D:\\Codes\\OfficeBench\\tasks\\1-1\\outputs\\0\\qwen2.5-3b-instruct_b1_qwen_simple_1_1\\testbed...\n"
+  },
+  {
+    "task": "2-3",
+    "subtask": "0",
+    "run": "phi4-mini_b1_phi_parent_2_3",
+    "eval_ok": false,
+    "eval_error": null,
+    "steps": 5,
+    "invalid_obs": 4,
+    "final_action": {
+      "app": "system",
+      "action": "got_stuck"
+    },
+    "changed_files": [],
+    "removed_files": [],
+    "eval_log_tail": "Evaluating 2-3 0 D:\\Codes\\OfficeBench\\tasks\\2-3\\outputs\\0\\phi4-mini_b1_phi_parent_2_3\\testbed...\nFailed: evaluate_file_exist {'file': 'data/welcome.jpg'}\n"
+  },
+  {
+    "task": "2-3",
+    "subtask": "0",
+    "run": "qwen2.5-3b-instruct_b1_flat_parent_2_3",
+    "eval_ok": true,
+    "eval_error": null,
+    "steps": 9,
+    "invalid_obs": 0,
+    "final_action": {
+      "app": "system",
+      "action": "got_stuck"
+    },
+    "changed_files": [
+      "data/welcome.jpg"
+    ],
+    "removed_files": [],
+    "eval_log_tail": "Evaluating 2-3 0 D:\\Codes\\OfficeBench\\tasks\\2-3\\outputs\\0\\qwen2.5-3b-instruct_b1_flat_parent_2_3\\testbed...\n"
+  },
+  {
+    "task": "2-3",
+    "subtask": "0",
+    "run": "qwen2.5-3b-instruct_b1_parent_2_3",
+    "eval_ok": true,
+    "eval_error": null,
+    "steps": 15,
+    "invalid_obs": 0,
+    "final_action": {
+      "app": "system",
+      "action": "got_stuck"
+    },
+    "changed_files": [
+      "data/welcome.jpg",
+      "data/welcome2.jpg",
+      "data/welcome4.jpg",
+      "data/welcome_final.jpg",
+      "data/welcomewelcome.jpg"
+    ],
+    "removed_files": [],
+    "eval_log_tail": "Evaluating 2-3 0 D:\\Codes\\OfficeBench\\tasks\\2-3\\outputs\\0\\qwen2.5-3b-instruct_b1_parent_2_3\\testbed...\n"
+  },
+  {
+    "task": "2-14",
+    "subtask": "0",
+    "run": "qwen2.5-3b-instruct_b1_flat2_parent_2_14",
+    "eval_ok": false,
+    "eval_error": null,
+    "steps": 15,
+    "invalid_obs": 10,
+    "final_action": {
+      "app": "system",
+      "action": "got_stuck"
+    },
+    "changed_files": [
+      "data/score.xlsx"
+    ],
+    "removed_files": [],
+    "eval_log_tail": "Evaluating 2-14 0 D:\\Codes\\OfficeBench\\tasks\\2-14\\outputs\\0\\qwen2.5-3b-instruct_b1_flat2_parent_2_14\\testbed...\nFailed: evaluate_file_exist {'file': 'calendar/Tina.ics'}\n"
+  },
+  {
+    "task": "2-14",
+    "subtask": "0",
+    "run": "qwen2.5-3b-instruct_b1_flat3_parent_2_14",
+    "eval_ok": false,
+    "eval_error": null,
+    "steps": 20,
+    "invalid_obs": 15,
+    "final_action": "{\"app\": \"excel\", \"action\": \"sort_rows\", \"file_path\": \"/testbed/data/score.xlsx\", \"column_index\": 1, \"ascending\": false}",
+    "changed_files": [
+      "calendar/Alice.ics",
+      "data/score.xlsx"
+    ],
+    "removed_files": [],
+    "eval_log_tail": "Evaluating 2-14 0 D:\\Codes\\OfficeBench\\tasks\\2-14\\outputs\\0\\qwen2.5-3b-instruct_b1_flat3_parent_2_14\\testbed...\nFailed: evaluate_file_exist {'file': 'calendar/Tina.ics'}\n"
+  },
+  {
+    "task": "2-14",
+    "subtask": "0",
+    "run": "qwen2.5-3b-instruct_b1_flat_parent_2_14",
+    "eval_ok": false,
+    "eval_error": null,
+    "steps": 20,
+    "invalid_obs": 0,
+    "final_action": {
+      "app": "shell",
+      "action": "command",
+      "command": "find /testbed/data -name 'students_scores.csv'"
+    },
+    "changed_files": [],
+    "removed_files": [],
+    "eval_log_tail": "Evaluating 2-14 0 D:\\Codes\\OfficeBench\\tasks\\2-14\\outputs\\0\\qwen2.5-3b-instruct_b1_flat_parent_2_14\\testbed...\nFailed: evaluate_file_exist {'file': 'calendar/Tina.ics'}\n"
+  },
+  {
+    "task": "2-15",
+    "subtask": "0",
+    "run": "qwen2.5-3b-instruct_b1_parent_2_15",
+    "eval_ok": false,
+    "eval_error": null,
+    "steps": 14,
+    "invalid_obs": 0,
+    "final_action": {
+      "app": "system",
+      "action": "got_stuck"
+    },
+    "changed_files": [
+      "data/meeting_agenda.xlsx"
+    ],
+    "removed_files": [],
+    "eval_log_tail": "Evaluating 2-15 0 D:\\Codes\\OfficeBench\\tasks\\2-15\\outputs\\0\\qwen2.5-3b-instruct_b1_parent_2_15\\testbed...\nFailed: evaluate_contain {'doc_type': 'xlsx', 'file': 'data/meeting_agenda.xlsx', 'keywords': ['Linda', 'Davide', 'Charlie']}\n"
+  },
+  {
+    "task": "2-16",
+    "subtask": "0",
+    "run": "phi4-mini_b1_phi_parent_2_16",
+    "eval_ok": true,
+    "eval_error": null,
+    "steps": 6,
+    "invalid_obs": 0,
+    "final_action": {
+      "app": "system",
+      "action": "got_stuck"
+    },
+    "changed_files": [],
+    "removed_files": [],
+    "eval_log_tail": "Evaluating 2-16 0 D:\\Codes\\OfficeBench\\tasks\\2-16\\outputs\\0\\phi4-mini_b1_phi_parent_2_16\\testbed...\n"
+  },
+  {
+    "task": "2-16",
+    "subtask": "0",
+    "run": "qwen2.5-3b-instruct_b1_parent_2_16",
+    "eval_ok": true,
+    "eval_error": null,
+    "steps": 14,
+    "invalid_obs": 13,
+    "final_action": {
+      "app": "system",
+      "action": "got_stuck"
+    },
+    "changed_files": [],
+    "removed_files": [],
+    "eval_log_tail": "Evaluating 2-16 0 D:\\Codes\\OfficeBench\\tasks\\2-16\\outputs\\0\\qwen2.5-3b-instruct_b1_parent_2_16\\testbed...\n"
+  },
+  {
+    "task": "2-27",
+    "subtask": "0",
+    "run": "qwen2.5-3b-instruct_b1_final_parent_2_27",
+    "eval_ok": false,
+    "eval_error": null,
+    "steps": 12,
+    "invalid_obs": 5,
+    "final_action": {
+      "app": "system",
+      "action": "got_stuck"
+    },
+    "changed_files": [
+      "calendar/Alice.ics"
+    ],
+    "removed_files": [],
+    "eval_log_tail": "Evaluating 2-27 0 D:\\Codes\\OfficeBench\\tasks\\2-27\\outputs\\0\\qwen2.5-3b-instruct_b1_final_parent_2_27\\testbed...\nFailed: evaluate_contain {'doc_type': 'ics', 'file': './calendar/Alice.ics', 'keywords': ['Welcome', 'Fiscal', 'vote', 'advisory', 'budget', 'break', 'business']}\n"
+  },
+  {
+    "task": "2-29",
+    "subtask": "0",
+    "run": "qwen2.5-3b-instruct_b1_utf8_parent_2_29",
+    "eval_ok": true,
+    "eval_error": null,
+    "steps": 14,
+    "invalid_obs": 4,
+    "final_action": {
+      "app": "system",
+      "action": "got_stuck"
+    },
+    "changed_files": [
+      "calendar/Alice.ics",
+      "data/invitation_letter.jpg"
+    ],
+    "removed_files": [],
+    "eval_log_tail": "Evaluating 2-29 0 D:\\Codes\\OfficeBench\\tasks\\2-29\\outputs\\0\\qwen2.5-3b-instruct_b1_utf8_parent_2_29\\testbed...\n"
+  },
+  {
+    "task": "3-17",
+    "subtask": "0",
+    "run": "phi4-mini_b1_phi_child_3_17",
+    "eval_ok": false,
+    "eval_error": null,
+    "steps": 8,
+    "invalid_obs": 4,
+    "final_action": {
+      "app": "system",
+      "action": "got_stuck"
+    },
+    "changed_files": [],
+    "removed_files": [],
+    "eval_log_tail": "Evaluating 3-17 0 D:\\Codes\\OfficeBench\\tasks\\3-17\\outputs\\0\\phi4-mini_b1_phi_child_3_17\\testbed...\nFailed: evaluate_file_exist {'file': 'data/welcome.jpg'}\n"
+  },
+  {
+    "task": "3-17",
+    "subtask": "0",
+    "run": "qwen2.5-3b-instruct_b1_child_3_17",
+    "eval_ok": false,
+    "eval_error": null,
+    "steps": 20,
+    "invalid_obs": 19,
+    "final_action": "None",
+    "changed_files": [],
+    "removed_files": [],
+    "eval_log_tail": "Evaluating 3-17 0 D:\\Codes\\OfficeBench\\tasks\\3-17\\outputs\\0\\qwen2.5-3b-instruct_b1_child_3_17\\testbed...\nFailed: evaluate_file_exist {'file': 'data/welcome.jpg'}\n"
+  },
+  {
+    "task": "3-17",
+    "subtask": "0",
+    "run": "qwen2.5-3b-instruct_b1_flat4_noexp_child_3_17",
+    "eval_ok": null,
+    "eval_error": "UnboundLocalError: cannot access local variable 'email_account' where it is not associated with a value",
+    "steps": 13,
+    "invalid_obs": 0,
+    "final_action": {
+      "app": "system",
+      "action": "got_stuck"
+    },
+    "changed_files": [
+      "data/welcome.jpg",
+      "emails/Bob3/Welcome to our event!.eml",
+      "emails/sender/Welcome to our event!.eml"
+    ],
+    "removed_files": [],
+    "eval_log_tail": "Evaluating 3-17 0 D:\\Codes\\OfficeBench\\tasks\\3-17\\outputs\\0\\qwen2.5-3b-instruct_b1_flat4_noexp_child_3_17\\testbed...\n"
+  },
+  {
+    "task": "3-17",
+    "subtask": "0",
+    "run": "qwen2.5-3b-instruct_b1_flat_child_3_17",
+    "eval_ok": false,
+    "eval_error": null,
+    "steps": 13,
+    "invalid_obs": 0,
+    "final_action": {
+      "app": "system",
+      "action": "got_stuck"
+    },
+    "changed_files": [],
+    "removed_files": [],
+    "eval_log_tail": "Evaluating 3-17 0 D:\\Codes\\OfficeBench\\tasks\\3-17\\outputs\\0\\qwen2.5-3b-instruct_b1_flat_child_3_17\\testbed...\nFailed: evaluate_file_exist {'file': 'data/welcome.jpg'}\n"
+  },
+  {
+    "task": "3-71",
+    "subtask": "0",
+    "run": "qwen2.5-3b-instruct_b1_final_noexp_3_71",
+    "eval_ok": false,
+    "eval_error": null,
+    "steps": 10,
+    "invalid_obs": 4,
+    "final_action": {
+      "app": "system",
+      "action": "got_stuck"
+    },
+    "changed_files": [
+      "calendar/Bob.ics",
+      "data/agenda.jpg"
+    ],
+    "removed_files": [],
+    "eval_log_tail": "Evaluating 3-71 0 D:\\Codes\\OfficeBench\\tasks\\3-71\\outputs\\0\\qwen2.5-3b-instruct_b1_final_noexp_3_71\\testbed...\nFailed: evaluate_contain {'doc_type': 'ics', 'file': 'calendar/Bob.ics', 'keywords': ['Financial', 'Meeting', 'Agenda']}\n"
+  },
+  {
+    "task": "3-73",
+    "subtask": "0",
+    "run": "qwen2.5-3b-instruct_b1_utf8_noexp_3_73",
+    "eval_ok": false,
+    "eval_error": null,
+    "steps": 20,
+    "invalid_obs": 10,
+    "final_action": "None",
+    "changed_files": [
+      "calendar/Bob.ics",
+      "data/invitation.jpg"
+    ],
+    "removed_files": [],
+    "eval_log_tail": "Evaluating 3-73 0 D:\\Codes\\OfficeBench\\tasks\\3-73\\outputs\\0\\qwen2.5-3b-instruct_b1_utf8_noexp_3_73\\testbed...\nFailed: evaluate_contain {'doc_type': 'ics', 'file': 'calendar/Bob.ics', 'keywords': ['invitation', 'DTSTART:20241115T130000Z']}\n"
+  }
+]

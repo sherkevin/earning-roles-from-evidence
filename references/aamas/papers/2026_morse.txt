@@ -1,0 +1,2722 @@
+MoRSE: Task-Oriented Multi-Agent System
+with Mixture of Role-Subtask Experts
+Peiwen Li
+Shiyang Zhang
+Yangtian Zhang
+Sizhuang He
+David van Dijk
+Rex Ying
+Yale University, New Haven, CT, USA
+{peiwen.li, shiyang.zhang, yangtian.zhang, sizhuang.he}@yale.edu
+{david.vandijk, rex.ying}@yale.edu
+Abstract
+Large language model-based multi-agent systems have recently shown strong po-
+tential for complex, long-horizon tasks. However, existing methods mainly rely
+on coarse prompt-level differentiation without parameter adaptation for diverse
+subtasks, resulting in insufficient inter-agent heterogeneity and limited specialized
+capability that bottleneck performance on tasks with complex requirements. To
+address this, we introduce a Task-Oriented Multi-Agent System with Mixture of
+Role-Subtask Experts (MoRSE) that distinguishes agents with (role, subtask)-
+conditional specialization at both the task structure and parameter levels. To
+make agents’ responsibility explicit at the task structure level, we formulate a task-
+oriented multi-agent system that decomposes each task into a dependency-aware
+Directed Acyclic Graph of subtasks and assigns each agent a specific (role, subtask),
+introducing task-level specialization across collaborating agents. Additionally, to
+address the diverse role and subtask parameter adaptation demands, we propose a
+dynamic Mixture of (role, subtask) LoRA Experts module with a prototype-based
+semantic router for subtasks, augmenting agents with parameter-level specialization
+on a shared LLM substrate cost-effectively. Then, to co-optimize experts and router
+stably under sparse task rewards, we further propose a hierarchical group-relative
+policy optimization with two-layer credit assignment that isolates expert updates
+from the cross-route variance introduced by routing decisions, disentangling expert
+quality from routing quality. Experiments on code-generation benchmarks across
+three backbones demonstrate the effectiveness of our approach, with improve-
+ments in both whole-task and step-wise performance, and the gains from trained
+specialization generalize across held-out task categories and domains.
+1
+Introduction
+Large language model (LLM)-based multi-agent systems (MAS) have emerged as an effective
+paradigm for addressing complex, long-horizon tasks, by orchestrating multiple role-specialized
+agents into structured multi-stage pipelines [35, 12, 24]. This paradigm has demonstrated strong
+performance across diverse domains such as collaborative software development with simulated
+engineering teams [12, 24] and multi-step reasoning through inter-agent debate and critique [3],
+with recent work further pushing collaboration to populations of hundreds or even thousands of
+agents [25]. Yet simply adding more agents to a shared backbone yields diminishing returns [37]; the
+real bottleneck is how distinctly each agent contributes to the joint solution.
+Existing MAS methods, however, pursue such distinctness mainly through prompt-level role
+descriptions over frozen base models [35, 12, 24, 25]; but without explicit subtask assignment,
+agents tend to produce redundant, overlapping responsibilities and correlated outputs that saturate
+performance quickly as the system scales [37], leaving inter-agent heterogeneity insufficient at
+Preprint.
+arXiv:2608.09251v1  [cs.MA]  10 Aug 2026
+the task structure level. A growing line of work moves beyond prompts toward parameter-level
+adaptation, including role-conditioned adaptation in a single-agent setting [10], and multi-agent
+reinforcement learning (RL) frameworks like AT-GRPO [43] and MARTI [41] that extend RL
+optimization to multi-agent settings. Yet these methods adapt mainly at the predefined and limited
+role level; the diverse subtasks within a single complex task impose distinct demands that a single
+shared base model cannot satisfy, leaving inter-agent heterogeneity insufficient at the parameter
+level and bottlenecking performance on tasks with complex requirements.
+To address these two levels of insufficiency, in this paper we study sufficient agent heterogeneity
+on complex open-ended multi-agent collaboration tasks from both the task structure and parameter
+levels. We introduce a Task-Oriented Multi-Agent System with Mixture of Role-Subtask Experts
+(MoRSE) that explicitly manages subtasks within the whole task and learns role- and subtask-specific
+parameter specialization across collaborating agents cost-effectively on a shared backbone via a
+stable optimization scheme. Here, an agent’s role denotes its reusable function drawn from a small
+discrete set (e.g., merging upstream context or executing a step), whereas its subtask denotes the
+instance-specific unit of work described in natural language; the two axes impose complementary
+specialization demands and jointly define each agent’s responsibility.
+Specifically, we introduce a task-oriented MAS framework that exposes each agent’s (role, subtask)
+responsibility, reducing task-structure-level redundancy and providing a substrate for fine-grained
+parameter-level specialization. Inspired by graph-based planning [34], our model decomposes each
+task instance into a dependency-aware Directed Acyclic Graph (DAG) of subtasks and assigns each
+agent a specific (role, subtask). Building on this framework, we further propose a dynamic mixture of
+(role, subtask) LoRA experts that enhances inter-agent heterogeneity at the parameter level. It attaches
+role and subtask experts selected per agent call by a learned prototype-based semantic router. Jointly
+optimizing the experts and router under sparse, open-ended task rewards, however, can entangle expert
+quality with routing quality. Finally, we propose a hierarchical group-relative policy optimization with
+two-layer credit assignment that splits the task-level reward into a within-route advantage updating
+experts within a routed combination and a cross-route advantage updating the router across combi-
+nations. We show analytically that it reduces gradient variance for expert updates and empirically
+that it stabilizes co-optimization, reliably realizing the parameter-level heterogeneity gains.
+Experiments on complex code-generation benchmarks across multiple LLM backbones demonstrate
+that MoRSE achieves the best held-out test scores over all baselines in both whole-task and step-wise
+performance. On held-out task categories, MoRSE further surpasses both its untrained variant and a
+standard fixed-LoRA fine-tuning baseline, indicating that the learned role-subtask experts generalize
+better under distribution shift. Our contributions are summarized as follows:
+• We introduce a task-oriented MAS framework with dependency-aware DAG decomposition and
+per-agent (role, subtask) assignment as substrate to reduce redundancy at the task-structure level.
+• We propose a dynamic mixture of (role, subtask)-conditioned LoRA experts on a shared backbone
+with a prototype-based semantic router for effective parameter-level specialization.
+• We propose a hierarchical group-relative policy optimization with two-layer credit assignment
+that disentangles expert quality from routing quality to stabilize co-optimization.1
+2
+Preliminaries
+2.1
+Empirical Motivation
+To diagnose the heterogeneity bottleneck identified in Sec. 1 and motivate the design of MoRSE, we
+conduct two preliminary studies on SRDD [24] with Qwen3-4B. The first measures the redundancy of
+role-prompted MAS to confirm the heterogeneity deficit is real, and to ground our adoption of subtask-
+based decomposition as the framework substrate. The second probes the limitation of parameter-
+efficient fine-tuning on a single base LM in satisfying the heterogeneous learning demands of diverse
+roles and subtasks, directly motivating the design of Mixture of Role-Subtask LoRA Experts.
+Redundancy in role-prompted, graph-structured MAS.
+For each SRDD task instance involving
+n collaborating agents, we measure heterogeneity by the mean pairwise cosine similarity of node-level
+1Code: https://github.com/lpwpower/MoRSE.
+2
+prompts {pi}n
+i=1 and outputs {yi}n
+i=1 under a frozen text encoder f(·) (gte-Qwen2-7B-instruct):
+Sim({ti}) ≜
+2
+n(n −1)
+X
+i<j
+cos
+  ˆf(ti), ˆf(tj)
+
+,
+ti ∈{pi}n
+i=1 or {yi}n
+i=1,
+(1)
+producing Simprompt and Simoutput, where smaller values indicate lower redundancy. Figure 1 traces,
+for every SRDD instance, the per-sample shift from Simprompt (top axis row) to Simoutput (bottom
+axis row) under three methods: MacNet [25] without and with its review stage, both of which
+differentiate role-based agents at the prompt level over static, predefined graph topologies; and
+our task-decomposed dynamic graph (MoRSEbase, the framework substrate of MoRSE without
+trained MoLE experts) that formulates the DAG at the (role, subtask) level. Both MacNet variants
+collapse the per-sample distribution toward Simoutput ≈1 (median shift ∆out-prompt= + 0.14 for both,
+indicating that the review stage does not relieve the redundancy). In contrast, MoRSEbase spreads
+the per-sample outputs apart (∆= −0.15, lowering median Simoutput from 0.75 to 0.60). However,
+even with our subtask decomposition, the median Simoutput still sits around 0.60, confirming that
+structural decomposition alone does not close the heterogeneity deficit—motivating the parameter-
+level adaptation we develop in Sec. 3, which the next study further grounds in the base LM.
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Pairwise Sim
+prompt
+output
+median  (output 
+ prompt)
+MacNet w/o review   (+0.14)
+MacNet w/ review   (+0.14)
+MoRSEbase (ours)   (-0.15)
+Figure 1: Heterogeneity deficit in role-prompted, graph-structured MAS. Each thin line is one
+SRDD instance, drawn from its prompt-level Sim (top row) to its output-level Sim (bottom row);
+bold lines show per-method median trajectories. Smaller Sim indicates lower redundancy. The
+legend reports the median shift ∆= Simoutput −Simprompt: positive (+) means the pipeline amplifies
+agent-output redundancy, negative (-) means it disperses agents apart.
+Role-subtask mismatch in the base LM.
+To inform parameter-efficient fine-tuning over the dy-
+namic (role, subtask)-DAG, we ask whether different roles and subtasks require mismatched rank-ρ
+adaptations of the base LM that no single shared LoRA can simultaneously provide under its rank-ρ
+bottleneck, a limitation we formalize in Theorem L.2, Appendix L. Adapting subspace-based represen-
+tation analyses [26, 15, 9] to per-(role, subtask) groups, we take execute and merge as two example
+roles: Figure 2(a) shows that real role labels yield substantially larger pairwise rank-ρ subspace diver-
+gence (1 −∥V ⊤
+a Vb∥2
+F /ρ, ρ=8) than a label-shuffled binary baseline across the deeper 8 transformer
+layers (where prior work shows task-relevant representations are most concentrated [31, 22]; gap
+∆≈0.40). Fixing the role to execute and varying subtasks, we further cluster SRDD subtask descrip-
+tions into K=8 groups and apply the same diagnostic across the same deeper layers: real cluster labels
+yield divergence ∼0.75 vs. ∼0.45 under label-shuffled baselines, with σ-bands non-overlapping at
+every layer (Figure 2(b)) and visually stable cluster-pair structure across layers (Figure 2(c) for
+one layer; full per-layer panel in Appendix L). Full procedure for both diagnostics is given in
+Appendix L.1. Together, these results reveal specialized adaptation needs along two axes—roles (per-
+sistent, process-level) and subtasks (fine-grained, semantic)—directly motivating a dynamic mixture
+of LoRA experts with a router for (role, subtask) specialization on a shared base model (Sec. 3.2).
+The two studies together reveal further heterogeneity demand at the task-structural (output re-
+dundancy) and parameter (role/subtask mismatch) levels, which we resolve with a dynamic
+(role, subtask)-DAG and a router-composed mixture of LoRA experts on a shared base model (Sec. 3).
+2.2
+Problem Formulation
+In this paper, we consider a complex task instance T that admits decomposition into |V | interde-
+pendent subtasks {vi}|V |
+i=1 with natural-language descriptions {si}|V |
+i=1. Each subtask vi is handled
+by a collaborating agent ai with role ri drawn from a small discrete role set R. Agent ai produces
+an artifact yi conditioned on its (role, subtask) pair (ri, si) and the upstream artifacts {yj}j∈Pa(i),
+where Pa(i) ⊆{1, . . . , |V |} indexes the subtasks that vi depends on.
+3
+28
+29
+30
+31
+32
+33
+34
+35
+Layer index (LoRA range)
+0.0
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6
+Role-pair subspace divergence
+SRDD: role subspace divergence vs. shuffle (rank=8)
+real role labels (execute vs merge)
+shuffle baseline
+(a) Role subspace divergence.
+28
+29
+30
+31
+32
+33
+34
+35
+Layer index (LoRA range)
+0.0
+0.2
+0.4
+0.6
+0.8
+Mean cluster-pair subspace divergence
+SRDD: cluster subspace divergence vs. shuffle (rank=8)
+real cluster labels
+shuffle baseline
+(b) Subtask subspace divergence.
+C0
+C1
+C2
+C3
+C4
+C5
+C6
+C7
+Cluster
+C0
+C1
+C2
+C3
+C4
+C5
+C6
+C7
+Cluster
+L31  (mean off-diag=0.76)
+0.0
+0.2
+0.4
+0.6
+0.8
+1
+Va Vb 2
+F/r
+(c) Cluster-pair struc-
+ture example.
+Figure 2: Role and subtask mismatch in the base LM (Qwen3-4B, SRDD). (a) Pairwise rank-8
+subspace divergence between two roles (execute and merge) per LoRA-injected layer; the dashed
+line shows the label-shuffled binary baseline. Higher = more divergent subspaces. (b) Same diagnostic
+with K=8 subtask clusters; shaded bands show label-shuffled baselines. (c) Heatmap of pairwise
+cluster divergence at layer 31 (representative); brighter = more divergent.
+All agents share a frozen base language model with parameters θ0, and (role, subtask)-conditional
+heterogeneity is realised via parameter-efficient adaptation θi = θ0 + ∆θi(ri, si) with dim ∆θi ≪
+dim θ0, so that yi ∼p(· | ri, si, {yj}j∈Pa(i); θi). Given a reward R({yi}|V |
+i=1) defined over the
+joint outputs, we jointly optimise all learnable parameters Θ of the chosen ∆θ parameterisation to
+maximise expected reward over a task distribution D:
+max
+Θ
+ET ∼D, {yi}∼pΘ(·|T )
+
+R({yi})
+
+.
+(2)
+3
+Methodology
+We instantiate the Problem Formulation in Sec. 2.2 with three tightly coupled components realising
+(role, subtask)-conditional specialization at both the task-structure and parameter levels (Figure 3).
+We first introduce a task-oriented multi-agent system that decomposes each task into a subtask DAG
+with a rule-based step verifier, supplying the per-node (ri, si) labels and step rewards required by the
+downstream modules (Sec. 3.1). On the shared frozen backbone, we then build a dual-factorised mix-
+ture of role and subtask LoRA experts composed by a prototype-based semantic router, specialising at
+the parameter level across an open-ended subtask space at near single-model cost (Sec. 3.2). Finally,
+we propose hierarchical GRPO with two-layer credit assignment that decouples expert and router
+updates and provably reduces the LoRA-expert gradient variance for stable co-optimization (Sec. 3.3).
+Task-Oriented Multi-Agent System
+1
+Task
+(e.g. implement a 
+coding solution)
+Planner
+(e.g. decompose into 
+dependent subtasks
+Merger
+(no parents)
+Executor
+Implement the parser
+Merger
+(1 parent)
+Executor
+write tests 
+Merger
+(1 parent)
+Executor
+build evaluator
+Merger
+(2 parents)
+Executor
+Refine the solution
+1
+2
+3
+4
+Each node first merges incoming information, 
+then executes its assigned subtask.
+Dynamic Mixture of Role-Subtask
+LoRA Experts
+2
+DAG of (role, subtask) nodes
+Input  for node 
+Role
+Subtask
+Context
+(e.g. executor)
+(e.g. build 
+evaluator)
+(parent artifacts, 
+instructions, etc.)
+Role expert pool
+Subtask expert (prototype) pool
+…
+…
+Prototype-based
+Semantic router
+1 role expert +
+Top k subtask experts
+Frozen backbone 
+LoRA adapters injected
+Hierarchical GRPO with Two-Layer 
+Credit Assignment (HGRPO)
+3
+Sample          routes (expert combinations)
+1
+Route 2
+Route 1
+Route 
+…
+2 For each route, sample
+candidates and verify
+Route 
+Candidate 1
+Candidate 2
+Candidate 
+…
+3 Compute two advantages and update separately
+Within-route (candidate-level)
+Update LoRA experts
+using
+Cross (route-level)
+Update router
+using
+Decouples expert quality from routing 
+quality and stabilizes co-optimization.
+…
+subtask
+experts
+…
+role
+experts
+…
+…
+…
+…
+…
+Route 
+…
+…
+Figure 3: Overview of the MoRSE framework: (1) task-oriented MAS that decomposes T into a
+per-instance (role, subtask)-DAG with per-node Merger→Executor execution; (2) dynamic mixture
+of role-subtask LoRA experts (role expert + top-K subtask experts) on a shared frozen backbone; (3)
+hierarchical GRPO with two-layer credit (Awithin, Across) that decouples expert and router updates.
+4
+3.1
+Task-Oriented Multi-Agent System (ToMAS)
+To address the task-structure-level redundancy diagnosed in Sec. 2.1, we explicitly decompose
+each task instance into subtasks structured by dependencies, inspired by graph-based planning [34],
+and execute the resulting DAG with a step-level rule-based verifier at every node. This produces
+two signals required by the downstream modules: per-node (ri, si) labels that condition parameter
+specialization (Sec. 3.2), and step-level rewards {ui}i∈V that supply the training signal for that
+specialization via per-step credit assignment (Sec. 3.3).
+DAG-based task decomposition and execution.
+Given a task instance T , a planner dynamically
+produces a per-instance dependency-aware DAG G = (V, E), where each node vi ∈V carries
+a subtask description si and each directed edge (vi, vj) ∈E indicates that subtask j depends
+on the artifact yi produced by subtask i. We execute G in topological order: at each node vi,
+a Merger first aggregates the upstream artifacts {yj}j∈Pa(i) into a coherent context Ci ∼p(· |
+r, T , {yj}j∈Pa(i); θr
+i ), r=merge (which reduces to yj when |Pa(i)| = 1 and to ∅when Pa(i) = ∅);
+the Executor then produces the current artifact yi ∼p(· | r, T , si, Ci; θr
+i ), r=execute. Each agent
+call carries its own role r, which selects a role-conditioned LoRA composition in Sec. 3.2. We
+consider a general execute role here, while the framework readily extends to additional specialized
+roles (e.g., review, refine). Training proceeds sequentially to expose per-subtask credit signals,
+while at inference the DAG also allows independent branches to run in parallel for efficiency.
+Rule-based verifier for reward signals.
+A task-completion-only reward is too sparse to provide
+sufficient supervision for fine-grained per-subtask credit assignment; we therefore apply a rule-based
+verifier at every DAG node to produce a step reward ui on each output artifact yi, which also blocks
+yi from downstream propagation upon failing task-specific validity criteria (e.g., output format,
+basic correctness), preventing error compounding across the DAG. These step rewards {ui}i∈V feed
+downstream policy optimization (Sec. 3.3); per-task details are given in Appendix E.
+3.2
+Prototype-Routed Mixture of Role-Subtask LoRA Experts (MoLE)
+Motivated by the role-subtask architecture mismatch under parameter-efficient fine-tuning diagnosed
+in Sec. 2.1, we address it via learnable specialization on the shared frozen backbone θ0. We employ a
+dynamic mixture of dual-factorized LoRA experts—a role expert pool Φr activated per role, and a
+subtask expert pool Φs from which a subset is selected per subtask by a lightweight prototype-based
+semantic router—keeping training and inference cost close to a single-model system.
+Mixture of dual-factorized LoRA experts.
+The expert pool is partitioned into role experts Φr
+(one per role r ∈R) and subtask experts Φs (shared across subtasks), all attached as LoRA pairs to
+the frozen backbone θ0 (architecture details in Appendix E). For each agent call at node vi with role
+ri, the active set Ei combines the role expert e(ri) with a subtask-expert subset Es,i:
+Ei = {e(ri)} ∪Es,i,
+e(ri) ∈Φr, Es,i ⊂Φs.
+(3)
+This active set yields the LoRA-composed projection at each adapted layer ℓ:
+W (i)
+ℓ
+= Wℓ+
+X
+k∈Ei
+wk · α
+ρ Bℓ,kAℓ,k,
+(4)
+where (Aℓ,k, Bℓ,k) is the rank-ρ LoRA pair of expert k, α is a scaling, and we use uniform aggregation
+weights wk = 1/|Ei|. The subtask-expert subset Es,i is selected by the prototype router introduced
+below, except at Merger join nodes (|Pa(i)| > 1), where it is inherited from upstream Executors
+as E(merge)
+s,i
+= S
+j∈Pa(i) E(execute)
+s,j
+, exposing the merge role to the same subtask-specific adaptation
+directions that produced the upstream artifacts.
+Dynamic prototype-based semantic router.
+We introduce a router πψ that scores subtask experts
+against per-expert learnable prototypes, inducing a soft semantic partition over the open-ended
+subtask space rather than a hard cluster-to-expert assignment. We encode subtask description si via a
+frozen embedder, then apply a trainable projection hη to produce hη(si) ∈RD in the same latent
+space as the per-expert prototypes P ∈RKs×D (Ks = |Φs|):
+zk =
+hη(si)⊤pk
+∥hη(si)∥2 ∥pk∥2
+,
+πψ(k | si) = softmax(z)k,
+(5)
+5
+where pk ∈RD is the k-th subtask expert’s prototype, zk is its cosine similarity to the projected
+subtask embedding, and πψ(k | si) is the probability of routing si to expert k; we sample top-K
+from πψ(· | si) stochastically during training and greedily at inference.
+Trainable parameters.
+The trainable components of this module are the LoRA expert matrices
+{(Aℓ,k, Bℓ,k)} for all experts in Φ := Φr ∪Φs, and the router parameters ψ = (η, P) comprising the
+embedding-projection parameters η and the prototypes P. Backbone θ0 remains frozen throughout
+training. Together Φ and ψ instantiate the abstract learnable parameters Θ = Φ ∪ψ from Sec. 2.2.
+3.3
+Hierarchical GRPO with Two-Layer Credit Assignment (HGRPO)
+Co-optimizing Φ and πψ under step rewards {ui}i∈V entangles their updates under a single shared
+advantage, exposing each to uncontrolled reward variation and inflating gradient variance. We address
+this with a two-layer credit assignment that uses separate within-route and cross-route advantages to
+update experts and the router: the within-route conditional baseline strictly reduces the LoRA-expert
+gradient variance compared to standard GRPO (a single shared advantage for both expert and router
+updates), while the cross-route formulation supplies the router with a well-scaled per-route signal.
+Two-layer credit assignment.
+At each node vi during training, we sample B routes from πψ(· | si)
+(each fixing an expert combination E(b)
+i
+), generate M candidates {y(b,m)
+i
+} per route, and obtain step
+rewards {u(b,m)
+i
+} from the verifier. We form two advantages with conditional baselines:
+A(b,m)
+within = u(b,m)
+i
+−µ(b)
+σ(b) + ϵ
+,
+A(b)
+cross = µ(b) −¯µ
+σC + ϵ ,
+(6)
+where µ(b), σ(b) are the within-route mean and standard deviation, ¯µ = 1
+B
+P
+b µ(b) is the across-route
+baseline, and σC is the standard deviation of {µ(b)}B
+b=1. Following GRPO [28], Awithin updates the
+LoRA experts under fixed E(b)
+i
+and Across updates the router via the route log-likelihood:
+LLoRA = −
+X
+b,m
+A(b,m)
+within · log p
+
+y(b,m)
+i
+| T , ri, si, Ci; E(b)
+i
+
+,
+(7)
+Lrouter = −απ
+X
+b
+A(b)
+cross · log πψ
+
+E(b)
+s,i | si
+
+,
+(8)
+with απ balancing router and LoRA gradients. The within-route baseline µ(b) removes the cross-route
+component σ2
+C from the LoRA-expert gradient variance; the cross-route signal A(b)
+cross supplies the
+router with a well-scaled per-route gradient.
+Variance reduction analysis.
+Decompose the reward variance into within- and cross-route compo-
+nents,
+σ2
+W := Eb
+
+Varm(u(b,m) | b)
+
+(within-route),
+σ2
+C := Varb
+
+µ(b)
+(cross-route),
+(9)
+with µ(b) := Em[u(b,m) | b] the mean reward of route b (so Var(u) = σ2
+W + σ2
+C).
+Proposition 3.1 (HGRPO LoRA-expert variance reduction). HGRPO and standard GRPO share the
+same expected gradient; at finite group sizes M, B, the HGRPO LoRA-expert gradient has strictly
+lower variance,
+Var
+
+gLoRA
+HGRPO
+
+= Var
+
+gLoRA
+single
+
+−σ2
+C · E
+
+∥∇Φ log p∥2
+.
+(10)
+This isolates the LoRA expert from cross-route variance it cannot influence, attributing reward
+signals to expert quality rather than routing decisions; the construction applies the classical
+conditional-baseline variance reduction [7] in a two-layer form to the router–expert credit structure,
+and the formal proof is in Appendix G. Proposition 3.1 is stated for the unnormalized advantages,
+while the implemented estimator (Eq. 6) further standardizes each advantage by the per-route scale
+σ(b) + ϵ. A short bridge argument shows that the variance reduction persists for this normalized
+estimator in a reweighted form, up to finite-sample corrections (Corollary G.1, Appendix G).
+In conclusion, the three modules jointly instantiate the abstract framework in Sec. 2.2: Sec. 3.1 sup-
+plies the decomposition {vi, Pa(i)} and step rewards {ui}; Sec. 3.2 realises the (ri, si)-conditional
+adaptation ∆θi on the shared backbone θ0; and Sec. 3.3 optimises the learnable parameters Θ = Φ∪ψ
+with provable variance reduction on the LoRA-expert gradient.
+6
+Table 1: Main results on SRDD and SciCode. MoRSEbase is the untrained version. All scores
+inference on the full benchmark; Test is held out from MoRSE’s training and is harder on average, so
+numbers are not comparable across the two sets. For each column and backbone, the best is in bold
+(with light-blue on Test Set); the second-best is underlined.
+Type
+Method
+SRDD
+SciCode
+All Set
+Test Set
+All Set
+Test Set
+Exec
+(%)
+ECI
+Mean
+ECI
+Product
+Exec
+(%)
+ECI
+Mean
+ECI
+Product
+Step
+Pass (%)
+Mean Step
+Pass (%)
+Problem
+Pass (%)
+Step
+Pass (%)
+Mean Step
+Pass (%)
+Problem
+Pass (%)
+Qwen3-4B-Instruct
+Single
+Base model
+67.01
+0.686
+0.284
+65.00
+0.690
+0.286
+18.05
+17.55
+1.25
+21.43
+19.33
+0.00
+Multi
+ChatChain
+58.33
+0.687
+0.264
+42.86
+0.641
+0.205
+15.98
+17.74
+2.50
+14.29
+13.71
+0.00
+MacNet
+61.81
+0.673
+0.261
+60.76
+0.666
+0.254
+7.99
+9.60
+2.50
+9.18
+9.50
+0.00
+Aflow
+65.83
+0.634
+0.162
+52.50
+0.580
+0.121
+19.82
+21.91
+3.75
+18.37
+20.23
+0.00
+MoRSEbase
+77.00
+0.718
+0.299
+72.50
+0.693
+0.268
+25.44
+27.22
+6.25
+20.41
+19.65
+0.00
+MoRSE
+-
+-
+-
+86.25
+0.755
+0.360
+-
+-
+-
+29.00
+32.50
+10.00
+Llama-3.1-8B-Instruct
+Single
+Base model
+63.45
+0.652
+0.220
+70.51
+0.674
+0.251
+12.72
+15.70
+2.50
+10.20
+10.02
+0.00
+Multi
+ChatChain
+66.25
+0.628
+0.192
+66.25
+0.628
+0.192
+12.13
+15.82
+3.75
+8.16
+10.02
+0.00
+MacNet
+55.00
+0.591
+0.143
+55.00
+0.591
+0.143
+11.83
+14.30
+2.50
+6.12
+7.20
+0.00
+Aflow
+73.37
+0.665
+0.189
+65.00
+0.636
+0.167
+12.43
+15.20
+2.50
+11.22
+10.38
+0.00
+MoRSEbase
+75.00
+0.688
+0.252
+78.75
+0.707
+0.281
+17.75
+18.07
+2.50
+18.37
+14.92
+0.00
+MoRSE
+-
+-
+-
+87.34
+0.767
+0.389
+-
+-
+-
+26.00
+15.50
+5.00
+Gemma-4-31B-IT
+Single
+Base model
+94.00
+0.763
+0.338
+96.25
+0.767
+0.333
+49.11
+55.93
+28.75
+45.92
+53.02
+20.00
+Multi
+ChatChain
+89.95
+0.706
+0.260
+88.75
+0.700
+0.256
+48.22
+54.74
+27.50
+40.82
+49.38
+15.00
+MacNet
+89.95
+0.705
+0.246
+88.75
+0.688
+0.228
+46.45
+51.83
+25.00
+46.94
+53.44
+20.00
+Aflow
+91.46
+0.720
+0.272
+87.50
+0.690
+0.246
+46.45
+52.68
+25.00
+45.92
+53.02
+20.00
+MoRSEbase
+95.68
+0.734
+0.316
+93.67
+0.728
+0.321
+51.78
+56.92
+31.25
+45.92
+47.25
+15.00
+MoRSE
+-
+-
+-
+98.65
+0.782
+0.394
+-
+-
+-
+51.02
+56.36
+20.00
+4
+Experiment
+We evaluate MoRSE on complex code-generation benchmarks across three backbones, asking three
+questions: whether the task-oriented framework improves inference without any training, whether
+MoLE together with HGRPO delivers further gains through parameter-level specialization, and
+whether the designed mechanisms behave as intended, reducing inter-agent output redundancy,
+stabilizing co-optimization, and generalizing across held-out task categories and domains.
+Datasets.
+We evaluate on two code-generation benchmarks with complex task requirements:
+SRDD [24]2 (1,200 software-requirement descriptions across 40 application categories) and Sci-
+Code [32]3 (80 scientific computing problems spanning 5 scientific domains, decomposed into 338
+subproblems with executable unit tests at the step and problem level).
+Baselines.
+We compare against three multi-agent baselines spanning role-based, graph-structured,
+and search-based designs — ChatChain [24], MacNet [25], and AFlow [40] — together with a single-
+agent reference (Base model) that runs each backbone alone. All methods share the same Qwen3-4B-
+Instruct, Llama-3.1-8B-Instruct, and Gemma-4-31B-IT backbones, prompts, and decoding configura-
+tion, with each method’s native revision mechanism capped at the same maximum number of attempts.
+Evaluation metrics.
+On SRDD we follow Qian et al. [24] and report Exec (↑), the fraction of
+generated codebases that compile and run end-to-end, and ECI (↑), a [0, 1]-valued composite over
+completeness, executability, and consistency, summarised as the per-sample mean (ECI Mean) and
+product (ECI Product). On SciCode we follow the official protocol [32] and report Step Pass (↑)
+(micro step-level pass rate across all subproblems), Mean Step Pass (↑) (per-problem step accuracy
+averaged across problems), and Problem Pass (↑) (fraction of problems for which all steps pass).
+Detailed experimental configurations are included in Appendix I.
+2https://github.com/OpenBMB/ChatDev/tree/chatdev1.0/SRDD
+3https://huggingface.co/datasets/SciCode1/SciCode
+7
+4.1
+Main Results
+Table 1 reports two comparisons. The All set scores the inference performance of methods on the full
+benchmark without training; the Test split is held out from MoRSE’s training for direct comparison
+against baselines, where MoRSE attains the column-best score on every reported test cell.
+SciCode provides both process-level performance (Step Pass, Mean Step Pass) and end-to-end success
+(Problem Pass); SRDD complements this with overall quality aligning with the task requirements
+(ECI: completeness and task-description alignment given executability). On the All set, the untrained
+MoRSEbase (Sec. 3.1) achieves the best overall performance comparing with all baselines, showing
+that the role-subtask DAG decomposition framework adds value without any training. On the held-
+out Test split, the trained MoRSE further lifts MoRSEbase on all metrics, confirming the value of
+specialized parameter-level adaptation.
+As a side observation, prior MAS without task-specific adaptation can lag below the single-agent
+reference, and the gap widens on stronger backbones whose base is near-saturating. Also, we observe
+that the post-training uplift is smaller on the strongest backbone (Gemma-4-31B), where the base
+model is closer to saturation and, with the LoRA configuration fixed across backbones, the trainable
+fraction shrinks with model width (0.170% on Qwen3-4B, 0.109% on Llama-3.1-8B, 0.048% on
+Gemma-4-31B), making the adaptation relatively less expressive [38]. The structure and the training
+remain complementary there, as the untrained framework sometimes falls slightly below the single
+agent on the held-out split while training recovers the gap and matches or exceeds it on every metric.
+To conclude, on both process and end-to-end aspects, the role-subtask DAG framework improves
+inference performance at the task-structure level, and specialized adaptation provides a further
+substantial uplift at the parameter level.
+4.2
+Deeper Analysis
+Ablation study.
+Table 1 shows the standalone effect of the role-subtask DAG framework (Sec. 3.1)
+via MoRSEbase. Table 2 ablates the remaining two core modules: (i) the MoLE architecture (Sec. 3.2)
+and (ii) HGRPO training (Sec. 3.3).
+C vs. D (fixed MoLE, swap standard GRPO →HGRPO) isolates the training: HGRPO substantially
+recovers and extends the gain, directly verifying the hierarchical-credit design. B vs. C (under
+standard GRPO) reveals the converse: plugging in MoLE without hierarchical credit is fragile,
+indicating that experts and router can be challenging to jointly optimize under a standard optimization
+method. The training dynamics behind this fragility, where the standard-GRPO surrogate destabilizes
+while HGRPO remains controlled across epochs, are shown in Appendix H. A vs. D then confirms
+the joint effect with substantial gains across all metrics; the gain is further validated by B vs. D, where
+MoRSE surpasses a non-routing fixed-LoRA baseline trained with standard GRPO whose rank is
+matched to MoRSE’s activated parameters per call.
+Together, MoLE and HGRPO are tightly coupled and both are required to deliver the full improvement.
+A detailed experimental analysis for each module is provided in Appendix J.
+Table 2: Ablation study on SRDD and SciCode.
+Variant
+Adapter
+Training
+SRDD
+SciCode
+Exec
+(%)
+ECI
+Mean
+ECI
+Product
+Step
+Pass (%)
+Mean Step
+Pass (%)
+Problem
+Pass (%)
+Qwen3-4B-Instruct
+A. MoRSE w/o MoLE & HGRPO (MoRSEbase)
+-
+-
+72.50
+0.693
+0.268
+20.41
+19.65
+0.00
+B. MoRSE w/o MoLE
+fixed LoRA
+standard GRPO
+82.50
+0.745
+0.329
+25.00
+20.25
+5.00
+C. MoRSE w/o HGRPO
+MoLE
+standard GRPO
+73.75
+0.696
+0.257
+23.00
+29.12
+10.00
+D. MoRSE
+MoLE
+HGRPO
+86.25
+0.755
+0.360
+29.00
+32.50
+10.00
+Llama-3.1-8B-Instruct
+A. MoRSE w/o MoLE & HGRPO (MoRSEbase)
+-
+-
+78.75
+0.707
+0.281
+18.37
+14.92
+0.00
+B. MoRSE w/o MoLE
+fixed LoRA
+standard GRPO
+82.50
+0.737
+0.326
+23.00
+14.00
+0.00
+C. MoRSE w/o HGRPO
+MoLE
+standard GRPO
+72.50
+0.698
+0.316
+18.00
+14.64
+0.00
+D. MoRSE
+MoLE
+HGRPO
+87.34
+0.767
+0.389
+26.00
+15.50
+5.00
+8
+0.6
+0.7
+0.8
+0.9
+Simoutput --- MoRSEbase (untrained)
+0.6
+0.7
+0.8
+0.9
+Simoutput --- MoRSE
+=
+0.053
+more diverse
+(below diagonal)
+MoRSE 
+ redundancy
+MoRSEbase mean
+MoRSE mean
+Figure 4: Output Sim.
+Parameter-level heterogeneity gain from MoLE.
+Sec. 2.1’s
+prelim diagnosed a heterogeneity deficit at the prompt level
+(role-prompted MAS); the role-subtask DAG framework alone
+mitigates it to some extent. Figure 4 shows that MoLE further
+reduces residual node-output redundancy at the parameter level:
+trained dual role×subtask LoRA experts shift the per-sample
+Simoutput distribution toward more diversity, with the majority of
+samples landing below the diagonal, letting each node speak in its
+own voice rather than echoing its neighbours.
+Out-of-distribution (OOD) generalization.
+A central premise
+of MoLE is that role-subtask decomposition exposes potentially
+generalizable units—different tasks may share recurring subtask
+skills, so LoRA experts learned on training categories have the potential to compose for unseen ones.
+We test this on category-level held-outs: SRDD withholds 8 of 40 categories; SciCode trains on
+Physics+Math+Material Science and tests on Chemistry+Biology.
+A
+B
+D
+Variant
+80
+100
+Exec
++6.2
++7.5
+A
+B
+D
+Variant
+0.6
+0.7
+0.8
+ECI Mean
++0.02
++0.05
+A
+B
+D
+Variant
+0.2
+0.3
+0.4
+ECI Product
++0.02
++0.07
+A
+B
+D
+Variant
+10
+20
+Step Pass
++7.2
++11.0
+A
+B
+D
+Variant
+10
+15
+20
+Mean Step Pass
+-0.63
++0.51
+A
+B
+D
+Variant
+0
+1
+Problem Pass
+all variants score 0
+SRDD
+SciCode
+A=MoRSEbase  |  B=MoRSE w/o MoLE  |  D=MoRSE (ours)
+Qwen3-4B (A→B→D)
+Llama-3.1-8B (A→B→D)
+MacNet (Qwen3-4B)
+MacNet (Llama-3.1-8B)
+Figure 5: OOD generalization experiments for two backbones. Bold
+numbers above D are ∆vs. A. Per-metric tables are in Appendix K.
+Figure 5 contrasts four con-
+figurations on the OOD test:
+prior role-based DAG MAS
+MACNET, our untrained
+MoRSEbase (A), a standard
+non-routing
+LoRA
+with
+GRPO fine-tuning baseline
+(B = MoRSE w/o MoLE),
+and the full trained MoRSE
+(D). Two findings emerge
+across both backbones and
+both datasets. (i) Training
+transfers to OOD: trained
+MoRSE consistently im-
+proves over the untrained
+MoRSEbase, indicating that
+subtask-level skills learned
+on one category help held-
+out ones. (ii) Dynamic role-
+subtask routing matters at
+OOD: MoRSE also surpasses the standard fine-tuning baseline, indicating that dynamic expert
+routing generalizes to held-out subtasks better than a fixed LoRA.
+5
+Related work
+LLM-based multi-agent systems.
+Existing MAS coordinate cooperating agents via prompting
+protocols [35, 12, 24, 3, 25], recently with dependency-aware DAGs [34]; ToMAS instead exposes per-
+node (role, subtask) structure as the substrate for downstream parameter-level adaptation in MoLE.
+Mixture of LoRA experts.
+Mixture-of-LoRA-Experts combines parameter-efficient adapters with
+sparse gating [2], and recent GRPO variants [28] apply policy-gradient RL to MoE/LoRA-MoE
+under a single shared advantage; HGRPO instead performs a bi-level credit decomposition with
+within-route and cross-route conditional baselines, sharing the same expected gradient [7] but with
+strictly lower variance at finite group sizes (Prop. 3.1).
+RL for multi-agent LLM systems.
+Recent multi-agent LLM RL [10, 43, 41, 19] operates on static
+topologies and parameterizes only the role axis under a single shared advantage; a parallel line extends
+GRPO along the rollout-time axis [11, 4]. MoRSE differs along three orthogonal axes—per-instance
+dynamic DAGs, dual role-subtask LoRA factorization on a shared backbone, and structural-axis credit
+decomposition via HGRPO’s bi-level baselines—and is composable with rollout-time hierarchy.
+An extended discussion of the above directions is provided in App. B.
+9
+6
+Conclusion
+We presented MoRSE, a task-oriented multi-agent system that addresses the heterogeneity bottleneck
+of role-prompted MAS via (role, subtask)-conditional specialization at both task-structure and
+parameter levels. ToMAS decomposes each task into a dependency-aware DAG with per-agent (role,
+subtask) labels for task-structure-level specialization; MoLE attaches a dynamic mixture of role and
+subtask LoRA experts with a prototype-based semantic router on a shared backbone, addressing the
+diverse role and subtask demands that a single shared base model cannot satisfy; HGRPO stably
+co-optimizes experts and router via two-layer credit assignment that disentangles expert quality from
+routing quality. Experiments across three diverse backbones show notable whole-task and step-wise
+improvements, with better generalization across held-out task categories and domains.
+References
+[1] Damai Dai, Chengqi Deng, Chenggang Zhao, RX Xu, Huazuo Gao, Deli Chen, Jiashi Li,
+Wangding Zeng, Xingkai Yu, Yu Wu, et al. Deepseekmoe: Towards ultimate expert specializa-
+tion in mixture-of-experts language models. In Proceedings of the 62nd annual meeting of the
+association for computational linguistics (volume 1: Long papers), pages 1280–1297, 2024.
+[2] Shihan Dou, Enyu Zhou, Yan Liu, Songyang Gao, Jun Zhao, Wei Shen, Yuhao Zhou, Zhiheng
+Xi, Xiao Wang, Xiaoran Fan, et al. Loramoe: Alleviate world knowledge forgetting in large
+language models via moe-style plugin. arXiv preprint arXiv:2312.09979, 2023.
+[3] Yilun Du, Shuang Li, Antonio Torralba, Joshua B Tenenbaum, and Igor Mordatch. Improving
+factuality and reasoning in language models through multiagent debate, 2023. URL https://arxiv.
+org/abs/2305.14325, 3, 2023.
+[4] Lang Feng, Zhenghai Xue, Tingcong Liu, and Bo An. Group-in-group policy optimization for
+LLM agent training. In The Thirty-ninth Annual Conference on Neural Information Processing
+Systems, 2026. URL https://openreview.net/forum?id=QXEhBMNrCW.
+[5] Wenfeng Feng, Chuzhan Hao, Yuewei Zhang, Yu Han, and Hao Wang. Mixture-of-loras: An
+efficient multitask tuning method for large language models. In Proceedings of the 2024 Joint
+International Conference on Computational Linguistics, Language Resources and Evaluation
+(LREC-COLING 2024), pages 11371–11380, 2024.
+[6] Chongyang Gao, Kezhen Chen, Jinmeng Rao, Baochen Sun, Ruibo Liu, Daiyi Peng, Yawen
+Zhang, Xiaoyuan Guo, Jie Yang, and VS Subrahmanian. Higher layers need more lora experts.
+arXiv preprint arXiv:2402.08562, 2024.
+[7] Evan Greensmith, Peter L Bartlett, and Jonathan Baxter. Variance reduction techniques for
+gradient estimates in reinforcement learning. Journal of Machine Learning Research, 5(Nov):
+1471–1530, 2004.
+[8] Taicheng Guo, Xiuying Chen, Yaqi Wang, Ruidi Chang, Shichao Pei, Nitesh V. Chawla, Olaf
+Wiest, and Xiangliang Zhang. Large language model based multi-agents: A survey of progress
+and challenges, 2024. URL https://arxiv.org/abs/2402.01680.
+[9] Jihun Hamm and Daniel D Lee. Grassmann discriminant analysis: a unifying view on subspace-
+based learning. In Proceedings of the 25th international conference on Machine learning, pages
+376–383, 2008.
+[10] Jing Han, Binwei Yan, Tianyu Guo, Zheyuan Bai, Mengyu Zheng, Hanting Chen, and Ying
+Nie.
+Moragent: Parameter efficient agent tuning with mixture-of-roles.
+arXiv preprint
+arXiv:2512.21708, 2025.
+[11] Shuo He, Lang Feng, Qi Wei, Xin Cheng, Lei Feng, and Bo An. Hierarchy-of-groups policy
+optimization for long-horizon agentic tasks. arXiv preprint arXiv:2602.22817, 2026.
+[12] Sirui Hong, Mingchen Zhuge, Jonathan Chen, Xiawu Zheng, Yuheng Cheng, Jinlin Wang,
+Ceyao Zhang, Zili Wang, Steven Ka Shing Yau, Zijuan Lin, et al. Metagpt: Meta programming
+for a multi-agent collaborative framework. In The twelfth international conference on learning
+representations, 2023.
+10
+[13] Edward J. Hu, Yelong Shen, Phillip Wallis, Zeyuan Allen-Zhu, Yuanzhi Li, Shean Wang,
+Lu Wang, and Weizhu Chen. Lora: Low-rank adaptation of large language models, 2021. URL
+https://arxiv.org/abs/2106.09685.
+[14] Dohwan Ko, Jinyoung Park, Seoung Choi, Sanghyeok Lee, Seohyun Lee, and Hyunwoo J
+Kim. Moe-grpo: Optimizing mixture-of-experts via reinforcement learning in vision-language
+models. arXiv preprint arXiv:2603.24984, 2026.
+[15] Simon Kornblith, Mohammad Norouzi, Honglak Lee, and Geoffrey Hinton. Similarity of neural
+network representations revisited. In International conference on machine learning, pages
+3519–3529. PMlR, 2019.
+[16] Abhijit Kumar, Natalya Kumar, and Shikhar Gupta. Execution-grounded credit assignment for
+grpo in code generation. arXiv preprint arXiv:2603.16158, 2026.
+[17] Weikai Li, Ding Wang, Zijian Ding, Atefeh Sohrabizadeh, Zongyue Qin, Jason Cong, and
+Yizhou Sun. Hierarchical mixture of experts: Generalizable learning for high-level synthesis. In
+Proceedings of the AAAI Conference on Artificial Intelligence, volume 39, pages 18476–18484,
+2025.
+[18] Yunfan Li, Bingbing Xu, Xueyun Tian, Xiucheng Xu, and Huawei Shen. Beyond entangled
+planning: Task-decoupled planning for long-horizon agents. arXiv preprint arXiv:2601.07577,
+2026.
+[19] Junwei Liao, Muning Wen, Jun Wang, and Weinan Zhang. Marft: Multi-agent reinforcement
+fine-tuning. arXiv preprint arXiv:2504.16129, 2025.
+[20] Changlian Ma, Zizheng Huang, Xiangyu Zeng, Yi Wang, Cheng Liang, Kun Tian, Xinhai Zhao,
+and Limin Wang. Balancing the experts: Unlocking loRA-moe for GRPO via mechanism-aware
+rewards. In The Fourteenth International Conference on Learning Representations, 2026. URL
+https://openreview.net/forum?id=rhD7ZuFAjU.
+[21] Wenhan Ma, Hailin Zhang, Liang Zhao, Yifan Song, Yudong Wang, Zhifang Sui, and Fuli
+Luo. Stabilizing moe reinforcement learning by aligning training and inference routers. arXiv
+preprint arXiv:2510.11370, 2025.
+[22] Kevin Meng, David Bau, Alex Andonian, and Yonatan Belinkov. Locating and editing factual
+associations in gpt. Advances in neural information processing systems, 35:17359–17372, 2022.
+[23] Prasanna Parthasarathi, Mathieu Reymond, Boxing Chen, Yufei Cui, and Sarath Chandar.
+Grpo-λ: Credit assignment improves llm reasoning. arXiv preprint arXiv:2510.00194, 2025.
+[24] Chen Qian, Wei Liu, Hongzhang Liu, Nuo Chen, Yufan Dang, Jiahao Li, Cheng Yang, Weize
+Chen, Yusheng Su, Xin Cong, Juyuan Xu, Dahai Li, Zhiyuan Liu, and Maosong Sun. Chatdev:
+Communicative agents for software development, 2024. URL https://arxiv.org/abs/
+2307.07924.
+[25] Chen Qian, Zihao Xie, Yifei Wang, Wei Liu, Kunlun Zhu, Hanchen Xia, Yufan Dang, Zhuoyun
+Du, Weize Chen, Cheng Yang, et al. Scaling large language model-based multi-agent collabora-
+tion. arXiv preprint arXiv:2406.07155, 2024.
+[26] Maithra Raghu, Justin Gilmer, Jason Yosinski, and Jascha Sohl-Dickstein. Svcca: Singular
+vector canonical correlation analysis for deep learning dynamics and interpretability. Advances
+in neural information processing systems, 30, 2017.
+[27] John Schulman, Filip Wolski, Prafulla Dhariwal, Alec Radford, and Oleg Klimov. Proximal
+policy optimization algorithms, 2017. URL https://arxiv.org/abs/1707.06347.
+[28] Zhihong Shao, Peiyi Wang, Qihao Zhu, Runxin Xu, Junxiao Song, Xiao Bi, Haowei Zhang,
+Mingchuan Zhang, YK Li, Yang Wu, et al. Deepseekmath: Pushing the limits of mathematical
+reasoning in open language models. arXiv preprint arXiv:2402.03300, 2024.
+[29] Noam Shazeer, Azalia Mirhoseini, Krzysztof Maziarz, Andy Davis, Quoc Le, Geoffrey Hinton,
+and Jeff Dean. Outrageously large neural networks: The sparsely-gated mixture-of-experts
+layer, 2017. URL https://arxiv.org/abs/1701.06538.
+11
+[30] Jake Snell, Kevin Swersky, and Richard S. Zemel. Prototypical networks for few-shot learning,
+2017. URL https://arxiv.org/abs/1703.05175.
+[31] Ian Tenney, Dipanjan Das, and Ellie Pavlick. Bert rediscovers the classical nlp pipeline. In
+Proceedings of the 57th annual meeting of the association for computational linguistics, pages
+4593–4601, 2019.
+[32] Minyang Tian, Luyu Gao, Shizhuo D Zhang, Xinan Chen, Cunwei Fan, Xuefei Guo, Roland
+Haas, Pan Ji, Kittithat Krongchon, Yao Li, et al. Scicode: A research coding benchmark curated
+by scientists. Advances in Neural Information Processing Systems, 37:30624–30650, 2024.
+[33] Haoyuan Wu, Haisheng Zheng, Zhuolun He, and Bei Yu. Parameter-efficient sparsity crafting
+from dense to mixture-of-experts for instruction tuning on general tasks. In Proceedings of the
+2024 Conference on Empirical Methods in Natural Language Processing, pages 737–749, 2024.
+[34] Jiaqi Wu, Qinlao Zhao, Zefeng Chen, Kai Qin, Yifei Zhao, Xueqian Wang, and Yuhang Yao.
+Gap: Graph-based agent planning with parallel tool use and reinforcement learning. arXiv
+preprint arXiv:2510.25320, 2025.
+[35] Qingyun Wu, Gagan Bansal, Jieyu Zhang, Yiran Wu, Shaokun Zhang, Erkang Zhu, Beibin Li,
+Li Jiang, Xiaoyun Zhang, and Chi Wang. Autogen: Enabling next-gen llm applications via
+multi-agent conversation framework. arXiv preprint arXiv:2308.08155, 3(4), 2023.
+[36] Shengtian Yang, Yu Li, Shuo He, Yewen Li, Qingpeng Cai, Peng Jiang, and Lei Feng. Phase-
+aware mixture of experts for agentic reinforcement learning. arXiv preprint arXiv:2602.17038,
+2026.
+[37] Yingxuan Yang, Chengrui Qu, Muning Wen, Laixi Shi, Ying Wen, Weinan Zhang, Adam
+Wierman, and Shangding Gu. Understanding agent scaling in llm-based multi-agent systems
+via diversity. arXiv preprint arXiv:2602.03794, 2026.
+[38] Yuchen Zeng and Kangwook Lee. The expressive power of low-rank adaptation. In International
+Conference on Learning Representations, volume 2024, pages 5078–5123, 2024.
+[39] Di Zhang, Xun Wu, Shaohan Huang, Lingjie Jiang, Yaru Hao, Li Dong, Zewen Chi, Zhifang
+Sui, and Furu Wei. Towards stable and effective reinforcement learning for mixture-of-experts.
+arXiv preprint arXiv:2510.23027, 2025.
+[40] Jiayi Zhang, Jinyu Xiang, Zhaoyang Yu, Fengwei Teng, Xiong-Hui Chen, Jiaqi Chen, Mingchen
+Zhuge, Xin Cheng, Sirui Hong, Jinlin Wang, et al. Aflow: Automating agentic workflow
+generation. In The Thirteenth International Conference on Learning Representations, 2024.
+[41] Kaiyan Zhang, Kai Tian, Runze Liu, Sihang Zeng, Xuekai Zhu, Guoli Jia, Yuchen Fan, Xingtai
+Lv, Yuxin Zuo, Che Jiang, Yuru wang, Jianyu Wang, Ermo Hua, Xinwei Long, Junqi Gao,
+Youbang Sun, Zhiyuan Ma, Ganqu Cui, Ning Ding, Biqing Qi, and Bowen Zhou. MARTI: A
+framework for multi-agent LLM systems reinforced training and inference. In The Fourteenth
+International Conference on Learning Representations, 2026. URL https://openreview.
+net/forum?id=E7jZqo0A50.
+[42] Ruizhe Zhang, Xinke Jiang, Zhibang Yang, Zhixin Zhang, Jiaran Gao, Yuzhen Xiao, Hongbin
+Lai, Xu Chu, Junfeng Zhao, and Yasha Wang. Stackplanner: A centralized hierarchical multi-
+agent system with task-experience memory management. arXiv preprint arXiv:2601.05890,
+2026.
+[43] Yujie Zhao, Lanxiang Hu, Yang Wang, Minmin Hou, Hao Zhang, Ke Ding, and Jishen Zhao.
+Stronger-mas: Multi-agent reinforcement learning for collaborative llms.
+arXiv preprint
+arXiv:2510.11062, 2025.
+12
+A
+Notation
+We summarize the main notation used throughout Sections 2–3.
+Symbol
+Meaning
+Task structure and DAG (Sec. 2.2, Sec. 3.1)
+T
+Complex task instance (input to the planner)
+G = (V, E)
+Per-instance dependency-aware DAG
+vi ∈V
+Subtask node
+(vi, vj) ∈E
+Data dependency: subtask j requires artifact yi
+Pa(i)
+Parent set of node vi
+ri ∈R
+Role of subtask i (e.g., execute, merge)
+si
+Natural-language subtask description
+yi
+Artifact produced at node vi
+Ci
+Merged context from upstream artifacts
+Verifier and reward (Sec. 3.1)
+gi ∈{0, 1}
+Verifier admissibility flag at node vi
+ui
+Step-level scalar reward at node vi
+Backbone and experts (Sec. 2.2, Sec. 3.2)
+θ0
+Frozen base language model parameters
+Φr, Φs
+Pools of role and subtask LoRA experts
+Ei ⊂Φr ∪Φs
+Active expert set at node vi
+e(r) ∈Φr
+Role-to-expert mapping
+θi
+Agent ai’s effective parameters
+Router (Sec. 3.2)
+πψ
+Prototype-based semantic router policy
+hη(si)
+Subtask embedding
+P
+Learnable prototype matrix
+ψ = (η, P)
+Router parameters
+HGRPO (Sec. 3.3)
+B
+Number of sampled routes per node
+M
+Number of candidates per route group
+E(b)
+i
+b-th sampled expert combination
+µ(b), σ(b)
+Within-route mean and std of rewards
+¯µ
+Across-route baseline
+A(b,m)
+within , A(b)
+cross
+Within-route and cross-route advantages
+LLoRA, Lrouter
+LoRA and router losses
+B
+Related Work
+B.1
+LLM-based Multi-Agent System
+LLM-based multi-agent systems decompose complex tasks across cooperating agents coordinated by
+prompting protocols [8]. AutoGen [35] provides a general conversational framework; MetaGPT [12]
+and ChatDev [24] standardise software-engineering roles; multi-agent debate [3] improves reasoning
+through interaction; and MacNet [25] scales cooperation to large agent populations.
+These
+frameworks typically rely on frozen backbones and handcrafted prompts, leaving the question of
+how to learn agent-specific parameters largely open. MoRSE addresses this gap by equipping each
+agent with role- and subtask-conditioned LoRA [13] experts that are jointly optimised together with
+a dynamic prototype-based [30] semantic subtask router.
+DAG-based MAS frameworks.
+A recent line of MAS work uses dependency-aware DAG decom-
+position to structure multi-agent collaboration: TDP [18] decouples planning from execution via
+per-instance sub-goal DAGs; GAP [34] trains agent foundation models to construct sub-task graphs
+for parallel tool execution; and STACKPLANNER [42] adopts hierarchical task decomposition with
+task-experience memory management. Our ToMAS adopts a similar DAG abstraction but with a
+fundamentally different purpose: rather than serving planning decoupling or parallel execution alone,
+13
+ToMAS exposes per-node (role, subtask) structure as the substrate for parameter-level adaptation in
+MoLE, and adds requirement-coverage checking and step-level rule-based verification to make the
+per-node structure reliable enough for downstream parameter learning.
+B.2
+Mixture of LoRA Experts
+Architectures.
+Mixture-of-LoRA-Experts combines parameter-efficient adapters with sparse gat-
+ing [29]. LoRAMoE [2] and Mixture-of-LoRAs [5] show that multi-task instruction tuning benefits
+from per-task LoRA experts; MoLA [6] allocates experts layer-wise; PESC [33] sparsifies a dense
+model into an MoE for instruction tuning; and hierarchical MoE [17] introduces multi-level gating
+to ease routing complexity. These works are structural: training credit is still assigned via a single
+supervised loss or a single unified advantage.
+Reinforcement fine-tuning for MoE / MoLE.
+A recent line applies policy-gradient RL [27]—
+notably GRPO [28]—to MoE and LoRA-MoE backbones. RO-GRPO [20] turns routing statistics
+into an auxiliary reward term to prevent expert collapse; RSPO [39] down-weights tokens with high
+router drift via a router-shift importance ratio; R3 [21] replays inference-time routing masks during
+training to close the train–inference gap; MoE-GRPO [14] casts expert selection as a sequential
+decision process in vision-language models; and PA-MoE [36] assigns disjoint LoRA experts to task
+phases under a unified policy objective. All of these approaches update the router and the experts
+under a single shared advantage (or only shape the reward), and none decompose credit along the
+router–expert axis. In contrast, our HGRPO performs a bi-level credit decomposition: a within-route
+conditional baseline (µr, σr) for the LoRA policy and an across-route baseline ¯µ for the router. The
+two estimators share the same expected gradient by the conditional-baseline argument of Greensmith
+et al. [7], but HGRPO has strictly lower variance at finite group sizes—consistent with what we
+observe in the C-vs.-D ablation of Table 2 in the main text.
+B.3
+Reinforcement Learning for Multi-Agent LLM Systems
+Recent work has explored reinforcement learning and adaptation mechanisms for LLM-based multi-
+agent systems. MoRAgent introduces role-conditioned LoRA adapters under single-agent train-
+ing [10], but does not consider multi-agent reinforcement learning or subtask-level credit assignment.
+Stronger-MAS adapts group-based policy optimization to multi-agent settings via AT-GRPO, defining
+groups along the temporal axis (env, agent, turn) with a single shared baseline [43]; MARTI provides
+a unified training-inference framework that supports multiple full-parameter RL algorithms with
+trajectory-level group-relative advantages [41]. Both, however, operate on static, predefined collabora-
+tion topologies (fixed role pairs or workflow templates), parameterize agent heterogeneity at the level
+of full per-role LLMs, and assign credit without an explicit router–expert decomposition. The closest
+exception, MARFT [19], formulates a Flex-MG DAG abstraction and adopts per-role LoRA, but pa-
+rameterizes only the role axis, exercises its DAG abstraction in practice as a fixed agent pipeline rather
+than per-instance dependency graphs, and assigns credit under a single shared advantage with no
+router–expert decomposition. MoRSE, in contrast, executes a per-instance dynamic DAG (whose node
+count, edges, and (role, subtask) labels are produced by the ToMAS planner per task) in topological
+order during training, supplying subtask-level credit signals to HGRPO. In contrast, MoRSE (i) trains
+on per-instance dependency-aware DAGs with open-ended subtask labels, (ii) factorizes parameters
+along both role and subtask axes via prototype-routed LoRA experts on a shared frozen backbone, and
+(iii) decomposes RL credit along the router–expert structural axis via HGRPO’s bi-level conditional
+baselines—an axis orthogonal to AT-GRPO’s (agent, turn) grouping and thus composable with it.
+Hierarchical and step-level credit in GRPO.
+A parallel line extends GRPO with finer credit
+along the temporal axis of agent rollouts: HGPO [11] introduces context-aware hierarchical grouping
+over rollout steps for long-horizon agents; GiGPO [4] groups anchor states across trajectories to
+estimate per-step advantages; GRPO-λ [23] refines credit at the token level; and execution-grounded
+schemes [16] exploit code-execution feedback as a step-level signal. Despite the naming overlap with
+HGRPO, these methods introduce hierarchy along the rollout-time axis, whereas HGRPO operates
+on the orthogonal structural axis of router versus experts within a single decoding step, and can in
+principle be combined with any of them.
+14
+C
+Limitations and Future Work
+Limitations.
+Empirically, our evaluation covers code-generation benchmarks; broader task families
+and substantially larger backbones remain to be tested. Architecturally, the default subtask-expert pool
+size is intentionally conservative, and we currently instantiate only two general roles, execute and
+merge, without finer-grained roles such as review, reasoning, or refine. Two further limitations
+concern the evaluation protocol. First, the SRDD training reward and the ECI evaluation metric
+draw on shared component sources, although their weights and implementations differ (Appendix I);
+an execution-verified independent evaluation corroborates the reported gains (Appendix J). Second,
+most reported results, such as those in Table 1, are computed under a single seed.
+Future work.
+Scaling the subtask-expert pool—especially when paired with adaptive per-instance
+allocation—should further improve coverage of heavy-tailed subtask distributions and strengthen
+generalization across diverse tasks; the pool is also a natural carrier for modality-specific experts in
+multi-modal settings, where each subtask can route to the modality expert(s) matching the input it
+needs to process. The framework is likewise compatible with richer role taxonomies—each new role
+corresponds to an additional role expert in Φr under the same MoLE composition. Finally, parameter-
+level heterogeneity is orthogonal to, and composable with, prompt-, tool-, and context-boundary-level
+differentiation: differentiated tools and context accesses present exactly the divergent contexts that
+demand differentiated parameters, and the expert pool and router can condition on each agent’s tool
+or action-space context in the same way they condition on (role, subtask). Therefore, extending
+MoRSE to such tool-use and broader agentic settings is a natural next step.
+D
+Broader Impacts
+MoRSE targets complex tasks that decompose into multiple interdependent subtasks, a setting that
+recurs across software engineering, scientific computing, data analysis, document and knowledge
+work, and decision support. By improving the capability and sample efficiency of LLM-based multi-
+agent systems on such tasks, the framework can lower the cost of deploying autonomous assistants in
+domains where progress currently depends on careful human orchestration of subtask pipelines. The
+work introduces no new datasets or pre-trained foundation models and does not pose specific risks
+beyond those already inherent to the open base models it builds on.
+E
+Implementation Details
+We instantiate MoRSE on three backbones spanning different families and sizes—Qwen3-4B-Instruct,
+Llama-3.1-8B-Instruct, and Gemma-4-31B-IT—as the shared backbone θ0. The planner uses the
+same backbone with a structured-output prompt to produce the per-instance DAG.
+LoRA experts.
+Each expert injects rank-ρ LoRA pairs at the query, value, and output projections
+of self-attention in the last Ladapt = 8 transformer blocks, with ρ = 8 and scaling α = 16. The role
+expert pool Φr contains |R| = 2 experts (one each for execute and merge); the subtask expert pool
+Φs contains Ks = 4 experts.
+Router.
+The subtask embedder mean-pools the frozen input token embeddings of si (truncation
+length 64), applies a trainable projection to dimension D = 128, and ℓ2-normalizes. The router
+selects K = 2 subtask experts per agent call (top-K stochastic sampling during training, greedy at
+inference).
+HGRPO training.
+Each node samples B = 4 expert routes from πψ, with M = 4 candidates per
+route. Advantages are normalized by the within-route standard deviation and clipped to ±5; updates
+are skipped when the within-group reward std falls below 5×10−4. The router gradient is scaled by
+απ = 0.15 relative to the LoRA gradient. Learning rates are 8×10−5 (LoRA experts) and 3×10−5
+(router), optimized with AdamW. Sampling uses top-p = 0.95.
+HGRPO instantiation across roles.
+The two-layer credit assignment in Sec. 3.3 applies in full
+to Executor calls, where the prototype router selects subtask experts and contributes a routing log-
+likelihood. For Merger calls, expert combinations are inherited from upstream Executors (Sec. 3.2)
+15
+without any router decision, so the cross-route advantage drops out and only the within-route advan-
+tage A(b,m)
+within updates the merge-role expert through log p(C(b,m)
+i
+| r, T , {yj}j∈Pa(i); θr
+i ), r=merge.
+Reward instantiations.
+At each DAG node, the rule-based verifier returns a binary admissibility
+flag gi ∈{0, 1} together with a scalar score ui aggregating task-appropriate metrics, with ui = 0
+whenever gi = 0. Inadmissible artifacts (gi = 0) trigger localised regeneration with diagnostic
+feedback before downstream propagation, preventing error compounding across the DAG. We
+instantiate the scorer ui as follows.
+SRDD-style code tasks. Let S denote the materialized repository artifact. We apply a hard gate that
+checks basic validity (e.g., presence of an entry point and a short smoke test). Conditioned on passing
+the gate, we compute a scalar reward as a weighted sum of task-relevant components,
+Rcode(T , S) = wexec rexec(S) + wcomp rcomp(S) + wcons rcons(T , S),
+(11)
+where rexec measures executability, rcomp measures completeness, and rcons measures semantic
+consistency between the task description and the produced codebase.
+SciCode-style scientific computing tasks. Each subtask is paired with a set of executable unit tests
+Ui. The admissibility flag gi requires the generated code to parse and expose the specified function
+signature; conditioned on passing the gate, the scalar reward is the per-subtask test pass rate
+Rsci(yi, Ui) = |{t ∈Ui : yi passes t}|
+|Ui|
+,
+(12)
+which aligns directly with the official Step Pass metric.
+Compute resources.
+SRDD and SciCode training on Qwen3-4B and Llama-3.1-8B uses 4×H200
+(141 GB HBM each) and 4×H100 (80 GB HBM each) respectively; Gemma-4-31B training uses
+4×B200 (192 GB HBM each). Each epoch takes approximately 6–12 hours; small-backbone runs use
+5–10 epochs, while Gemma-4-31B uses 1–2 epochs. Per-run on-disk footprint (LoRA checkpoints,
+rollouts, evaluation artefacts) is under 200 GB.
+F
+Training Algorithm for MoRSE
+Algorithm 1 summarizes one HGRPO update for a task instance T . ToMAS first decomposes T
+into a DAG; for each executor node, the router samples B expert routes and the policy generates M
+candidates per route, after which the rule-based verifier yields step rewards u(b,m). HGRPO then
+forms hierarchical advantages (Eq. (6)): within-route advantages drive the LoRA-expert gradient and
+cross-route advantages drive the router gradient, as derived in Sec. 3.3. Merger nodes follow the same
+loop but only update the merge role expert with no subtask routing (see Sec. 3.1 and Appendix E).
+G
+HGRPO Variance Reduction: Proposition and Proof
+We formalise the gradient-variance reduction of the two-layer credit assignment in Sec. 3.3 relative to
+standard GRPO, which applies the empirical mean ¯u =
+1
+BM
+P
+b,m u(b,m)
+i
+as the only baseline for
+both expert and router updates.
+Setup.
+At a fixed node vi, treat the route index b ∈{1, . . . , B} and the candidate index m ∈
+{1, . . . , M} as random draws (routes from πψ(· | si), candidates from the policy under E(b)
+i
+). Let
+u(b,m) := u(b,m)
+i
+for brevity. Define the conditional baselines µ(b) := Em[u | b] and ¯µ := Eb[µ(b)],
+with the law-of-total-variance decomposition
+σ2
+W := Eb[Varm(u | b)],
+σ2
+C := Varb[µ(b)],
+Var(u) = σ2
+W + σ2
+C.
+Proposition (informal).
+The HGRPO and standard GRPO gradient estimators in Eqs. (7)–(8) share
+the same expected gradient. The variance reduction, however, differs between the two updates.
+LoRA-expert update (real reduction). At finite group sizes M, B, the HGRPO LoRA-expert
+gradient has strictly lower per-term variance than standard GRPO, with reduction
+Var
+
+gLoRA
+single
+
+−Var
+
+gLoRA
+HGRPO
+
+= σ2
+C · E
+
+∥∇Φ log p∥2
+≥0.
+16
+Algorithm 1 MoRSE training step (per task instance T ).
+Require: Frozen backbone θ0; LoRA experts Φ = Φr ∪Φs; prototype router πψ; rule-based verifier
+V; group sizes (B, M); PPO clip ϵclip; step size η.
+1: Decompose via ToMAS: G = (V, E), {(ri, si, Pa(i))}i∈V ←ToMAS(T )
+{Sec. 3.1}
+2: Initialize gradient accumulators gΦ ←0, gψ ←0
+3: for each node vi ∈V in topological order do
+4:
+Build context Ci ←{yj}j∈Pa(i)
+5:
+for route b = 1, . . . , B do
+6:
+Sample expert subset E(b)
+s,i ∼πψ(· | si)
+{top-K stochastic during training; greedy at
+inference}
+7:
+θ(b)
+i
+←θ0 + ∆Φ
+ {e(ri)} ∪E(b)
+s,i
+
+8:
+for candidate m = 1, . . . , M do
+9:
+Sample y(b,m) ∼p(· | T , si, Ci; θ(b)
+i )
+10:
+Compute step reward u(b,m) ←V(y(b,m), si)
+11:
+end for
+12:
+Within-route stats: µ(b) ←
+1
+M
+P
+m u(b,m), σ(b) ←stdm
+ u(b,m)
+13:
+end for
+14:
+Cross-route stats: ¯µ ←1
+B
+P
+b µ(b), σC ←stdb
+ µ(b)
+15:
+A(b,m)
+within ←
+ u(b,m) −µ(b)
+/(σ(b) + ϵ)
+{LoRA-expert advantage}
+16:
+A(b)
+cross ←
+ µ(b) −¯µ
+
+/(σC + ϵ)
+{router advantage}
+17:
+gΦ += ∇Φ JPPO-clip
+ϵclip
+ {A(b,m)
+within }; πθ(b)
+i
+
+18:
+gψ += ∇ψ JPPO-clip
+ϵclip
+ {A(b)
+cross}; πψ(· | si)
+
+19:
+Select one yi ∈{y(b,m)} for downstream context propagation
+{e.g., highest-reward route}
+20: end for
+21: Φ ←Φ + η gΦ;
+ψ ←ψ + η gψ
+Ensure: Updated (Φ, ψ).
+Because each candidate produces its own gradient ∇Φ log p(b,m), the per-term reduction σ2
+C accumu-
+lates additively across all BM candidates.
+Proof sketch (LoRA-expert reduction).
+Unbiasedness follows from the standard score-function
+identity: for any baseline that is independent of the action conditional on the corresponding context,
+E[(R −baseline)∇log p] = E[R∇log p] since E[∇log p] = 0. Both µ(b) (constant in m given b)
+and ¯µ (constant across actions) satisfy this requirement.
+For the variance reduction, write
+gLoRA
+HGRPO = (u −µ(b))∇Φ log p,
+gLoRA
+single = (u −¯µ)∇Φ log p,
+and observe u −¯µ = (u −µ(b)) + (µ(b) −¯µ), where the two terms are uncorrelated (within-route
+vs. cross-route deviation, orthogonal under conditional expectation). Taking variances and using
+independence of the score function from the cross-route deviation µ(b) −¯µ within the conditional-
+baseline regime [7],
+Var[gLoRA
+single ] = Var[gLoRA
+HGRPO] + σ2
+C · E[∥∇Φ log p∥2].
+Remarks.
+(i) With the σ(b) normalisation included, the LoRA-expert variance reduction carries the
+reweighted factor made precise in Corollary G.1 below. (ii) The reduction is largest when the cross-
+route reward variance σ2
+C dominates—i.e., when the routed expert combinations differ substantially
+in quality, which is precisely the regime where credit assignment matters most.
+Corollary G.1 (normalized form). Under the conditions of Proposition 3.1, with per-route standard-
+ization, replacing the global baseline with the within-route baseline reduces the per-term LoRA-expert
+gradient variance by
+Eb
+(µ(b) −¯µ)2
+(σ(b) + ϵ)2
+
+· E
+
+∥∇Φ log p∥2
+≥0.
+(13)
+17
+Bridge to the normalized estimator (proof of Corollary G.1).
+With per-route standardization,
+the two estimators become gLoRA
+HGRPO = u−µ(b)
+σ(b)+ϵ ∇Φ log p and gLoRA
+single =
+u−¯µ
+σ(b)+ϵ ∇Φ log p, both divided
+by the same route-constant scale σ(b) + ϵ. Writing
+u−¯µ
+σ(b)+ϵ = u−µ(b)
+σ(b)+ϵ + µ(b)−¯µ
+σ(b)+ϵ , the two terms remain
+uncorrelated under the same conditional-independence conditions as in the unnormalized proof, and
+the shared within-route component cancels in the variance difference. The reduction is therefore
+carried by the second term alone,
+Var
+
+gLoRA
+single
+
+−Var
+
+gLoRA
+HGRPO
+
+= Eb
+(µ(b) −¯µ)2
+(σ(b) + ϵ)2
+
+· E
+
+∥∇Φ log p∥2
+≥0,
+which is exactly Corollary G.1.
+Two qualifications apply. Replacing population means with empirical group statistics preserves
+both conclusions up to O(1/M) finite-sample corrections; equal expectation holds up to two benign
+scaling effects, a (1 −1/M) factor absorbed by the learning rate and the empirical per-route scale
+acting as an adaptive step size, both shared by group-relative estimators including standard GRPO.
+Advantage clipping and the low-variance-group skip are engineering stabilizers outside the analysis.
+Router update (scaling-equivalent at the batch level).
+The router score function ∇ψ log πψ(E(b))
+is constant in m, so the flat-GRPO batch-summed router gradient collapses to M P
+b(ˆµ(b) −
+¯u)∇ψ log π(b). Combined with ¯u = ¯µ, this equals M times the unnormalised HGRPO router
+gradient P
+b(ˆµ(b) −¯µ)∇ψ log π(b); the two estimators therefore have identical signal-to-noise ra-
+tio at the batch level. The substantive contribution of HGRPO’s per-route formulation is the σC
+normalisation, providing a well-scaled router gradient that does not depend on the group size M.
+Scope of the guarantees.
+In summary, the formal guarantees concern the LoRA-expert update:
+HGRPO shares the expected gradient of standard GRPO and strictly reduces the LoRA-expert gra-
+dient variance at finite group sizes (Proposition 3.1), a reduction that persists for the implemented
+normalized estimator in the reweighted form of Corollary G.1, up to O(1/M) finite-sample correc-
+tions. For the router, the analysis establishes a weaker property: the batch-level router gradient is
+scaling-equivalent to that of flat GRPO, and the per-route σC normalization supplies a well-scaled
+signal whose magnitude does not depend on the group size M; no variance-reduction claim is made
+for the router update. The stability of the joint co-optimization of experts and router is an empiri-
+cal finding rather than a theorem: it is supported by the training dynamics in Appendix H, where
+the HGRPO surrogate remains within ±0.05 across all epochs while the standard-GRPO variant
+destabilizes, and by the C vs. D ablation in Table 2.
+H
+HGRPO Training Dynamics
+Figure 6 compares the full method (ours) to an ablation that removes hierarchical credit (−hgrpo,
+standard GRPO over merged trajectories) on Qwen3-4B SRDD training. Left: per-epoch GRPO
+surrogate (updated steps only, symlog scale). The surrogate measures the importance-ratio–advantage
+product and is expected to stay near zero under stable on-policy updates; deviations indicate either
+ratio drift or advantage blow-up. Ours remains within ±0.05 across all 10 epochs, indicating that
+the within-route conditional baseline keeps both quantities controlled. The standard-GRPO variant
+crashes to ≈−11.5 at epochs 7–8 before partially recovering, consistent with the variance-reduction
+analysis in Sec. 3.3 and Appendix G: without the conditional baseline, advantages computed across
+merged trajectories accumulate cross-route variance that destabilises the policy ratio. Right: the
+downstream consequence on SRDD evaluation step-pass rate—ours rises monotonically from ∼21%
+at epoch 1 to ∼28% at epoch 10, while the −hgrpo curve plateaus earlier and is eventually overtaken.
+Together these two views confirm that hierarchical credit does not merely enable MoLE to fit the data:
+it is required for stable optimization under the DAG/merge rollout structure.
+I
+Experimental Setup Details
+This appendix expands the experimental setup of Sec. 4 (Datasets, Baselines, and Evaluation Metrics).
+18
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+Epoch
+101
+100
+10
+1
+10
+20
+10
+2
+10
+1
+GRPO Loss  (symlog scale)
+crash
+(-11.5)
+linear ±0.05
+GRPO Loss per Epoch
+(updated steps only)
+-hgrpo
+ours
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+Epoch
+18.0%
+20.0%
+22.0%
+24.0%
+26.0%
+28.0%
+30.0%
+Step Pass Rate
+Pass Rate per Epoch  (Qwen3-4B)
+-hgrpo
+ours
+Figure 6: HGRPO training dynamics on Qwen3-4B (SRDD). Left: per-epoch GRPO loss (updated
+steps only, symlog scale). Right: step-pass rate per epoch.
+Dataset splits.
+For SRDD we sample from the 1,200 examples with a 3:2 train/test ratio for
+in-distribution evaluation. The out-of-distribution split is category-disjoint: 8 of the 40 categories
+(Strategy_Game, Science, Health_Fitness, Graphics, etc.) are withheld entirely from training,
+yielding a 4:1 train/test sample ratio. For SciCode we use the official 60/20 problem split for IID
+evaluation, and a 64/16 problem-disjoint OOD split that withholds the Chemistry and Biology
+domains while training only on Physics, Math, and Material Science.
+Baselines.
+ChatChain [24] is a sequential CEO/CTO/Programmer/Counselor pipeline that pro-
+duces code through structured chat across two phases (language selection followed by coding).
+MacNet [25] organizes agents on a 5-node DAG with per-node review and an aggregation step that
+merges the outputs; both ChatChain and MacNet run on the official ChatDev codebase implementa-
+tion [24]. AFlow [40] is a search-based agentic-workflow generator that constructs the orchestration
+graph via Monte-Carlo Tree Search over operator templates. MoRSEbase is the untrained MoRSE
+framework (row A of Table 2) and serves as an anchor that isolates the contribution of training
+on the same DAG. All baselines and our method share Qwen3-4B-Instruct, Llama-3.1-8B-Instruct,
+and Gemma-4-31B-IT backbones served via HuggingFace Transformers in bfloat16, with the same
+prompts and decoding configuration (8192-token budget, temperature 0.2, top-p 0.95). Each base-
+line runs with its own native revision mechanism: code-review-and-test revision in ChatChain,
+verification-informed review-and-rewrite along edges in MacNet, test-and-revise operators in AFlow,
+and the same verify-and-regeneration attempts for the single-agent reference. The maximum number
+of attempts is fixed to 3 across all pipelines on SRDD; on SciCode, the Table 1 evaluation includes
+no revision for any method, while the verifier still provides step-level rewards during training.
+Evaluation metrics.
+On SRDD we report two scoring metrics from Qian et al. [24]: Exec (↑),
+the fraction of generated codebases that compile and run end-to-end; and ECI (↑), a [0, 1]-valued
+composite over per-sample completeness rcomp, executability rexec, and consistency rcons, summarised
+across the suite as
+ECImean = 1
+3
+ rexec + rcomp + rcons
+
+,
+ECIproduct = rexec · rcomp · rcons.
+(14)
+On SciCode we report the official [32] Step Pass (↑) (micro step-level pass rate), Mean Step
+Pass (↑) (per-problem step accuracy averaged across problems), and Problem Pass (↑) (fraction
+of problems for which all steps pass), identical to the main-text protocol of Sec. 4.
+Reward–metric relationship (SRDD).
+We fix wexec = 0.5, wcomp = 0.5, and wcons = 1.0 (split
+as 0.7 for consistency with the overall task description and 0.3 for the node’s own subtask); the
+weights are principled defaults fixed a priori from the design intent and kept unchanged across all
+trained variants and backbones. The training reward further differs from the ECI evaluation metrics
+in both implementation and composites. The consistency term in the reward is a purely lexical
+bag-of-words cosine between the (sub)task description and the stripped code, without any learned
+model, whereas the ECI evaluation computes an embedding cosine with gte-Qwen2-7B-instruct,
+so the training signal never observes the evaluation scorer. The composites also differ: ECImean
+averages the three components with equal weights while the reward is non-uniformly weighted, and
+19
+ECIproduct multiplies the three components, an aggregation form that never appears in the reward.
+An execution-verified check (Appendix J) verifies that the gains are not an artifact of this alignment.
+J
+Detailed Experimental Analysis
+This appendix expands the ablation study of Sec. 4.2 with a module-level progression, budget-
+accounted trained comparisons, a router-utilization analysis, and an execution-verified independent
+evaluation; the training-dynamics comparison behind the stability ablation is in Appendix H.
+Module-level progression.
+Table 3 traces the progression from the single agent to the untrained
+framework and the trained MoRSE on the held-out Test split, where the framework-level uplift covers
+the task decomposition together with the verifier-guided regeneration, and the training-level uplift
+covers the proposed parameter specialization and credit assignment. The training-level uplift exceeds
+the framework-level uplift on every metric on both benchmarks under the same revision budget;
+within it, the part beyond ordinary RL fine-tuning (D vs. the budget-matched single-LoRA controls
+in Table 4) remains positive on every metric.
+Table 3: Progression from the single agent to MoRSEbase and the trained MoRSE on the held-out
+Test split (Qwen3-4B; Table 1 numbers). Uplifts are relative (%), except SciCode Problem Pass in
+percentage points.
+#
+Setting
+SRDD (Exec / ECI-M / ECI-P)
+SciCode (Step / Mean Step / Problem Pass)
+1
+Single-agent
+65.00 / 0.690 / 0.286
+21.43 / 19.33 / 0.00
+2
+MoRSEbase
+72.50 / 0.693 / 0.268
+20.41 / 19.65 / 0.00
+3
+MoRSE
+86.25 / 0.755 / 0.360
+29.00 / 32.50 / 10.00
+–
+Framework-level uplift (1 →2)
++11.5% / +0.4% / −6.3%
+−4.8% / +1.7% / +0.0 pp
+–
+Training-level uplift (2 →3)
++19.0% / +8.9% / +34.3%
++42.1% / +65.4% / +10.0 pp
+All trained comparisons with budget accounting.
+Table 4 collects all trained comparisons together
+with the full budget accounting. Each expert is a rank-8 LoRA on the q/v/o projections of the last 8
+blocks, and each call activates 1 role + top-2 subtask experts, giving the activated vs. total accounting
+(3.24M / 6.49M). Trainable parameters: B exactly matches MoRSE’s per-call activation, and B+
+matches the total budget. Rollout budget: identical total per call, sampled as one flat credit group
+under standard GRPO and as 4 routes × 4 candidates per route under HGRPO; for C, each of the 16
+candidates still samples its own expert combination, while the credit group stays flat. Optimization
+budget: identical training data, reward, and schedule, under the same AdamW optimizer with the
+same LoRA learning rate (8 × 10−5) and top-p = 0.95 sampling (Appendix E). D outperforms both
+single-LoRA controls (B, B+), and doubling the single LoRA’s rank to the total-parameter match
+brings no consistent further gain under the same data and training settings, indicating that the gains
+are not simply an effect of a larger parameter budget under either the activated or the total accounting.
+Table 4: All trained comparisons on the SRDD held-out Test split (Qwen3-4B). Rollouts are per call;
+Router = the dynamic role–subtask prototype router; GRPO = standard GRPO.
+#
+Setting
+Rank
+Act. params
+Total params
+Rollouts
+Router
+Credit
+Exec / ECI-M / ECI-P
+1
+Single-agent (Table 1)
+–
+–
+–
+–
+–
+–
+65.00 / 0.690 / 0.286
+2
+Single-agent LoRA RL
+24 × 1
+3.24M
+3.24M
+16
+none
+GRPO
+70.75 / 0.722 / 0.321
+3
+A. MoRSEbase (Table 2)
+–
+–
+–
+–
+–
+–
+72.50 / 0.693 / 0.268
+4
+B. MoRSE w/o MoLE (act. params matched; Table 2)
+24 × 1
+3.24M
+3.24M
+16
+none
+GRPO
+82.50 / 0.745 / 0.329
+5
+B+. MoRSE w/o MoLE (total params matched)
+48 × 1
+6.49M
+6.49M
+16
+none
+GRPO
+81.25 / 0.741 / 0.348
+6
+C. MoRSE w/o HGRPO (2-role + 4-subtask MoLE; Table 2)
+8 × (2+4)
+3.24M
+6.49M
+16
+✓
+GRPO
+73.75 / 0.696 / 0.257
+7
+D. MoRSE (2-role + 4-subtask MoLE; Table 2)
+8 × (2+4)
+3.24M
+6.49M
+16 (4 × 4)
+✓
+HGRPO
+86.25 / 0.755 / 0.360
+Isolation map. HGRPO: row 6 vs. row 7 (fixed MoLE, standard GRPO →HGRPO) isolates the
+hierarchical credit assignment. Dynamic role–subtask routing: row 4 vs. row 6 isolates the routing
+architecture under standard GRPO, fragile without hierarchical credit (Sec. 4.2), while rows 4–5
+vs. row 7 give the net contribution of dynamic routing combined with HGRPO under matched
+budgets. The multi-agent structure itself: row 1 vs. row 3 without training, and row 2 vs. row
+4 under identical training, where the two rows share the same data, trainable-parameter, rollout, and
+optimization budgets and differ only in the multi-agent structure.
+20
+Router utilization and the expert-count diagnostic.
+After training, the router does not collapse
+to a nearly fixed route: every expert enters the greedy top-2 for some subtasks, the soft routing
+entropy averages 1.374 nats and the realized top-2 utilization entropy is 1.009 nats, both against
+the maximum ln 4 = 1.386 and the latter well above the ln 2 = 0.693 of a fixed pair, and the most
+common pair carries 76.1% of the subtasks while 23.9% route elsewhere (Table 5). The pair pattern
+is a learned shared-plus-specialist structure rather than a degeneration, one generalist expert staying
+active while the second slot switches with the subtask, mirroring the deliberate shared-expert design
+of DeepSeekMoE [1]. Training further includes two anti-collapse mechanisms, an entropy regularizer
+on each routing distribution (weight 0.02) and an orthogonality penalty on the expert prototypes
+(weight 0.05), so every expert receives gradient signal throughout training.
+Table 5: Expert- and pair-level utilization of the trained model (Table 2 row D, Qwen3-4B, SRDD
+test).
+Expert
+Selected in top-2
+Mean routing prob.
+Expert pair (top-2)
+Share of subtasks
+0
+21.3%
+0.227
+(1, 3)
+76.1%
+1
+76.1%
+0.238
+(0, 3)
+21.3%
+2
+2.6%
+0.219
+(2, 3)
+2.6%
+3
+100.0%
+0.316
+(0,1), (0,2), (1,2)
+0%
+The cluster count in Sec. 2.1 is diagnostic, while the expert count is a design choice: K=8 is the
+clustering resolution used to demonstrate that heterogeneous subtask demands exist, not a design
+target, and with top-2 routing the four subtask experts act as a compositional basis, providing
+ 4
+2
+
+= 6
+subtask combinations crossed with the two role experts. The choice of four was fixed in advance,
+never tuned on validation or test performance, and we do not claim it is optimal.
+Execution-verified independent evaluation (SRDD).
+To verify that the SRDD gains are not an
+artifact of the residual alignment between the training reward and the ECI metrics (Appendix I),
+we build an execution-verified evaluation that is not encoded in the training reward and apply it to
+variants A, B, and D of Table 2 on the SRDD test split (Qwen3-4B). For each task, 3 to 5 acceptance
+checks are derived from the task description alone, blind to all systems; every generated program
+is then executed in a scripted interactive session, and its runtime transcript is scored against the
+checks by a deterministic pattern match and by a stricter LLM pass/fail grading. Both the checks and
+the LLM grading come from a model family disjoint from the trained backbone and the evaluation
+embedder, and the training reward never sees the checks, the runtime protocol, or either scoring rule.
+Table 6 reports both metrics; MoRSE improves over both variants under either scoring rule.
+Table 6: Execution-verified evaluation of the Table 2 variants on the SRDD test split (Qwen3-4B).
+Coverage is the fraction of acceptance checks satisfied.
+Variant
+Coverage (pattern-matched)
+Coverage (LLM-scored, Claude Opus 4.8)
+A. MoRSEbase
+0.501
+0.167
+B. MoRSE w/o MoLE
+0.582
+0.202
+D. MoRSE
+0.619
+0.224
+K
+OOD Generalization Tables
+This appendix provides per-row OOD tables corresponding to Fig. 5 in the main body. ∆gain
+OOD =
+variant −A computed on the same OOD samples isolates the training contribution from intrinsic
+domain difficulty.
+21
+Table 7: OOD generalization on SRDD (8 categories held out from training).
+OOD test
+∆gain
+OOD = variant −A
+Variant
+Description
+Exec
+(%)
+ECI
+Mean
+ECI
+Product
+∆
+Exec
+∆ECI
+Mean
+∆ECI
+Product
+Qwen3-4B-Instruct
+0. MacNet
+prior MAS baseline
+66.25
+0.616
+0.186
+−23.75 −0.149 −0.184
+A. MoRSE w/o MoLE & HGRPO (MoRSEbase) untrained reference
+90.00
+0.765
+0.370
+0.00
+0.000
+0.000
+B. MoRSE w/o MoLE
+standard-training baseline
+88.75
+0.765
+0.374
+−1.25
+0.000
++0.004
+D. MoRSE
+ours
+96.25
+0.783
+0.392
++6.25
++0.018
++0.022
+Llama-3.1-8B-Instruct
+0. MacNet
+prior MAS baseline
+71.25
+0.630
+0.184
+−1.25
+−0.046 −0.058
+A. MoRSE w/o MoLE & HGRPO (MoRSEbase) untrained reference
+72.50
+0.676
+0.242
+0.00
+0.000
+0.000
+B. MoRSE w/o MoLE
+standard-training baseline
+76.25
+0.702
+0.285
++3.75
++0.026
++0.043
+D. MoRSE
+ours
+80.00
+0.722
+0.310
++7.50
++0.046
++0.068
+Table 8: OOD generalization on SciCode (Chemistry+Biology withheld; training uses only
+Physics+Math+Material Science).
+OOD test
+∆gain
+OOD = variant −A
+Variant
+Description
+Step
+Pass (%)
+Mean Step
+Pass (%)
+Problem
+Pass (%)
+∆Step
+Pass
+∆Mean
+Step Pass
+∆Problem
+Pass
+Qwen3-4B-Instruct
+0. MacNet
+prior MAS baseline
+8.75
+9.79
+0.00
+−8.75
+−10.28
+0.00
+A. MoRSE w/o MoLE & HGRPO (MoRSEbase) untrained reference
+17.50
+20.07
+0.00
+0.00
+0.00
+0.00
+B. MoRSE w/o MoLE
+standard-training baseline
+22.22
+16.67
+0.00
++4.72
+−3.40
+0.00
+D. MoRSE
+ours
+24.69
+19.44
+0.00
++7.19
+−0.63
+0.00
+Llama-3.1-8B-Instruct
+0. MacNet
+prior MAS baseline
+8.75
+9.06
+0.00
++1.25
+0.00
+0.00
+A. MoRSE w/o MoLE & HGRPO (MoRSEbase) untrained reference
+7.50
+9.06
+0.00
+0.00
+0.00
+0.00
+B. MoRSE w/o MoLE
+standard-training baseline
+16.05
+9.26
+0.00
++8.55
++0.20
+0.00
+D. MoRSE
+ours
+18.52
+9.57
+0.00
++11.02
++0.51
+0.00
+L
+Role-Subtask Architecture Mismatch in the Base LM: Procedure,
+Diagnostics, and Coverage Limit
+This appendix supports the empirical motivation in Sec. 2.1, where we claim that different roles and
+subtasks impose mismatched parameter-adaptation demands on the base LM. We operationalise this
+mismatch via rank-ρ subspace divergence between (role, subtask) groups. §L.1 states the diagnostic
+procedure; §L.2 provides supplementary evidence (per-layer stability, cross-benchmark robustness);
+§L.3 proves a coverage-limit theorem in the same divergence quantity, formalising why a single
+shared rank-ρ LoRA cannot cover both groups simultaneously.
+L.1
+Diagnostic Procedure
+Our diagnostic is inspired by prior representation-similarity analyses that summarise neural activations
+by their low-rank principal subspaces and compare two such subspaces via Frobenius/principal-angle
+distances on the Grassmann manifold [26, 15, 9]. Whereas those works compare representations
+across networks or layers, we apply the same machinery within a single base LM at a fixed layer,
+conditioned on (role, subtask) group membership, in order to test whether different groups carry their
+adaptation signal in different rank-ρ directions. The role diagnostic (Figure 2(a)) and the subtask
+diagnostic (Figure 2(b,c)) share the same SVD-subspace + shuffle-baseline pipeline; they differ only
+in how prompts are constructed and how groups are defined.
+Backbone and target layers.
+We use Qwen3-4B-Instruct in float16.
+The diagnostic tar-
+gets the last N=8 decoder layers, matching the LoRA injection range used by MoLE on
+{q_proj, v_proj, o_proj}. For each prompt we run a single no-grad forward pass and capture
+the input activation to each target layer at the last token position—exactly what the LoRA module
+sees—giving a tensor A(L) ∈RNp×d per layer.
+22
+C0
+C1
+C2
+C3
+C4
+C5
+C6
+C7
+C0
+C1
+C2
+C3
+C4
+C5
+C6
+C7
+layer 28
+C0
+C1
+C2
+C3
+C4
+C5
+C6
+C7
+C0
+C1
+C2
+C3
+C4
+C5
+C6
+C7
+layer 29
+C0
+C1
+C2
+C3
+C4
+C5
+C6
+C7
+C0
+C1
+C2
+C3
+C4
+C5
+C6
+C7
+layer 30
+C0
+C1
+C2
+C3
+C4
+C5
+C6
+C7
+C0
+C1
+C2
+C3
+C4
+C5
+C6
+C7
+layer 31
+C0
+C1
+C2
+C3
+C4
+C5
+C6
+C7
+C0
+C1
+C2
+C3
+C4
+C5
+C6
+C7
+layer 32
+C0
+C1
+C2
+C3
+C4
+C5
+C6
+C7
+C0
+C1
+C2
+C3
+C4
+C5
+C6
+C7
+layer 33
+C0
+C1
+C2
+C3
+C4
+C5
+C6
+C7
+C0
+C1
+C2
+C3
+C4
+C5
+C6
+C7
+layer 34
+C0
+C1
+C2
+C3
+C4
+C5
+C6
+C7
+C0
+C1
+C2
+C3
+C4
+C5
+C6
+C7
+layer 35
+0.0
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6
+0.7
+0.8
+SRDD cluster subspace divergence (rank=8, last 8 layers)
+Figure 7: SRDD subspace divergence across all 8 LoRA layers. Each sub-panel is a cluster-pair
+heatmap (1 −∥V ⊤
+a Vb∥2
+F /ρ) at one layer; off-diagonal structure is nearly constant across panels.
+Subspace and divergence measure.
+For each layer L and group g, restrict A(L) to rows in g,
+mean-center, and take the top-ρ right singular vectors V (L)
+g
+∈Rd×ρ with ρ=8 matching the LoRA
+rank. For every group pair (ga, gb),
+div(L)(ga, gb) = 1 −1
+ρ
+ (V (L)
+ga )⊤V (L)
+gb
+2
+F ∈[0, 1],
+where 0 corresponds to identical rank-ρ subspaces and 1 to mutually orthogonal ones.
+Shuffle baseline.
+For each layer we randomly permute group labels (preserving group sizes),
+recompute the group SVD subspaces, and average the off-diagonal divergence; repeating T=20 trials
+yields a baseline mean±σ. The real-vs-shuffle gap quantifies how much divergence is genuinely
+group-conditional rather than an artifact of any size-preserving partition.
+Role diagnostic (K=2).
+We collect 200 execute-node subtask descriptions from SRDD inference
+traces. Each is rendered into two prompts that differ only in a role marker (ROLE=execute vs.
+ROLE=merge) and a short role-specific instruction tail; subtask content is held identical, so the
+divergence isolates role-conditioning from subtask content.
+Subtask diagnostic (K=8).
+We take all SRDD execute-node prompts, build TF-IDF features,
+and run KMeans with K=8 clusters (a finer granularity than the Ks=4 subtask experts; the clustering
+is a diagnostic instrument rather than a prescription for the expert count). Each prompt uses a fixed
+ROLE=execute marker so role is held constant and cluster identity is the only varying factor; up to
+50 prompts per cluster are sampled. Off-diagonal entries of the K×K divergence matrix appear in
+Figure 2(c) (representative layer) and Figure 7 (all 8 layers).
+L.2
+Supplementary Diagnostics
+All eight LoRA layers.
+Figure 7 shows the K×K subtask-cluster divergence heatmap for every
+LoRA-injected layer. The pattern of high- and low-divergence cluster pairs is visually stable across
+all eight layers, confirming that the layer instance shown in Figure 2(c) is not cherry-picked.
+Robustness across benchmarks (SciCode).
+Repeating the diagnostic on SciCode reproduces the
+SRDD finding: the real-vs-shuffle gap is 0.29 (0.73 vs. 0.44), ±σ-bands are non-overlapping at every
+layer, and the layer-wise cluster-pair heatmap shows the same off-diagonal heterogeneity (Figure 8).
+L.3
+LoRA Subspace Coverage Limit
+The empirical observation in Sec. 2.1 is that role- and subtask-conditioned updates of the base LM
+live in distinct rank-ρ subspaces. We now show that no single shared rank-ρ LoRA adapter can
+simultaneously cover both subspaces. The assumption is stated in the same divergence quantity as
+Figure 2, so the empirical and theoretical statements speak about the same object.
+23
+28
+29
+30
+31
+32
+33
+34
+35
+Layer index (LoRA range)
+0.0
+0.2
+0.4
+0.6
+0.8
+Mean cluster-pair subspace divergence
+SCICODE: cluster subspace divergence vs. shuffle (rank=8)
+real cluster labels
+shuffle baseline
+(a) SciCode: real vs. shuffle.
+C0
+C1
+C2
+C3
+C4
+C5
+C6
+C7
+Cluster
+C0
+C1
+C2
+C3
+C4
+C5
+C6
+C7
+Cluster
+L31  (mean off-diag=0.71)
+0.0
+0.2
+0.4
+0.6
+0.8
+1
+Va Vb 2
+F/r
+(b) SciCode: representative layer.
+Figure 8: SciCode robustness. Repeating the SRDD diagnostic on SciCode: real-vs-shuffle gap 0.29
+with non-overlapping ±σ-bands across layers (left), and the same off-diagonal cluster-pair structure
+at the representative layer (right).
+Assumption L.1 (Group subspace divergence). At some layer of the base LM, there exist two
+groups (e.g., two roles, or two subtask clusters) whose group-optimal rank-ρ LoRA update subspaces
+Va, Vb ⊆Rd, with orthonormal bases Va, Vb ∈Rd×ρ, satisfy
+D(Va, Vb) ≜1 −1
+ρ∥V ⊤
+a Vb∥2
+F ≥∆> 0.
+This is exactly the divergence in Figure 2(a,b); ∆is the empirically measured real-label value at each
+layer.
+Theorem L.2 (LoRA Subspace Coverage Limit). Let θ1, . . . , θρ ∈[0, π/2] be the principal angles
+between Va and Vb. For any shared rank-ρ LoRA update subspace with orthonormal basis Vs ∈Rd×ρ,
+¯p(Vs) ≜
+∥V ⊤
+s Va∥2
+F +∥V ⊤
+s Vb∥2
+F
+2ρ
+≤
+1
+2 + 1
+2ρ
+Pρ
+i=1 cos θi ≤
+1+√1−∆
+2
+< 1.
+The first inequality is tight when Vs stacks the top-ρ eigenvectors of VaV ⊤
+a +VbV ⊤
+b , i.e., the principal-
+angle bisecting subspace span{(ui + wi)/∥ui + wi∥}ρ
+i=1 of (Va, Vb). The second is tight iff all
+principal angles are equal. As an immediate corollary, min
+ ∥V ⊤
+s Va∥2
+F , ∥V ⊤
+s Vb∥2
+F
+
+/ρ ≤(1 +
+√
+1 −∆)/2, so at least one of the two groups is strictly under-covered by any single shared rank-ρ
+adapter.
+Proof. (1) Trace formulation. Using ∥V ⊤
+s V ∥2
+F = tr(V ⊤
+s V V ⊤Vs) and trace cyclicity,
+∥V ⊤
+s Va∥2
+F + ∥V ⊤
+s Vb∥2
+F = tr
+ V ⊤
+s MVs
+
+,
+M ≜VaV ⊤
+a + VbV ⊤
+b
+∈Rd×d,
+where M is symmetric and positive semi-definite.
+(2) Ky Fan trace maximum. Let λ1(M) ≥λ2(M) ≥· · · ≥λd(M) ≥0 be the eigenvalues of M.
+By the Ky Fan trace maximum principle,
+max
+V ⊤
+s Vs=Iρ
+tr
+ V ⊤
+s MVs
+
+=
+ρ
+X
+i=1
+λi(M),
+attained by stacking the top-ρ orthonormal eigenvectors of M in Vs.
+(3) Spectrum of M via principal angles. Write the SVD V ⊤
+a Vb = U diag(cos θi) W ⊤with
+U, W ∈Rρ×ρ orthogonal and θi ∈[0, π/2]. Set ¯Va ≜VaU and ¯Vb ≜VbW; their columns
+ui, wi ∈Rd form orthonormal bases of Va and Vb with u⊤
+i wj = cos θi δij (canonical correlation
+pairs), and VaV ⊤
+a
+= ¯Va ¯V ⊤
+a , similarly for b. For each i, M leaves span(ui, wi) invariant: when
+θi ∈(0, π/2] the two vectors are linearly independent and a direct computation gives eigenvalues
+1 + cos θi (eigenvector ∝ui + wi) and 1 −cos θi (eigenvector ∝ui −wi); when θi = 0 we have
+24
+ui = wi and the subspace collapses to one eigenvalue 1 + cos θi = 2. On (Va + Vb)⊥, M acts as
+zero. Hence the non-zero spectrum of M is
+{1 + cos θi}ρ
+i=1 ∪{1 −cos θi : θi > 0}.
+Since cos θi ∈[0, 1], every 1 + cos θi ≥1 ≥1 −cos θj, so the top ρ eigenvalues are precisely
+{1 + cos θi}ρ
+i=1, giving
+ρ
+X
+i=1
+λi(M) = ρ +
+ρ
+X
+i=1
+cos θi.
+Combining with (1)–(2) yields the first inequality of the theorem (with equality at the principal-
+bisector subspace).
+(4) Bounding P
+i cos θi by ∆.
+Since ∥V ⊤
+a Vb∥2
+F
+=
+Pρ
+i=1 cos2 θi, Assumption L.1 gives
+P
+i cos2 θi ≤ρ(1 −∆). By Cauchy–Schwarz applied to the all-ones vector and (cos θi)ρ
+i=1,
+ρ
+X
+i=1
+cos θi ≤
+q
+ρ · P
+i cos2 θi ≤ρ
+√
+1 −∆,
+with equality iff all cos θi are equal. Substituting yields the second inequality of the theorem; ∆> 0
+implies
+√
+1 −∆< 1, so ¯p(Vs) < 1.
+(5) Min-coverage corollary. min(x1, x2) ≤(x1 + x2)/2 applied to xg = ∥V ⊤
+s Vg∥2
+F /ρ gives the
+corollary.
+Connection to dynamic LoRA composition.
+The assumption parameter ∆is exactly the rank-ρ
+subspace divergence reported in Figure 2(a,b), so the empirical measurement and the theoretical
+bound describe the same quantity (no bridging assumption needed). Plugging in the observed subtask-
+cluster divergence ∼0.75 across the deeper layers (Figure 2(b)) gives ¯p(Vs) ≤(1+
+√
+0.25)/2 = 0.75:
+under this idealized reading, a single shared rank-ρ adapter would cover at most 75% of the average
+target subspace, and the corollary forces at least one of the two groups to be strictly under-covered.
+The dynamic LoRA composition in Sec. 3.2 sidesteps this limit by maintaining multiple rank-
+ρ subspaces—factorized role experts {∆W role
+r
+} and subtask experts {∆W subtask
+s
+}—and routing
+(∆W role
+r
++ ∆W subtask
+s
+) conditionally on (ri, si) via the prototype router, so each call accesses an
+adaptation subspace matched to its (role, subtask) context rather than a globally compromised one.
+The argument extends to N > 2 groups by replacing M with PN
+g=1 VgV ⊤
+g ; the average-coverage
+maximum is then Pρ
+i=1 λi(M)/(Nρ), which decreases as more pairwise divergences exceed zero.
+25

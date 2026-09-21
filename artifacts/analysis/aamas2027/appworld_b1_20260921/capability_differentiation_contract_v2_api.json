@@ -1,0 +1,45 @@
+{
+  "status": "B1_DEVELOPMENT_CONTRACT_V2_API_FROZEN_BEFORE_TARGET_RUNS",
+  "supersedes": "capability_differentiation_contract.json",
+  "unchanged_scientific_question": "Does task exposure create scoped persistent capability differences under a common initial backbone, enabling evidence-conditioned workflow rebinding?",
+  "benchmark": {
+    "name": "AppWorld",
+    "commit": "42b5bcf3cd334fee33f0c37c02070a9f5807add5",
+    "data_version": "0.2.0"
+  },
+  "backbone": {
+    "model": "qwen3.8-max",
+    "same_model_all_workers": true,
+    "transport": "local Responses API router at http://127.0.0.1:8317/v1",
+    "execution_device": "U-CGPCVWR0-0024.local",
+    "temperature": 0.0,
+    "max_steps": 30,
+    "max_output_tokens_per_turn": 2048,
+    "secret_policy": "Project contains no upstream API key."
+  },
+  "acquisition": {
+    "note_role": {
+      "family": "cf6abd2",
+      "tasks": ["cf6abd2_1", "cf6abd2_2"],
+      "allowed_actions_for_memory": ["simple_note.login", "simple_note.search_notes", "simple_note.show_note"]
+    },
+    "file_role": {
+      "family": "6104387",
+      "tasks": ["6104387_1", "6104387_2"],
+      "allowed_actions_for_memory": ["file_system.login", "file_system.create_file"]
+    }
+  },
+  "conditions": ["control_none", "note_only", "file_only", "note_plus_file"],
+  "target_family": {
+    "family": "6c2c621",
+    "backbone_gate": ["6c2c621_1", "6c2c621_2", "6c2c621_3"],
+    "differentiation_targets_after_gate": ["6c2c621_2", "6c2c621_3"]
+  },
+  "boundaries": [
+    "No test_normal or test_challenge task is used for model, prompt, memory, or threshold selection.",
+    "No evaluator-private truth is exposed to execution policy or memory promotion.",
+    "No prompt tuning after seeing differentiation target outcomes.",
+    "API transport/model choice is a backbone/runtime decision, not the treatment variable.",
+    "All compared workers use the same qwen3.8-max route and model settings."
+  ]
+}

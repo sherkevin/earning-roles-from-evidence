@@ -1,0 +1,34 @@
+{
+  "status": "development_smoke_frozen_before_run",
+  "purpose": "B1 backbone/runtime feasibility only; not confirmatory evidence",
+  "benchmark": {
+    "name": "AppWorld",
+    "commit": "42b5bcf3cd334fee33f0c37c02070a9f5807add5",
+    "data_version": "0.2.0",
+    "task_id": "6c2c621_1",
+    "family": "6c2c621",
+    "split": "dev"
+  },
+  "policy_boundary": {
+    "private_experience": false,
+    "evaluator_private_truth_visible_to_policy": false,
+    "prompt": "AppWorld Simplified ReAct public prompt",
+    "temperature": 0.0,
+    "max_steps": 20,
+    "max_tokens_per_turn": 256
+  },
+  "backbone": {
+    "model": "qwen2.5-3b-instruct",
+    "served_model_name": "qwen2.5-3b-instruct-16k",
+    "max_model_len": 16384,
+    "inference_host": "viplabserver12",
+    "gpu_class": "RTX 2080 Ti",
+    "attention_backend": "TRITON_ATTN"
+  },
+  "pass_gate": {
+    "no_infrastructure_error": true,
+    "task_marked_complete": true,
+    "official_evaluator_success": true
+  },
+  "decision_rule": "A clean failure is evidence that this 3B backbone is below the B1 regime; do not tune prompts to rescue it. Move to a stronger backbone."
+}

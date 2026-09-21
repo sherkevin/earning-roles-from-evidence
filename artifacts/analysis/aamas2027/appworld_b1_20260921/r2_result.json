@@ -1,0 +1,32 @@
+{
+  "run": "b1_qwen25_3b_16k_noexp_6c2c621_1_r2",
+  "status": "CLEAN_FAIL_BACKBONE_BELOW_B1_REGIME",
+  "infrastructure_clean": true,
+  "task_marked_complete": false,
+  "official_evaluator": {
+    "passed_tests": 1,
+    "failed_tests": 7,
+    "total_tests": 8,
+    "success": false
+  },
+  "runtime": {
+    "model": "qwen2.5-3b-instruct",
+    "served_model_name": "qwen2.5-3b-instruct-16k",
+    "max_model_len": 16384,
+    "attention_backend": "TRITON_ATTN",
+    "gpu_class": "RTX 2080 Ti",
+    "max_steps": 20,
+    "max_tokens_per_turn": 1024
+  },
+  "trace_summary": {
+    "complete_task_calls": 0,
+    "invented_supervisor_show_notes_calls": 13,
+    "get_note_mentions": 18,
+    "fetch_note_mentions": 6,
+    "prohibited_open_mentions": 6,
+    "input_tokens": 78941,
+    "output_tokens": 12250
+  },
+  "decision": "Stop prompt-tuning Qwen2.5-3B. Move B1 to a stronger backbone under the same AppWorld contract.",
+  "claim_boundary": "This is a development feasibility result on one dev scenario, not confirmatory evidence and not a benchmark-wide statement about Qwen2.5-3B."
+}

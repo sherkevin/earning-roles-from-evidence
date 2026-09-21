@@ -1,0 +1,533 @@
+{
+  "status": "B0_PASS_CURATED_SUBSET",
+  "officebench_commit": "b978b808667c32b52ce19a67ce1def1de9ae02b7",
+  "generated_date": "2026-09-20",
+  "model_calls": 0,
+  "core_pair_count": 15,
+  "distinct_parent_count": 12,
+  "sibling_extension_parents": [
+    "2-15",
+    "2-29",
+    "2-7"
+  ],
+  "added_output_roles": [
+    "calendar",
+    "email",
+    "excel",
+    "image",
+    "pdf",
+    "word"
+  ],
+  "core_pairs": [
+    {
+      "parent": "2-3",
+      "child": "3-17",
+      "added_output_role": "email",
+      "parent_task": "read a pdf file google_form.pdf, make an image post welcome.jpg",
+      "child_task": "read pdf google form file, make an image post welcome.jpg, email corresponding person with welcome image in welcome.eml",
+      "shared_input_sha256": [
+        "5b38de02d8ccc456d09aab9b214df2222a0386911b853590a581a452013a81e9"
+      ],
+      "parent_inputs": [
+        {
+          "path": "data/google_form.pdf",
+          "sha256": "5b38de02d8ccc456d09aab9b214df2222a0386911b853590a581a452013a81e9"
+        }
+      ],
+      "child_inputs": [
+        {
+          "path": "data/google_form.pdf",
+          "sha256": "5b38de02d8ccc456d09aab9b214df2222a0386911b853590a581a452013a81e9"
+        }
+      ],
+      "manual_checks": [
+        "task_semantic_extension",
+        "evaluator_checks_base_or_downstream_semantics",
+        "evaluator_checks_added_output",
+        "no_known_open_PR_7_13_touch"
+      ]
+    },
+    {
+      "parent": "2-7",
+      "child": "3-24",
+      "added_output_role": "calendar",
+      "parent_task": "Extract key points from PDF research papers, summarize them in paper.docx, and save it for reference",
+      "child_task": "Extract key points from PDF research papers, summarize them in abstract.docx, and save it for reference, schedule a meeting saved in meeting.ics with professor Dan at 5/31/2024 at 11:00 a.m to talk about paper",
+      "shared_input_sha256": [
+        "d87d482d5ae7960e2e43d7dd6d21377e60e73e8fce1bf2a01aff7aca8a08c537"
+      ],
+      "parent_inputs": [
+        {
+          "path": "data/paper.pdf",
+          "sha256": "d87d482d5ae7960e2e43d7dd6d21377e60e73e8fce1bf2a01aff7aca8a08c537"
+        }
+      ],
+      "child_inputs": [
+        {
+          "path": "data/paper.pdf",
+          "sha256": "d87d482d5ae7960e2e43d7dd6d21377e60e73e8fce1bf2a01aff7aca8a08c537"
+        }
+      ],
+      "manual_checks": [
+        "task_semantic_extension",
+        "evaluator_checks_base_or_downstream_semantics",
+        "evaluator_checks_added_output",
+        "no_known_open_PR_7_13_touch"
+      ]
+    },
+    {
+      "parent": "2-7",
+      "child": "3-26",
+      "added_output_role": "email",
+      "parent_task": "Extract key points from PDF research papers, summarize them in paper.docx, and save it for reference",
+      "child_task": "Extract key points from PDF research papers, summarize them in abstract.docx, and save it in email to professor Dan named paper.eml",
+      "shared_input_sha256": [
+        "d87d482d5ae7960e2e43d7dd6d21377e60e73e8fce1bf2a01aff7aca8a08c537"
+      ],
+      "parent_inputs": [
+        {
+          "path": "data/paper.pdf",
+          "sha256": "d87d482d5ae7960e2e43d7dd6d21377e60e73e8fce1bf2a01aff7aca8a08c537"
+        }
+      ],
+      "child_inputs": [
+        {
+          "path": "data/paper.pdf",
+          "sha256": "d87d482d5ae7960e2e43d7dd6d21377e60e73e8fce1bf2a01aff7aca8a08c537"
+        }
+      ],
+      "manual_checks": [
+        "task_semantic_extension",
+        "evaluator_checks_base_or_downstream_semantics",
+        "evaluator_checks_added_output",
+        "no_known_open_PR_7_13_touch"
+      ]
+    },
+    {
+      "parent": "2-14",
+      "child": "3-46",
+      "added_output_role": "email",
+      "parent_task": "schedule a reward meeting for the top-three students in score excel file and create calendar events for each of them.",
+      "child_task": "schedule a reward meeting to the top-three students in midterm 2, create calendar event reward for them with their score in midterm 2. email to top-three students separately with the same details in the calendar event.",
+      "shared_input_sha256": [
+        "a5c8026dc09f38411c6b8783dad74f7f66f08387eeb21b9d8eb7f28a90dd5b6e"
+      ],
+      "parent_inputs": [
+        {
+          "path": "data/score.xlsx",
+          "sha256": "a5c8026dc09f38411c6b8783dad74f7f66f08387eeb21b9d8eb7f28a90dd5b6e"
+        }
+      ],
+      "child_inputs": [
+        {
+          "path": "data/score.xlsx",
+          "sha256": "a5c8026dc09f38411c6b8783dad74f7f66f08387eeb21b9d8eb7f28a90dd5b6e"
+        }
+      ],
+      "manual_checks": [
+        "task_semantic_extension",
+        "evaluator_checks_base_or_downstream_semantics",
+        "evaluator_checks_added_output",
+        "no_known_open_PR_7_13_touch"
+      ]
+    },
+    {
+      "parent": "2-15",
+      "child": "3-50",
+      "added_output_role": "image",
+      "parent_task": "Convert meeting agenda from calendar into Excel file meeting_agenda.xlsx for further analysis",
+      "child_task": "Convert meeting agenda from calendar into Excel file meeting_agenda.xlsx for further analysis, create an image post agenda.jpg",
+      "shared_input_sha256": [
+        "a9d16392b8a24ad049655586076f0fa657890af5f3b1c85e0139d602514b2f13"
+      ],
+      "parent_inputs": [
+        {
+          "path": "calendar/Alice.ics",
+          "sha256": "a9d16392b8a24ad049655586076f0fa657890af5f3b1c85e0139d602514b2f13"
+        },
+        {
+          "path": "data/meeting_agenda_2.xlsx",
+          "sha256": "ffd3161364fde910fbd5491cc1dd19ba346134231e60f217ad668a874af80b0e"
+        }
+      ],
+      "child_inputs": [
+        {
+          "path": "calendar/meeting_agenda.ics",
+          "sha256": "a9d16392b8a24ad049655586076f0fa657890af5f3b1c85e0139d602514b2f13"
+        }
+      ],
+      "manual_checks": [
+        "task_semantic_extension",
+        "evaluator_checks_base_or_downstream_semantics",
+        "evaluator_checks_added_output",
+        "no_known_open_PR_7_13_touch"
+      ]
+    },
+    {
+      "parent": "2-15",
+      "child": "3-51",
+      "added_output_role": "email",
+      "parent_task": "Convert meeting agenda from calendar into Excel file meeting_agenda.xlsx for further analysis",
+      "child_task": "Convert meeting agenda from calendar into Excel file meeting_agenda.xlsx for further analysis, email it to manager Rena",
+      "shared_input_sha256": [
+        "a9d16392b8a24ad049655586076f0fa657890af5f3b1c85e0139d602514b2f13"
+      ],
+      "parent_inputs": [
+        {
+          "path": "calendar/Alice.ics",
+          "sha256": "a9d16392b8a24ad049655586076f0fa657890af5f3b1c85e0139d602514b2f13"
+        },
+        {
+          "path": "data/meeting_agenda_2.xlsx",
+          "sha256": "ffd3161364fde910fbd5491cc1dd19ba346134231e60f217ad668a874af80b0e"
+        }
+      ],
+      "child_inputs": [
+        {
+          "path": "calendar/meeting_agenda.ics",
+          "sha256": "a9d16392b8a24ad049655586076f0fa657890af5f3b1c85e0139d602514b2f13"
+        }
+      ],
+      "manual_checks": [
+        "task_semantic_extension",
+        "evaluator_checks_base_or_downstream_semantics",
+        "evaluator_checks_added_output",
+        "no_known_open_PR_7_13_touch"
+      ]
+    },
+    {
+      "parent": "2-16",
+      "child": "3-52",
+      "added_output_role": "email",
+      "parent_task": "Create meeting agenda from Excel data and add it to my calendar",
+      "child_task": "Create meeting agenda from Excel data and add it to my calendar and email to the participants emails as reminders, separately.",
+      "shared_input_sha256": [
+        "ffd3161364fde910fbd5491cc1dd19ba346134231e60f217ad668a874af80b0e"
+      ],
+      "parent_inputs": [
+        {
+          "path": "calendar/Alice.ics",
+          "sha256": "a9d16392b8a24ad049655586076f0fa657890af5f3b1c85e0139d602514b2f13"
+        },
+        {
+          "path": "data/meeting_agenda_2.xlsx",
+          "sha256": "ffd3161364fde910fbd5491cc1dd19ba346134231e60f217ad668a874af80b0e"
+        }
+      ],
+      "child_inputs": [
+        {
+          "path": "data/meeting_agenda_2.xlsx",
+          "sha256": "ffd3161364fde910fbd5491cc1dd19ba346134231e60f217ad668a874af80b0e"
+        }
+      ],
+      "manual_checks": [
+        "task_semantic_extension",
+        "evaluator_checks_base_or_downstream_semantics",
+        "evaluator_checks_added_output",
+        "no_known_open_PR_7_13_touch"
+      ]
+    },
+    {
+      "parent": "2-22",
+      "child": "3-62",
+      "added_output_role": "pdf",
+      "parent_task": "Generate a word report based on midterm1 and midterm2 scores, the filename is 'midterm_report.docx'.",
+      "child_task": "Generate a file report.docx based on midterm1 and midterm2 scores, convert to report.pdf",
+      "shared_input_sha256": [
+        "a5c8026dc09f38411c6b8783dad74f7f66f08387eeb21b9d8eb7f28a90dd5b6e"
+      ],
+      "parent_inputs": [
+        {
+          "path": "data/car_trading.xlsx",
+          "sha256": "7ae652a8524e7140167492b9a8b62daca54d1434eeb103675978a6f260366f3f"
+        },
+        {
+          "path": "data/house_price_index.xlsx",
+          "sha256": "e2cc3d30e3fd218d4a8c8c321a1752c4e2ad403e040f04c87750eda76ad58adf"
+        },
+        {
+          "path": "data/score.xlsx",
+          "sha256": "a5c8026dc09f38411c6b8783dad74f7f66f08387eeb21b9d8eb7f28a90dd5b6e"
+        }
+      ],
+      "child_inputs": [
+        {
+          "path": "data/score.xlsx",
+          "sha256": "a5c8026dc09f38411c6b8783dad74f7f66f08387eeb21b9d8eb7f28a90dd5b6e"
+        },
+        {
+          "path": "data/target.pdf",
+          "sha256": "5993fd1c9346b542379211b9eb8b82d0d7d972bea328afab1b03307cf2a85d62"
+        }
+      ],
+      "manual_checks": [
+        "task_semantic_extension",
+        "evaluator_checks_base_or_downstream_semantics",
+        "evaluator_checks_added_output",
+        "no_known_open_PR_7_13_touch"
+      ]
+    },
+    {
+      "parent": "2-27",
+      "child": "3-71",
+      "added_output_role": "image",
+      "parent_task": "Extract schedule from PDF and add it to my calendar.",
+      "child_task": "Extract schedule from PDF and add it to a calendar meeting_agenda.ics, also save it as agenda.jpg",
+      "shared_input_sha256": [
+        "afa659cbb7953e567ae2a9aaa98314ecc127ce299ed3eac59a0f2c1a70bc59ec"
+      ],
+      "parent_inputs": [
+        {
+          "path": "data/meeting_agenda.pdf",
+          "sha256": "afa659cbb7953e567ae2a9aaa98314ecc127ce299ed3eac59a0f2c1a70bc59ec"
+        }
+      ],
+      "child_inputs": [
+        {
+          "path": "data/meeting_agenda.pdf",
+          "sha256": "afa659cbb7953e567ae2a9aaa98314ecc127ce299ed3eac59a0f2c1a70bc59ec"
+        }
+      ],
+      "manual_checks": [
+        "task_semantic_extension",
+        "evaluator_checks_base_or_downstream_semantics",
+        "evaluator_checks_added_output",
+        "no_known_open_PR_7_13_touch"
+      ]
+    },
+    {
+      "parent": "2-29",
+      "child": "3-73",
+      "added_output_role": "image",
+      "parent_task": "Scan Conference Invitation PDF and search for conference date, add event to that date on calender, save in my calendar.",
+      "child_task": "Scan Conference Invitation PDF and search for conference date (If no time is specified, use 6:00 am as default start time), add event to that date on calender, save as invitation.ics, make an invitation post named invitation.jpg",
+      "shared_input_sha256": [
+        "bec592c0d14b44d0e00fb2e0c2b8ebdc98be2be8a6fff0e2af01a9833c23ccea"
+      ],
+      "parent_inputs": [
+        {
+          "path": "data/invitation_letter.pdf",
+          "sha256": "bec592c0d14b44d0e00fb2e0c2b8ebdc98be2be8a6fff0e2af01a9833c23ccea"
+        }
+      ],
+      "child_inputs": [
+        {
+          "path": "data/invitation_letter.pdf",
+          "sha256": "bec592c0d14b44d0e00fb2e0c2b8ebdc98be2be8a6fff0e2af01a9833c23ccea"
+        }
+      ],
+      "manual_checks": [
+        "task_semantic_extension",
+        "evaluator_checks_base_or_downstream_semantics",
+        "evaluator_checks_added_output",
+        "no_known_open_PR_7_13_touch"
+      ]
+    },
+    {
+      "parent": "2-29",
+      "child": "3-74",
+      "added_output_role": "excel",
+      "parent_task": "Scan Conference Invitation PDF and search for conference date, add event to that date on calender, save in my calendar.",
+      "child_task": "Scan Conference Invitation PDF and search for conference date, add event to that date on calender, save as invitation.ics, record date, location, conference name, etc. in excel conference.xlsx",
+      "shared_input_sha256": [
+        "bec592c0d14b44d0e00fb2e0c2b8ebdc98be2be8a6fff0e2af01a9833c23ccea"
+      ],
+      "parent_inputs": [
+        {
+          "path": "data/invitation_letter.pdf",
+          "sha256": "bec592c0d14b44d0e00fb2e0c2b8ebdc98be2be8a6fff0e2af01a9833c23ccea"
+        }
+      ],
+      "child_inputs": [
+        {
+          "path": "data/invitation_letter.pdf",
+          "sha256": "bec592c0d14b44d0e00fb2e0c2b8ebdc98be2be8a6fff0e2af01a9833c23ccea"
+        }
+      ],
+      "manual_checks": [
+        "task_semantic_extension",
+        "evaluator_checks_base_or_downstream_semantics",
+        "evaluator_checks_added_output",
+        "no_known_open_PR_7_13_touch"
+      ]
+    },
+    {
+      "parent": "2-36",
+      "child": "3-86",
+      "added_output_role": "pdf",
+      "parent_task": "Read grade in transcripts and generate a grade report report.docx",
+      "child_task": "Read grade in transcripts and generate a grade report called transcripts_report.docx, also save the report as transcripts_report_pdf_version.pdf",
+      "shared_input_sha256": [
+        "6daa210aa86e5b3cdca6ad5324dd7c0c849cfdd4e50218a6c2b229848505d8cf"
+      ],
+      "parent_inputs": [
+        {
+          "path": "data/sales_report.pdf",
+          "sha256": "c81af7b68abe3bfe4c22073348697fc8a153b335ff09ef972e2f6be025da13f4"
+        },
+        {
+          "path": "data/transcripts.png",
+          "sha256": "6daa210aa86e5b3cdca6ad5324dd7c0c849cfdd4e50218a6c2b229848505d8cf"
+        }
+      ],
+      "child_inputs": [
+        {
+          "path": "data/transcripts.png",
+          "sha256": "6daa210aa86e5b3cdca6ad5324dd7c0c849cfdd4e50218a6c2b229848505d8cf"
+        }
+      ],
+      "manual_checks": [
+        "task_semantic_extension",
+        "evaluator_checks_base_or_downstream_semantics",
+        "evaluator_checks_added_output",
+        "no_known_open_PR_7_13_touch"
+      ]
+    },
+    {
+      "parent": "2-40",
+      "child": "3-93",
+      "added_output_role": "pdf",
+      "parent_task": "read Bob's calendar event and send email using event names to Bob for all events in calendar",
+      "child_task": "read Bob's calendar event and send email to Bob for all events in calendar, save all events in event.pdf",
+      "shared_input_sha256": [
+        "a641a03140fc0903fb3d3a320642c146edc5689ffae06712c84cb4b5ee60be98"
+      ],
+      "parent_inputs": [
+        {
+          "path": "calendar/Bob.ics",
+          "sha256": "a641a03140fc0903fb3d3a320642c146edc5689ffae06712c84cb4b5ee60be98"
+        },
+        {
+          "path": "calendar/Tom.ics",
+          "sha256": "aae331efe111f71a86483309a9acbb193ee0c8caf4f0a388e5fc2dbf2f4cfae8"
+        }
+      ],
+      "child_inputs": [
+        {
+          "path": "calendar/Bob.ics",
+          "sha256": "a641a03140fc0903fb3d3a320642c146edc5689ffae06712c84cb4b5ee60be98"
+        }
+      ],
+      "manual_checks": [
+        "task_semantic_extension",
+        "evaluator_checks_base_or_downstream_semantics",
+        "evaluator_checks_added_output",
+        "no_known_open_PR_7_13_touch"
+      ]
+    },
+    {
+      "parent": "2-42",
+      "child": "3-95",
+      "added_output_role": "pdf",
+      "parent_task": "make a table email_counting.xlsx to show how many emails for each people in the email list, first row is Alice, second row is Bob",
+      "child_task": "make a table email_counting.xlsx to show how many emails for each people in the email list, summarize it in email_stat.pdf",
+      "shared_input_sha256": [
+        "0516494d97838836e719a060b32d732bde6a332c876cf90641b0758ab9ff6cd6",
+        "2ca0819ff1e8e18d993ca9c7622f46bd626d85518ab4d0ff0f7ff0048dc6276c",
+        "3a68d2de7fe101c82da099ee58b9637664a34e2f1012a973d174227ef2b4b2f6",
+        "52e11babea58b16e467ed793a48ea1827a4bd3bdc42aa6833c0c0e1608469883",
+        "724b0997763dc4c57f7bc7ee94fc50490bfd6d1b44f8e7578c061990eb4166ea",
+        "c386346daf2dfd9b8966d61a31462cefdf461d637289593cee50b3c89a7deac6"
+      ],
+      "parent_inputs": [
+        {
+          "path": "emails/Alice/coupon.eml",
+          "sha256": "2ca0819ff1e8e18d993ca9c7622f46bd626d85518ab4d0ff0f7ff0048dc6276c"
+        },
+        {
+          "path": "emails/Alice/mobile_bill.eml",
+          "sha256": "724b0997763dc4c57f7bc7ee94fc50490bfd6d1b44f8e7578c061990eb4166ea"
+        },
+        {
+          "path": "emails/Bob/gradescope.eml",
+          "sha256": "52e11babea58b16e467ed793a48ea1827a4bd3bdc42aa6833c0c0e1608469883"
+        },
+        {
+          "path": "emails/Bob/meeting.eml",
+          "sha256": "3a68d2de7fe101c82da099ee58b9637664a34e2f1012a973d174227ef2b4b2f6"
+        },
+        {
+          "path": "emails/Bob/rental.eml",
+          "sha256": "c386346daf2dfd9b8966d61a31462cefdf461d637289593cee50b3c89a7deac6"
+        },
+        {
+          "path": "emails/Bob/scholarship approved.eml",
+          "sha256": "0516494d97838836e719a060b32d732bde6a332c876cf90641b0758ab9ff6cd6"
+        }
+      ],
+      "child_inputs": [
+        {
+          "path": "emails/Alice/coupon.eml",
+          "sha256": "2ca0819ff1e8e18d993ca9c7622f46bd626d85518ab4d0ff0f7ff0048dc6276c"
+        },
+        {
+          "path": "emails/Alice/mobile_bill.eml",
+          "sha256": "724b0997763dc4c57f7bc7ee94fc50490bfd6d1b44f8e7578c061990eb4166ea"
+        },
+        {
+          "path": "emails/Bob/gradescope.eml",
+          "sha256": "52e11babea58b16e467ed793a48ea1827a4bd3bdc42aa6833c0c0e1608469883"
+        },
+        {
+          "path": "emails/Bob/meeting.eml",
+          "sha256": "3a68d2de7fe101c82da099ee58b9637664a34e2f1012a973d174227ef2b4b2f6"
+        },
+        {
+          "path": "emails/Bob/rental.eml",
+          "sha256": "c386346daf2dfd9b8966d61a31462cefdf461d637289593cee50b3c89a7deac6"
+        },
+        {
+          "path": "emails/Bob/scholarship approved.eml",
+          "sha256": "0516494d97838836e719a060b32d732bde6a332c876cf90641b0758ab9ff6cd6"
+        }
+      ],
+      "manual_checks": [
+        "task_semantic_extension",
+        "evaluator_checks_base_or_downstream_semantics",
+        "evaluator_checks_added_output",
+        "no_known_open_PR_7_13_touch"
+      ]
+    },
+    {
+      "parent": "2-43",
+      "child": "3-96",
+      "added_output_role": "word",
+      "parent_task": "read company revenues and send a email revenues.eml containing all years' revenues to Bob for reporting",
+      "child_task": "read company revenues and send a email revenues.eml containing data to Bob for reporting, also write a revenue.docx to summarize it",
+      "shared_input_sha256": [
+        "b7a5d913221fafb9f545e9367df2bcf07e665b93baefe726788a88532c937e28"
+      ],
+      "parent_inputs": [
+        {
+          "path": "data/company_revenues.xlsx",
+          "sha256": "b7a5d913221fafb9f545e9367df2bcf07e665b93baefe726788a88532c937e28"
+        }
+      ],
+      "child_inputs": [
+        {
+          "path": "data/company_revenues.xlsx",
+          "sha256": "b7a5d913221fafb9f545e9367df2bcf07e665b93baefe726788a88532c937e28"
+        }
+      ],
+      "manual_checks": [
+        "task_semantic_extension",
+        "evaluator_checks_base_or_downstream_semantics",
+        "evaluator_checks_added_output",
+        "no_known_open_PR_7_13_touch"
+      ]
+    }
+  ],
+  "excluded_or_dirty": {
+    "2-13->3-45": "cross-level duplicate task/evaluator family; not unseen composition",
+    "2-13->3-48": "cross-level duplicate task text; not unseen composition",
+    "2-1->3-12": "child only checks PDF existence, weakening preservation of parent semantic output",
+    "2-6->3-23": "source task says PDF but testbed input is JPG; child calendar paths are inconsistent",
+    "2-6->3-25": "source task says PDF but testbed input is JPG",
+    "2-10->3-36": "source says scanned PDF but input is JPG; child exact-match path is inconsistent",
+    "2-12->3-43": "child asks for email but evaluator does not check email",
+    "2-25->3-70": "parent evaluator does not check requested PDF; child also omits PDF check",
+    "2-48->3-97": "upstream PR #13 documents task/evaluator mismatch",
+    "3-99": "upstream PR #7/#13 documents revenues.docx/revenuse.docx mismatch"
+  },
+  "boundary": "B0 establishes a natural compositional subset only. It does not lock the benchmark, validate agent specialization, or establish model feasibility; B1 remains required."
+}

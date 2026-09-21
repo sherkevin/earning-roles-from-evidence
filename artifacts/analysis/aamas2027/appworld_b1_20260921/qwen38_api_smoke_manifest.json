@@ -1,0 +1,39 @@
+{
+  "status": "B1_API_BACKBONE_GATE_FROZEN_BEFORE_RUN",
+  "purpose": "Establish a non-floor AppWorld backbone using the user-approved free local API route before testing private-experience capability differentiation.",
+  "supersedes_runtime_plan": "qwen3_14b_smoke_manifest.json",
+  "supersede_reason": "User selected API inference to remove self-hosted GPU/runtime confounds; the prior Qwen3-14B self-hosted gate was not run.",
+  "benchmark": {
+    "name": "AppWorld",
+    "commit": "42b5bcf3cd334fee33f0c37c02070a9f5807add5",
+    "data_version": "0.2.0",
+    "family": "6c2c621",
+    "tasks": ["6c2c621_1", "6c2c621_2", "6c2c621_3"],
+    "split": "dev"
+  },
+  "inference": {
+    "execution_device": "U-CGPCVWR0-0024.local",
+    "client_base_url": "http://127.0.0.1:8317/v1",
+    "router": "~/.codex/codex-model-router.py",
+    "model": "qwen3.8-max",
+    "credential_policy": "No API secret is stored in the project; the local router resolves its upstream credential from the user's existing environment.",
+    "router_smoke": "HTTP 200 on /v1/responses; observed model qwen3.8-max and output API_OK."
+  },
+  "agent": {
+    "private_experience": false,
+    "evaluator_private_truth_visible_to_policy": false,
+    "max_steps": 40,
+    "max_output_tokens_per_turn": 2048,
+    "temperature": 0.0
+  },
+  "pass_gate": {
+    "minimum_successes": 2,
+    "out_of": 3,
+    "each_success_requires": [
+      "no infrastructure/API transport error",
+      "task marked complete",
+      "official evaluator success"
+    ]
+  },
+  "decision_rule": "Run all three siblings. >=2/3 establishes a usable non-floor development regime. <=1/3 triggers a different strong API backbone before any experience-factorial target run. These scores are development feasibility only."
+}

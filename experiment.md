@@ -1,5 +1,7 @@
 # experiment.md
 
+> HISTORICAL EXPERIMENT CONTRACT for the EMNLP submission. For AAMAS 2027, [REQUIREMENTS.md](docs/paper/aamas2027/REQUIREMENTS.md) and [AAMAS_TASKS.md](docs/coordination/AAMAS_TASKS.md) supersede any conflicting authority, benchmark/model lock, launch condition or promotion rule below. Durable no-paid-API and evidence-preservation decisions remain in force. Do not launch the old matrix as the AAMAS plan.
+
 ## 0. 文档定位
 
 这是本项目当前阶段的**权威实验执行规范**。
@@ -53,6 +55,18 @@
 - future work；
 
 不能作为当前主论文主表的主实验设置。
+
+### 1.2.1 2026-04-27 local open-weight exception
+
+User decision `U-024=(c)` and `U-EXEC-008` create a narrow second axis:
+
+- `gpt-4.1-mini` remains the canonical strong-model backbone for the API-gated main matrix.
+- Paid API execution is parked for now.
+- The immediate no-paid execution lane is local open-weight diagnostics on the server.
+- The local primary backbone is `microsoft/Phi-4-mini-instruct` / `Phi-4-mini`.
+- The local control backbone is `HuggingFaceTB/SmolLM3-3B` / `SmolLM3-3B`.
+
+This local axis is a capability-boundary / organizational-emergence diagnostic lane. It must not be mixed into the canonical `gpt-4.1-mini` main matrix unless a future scientist sync explicitly promotes a positive and stable local result into the paper narrative.
 
 ### 1.3 旧 GLM 结果的定位
 

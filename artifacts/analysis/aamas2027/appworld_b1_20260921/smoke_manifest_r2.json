@@ -1,0 +1,24 @@
+{
+  "status": "development_smoke_frozen_before_run",
+  "purpose": "B1 backbone/runtime feasibility only; not confirmatory evidence",
+  "parent_diagnostic": "r1_diagnostic.json",
+  "task_id": "6c2c621_1",
+  "family": "6c2c621",
+  "split": "dev",
+  "backbone": "qwen2.5-3b-instruct",
+  "served_model_name": "qwen2.5-3b-instruct-16k",
+  "max_model_len": 16384,
+  "attention_backend": "TRITON_ATTN",
+  "private_experience": false,
+  "evaluator_private_truth_visible_to_policy": false,
+  "temperature": 0.0,
+  "max_steps": 20,
+  "max_tokens_per_turn": 1024,
+  "only_change_from_r1": "max_tokens_per_turn: 256 -> 1024",
+  "pass_gate": [
+    "no infrastructure error",
+    "task marked complete",
+    "official evaluator success"
+  ],
+  "decision_rule": "If this clean run fails because of semantic/API grounding rather than infrastructure or truncation, Qwen2.5-3B is below the chosen B1 regime and will not be prompt-tuned further."
+}

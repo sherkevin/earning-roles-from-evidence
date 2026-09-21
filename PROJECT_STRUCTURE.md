@@ -1,5 +1,7 @@
 # PROJECT_STRUCTURE - 论文协作项目结构索引
 
+> AAMAS 2027 active entry points, updated 2026-09-16: read [REQUIREMENTS.md](docs/paper/aamas2027/REQUIREMENTS.md), then [AAMAS_TASKS.md](docs/coordination/AAMAS_TASKS.md). This pair supersedes historical scientific/venue plans and duplicated AAMAS queues below. Requirements live in the first file; gaps, task states, owner/dependency/acceptance criteria and execution links live in the second. Role TODO files remain historical indices and pointers. The current internal manuscript is `article/aamas2027/`; `article/latex/` is preserved EMNLP material.
+
 > 维护者建议：科学家（writing lead）主维护本索引；工程师、审稿人和用户在路径变化时补充。
 >
 > 目标：让任意新协作者只读这一份文件，就能知道项目怎么推进、任务状态写到哪里、角色间交付文档放到哪里、论文编译边界在哪里。
@@ -44,7 +46,8 @@ idea04/
 ├── experiment.md                     实验原则、设置约束、评估规范
 ├── prompts/                          角色 prompt 与审稿模板
 │   ├── ROLE_PROMPTS.md
-│   └── reviewer_template.md
+│   ├── reviewer_template.md
+│   └── reviewer_templates/            single-lens reviewer entrypoints and snippets
 ├── docs/
 │   ├── coordination/                 任务状态与决策状态，只放“队列/状态”
 │   │   ├── USER_TODO.md

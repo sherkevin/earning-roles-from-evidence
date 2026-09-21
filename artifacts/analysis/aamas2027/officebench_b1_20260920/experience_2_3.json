@@ -1,0 +1,21 @@
+{
+  "source_task_id": "2-3",
+  "source_subtask_id": "0",
+  "source_task": "read a pdf file google_form.pdf, make an image post welcome.jpg",
+  "source_history_sha256": "419d89548f85eddbea94c20eb0771e84afc4dd858d844ee6992a67a47bf06d68",
+  "source_action": {
+    "app": "pdf",
+    "action": "convert_to_image",
+    "pdf_file_path": "/testbed/data/google_form.pdf",
+    "image_file_path": "/testbed/data/welcome.jpg"
+  },
+  "source_observation": "Success",
+  "abstracted_action": {
+    "app": "pdf",
+    "action": "convert_to_image",
+    "pdf_file_path": "<bind from current task or file discovery>",
+    "image_file_path": "<bind requested current output path>"
+  },
+  "experience_text": "Reusable procedure learned from a previously completed task: use pdf.convert_to_image for this operation.\nValidated interface pattern: {\"app\": \"pdf\", \"action\": \"convert_to_image\", \"pdf_file_path\": \"<bind from current task or file discovery>\", \"image_file_path\": \"<bind requested current output path>\"}\nBind arguments from the current task or current file discovery; do not reuse old entity names or paths blindly. Scope is only this operation; it says nothing about other stages of a new task.",
+  "boundary": "B1 feasibility artifact. Derived only from prior task execution; not evidence of the final skill-induction algorithm or of benchmark lock."
+}

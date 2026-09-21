@@ -1,0 +1,27 @@
+{
+  "appworld_commit": "42b5bcf3cd334fee33f0c37c02070a9f5807add5",
+  "data_version": "0.2.0",
+  "train_instances": 90,
+  "train_families": 30,
+  "dev_instances": 57,
+  "dev_families": 19,
+  "test_normal_instances": 168,
+  "test_normal_families": 56,
+  "test_challenge_instances": 417,
+  "test_challenge_families": 139,
+  "all_split_family_overlaps_zero": true,
+  "all_train_have_no_op_fail": true,
+  "all_dev_have_no_op_fail": true,
+  "train_api_universe_size": 56,
+  "dev_instances_all_primitives_seen": 32,
+  "dev_families_signature_invariant": 16,
+  "strict_composition_families": [
+    "530b157",
+    "4ec8de5",
+    "6bdbc26",
+    "6c2c621"
+  ],
+  "strict_composition_family_count": 4,
+  "selection_rule": "Dev family has invariant API signature across its three scenarios; all target primitives occur in train; no single train family contains the target signature; <=3 train families can cover it.",
+  "boundary": "Required-API cover is a structural feasibility proxy, not the final workflow decomposition. Final slots must be typed subprocedures with explicit I/O and public runtime checks."
+}

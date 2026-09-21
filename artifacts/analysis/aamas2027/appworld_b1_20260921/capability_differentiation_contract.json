@@ -1,0 +1,74 @@
+{
+  "status": "B1_DEVELOPMENT_CONTRACT_FROZEN_BEFORE_QWEN3_TARGET_RUNS",
+  "benchmark": {
+    "name": "AppWorld",
+    "commit": "42b5bcf3cd334fee33f0c37c02070a9f5807add5",
+    "data_version": "0.2.0"
+  },
+  "purpose": "Test whether task exposure creates scoped persistent capability differences under a common initial backbone. This is development evidence, not confirmatory test evidence.",
+  "backbone_candidate": {
+    "model": "Qwen/Qwen3-14B",
+    "same_weights_all_workers": true,
+    "temperature": 0.0,
+    "thinking_mode": true,
+    "max_tokens_per_turn": 2048,
+    "max_steps": 30
+  },
+  "acquisition": {
+    "note_role": {
+      "family": "cf6abd2",
+      "tasks": ["cf6abd2_1", "cf6abd2_2"],
+      "allowed_actions_for_memory": [
+        "simple_note.login",
+        "simple_note.search_notes",
+        "simple_note.show_note"
+      ]
+    },
+    "file_role": {
+      "family": "6104387",
+      "tasks": ["6104387_1", "6104387_2"],
+      "allowed_actions_for_memory": [
+        "file_system.login",
+        "file_system.create_file"
+      ]
+    }
+  },
+  "memory_promotion": {
+    "source": "worker own execution trace only",
+    "public_runtime_success_required": true,
+    "evaluator_private_truth_used": false,
+    "concrete_credentials_or_entity_values_retained": false,
+    "scope": "exact app.action interface patterns only"
+  },
+  "conditions": [
+    "control_none",
+    "note_only",
+    "file_only",
+    "note_plus_file"
+  ],
+  "target_family": {
+    "family": "6c2c621",
+    "backbone_smoke_only": ["6c2c621_1"],
+    "differentiation_targets": ["6c2c621_2", "6c2c621_3"]
+  },
+  "primary_measurements": [
+    "official evaluator success and passed-test fraction",
+    "correct simple_note API use",
+    "correct file_system API use",
+    "invalid or invented API calls",
+    "task completion call",
+    "interaction count",
+    "input/output tokens"
+  ],
+  "factorial_effects": {
+    "note_main_effect": "mean(note_only, note_plus_file) - mean(control_none, file_only)",
+    "file_main_effect": "mean(file_only, note_plus_file) - mean(control_none, note_only)",
+    "complementarity": "score(note_plus_file) - score(note_only) - score(file_only) + score(control_none)"
+  },
+  "boundaries": [
+    "No test_normal or test_challenge task is used for model, prompt, memory, or threshold selection.",
+    "No evaluator private truth is exposed to execution policy or memory promotion.",
+    "No prompt tuning after seeing differentiation target outcomes.",
+    "If Qwen3-14B is still a capability floor on the smoke task, switch backbone before running this factorial rather than tuning on target outcomes."
+  ]
+}
