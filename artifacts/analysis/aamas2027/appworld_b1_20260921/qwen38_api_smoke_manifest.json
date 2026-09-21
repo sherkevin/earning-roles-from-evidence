@@ -13,11 +13,13 @@
   },
   "inference": {
     "execution_device": "U-CGPCVWR0-0024.local",
-    "client_base_url": "http://127.0.0.1:8317/v1",
-    "router": "~/.codex/codex-model-router.py",
+    "client_base_url": "http://127.0.0.1:8318/v1",
+    "transport_adapter": "scripts/aamas2027_router_json_proxy.py",
+    "upstream_router": "http://127.0.0.1:8317/v1 via ~/.codex/codex-model-router.py",
     "model": "qwen3.8-max",
     "credential_policy": "No API secret is stored in the project; the local router resolves its upstream credential from the user's existing environment.",
-    "router_smoke": "HTTP 200 on /v1/responses; observed model qwen3.8-max and output API_OK."
+    "router_smoke": "HTTP 200 on upstream /v1/responses; observed model qwen3.8-max and output API_OK.",
+    "adapter_smoke": "Before any benchmark run, AppWorld's pinned OpenAI SDK returned a standard Response object through 8318 with model qwen3.8-max and output SDK_PROXY_OK. The adapter only aggregates upstream SSE response.completed into JSON."
   },
   "agent": {
     "private_experience": false,

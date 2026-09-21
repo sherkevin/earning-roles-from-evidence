@@ -1,0 +1,14 @@
+{
+  "status": "PREFLIGHT_ABORT_NO_MODEL_CALL",
+  "experiment_name": "aamas_b1_qwen38_api_gate_20260921",
+  "stage": "first task before first LLM request",
+  "reason": "AppWorld LanguageModel.__init__ accepts Responses max_output_tokens, but non_cached_lm_call rejects it and instead expects max_completion_tokens/max_tokens before converting to max_output_tokens.",
+  "evidence": {
+    "lm_call_files": 0,
+    "proxy_requests_observed": 0,
+    "benchmark_model_output_observed": false
+  },
+  "correction": "Do not modify AppWorld. Construct the agent without a token-cap kwarg, then inject language_model.generation_kwargs['max_completion_tokens']=2048 so AppWorld's own conversion produces Responses max_output_tokens=2048.",
+  "scientific_parameters_changed": false,
+  "claim_boundary": "Infrastructure/harness preflight only; not a benchmark result."
+}

@@ -38,3 +38,11 @@ The dev target's official ten assertions admit a natural offline partition witho
 - **Global/safety:** answer/completion semantics; allowed changed-model set; no deletion of existing user text records.
 
 This partition is used only after execution for audit/scoring. Hidden receiver IDs, grocery amounts, and evaluator state are never supplied to an execution policy, experience artifact, router, or workflow binder.
+
+## qwen3.8-max API backbone gate result
+
+The frozen API backbone gate completed on `U-CGPCVWR0-0024.local` after the migrated environment passed AppWorld's official 147/147 task verification. The gate ran all three dev siblings in family `6c2c621` with no private experience and no evaluator-private truth available to the policy.
+
+Results: `6c2c621_1`, `6c2c621_2`, and `6c2c621_3` each passed all **8/8** official evaluator assertions and each issued exactly one `apis.supervisor.complete_task` call. The preregistered gate required >=2/3 successes; observed result was **3/3**, so `qwen3.8-max` is accepted as the non-floor development backbone. Total runtime was 253.819 seconds. Raw trajectories remain under AppWorld's local `experiments/outputs/aamas_b1_qwen38_api_gate_20260921`; the project stores the compact result in `qwen38_api_gate_result.json`.
+
+This is a backbone-feasibility result only. It does not test or support claims about private task exposure, specialization, earned roles, or evidence-conditioned workflow rebinding.
