@@ -1,0 +1,182 @@
+{
+  "date": "2026-09-22",
+  "boundary": "Read-only primary-source and official-code design audit; no new model runs or test-answer inspection. Downloaded objects and failed attempts in sources.json; older source evidence remains in q1_novelty.",
+  "entries": [
+    {
+      "id": "appworld",
+      "kind": "benchmark",
+      "status": "ACL 2024; pinned runtime data0.2.0",
+      "url": "https://aclanthology.org/2024.acl-long.850/",
+      "repo": "https://github.com/StonyBrookNLP/appworld",
+      "inspected": "Pinned README restrictions/license and local B0/B1 audit; no test truth inspection",
+      "decision": "Primary",
+      "facts": "Use pinned split counts90/57/168/417 rather than original paper750; native family disjointness; official aggregate-only test policy",
+      "limits": "B1 ceiling is only530b157; no acquired-state result"
+    },
+    {
+      "id": "scienceworld",
+      "kind": "benchmark",
+      "status": "EMNLP 2022; current source1.3.0",
+      "url": "https://aclanthology.org/2022.emnlp-main.775/",
+      "repo": "https://github.com/allenai/ScienceWorld",
+      "commit": "e8216d6044e8e39be9fcb185e3b2dfb602584b52",
+      "inspected": "Pinned README, Python step/get_variations and Scala getSets; Apache2 license",
+      "decision": "Secondary90-episode stratified native-test subset",
+      "facts": "30types; native within-type variation splits;1.3.0 UUID-order change affects trajectories",
+      "limits": "7207 README total and3592/1796/1819 split counts are static inference, not executed; JAR/runtime not verified"
+    },
+    {
+      "id": "workarena",
+      "kind": "benchmark",
+      "status": "Primary paper inspected",
+      "url": "https://arxiv.org/html/2407.05291v1",
+      "repo": "https://github.com/ServiceNow/WorkArena",
+      "inspected": "Paper §§3–4, current setupREADME",
+      "decision": "Deferred",
+      "facts": "33L1 atomic tasks;341workflows at L2/L3 (682tasks, not682independent workflows); current gated ServiceNow access",
+      "limits": "Access not acquired; no runtime"
+    },
+    {
+      "id": "skilllearnbench",
+      "kind": "benchmark",
+      "status": "COLM2026 acceptance indicated by author project; author arXiv v1 inspected",
+      "url": "https://arxiv.org/html/2604.20087v1",
+      "record": "https://cxcscmu.github.io/SkillLearnBench/",
+      "repo": "https://github.com/cxcscmu/SkillLearnBench",
+      "inspected": "§3.1, evaluation/implementation sections",
+      "decision": "Related component evidence; no third suite",
+      "facts": "20tasks100instances; same-structure parameter variants; deterministic outcome verifiers separate from judge-based intermediate metrics",
+      "limits": "Curated skill-dependent population and Docker/external dependencies; not native MAS rebinding"
+    },
+    {
+      "id": "skillflow",
+      "kind": "benchmark",
+      "status": "arXiv preprint verified",
+      "url": "https://arxiv.org/html/2604.17308v1",
+      "inspected": "§2.4, benchmark/evaluation appendix",
+      "decision": "Related, not selected",
+      "facts": "166tasks20families; family-reset libraries, fixed increasing-difficulty order, verifier-derived rubric",
+      "limits": "Not cross-family composition evaluation"
+    },
+    {
+      "id": "alfworld",
+      "kind": "benchmark",
+      "status": "Official repository screening",
+      "url": "https://github.com/alfworld/alfworld",
+      "decision": "Not selected",
+      "limits": "Narrower household types; saturation here is a prediction, not a run result"
+    },
+    {
+      "id": "tau",
+      "kind": "benchmark",
+      "status": "Current upstream screening",
+      "url": "https://github.com/sierra-research/tau2-bench",
+      "decision": "Not selected",
+      "limits": "Current upstream tau3 changes; user simulation and co-control are extra variables"
+    },
+    {
+      "id": "webarena",
+      "kind": "benchmark",
+      "status": "Official infrastructure documentation screening",
+      "url": "https://github.com/web-arena-x/webarena/blob/main/environment_docker/README.md",
+      "decision": "Not selected",
+      "limits": "Multi-site deployment/state reset; BrowserGym is an interface framework"
+    },
+    {
+      "id": "agentnet",
+      "kind": "baseline",
+      "status": "NeurIPS2025",
+      "url": "https://papers.nips.cc/paper_files/paper/2025/hash/9a379c1b05793d1c42dc832269834515-Abstract-Conference.html",
+      "repo": "https://github.com/zoe-yyx/AgentNet",
+      "commit": "325d39f2a940be5fa903d28c411bd3426b8007f5",
+      "inspected": "Cached final paper §§3–4; official src/agent.py and src/experiment.py fit/evaluate",
+      "decision": "Mandatory adapted baseline",
+      "limits": "Tool-state environment adapter required; no root license observed; train fit vs frozen evaluate must be preserved"
+    },
+    {
+      "id": "flowevo",
+      "kind": "baseline",
+      "status": "COLM2026 accepted verified official accepted list; arXivv1 author method inspected",
+      "url": "https://arxiv.org/html/2607.21596v1",
+      "record": "https://colm.eventhosts.cc/Conferences/2026/AcceptedPapers",
+      "repo": "https://github.com/DEFENSE-SEU/FlowEvo",
+      "commit": "36e81efd4d1fdbabca7366200b15808ebef157fa",
+      "inspected": "§§3.1–3.5; planner/compatibility/admission/governance code",
+      "decision": "Mandatory current procedural baseline replacing AWM in minimal matrix",
+      "facts": "Three routes, executable admission, negative utility and targeted rechecks; Apache2",
+      "limits": "Native ALFWorld/code/math, not AppWorld or ScienceWorld; frozen-test protocol is explicit adaptation"
+    },
+    {
+      "id": "psn",
+      "kind": "related",
+      "status": "COLM2026 accepted verified official list; author arXivv2 inspected",
+      "url": "https://arxiv.org/html/2601.03509v2",
+      "repo": "https://github.com/evolving-skill-networks/psn",
+      "commit": "e01f8be5ea99507d4c2e229c4c6dcc64721a1585",
+      "inspected": "§§2.3–2.5",
+      "facts": "Typed executable skills, local parent/child responsibility, maturity gating and structural repairs",
+      "limits": "Do not claim typed skill-DAG repair novel; native embodied setting differs"
+    },
+    {
+      "id": "asi",
+      "kind": "related",
+      "status": "COLM2025 formal paper",
+      "url": "https://openreview.net/pdf?id=lsAY6fWsog",
+      "author_text": "https://arxiv.org/html/2504.06821v1",
+      "repo": "https://github.com/zorazrw/agent-skill-induction",
+      "inspected": "Method and official implementation scope",
+      "facts": "Programmatic skill induction, testing, composition, incompatible-skill update",
+      "limits": "Browser-only adapter is substantial; not mandatory beyond FlowEvo and same-information control"
+    },
+    {
+      "id": "awm",
+      "kind": "related",
+      "status": "ICML2025",
+      "url": "https://proceedings.mlr.press/v267/wang25bx.html",
+      "repo": "https://github.com/zorazrw/agent-workflow-memory",
+      "commit": "8c0ff8cd11d648c8fceb99e4e42f37e3b75381b1",
+      "inspected": "Prior final-text audit plus repository",
+      "decision": "Key related; optional appendix extension, not mandatory7th row",
+      "limits": "Induced/composed procedural workflows already exist"
+    },
+    {
+      "id": "gmemory",
+      "kind": "related",
+      "status": "NeurIPS2025",
+      "url": "https://openreview.net/forum?id=mmIAp3cVS0",
+      "repo": "https://github.com/bingreeky/GMemory",
+      "commit": "7b581c51d993bd600df14691d101d7e601040cc6",
+      "inspected": "Prior method audit and current memory update/environment adapters",
+      "limits": "Label input must be contracted; no root license observed; not baseline by paper name alone"
+    },
+    {
+      "id": "traditional_repair",
+      "kind": "related",
+      "status": "Primary fulltext and institutional record",
+      "url": "https://www.cs.umd.edu/~nau/papers/zaidins2023implicit.pdf",
+      "additional": [
+        "https://arxiv.org/abs/2504.16209",
+        "https://kclpure.kcl.ac.uk/portal/en/publications/adaptive-composition-in-dynamic-service-environments/"
+      ],
+      "inspected": "IPyHOPPER local repair/forward simulation; service composition repair sections",
+      "facts": "Selective repair/provider substitution predate LLMs",
+      "limits": "Graph invalidation is an engineering ingredient, not a new planning theorem"
+    },
+    {
+      "id": "evoskillbank_and_alerts",
+      "kind": "incomplete_screen",
+      "status": "COLM2026 accepted list verified",
+      "url": "https://colm.eventhosts.cc/Conferences/2026/AcceptedPapers",
+      "inspected": "Accepted titles/abstracts only for EvoSkillBank, EvoSkill, CoEvoSkills",
+      "limits": "Fulltext access unsuccessful for EvoSkillBank; no method-level absence claim"
+    },
+    {
+      "id": "aamas_criteria",
+      "kind": "venue",
+      "status": "Live primarycall checked2026-09-22",
+      "url": "https://warwick.ac.uk/fac/sci/dcs/aamas2027/calls/call-for-main-track/",
+      "inspected": "Evaluation criteria and GAAI scope",
+      "facts": "Originality/significance/soundness/reproducibility/clarity/relevance/presentation/state-of-art engagement; not acceptance predictors"
+    }
+  ]
+}

@@ -1,443 +1,218 @@
-# Q1: How can task experience create capabilities and reusable workflows?
+# Q1: Earning roles through reusable evidence of collaboration
 
-Discussion draft v4, 2026-09-16; published-work novelty audit and EDO-C fusion added. **The user selected C: acquired specialization, with workflows as first-class, persistent and composable objects.** The broad ingredients have published precedents; the narrower candidate contribution is evidence-conditioned workflow transfer across changing acquired capabilities. This is a research recommendation, not established novelty or a frozen method. The [requirements](../../paper/aamas2027/REQUIREMENTS.md) and [task ledger](../../coordination/AAMAS_TASKS.md) remain authoritative; this note is not another plan.
+Discussion v6.1, 2026-09-22. **Final-lock review: keep the candidate question stable; do not lock the current method.** This revision evaluates v6 without replacing its candidate. The [requirements](../../paper/aamas2027/REQUIREMENTS.md) and [task ledger](../../coordination/AAMAS_TASKS.md) remain authoritative. The previous exact-state retention design is preserved in the [v5 snapshot](../../../artifacts/analysis/aamas2027/problem_entry_20260922/q1_v5_assessed_snapshot.txt); [contract.json](../../../configs/aamas2027/contract.json) now marks that specification as reference-only pending redesign. Its parameter blocks are not a runnable specification of the proposal below.
 
-## 1. Central question
+## 1. Recommended problem entry
 
-**Can initially comparable agents acquire complementary capabilities from different task histories, and can their team turn coordination experience into reusable workflows that improve performance on new task compositions under a fixed resource budget?**
+**Execution status:** paused at the user's request on 2026-09-22 after read-only infrastructure checks. The subsequent empirical iteration did not produce a new algorithm, frozen development batch or model result. This document remains the assessed candidate; the task ledger contains the resume checklist.
 
-An agent learns how to perform a contribution; a team learns how to organize contributions. Assignment connects them: it uses current capability and determines opportunities to acquire future capability. A workflow preserves organizational knowledge beyond a conversation or set of agent IDs.
+**How can a team admit newly acquired capabilities into reusable workflows without exhaustively retesting every executor combination or accepting harmful collaboration regressions?**
 
-| User intuition | Operational interpretation | Evidence still needed |
-|---|---|---|
-| Skills, workflows, tools and memory create capability differences | Explicit resources in execution state, with a shared frozen model initially | Different artifacts must produce different held-out response profiles |
-| Early tasks shape an agent | Task exposure changes artifacts; allocation changes later exposure | Persistence, order effects and harmful lock-in are hypotheses |
-| Failure produces memory; success produces skill | Both produce evidence and candidate lessons/procedures | Success does not validate every component; failure does not invalidate all components |
-| Communication forms composable workflows | Traces can yield parameterized execution templates | Stored conversations need abstraction, contracts and validation |
-| Differentiated agents and workflows produce emergence | Measure acquired complementarity, reusable organization and compositional transfer | Artifact count and routing concentration alone establish none of these |
+Task experience can improve an agent's local behavior while changing the assumptions on which collaborators rely. Local capability estimates alone may not tell us whether the new behavior is useful in a particular workflow. The proposed decision is conditional adoption: use a new package where collaboration is supported, retain a previous package elsewhere, or qualify a changed handoff before adopting it.
 
-The organizing insight is that **allocation changes both the current execution graph and the future capability distribution**. This broad loop is already described by AgentNet; it is motivation, not our novelty claim. The fusion proposed here gives the loop one organizational object: a workflow preserves responsibility structure, while local accepted evidence earns a scoped binding of an agent to each responsibility. Section 9 narrows the candidate to preserving useful workflow structure while acquired executors change, using those evidence-conditioned bindings and selective rebinding/reconstruction. Capability-based routing itself also has precedents. The proposed distinction needs a specific mechanism and causal transfer evidence.
+The important distinction is between knowing that an executor can perform a subtask and knowing that its contribution can be used successfully by the rest of this workflow. This is an interaction problem, not a claim that more agents are inherently better.
 
-## 2. State, feedback and objective
-
-### 2.1 Agent state and capability
-
-For n agents and tasks X_1,...,X_T, let X_t contain only permitted inputs and metadata. Initially agents share model parameters φ, instructions P, tools and update rules. Define
-
-$$
-L_{j,t}=(\mathcal S_{j,t},\mathcal M_{j,t},\mathcal T_{j,t},\mathcal W_{j,t}),
-\qquad \Xi_t=(L_{1,t},\ldots,L_{n,t},\mathcal L_t,R_t).
-\tag{1}
-$$
-
-- **Skills S:** versioned single-agent procedures with applicability conditions, input/output schemas and supporting evidence. They may call tools. Under this ontology, procedures delegating to several agents are workflows.
-- **Memory M:** provenance-linked episodes, observations, warnings and unresolved hypotheses. Both successful and failed episodes can be memories; storage does not imply validated procedural knowledge.
-- **Tools T:** executable interfaces and access rights. Availability differs from learned competence using a tool. Initially T_j,t=T_0 for everyone; learned tool-use procedures belong to S. Tool acquisition is deferred.
-- **Workflow access W:** references an agent may invoke. The team library L stores definitions once. Initially catalog access is equal; access to a workflow does not imply competence in every role.
-- **Allocation records R:** estimates of suitability for capability slots, conditioned on task and artifact versions; not true competence.
-
-Working context resets per task; skills, selected memories, workflows and allocation records persist. Skills/memories start empty or from the same disclosed seed; workflow grammar and any seed templates are shared across methods. Do not inject different role personalities to manufacture the specialization we intend to explain.
-
-At a cloned, frozen checkpoint, define individual capability using an independently scored contribution Z under a common probe protocol and budget b:
-
-$$
-\mu_{j,t}(x;b)=\mathbb E[Z(j,x;L_{j,t},b)].
-\tag{2}
-$$
-
-Probes cannot update live learning state. Individual probes prohibit delegation and use the same compatible contribution interface; permitted single-agent skills/tools remain available. Workflow-mediated whole-task ability is assessed separately: an agent invoking an excellent team is not thereby an excellent individual executor. For a common probe distribution D and the same feasible workers, contextual complementarity is
-
-$$
-G_t=\mathbb E_{X\sim D}\max_j\mu_{j,t}(X;b)
--\max_j\mathbb E_{X\sim D}\mu_{j,t}(X;b)\ge0.
-\tag{3}
-$$
-
-One uniformly superior agent can produce variance while G_t=0. These maxima are theoretical diagnostics, not deployable test-label oracles. Estimation needs uncertainty and protection against maximizing noisy sample means. G_t>0 does not show that our router can exploit it.
-
-### 2.2 Coupled decisions
-
-Let H_t be the relevant decision maker's authorized view of history, not omniscient access to private artifacts. A policy chooses workflow construction/retrieval, executor bindings and bounded execution decisions. Here a_t denotes a contingent episode controller whose step-level decisions can respond to legitimate new messages, rather than one immutable pre-episode action. Write
-
-$$
-a_t\sim\pi(\cdot\mid X_t,H_t),\quad
-(\tau_t,F_t)\sim K(\cdot\mid X_t,\Xi_t,a_t),\quad
-\Xi_{t+1}=U(\Xi_t,\tau_t,F_t).
-\tag{4}
-$$
-
-Here τ_t records contributions, dependencies, versions, attempts and costs; F_t is permitted environment/audit feedback. Artifact proposal, validation and promotion are charged parts of U. Participating agents update only from authorized observations. Nonparticipants do not silently receive private traces. Initial coordination may be centralized; this definition does not establish decentralization.
-
-| Outcome | Meaning | Policy access |
-|---|---|---|
-| F_t, including audit acceptance A_t | Actually observable feedback | As declared by the contract |
-| Z_t | Independent correctness of a specified contribution | Evaluator-only unless a particular check is a declared public service |
-| Y_t | Independent final utility, e.g. hidden-test success | Evaluator-only for final assessment |
-
-Public tests, simulator rewards or disclosed verifiers can supply feedback if all methods receive the same access and cost. Hidden evaluation answers/tests cannot affect updates, retries, stopping or selection. If acceptance is all we observe, call it acceptance rather than correctness.
-
-Compare complete policies from matched initial states:
-
-$$
-V_T(\pi;B)=\frac1T\mathbb E_\pi\sum_{t=1}^T Y_t,
-\quad C_t^{calls}\le B_c,\quad C_t^{tokens}\le B_k,
-\quad \operatorname{bytes}(\mathcal P_t)\le B_s.
-\tag{5}
-$$
-
-Here P_t is all policy-readable persistent state: memories, skills, workflow definitions, allocation records, indexes, retained traces and validation evidence, including any history later supplied through H_t. Truly evaluator-only logs may be excluded only if inaccessible to policies. Persistent capacity is total across the system; declare additional per-agent and per-call retrieval/context limits. Charge routing, tools, failures, abstraction, validation and workflow search. Report latency/concurrency and offline development costs separately. Preparation phases need equal disclosed preparation budgets. They must not hide online learning cost.
-
-Assigning work can build future capability, so immediate-reward routing need not optimize the horizon. Another policy would create different artifacts; a contextual oracle on our realized checkpoints is therefore not a full-horizon regret comparator. Compare full streams for total effects and cloned checkpoints for mechanism explanations.
-
-## 3. Workflow as a first-class object
-
-### 3.1 Trace, template, instance
-
-A **trace** records one execution. A **template** defines a reusable family of executions. An **instance** binds a template to input data, exact versions and actual agents. Temporal message order alone does not identify necessary causal dependencies.
-
-Define
-
-$$
-w=(\mathrm{id},v,\Sigma_{in},\Sigma_{out},P_w,Q_w,G_w,\rho_w,\Gamma_w,\ell_w,\mathcal E_w).
-\tag{6}
-$$
-
-| Field | Meaning |
+| Preserved commitment | Function in the narrower story |
 |---|---|
-| id, v | Stable identifier and immutable version |
-| Σ_in, Σ_out | Typed input/output schemas, including units and provenance |
-| P_w, Q_w | Preconditions/postconditions; label verified predicates versus empirical expectations |
-| G_w | Skill/tool/subworkflow nodes with data and control edges |
-| ρ_w | Capability requirements for executor slots, independent of agent IDs |
-| Γ_w | Guards, acceptance checks, failure propagation and allowed state/side effects |
-| ℓ_w | Budget, depth, retry and termination limits |
-| E_w | Origin traces, validation, scope, failures, dependencies and retirement status |
+| Experience-induced private skills/memory | Real learned changes generate the candidate capabilities to adopt |
+| Earning roles from evidence | Evidence qualifies a contribution in its collaboration context; a global reputation score is insufficient |
+| First-class composable workflows | A workflow retains executable obligations at its handoffs, so organizational knowledge can survive changed executors and enter new compositions |
 
-Initially use finite DAGs after bounded retry expansion, with no cyclic subworkflow references. An instance I_t=(w^v,X_t,β_t,ν_t) binds slots through β_t and pins dependency versions through ν_t. Future bindings can change after failures only under declared, logged rules. Reconstruction recovers an execution specification, not identical stochastic outputs.
+Working narrative: experience changes local procedures; changed procedures may alter compatibility; contribution evidence identifies the coordination conditions under which they remain useful; the workflow retains those conditions; new executors earn responsibilities by satisfying them. This is a candidate causal chain, not a demonstrated effect or three independent priority claims.
 
-First-class means addressable, retrievable, executable, inspectable, composable, decomposable, versioned and retireable. A prose plan inside a prompt alone is insufficient for this operational claim.
+## 2. AAMAS fit and competing entries
 
-### 3.2 Evidence-earned role bindings
+The [official AAMAS 2027 call](https://warwick.ac.uk/fac/sci/dcs/aamas2027/calls/call-for-main-track/) explicitly includes interaction protocols, coordination, self-improving agents and failure recovery in GAAI. COINE covers teamwork and organizations, but generative-agent architectures primarily belong in GAAI. Official evaluation concerns originality, significance, soundness, reproducibility, clarity and engagement with prior work. There is no verified acceptance-probability advantage from selecting a fashionable label.
 
-The original EDO principle is retained as a **binding rule**, not as a global reputation score. A workflow slot is an abstract responsibility, such as "extract source-linked records" or "check unit consistency". For slot $r\in R(w)$, context $\kappa$ includes the task family, interface contract, workflow version and dependency versions. Let $e_{j,r,\kappa,t}$ be the evidence ledger for assigning agent $j$ to that slot and context:
+Our inference about fit: a bounded coordination decision, a recognizable failure of a competent alternative, and a mechanism that explains the resulting behavior provide a stronger paper identity than broad claims of coevolution or emergence. This is editorial judgment, not a venue rule. Centralized coordination and a contribution using standard components can still fit; scientific value must come from a substantive problem, mechanism or finding.
 
-$$
-e_{j,r,\kappa,t}=\bigl(n^+_{j,r,\kappa,t},n^-_{j,r,\kappa,t},\bar v_{j,r,\kappa,t},\bar c_{j,r,\kappa,t},\nu_{j,t},t_{\mathrm{last}}\bigr).
-\tag{18}
-$$
+| Entry considered | Assessment |
+|---|---|
+| **A. Conditional adoption under collaboration incompatibility** | Recommended. A concrete team decision with an interpretable failure witness; preserves all three commitments. Novelty must exceed synergy matching and integration testing |
+| B. Counterfactual failure attribution and local repair | Useful diagnostic instrument for A. Replay/repair already have close precedents; replay is costly and there need not be a uniquely blameworthy agent |
+| C. Assign experience to develop complementary capabilities | Legitimate longer-horizon learning problem, but changes the project into curriculum/resource allocation. Training allocation to learning teams is already studied; free artifact migration also weakens an identity-based story |
 
-Each update is produced by the upstream owner of the slot after inspecting the returned artifact and its provenance. It records accepted value, repair/rework, interface validity and cost, together with the exact capability and workflow versions used. The ledger is scoped to $(r,\kappa)$: evidence that an agent extracted text well does not automatically authorize it to integrate a result, and evidence under an obsolete artifact version is stale. The update may be an EMA or a calibrated posterior chosen in A-T04; the scientific object is the scope and provenance of the evidence, not a particular estimator.
+No active curriculum, new backbone training, unrestricted topology search, security-governance system or general debugging framework is added to the main proposal.
 
-Let $\operatorname{LCB}(e_{j,r,\kappa,t})$ denote a prespecified lower confidence bound for the declared contribution utility, and let $\theta_r$ be a development-fixed useful threshold. The eligible binding set is
+## 3. Minimal mathematical model
 
-$$
-\mathcal B_t(r,\kappa)=\left\{j:
-\operatorname{fresh}(e_{j,r,\kappa,t},\nu_{j,t},v_w)\land
-\operatorname{LCB}(e_{j,r,\kappa,t})\ge\theta_r\right\}.
-\tag{19}
-$$
+Let \(d_u,d_v\) denote complete effective execution packages for adjacent producer and consumer roles: model/settings, role instructions, tools and actually loaded artifacts. Let \(h\) be the handoff protocol, \(x\) the task and observable state. The producer emits \(z\); the consumer uses it in a continuation:
 
-An execution instance uses a binding $\beta_t$ with $\beta_t(r)\in\mathcal B_t(r,\kappa)$ when exploitation is selected; a declared exploration rule may also sample an unproven agent at bounded cost. An audit rejection does not directly label the whole workflow or every participant. It updates the implicated slot, invalidates dependent bindings when the relevant contract/version changed, and selects among unchanged reuse, rebind, local repair or fresh construction. Thus the original acceptance ladder becomes a scoped, revocable responsibility assignment inside a reusable workflow.
+\[
+z\sim P_{d_u}(\cdot\mid x),\qquad
+S_x(d_u,d_v,h)=\Pr(Y=1\mid x,d_u,d_v,h).
+\tag{1}
+\]
 
-This separation prevents three circular claims. A role ledger is not correctness: acceptance may be noisy and must be evaluated against independent contribution checks. A workflow is not a list of trusted names: $\beta_t$ is late-bound and version-aware. A successful final answer is not credit for every edge: promotion requires slot-level provenance and, where needed, independent composition validation. The empirical question is whether these scoped bindings preserve utility and reduce invalid compositions after executor changes beyond ordinary capability matching with the same evidence.
+\(Y\) is the independently scored continuation or task outcome under a fixed remainder policy and budget. If only a local proxy is available, label it separately; it is not automatically task success. Local contribution quality \(Q_x(d_u)\) is measured with an adequate role-specific assessment, independently of the adoption mechanism.
 
-### 3.3 Composition and decomposition
+A diagnostic interaction is
 
-Sequential composition w_2∘w_1 needs compatible schemas and semantic assumptions:
+\[
+Q(d_u^{new})\ge Q(d_u^{old}),\quad
+\Delta_{v_1}>0,\quad\Delta_{v_2}<0,\qquad
+\Delta_v=\mathbb E_X[S_X(d_u^{new},d_v,h)-S_X(d_u^{old},d_v,h)].
+\tag{2}
+\]
 
-$$
-\Sigma_{out}(w_1)\preceq\Sigma_{in}(w_2),\qquad
-Q_{w_1}(z)\Rightarrow P_{w_2}(z)
-\tag{7}
-$$
+Use the same task distribution in the two partner comparisons. Otherwise task mix alone can produce the apparent reversal. A negative team change with improved local quality is sufficient to motivate investigation; the crossing is a stronger witness that a universal package ranking is inadequate. Neither is a new theorem.
 
-on the relevant execution domain. The schema relation permits an explicit validated adapter. Also check permissions, side effects, provenance, freshness and resources. With sound contracts and represented state effects, the standard rule is
+Illustrative invented probabilities, **not results**:
 
-$$
-\{P_1\}w_1\{Q_1\},\quad Q_1\Rightarrow P_2,\quad
-\{P_2\}w_2\{Q_2\}
-\Longrightarrow\{P_1\}w_2\circ w_1\{Q_2\}.
-\tag{8}
-$$
+| Producer package | Local quality | Team success with consumer A | Team success with consumer B |
+|---|---:|---:|---:|
+| Old | 0.80 | 0.80 | 0.80 |
+| Newly learned | 0.90 | 0.92 | 0.64 |
 
-This is a conditional composition rule, not a new theorem or proof of LLM correctness. Natural-language declarations do not establish its premises. Components validated separately can fail together under a changed intermediate-output distribution. Validate the actual composition; do not multiply component success rates without justified assumptions.
+A marginal-quality selector prefers the new package everywhere. Conditional selection keeps it with A and the old one with B. A competent pairwise compatibility matcher can already express this solution; beating marginal selection alone establishes little novelty.
 
-Parallel composition needs an explicit join and checks for conflicting writes, shared resources and incompatible assumptions. Decomposition must expose every dependency crossing a cut, including state and provenance. A convenient conversation boundary is not necessarily a valid interface.
+For a workflow \(w=(G,\{K_e\}_{e\in E})\), bindings \(\beta\) select role packages. A coordination record
 
-**Example:** extraction produces source-linked table records; normalization produces records in declared units; aggregation computes a statistic. JSON schema compatibility alone cannot prevent feeding values in thousands of dollars into a component expecting dollars. The reusable knowledge includes the unit contract and check. A new comparison task could combine these workflows with a join/comparison node and newly bind the roles. This is an illustrative construction, not a selected benchmark or result.
+\[
+K_e=(\sigma_e,\Gamma_e,h_e,\mathcal T_e,\mathcal E_e)
+\tag{3}
+\]
 
-### 3.4 Workflow pool
+contains the role interface, guarded semantic obligations, an executable handoff procedure, qualification cases and provenance/coverage evidence. These are empirical requirements, not universal correctness certificates. Obligations concern facts a consumer needs (such as source-linked identity, temporal scope or unresolved ambiguity), not merely a JSON schema.
 
-The task-to-workflow relation is many-to-many. Let
+The scientific target is useful adoption at a bounded total qualification and execution cost:
 
-$$
-\mathcal C_t(x)=\{w:\operatorname{applicable}(w,x),\ w\text{ retrieved, constructed, or composed from }\mathcal L_t\},
-\quad (w_t,\beta_t)\in\operatorname{Select}_{\pi}(x,\mathcal C_t(x),R_t,B).
-\tag{9}
-$$
+\[
+\max_\pi\;\mathbb E[Y_\pi]\quad
+\text{subject to }C_{acquisition}+C_{qualification}+C_{coordination}+C_{execution}\le B.
+\tag{4}
+\]
 
-Retrieval proposes candidates; contract checks remove infeasible ones; feedback measures actual usefulness. Bound search depth, candidate count and validation cost. Include fresh-construction/direct fallback. Similar task wording is not an applicability proof, and reuse must not hide uncharged combinatorial search.
+The old/new package, binding and handoff are decisions; the graph can initially remain fixed. Composition becomes a transfer test for learned coordination obligations, rather than a second unrestricted search problem.
 
-## 4. From experience to reusable capability
+## 4. Candidate mechanism and why it could work
 
-### 4.1 Evidence and promotion
+The candidate is **qualification using learned workflow handoff requirements**. It is not frozen pseudocode yet.
 
-Use the lifecycle `evidence → candidate abstraction → permitted validation → promotion/versioning → monitored reuse → revise or retire` for both skills and workflows. For an artifact q,
+1. **Retain useful versions and actual handoff evidence.** A successful local skill proposal becomes an available candidate, not a global replacement. Log what its consumers received and which observable obligations they needed. Retention/storage costs apply equally to baselines.
+2. **Learn bounded, executable coordination requirements from training experience.** Propose a small predicate/handoff change from a real success or failure. Ground it in available observations; do not invent missing evidence. Compare the original and changed handoff with the same prefix, consumer and resources in an isolated training environment. Use a separate allowed validation instance for admission. An LLM critique alone neither verifies the obligation nor establishes causal blame.
+3. **Qualify changed packages against reusable requirements.** Reuse parameterized qualification cases attached to the workflow boundary. A new package receives its own measured evidence; no old success counts are copied into its new state. A passing test is empirical support only for the covered conditions. Unseen conditions remain unqualified.
+4. **Adopt conditionally.** Choose among retaining the old package, adopting the new package, or adopting with a validated handoff change. Preserve working combinations where there is insufficient evidence. New tasks remain solvable through the common fresh-planning fallback; the proposed policy may not exclude difficult cases from evaluation.
 
-$$
-q\sim\operatorname{Propose}(\operatorname{View}_{r}(\tau_{\le t},F_{\le t})),\qquad
-\operatorname{promote}(q)=\mathbf1\{\operatorname{valid}(q)\land
-\operatorname{beneficial}(q;D_{val})\land\operatorname{withinBudget}(q)\}.
-\tag{10}
-$$
+Initially allow only a small predefined grammar of source-grounded handoff operations and predicates; separate proposal, validation and evaluation data. Repeatedly tuning against the same qualification cases will overfit. Arbitrary natural-language rules or an unconstrained LLM judge do not solve this issue.
 
-View_r is the proposing actor r's authorized observation projection; workflow induction receives only explicitly shareable summaries and dependencies. It cannot bypass private-state access. D_val is a separate permitted validation source, never hidden confirmatory evaluation. The contract must specify its sampling, observable checks, candidate count and reuse. Adaptive screening needs fresh validation batches or an appropriate prespecified correction/monitoring rule; repeatedly optimizing the same small set overfits it.
+The intuitive benefit comes from preventing detectable downstream regressions while retaining improvements where they actually help. In a simplified comparison, let \(p\) be harmful-update frequency, \(d\) detection probability, \(L\) avoided loss, \(f\) false-rejection rate, \(O\) forgone improvement and \(c\) qualification cost, all utilities/costs expressed on a common scale. Net benefit is positive only if
 
-For a frozen candidate on a declared reference distribution, a paired utility comparison can support promotion when a prespecified lower confidence bound exceeds a useful threshold and protected regression strata stay within tolerances. This depends on the sampling/uncertainty model. With proxy feedback, it concerns the proxy, not hidden correctness. Cheap duplicate, provenance and interface checks precede expensive validation. The exact rule remains an A-T04 design choice, not an implemented guarantee.
+\[
+pdL>(1-p)fO+c.
+\tag{5}
+\]
 
-Rollback restores an earlier version for future use; it cannot undo previous environmental effects. Retiring a component must invalidate or revalidate dependent workflows. Bounded storage requires consolidation and eviction rules as well as insertion.
+This is bookkeeping intuition under the stated partition of cases, not a new optimality result. It explains why the method may work when updates create repeated, locally diagnosable compatibility problems and tests are cheap; it also explains why it loses when compatibility is already standardized, regressions are rare, checks are noisy or tests cost almost a full task.
 
-### 4.2 Outcomes do not automatically assign component credit
+The **harder and potentially more valuable hypothesis** is that learned obligations transfer to combinations not exhaustively tested. One possible explanatory model is
 
-A failed task may contain a correct extractor and faulty integration. A successful task may contain wasted calls, an error corrected downstream or a lucky guess. Thus "failure → memory, success → skill" is a **candidate-generation heuristic**, not the acceptance rule. Capture both outcomes: failure can yield a useful diagnostic skill; success can remain merely an episode when transfer is unproven. Warnings need applicability conditions and supporting traces.
+\[
+S_x(d_u,d_v,h)=\mathbb E_{z\sim P_{d_u}(\cdot\mid x)}
+[g_{d_v}(\psi_h(z,x),x)].
+\tag{6}
+\]
 
-Observable team reward is legitimate feedback, but does not identify marginal contributions. Contribution checks, provenance and controlled development ablations can support attribution; otherwise mark it unresolved. Giving every node terminal reward and treating the resulting score as competence confuses participation with causal usefulness.
+A small learned boundary representation \(\psi_h\) would capture what the consumer needs; then useful qualification may be shared across packages/compositions. This factorization requires sufficient represented information and a fixed relevant continuation; it is not assumed true merely because a message is well typed. Its predictive transfer and total-cost benefit must be tested against empirical pairwise matching. No linear sample-complexity or semantic-certification claim follows without further assumptions and proof.
 
-### 4.3 Improvement is a distributional target
+## 5. Closest work and defensible novelty boundary
 
-The intended improvement is
+The [new primary-source cache](../../../references/aamas/problem_entry_20260922/sources.json) supplements the [earlier audit](../../../references/aamas/design_lock_20260922/evidence.json). The search is targeted, not an exhaustive priority proof.
 
-$$
-\Delta_{j,t}(D;b)=\mathbb E_{X\sim D}
-[\mu_{j,t+1}(X;b)-\mu_{j,t}(X;b)].
-\tag{11}
-$$
+| Work / inspection boundary | What it already covers and implication |
+|---|---|
+| [Modeling and Learning Synergy, AAMAS 2012](https://www.ifaamas.org/Proceedings/aamas2012/papers/5B_4.pdf), model/learning/team-formation sections | Learns individual capability and pairwise synergy from group outcomes. Nonadditivity, compatibility graphs and partner-sensitive selection are established |
+| [Updates in Human-AI Teams, AAAI 2019](https://ojs.aaai.org/index.php/AAAI/article/view/4087), official abstract/record | Better individual models can disrupt teamwork; performance/compatibility tradeoff is established. Do not claim this phenomenon first |
+| [AgentNet, NeurIPS 2025](https://papers.nips.cc/paper_files/paper/2025/hash/9a379c1b05793d1c42dc832269834515-Abstract-Conference.html); FlowEvo/PSN in the earlier audit | Experience specialization, organization, skill/workflow coevolution and typed/local repair are already close |
+| [SkillMAS](https://arxiv.org/html/2605.09341v1), §§2.2–2.4; preprint v1, formal venue unverified | Shared retained evidence guides skill evolution and organization edits, with executor utility and bounded restructuring. Coupling skill learning with earned responsibilities is insufficient novelty |
+| [Meta-Team](https://arxiv.org/html/2605.29790v1), §§3.1–3.2; preprint v1, formal venue unverified | Cross-agent evidence, downstream feedback, teammate profiles and three levels of evolution. Generic collaborative reflection and learned handoffs are insufficient novelty |
+| [Pact](https://docs.pact.io/), official documentation | Consumer-driven executable integration contracts are established engineering. Automatically storing/checking a handoff contract is not itself new |
+| [Learning Assumptions for Compositional Verification, TACAS 2003](https://link.springer.com/chapter/10.1007/3-540-36577-X_24), official record; related [2002 NASA report](https://ntrs.nasa.gov/citations/20030017771), method inspected | Automatically learning environmental assumptions and discharging them against other components predates this proposal. The report is not mislabeled as proceedings text |
+| [Learning-based Assume-Guarantee Regression Verification, CAV 2016](https://homepage.iis.sinica.edu.tw/~bywang/papers/cav16.pdf), pp. 1–5, model/queries and reuse mechanism | Learns and reuses contextual assumptions to reduce repeated verification of evolving systems. Uses finite symbolic transition models and a mechanical teacher answering membership/equivalence queries. Our broad learning/reuse/cost slogan overlaps; stochastic black-box agents lack that teacher |
+| [Weighted Automata in Compositional Reasoning about Concurrent Probabilistic Systems, POPL 2015](https://feihe.github.io/materials/popl15.pdf), pp. 503–504, abstract/introduction | Learns weighted assumptions for MDP components through a mechanical teacher. Stochasticity alone is also established; this limited inspection does not establish absence of finite-feedback alternatives |
+| [Assumption Generation for Verification of Learning-Enabled Autonomous Systems](https://arxiv.org/html/2305.18372v1), abstract/model; 2023 preprint, venue unverified | Generates assumptions around opaque learned perception components using known finite controller/plant models and a safety property. Merely involving learned components is not sufficient distinction |
+| [Trace-Based Assurance](https://arxiv.org/html/2603.18096v1), §§IV–V; preprint | Trace contracts, budgeted counterexample tests, boundary fault injection and regression coverage. No novelty claim for instrumentation/testing alone |
+| [AgenTracer](https://arxiv.org/html/2509.03312v1), attribution/replay method; [Causal Agent Replay](https://arxiv.org/html/2606.08275v1), attribution formulation | Replay-based intervention/attribution are prior art; inspected versions do not establish this project's access or replay validity |
+| [Allocating Training Instances to Learning Agents](https://www.cs.cmu.edu/~mmv/papers/14arms-LiemhetcharatVeloso.pdf), abstract/model; 2014 author paper, precise proceedings status not audited | Allocation of finite training opportunities to improve team coordination is established; entry C cannot claim this general idea |
 
-Promotion aims for useful positive Δ, not universal pointwise monotonicity. Finite feedback cannot guarantee improvement on every future task or distribution. Artifacts can introduce stale advice, retrieval distraction, interference and extra cost. Regression probes and retirement are therefore part of learning itself.
+The candidate contribution would be an effective way to **learn and reuse task-conditioned coordination requirements to qualify genuinely changed capabilities with less testing than pairwise/full-workflow re-evaluation**, accompanied by a controlled account of when it succeeds or fails. Learning/reusing assumptions, including probabilistic ones, is established; a possible remaining distinction is a useful finite-feedback procedure for stochastic black-box agents without exact component models or an equivalence oracle. That procedure is still missing, and this targeted search does not establish priority for it. A package-version table plus familiar tests, or substituting agents into a traditional verification story, is not enough. If the mechanism does not transfer obligations or materially improve adoption cost/quality, narrow the paper to a substantively demonstrated empirical finding or reject this entry.
 
-## 5. Early experience and specialization
+## 6. Decisive evidence before another method lock
 
-The proposed feedback loop is
+### 6.1 First establish that the problem exists in this setting
 
-$$
-\text{task exposure}\rightarrow\text{private artifacts}\rightarrow
-\text{capability profiles}\rightarrow\text{binding/execution}\rightarrow
-\text{workflow evidence}\rightarrow\text{future exposure}.
-\tag{12}
-$$
+Use genuine training-derived old/new packages and independently adequate local assessments. Hold tasks, world states, downstream packages, budget and ordinary semantic interfaces fixed. Repeatedly estimate the package-by-partner comparison in Equation (2), including the unchanged-state control. Show uncertainty and all predeclared update cases, including improvements without regressions. Do not synthesize the main effect by deleting required fields, confusing units, degrading prompts or selecting a favorable weak model.
 
-Separate two hypotheses:
+A competent universal semantic interface/canonicalizer is essential. If it cheaply removes the mismatch, the proposed problem reduces to ordinary integration hygiene. Irreducibly wrong local outputs are ordinary skill errors, not proof of collaboration incompatibility.
 
-1. **Experience-content dependence:** randomized prefixes containing different tasks, followed by a common suffix, produce different capability profiles.
-2. **Order dependence:** different permutations of the same prefix multiset, followed by a common suffix, produce differences beyond total exposure.
+### 6.2 Then test the proposed distinction
 
-Probe cloned checkpoints on the same unseen tasks without updating live state. Align worker labels when comparing profile sets; renamed identical capabilities are not divergence. Record difficulty, primitive-demand coverage and assignment counts. Balanced corrective exposure tests whether the differences persist, adapt or disappear.
+| Control | What a gain would have to establish |
+|---|---|
+| Local-quality admission + competent common interface | Downstream compatibility matters beyond measured local competence |
+| Contextual pairwise compatibility matching | Reusable obligations add something beyond observing successful pairs |
+| Equal-budget integration/regression testing, random or coverage-based test selection | Gain is not just extra tests or a standard test-selection policy |
+| Full-workflow validation within the same total budget | Local qualification saves useful cost without concealing missed interactions |
+| Retain-old / pin-all-versions | Gain includes useful adoption, not simply refusing all change |
+| Pooled same-learner with the same version/test library and context management | Value survives a capable centralized implementation |
+| Meta-Team/SkillMAS or faithful closest feasible adaptation | Contribution survives current collaborative-evolution alternatives; formal baseline replacement requires a later frozen contract |
 
-Persistent assignments with equal capability indicate authority lock-in, not specialization. Persistent differences lowering team utility may be harmful lock-in. Useful specialization can also remain adaptable. Declare prefix length and recovery horizon from development, rather than selecting a dramatic trajectory afterward.
+First study a fixed small workflow. Hold out entire package/consumer combinations and later entire workflow compositions; keep discovery/qualification cases separate from confirmation cases. A method that only memorizes observed pairs does not demonstrate transfer. Training replay needs verifiable snapshots and identical charged access for all methods. No live test-world rewind, hidden answer injection or free counterfactual simulator is added by this proposal.
 
-Initially symmetric agents can become asymmetric through different sampled experience. Greedy allocation can instead concentrate experience in one worker. Exploration is a plausible response, but diversity is not automatically optimal and "the first few tasks determine destiny" is too strong.
+Core measurements: local quality; team regression/improvement after updates; supported adoption coverage; false admission/rejection; success on untested combinations; qualification calls/tokens plus full total cost. A few vivid traces are explanatory, not the primary evidence.
 
-## 6. Three implementations within selected C
+AppWorld remains the first feasibility environment because the runtime is already audited and tasks have real state/dependencies. ScienceWorld remains a secondary candidate. Neither is inherently a multiagent compatibility benchmark. Their prior source pins and test boundaries remain protected; their final role and the six-arm matrix are reopened where this new question requires different evidence. No third dataset is selected here.
 
-These choices refine C; they do not reopen A/B.
+## 7. What is preserved and what is reopened
 
-| Design | Learned objects | Strength | Limitation |
-|---|---|---|---|
-| C1: whole-template reuse | Private skills/memories; validated complete workflows; runtime binding | Smallest complete learning/reuse loop; useful comparator | Cannot substantiate compositional transfer; may reduce to case retrieval |
-| **C2: typed subworkflow reuse and composition** | C1 plus interface-preserving decomposition and bounded composition | Directly tests the user's workflow proposal | Requires valid boundaries and meaningful unseen task combinations |
-| C3: joint curriculum and structure learning | C2 plus active learning-opportunity allocation and broad workflow rewriting | Addresses the horizon value of cultivating specialists | Much harder credit, comparison and nonstationarity problem |
+Preserved: acquired artifacts rather than invented personas; task-grounded evidence; reusable/composable workflows; equal model/tool opportunity; full cost; no gold in policy; official test integrity; historical negative evidence; strong pooled controls.
 
-**Recommend narrow C2, with C1 as a comparator and C3 deferred.** C2 is an implementation scope, not by itself a novel algorithm: AWM already builds more complex workflows from earlier ones, and GPTSwarm recursively composes graphs. The candidate distinction and additional portability controls are in section 9. Use a shared frozen model, fixed common tools, bounded private memories/skills, one versioned DAG pool and runtime binding. Begin with sequential/fork-join operators and bounded retries/depth; choose numerical limits on development data. A simple router can support a useful finding, but cannot establish novel routing.
+Reopened: the primary scientific question; exact-state reuse as the headline mechanism; unconditional two-PASS qualification; whether a role score can omit partner/input-distribution information; admission/qualification procedure; main comparison/estimand and final baseline matrix. Primitive state hashes remain necessary provenance, but do not replace behavioral evidence about changed collaborations.
 
-The minimal complete loop is:
+Do not treat this discussion as a frozen new controller. The bounded predicate/procedure language, qualification-case selection, independent feedback access, admission rule and transfer split need an executable specification after the first development witness. The old 7,941-episode matrix is not authorized confirmation for this candidate. A-T04 is reopened; method-specific A-T05 work is no longer READY. Independent infrastructure/headroom work remains valid.
 
-1. Retrieve applicable workflows or decompose the task into typed subrequests with a charged planner.
-2. Compose a bounded candidate; check dependencies, access, interfaces and budget; fall back if infeasible.
-3. Bind slots using permitted capability evidence and declared exploration.
-4. Execute with typed outputs, local checks, provenance and complete accounting.
-5. Propose lessons, skills and workflow templates from authorized feedback; validate before promotion.
-6. Reuse versions on new tasks, monitor regressions and propagate retirement to dependents.
+## 8. Final-lock decision
 
-A supplied task grammar can make interfaces tractable, but must be disclosed and given to comparators. Human-authored decomposition for every test task cannot support autonomous workflow-discovery claims. The benchmark needs repeated useful substructures and independent outcomes; a workflow pool attached to arbitrary single-step QA would poorly test this proposal.
+**Do not irreversibly lock v6 as a method. Retain its research question for one bounded specification/feasibility closure, without another narrative pivot.** This is the scientist's assessment with one independent skeptical review, not an official AAMAS review or acceptance prediction. Positive outcomes are not a prerequisite for preregistration; an executable, distinguishable intervention and a feasible observation protocol are. Freezing a hypothesis must not freeze its truth.
 
-## 7. Required evidence and failure conditions
+The v5 critique remains in the archival snapshot: weak residual distinction from competent matching, thin exact-state evidence coverage and an endpoint that did not establish evolution. V6 improves the decision problem but has not supplied the missing algorithm.
 
-### 7.1 Four questions
-
-| Question | Necessary evidence | Narrowing/falsifying outcome |
+| Paper dimension | Current judgment | What prevents final lock |
 |---|---|---|
-| H1: acquired useful differences? | Matched held-out contribution profiles change; complementarity and artifact interventions explain utility | Different memories but no useful differences, or one generalist explains the gain |
-| H2: retained organization helps? | Workflow reuse improves utility/cost over charged fresh construction with comparable artifact access | Matching compute, validation and context removes the gain |
-| H3: composition transfers? | Unseen combinations of familiar demands benefit over whole-template reuse and fresh planning | Near-duplicate traces, answers or templates explain improvement |
-| H4: complete system helps? | Stream utility/cost beats close methods and pooled-artifact alternatives | A simpler pooled agent or controller matches the effect |
+| Importance and venue fit | Plausible coordination question; GAAI fit is credible | Natural frequency/severity after competent interfaces is unmeasured |
+| Story coherence | Skills, earned responsibility and workflows form a coherent candidate chain | Acquired specialization/composition could become incidental to generic update testing |
+| Originality | Broad assumption learning/reuse and compatibility management are established | No specified finite-feedback mechanism distinguishes the proposal from strong simple alternatives |
+| Method completeness | An objective and record schema exist | No reproducible learner, test policy or adoption decision rule |
+| Soundness | Useful uncertainty/feedback boundaries are acknowledged | Transfer relies on an unestablished sufficient boundary representation |
+| Experimental feasibility | AppWorld infrastructure exists | Lawful semantic feedback, faithful replay and cost-saving qualification remain unverified |
+| Evidence | Historical environment/headroom results only | No acquired-update interaction or transferable-qualification result |
 
-For clean compositional transfer, freeze a checkpoint after permitted acquisition and test unseen composition families without committing evaluation feedback or new artifacts. Preserve familiar primitive coverage where intended but hold out composition graphs/task families, not only wording. Audit near-duplicate traces and answer-bearing artifacts. Separately evaluate ongoing co-development in online streams; later repetitions of a composition are no longer evidence of first-use transfer.
+### 8.1 Why the present intuition does not yet establish a method
 
-### 7.2 Focused controls
+Equations (1)–(2) define outcomes and a diagnostic interaction; (3) defines a record; (4) gives an objective; (5) states when checking could pay; (6) hypothesizes a useful representation. None specifies how to learn a requirement, select the next paid test, or decide adoption from the available history. The decisive work remains inside the verbs **learn, qualify and transfer**.
 
-Use a small primary set and separate checkpoint interventions:
+For Equation (6) to explain transfer, the representation must retain downstream-relevant information across the supported producer changes, with consumer and relevant continuation fixed. Agreement on observed cases does not establish this invariance. A constructed counterexample fixes a task and uses messages \(z=(a,b)\), abstraction \(\psi(z)=a\), local score \(Q(z)=a\), and downstream success \(Y=b\). Observed packages emit \((1,1)\); a new package emits \((1,0)\). Local quality and abstract observations agree perfectly, while downstream success reverses. Any predictor restricted to that shared abstraction has worst-case probability error at least 0.5 across these two cases. This is an identifiability counterexample, not evidence that AppWorld naturally exhibits the phenomenon. Its [arithmetic record](../../../artifacts/analysis/aamas2027/problem_entry_20260922/final_lock_reasoning.json) is explicitly synthetic.
 
-- Full C2 versus private artifact learning with fresh workflow construction and no retention.
-- C2 versus C1: composition versus complete-template reuse, with comparable induction, feedback and budget rules.
-- Learned versus fixed/uniform binding with the same workflow machinery.
-- Mutable versus frozen acquired artifacts from a common declared checkpoint; specify exactly which artifact families are frozen.
-- A pooled-memory/skill single agent or central controller with equal total storage, tool access, preparation budget and per-call context limits, plus a faithful close external method.
+Keeping the entire message/history could avoid this particular information loss, but would not explain compact transferable requirements or cheaper qualification. A new consumer, a changed task distribution and a changed continuation each introduce separate transfer assumptions; they cannot all be justified by one unseen-pair experiment.
 
-Full policies create different histories; match initial conditions/rules, not realized memories copied from the full method. Cloned checkpoints separately permit swapping private artifacts while records remain fixed, swapping records while artifacts remain fixed, and consistently renaming everything as a symmetry check. Pin catalog access and workflow versions. A consistent renaming should preserve behavior under coupled randomness.
+The feedback issue is equally concrete. Public checks may not label semantic usefulness; a full continuation can supply a lawful training outcome but may cost nearly as much as full-workflow testing. Reusing the same qualification cases across adaptively proposed versions can overfit. Discovery, fresh validation, replay, retained state and rejected candidates all consume budget. Local audit acceptance is not independent task truth.
 
-A stronger claim that differentiation and composition reinforce one another needs a defined 2×2 intervention:
+### 8.2 Conditions under which the idea is worth testing
 
-$$
-I=[V_{11}-V_{10}]-[V_{01}-V_{00}].
-\tag{13}
-$$
+There is a credible conditional intuition: repeated tasks may share a small number of stable consumer requirements; learned updates may sometimes violate these requirements; checking them may be cheaper than rerunning every complete combination. If all three conditions hold, retaining and selectively reusing qualification evidence can improve adoption at a fixed budget. If failures are idiosyncratic, a common interface removes them, or useful checks require full continuations, this advantage can disappear.
 
-One possible first factor is private versus pooled acquisition at equal total capacity; the second is composition enabled/disabled. Positive I supports an access/acquisition-regime interaction with composition. It does not isolate acquired differentiation as the cause, because pooling also changes access and learning dynamics. A differentiation-specific reinforcement claim requires a more direct matched intervention or additional identifying evidence. Do not add an interaction claim if evidence supports only reusable organization.
+The retained innovations must have causal roles. Acquired artifacts must generate genuine behavior changes. Earned responsibility must change an adoption/binding decision using relevant evidence. Workflow memory must transfer useful requirements beyond storing observed pair outcomes. If every new pair requires an independent full test and a bespoke patch, the demonstrated result is update testing, not reusable organizational learning. A strong centralized implementation remains an essential comparator, not an automatic disqualifier for AAMAS.
 
-### 7.3 Statistics and cost
+### 8.3 Finite closure before a new method freeze
 
-Use independently reset streams as units for online inference, with paired task orders across methods. Include failure and exhaustion in denominators. Transfer-probe analysis must respect shared checkpoints and task-family dependence. Use development variability and minimum useful effects to choose sample size; thousands of dependent steps are not thousands of independent learning systems.
+Complete the following outputs within the existing A-T03/A-T04 work; do not add another parallel plan. The next diagnostic contract must declare its native population, maximum candidate revisions, run/test budget and decision point **before any new model execution**. Numerical feasibility choices are still pending; this review does not silently authorize a pilot.
 
-Report quality-cost curves, acquisition overhead, first-use/reuse performance, regressions and capacity. Short horizons may not amortize induction cost; that is a meaningful boundary. Avoid the full Cartesian product of controls, models, budgets and topologies.
+1. **Executable minimal policy.** Specify one finite predicate/handoff language, learner, candidate/test-selection rule, uncertainty treatment, accept/reject/UNKNOWN transitions, version retention and fallback. Acceptance: another researcher can determine the next action from the same history, budget and random seed. Include one worked trace and one abstention case; avoid an unspecified LLM judgment as the whole mechanism.
+2. **Observation and intervention contract.** Enumerate what each component can see, which independent training outcomes are available, how snapshots/continuations work and what every query costs. Acceptance: small isolation/replay fixtures execute without evaluator leakage or a free oracle. Experimental measurement access must not silently become policy access.
+3. **One exact transfer claim.** Define the held-out unit, fixed consumer/continuation, supported package changes and intended task distribution. State whether sufficiency is an assumption, an empirical hypothesis or a proved property. Acceptance: a concrete success/failure test beyond memorized pair identities; no simultaneous claim of arbitrary partner, distribution and composition transfer.
+4. **Bounded development assessment.** Assess natural incompatibility, feedback reliability and actual qualification cost on the declared development population, retaining all candidates and outcomes. Acceptance: an auditable feasibility/stop decision and cost estimate. A favorable effect is not required to complete the task; do not keep changing tasks/backbones until the desired witness appears.
+5. **A decisive confirmation contract.** Resolve the comparison capabilities in Section 6 into feasible nonredundant arms, including common interfaces, contextual matching and equal-budget regression-test selection. Freeze primary quality/cost criteria, useful-effect thresholds, uncertainty, independent splits and failure handling. Acceptance: a specified result could refute the contribution even if selected examples look good.
 
-## 8. Mathematical guardrails retained from Q1 v1
+At that declared decision point, proceed only with an executable procedure whose remaining empirical uncertainty is honestly testable at feasible cost. Otherwise close this candidate as unsupported for the intended mechanism paper; do not rename it or add modules to bypass the failure. Development selection must be disclosed and confirmation remain independent. A scientifically substantial negative finding may support a separately stated paper, but is not an automatic fallback claim.
 
-### 8.1 Conditional equality and history
-
-At a fixed context I, fixed state and common downstream protocol/budget, let routing randomization not anticipate potential outcomes. Then
-
-$$
-\mathbb E[Y(j)\mid I]=m(I)\ \forall j
-\Longrightarrow \mathbb E[Y(J)\mid I]=\sum_j\pi(j\mid I)m(I)=m(I).
-\tag{14}
-$$
-
-This immediate null is not a horizon-level result: C changes later states. It does not rule out complementary error correlations when choosing teams rather than individuals.
-
-Prior exchangeability is weaker than conditional equality. In the earlier illustrative model, latent accuracies .9 and .1 are randomly assigned to worker IDs. Both initially have mean .5; one perfectly observed success by worker 1 yields next-task means .82 and .18. Initial symmetry therefore does not prohibit learning.
-
-With frozen response states, a common reference history distribution and the same feasible set,
-
-$$
-G_H=\mathbb E_{X,H}\max_j\mathbb E[Y(j)\mid X,H]
--\mathbb E_X\max_j\mathbb E[Y(j)\mid X]\ge0.
-\tag{15}
-$$
-
-Conditional Jensen gives this information-value statement. It omits history-acquisition costs and does not compare two coevolving full policies. Consistent renaming of workers and histories preserves information; it is not a history-destruction intervention.
-
-### 8.2 Audit acceptance and correctness
-
-For binary contribution truth Z and acceptance A, at matched frozen states let p_j=P(Z=1|j), with false acceptance α_j and false rejection β_j. Then
-
-$$
-q_j=P(A=1\mid j)=\alpha_j+(1-\alpha_j-\beta_j)p_j.
-\tag{16}
-$$
-
-Common worker-independent α,β with α+β<1 preserve quality order. Worker-specific audits may reverse it: truth (.7,.6) with perfect audits and truth (.4,.8) with error pairs (.5,0), (0,.25) both yield acceptance (.7,.6). If other observations are uninformative, acceptance cannot distinguish those worlds. More samples of that channel do not repair identification.
-
-Even common informative noise does not preserve an uncalibrated cost trade-off. For κ=1−α−β>0,
-
-$$
-q_j-\lambda c_j=\alpha+\kappa\bigl(p_j-(\lambda/\kappa)c_j\bigr).
-\tag{17}
-$$
-
-This matters for promotion and binding alike. Independent checks, justified noise assumptions and matched opportunities remain necessary. These elementary statements are explanatory, not sufficient theoretical novelty. A fixed-step EMA has residual variance; it is not a convergence result for evolving capabilities.
-
-## 9. Published-work comparison and the remaining candidate contribution
-
-### 9.1 Verdict and source boundaries
-
-**Q1 does not yet establish a novel method. Its broad ingredients and much of the proposed coevolution story already appear in published work.** In particular, combining private experience, evolving specialization and changing coordination is not new relative to AgentNet; treating agent graphs as recursively composable objects is not new relative to GPTSwarm; inducing and extending workflows from experience is not new relative to AWM.
-
-The following comparison was checked on 2026-09-16. It uses formal proceedings or venue OpenReview records, not a preprint date as proof of acceptance. The [source manifest](../../../references/aamas/q1_novelty/sources.json) preserves downloads, hashes and failed accesses; the [evidence index](../../../references/aamas/q1_novelty/evidence.json) records paper versions and claim locations. Where venue PDFs returned HTTP 403, the accepted publication record and the inspected author arXiv version are explicitly separate. Absence statements below are confined to inspected methods, not assertions that nobody has addressed the problem.
-
-### 9.2 What published papers already cover
-
-| Published work | Mechanism in the inspected paper | Consequence for Q1 |
-|---|---|---|
-| [Reflexion, NeurIPS 2023](https://openreview.net/forum?id=vAElhFcKW6) | Task feedback produces verbal reflection retained in episodic memory; later attempts use it (§3/Algorithm 1, author text pp.3–4) | Failure-to-memory and improvement without weight updates are established ingredients |
-| [Voyager, TMLR 2024](https://openreview.net/forum?id=ehfRiF0R3a) | Automatic curriculum, reusable executable skill library, self-verification and composition of simpler skills (§2.2–2.3, author text pp.4–5) | Success-to-skill, lifelong accumulation and compositional procedural reuse are not new |
-| [GPTSwarm, ICML 2024](https://proceedings.mlr.press/v235/zhuge24a.html) | Agent computational graphs recursively combine into larger graphs; node prompts and inter-agent edges optimize from feedback (§2.1–2.5, final pp.2–4) | First-class graphs, recursive composition and simultaneous component/coordination improvement are prior art |
-| [AWM, ICML 2025](https://proceedings.mlr.press/v267/wang25bx.html) | Abstracts parameterized subroutines from trajectories; supports offline/online memory; builds more complex workflows using earlier workflows (§2.3, §3.1/Fig.5, Appendix E, final pp.3–5 and 14) | Workflow induction, a persistent pool, reuse, progressive composition and even order sensitivity are already explored; do not reduce AWM to whole-trajectory replay |
-| [AFlow, ICLR 2025](https://openreview.net/forum?id=z5uVAKwmjf) | Searches code-represented workflows with reusable operators, MCTS and execution feedback (§3–4, inspected ICLR-marked author version) | Automatic workflow construction/optimization and operator composition are not new |
-| [AgentSquare, ICLR 2025](https://openreview.net/forum?id=mPdmDYIQ7f) | Planning/reasoning/tool/memory modules with uniform interfaces; a module pool supports recombination and evolution (§2–3, author version) | A modular resource ontology and software-like component reuse are not sufficient novelty |
-| [ADAS, ICLR 2025](https://openreview.net/forum?id=t9U3LW7JVX) | Meta-agent searches code-defined agents, retaining an archive of discoveries; evaluates transfer across domains/models (§2–4, ICLR-marked author version) | Archiving useful agent designs and showing generic transfer do not establish the proposed distinction |
-| [EvoMAC, ICLR 2025](https://openreview.net/forum?id=4R71pdPBZp) | Textual feedback updates agents and their collaboration connections during test-time refinement for each task (§3.1–3.2, author version) | Joint evolution of agents and workflow connections is not unique; distinguish per-task refinement from persistent cross-task acquisition |
-| [G-Memory, NeurIPS 2025](https://openreview.net/forum?id=mmIAp3cVS0) | Insight/query/interaction graphs, extraction of core collaboration subgraphs, role-conditioned retrieval and cross-task updates (§4.1–4.3, author v2 pp.5–6) | Organizational memory, inter-agent trajectory reuse and agent-specific memory support already exist; a memory graph is not our contribution |
-| [AgentNet, NeurIPS 2025](https://papers.nips.cc/paper_files/paper/2025/hash/9a379c1b05793d1c42dc832269834515-Abstract-Conference.html) | Private router/executor memories, task-experience specialization, capability matching, split/forward/execute decisions and evolving weighted connectivity (§3.1–3.4, final pp.4–7; §4.4 pp.9–10) | The closest overlap with C's acquired-specialization loop; neither coevolution nor capability-based selection can be claimed first |
-| [RepuNet, AAMAS 2026](https://www.ifaamas.org/Proceedings/aamas2026/pdfs/UEHN4980.pdf) | Direct and indirect peer/self reputation is stored per target and used to update network ties and partner selection (§3, proceedings) | Evidence-conditioned partner choice and topology change are prior art; our candidate must be slot-, workflow-, interface- and version-scoped, with executor transfer and invalidation rather than a general reputation value |
-| [ReAcTree, AAMAS 2026](https://www.ifaamas.org/Proceedings/aamas2026/pdfs/UCGT7089.pdf) | Dynamic subgoal agents, sequence/fallback/parallel controls, subgoal episodic retrieval and shared working memory (§4–5, proceedings pp.321–323) | Dynamic decomposition plus memory is established. It also retains varied local termination states from successful overall episodes, so prior work does not uniformly equate global success with local success |
-| [LEGOMem, AAMAS 2026 extended abstract](https://www.ifaamas.org/Proceedings/aamas2026/pdfs/VLUA1303.pdf) | Distills full-task and subtask procedural memories, assigns them to orchestrator/task agents, compares dynamic/query-rewrite retrieval (§1–2, proceedings pp.3116–3117) | Splitting experience into reusable modules and allocating memory across a MAS is already directly relevant AAMAS work. The formal publication is three pages; its ten-page author preprint is not a full AAMAS paper |
-
-The four-resource description remains useful for specification, but is an ontology. Version IDs, schemas, rollback and storage limits are valuable implementation disciplines. They become a research contribution only if a specific new mechanism or controlled finding depends on them and survives comparison with existing modular planning, service composition and memory methods.
-
-### 9.3 The three closest comparisons
-
-**Against AgentNet:** the published method already says agents naturally specialize through task experience without explicit role assignment. It stores participating trajectory fragments and uses capability vectors to route future tasks. The narrower proposed difference is an independently retained, executable **workflow template with abstract role slots**, which can be reconstructed with a different distribution of acquired worker capabilities. AgentNet's inspected organizational state is primarily agent connectivity, capability vectors and routing experience. This does not make an added template store automatically novel; its portability must produce a measurable capability that the faithful comparator or a simple extension lacks.
-
-**Against AWM/GPTSwarm:** both defeat a broad claim about composable workflows. AWM explicitly extends earlier subroutines; GPTSwarm recursively combines computational graphs. Q1 must test more than composition: whether execution knowledge learned with one team remains valid when executors change, which interface assumptions matter, and when reuse is cheaper than reconstruction. AWM also has cross-template generalization and an order analysis; merely adding either experiment is not new.
-
-**Against G-Memory/LEGOMem:** these already preserve organizational experience and deliver appropriate fragments to agents. The distinction to pursue is between retrieving examples that guide another planning episode and inducing a parameterized execution structure whose binding and validity can be tested independently of the original agents. A strong baseline must receive the same retained evidence and capability observations. Do not artificially deny retrieval methods the information our method uses.
-
-**Against RepuNet:** context-dependent peer/self reputation and topology rewiring already establish that interaction evidence can change partner choice. The proposed distinction is narrower: evidence is attached to an abstract slot inside a versioned workflow, carries interface and dependency provenance, expires when those conditions change, and directly controls reuse versus revalidation/rebinding/repair. This is a candidate execution mechanism, not a claim that evidence-based partner selection is new.
-
-### 9.4 Recommended candidate: evidence-conditioned workflow transfer
-
-The more specific research question is:
-
-> **When agent capabilities change through experience, which parts of a learned collaborative procedure remain reusable, and can scoped evidence earned at local responsibility boundaries preserve useful structure by rebinding executors and selectively repairing incompatible subworkflows?**
-
-Write a retained template as $w=(G,C)$, with execution graph $G$ and interface/role contracts $C$. Let $\beta$ bind abstract slots to concrete agents, $L$ denote their acquired states, and $\mathcal R_t$ be the evidence ledger of scoped role bindings $(w,r,\kappa,j,e)$. The useful object is the conditional execution value $V(w,\beta;x,L,\mathcal R_t)$, not a task-to-fixed-team lookup. Changes in task $x$, executor state $L$, role evidence $\mathcal R_t$ and workflow structure $G$ are different interventions. The difficulty is deciding whether a failure reflects an unsuitable binding, a broken interface assumption or an obsolete decomposition.
-
-An illustrative sequence clarifies the intended increment. A team learns `extract evidence → normalize units → calculate → check`. Later, a different agent has acquired the best extraction skill, while the old calculator's output format changes. A remembered list of names is stale; a prose precedent may require planning everything again. The proposed mechanism would retain the supported dependency structure, bind extraction to the currently suitable agent using evidence scoped to that slot and interface, and revalidate or repair the affected calculation interface. Whether this actually helps, and whether ordinary capability matching already suffices, are experimental questions.
-
-The resulting causal line is:
-
-$$
-\text{task exposure}\rightarrow\text{skill/memory candidates}\rightarrow
-\text{audited contribution}\rightarrow\text{scoped earned role}\rightarrow
-\text{promoted workflow template}\rightarrow
-\text{late binding/rebinding}\rightarrow\text{new audited evidence}.
-\tag{20}
-$$
-
-This gives each layer one job. Skills and memories change what an agent can do; a role binding records what responsibility that agent has earned under a particular workflow and interface; a workflow stores how responsibilities depend on one another. The role is therefore neither a prompt persona nor a permanent reputation. It can be explored, revoked, made stale by a version change, or transferred to another executor when the evidence and contract permit it.
-
-The candidate contribution is correspondingly narrow: **evidence-conditioned workflow rebinding**. The method would retain an independently validated organizational structure while making executor assignment a scoped, auditable and revisable decision. This is a mechanism hypothesis, not a priority claim. It differs from AgentNet's inspected agent-level capability/connectivity adaptation and from AWM's inspected workflow induction by making role evidence a first-class, versioned condition for reusing a workflow after the acquired executor population changes. A faithful method may already implement an equivalent rule; the same-information baseline below is designed to discover that case.
-
-To become more than architecture, the mechanism must specify:
-
-1. **Induction:** extract a minimal candidate subgraph with typed inputs/outputs, semantic preconditions, evidence provenance and role requirements. Message order alone is not enough; development deletion/replay probes can assess which dependencies matter.
-2. **Evidence-conditioned reuse:** record the task/interface/capability conditions under which a component was validated. On new tasks or changed artifact versions, estimate applicability from allowed observations and obtain charged validation where needed. A declared contract is not a certified guarantee.
-3. **Selective adaptation:** choose among unchanged reuse, rebinding, local recomposition and fresh planning under one budget. Rebinding preserves the graph; recomposition changes it. The algorithm must explain this choice, its costs and fallback rather than simply asking an unrestricted LLM to solve it.
-
-This is a candidate contribution within C2, not a claim that late binding, contracts or repair were invented here. A targeted follow-up on adaptive service composition and hierarchical plan repair remains necessary before asserting algorithmic priority. No named system or implementation has been frozen by this audit.
-
-### 9.5 Evidence that could make the contribution defensible
-
-Use two independently controlled transfer axes after acquisition: **new task compositions** and **changed executor capability assignments**. Keep template structure fixed in the executor-only test; keep executor states fixed in the task-only test; then test both together. New wording alone is not a new composition. Artifact swaps must respect declared access and cannot be disguised as natural learning; natural continued-learning streams are a separate ecological test.
-
-The decisive comparisons are retained full templates, fresh planning, identity-bound replay, retrieved procedural examples, and **the same template library plus ordinary capability matching without the proposed validity/repair mechanism**. The last is essential: beating a stale ID lookup alone would be an easy, uninformative result. Include faithful AgentNet and a task-compatible AWM/LEGOMem-style memory method, with shared feedback and total acquisition/inference/storage budgets.
-
-Measure held-out utility/cost, transfer loss after the change, recovery cost, valid interface rate, how much structure is retained, and unnecessary reconstruction. These diagnostics complement the individual frozen probes from section 7. Contracts must reduce concrete composition failures beyond schema checks; they need not improve every scenario. If matching alone recovers the benefit, withdraw the contract/repair novelty. If pooled memory or fresh planning wins, report the boundary rather than excluding it.
-
-A second possible paper is a causal finding about **useful specialization versus self-reinforcing assignment lock-in**, and whether workflow reuse amplifies or mitigates it. AgentNet already motivates specialization, and AWM already discusses order, so novelty would require an identified mechanism, intervention and consequential boundary, not the existence of those phenomena alone.
-
-### 9.6 Recent alerts and confidence limits
-
-- [EvoSkillBank](https://openreview.net/forum?id=I9siUH3wEc) has a current COLM 2026 venue record. Its inspected abstract explicitly covers trace-to-skill candidates and adding, merging, deprecating or rejecting skills. Treat it as current accepted-work competition, separate from older completed proceedings. This audit inspected its record/abstract only; it cannot support detailed claims about what its method lacks. Skill governance is not a safe fallback novelty claim.
-- [EvoFlow](https://arxiv.org/abs/2502.07373) describes workflow-population retrieval, crossover, mutation and diversity. Only a preprint/CoRR record was verified here; do not label it a confirmed conference paper. It still matters for novelty. The search also surfaced recent workflow-subgraph and typed-composition preprints; this is not an exhaustive priority search through all of 2026.
-- Sources retrieved through OpenReview include discussion records, but this comparison relies on publication metadata and paper content, not reviewer opinions. Conference status and the inspected full-text version are separately recorded. No empirical scores from different papers are compared as if their datasets/budgets matched.
-
-**Current judgment:** the broad Q1 story is substantially anticipated; the proposed portability/repair mechanism and causal evidence are the strongest candidates to develop, but no completed innovation is established yet. A-T03 selects tasks/feedback/resources; A-T04 must close the exact mechanism and prior-work gap. The [historical audit](../../../artifacts/analysis/aamas2027/t02_20260916/report.json) and current [memory](../../../codes/edo_frame/edo_frame/note_board_memory.py), [tools](../../../codes/edo_frame/edo_frame/tool_registry.py) and [events](../../../codes/edo_frame/edo_frame/events.py) provide starting components, not evidence for these claims. Earlier A/B designs remain controls, not primary recommendations.
-
-## 10. Evidence boundary
-
-This revision incorporates an independent bounded design review covering conditional symmetry, exposure/order, allowed feedback, attribution, semantic composition, full-policy versus checkpoint comparisons and focused controls. No runtime or model experiment validates this design yet.
-
-The previous [illustrative arithmetic](../../../artifacts/analysis/aamas2027/q1_math_checks.json) checks earlier toy calculations and audit-bound algebra only, not the new workflow design or promotion rule. The composition rule is standard and conditional on sound premises. General background: [Bandit Algorithms](https://tor-lattimore.com/downloads/book/book.pdf); no regret guarantee is imported for this system.
-
-No new benchmark result, superiority, guaranteed improvement, established early lock-in or first-in-literature claim is asserted.
+After a justified freeze, hold the hypothesis, algorithm and confirmatory protocol fixed and report the result. Integrity defects or newly invalid assumptions require a documented amendment or stopping decision; an instruction never to change the plan cannot make a false assumption true. AppWorld/ScienceWorld source pins remain preserved, while final benchmark roles and baseline implementations depend on closing the specification above. No confirmation runs are launched by this review.

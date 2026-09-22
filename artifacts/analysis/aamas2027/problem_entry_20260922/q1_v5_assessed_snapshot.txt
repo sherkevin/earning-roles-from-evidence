@@ -1,0 +1,288 @@
+# Q1: Earning roles as acquired capabilities change
+
+Design v5, 2026-09-22. Selected C2 is specified: **private acquired capabilities, evidence-earned responsibility assignments, and persistent composable workflows**. The [requirements](../../paper/aamas2027/REQUIREMENTS.md) and [task ledger](../../coordination/AAMAS_TASKS.md) remain authoritative; [contract.json](../../../configs/aamas2027/contract.json) records the design. This note replaces the earlier alternatives and provisional LCB/certificate formulation. Selection is locked; feasibility, novelty and positive results are not verified.
+
+Working title: *Earning Roles from Evidence: Reusing Workflows as Agent Capabilities Evolve*. It retains the original identity while naming the narrower problem; final wording must follow results.
+
+## 1. One story and three contribution obligations
+
+**When experience changes who can do what, how can a team retain useful organization without retaining obsolete responsibility assignments?**
+
+Experience produces private skill/memory artifacts. Their usefulness changes an executor's capability. A role assigns responsibility for a contribution under a declared interface and execution state. A workflow retains the dependency structure of responsibilities independently of its executors. New tasks may reuse or compose the structure; changed capabilities may require new bindings or local reconstruction.
+
+The original *earning roles from evidence* idea becomes the organizing principle of C:
+
+\[
+\text{experience}\to\text{private artifacts}\to\text{audited contributions}
+\to\text{earned bindings}\to\text{reusable organization}\to\text{new experience}.
+\tag{1}
+\]
+
+This broad loop is prior art. The narrow candidate is **evidence-conditioned responsibility transfer in workflows executed by agents whose private capabilities change through experience**.
+
+| Retained core | Required evidence | Unsupported interpretation |
+|---|---|---|
+| Acquired specialization | Artifacts change held-out response profiles and sometimes create complementarity | Different memories imply different abilities; early tasks permanently determine roles |
+| Earning roles from evidence | Contribution evidence supports provisional, scoped responsibility and explains rebinding | Agent identity, global reputation, self-approval or terminal success establishes competence |
+| First-class workflows | Executable structure survives executor changes and supports useful subworkflow composition | Storing plans, graph composition or local repair is independently new |
+
+The three contribution obligations are a precise state-based responsibility-transfer problem, a concrete scoped-evidence controller, and controlled evidence about its utility and limits. They are not three already demonstrated innovations. If competent ordinary matching reproduces the controller's behavior/results, withdraw the stronger algorithmic claim.
+
+## 2. State, capability and objective
+
+Three executors and one charged coordinator share a frozen model, initial instructions, tools and empty private stores. Let
+
+\[
+L_{j,t}=(S_{j,t},M_{j,t}),\qquad
+\Xi_t=(L_{1,t},\ldots,L_{n,t},\mathcal W_t,E_t).
+\tag{2}
+\]
+
+Skills are parameterized single-executor procedures. Memory stores source-linked episodes, lessons and unresolved warnings. The workflow catalog stores organizational structure; the ledger stores public evidence summaries and the counted binding/validity cache. Tool acquisition, fine-tuning, autonomous curricula and decentralization are outside this study. Context resets per task; declared stores persist during acquisition.
+
+The effective role execution state is
+
+\[
+d(j,r,x,t)=H(\phi,P,\mathcal T,\eta,
+  \operatorname{orderedContents}(\operatorname{Retrieve}(L_{j,t},r,x))).
+\tag{3}
+\]
+
+The hash covers model/route, prompt, tools, settings and **every actually loaded artifact**, including apparently irrelevant memories. Unloaded storage changes need not invalidate the package. Unknown dependency coverage requires conservative invalidation. The controller receives hashes and permitted descriptors, not private text.
+
+With identical backbones/prompts/tools, actor identity has no residual causal competence beyond the execution state. An identical complete package and its evidence may migrate to another identical worker. IDs remain provenance/ownership metadata. This corrects v4's agent × family × whole-workflow-version key, which would have prevented transfer to unseen compositions.
+
+At a cloned checkpoint, individual probes prohibit delegation and use a common contribution interface/budget:
+
+\[
+\mu_{j,t}(x;b)=\mathbb E[Z(j,x;L_{j,t},b)],\qquad
+G_t=\mathbb E_X\max_j\mu_{j,t}(X;b)-\max_j\mathbb E_X\mu_{j,t}(X;b)\ge0.
+\tag{4}
+\]
+
+Independent contribution quality \(Z\) is distinct from observed acceptance. \(G_t\) separates complementarity from one uniformly better worker; it is not a deployable oracle. Protect empirical estimation against maximizing noisy sample means. A private/pooled difference alone does not identify specialization.
+
+A policy uses only authorized history and selects a contingent episode controller:
+
+\[
+a_t\sim\pi(\cdot\mid X_t,H_t),\quad
+(\tau_t,F_t)\sim K(\cdot\mid X_t,\Xi_t,a_t),\quad
+\Xi_{t+1}=U(\Xi_t,\tau_t,F_t).
+\tag{5}
+\]
+
+Permitted feedback \(F_t\) is not synonymous with truth. AppWorld gets a declared **training-only terminal binary-success service**, equally available to all learners. No assertion details, expected values, solutions or evaluator code enter agents. Confirmatory outcomes never update persistent state. ScienceWorld's native public reward/score is allowed equally under its explicit observation contract; score increments are task progress, not causal role credit.
+
+The target is success within shared resource constraints:
+
+\[
+J(\pi;B)=\mathbb E\!\left[\frac1T\sum_tY_t\right],
+\quad C_t^{calls}\le B_c,\quad C_t^{tokens}\le B_k,\quad
+|\text{all policy-readable state}|\le B_s.
+\tag{6}
+\]
+
+Charge preparation, routing, audits, induction, validation, failed calls, repair and API operations; report latency and amortized preparation. Pooled methods get equal total capacity/opportunity. No expert personas or artificial tool-permission differences create specialization.
+
+## 3. Workflow semantics
+
+A trace records one execution; a template describes a reusable procedure; an instance binds current data, versions and executors:
+
+\[
+w=(G,\Sigma,P,Q,\rho,\Gamma,\nu,\mathcal E),\qquad
+I=(w,x,\beta,\{d_r\}_{r\in R(w)}).
+\tag{7}
+\]
+
+These fields encode a bounded DAG, types, pre/postconditions, responsibilities, guards/effects/termination, versions and provenance. Workflows are addressable, executable, composable, decomposable and retireable. \(\beta\) can change without replacing the responsibility structure.
+
+Use sequence and guarded fork/join, at most three subworkflows, depth two and six leaf roles. Stateful writes remain serial. Retrieve three templates by descriptor-based BM25. At most one charged coordinator proposal may compose their registered roles or introduce new normalized contract ASTs; one deterministic validator checks syntax/dataflow/effects. Unsupported semantic predicates remain UNKNOWN. No repeated proposal sampling or unrestricted topology search.
+
+Role identity uses canonical JSON ASTs (types, units, bound-input comparisons, provenance/receipt/readback/effect predicates and Boolean operators), with sorted fields and alpha-renamed variables. Natural-language paraphrases are not automatically equivalent. Compare exact normalized contracts and checker versions; record unmatched coverage rather than invent semantic aliases.
+
+Rank up to three retrieved templates plus one valid composition by supported-role fraction, mean smoothed acceptance score, estimated sum cost, then canonical hash. Missing evidence uses 0.5 only for ranking; missing cost uses a conservative cap. No product is interpreted as workflow success probability. If none is applicable, use the bounded fresh decomposition/direct continuation. The same candidate frontier/proposal costs are available to B4.
+
+A role signature \(\sigma_r\) contains input/output obligations, units, provenance, parameterized state conditions, effects and public checks. It does not require an agent name, task-family label or whole-workflow ID. Sequential composition needs
+
+\[
+\Sigma_{\rm out}(w_1)\preceq\Sigma_{\rm in}(w_2),\qquad Q_{w_1}\Rightarrow P_{w_2}
+\tag{8}
+\]
+
+on the represented state/effects. Schema matching alone cannot establish the implication. Shared-state interference, units, provenance and freshness matter. These are standard compositional obligations, not a new theorem or a proof that generated declarations are sound. Newly composed structures are provisional; individually successful parts do not certify the whole.
+
+## 4. Locked minimal controller
+
+### 4.1 Scoped empirical support
+
+Each evidence event is
+
+\[
+e=(\sigma_r,d,\kappa,c,o,\text{source task/event IDs},\text{cost}),\qquad
+o\in\{\mathrm{PASS},\mathrm{FAIL},\mathrm{UNKNOWN}\}.
+\tag{9}
+\]
+
+\(\kappa\) names declared observable applicability predicates; \(c\) identifies the checker and covered obligation. Actual amounts/identities are parameters, not hidden expected answers. A positive semantic check must be grounded in allowed observations or executable predicates. Unsupported LLM approval, exception-free execution and AST call presence do not establish semantic PASS. Uncheckable obligations are UNKNOWN.
+
+Use at most eight recent distinct-task observations per exact scope:
+
+\[
+q=\frac{s+1}{s+f+2},\qquad
+\operatorname{supported}=\mathbf1\{s\ge2,\ f=0\}.
+\tag{10}
+\]
+
+Record unknowns separately. This is a fixed heuristic, **not a calibrated posterior, confidence bound or correctness certificate**. Repeated checks of one task do not constitute independent support.
+
+Transport support only across equivalent role obligations, context predicates, checker and effective execution package. Genuinely changed packages are unproven. Complete state+evidence migration is legitimate; retaining unchanged siblings' evidence differs from extrapolating competence to a new skill. No arbitrary age expiry is needed under fixed versions; relevant state/freshness conditions remain checked.
+
+### 4.2 Executable decisions
+
+1. Retrieve templates and check input/interface/state applicability. One charged read-only inspection may resolve UNKNOWN applicability; it cannot demonstrate executor competence.
+2. Training exploration takes precedence. Otherwise retain the cached binding if its current retrieved package is unchanged, applicable and supported, even if another marginal score is higher: this is an explicit stability preference. When invalid/unproven, rank supported candidates by \(q\), mean cost and seeded ties; if none is supported, use a compatible unproven state. Cache abstract binding/dependency descriptions within counted persistent state. Receipts, concrete task values, committed-effect records and completed flags are episode-local: reset them with every world and bind fresh observations. A previous task's receipt never authorizes skipping a new action. A7 tests retention preference separately; it is not an optimality guarantee.
+3. During acquisition, every fifth eligible binding explores the least-observed compatible state. No cross-test learning.
+4. Pin the execution package; record actual actions, inputs/outputs, audits and committed effects. An upstream owner checks the returned contribution. Do not distribute terminal success to all participants.
+5. After covered failure, repair the affected uncommitted frontier once. Preserve verified effects/unaffected components. If insufficient, plan a fresh continuation within the **same current world** and remaining budget. Inspect ambiguous effects before another state-changing call; never blindly repeat it.
+
+Implement these branches in controller code. An unconstrained prompt asking an LLM to choose among reuse/rebind/repair is insufficient.
+
+### 4.3 Acquisition and promotion
+
+Only actual authorized trace/events generate private artifacts. Mere restatement of common API documentation is not demonstrated learning. After two acquisition instances in a family/type, freeze at most one package with two local skills and one workflow; validate it once on the reserved training instance. Admission and role support are distinct: one held-out training success with structural/public checks admits a package **provisionally**. The two preceding acquisition runs occurred before this package existed and cannot count toward its fingerprint's support. Only later distinct allowed training executions can earn the second supporting observation. Unknown local obligations remain unproven; covered FAIL or failed terminal validation rejects the package. Never re-edit against the same promotion instance.
+
+This small empirical admission budget does not prove transfer or monotonic improvement. All readable records/indexes/traces count toward storage. Eviction/retirement invalidates references. Rollback changes future choices; it cannot undo earlier environmental effects.
+
+### 4.4 Example and failure
+
+The existing development example is
+
+\[
+\text{extract source-linked amount}\to\text{pay}\to\text{acknowledge with receipt}.
+\tag{11}
+\]
+
+A changed extraction package makes its old competence evidence stale; unchanged payment/acknowledgement support may survive subject to current input conditions. A new extractor can earn the role without changing the graph.
+
+If acknowledgement fails after payment, resume from the receipt, without repeating payment. If extraction supplied the wrong amount, final failure alone does not prove the payment executor mishandled its input.
+
+This is illustrative: all three AppWorld \(\texttt{530b157}\) siblings were already solved by each of four tested strong API routes. It supplies no learning effect and is not a fresh confirmation slice.
+
+## 5. Locked benchmarks and predicted boundaries
+
+| Benchmark | Role | Evidence boundary |
+|---|---|---|
+| AppWorld, source \(\texttt{42b5bcf3}\), data 0.2.0 | Main stateful suite; complete 57-task dev screen; test-normal 168 / test-challenge 417 separately | Native generator-family transfer and composition-operator ablations. API set cover/family novelty alone does not establish semantic compositional generalization |
+| ScienceWorld, source \(\texttt{e8216d60}\), 1.3.0 | Cross-domain procedures; 30 types × three prespecified native test variations | Native splits hold out variations within types, not workflow families; secondary utility/breadth only |
+
+Use two seeded training instances per family/type, reserve a third for promotion, and initially assign families/types randomly and evenly to identical workers. Later delegated contributions follow the controller. Active curriculum optimization is deferred.
+
+Restore a frozen persistent checkpoint before every confirmatory task. AppWorld reporting stays aggregate-only under official test restrictions. No favorable-result subset selection. A semantic composition subtype would require a frozen, method-independent annotation rule; until validated without test-error inspection, claim **native-family transfer and whole-population composition-operator utility**, not a clean new-composition benchmark.
+
+Plausible favorable regimes are repeated nontrivial procedures, complementary acquired packages, familiar obligations in new combinations, and capability changes where unaffected organization remains useful. Short familiar tasks, one dominant generalist, documentation caching, entirely new primitives, weak checks and high coordination overhead may yield neutral or negative results. These are predictions, not success probabilities.
+
+OfficeBench remains rejected for stored evaluator-integrity failures. WorkArena++ has strong native composition but unavailable gated instance access and browser cost. ALFWorld adds less diversity; WebArena adds deployment/perception variables; tau-bench adds simulated user/co-control variables. SkillLearnBench tests mainly within-procedure skill transfer; SkillFlow resets libraries per workflow family. Neither replaces the coordination study. See the [source index](../../../references/aamas/design_lock_20260922/evidence.json).
+
+## 6. Locked comparisons and identification
+
+| Arm | Purpose/fidelity |
+|---|---|
+| ReAct | Strong task-local interactive agent with full common tools/budget |
+| Pooled learner | Same induction, acquisition opportunity and total capacity; pooled access with normal context management/delegation |
+| AgentNet-adapt | Preserve router/executor memories, execute/forward/split, capability and connection updates; disclose tool-environment changes |
+| FlowEvo-adapt | Preserve compilation, admission, direct replay / skill-conditioned / dynamic routes, and negative-utility governance |
+| Current-state matching | Same checkpoint/packages/templates/evidence/checks/cache map; recompute all unfinished role bindings at task start/after failure by current score; preserve correct graph and committed effects, same one-repair/remaining-budget continuation |
+| Proposed controller | Scoped support and selective structure retention |
+
+The current-state matcher must use current version/context information competently; stale-ID replay is insufficient. Do not force extra model calls for deterministic matching. Behavioral equivalence is a legitimate falsifier of algorithmic distinctness.
+
+External full policies acquire their own histories. Copying our realized memories into an external method is not a live-policy comparison. The pooled learner may emulate specialized contexts. External methods receive the same aggregate preparation opportunity/call/token envelope, but allocate it to their own native induction/curation schedule; do not impose our one-package update cadence on FlowEvo.
+
+Focused checkpoint interventions avoid a full Cartesian experiment grid:
+
+| Question | Contrast | Failure interpretation |
+|---|---|---|
+| Acquired ability | Private artifacts present vs removed/frozen; common no-delegation probes | Different stores need not contain useful skills |
+| Retained organization | Retained vs fresh construction | Memory/prompt content may explain the gain |
+| Composition | Subworkflow vs whole-template-only reuse | No compositional claim if whole reuse suffices |
+| Evidence/selectivity | Strong current-state matcher and global invalidation | Ordinary matching/global refresh may suffice |
+| Role selection | Learned vs seeded uniform compatible binding | Binding may be unnecessary |
+| State dependence | Consistent migration; artifact-only stale association; real later acquired-state substitution | Renaming is a symmetry check, not drift |
+| Binding stability | Keep scoped cache/repair, but always rematch by current score (A7) | Retention preference, rather than evidence scope, may explain any gain |
+
+Choose later states from archived **training** acquisition without test outcomes. Artificial corruption is a separate stress test. Unchanged structure does not imply unchanged output distributions; downstream input checks still apply.
+
+## 7. Analysis and stop rules
+
+The primary effect is the paired, family-balanced AppWorld test-normal success difference at identical learned checkpoints:
+
+\[
+\Delta=\mathbb E_s\left[\frac1{|\mathcal F|}\sum_{f\in\mathcal F}
+\frac1{|f|}\sum_{x\in f}
+(Y^{\rm proposed}_{s,x}-Y^{\rm matching}_{s,x})\right].
+\tag{12}
+\]
+
+This is a controller intervention on sampled acquired states, not complete-policy superiority. External methods have separate acquisition streams.
+
+Five development streams estimate variability/cost. Plan ten independent primary confirmation checkpoints, then freeze the actual count and analysis before test output. Ten is not a power guarantee. Five streams cannot yield a two-sided distribution-free sign-test \(p<.05\) even if every difference is positive. Many tasks inside one learned organization are not independent organizations.
+
+The planning cells sum to approximately 7,941 confirmation episodes before acquisition, pilot and ablation costs or deduplication. A-T07 must name arms/checkpoints/populations and price them from actual traces; two datasets does not mean a cheap study. Three external-policy streams provide weaker history-level precision than the ten-checkpoint primary.
+
+Show every stream delta and conditional family-block uncertainty separately; state assumptions for uncertainty over both families and histories. One primary quality contrast is fixed. Secondary comparisons use declared multiplicity handling. The practical quality target is five percentage points; a noninferior-quality cost claim needs a separate prespecified endpoint and cannot establish acquired content ability.
+
+Next: full AppWorld dev on the existing qwen route at inherited 30-call/2048-output settings. Success outside (0.10,0.90) stops the content-gain regime. These are feasibility heuristics, not power thresholds. No weaker-model hunt, degraded prompts or hard-only filtering. Then artifact-removal probes must show content effects on more than one family. Report support coverage and require at least two distinct learned role obligations with lawful post-generation support before broad confirmation; otherwise the earned-role mechanism is not operational.
+
+The central claim fails if artifacts do not help, one generalist dominates, pooled/current-state matching explains the gain, composition adds nothing, stale reuse causes harmful actions, or full cost erases utility. Negative results remain visible and require an explicit narrower paper, not silent benchmark replacement.
+
+## 8. Closest work and remaining distinction
+
+This updates the [earlier audit](../../../references/aamas/q1_novelty/evidence.json); current 2026 work further narrows priority.
+
+| Primary work / inspected scope | Established overlap |
+|---|---|
+| [AgentNet, NeurIPS 2025](https://papers.nips.cc/paper_files/paper/2025/hash/9a379c1b05793d1c42dc832269834515-Abstract-Conference.html), §§3–4 | Experience specialization and dynamic organization |
+| [FlowEvo, COLM 2026 accepted](https://arxiv.org/html/2607.21596v1), §§3.1–3.5 | Workflow/skill coevolution, executable admission, routing/governance, targeted rechecks |
+| [PSN, COLM 2026 accepted](https://arxiv.org/html/2601.03509v2), §§2.3–2.5 | Typed skill networks, localized responsibility/repair, structural changes |
+| [AWM, ICML 2025](https://proceedings.mlr.press/v267/wang25bx.html), §§2.3/3.1 | Parameterized workflow induction and composition of prior subroutines |
+| [ASI, COLM 2025](https://openreview.net/pdf?id=lsAY6fWsog) | Program skills, testing, composition and incompatible-skill updates |
+| [GPTSwarm, ICML 2024](https://proceedings.mlr.press/v235/zhuge24a.html) | Recursive graphs and node/edge optimization |
+| [G-Memory, NeurIPS 2025](https://openreview.net/forum?id=mmIAp3cVS0); [LEGOMem, AAMAS 2026 extended abstract](https://www.ifaamas.org/Proceedings/aamas2026/pdfs/VLUA1303.pdf) | Organizational/procedural memory and role-conditioned retrieval |
+| [ReAcTree](https://www.ifaamas.org/Proceedings/aamas2026/pdfs/UCGT7089.pdf); [RepuNet](https://www.ifaamas.org/Proceedings/aamas2026/pdfs/UEHN4980.pdf), AAMAS 2026 | Dynamic task trees/local memory; contextual role/reputation organization |
+| [IPyHOPPER](https://www.cs.umd.edu/~nau/papers/zaidins2023implicit.pdf); [adaptive service composition](https://kclpure.kcl.ac.uk/portal/en/publications/adaptive-composition-in-dynamic-service-environments/) | Local plan repair/provider replacement/preservation of unaffected structure |
+
+AFlow, AgentSquare, ADAS, EvoMAC, Voyager and Reflexion remain component precedents in the earlier audit. Additional accepted records include EvoSkillBank; inaccessible full texts/abstract-only screening remain explicitly incomplete. This is targeted comparison, not an exhaustive priority proof.
+
+The candidate difference concerns **acquired execution state, evidence for responsibility, and reusable multiagent structure together**. Metadata scope and graph invalidation are engineering ingredients. A substantive contribution requires a consequential effect beyond FlowEvo, AgentNet and competent same-information matching.
+
+## 9. Lock boundary
+
+Locked: question, retained commitments, effective-state semantics, controller branches, two benchmarks, six-arm comparison, access/feedback, interventions and stop rules.
+
+Unverified: useful private skills, complementary capabilities, working C executor, faithful adapters, a confirmatory semantic-composition subtype, profitable repair or a powered result. Historical QA and AppWorld floor/ceiling diagnostics establish none of these.
+
+Implementation invariants, complete-development headroom/artifact checks, adapter fidelity, cost/precision accounting and a separately hashed confirmation manifest are the next work. Their only status surface is the canonical task ledger.
+
+### 9.1 Objective assessment of the locked design (2026-09-22)
+
+**Verdict:** a coherent, worthwhile research question with an increasingly testable protocol; a distinctive and effective scientific contribution remains unestablished. The design lock ends uncontrolled design drift. It does not certify novelty, validate the method or justify the full confirmation spend. This assessment includes one bounded independent skeptical review and does not change the contract.
+
+| Evaluation criterion | Current assessment |
+|---|---|
+| Significance and story | Separating acquired capability, earned responsibility and reusable structure is meaningful. Preserving organization when capabilities change is a credible coordination problem |
+| Originality | Broad specialization, skill/workflow coevolution, graph composition and local repair overlap established work in Section 8. The consequential residual decision rule is still uncertain |
+| Methodological soundness | Explicit states, lawful feedback, competent controls and cost accounting improve falsifiability. Semantic audit validity, evidence coverage and several fixed heuristics remain unvalidated |
+| Multiagent relevance | Organization under bounded context/computation is plausible; inherent superiority or necessity of private agents is not established |
+| Empirical support | Existing floor/ceiling and runtime diagnostics establish neither useful acquired complementarity nor benefits from evidence-earned bindings |
+| Clarity and feasibility | One causal story is clearer than three independent innovation claims. The implementation/confirmation burden is still large relative to evidence for the central phenomenon |
+
+Four objections take priority:
+
+1. **The algorithmic distinction may collapse under B4.** B4 has the same current states, evidence, candidate frontier, cache information, preserved valid structure/effects and local-repair allowance. Deterministically rematching a small number of roles need not cost another model call. The remaining difference can be chiefly the preference for a supported incumbent; A7 isolates it. A benefit from binding stability alone does not establish independent novelty in evidence scoping, composition or repair. This is a legitimate falsifier, not a reason to weaken B4.
+2. **Exact-state support is conservative but may rarely be usable.** Section 4 transfers unchanged evidence to equivalent obligations and execution packages; a changed package must earn new support. This is selective evidence reuse and revalidation, not competence extrapolation across capability changes. One promotion observation is insufficient for the two-task support rule. A different retrieved memory or skill combination creates a new package, and frozen confirmation cannot accumulate missing support. Two supported obligations establish existence, not useful coverage. Report the fraction of actual decisions using supported bindings, exact-scope recurrence, time to support, UNKNOWNs and semantic false passes. Checking that a payment used its supplied amount does not establish that the supplied amount satisfied the user's request.
+3. **The main estimand is narrower than the evolution story.** Equation (12) measures controller utility at sampled frozen learned states. It cannot alone show that the method benefits from adapting through real capability changes. Earlier/later training-derived state substitution, with an unchanged-state control, is central evidence for that headline. Likewise native family/variation splits do not independently prove semantic compositional generalization. Any revision of confirmatory priority must be explicit before confirmation; this critique does not silently revise the endpoint.
+4. **Private specialization is an organizational choice whose value must be earned.** With identical workers/tools and migratable artifacts, an equally resourced pooled controller allowed specialized contexts can simulate the private partition. Under equivalent policy/simulation resources, private execution is not a fundamentally larger policy class. Practical gains may arise from context selection, finite computation or a useful organizational bias. Those can be valuable findings, but neither different stored histories nor beating an artificially restricted pooled implementation proves multiagent necessity. Randomly allocated acquisition also does not establish autonomous curriculum emergence.
+
+The minimal decisive development evidence is a naturally learned checkpoint-change comparison. First demonstrate useful held-out artifact effects and complementary capabilities. Then select earlier/later acquired packages without held-out outcome selection, compare the proposed controller with B4 and the capable pooled learner at matched resources, and include unchanged-state controls. Independently score contribution quality; measure supported-role coverage, changed-package invalidation, unaffected-evidence retention, failures/UNKNOWNs, task success and full cost. Use A7 to distinguish evidence-related utility from incumbent preference. The question is whether actual capability change creates a coordination problem and whether this mechanism solves it better than competent alternatives.
+
+Preserve the three core commitments as one causal chain, not three priority claims. If artifacts do not produce useful differences or support coverage is negligible, there is no operational earned-role mechanism. If B4 reproduces the behavior, narrow the allocator claim. If only structured retrieval or planning cost improves, report that narrower result. If selective preservation after real acquired-state changes improves quality or a prespecified cost endpoint against strong alternatives, the story acquires substantive evidence. Current readiness is for this feasibility/falsification stage, not an established strong-paper claim.

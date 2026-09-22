@@ -1,5 +1,7 @@
 # AppWorld B1 feasibility — 2026-09-21
 
+**Checkpoint, 2026-09-22:** research/experiments are paused by the user. The latest completed result is the terminal four-model ceiling screen recorded below. No donor acquisition, exposure treatment or workflow-rebinding experiment followed. Earlier "next" directions in this chronological report are historical; the [canonical task ledger](../../../../docs/coordination/AAMAS_TASKS.md) governs any later resumption.
+
 ## Current decision
 
 AppWorld remains the primary benchmark candidate. Qwen2.5-3B is rejected as the main B1 backbone after a clean no-experience run on dev task `6c2c621_1`.
@@ -46,3 +48,46 @@ The frozen API backbone gate completed on `U-CGPCVWR0-0024.local` after the migr
 Results: `6c2c621_1`, `6c2c621_2`, and `6c2c621_3` each passed all **8/8** official evaluator assertions and each issued exactly one `apis.supervisor.complete_task` call. The preregistered gate required >=2/3 successes; observed result was **3/3**, so `qwen3.8-max` is accepted as the non-floor development backbone. Total runtime was 253.819 seconds. Raw trajectories remain under AppWorld's local `experiments/outputs/aamas_b1_qwen38_api_gate_20260921`; the project stores the compact result in `qwen38_api_gate_result.json`.
 
 This is a backbone-feasibility result only. It does not test or support claims about private task exposure, specialization, earned roles, or evidence-conditioned workflow rebinding.
+
+## `530b157` no-experience dynamic-range gate: ceiling
+
+After the v3 exposure contract was frozen on Shervin and before any donor acquisition, the Mac execution machine ran `qwen3.8-max` with **no private experience** on all three `530b157` dev siblings. The complete record was synchronized back to Shervin before the scientific decision was recorded.
+
+All three tasks achieved official success with **10/10 evaluator assertions**, and each issued exactly one `apis.supervisor.complete_task` call. Mean passed-test fraction was 1.0; total runtime was 385.970 seconds. The v3 contract predeclared 3/3 official success as a **ceiling**, so the qwen3.8-max donor-acquisition/treatment matrix is stopped without running C/CA/CB/CAB.
+
+This does not falsify task-exposure specialization; it means this model/family pairing has no content-score headroom for the development contrast. Per contract, the next experiment must version the backbone/dynamic-range protocol rather than lower step budgets or tune prompts after observing the ceiling.
+
+## v4 alternative backbone screen: MiniMax-M3 ceiling
+
+The first v4 alternative candidate, `MiniMax-M3`, completed the same no-experience `530b157_1/_2/_3` screen. After the complete record was synchronized to Shervin, all three tasks were verified as official successes with **10/10** assertions and one completion call each. Mean passed-test fraction = 1.0; runtime = 118.283 seconds.
+
+This is `CEILING_REJECT` under the frozen v4 rule. MiniMax-M3 is therefore not used for donor acquisition. The next candidate is the second predeclared router-catalog entry, `bailian/glm-5.2`.
+
+## v4 alternative backbone screen: GLM ceiling
+
+The second frozen candidate, `bailian/glm-5.2`, also completed all three no-experience `530b157` tasks successfully. After synchronization to Shervin, each task was verified at **10/10** official assertions with one completion call; mean passed-test fraction = 1.0 and runtime = 263.073 seconds.
+
+This is `CEILING_REJECT`. The final predeclared candidate is `moonshot/kimi-k3`.
+
+## v4 terminal: all configured alternative API backbones are ceiling on `530b157`
+
+The final frozen candidate, `moonshot/kimi-k3`, also scored **3/3 official successes**, with **10/10** assertions and one completion call on every sibling; mean passed-test fraction = 1.0 and runtime = 253.020 seconds. It is therefore `CEILING_REJECT`.
+
+The complete v4 fixed-order screen is now exhausted: `MiniMax-M3`, `bailian/glm-5.2`, and `moonshot/kimi-k3` all hit the same 3/3 content ceiling. qwen3.8-max had already hit that ceiling before the v4 screen. No donor acquisition or treatment matrix was run. The scientifically relevant conclusion is a **dynamic-range failure for this model/family pairing**, not a negative result about specialization. The next design must create legitimate headroom through a new predeclared development regime, not by post-hoc prompt or budget degradation.
+
+## A-T03 checkpoint after v4 backbone screening
+
+The canonical record is maintained on Shervin. The complete free-API backbone screen on the development family `530b157` has reached its terminal rule: qwen3.8-max, MiniMax-M3, bailian/glm-5.2, and moonshot/kimi-k3 all achieved ceiling performance before any donor acquisition.
+
+Observed pattern:
+
+- qwen3.8-max: 3/3 siblings, 10/10 evaluator assertions each.
+- MiniMax-M3: 3/3 siblings, 10/10 evaluator assertions each.
+- bailian/glm-5.2: 3/3 siblings, 10/10 evaluator assertions each.
+- moonshot/kimi-k3: 3/3 siblings, 10/10 evaluator assertions each.
+
+Decision boundary:
+
+The exposure-effect experiment is not run under this regime because the dependent variable has no dynamic range. This should be interpreted as a development-regime limitation, not as a conclusion against experience-induced capability differentiation.
+
+Next work must begin with a new frozen contract on Shervin before any execution-machine run.

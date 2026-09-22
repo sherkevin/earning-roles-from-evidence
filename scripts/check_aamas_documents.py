@@ -44,7 +44,7 @@ def check(sync_gate=False, check_gate=False):
     assert set(task_ids) == set(queue), 'Task cards/queue coverage differs'
     assert set(reviews) == {f'V{i:02d}' for i in range(1, 14)}, 'Actual-review coverage differs'
     allowed_req = {'OPEN', 'PARTIAL', 'WAITING_AUTHOR', 'VERIFIED', 'SCOPE_REVISED'}
-    allowed_task = {'TODO', 'READY', 'RUNNING', 'DONE', 'WAITING_AUTHOR', 'BLOCKED', 'SCOPE_REVISED', 'SUPERSEDED'}
+    allowed_task = {'TODO', 'READY', 'RUNNING', 'DONE', 'STOPPED', 'WAITING_AUTHOR', 'BLOCKED', 'SCOPE_REVISED', 'SUPERSEDED'}
     mapping = {}
     for key, cells in gaps.items():
         assert len(cells) == 3 and cells[0] in allowed_req, f'Invalid gap row: {key}'

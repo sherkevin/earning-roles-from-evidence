@@ -1,0 +1,380 @@
+{
+  "schema_version": "1.0",
+  "contract_id": "aamas2027-c2-20260922",
+  "date": "2026-09-22",
+  "authority": {
+    "requirements": "docs/paper/aamas2027/REQUIREMENTS.md",
+    "tasks": "docs/coordination/AAMAS_TASKS.md",
+    "supporting_definition": "docs/scientist/analysis/AAMAS_Q1_worker_differences.md"
+  },
+  "status": {
+    "design_selection": "locked",
+    "method_specification": "locked",
+    "benchmark_selection": "locked",
+    "execution_manifest": "pending_A-T05_A-T06",
+    "confirmatory_analysis": "pending_A-T07",
+    "runtime_validated": false,
+    "scientific_claims_verified": false,
+    "automatic_execution": false
+  },
+  "question": "When task experience changes agent execution states, can scoped evidence preserve and recompose useful workflow structure through responsibility rebinding and selective repair at matched total cost?",
+  "retained_core": [
+    "Experience creates private procedural capabilities; complementarity must be measured.",
+    "Roles are provisional assignments earned from evidence under an execution state and role interface.",
+    "Workflows persist independently of executors and support bounded composition, decomposition and reconstruction."
+  ],
+  "excluded_claims": [
+    "First skill/workflow coevolution or compositional graph",
+    "Novel generic reputation, versioning or plan repair",
+    "Universal improvement, strong emergence, decentralization or autonomous curriculum",
+    "Historical QA results establish the C mechanism"
+  ],
+  "method": {
+    "agents": 3,
+    "coordinator": "One charged controller using the same backbone; not a fourth independent full-budget worker",
+    "initial_state": "Identical model, base instructions, tools and empty private stores; common API/action documentation",
+    "private_state": [
+      "skills",
+      "episodic memory"
+    ],
+    "shared_state": [
+      "typed workflow catalog",
+      "public capability descriptors",
+      "scoped evidence ledger",
+      "binding and applicability cache with role-package/effect dependencies, counted in storage"
+    ],
+    "execution": "Serial writes to one task world; parallelism across independently reset episodes/streams only",
+    "state_fingerprint": [
+      "resolved model/route configuration",
+      "executor system prompt and parameterized role-instruction template; fresh instance input values are x, governed by context obligations rather than made into persistent package identity",
+      "tool and adapter versions",
+      "ordered content hashes of ALL actually supplied skills/memories",
+      "execution settings"
+    ],
+    "evidence_key": [
+      "role obligation signature",
+      "execution_state_fingerprint",
+      "declared observable context predicate signature",
+      "checker version"
+    ],
+    "actor_identity": "Provenance and ownership only; complete equivalent state plus evidence may migrate between identical actors",
+    "role_signature": [
+      "input/output schema",
+      "units and provenance obligations",
+      "parameterized preconditions",
+      "allowed/read/write effects",
+      "termination and public audit predicates"
+    ],
+    "forbidden_scope_keys": [
+      "test answers",
+      "dataset/task ID for routing",
+      "whole workflow ID as necessary evidence-validity condition"
+    ],
+    "check_values": [
+      "PASS",
+      "FAIL",
+      "UNKNOWN"
+    ],
+    "acceptance_score": "(pass_count+1)/(pass_count+fail_count+2), using at most 8 most recent distinct-task observations for the exact scope; UNKNOWN recorded separately",
+    "supported_binding": "At least2 distinct-task PASS and no FAIL among last8 exact-scope observations; provisional artifact admission does NOT require this. Never credit pre-generation episodes to the new execution fingerprint.",
+    "evidence_transport": "Exact role obligation, checker, loaded execution-state and predicate equivalence only. Changed unloaded storage alone is irrelevant. If dependency coverage is unknown, conservatively invalidate affected worker package. No confidence transfer across genuinely changed states.",
+    "audit_truth_boundary": "Positive role support requires checkable obligations grounded in allowed tool/event evidence. Model self-approval or exception-free code is not semantic PASS. Terminal success never credits all slots.",
+    "retrieval": {
+      "method": "Deterministic BM25 over public task/role descriptors; stable ID ties",
+      "workflow_candidates": 3,
+      "private_artifacts_per_role": 2,
+      "max_retrieved_tokens_per_call": 4096
+    },
+    "workflow": {
+      "representation": "Versioned typed DAG, abstract responsibility slots, immutable component references and evidence provenance",
+      "max_depth": 2,
+      "max_leaf_roles": 6,
+      "max_composed_subworkflows": 3,
+      "operators": [
+        "sequence",
+        "guarded fork-join serialized at stateful tool layer"
+      ],
+      "cycles": false,
+      "canonicalization": "Role IDs refer to a registry of normalized JSON AST contracts, not free-text labels. Types/units/effects/predicate operators canonicalized with sorted keys; variables alpha-renamed, actual task values parameterized. Match exact normalized AST and checker version; no LLM judgment of logical equivalence. Unsupported semantic predicates remain UNKNOWN.",
+      "predicate_grammar": [
+        "has_field",
+        "type_is",
+        "unit_is",
+        "equals_bound_input",
+        "source_ref_exists",
+        "receipt_ref_matches",
+        "public_readback_matches",
+        "effect_observed_once",
+        "and",
+        "or",
+        "not"
+      ],
+      "candidate_generation": "At most1 charged coordinator call proposes either a composition or fresh role decomposition using task text, public docs and up to3 retrieved registry templates. Proposal may use registered role IDs or new canonical contract ASTs; at most3 subworkflows, depth2,6 leaves. Deterministic validator checks acyclicity, declared dataflow/types/effects and provenance references; actual semantic obligations still require runtime observations. No hidden task names/answers or private-state text. A failed proposal is not repeatedly sampled.",
+      "candidate_ranking": "Consider up to3 applicable retrieved templates plus at most1 valid composition. For each resolve trial bindings, rank lexicographically: fraction of supported role bindings descending; mean smoothed role-acceptance score descending (unknown=0.5 for ranking only); estimated sum role cost ascending (missing=per-role remaining-budget ceiling); canonical template hash ascending. No products interpreted as success probabilities. If no compatible candidate, execute the one bounded fresh decomposition/direct continuation within remaining budget.",
+      "cache": "Persistent cache stores only abstract bindings, package/evidence references and dependency descriptions, counted within512KiB. Actual task values, receipts, committed-effect records and completed flags are EPISODE-LOCAL, reset with every world, and rebound from current observations. Never skip an action using a prior task's receipt. B4 receives same descriptions but may rematch; it is not denied information."
+    },
+    "binding": "Training exploration takes precedence. Otherwise retain the remembered binding when its CURRENT retrieved package remains identical, compatible and supported, even if another marginal score is higher (explicit stability preference). If invalid/unproven, choose compatible supported state by smoothed score, then mean cost, then seeded tie order; if none supported use compatible unproven state. This preference is tested by A7; it is not a calibrated optimality rule.",
+    "training_exploration": "Every fifth eligible binding explores the least-observed compatible state, with seeded ties; same total budget. No cross-test learning.",
+    "decision_order": [
+      "Retrieve/check compatible templates and input applicability.",
+      "Retain supported applicable bindings; otherwise rebind affected role from current states.",
+      "UNKNOWN applicability permits one charged read-only inspection; it does not earn competence.",
+      "Execute and audit with recorded inputs, actual tool events and committed effects.",
+      "After a covered failure: one local repair of affected uncommitted frontier; otherwise fresh continuation in SAME current world."
+    ],
+    "repair": {
+      "max_local_repairs_per_task": 1,
+      "max_read_only_revalidation_per_unknown_obligation": 1,
+      "reset_world_during_episode": false,
+      "blind_retry_state_changing_action": false,
+      "rule": "Inspect ambiguous effects before retry; preserve verified committed effects, rebuild affected suffix only; stop on unresolved duplicate-action risk."
+    },
+    "artifact_lifecycle": {
+      "extraction": "From actual authorized executed tool events and trace; abstract instance constants. No API-documentation restatement counted as demonstrated skill learning.",
+      "candidate_limit": "One frozen candidate package per acquisition family/type after two acquisition instances; up to two local skills and one workflow. No adaptive re-edit on promotion outcomes.",
+      "validation": "A frozen package is tested once on one disjoint reserved train instance. Valid schemas/provenance plus declared public checks and official terminal train success admit it PROVISIONALLY. This is only one observation under its new fingerprint; it does not earn supported role status. Later distinct permitted training executions may provide additional support. Failed or uncheckable component obligations are recorded; uncheckable roles remain unproven.",
+      "failed_validation": "Reject package on failed terminal training validation or covered obligation FAIL; keep bounded diagnostic memory. No re-edit/retest on the same promotion task. UNKNOWN obligations are disclosed and do not become positive role support.",
+      "max_workflows": 30,
+      "storage": "512 KiB UTF-8 total policy-readable state; private stores <=96 KiB per worker; all indexes/records/descriptors included; no disk-log side channel",
+      "eviction": "Unreferenced failed candidates first, then least recently used eligible item with stable ID tie; invalidate dependent references; no silent merge of contradictory evidence"
+    }
+  },
+  "feedback": {
+    "appworld": {
+      "train": "After terminal stop, declared evaluator service returns only official binary success to all learners equally. No assertion details, expected values, solutions or evaluator code. Within-task feedback is documented API observations plus charged public readbacks.",
+      "dev": "Human aggregate/error analysis allowed for development; evaluator data never inserted into target solver prompts.",
+      "test": "Only task instructions, official public API/docs/state observations. Evaluator isolated; no score-guided retries, stopping or persistent updates; aggregate reports only."
+    },
+    "scienceworld": {
+      "all_splits": "Ordinary observation, task description, look/inventory, documented action grammar; public native step reward/score/done allowed equally to ALL methods as explicitly declared environment feedback.",
+      "denied": "Gold actions, get_goal_progress, omniscient world-state and oracle valid-action enumeration; do not expose full info dict.",
+      "credit": "Score increments are public task progress, not causal individual credit. No cross-test persistent updates."
+    },
+    "split_distinction": "Declared TRAIN terminal feedback is permitted supervision, not target evaluator leakage. This intentionally supersedes v3 no-gold-acquisition assumptions; v3/v4 evidence remains unchanged."
+  },
+  "benchmarks": {
+    "primary": {
+      "name": "AppWorld",
+      "repo": "https://github.com/StonyBrookNLP/appworld",
+      "commit": "42b5bcf3cd334fee33f0c37c02070a9f5807add5",
+      "data_version": "0.2.0",
+      "counts": {
+        "train": 90,
+        "dev": 57,
+        "test_normal": 168,
+        "test_challenge": 417
+      },
+      "acquisition": "For each of 30 train families, seeded sibling permutation: first 2 acquisition, third reserved promotion. Seeded balanced family assignment gives 10 families per worker; no semantic expert labels. Policies may delegate subsequent roles under the common rule.",
+      "dev_population": "All 57 official dev instances; preserve prior inspected families in population.",
+      "confirmation": "Report test_normal and test_challenge separately. Frozen persistent checkpoint restored before each independent task; no cross-task test traces/rewards enter learning.",
+      "metrics": [
+        "Official task success TGC",
+        "Official scenario-group success SGC where supported by pinned scorer",
+        "Attempted calls, all input/output tokens including cache hits, API operations, latency, acquisition-amortized cost"
+      ],
+      "composition_boundary": "Native family novelty is not by itself semantic composition. Existing dev API-set-cover tags are diagnostic only; confirmatory composition evidence requires frozen public-interface annotation rule and evaluator-only analysis without test error-driven redesign.",
+      "license": "Apache-2.0 public code; protected bundle/derived material redistribution has additional restrictions; release pointers/loaders, not plaintext protected tasks."
+    },
+    "secondary": {
+      "name": "ScienceWorld",
+      "repo": "https://github.com/allenai/ScienceWorld",
+      "commit": "e8216d6044e8e39be9fcb185e3b2dfb602584b52",
+      "version": "1.3.0 source; packaged JAR hash must be recorded before execution",
+      "types": 30,
+      "acquisition": "Per type: deterministically hash-order native train IDs, 2 acquisition +1 disjoint promotion; same total60+30 as AppWorld. Balance types across workers by seeded assignment, not hand-coded specialist roles.",
+      "dev_population": "One hash-selected native dev variation per type (30 episodes), selection before outputs.",
+      "confirmation": "Three hash-selected native test variations per type =90 episodes/checkpoint; stratified official-test subset, not full leaderboard.",
+      "selection_hash": "SHA256('aamas2027-c2-20260922|scienceworld|'+split+'|'+task_type+'|'+variation_id), ascending; retain native split membership",
+      "simplifications": "",
+      "max_environment_steps": 100,
+      "metrics": [
+        "Macro type mean official score",
+        "Task success at full official score",
+        "Cost and invalid actions"
+      ],
+      "claim_boundary": "Native splits separate variations within types, not unseen workflow families. Secondary procedural/domain transfer only.",
+      "license": "Apache-2.0",
+      "runtime_counts_verified": false
+    },
+    "rejected_or_deferred": {
+      "OfficeBench": "Rejected primary: stored zero-action/evaluator integrity failures.",
+      "WorkArenaPP": "Deferred: strong native composition but gated ServiceNow access/browser infrastructure not secured.",
+      "ALFWorld": "Not selected: narrower repetitive household types, secondary redundancy; saturation is prediction not measured here.",
+      "WebArena_BrowserGym": "Not selected: deployment/perception confounds; BrowserGym is framework, not independent dataset.",
+      "tau_bench": "Not selected: user simulator/co-control and policy dialogue add different variables; latest upstream no longer a stable tau2 label.",
+      "SkillLearnBench": "Related/component evidence:20 tasks100 variants, mostly same-procedure parameter transfer; no native multiagent role rebinding.",
+      "SkillFlow": "Related:166 tasks20 families, per-family reset and rubric feedback differ from cross-family coordination objective."
+    }
+  },
+  "baselines": [
+    {
+      "id": "B0",
+      "name": "ReAct",
+      "role": "Strong direct interactive agent with same model/tools/task-wide caps; no persistent learning",
+      "status": "adapter_required"
+    },
+    {
+      "id": "B1",
+      "name": "Pooled learner",
+      "role": "Same acquisition, artifact induction and total storage; pooled retrieval for one central controller with same allowable worker concurrency. It may emulate specialized contexts; do not cripple it.",
+      "status": "adapter_required"
+    },
+    {
+      "id": "B2",
+      "name": "FlowEvo-adapt",
+      "source": "https://github.com/DEFENSE-SEU/FlowEvo",
+      "commit": "36e81efd4d1fdbabca7366200b15808ebef157fa",
+      "role": "Closest current executable procedural reuse/coevolution baseline",
+      "preserve": [
+        "direct skill replay",
+        "skill-conditioned generation",
+        "dynamic planning",
+        "admission",
+        "negative-utility governance"
+      ],
+      "deviation": "AppWorld/ScienceWorld adapters and train-learning/frozen-test protocol; no claim reproducing published native scores",
+      "license": "Apache-2.0",
+      "status": "adapter_required"
+    },
+    {
+      "id": "B3",
+      "name": "AgentNet-adapt",
+      "commit": "325d39f2a940be5fa903d28c411bd3426b8007f5",
+      "role": "Experience specialization plus dynamic multiagent allocation",
+      "preserve": [
+        "router/executor memory",
+        "split-forward-execute",
+        "capability matching",
+        "connectivity updates"
+      ],
+      "deviation": "Common initially equal backbone/tools, serial shared-world writes, same train/evaluation boundary; report every departure",
+      "license": "No root license observed; use attributed independent implementation unless source reuse permission resolved",
+      "status": "adapter_required",
+      "source": "https://github.com/zoe-yyx/AgentNet"
+    },
+    {
+      "id": "B4",
+      "name": "Current-state matching",
+      "role": "Decisive SAME-CHECKPOINT comparator: same private states, candidate frontier, templates, raw/scoped evidence, binding map, current versions, predicates, checks and budgets. At task start and after failure, greedily recompute compatible bindings for ALL unfinished roles by the same smoothed score/cost/ties. Preserve correct graph and verified committed effects; same one-repair and remaining-budget fresh-continuation allowance. It need not make extra model calls or rebuild a correct graph. No persistent selective validity cache or deliberate stale-ID behavior.",
+      "failure_interpretation": "If competent matching collapses to the same choices/results, withdraw distinct allocator claims. A7 isolates the proposed stability preference; global invalidation separately tests reconstruction granularity."
+    }
+  ],
+  "ablations": [
+    {
+      "id": "A1",
+      "name": "Artifact removal",
+      "contrast": "Freeze checkpoint; remove role-visible acquired artifacts while preserving common docs/budget; independent no-delegation role probes."
+    },
+    {
+      "id": "A2",
+      "name": "No workflow retention",
+      "contrast": "Same acquired states; construct anew; charge preparation and planning."
+    },
+    {
+      "id": "A3",
+      "name": "Whole-template only",
+      "contrast": "Same library and states; prohibit subworkflow composition, allow whole reuse and fresh fallback."
+    },
+    {
+      "id": "A4",
+      "name": "Global invalidation",
+      "contrast": "Same scoped evidence checks, but revalidate/reconstruct whole affected workflow on participating effective-state change."
+    },
+    {
+      "id": "A5",
+      "name": "Uniform binding",
+      "contrast": "Seeded compatible-worker selection with same observations and costs."
+    },
+    {
+      "id": "A6",
+      "name": "Migration and change",
+      "contrast": "Consistent full-state+record renaming; artifact-only stale-association swap; real later acquired state substituted with earlier evidence. Distinguish all three, never label migration drift."
+    },
+    {
+      "id": "A7",
+      "name": "Always rematch",
+      "contrast": "Keep scoped evidence, candidates, validity cache and local repair identical; replace supported-binding retention precedence with current-score greedy rematching. Isolates stability preference from repair/cache benefits."
+    }
+  ],
+  "development_v5": {
+    "supersedes": "v4 exhausted fixed backbone screen; not a rerun or continuation of its stopped exposure treatment",
+    "primary_route": "qwen3.8-max",
+    "second_route": "MiniMax-M3",
+    "model_identity": "Router IDs, not verified checkpoint identities; record returned model, secret-free route config and any provider fingerprint, interleave paired calls, disclose unresolved provider identity.",
+    "screening": "One full57 dev B0 ReAct run at inherited AppWorld30-call cap, output2048, temperature0. No weaker-model search or hard-only cherry-picking.",
+    "headroom_rule": "0.10 < official full-dev TGC < 0.90 is a design feasibility heuristic, not power. Outside range stop content-gain claim; retain all57 and report floor/ceiling. Do not shrink prompts/budgets.",
+    "artifacts_gate": "After one complete train stream, frozen dev acquired-vs-removed-artifact probes must show independently scored content differences on at least2 families. In addition report role-support coverage; at least2 distinct role obligations must have supported learned packages after lawful post-generation training evidence, or the earned-role mechanism is not operational. No retroactive evidence reuse. These are development feasibility heuristics, not significance.",
+    "statistics_pilot_streams": 5,
+    "stop": "If full dev remains ceiling or artifacts do not change content, no broad confirmation; record failure and revise scientific claim explicitly. A cost-only result cannot pass acquired-capability gate."
+  },
+  "budgets": {
+    "appworld": {
+      "task_total_attempted_model_calls": 30,
+      "max_output_tokens_per_call": 2048,
+      "max_context_tokens_per_call": 32768,
+      "max_total_input_output_tokens": 1044480,
+      "temperature": 0,
+      "rule": "One shared cap for coordinator, workers, audit, retries and repair; every generated code tool event counted. Preserve existing public environment limits; pin exact API-operation cap from native config before execution."
+    },
+    "scienceworld": {
+      "task_total_attempted_model_calls": 100,
+      "max_output_tokens_per_call": 2048,
+      "max_context_tokens_per_call": 32768,
+      "max_total_input_output_tokens": 3481600,
+      "temperature": 0,
+      "max_environment_steps": 100
+    },
+    "preparation": "Equal60 acquisition +30 disjoint validation task opportunities per stream/environment and same total preparation envelope:90*environment episode caps plus30 extra induction-call equivalents (each2048 output,32768 input). Ours freezes one package per family/type; external methods allocate aggregate calls/tokens among native compilation, admission, validation and governance, without being forced to share Ours update cadence. No extra validation worlds/replays beyond the90 opportunities; any resulting native-protocol deviation is disclosed. Live-policy comparisons have independent histories.",
+    "other": "No unpaid oracle, free candidate rehearsal or uncharged induction. Price using actual provider rates supplied at launch; cache hits count as context tokens even when billed cheaper. All unknown/failed attempts charged conservatively.",
+    "sensitivity": "Matched double-call/token cap for all compared arms on fixed dev population only; no unequal per-worker limits or confirmatory tuning.",
+    "launch_cost_gate": "Compute episode count, projected tokens, monetary cost and elapsed time from synced development traces before any broad run. No paid execution launched by this contract."
+  },
+  "analysis": {
+    "primary_estimand": "Paired family-balanced AppWorld test_normal TGC difference: proposed controller versus B4 current-state matching at identical acquired checkpoints and shared resource caps. This is controller effect conditional on sampled checkpoint distribution, not independent full-policy superiority.",
+    "minimum_useful_difference": 0.05,
+    "practical_success": "Target at least+5 percentage points quality with positive uncertainty evidence, or a separately declared quality-noninferior cost result; never relabel efficiency as capability gain.",
+    "confirmatory_planning": {
+      "paired_checkpoint_streams": 10,
+      "external_full_policy_streams": 3,
+      "appworld_normal_population": "All168",
+      "appworld_challenge_population": "All417 for proposed+B1+B2 at prespecified first stream, secondary conditional result",
+      "scienceworld_population": "90 type-stratified episodes for proposed+B1+B2 at3 independent streams",
+      "second_model": "Fixed first stream, AppWorld test_normal proposed+B1+B4, all168; breadth conditional on checkpoint",
+      "rough_episode_count_before_training_and_ablations": 7941,
+      "count_breakdown": {
+        "primary_paired_normal": 3360,
+        "external_normal_B0_B1_B2_B3": 2016,
+        "challenge": 1251,
+        "scienceworld": 810,
+        "second_route": 504
+      },
+      "caveat": "Planning sum before deduplication; A-T07 must name every arm/seed/task population, identify reference checkpoints shared across cells, and price full acquisition/pilots/ablations. B0 has no learning stream; repeat runs measure generation/service variability. Three external streams are secondary with limited learning-history uncertainty, not equivalent to the10-checkpoint primary."
+    },
+    "sample_size_rule": "10 is a planning minimum, not power guarantee. Before any test outcome, A-T07 uses dev variance and actual cost to freeze final count and run manifest. Any infeasible reduction requires dated scope revision, not optional stopping.",
+    "uncertainty": "Paired stream deltas primary; report every stream. Family-block resampling conditional on checkpoints separately; two-way stream/family resampling only with stated independence model. Exact sign test as robustness, no invalid claim5streams guarantee p<.05.",
+    "multiplicity": "One primary quality contrast; other baseline/mechanism contrasts secondary with Holm adjustment within declared families. No switching to whichever metric wins.",
+    "learned_state_change": "Use archived earlier/later TRAIN-derived effective bundles, selection independent of test outcomes; evaluator-only controlled probes, never hand-corrupted artifacts as natural drift. Keep consistent migration null separate.",
+    "main_falsifiers": [
+      "No useful artifact-mediated capability change",
+      "One generalist dominates all roles",
+      "Pooled learner or strong same-information matching reproduces the effect",
+      "Composition adds no value beyond whole-template reuse",
+      "Selective reuse causes harmful side-effect duplication or stale evidence",
+      "Acquisition and checking costs erase deployment benefit"
+    ],
+    "tests_not_yet_done": true
+  },
+  "execution_prerequisites": [
+    "Exact IDs/hashes generated from native train/dev/test ID registries without inspecting test ground truth",
+    "ScienceWorld JAR/runtime/no-op/scorer integrity check",
+    "Actual C executor and invariant fixtures",
+    "Faithful external adapter check on native fixtures and behavior traces",
+    "All policy/evaluator access, ledger, side-effect recovery and resume gates",
+    "Dev headroom/artifact/variance/cost reports synced to Shervin",
+    "A-T07 signed frozen analysis/run manifest before test outcomes"
+  ],
+  "storage_ownership": {
+    "canonical": "Shervin: D:/Codes/earning-roles-from-evidence",
+    "execution_only": "Mac U-CGPCVWR0-0024.local; synchronize manifest/results/raw traces before next scientific stage"
+  }
+}
