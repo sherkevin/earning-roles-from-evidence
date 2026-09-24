@@ -1,7 +1,10 @@
 # Stream-JEV v0: architecture and deployment debate
 
 Date: 2026-09-24  
-Status: design proposal under falsification; not a frozen paper method.
+Status: historical debate artifact. The dual-state proposal is superseded as the
+mainline by [`streamjev_method_spec_v2.md`](streamjev_method_spec_v2.md), which
+puts live selected-only RLS parameter updates first and keeps neural fast state
+as a challenger.
 
 This document is the current debate artifact for the peer-selection and
 tool-selection projects. The two projects share the event/update/runtime
