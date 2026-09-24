@@ -11,9 +11,15 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple
 
 
+# A field name such as ``label`` or ``tool_output`` is not itself leakage: a
+# previously selected tool may legitimately return a label or output that is
+# visible on the next decision.  The adapter must attach such observations to
+# the selected source event.  These names are reserved for hidden correctness
+# signals or outputs that were not legally observed.
 POST_ACTION_KEYS = {
-    "label", "reward", "truth", "ground_truth", "tool_output", "peer_output",
-    "candidate_output", "final_answer", "verdict", "outcome", "future_event",
+    "reward", "truth", "ground_truth", "reference_label", "oracle_label",
+    "correctness", "correctness_label", "feedback_label", "selected_truth",
+    "unselected_output", "future_output", "hidden_output", "future_event",
 }
 
 

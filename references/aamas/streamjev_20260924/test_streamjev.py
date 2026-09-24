@@ -9,10 +9,23 @@ def test_pre_action_contract_rejects_hidden_truth():
     with pytest.raises(ValueError, match="post-action"):
         DecisionEvent(
             event_id="e1", episode_id="p1", decision_type="select",
-            context={"task": "x", "tool_output": "leak"},
+            context={"task": "x", "ground_truth": 1},
             candidates=candidate_tuple([Candidate("a", "tool", "v1")]),
             chosen_id="a", propensity=1.0, state_version="s0", observed_at=0.0,
         )
+
+
+def test_previously_selected_output_is_legal_observation():
+    event = DecisionEvent(
+        event_id="e2", episode_id="p1", decision_type="select",
+        context={"task": "x", "history": [{"source_event_id": "e0",
+                                               "candidate_id": "a",
+                                               "selected": True,
+                                               "tool_output": {"label": 0}}]},
+        candidates=candidate_tuple([Candidate("b", "tool", "v1")]),
+        chosen_id="b", propensity=1.0, state_version="s0", observed_at=1.0,
+    )
+    assert event.context["history"][0]["tool_output"]["label"] == 0
 
 
 def test_only_selected_candidate_is_updated():
