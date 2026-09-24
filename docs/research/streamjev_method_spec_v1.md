@@ -1,7 +1,7 @@
 # Stream-JEV v1: 可训练的实时评判模型方案
 
 **日期：** 2026-09-24  
-**状态：** 待小批量实验证伪；不是已经接受的论文方法。
+**状态：** Superseded by [`streamjev_method_spec_v2.md`](streamjev_method_spec_v2.md) for the current mainline. 保留本文件记录早期双快状态假设；它不是已经接受的论文方法。
 
 ## 要解决的问题
 

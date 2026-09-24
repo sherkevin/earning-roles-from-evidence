@@ -1,0 +1,42 @@
+{
+  "experiment_id": "selected_only_rls_falsification_20260924",
+  "seed_count": 12,
+  "base_seed": 20260924,
+  "horizon": 480,
+  "methods": [
+    "static",
+    "online_rls",
+    "label_shuffle",
+    "no_feedback"
+  ],
+  "environment": {
+    "n_candidates": 8,
+    "menu_size": 4,
+    "random_candidate_permutation": true,
+    "random_regime_switches": true,
+    "random_feedback_delay_range": [
+      1,
+      8
+    ],
+    "unselected_labels_delivered_to_learner": false,
+    "oracle_argmax_delivered_to_learner": false
+  },
+  "learner": {
+    "name": "OnlineRLSHead",
+    "forgetting": 0.985,
+    "ridge": 1.2,
+    "max_weight": 8.0,
+    "uncertainty_scale": 0.3,
+    "temperature": 1.0,
+    "feedback_deduplication": "feedback_id in bounded seen set"
+  },
+  "runtime": {
+    "started_at_utc": "2026-09-24T14:43:06.015255+00:00",
+    "python": "3.9.6",
+    "numpy": "1.26.4",
+    "platform": "macOS-26.3.2-arm64-arm-64bit",
+    "git_commit": "f611a2d5a437e4f6db454f352676aa72b50c35a3",
+    "command": "python3 experiments/selected_only_rls.py --seeds 12 --horizon 480"
+  },
+  "notes": "Corrected selected-only experiment; hidden truth fields in raw logs are evaluation-only and never passed to updates."
+}

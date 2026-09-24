@@ -8,7 +8,7 @@ lawful correctness signal.
 
 from __future__ import annotations
 
-from typing import Any, Mapping, Sequence
+from typing import Any, Mapping, Sequence, Tuple
 
 from protocol import Candidate, DecisionEvent, FeedbackEvent, candidate_tuple
 
@@ -23,6 +23,9 @@ def make_decision_event(
     propensity: float,
     state_version: str,
     observed_at: float,
+    encoder_version: str = "unknown",
+    feature_schema: str = "default",
+    captured_features: Mapping[str, Sequence[float]] | None = None,
 ) -> DecisionEvent:
     """Convert a public selector input without reading hidden truth.
 
@@ -58,6 +61,10 @@ def make_decision_event(
         propensity=propensity,
         state_version=state_version,
         observed_at=observed_at,
+        encoder_version=encoder_version,
+        feature_schema=feature_schema,
+        captured_features={k: tuple(float(x) for x in v)
+                           for k, v in (captured_features or {}).items()},
     )
 
 
@@ -83,4 +90,3 @@ def make_feedback_event(
         delay=arrived_at - selected_at,
         metadata=dict(metadata or {}),
     )
-

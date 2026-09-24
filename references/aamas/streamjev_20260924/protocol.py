@@ -54,6 +54,9 @@ class DecisionEvent:
     propensity: float
     state_version: str
     observed_at: float
+    encoder_version: str = "unknown"
+    feature_schema: str = "default"
+    captured_features: Mapping[str, Tuple[float, ...]] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         if self.decision_type not in {"select", "verify", "final"}:
@@ -64,6 +67,16 @@ class DecisionEvent:
             raise ValueError("chosen candidate must be unique and present in menu")
         if not (0.0 < self.propensity <= 1.0):
             raise ValueError("propensity must be in (0, 1]")
+        if not self.encoder_version or not self.feature_schema:
+            raise ValueError("encoder_version and feature_schema are required")
+        if self.captured_features:
+            unknown = set(self.captured_features) - set(ids)
+            if unknown:
+                raise ValueError(f"captured features contain unknown candidates: {sorted(unknown)}")
+            for cid, vector in self.captured_features.items():
+                values = tuple(float(x) for x in vector)
+                if not values or not all(_is_finite_number(x) for x in values):
+                    raise ValueError(f"captured feature for {cid} must be finite and non-empty")
 
 
 @dataclass(frozen=True)
@@ -81,6 +94,14 @@ class FeedbackEvent:
             raise ValueError(f"unsupported truth_status={self.truth_status}")
         if self.delay < 0:
             raise ValueError("delay must be non-negative")
+
+
+def _is_finite_number(value: Any) -> bool:
+    try:
+        import math
+        return math.isfinite(float(value))
+    except (TypeError, ValueError, OverflowError):
+        return False
 
 
 @dataclass(frozen=True)

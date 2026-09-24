@@ -26,3 +26,15 @@ def test_feedback_is_delayed_and_terminal_only():
         make_feedback_event(feedback_id="f2", source_event_id="e1", correct=0,
                             selected_at=2.0, arrived_at=1.0)
 
+
+def test_decision_carries_feature_and_encoder_versions_for_delayed_update():
+    event = make_decision_event(
+        event_id="e2", episode_id="p1", decision_type="select",
+        selector_input={"candidates": [{"provider_id": "a"}]},
+        chosen_id="a", propensity=1.0, state_version="s2", observed_at=2.0,
+        encoder_version="laya-v1", feature_schema="phi-v1",
+        captured_features={"a": [1.0, 0.5]},
+    )
+    assert event.encoder_version == "laya-v1"
+    assert event.feature_schema == "phi-v1"
+    assert event.captured_features["a"] == (1.0, 0.5)
