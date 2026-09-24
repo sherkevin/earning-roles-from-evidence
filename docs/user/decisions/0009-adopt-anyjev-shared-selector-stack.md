@@ -1,6 +1,6 @@
 # 0009 — Adopt AnyJev as the shared dynamic-selector stack
 
-Status: Accepted for the shared implementation path. Date: 2026-09-24.
+Status: Superseded by 0010. Date: 2026-09-24.
 
 ## Context
 
