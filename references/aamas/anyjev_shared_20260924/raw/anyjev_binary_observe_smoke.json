@@ -1,0 +1,39 @@
+{
+  "experiment_id": "task47_jev_binary_observe_smoke_v1",
+  "timestamp_utc": "2026-09-24T09:00:00Z",
+  "claim": "AnyJev native observe/fit_head loop can represent selected-tool correctness as a binary noul question and persist its learned head.",
+  "scope": "Synthetic FakeBackend unit smoke only; not a pharma result.",
+  "config": {
+    "question": "Is the selected tool result correct?",
+    "question_kind": "noul",
+    "observations": 16,
+    "fit_at": 8,
+    "refit_factor": 2.0,
+    "layers": [
+      4
+    ],
+    "noise": 0.1,
+    "label_mapping": {
+      "correctness_1": "Yes index 0",
+      "correctness_0": "No index 1"
+    }
+  },
+  "result": {
+    "tests": "24 passed in 2.94s for AnyJev test_decider_fake.py",
+    "fit_calls": [
+      {
+        "at_observation": 8,
+        "n_calib": 8
+      },
+      {
+        "at_observation": 16,
+        "n_calib": 16
+      }
+    ],
+    "stored_observations": 16,
+    "correct_holdout_probability": 1.0,
+    "incorrect_holdout_probability": 6.304407808934064e-38,
+    "restored_correct_holdout_probability": 1.0
+  },
+  "falsification_condition": "If the binary mapping, selected-only state construction, or artifact reload changes labels/probabilities, AnyJev cannot be used as the direct dynamic-JEV scaffold without a new adapter."
+}

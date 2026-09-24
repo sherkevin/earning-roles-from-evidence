@@ -1,0 +1,14 @@
+{
+  "framework": "AnyJev",
+  "repository": "https://github.com/nokia-applied-research/AnyJev",
+  "commit": "a59a69eaa91e62dc9b42924f8491f76d1b1972ea",
+  "license": "Apache-2.0",
+  "base_model": "Qwen/Qwen3-4B",
+  "backend": "local_hf_or_vllm_with_hidden_states",
+  "tool_project_source": "companion checkout task47-jev-source-evaluation/reference/AnyJev",
+  "question_type": "noul",
+  "primary_label_space": ["Yes", "No"],
+  "primary_label_indices": {"Yes": 0, "No": 1},
+  "shared_protocol": "protocol.py",
+  "note": "The idealab internal messages endpoint has no hidden-state/logit interface and is not an AnyJev L2 backend."
+}

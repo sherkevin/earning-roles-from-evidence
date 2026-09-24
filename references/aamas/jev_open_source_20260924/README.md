@@ -2,6 +2,8 @@
 
 审计日期：2026-09-24
 
+更新：本报告是在“只服务 earning-roles 单项目”约束下形成的。由于工具选择项目也需要同一框架和模型，当前共享主线已由 [ADR 0009](../../../docs/user/decisions/0009-adopt-anyjev-shared-selector-stack.md) 改为 AnyJev + Qwen3-4B；Kev 保留为外部强基线和后续消融。
+
 目标：为 `learning roles from others' judge` 的 peer-select 问题找一个可复用的开源决策模型，并判断它是否真的支持“新标签到来后实时更新”。
 
 ## 结论先行

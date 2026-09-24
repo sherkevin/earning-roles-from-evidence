@@ -6,6 +6,14 @@ Updated: 2026-09-24 (user resumed bounded real-data / real-API iteration; prior 
 
 The current user instruction supersedes the earlier operational pause; see [decision 0001](../user/decisions/0001-resume-real-api-iteration.md). Current work runs in the local `earning-roles` checkout using the named cc-switch provider. The older pause and publication receipts below are historical.
 
+## Shared AnyJev selector track — 2026-09-24
+
+- DONE JEV-000: audited the companion tool-selection project and verified its pinned AnyJev lifecycle; the focused AnyJev fake-backend tests in the companion checkout pass `38/38`. The raw manifest and smoke JSON are copied under [`references/aamas/anyjev_shared_20260924/`](../../references/aamas/anyjev_shared_20260924/).
+- TODO JEV-001 (P0): run a real local HF/vLLM `Qwen/Qwen3-4B` AnyJev inference smoke and record model revision, tokenizer digest, hidden-state contract, latency and artifact hash. The idealab `内部` messages API cannot supply AnyJev hidden states/logits; use it only for task content or external labels.
+- TODO JEV-002 (P0): implement the shared `JevSelector` protocol (`score`, `choose`, selected-only `observe`, `snapshot`, `restore`) with separate pre-action state and delayed feedback event schemas. Reject output leakage and stale candidate-version labels.
+- TODO JEV-003 (P0): implement the peer residual adapter and bounded replay/forgetting update; compare event-level updates with AnyJev scheduled refit at 30/60/120 labels and the same-information contextual bandit.
+- TODO JEV-004 (P1): connect the wrapper to the frozen DecisionBench selector slice and CooperBench role/handoff vertical slice; report prequential reward, regret, calibration, exploration coverage, delayed-feedback robustness and update cost.
+
 - DONE R-0922.1: fetched origin and fast-forward checked; upstream checkpoint `ddc95f1` already current. Read requirements, Q1 v6.1, B1 code and actual rejection feedback.
 - DONE R-0922.2: direct named-provider inference returned HTTP 200 / qwen3.8-max; native runtime/isolation fixture passed. [Frozen acquisition probe](../../configs/aamas2027/acquisition_probe_v1.json) declares 32 maximum episodes and a decision after 20, independently reviewed. Failed preflight attempts remain archived.
 - DONE R-0922.3: [real runner](../../scripts/aamas_real_probe.py) executing six fixed native training tasks, then one induction per trace and fresh-world paired validation. [Evidence](../../artifacts/experiments/aamas2027/dev_20260922/), [scientific scope](../scientist/analysis/AAMAS_ACQUISITION_PROBE_20260922.md).
