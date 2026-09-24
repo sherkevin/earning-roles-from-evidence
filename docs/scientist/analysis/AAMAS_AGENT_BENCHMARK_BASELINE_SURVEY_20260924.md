@@ -118,7 +118,39 @@ AgentBoard 用细粒度 progress rate 记录 agent 在长轨迹中的进展，�
 
 这个规模足以先验证协议是否能跑通，但不足以支持“大规模 benchmark”或普遍性结论。确认阶段至少需要更多 task roots、多个 seeds，并报告按 root 的置信区间，而不是把同一仓库的 feature pair 当作独立组织。
 
-### 3.3 主指标
+### 3.3 量级：benchmark 池、论文样本和 baseline 要分开
+
+“好论文的 benchmark 有多大”没有一个固定数字。公开工作的量级差异很大：CooperBench 报告 652 个 feature-pair、30 个 task roots、12 个仓库；TeamBench 是 851 个模板扩展成 931 个 seeded instances；WebArena 有 812 个 web tasks；SWE-bench 原始版有 2294 个 issue instances，但也使用 300/500 个严格筛选子集。换句话说，任务数量从几十个高质量独立场景到上千个公开实例都能发表，决定可信度的是独立性、难度覆盖、objective evaluator、split 和 baseline，而不是单纯的总行数。
+
+对本项目可以先冻结下面这个**分层量级方案**，但要把“全量 benchmark 池”和“论文确认样本”明确区分：
+
+| 层级 | 规模 | 用途 | 是否可作为主结果 |
+|---|---:|---|---|
+| benchmark inventory | CooperBench 全部 30 个 task roots、12 个 repositories、652 个 feature-pairs | 公开任务池、难度/语言/冲突分层、后续复现 | 是，但不要求第一轮全部调用模型 |
+| protocol smoke | 4–6 个 roots，每个 1–2 个 pair，1 seed，7 个 arms | 检查 receipt、judgment seal、use/rework、scorer 和 assignment 是否可重放 | 否 |
+| development pilot | 6–10 个 roots，至少 12–20 个 pair episodes，2 seeds，7 个 arms | 只估计成本、失败率、judgment 可用性和方差；冻结实现和分析规则 | 否 |
+| confirmation minimum | 至少 20 个互不重叠的 task roots，约 40 个 pair episodes，2 seeds，7 个 arms | 论文主分析的最低可辩护规模；按 root 做 block bootstrap/置信区间 | 可以，但只支持中等或较大效应 |
+| confirmation target | 尽可能覆盖全部 30 个 roots，约 60 个 pair episodes，2 seeds，7 个 arms | 跨仓库/语言/冲突类型的稳健性与失败边界 | 最理想 |
+
+这里的“7 个 arms”是 `B0–B5 + P`，所以 confirmation minimum 大约是 `40 × 2 × 7 = 560` 个 arm-episodes；每个 arm-episode 内还有 producer、recipient 和 assignment 的多次 API 调用。这个数字看起来大，但它不是 560 个独立组织：主要独立单位仍是 task root，pair 和 seed 是 root 内的重复观测，分析时必须按 root 聚类，不能把 560 当成样本量。
+
+如果实际 API 成本只能支持 12–14 个 confirmation roots，就只能称为 development/limited confirmation，不能声称跨仓库的稳定 role-learning 效果。反过来，也不应为了凑到 1000 个调用而重复同一 root、同一 pair 或同一身份；重复不会创造新的独立证据。
+
+baseline 的合理量级是 **5–8 个对照臂（包含 proposed arm 后总共 6–9 个 arms）**。少于 4 个通常无法区分 pooled upper bound、固定协作、artifact 边际价值和普通 contextual trust；超过 8 个若没有新的识别问题，容易变成成本很高的 baseline 展示。我们的核心矩阵定为 6 个 baseline 加 1 个 proposed arm，已经足够干净：
+
+- `B0` pooled single-agent / centralized selector；
+- `B1` fixed-coop / no-role update；
+- `B2` recipient-redo / no-handoff；
+- `B3` raw acceptance；
+- `B4` same-information contextual trust/bandit；
+- `B5` terminal-only feedback；
+- `P` source-aware peer-judged role ledger。
+
+Closest peer-feedback 或 Meta-Debate 只有在实现忠实、信息/预算匹配且确实覆盖额外威胁时才加入，不能为了让 baseline 数量更大而加入。
+
+因此现在可以确定的是：**benchmark 身份和 baseline 家族可以冻结；confirmation 的最终 task-root 数量要等 scorer、handoff adapter 和 development pilot 的成本/方差门通过后再冻结。** 这是实验设计上的必要顺序，不是继续拖延。
+
+### 3.4 主指标
 
 核心 endpoint 应该是 **future responsibility utility**，而不是 role label 数量：
 
