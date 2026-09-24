@@ -60,3 +60,15 @@
 - **Cause:** each arm was run once and repeated untreated execution also changed request count and actions; the analysis skipped this variance check when moving from observation to causal wording.
 - **Prevention:** state the observed contrast first, inspect unchanged-agent repeat variation, and reserve attribution to acquired content for a prospectively controlled comparison that separates content, generic reminders and prompt length.
 - **Evidence:** [reassessment](../docs/scientist/analysis/AAMAS_Q1_FEASIBILITY_REVIEW_20260922.md#报告判断的再次复核) and [task record](../docs/coordination/AAMAS_TASKS.md); frozen raw runs remain unchanged.
+
+### 0009-streamjev-random-baseline-was-too-weak | 2026-09-24 | earning-roles
+- **现象:** selected-only RLS showed a small positive simulated gain, but the comparison called a uniform policy “static” and did not test task-dependent candidate ranking.
+- **根因:** the first smoke was written to validate event/update plumbing, then its result was read too close to a method comparison; context was added additively, so it could not change within-menu ordering.
+- **避免:** label plumbing smokes as such; before any effect run, require a non-zero static scorer, a same-exploration no-update control, task×candidate interaction, and a separate old-task revisit gate.
+- **Evidence:** `references/aamas/streamjev_20260924/experiments/logs/selected_only_review_20260924_results.json` and the controlled-iteration ledger.
+
+### 0010-experiment-provenance-must-be-frozen-before-run | 2026-09-24 | earning-roles
+- **现象:** the saved experiment config recorded the checkout HEAD before the experiment code was committed, and omitted several runtime head parameters.
+- **根因:** execution started from a dirty working tree while the provenance check assumed HEAD identified all executed code.
+- **避免:** freeze or hash the source tree and diff before execution, record the complete learner config, and stream raw rows as each event is produced; never repair old provenance by silently rerunning.
+- **Evidence:** the original config, its preserved report, and the post-hoc analysis input hashes.

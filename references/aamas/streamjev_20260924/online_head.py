@@ -187,9 +187,9 @@ class OnlineRLSHead:
         norm = float(np.linalg.norm(delta))
         if norm > self.max_parameter_norm:
             target = self.theta0 + delta * (self.max_parameter_norm / norm)
-            # Keep the sufficient statistics consistent with the projected
-            # live parameter so the next event cannot undo the safety bound.
-            self.b = self.A @ target
+            # Keep the raw sufficient statistics.  Projection is a deployment
+            # safety constraint; rewriting ``b`` would silently turn the next
+            # update into a different estimator.
         self.theta = target
         self.observed += 1
         if feedback_id is not None:

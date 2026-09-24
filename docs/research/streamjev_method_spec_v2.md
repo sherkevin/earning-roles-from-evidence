@@ -13,7 +13,7 @@
 
 原来的“双快状态”容易把状态变化误称为模型训练，而且很容易在合成实验中使用未选候选真值。v2 把两件事分开：
 
-1. **参数学习**：每条已到达反馈直接改变小型 `theta`，可检查 checkpoint 前后参数差异，更新复杂度为 `O(d²)`；
+1. **参数学习**：每条已到达反馈直接改变小型 `theta`，可检查 checkpoint 前后参数差异。当前参考实现使用稠密线性代数，评分和更新通常为 `O(d³)`；只有在实际维度和延迟预算要求时，才实现并验证递推分解后再声称 `O(d²)`；
 2. **运行时记忆**：可选的 gated state 只作为 challenger，不承担“已经完成在线训练”的论断。
 
 训练目标只使用已执行候选的标签和该次决策时记录的 propensity。未执行候选的结果、未来结果、全量真值和事后 oracle 排名一律不能进入 actor 或 learner 的输入。
@@ -42,7 +42,7 @@ theta_t = solve(A_t, b_t)
 
 其中 `w_t = min(w_max, 1 / propensity_t)`，`y_t` 是被选候选最终得到的二值或软标签。`theta_0` 是静态 head 的锚点。`theta` 设范数上限，`A` 采用对称化和必要的数值抖动；所有反馈由单一 learner 串行化或按 selector 分片串行化，避免并发写同一统计量。遗忘因子按 learner 接收的反馈序列定义；如果业务需要按真实时间遗忘，必须把事件时间纳入 decay，而不能把乱序到达时间默认为决策时间。
 
-`base_i` 是和 `theta^T phi_i` 同尺度的质量 utility，不是未经校准的语言模型 logit。行为策略使用固定温度的 softmax：
+`base_i` 是和 `theta^T phi_i` 同尺度的质量 utility，不是未经校准的语言模型 logit。公式中的 `A^{-1}` 表示通过稳定线性求解得到的不确定度，不要求服务端显式存储逆矩阵。行为策略使用固定温度的 softmax：
 
 ```text
 policy_i = softmax((base_i + alpha * theta^T phi_i
