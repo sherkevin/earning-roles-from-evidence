@@ -1,0 +1,29 @@
+{
+  "experiment_id": "streamjev_a800_runtime_probe_20260924",
+  "task_id": "01a0d3b19d16b3b13131e0174406b999",
+  "application_id": "xdl-6ab52aa8a93f",
+  "project": "damo_genomic_gene",
+  "queue": "damo_genomic_gene_a800",
+  "card": "NVIDIA A800-SXM4-80GB",
+  "cluster": "asi_zjk_pai_b",
+  "image": "pytorch280/user_cu128_gcc13_py3.10.13_torch280",
+  "worker_count": 1,
+  "worker_gpu": 1,
+  "steps": 20000,
+  "state_dim": 32,
+  "hidden_dim": 64,
+  "source": "minimal local package, no GitHub or benchmark data",
+  "code_sha256": {
+    "nebula_entry.py": "b9795cc28f3b49860d4e2aa6a93a1d1d99f46776177845048450bc581f87b515",
+    "neural_fast_state.py": "5bdd9b4c7a0ffba351c6fba7a9549a565cf301389d1c6cb4be2bbad77b04b3e3"
+  },
+  "external_api": false,
+  "claims_allowed": [
+    "A800 cached scorer/update runtime throughput"
+  ],
+  "claims_forbidden": [
+    "real-data accuracy",
+    "adaptation gain",
+    "benchmark result"
+  ]
+}
