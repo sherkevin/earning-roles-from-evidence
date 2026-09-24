@@ -1,0 +1,12 @@
+{
+  "experiment_id": "synthetic_meta_train_20260924",
+  "event_type": "hidden_regime_selected_only_meta_training",
+  "code_path": "references/aamas/streamjev_20260924/experiments/synthetic_meta_train.py",
+  "seed": 7,
+  "hardware": "local_cpu",
+  "model": {"context_dim": 4, "candidate_dim": 3, "state_dim": 8, "hidden_dim": 32, "max_gate": 0.25, "max_state_norm": 4.0},
+  "optimizer": {"name": "Adam", "learning_rate": 0.003, "episodes": 160, "horizon": 50},
+  "feedback": "selected_only Bernoulli label; delay metadata 0-3; propensity logged",
+  "claims_allowed": ["synthetic_adaptation_direction"],
+  "claims_forbidden": ["real_data_gain", "A800_throughput", "publication_level_result"]
+}
