@@ -10,3 +10,4 @@ User decision records and external-operation summaries.
 - [0005](0005-retain-peer-judged-role-learning.md): retain learning roles from actual collaborators' judgments of delivered work as the research core; novelty and algorithm remain to be proven.
 - [0006](0006-study-peer-judged-role-formation.md): choose peer-judged role formation as the active direction; retire package replacement/conditional adoption as the main-paper question because agents and workflows co-evolve in this project.
 - [0007](0007-reuse-open-source-benchmark-runtime-first.md): reuse pinned benchmark/runtime components and write only thin peer-judgment adapters, with license/scorer gates before scientific lock.
+- [0008 — Freeze benchmark layers and baseline matrix](0008-freeze-benchmarks-and-baselines.md): use DecisionBench for selector evaluation, CooperBench for role-formation evaluation, AgentWorld for later external validity, and freeze the matched baseline matrix and scale defaults.
