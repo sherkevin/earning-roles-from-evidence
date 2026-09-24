@@ -1,0 +1,268 @@
+{
+  "experiment_id": "peer_judgment_smoke_v2_20260923",
+  "status": "COMPLETED_INVALID_DEVELOPMENT_SMOKE",
+  "scope": "Two fixed train sibling IDs; observation-controller feasibility only; no method or confirmatory conclusion.",
+  "fixed_task_ids_in_order": [
+    "22cc237_2",
+    "3c13f5a_2"
+  ],
+  "provenance": {
+    "source_manifest": "source_manifest.json",
+    "source_config_path": "configs/aamas2027/peer_judgment_smoke_v2.json",
+    "source_config_sha256": "1b089c9d0978f44a8dccaac919048ae06aa7a8fe94cc06b6630e1bb90ba77573",
+    "manifest_config_sha256_matches_source_and_both_episode_headers": true,
+    "frozen_config_path": "frozen_config.json",
+    "frozen_config_sha256": "829032bebc7ce618559a92660bd98f5c9771e9b48faaba11161a9c78f8f8bb3e",
+    "frozen_config_json_value_equal_to_source": true,
+    "frozen_config_byte_equal_to_source": false,
+    "runner_at_execution_path": "runner_at_execution.py",
+    "runner_at_execution_sha256": "83c06393378d88ce0a6953f2d28efb35df7d2b3a09c415eb3132c221fb89f09d",
+    "manifest_runner_sha256_matches_snapshot_and_both_episode_headers": true,
+    "current_source_runner_sha256_at_reduction": "83c06393378d88ce0a6953f2d28efb35df7d2b3a09c415eb3132c221fb89f09d",
+    "manifest_v1_hashes_match_amendment_and_v1_results_match_both_episode_headers": true,
+    "appworld_source_commit": "42b5bcf3cd334fee33f0c37c02070a9f5807add5",
+    "appworld_package_version_in_episode_headers": [
+      "0.2.0.dev0"
+    ],
+    "project_git_head_at_execution": [
+      "ddc95f1a3d6cb89dce5f78618babb542d0286266"
+    ],
+    "model_request": "qwen3.8-max",
+    "world_seed": 100
+  },
+  "totals": {
+    "native_tasks_attempted": 2,
+    "attempted_real_llm_calls": 7,
+    "successful_real_llm_responses": 5,
+    "api_errors": 2,
+    "unknown_usage_attempts": 2,
+    "reported_tokens_from_responses": {
+      "input_tokens": 7471,
+      "output_tokens": 2785,
+      "cache_read_input_tokens": 12288,
+      "cache_creation_input_tokens": 0
+    },
+    "producer_api_seconds": 322.21311237476766,
+    "sum_episode_wall_seconds": 337.7423026259057,
+    "world_execute_count": 4,
+    "api_docs_permission_errors": 3,
+    "public_task_data_reads": 0,
+    "sealed_proposals": 0,
+    "consumer_review_attempts": 0,
+    "sealed_consumer_judgments": 0,
+    "consumer_action_attempts": 0,
+    "officially_scored_tasks": 0,
+    "usd_cost": null,
+    "task_write_count": 0
+  },
+  "tasks": [
+    {
+      "task_id": "22cc237_2",
+      "status": "INVALID",
+      "failure_classification": "UNKNOWN_TRANSPORT",
+      "error": {
+        "type": "TimeoutError",
+        "message": "The read operation timed out"
+      },
+      "producer_api_attempts": 2,
+      "producer_successful_responses": 0,
+      "producer_api_errors": 2,
+      "api_error_types": [
+        "TimeoutError",
+        "TimeoutError"
+      ],
+      "timeout_retry_used": true,
+      "reported_tokens_from_responses": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0
+      },
+      "unknown_usage_attempts": 2,
+      "returned_models": [],
+      "producer_api_seconds": 240.34289716696367,
+      "wall_seconds": 248.58799570892006,
+      "world_execute_count": 0,
+      "world_observation_steps": [],
+      "api_docs_permission_errors": 0,
+      "public_task_data_reads": 0,
+      "producer_proposals_sealed": 0,
+      "consumer_review_attempts": 0,
+      "consumer_judgments_sealed": 0,
+      "consumer_action_attempts": 0,
+      "official_final_success": null,
+      "usd_cost": null,
+      "raw_log": "episodes/22cc237_2/raw.jsonl",
+      "raw_result": "episodes/22cc237_2/result.json",
+      "provider_attempts": [
+        {
+          "attempt": 1,
+          "model_requested": "qwen3.8-max",
+          "outcome": "error",
+          "error_type": "TimeoutError",
+          "error_message": "The read operation timed out",
+          "elapsed_seconds": 120.17763074999675,
+          "reported_usage": null
+        },
+        {
+          "attempt": 2,
+          "model_requested": "qwen3.8-max",
+          "outcome": "error",
+          "error_type": "TimeoutError",
+          "error_message": "The read operation timed out",
+          "elapsed_seconds": 120.14131304202601,
+          "reported_usage": null
+        }
+      ],
+      "task_write_count": 0,
+      "validation_rejections": {
+        "producer": 0,
+        "consumer_review": 0
+      }
+    },
+    {
+      "task_id": "3c13f5a_2",
+      "status": "INVALID",
+      "failure_classification": "INVALID_RUNTIME_GUARD",
+      "error": {
+        "type": "ValueError",
+        "message": "REPL name blocked: dir"
+      },
+      "producer_api_attempts": 5,
+      "producer_successful_responses": 5,
+      "producer_api_errors": 0,
+      "api_error_types": [],
+      "timeout_retry_used": false,
+      "reported_tokens_from_responses": {
+        "input_tokens": 7471,
+        "output_tokens": 2785,
+        "cache_read_input_tokens": 12288,
+        "cache_creation_input_tokens": 0
+      },
+      "unknown_usage_attempts": 0,
+      "returned_models": [
+        "qwen3.8-max"
+      ],
+      "producer_api_seconds": 81.870215207804,
+      "wall_seconds": 89.15430691698566,
+      "world_execute_count": 4,
+      "world_observation_steps": [
+        {
+          "step": 1,
+          "kind": "api_docs_failed",
+          "public_task_data_reads": 0,
+          "code": "print(apis.api_docs.show_api_descriptions(app_name='phone'))",
+          "runtime_error": "PermissionError: Usage of the following function is not allowed: pathlib.Path.mkdir."
+        },
+        {
+          "step": 2,
+          "kind": "api_docs_failed",
+          "public_task_data_reads": 0,
+          "code": "print(apis.api_docs.show_app_descriptions())",
+          "runtime_error": "PermissionError: Usage of the following function is not allowed: pathlib.Path.mkdir."
+        },
+        {
+          "step": 3,
+          "kind": "local_computation",
+          "public_task_data_reads": 0,
+          "code": "print(\"environment check\", 1 + 1)"
+        },
+        {
+          "step": 4,
+          "kind": "api_docs_failed",
+          "public_task_data_reads": 0,
+          "code": "print(apis.api_docs.show_app_descriptions())",
+          "runtime_error": "PermissionError: Usage of the following function is not allowed: pathlib.Path.mkdir."
+        }
+      ],
+      "api_docs_permission_errors": 3,
+      "public_task_data_reads": 0,
+      "producer_proposals_sealed": 0,
+      "consumer_review_attempts": 0,
+      "consumer_judgments_sealed": 0,
+      "consumer_action_attempts": 0,
+      "official_final_success": null,
+      "usd_cost": null,
+      "raw_log": "episodes/3c13f5a_2/raw.jsonl",
+      "raw_result": "episodes/3c13f5a_2/result.json",
+      "provider_attempts": [
+        {
+          "attempt": 1,
+          "model_requested": "qwen3.8-max",
+          "outcome": "response",
+          "http_status": 200,
+          "model_returned": "qwen3.8-max",
+          "elapsed_seconds": 47.44863058300689,
+          "reported_usage": {
+            "input_tokens": 3709,
+            "cache_creation_input_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "output_tokens": 1745
+          }
+        },
+        {
+          "attempt": 2,
+          "model_requested": "qwen3.8-max",
+          "outcome": "response",
+          "http_status": 200,
+          "model_returned": "qwen3.8-max",
+          "elapsed_seconds": 4.550030834041536,
+          "reported_usage": {
+            "input_tokens": 794,
+            "cache_creation_input_tokens": 0,
+            "cache_read_input_tokens": 3072,
+            "output_tokens": 91
+          }
+        },
+        {
+          "attempt": 3,
+          "model_requested": "qwen3.8-max",
+          "outcome": "response",
+          "http_status": 200,
+          "model_returned": "qwen3.8-max",
+          "elapsed_seconds": 11.740790750016458,
+          "reported_usage": {
+            "input_tokens": 913,
+            "cache_creation_input_tokens": 0,
+            "cache_read_input_tokens": 3072,
+            "output_tokens": 381
+          }
+        },
+        {
+          "attempt": 4,
+          "model_requested": "qwen3.8-max",
+          "outcome": "response",
+          "http_status": 200,
+          "model_returned": "qwen3.8-max",
+          "elapsed_seconds": 7.476269250037149,
+          "reported_usage": {
+            "input_tokens": 968,
+            "cache_creation_input_tokens": 0,
+            "cache_read_input_tokens": 3072,
+            "output_tokens": 220
+          }
+        },
+        {
+          "attempt": 5,
+          "model_requested": "qwen3.8-max",
+          "outcome": "response",
+          "http_status": 200,
+          "model_returned": "qwen3.8-max",
+          "elapsed_seconds": 10.61755645798985,
+          "reported_usage": {
+            "input_tokens": 1087,
+            "cache_creation_input_tokens": 0,
+            "cache_read_input_tokens": 3072,
+            "output_tokens": 348
+          }
+        }
+      ],
+      "task_write_count": 0,
+      "validation_rejections": {
+        "producer": 0,
+        "consumer_review": 0
+      }
+    }
+  ],
+  "conclusion": "Both episodes ended before a source-grounded producer handoff. The first is transport UNKNOWN after two timeouts; the second is invalid because native api_docs calls hit the pathlib.Path.mkdir SafetyGuard restriction and a later introspection attempt was blocked by safe_code. No consumer judgment, task outcome, role update, or method effect was observed."
+}

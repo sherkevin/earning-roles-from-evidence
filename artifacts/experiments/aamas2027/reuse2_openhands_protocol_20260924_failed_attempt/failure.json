@@ -1,0 +1,12 @@
+{
+  "fixture_id": "reuse2_openhands_protocol_20260924",
+  "attempt": "first_run",
+  "paid_api": false,
+  "error_type": "FileNotFoundError",
+  "error": "consumer_workspace/consumer_output.txt parent directory did not exist",
+  "root_cause": "ConsumerGate did not create its project-owned workdir before apply_delivery",
+  "impact": "consumer_action was not appended and no result.json was produced",
+  "fix": "ConsumerGate.__init__ now creates workdir with parents=True, exist_ok=True",
+  "rerun": "reuse2_openhands_protocol_20260924",
+  "preserved": true
+}

@@ -1,0 +1,153 @@
+{
+  "status": "PAIRED_QUALITY_COMPARISON_INDETERMINATE_BOTH_REVIEW_CAPPED",
+  "selection": "One posthoc selected AppWorld train case; development only",
+  "raw_provenance": {
+    "config_sha256": "b268aa7bfaaa39516e25a15dba4daf206607507bb131d3d78ba4cdcaefbb9a10",
+    "runner_sha256": "a8f513bc579f84c51d6ce4f7ff0961579837129a75341918cc3af3748539d1c7",
+    "protocol_sha256": "ee5c565606590945ae9ea354d06631979da730686aebfc3f39506daaef724c91",
+    "manifest_sha256": "8af18d9c554c40ff996c3625b83a57ee7c968e14d96a119cb28516c386cc9625",
+    "run_raw_sha256": "c8cc77e34a9ed7c9d2085294262c4f43d95d870732dcabf12102e795a073dd6e",
+    "results_sha256": "36f4e567a11abaa182fc044a707bca44f0cb30c796b9395ea469789281edf656",
+    "fixture_sha256": "8c5f2416cb2844b501b1554d94c790eb308780cfb23a66eaa95176dff9d5015d",
+    "health_sha256": "8ddecf64d1fb246fbd9860600f6cb747c32e74b13d811a8627f1a38935a06d6d"
+  },
+  "preflight": {
+    "zero_llm_fixture_calls": 0,
+    "separate_real_health_attempts": 1,
+    "health_ok": true
+  },
+  "arms": {
+    "visible": {
+      "status": "UNKNOWN",
+      "stop_reason": "consumer_review attempted-call cap exhausted after 8 world steps",
+      "stop_phase": "consumer_review",
+      "infrastructure_error_category": "phase_cap",
+      "attempted_llm_calls": 8,
+      "returned_responses": 8,
+      "request_errors": 0,
+      "unknown_usage_attempts": 0,
+      "tokens": {
+        "input_tokens": 12385,
+        "output_tokens": 2054,
+        "cache_read_input_tokens": 45696,
+        "cache_creation_input_tokens": 0
+      },
+      "provider_api_seconds": 66.59407400107011,
+      "wall_seconds": 82.77617604203988,
+      "world_steps": 8,
+      "actor_public_get_calls": 19,
+      "actor_failed_public_calls": [
+        {
+          "step": 5,
+          "app": "phone",
+          "api": "login",
+          "error_type": "Exception"
+        }
+      ],
+      "actor_successful_task_data_get_calls": 1,
+      "actor_task_data_get_steps": [
+        8
+      ],
+      "actor_task_data_get_apis": {
+        "file_system.show_directory": 1
+      },
+      "auth_login_posts": 5,
+      "actor_task_write_calls": 0,
+      "complete_task_calls": 0,
+      "pre_action_plan_sealed": false,
+      "action_audit_sealed": false,
+      "official_score_available": false,
+      "official_task_state_assertions": null,
+      "official_completion_answer_assertion": null,
+      "official_overall_success": null,
+      "historical_proposal_row_match": null,
+      "raw_sha256": "628d99e325566f20ad467c11e0749d7d47225ef3fdb17f80de3ee246afe83376",
+      "result_sha256": "6960271b9a8a02ddb1e3422b9ce25ae047437edb828d125add67169e857b82cd",
+      "native_experiment_name": "pj_delivery_visible_3c13f5a_3_v1"
+    },
+    "hidden": {
+      "status": "UNKNOWN",
+      "stop_reason": "consumer_review attempted-call cap exhausted after 8 world steps",
+      "stop_phase": "consumer_review",
+      "infrastructure_error_category": "phase_cap",
+      "attempted_llm_calls": 8,
+      "returned_responses": 8,
+      "request_errors": 0,
+      "unknown_usage_attempts": 0,
+      "tokens": {
+        "input_tokens": 13346,
+        "output_tokens": 3486,
+        "cache_read_input_tokens": 40960,
+        "cache_creation_input_tokens": 0
+      },
+      "provider_api_seconds": 102.23494920809753,
+      "wall_seconds": 194.54247791704256,
+      "world_steps": 8,
+      "actor_public_get_calls": 28,
+      "actor_failed_public_calls": [
+        {
+          "step": 6,
+          "app": "phone",
+          "api": "login",
+          "error_type": "Exception"
+        }
+      ],
+      "actor_successful_task_data_get_calls": 8,
+      "actor_task_data_get_steps": [
+        4,
+        5,
+        8
+      ],
+      "actor_task_data_get_apis": {
+        "file_system.show_directory": 3,
+        "file_system.show_file": 3,
+        "phone.get_current_date_and_time": 1,
+        "phone.show_contact_relationships": 1
+      },
+      "auth_login_posts": 3,
+      "actor_task_write_calls": 0,
+      "complete_task_calls": 0,
+      "pre_action_plan_sealed": false,
+      "action_audit_sealed": false,
+      "official_score_available": false,
+      "official_task_state_assertions": null,
+      "official_completion_answer_assertion": null,
+      "official_overall_success": null,
+      "historical_proposal_row_match": null,
+      "raw_sha256": "738d372a17d79a4688e1384c2b0c825884b747860433f4929289f19f41e25ff6",
+      "result_sha256": "cc10b9da0384e33361ffc99c977c1f5c05c8e1199448a3a66a4d7e81b22e5812",
+      "native_experiment_name": "pj_delivery_hidden_3c13f5a_3_v1"
+    }
+  },
+  "new_task_attempted_calls": 16,
+  "new_task_returned_responses": 16,
+  "new_task_request_errors": 0,
+  "new_task_unknown_usage_attempts": 0,
+  "visible_full_system_cost_with_historical_producer": {
+    "attempted_llm_calls": 15,
+    "reported_tokens": {
+      "input_tokens": 27054,
+      "output_tokens": 9613,
+      "cache_read_input_tokens": 87168,
+      "cache_creation_input_tokens": 0
+    },
+    "provider_api_seconds": 276.4415088761598,
+    "historical_producer_attribution_is_not_new_call": true
+  },
+  "hidden_recipient_system_cost": {
+    "attempted_llm_calls": 8,
+    "reported_tokens": {
+      "input_tokens": 13346,
+      "output_tokens": 3486,
+      "cache_read_input_tokens": 40960,
+      "cache_creation_input_tokens": 0
+    },
+    "provider_api_seconds": 102.23494920809753
+  },
+  "quality_cost_gate": "INDETERMINATE_NO_PREACTION_PLANS_OR_ACTIONS_OR_OFFICIAL_SCORES",
+  "actual_proposal_visibility_effect": "NOT_ESTIMABLE",
+  "role_learning_tested": false,
+  "method_or_population_claim": false,
+  "usd_cost": null,
+  "no_task_write_evidence": true
+}

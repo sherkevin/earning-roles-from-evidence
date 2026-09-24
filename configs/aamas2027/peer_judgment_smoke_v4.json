@@ -1,0 +1,70 @@
+{
+  "version": 4,
+  "frozen_at_utc": "2026-09-23 07:53:39 UTC",
+  "status": "PROSPECTIVE_COMPACT_PROMPT_SMOKE_ONLY",
+  "decision": "docs/user/decisions/0006-study-peer-judged-role-formation.md",
+  "question": "Does a compact, documented AppWorld prompt avoid the previous first-request transport timeout and permit a real isolated producer-to-consumer judgment smoke on the same task, which received no v3 model response or world action?",
+  "dataset_split": "train; evaluator inspected by research side; development only",
+  "selection_rule": "Reattempt the same preselected 3c13f5a_3 train task once with a compact prompt because v3 ended before any model response/world operation. This is a transport/controller development retry, not a new statistical sample or confirmation. Stop after the declared timeout rule; do not replace task after observing its outcome.",
+  "native_task_ids_in_order": [
+    "3c13f5a_3"
+  ],
+  "not_tested": [
+    "judgment-to-role update",
+    "future responsibility assignment",
+    "longitudinal agent-workflow co-evolution",
+    "method advantage or paper novelty",
+    "confirmatory generalization"
+  ],
+  "appworld_source_commit": "42b5bcf3cd334fee33f0c37c02070a9f5807add5",
+  "appworld_data_version": "0.2.0",
+  "world_seed": 100,
+  "provider_name": "内部",
+  "provider_endpoint_expected": "https://idealab.alibaba-inc.com/api/code",
+  "model_request": "qwen3.8-max",
+  "temperature": 0,
+  "max_output_tokens_per_call": 1024,
+  "attempted_call_caps_per_episode": {
+    "producer": 12,
+    "consumer_review": 8,
+    "consumer_action": 18,
+    "total": 38
+  },
+  "global_attempt_cap": 38,
+  "transport_rule": {
+    "service_errors": "Retry provider 429/503 at most twice per request, each attempt charged within its phase cap, with logged backoff of 1 then 2 seconds.",
+    "timeout": "Exactly one retry of a provider TimeoutError per episode, only before any AppWorld world.execute call; retry is charged within the current phase cap and logged with a 2-second backoff. A second timeout or any timeout after a world.execute call is UNKNOWN transport failure.",
+    "other": "No retry; transport failure is UNKNOWN, never scored as a task failure."
+  },
+  "validation_repair_rule": {
+    "producer": "Require at least one executed public task-data GET and at least one such read step in every proposal row's source_steps. A rejected proposal or malformed terminal artifact receives a specific, secret-free validation error as the next user message in the same producer history. The initial invalid response and every repair attempt count within the unchanged producer cap; the controller never invents evidence or source steps.",
+    "consumer_review": "A rejected or malformed judgment receives a specific, secret-free validation error as the next user message in the same consumer review history. Every repair attempt counts within the unchanged review cap. Judgment is sealed before any consumer write.",
+    "exhaustion": "If no valid artifact appears within the phase cap, preserve all calls and observations and mark the episode INVALID/UNKNOWN. Action budget exhaustion after a sealed judgment still preserves state, use analysis and offline evaluation."
+  },
+  "public_read_observation_definition": "A producer world.execute step whose audited API calls include at least one successful GET to a task-data app other than api_docs, supervisor or admin; API documentation and auth calls do not qualify as source evidence.",
+  "legal_feedback": "Task instruction, API documentation and public runtime observations only. The explicit validated producer artifact crosses to the consumer. Neither agent sees private_data, ground truth, evaluator code or outcome, or the other's hidden messages/runtime variables. The official evaluator runs only after consumer judgment and action are frozen and is for analysis only.",
+  "pre_action_judgment_schema": {
+    "verdict": [
+      "accept",
+      "rework",
+      "reject",
+      "unknown"
+    ],
+    "intends_to_use_proposal": "boolean, or null exactly when verdict is unknown",
+    "review_reason": "text with public evidence references",
+    "planned_repair": "text or null"
+  },
+  "output_root": "artifacts/experiments/aamas2027/peer_judgment_smoke_v4_20260923",
+  "cost_currency": "USD unavailable unless provider pricing is independently verified; report attempts, tokens, errors, unknown usage and wall time without inventing price",
+  "runtime_repair": "Requester audit events are buffered in memory while AppWorld SafetyGuard is active, then flushed after world.execute returns and native guard is disabled. The native guard remains enabled. A repeat Path.mkdir guard failure stops as an infrastructure error. Frozen v1/v2 observations remain unchanged.",
+  "amends_v3": {
+    "config": "configs/aamas2027/peer_judgment_smoke_v3.json",
+    "config_sha256": "e73fd0d8daa8119c89bcc3c1035d3d1ab87a88d2cc8c4f690b80d2b26b14449a",
+    "runner_at_execution": "artifacts/experiments/aamas2027/peer_judgment_smoke_v3_20260923/runner_at_execution.py",
+    "runner_at_execution_sha256": "6813ade1082e0fda02ec2068f01014bf0279fa126dc018496b07010f71ff4004",
+    "results": "artifacts/experiments/aamas2027/peer_judgment_smoke_v3_20260923/results.json",
+    "results_sha256": "2202ba38c723caa9a170862bb13d75d155d18fbe678f251547ad4ed9e70eee8d",
+    "retained_outcomes": "One scheduled 3c13f5a_3 episode made two real qwen3.8-max first-request attempts, both timed out after 120 seconds, with zero responses/world executes or task mutations. CPU native guard fixture passed separately. Frozen v3 output is retained; same task has not been exposed to a live producer or consumer response."
+  },
+  "prompt_rule": "Replace the AppWorld native long few-shot prompt with one compact public instruction containing task, supervisor, app descriptions, API discovery and access rules plus the same phase-specific producer/consumer constraints. Full actual request messages are retained in redacted raw logs; initial prompt SHA and character count are logged. Reduce max_output_tokens from 2048 to 1024. No task-derived answer, evaluator content or hidden label is inserted."
+}

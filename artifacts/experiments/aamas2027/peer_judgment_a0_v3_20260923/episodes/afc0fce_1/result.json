@@ -1,0 +1,59 @@
+{
+  "task_id": "afc0fce_1",
+  "family": "afc0fce",
+  "producer_id": "B",
+  "consumer_id": "C",
+  "public_spec_sha256": "38695334c722a78e7f85b0feb1e886bbea001a20bc65191f410fd5a9db8a4b38",
+  "status": "UNKNOWN",
+  "error": {
+    "type": "PhaseExhausted",
+    "message": "producer attempted-call cap exhausted after 8 world steps",
+    "traceback": "Traceback (most recent call last):\n  File \"/Users/jingwu/work/earning-roles/scripts/aamas_peer_judgment_a0.py\", line 751, in episode\n    proposal, producer_steps = phase_loop(producer, parser, apis[\"producer\"],\n                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/jingwu/work/earning-roles/scripts/aamas_peer_judgment_a0.py\", line 575, in phase_loop\n    raise PhaseExhausted(f\"{phase} attempted-call cap exhausted after {len(steps)} world steps\")\nPhaseExhausted: producer attempted-call cap exhausted after 8 world steps\n"
+  },
+  "infrastructure_error_category": null,
+  "global_stop": false,
+  "official_final_success": null,
+  "usd_cost": null,
+  "valid_complete_observation_chain": false,
+  "worlds": {
+    "producer": "pa0_prod_bf5f860d074fcc59ee",
+    "consumer": "pa0_cons_bf5f860d074fcc59ee"
+  },
+  "stop_reason": "producer attempted-call cap exhausted after 8 world steps",
+  "stop_phase": "producer",
+  "phase_costs": {
+    "producer": {
+      "attempts": 8,
+      "tokens": {
+        "input_tokens": 17109,
+        "output_tokens": 3269,
+        "cache_read_input_tokens": 55552,
+        "cache_creation_input_tokens": 0
+      },
+      "unknown_usage_attempts": 0,
+      "api_errors": 0,
+      "error_codes": [],
+      "returned_models": [
+        "qwen3.8-max",
+        "qwen3.8-max",
+        "qwen3.8-max",
+        "qwen3.8-max",
+        "qwen3.8-max",
+        "qwen3.8-max",
+        "qwen3.8-max",
+        "qwen3.8-max"
+      ],
+      "api_seconds": 101.32514162396546
+    }
+  },
+  "attempted_task_calls": 8,
+  "world_execute_count": 8,
+  "validation_rejections": {
+    "producer": 0,
+    "consumer_review": 0,
+    "consumer_action": 0
+  },
+  "action_budget_exhausted": false,
+  "timeout_retry_used": false,
+  "wall_seconds": 107.09353229193948
+}

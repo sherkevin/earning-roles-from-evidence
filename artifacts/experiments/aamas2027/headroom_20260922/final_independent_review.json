@@ -1,0 +1,53 @@
+{
+  "timestamp": "2026-09-22T12:07:22.770879+00:00",
+  "reviewer": "independent_design_review",
+  "read_only": true,
+  "new_model_calls": 0,
+  "verdict": "INCOMPLETE_PERMANENT_STOP_CONFIRMED",
+  "census_counts": {
+    "attempted_tasks": 38,
+    "valid_success": 33,
+    "valid_failure": 2,
+    "transport_unknown": 3,
+    "unstarted": 19,
+    "success_bounds": [
+      33,
+      55
+    ]
+  },
+  "attempt_partition": {
+    "original_acquire": 80,
+    "acquire_repair": 16,
+    "induction": 6,
+    "paired_validation": 195,
+    "unchanged_controls": 32,
+    "original_census": 433,
+    "recovery_census": 159,
+    "separate_health": 3
+  },
+  "benchmark_plus_induction_attempts": 921,
+  "all_inference_attempts": 924,
+  "known_usage_all": {
+    "input_tokens": 1057417,
+    "cache_read_input_tokens": 6573440,
+    "cache_creation_input_tokens": 0,
+    "output_tokens": 180578
+  },
+  "unknown_usage_attempts": 16,
+  "request_output_exceedances": {
+    "induction": 6,
+    "census": 3
+  },
+  "verified": [
+    "All raw attempt and response usage sums match per-case records",
+    "All54 original-prefix raw/result hashes retained",
+    "Frozen runtimes/configurations/recovery hashes match",
+    "Recovery dispatch equals original jobs[27:38]; no retry/replacement",
+    "Permanent stop check raises before model work",
+    "All2 valid failures reviewed;3 UNKNOWNs separate",
+    "Native replay fixture is explicitly partial"
+  ],
+  "clarification": "Protocol-valid allows recovered429/503 under the unchanged contract;3ab5b8b_3 had one such429. Valid must not imply error-free.",
+  "reviewed_stopped_summary_sha256": "55f6ebef930fa6b7d95b7ad46631a64153ba6b54afece3de045700d9448a4ecf",
+  "reviewed_report_sha256": "2f4ee687de8da95218cf37ae2039890f71854d577684590c2869403f8bd0660c"
+}

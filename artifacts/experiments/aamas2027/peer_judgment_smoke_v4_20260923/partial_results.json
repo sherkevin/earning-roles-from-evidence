@@ -1,0 +1,66 @@
+[
+  {
+    "task_id": "3c13f5a_3",
+    "status": "INVALID",
+    "global_stop": false,
+    "experiment_names": {
+      "producer": "pj4_prod_81238943f62a1aa35e",
+      "consumer": "pj4_cons_81238943f62a1aa35e"
+    },
+    "error": {
+      "type": "ValueError",
+      "message": "Import outside public computation allowlist",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/jingwu/work/earning-roles/scripts/aamas_peer_judgment_smoke_v4.py\", line 611, in episode\n    judgment_raw, review_steps = phase_loop(\n                                 ^^^^^^^^^^^\n  File \"/Users/jingwu/work/earning-roles/scripts/aamas_peer_judgment_smoke_v4.py\", line 409, in phase_loop\n    safe_code(code)\n  File \"/Users/jingwu/work/earning-roles/scripts/aamas_peer_judgment_smoke_v4.py\", line 155, in safe_code\n    raise ValueError(\"Import outside public computation allowlist\")\nValueError: Import outside public computation allowlist\n"
+    },
+    "official_final_success": null,
+    "usd_cost": null,
+    "phase_costs": {
+      "producer": {
+        "attempts": 7,
+        "tokens": {
+          "input_tokens": 14669,
+          "output_tokens": 7559,
+          "cache_read_input_tokens": 41472,
+          "cache_creation_input_tokens": 0
+        },
+        "unknown_usage_attempts": 0,
+        "api_errors": 0,
+        "error_codes": [],
+        "returned_models": [
+          "qwen3.8-max",
+          "qwen3.8-max",
+          "qwen3.8-max",
+          "qwen3.8-max",
+          "qwen3.8-max",
+          "qwen3.8-max",
+          "qwen3.8-max"
+        ],
+        "api_seconds": 209.84743487508968
+      },
+      "consumer_review": {
+        "attempts": 1,
+        "tokens": {
+          "input_tokens": 1409,
+          "output_tokens": 1453,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0
+        },
+        "unknown_usage_attempts": 0,
+        "api_errors": 0,
+        "error_codes": [],
+        "returned_models": [
+          "qwen3.8-max"
+        ],
+        "api_seconds": 41.77090450003743
+      }
+    },
+    "validation_rejections": {
+      "producer": 0,
+      "consumer_review": 0
+    },
+    "timeout_retry_used": false,
+    "world_execute_count": 6,
+    "attempted_calls": 8,
+    "wall_seconds": 256.8744891670067
+  }
+]

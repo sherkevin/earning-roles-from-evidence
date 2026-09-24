@@ -1,0 +1,29 @@
+{
+  "classification": "predicate_entity_scope",
+  "status": "public_trace_hypothesis_not_proven_counterfactual",
+  "public_evidence": [
+    {
+      "steps": [
+        6,
+        8,
+        9
+      ],
+      "observation": "Queries liked albums and intersects album IDs with the album library."
+    },
+    {
+      "steps": [
+        13,
+        14
+      ],
+      "observation": "Downloads songs of the selected album; validates membership in its own selected target set."
+    }
+  ],
+  "interpretation": "The executed condition attaches liked to album, whereas the instruction can be read as selecting liked songs in the album library. Official scoring rejects the final state. Exact causal attribution would require a separate declared intervention; task-language ambiguity is retained.",
+  "boundary": "A postcondition over a self-selected target set need not check the original task predicate. This is not producer-consumer incompatibility evidence.",
+  "reusable_design_input": "A competent semantic interface must expose selection entity and source predicate, not only output ID type; first test common-interface explanations before claiming learned compatibility.",
+  "task_id": "3ab5b8b_3",
+  "trace_sha256": "a564697ba971143449c7a2eee287137ea93be1e819b4bab9fe203bdb4e022e16",
+  "new_benchmark_LLM_calls": 0,
+  "ground_truth_solution_read": false,
+  "timestamp": "2026-09-22T09:36:23.905256+00:00"
+}

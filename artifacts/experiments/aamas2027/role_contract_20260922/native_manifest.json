@@ -1,0 +1,137 @@
+{
+  "id": "R1-native-replay-20260922",
+  "status": "FROZEN_BEFORE_NATIVE_INTERVENTION",
+  "created_at": "2026-09-22T15:10:36.763877+00:00",
+  "canonical_machine": "Shervin",
+  "execution_machine": "U-CGPCVWR0-0024.local",
+  "benchmark_commit": "42b5bcf3cd334fee33f0c37c02070a9f5807add5",
+  "data_version": "0.2.0",
+  "new_task_policy_llm_calls": 0,
+  "expected_world_count": 9,
+  "arms": [
+    "original",
+    "qualified",
+    "single_program"
+  ],
+  "code_sha256": {
+    "scripts/r1_role_contract_core.py": "1bb23c437866cc964ad0b2619f0ca0d273d0df88ce7a99b1f6c017c3af017c01",
+    "scripts/r1_native_replay.py": "7304ba38a4e2a843e7f3689b4dfc57500474c576e4301c298ab6ced4ccbb25e0",
+    "scripts/test_r1_role_contract.py": "a645858c476c6a4e9e1a201b0c7ecdc37540ab00383e8cb94026c0e4ca18595a",
+    "scripts/aamas_real_probe.py": "b9bba5e37e02e3d888bbc1ff9cf8c16bb59ed733ba65bcec575f37755205cf5c"
+  },
+  "source_contract": {
+    "record": {
+      "source": [
+        1,
+        28,
+        31,
+        40,
+        53,
+        86,
+        95,
+        117,
+        122,
+        124,
+        159,
+        175,
+        192,
+        206,
+        211,
+        225,
+        231,
+        239,
+        249,
+        251,
+        254,
+        307
+      ],
+      "predicate": [
+        17,
+        26,
+        27,
+        28,
+        40,
+        41,
+        44,
+        95,
+        122,
+        159,
+        175,
+        211,
+        231,
+        239,
+        249,
+        254
+      ],
+      "selected": [
+        28,
+        40,
+        95,
+        122,
+        159,
+        175,
+        211,
+        231,
+        239,
+        249,
+        254
+      ],
+      "entity_type": "song"
+    },
+    "hypotheses": [
+      "intersection"
+    ],
+    "entity_type": "song",
+    "source_sha256": "e83176d7b40d754196fbee937dbce72df00df25c2bb8ae4aa5448016afd723f5",
+    "source_trace": "artifacts/experiments/aamas2027/dev_20260922/episodes/acquire_692c77d_retry1/public_trace.json",
+    "source_steps": [
+      7,
+      8
+    ],
+    "meaning": "reproduces_observed_selection_not_hidden_truth"
+  },
+  "tasks": [
+    {
+      "task_id": "3ab5b8b_1",
+      "trace_path": "artifacts/experiments/aamas2027/headroom_20260922/episodes/headroom_12_3ab5b8b_1/public_trace.json",
+      "trace_sha256": "b9a08ab9b4474dff287790c3321cf4a865dcb32d40253b0aa1a4d94a73bc963c",
+      "boundary_index": 11,
+      "boundary_step": 12,
+      "boundary_variable": "all_song_ids",
+      "adapter": [
+        "show_playlist_library",
+        "song_ids"
+      ],
+      "archived_official_success": false
+    },
+    {
+      "task_id": "3ab5b8b_2",
+      "trace_path": "artifacts/experiments/aamas2027/headroom_20260922/episodes/headroom_02_3ab5b8b_2/public_trace.json",
+      "trace_sha256": "083d34f59ec77ea7d3a21d6d20e84139c35b42210aa67127b36000b967eb75a5",
+      "boundary_index": 9,
+      "boundary_step": 10,
+      "boundary_variable": "liked_library_song_ids",
+      "adapter": [
+        "show_song_library",
+        "song_id"
+      ],
+      "archived_official_success": true
+    },
+    {
+      "task_id": "3ab5b8b_3",
+      "trace_path": "artifacts/experiments/aamas2027/headroom_20260922/episodes/headroom_01_3ab5b8b_3/public_trace.json",
+      "trace_sha256": "a564697ba971143449c7a2eee287137ea93be1e819b4bab9fe203bdb4e022e16",
+      "boundary_index": 11,
+      "boundary_step": 13,
+      "boundary_variable": "target_song_ids",
+      "adapter": [
+        "show_album_library",
+        "song_ids"
+      ],
+      "archived_official_success": false
+    }
+  ],
+  "review_status": "author_static_review_and_12_CPU_checks; auxiliary_model_review_timed_out_not_passed",
+  "inferential_boundary": "Post-hoc developer intervention on all3 previously observed siblings; no autonomous-repair, novel qualification advantage, population-success or independent-test claim.",
+  "stop_rule": "Any native exception or mismatch of original replay with archived terminal success stops interpretation. No automatic retry or widening."
+}

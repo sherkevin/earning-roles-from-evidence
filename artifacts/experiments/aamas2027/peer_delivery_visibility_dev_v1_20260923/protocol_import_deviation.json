@@ -1,0 +1,36 @@
+{
+  "type": "FROZEN_PROTOCOL_LITERAL_IMPORT_BARRIER_DEVIATION",
+  "protocol_sha256": "ee5c565606590945ae9ea354d06631979da730686aebfc3f39506daaef724c91",
+  "runner_sha256": "a8f513bc579f84c51d6ce4f7ff0961579837129a75341918cc3af3748539d1c7",
+  "appworld_source_commit": "42b5bcf3cd334fee33f0c37c02070a9f5807add5",
+  "source_imports": [
+    {
+      "path": "/Users/jingwu/work/AppWorld/src/appworld/__init__.py",
+      "sha256": "20d2b0c9a92945a40700270e1d4bf8a99f4376a61f5a95574a9c78f69ce79651",
+      "import_line": 17
+    },
+    {
+      "path": "/Users/jingwu/work/AppWorld/src/appworld/environment.py",
+      "sha256": "f988f1e6f257041e73682725522662674d4d65e8a1673787614f54b89fe2baeb",
+      "import_line": 51
+    }
+  ],
+  "zero_llm_same_venv_sys_modules_probe": {
+    "command": "python -c \"import appworld,sys; print('appworld.evaluator' in sys.modules)\"",
+    "interpreter": "/Users/jingwu/work/AppWorld/.venv-b1-api/bin/python",
+    "evaluator_loaded_after_appworld_import": true,
+    "module_path": "/Users/jingwu/work/AppWorld/src/appworld/evaluator.py"
+  },
+  "actual_actor_sys_modules_logged": false,
+  "actor_import_inference": "Both actual arm processes constructed AppWorld; pinned AppWorld top-level imports appworld.evaluator. Therefore strict no-import-before-seal wording was not satisfied.",
+  "actual_actor_evaluate_task_calls": 0,
+  "official_scores_available": {
+    "visible": false,
+    "hidden": false
+  },
+  "score_or_label_in_actor_prompt_observed": false,
+  "scorer_barrier_completed_meaning": "No explicit offline evaluate_task call before actor terminal barrier; this does not prove evaluator module not imported.",
+  "outcome_effect": "No task state quality comparison exists because both review phases capped; retain INDETERMINATE.",
+  "frozen_inputs_or_raw_modified": false,
+  "any_actor_world_ground_truth_loaded": false
+}

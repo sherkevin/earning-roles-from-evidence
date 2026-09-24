@@ -1,10 +1,12 @@
 # Q1: Earning roles through reusable evidence of collaboration
 
-Discussion v6.1, 2026-09-22. **Final-lock review: keep the candidate question stable; do not lock the current method.** This revision evaluates v6 without replacing its candidate. The [requirements](../../paper/aamas2027/REQUIREMENTS.md) and [task ledger](../../coordination/AAMAS_TASKS.md) remain authoritative. The previous exact-state retention design is preserved in the [v5 snapshot](../../../artifacts/analysis/aamas2027/problem_entry_20260922/q1_v5_assessed_snapshot.txt); [contract.json](../../../configs/aamas2027/contract.json) now marks that specification as reference-only pending redesign. Its parameter blocks are not a runnable specification of the proposal below.
+Historical discussion v6.1, 2026-09-22. **Retired as the main-paper problem by [decision 0006](../../user/decisions/0006-study-peer-judged-role-formation.md).** The former final-lock review kept this conditional-adoption candidate stable while withholding a method lock; the text below preserves that assessment rather than endorsing it today. The [requirements](../../paper/aamas2027/REQUIREMENTS.md) and [task ledger](../../coordination/AAMAS_TASKS.md) remain authoritative. The previous exact-state retention design is preserved in the [v5 snapshot](../../../artifacts/analysis/aamas2027/problem_entry_20260922/q1_v5_assessed_snapshot.txt); [contract.json](../../../configs/aamas2027/contract.json) marks that specification as reference-only. Its parameter blocks are not a runnable specification of the proposal below.
 
-## 1. Recommended problem entry
+**Status update, 2026-09-23:** [decisions 0005](../../user/decisions/0005-retain-peer-judged-role-learning.md) and [0006](../../user/decisions/0006-study-peer-judged-role-formation.md) select role formation from actual collaborators' judgments while agents and workflows co-evolve. This assessed conditional-adoption candidate does not implement that loop and is retired as the main Q1. Its analysis and evidence limits remain available for comparison; G0 in the active ledger governs the next formulation.
 
-**Execution status:** paused at the user's request on 2026-09-22 after read-only infrastructure checks. The subsequent empirical iteration did not produce a new algorithm, frozen development batch or model result. This document remains the assessed candidate; the task ledger contains the resume checklist.
+## 1. Historical v6.1 problem entry (retired as main Q1)
+
+**Execution status:** resumed by explicit user instruction on 2026-09-22. The first real acquisition probe is complete: both arms scored6/6, the fixed promotion gate failed, and the package is not promoted. The independent planned full-dev census stopped at38/57 under its disclosed infrastructure recovery rule (33 protocol-valid successes,2 protocol-valid failures,3 UNKNOWNs,19 unstarted). No full-population headroom verdict or active inference remains. This document remains the assessed candidate, not a locked method; the [active task ledger](../../coordination/AAMAS_TASKS.md) links immutable protocols and actual results.
 
 **How can a team admit newly acquired capabilities into reusable workflows without exhaustively retesting every executor combination or accepting harmful collaboration regressions?**
 
@@ -28,7 +30,7 @@ Our inference about fit: a bounded coordination decision, a recognizable failure
 
 | Entry considered | Assessment |
 |---|---|
-| **A. Conditional adoption under collaboration incompatibility** | Recommended. A concrete team decision with an interpretable failure witness; preserves all three commitments. Novelty must exceed synergy matching and integration testing |
+| **A. Conditional adoption under collaboration incompatibility** | Formerly recommended in v6.1; retired as main Q1 by decision 0006. A concrete team decision with an interpretable failure witness, but its replacement premise does not capture the selected co-evolution problem. Novelty would still need to exceed synergy matching and integration testing |
 | B. Counterfactual failure attribution and local repair | Useful diagnostic instrument for A. Replay/repair already have close precedents; replay is costly and there need not be a uniquely blameworthy agent |
 | C. Assign experience to develop complementary capabilities | Legitimate longer-horizon learning problem, but changes the project into curriculum/resource allocation. Training allocation to learning teams is already studied; free artifact migration also weakens an identity-based story |
 
@@ -216,3 +218,55 @@ Complete the following outputs within the existing A-T03/A-T04 work; do not add 
 At that declared decision point, proceed only with an executable procedure whose remaining empirical uncertainty is honestly testable at feasible cost. Otherwise close this candidate as unsupported for the intended mechanism paper; do not rename it or add modules to bypass the failure. Development selection must be disclosed and confirmation remain independent. A scientifically substantial negative finding may support a separately stated paper, but is not an automatic fallback claim.
 
 After a justified freeze, hold the hypothesis, algorithm and confirmatory protocol fixed and report the result. Integrity defects or newly invalid assumptions require a documented amendment or stopping decision; an instruction never to change the plan cannot make a false assumption true. AppWorld/ScienceWorld source pins remain preserved, while final benchmark roles and baseline implementations depend on closing the specification above. No confirmation runs are launched by this review.
+
+## 9. First real empirical iteration
+
+The [complete acquisition result](../../../artifacts/experiments/aamas2027/dev_20260922/report.md)
+tests only the earliest link: whether a fixed package of procedures induced from
+six actual training trajectories improves independent native task execution.
+It uses the named idealab provider, qwen3.8-max, the original native prompt,
+fresh AppWorld states and the unchanged official scorer. There were 329 real
+benchmark/induction attempts, including unsuccessful requests and the declared
+same-task acquisition replacement. No confirmation task was used.
+
+Both treatment and control scored 6/6. There were no success wins or losses,
+and no success flip in the two unchanged-agent repeats. The gate independently
+fails for insufficient wins and one unwaived empty-text API response. Treatment
+used 99 versus 96 attempted calls and 19.9% more known context tokens; induction
+and acquisition add 102 calls. A decrease in output tokens does not establish a
+uniform resource improvement. This does not support the useful-capability claim.
+
+The [independent trajectory audit](../../../artifacts/experiments/aamas2027/dev_20260922/behavior_audit/review.md)
+covered every pair with arm names masked before the key was revealed. Both arms
+already perform most pagination, joins, deduplication and collect-before-update
+procedures. Some checking and scheduling differ; the clearest case adds separate
+archive-existence checks and manual deletion, increasing calls from 15 to 26.
+No failure prevented by those extra checks was observed. This is exploratory
+behavioral evidence, not a consumer interaction or a new mechanism result.
+
+The story therefore remains conditional: first establish useful acquired
+changes, then investigate whether downstream requirements can qualify them more
+cheaply than competent alternatives. Source-linked summaries are an acquisition
+baseline, not the innovation. Reusable finite-feedback qualification remains the
+candidate distinction and still needs an executable learner and a real witness.
+The empirical result does not justify adding a consumer module to manufacture
+an interaction, claiming equivalence from six pairs, or declaring all AppWorld
+tasks saturated.
+
+The next independent diagnostic was the [planned complete dev census](../../../configs/aamas2027/headroom_census_v1.json),
+already required by B5.2. It preserved all57 native IDs and competent settings,
+but [stopped incomplete](../../../artifacts/experiments/aamas2027/headroom_20260922/report.md)
+after the original outage and one documented infrastructure recovery.38 tasks
+were attempted:33 protocol-valid successes,2 protocol-valid failures,3 UNKNOWNs;19 are unstarted.
+The592 real requests include159 during recovery. Conservative success bounds
+are33–55/57, so no full-population headroom/floor/ceiling verdict is available.
+Both observed protocol-valid failures were audited; neither establishes a consumer
+interaction. Acquisition v1 remains unpromoted and no new treatment follows.
+
+The [concrete independent method review](AAMAS_Q1_FEASIBILITY_REVIEW_20260922.md)
+distinguishes implementable conditional-memory regression screening from the
+unestablished reusable qualification mechanism. The [zero-LLM replay fixture](../../../artifacts/experiments/aamas2027/replay_fixture_20260922/report.md)
+also shows that database-only restoration does not restore REPL state; its native
+teardown failure is retained. No method freeze or completed faithful-replay claim
+is made. This bounded empirical cycle provides real evidence and reusable code,
+not a resolved scientific contribution.

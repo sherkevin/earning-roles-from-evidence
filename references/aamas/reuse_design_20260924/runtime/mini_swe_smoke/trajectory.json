@@ -1,0 +1,164 @@
+{
+  "info": {
+    "model_stats": {
+      "instance_cost": 2.0,
+      "api_calls": 2
+    },
+    "config": {
+      "agent": {
+        "system_template": "You are a bounded test agent.",
+        "instance_template": "{{task}}",
+        "step_limit": 4,
+        "cost_limit": 10.0,
+        "wall_time_limit_seconds": 0,
+        "max_consecutive_format_errors": 3,
+        "output_path": null
+      },
+      "agent_type": "minisweagent.agents.default.DefaultAgent",
+      "model": {
+        "outputs": [
+          {
+            "role": "assistant",
+            "content": "producer delivery",
+            "tool_calls": [
+              {
+                "id": "call-1",
+                "type": "function",
+                "function": {
+                  "name": "bash",
+                  "arguments": "{\"command\": \"printf proposal-v1\"}"
+                }
+              }
+            ],
+            "extra": {
+              "actions": [
+                {
+                  "command": "printf proposal-v1",
+                  "tool_call_id": "call-1"
+                }
+              ],
+              "cost": 1.0,
+              "timestamp": 1790221126.631298
+            }
+          },
+          {
+            "role": "assistant",
+            "content": "finish",
+            "tool_calls": [
+              {
+                "id": "call-2",
+                "type": "function",
+                "function": {
+                  "name": "bash",
+                  "arguments": "{\"command\": \"printf 'COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT\\\\naccepted'\"}"
+                }
+              }
+            ],
+            "extra": {
+              "actions": [
+                {
+                  "command": "printf 'COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT\\naccepted'",
+                  "tool_call_id": "call-2"
+                }
+              ],
+              "cost": 1.0,
+              "timestamp": 1790221126.6313019
+            }
+          }
+        ],
+        "model_name": "deterministic_toolcall",
+        "cost_per_call": 1.0,
+        "observation_template": "{% if output.exception_info %}<exception>{{output.exception_info}}</exception>\n{% endif %}<returncode>{{output.returncode}}</returncode>\n<output>\n{{output.output}}</output>",
+        "multimodal_regex": ""
+      },
+      "model_type": "minisweagent.models.test_models.DeterministicToolcallModel",
+      "environment": {
+        "cwd": "",
+        "env": {},
+        "timeout": 30
+      },
+      "environment_type": "minisweagent.environments.local.LocalEnvironment"
+    },
+    "mini_version": "2.4.6",
+    "exit_status": "Submitted",
+    "submission": "accepted"
+  },
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a bounded test agent."
+    },
+    {
+      "role": "user",
+      "content": "record and submit one proposal"
+    },
+    {
+      "role": "assistant",
+      "content": "producer delivery",
+      "tool_calls": [
+        {
+          "id": "call-1",
+          "type": "function",
+          "function": {
+            "name": "bash",
+            "arguments": "{\"command\": \"printf proposal-v1\"}"
+          }
+        }
+      ],
+      "extra": {
+        "actions": [
+          {
+            "command": "printf proposal-v1",
+            "tool_call_id": "call-1"
+          }
+        ],
+        "cost": 1.0,
+        "timestamp": 1790221126.631298
+      }
+    },
+    {
+      "content": "<returncode>0</returncode>\n<output>\nproposal-v1</output>",
+      "extra": {
+        "raw_output": "proposal-v1",
+        "returncode": 0,
+        "timestamp": 1790221126.711599,
+        "exception_info": ""
+      },
+      "tool_call_id": "call-1",
+      "role": "tool"
+    },
+    {
+      "role": "assistant",
+      "content": "finish",
+      "tool_calls": [
+        {
+          "id": "call-2",
+          "type": "function",
+          "function": {
+            "name": "bash",
+            "arguments": "{\"command\": \"printf 'COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT\\\\naccepted'\"}"
+          }
+        }
+      ],
+      "extra": {
+        "actions": [
+          {
+            "command": "printf 'COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT\\naccepted'",
+            "tool_call_id": "call-2"
+          }
+        ],
+        "cost": 1.0,
+        "timestamp": 1790221126.6313019
+      }
+    },
+    {
+      "role": "exit",
+      "content": "accepted",
+      "extra": {
+        "exit_status": "Submitted",
+        "submission": "accepted"
+      }
+    }
+  ],
+  "trajectory_format": "mini-swe-agent-1.1"
+}

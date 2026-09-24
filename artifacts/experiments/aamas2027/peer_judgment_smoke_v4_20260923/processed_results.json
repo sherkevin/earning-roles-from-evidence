@@ -1,0 +1,291 @@
+{
+  "experiment_id": "peer_judgment_smoke_v4_20260923",
+  "status": "COMPLETED_PARTIAL_HANDOFF_INVALID_CONSUMER_REVIEW",
+  "scope": "One same-task train development continuation after v3 had no response/world step; not an independent sample, method test or confirmation.",
+  "task_ids_attempted": [
+    "3c13f5a_3"
+  ],
+  "provenance": {
+    "source_manifest": "source_manifest.json",
+    "source_config_path": "configs/aamas2027/peer_judgment_smoke_v4.json",
+    "source_config_sha256": "56db8eb1c30b40b3377b227d91b62c959a7a9c4419aba9524238c6313dde00b0",
+    "frozen_config_path": "frozen_config.json",
+    "frozen_config_sha256": "56db8eb1c30b40b3377b227d91b62c959a7a9c4419aba9524238c6313dde00b0",
+    "source_and_frozen_config_byte_equal": true,
+    "runner_at_execution_path": "runner_at_execution.py",
+    "runner_at_execution_sha256": "067d566558b6fa07b2f91dd0e74a2cbf546bd3a186408b4dda24ad01745432f9",
+    "runner_snapshot_source_manifest_episode_header_and_current_source_match": true,
+    "config_source_frozen_manifest_and_episode_header_match": true,
+    "v3_runner_and_results_hashes_match_amendment_and_manifest": true,
+    "v3_results_hash_matches_episode_header": true,
+    "appworld_source_commit": "42b5bcf3cd334fee33f0c37c02070a9f5807add5",
+    "appworld_package_version": "0.2.0.dev0",
+    "project_git_head_at_execution": "ddc95f1a3d6cb89dce5f78618babb542d0286266",
+    "model_request": "qwen3.8-max",
+    "world_seed": 100,
+    "evaluator_loaded_in_solver": false,
+    "initial_prompts": [
+      {
+        "phase": "producer",
+        "sha256": "48fbb3d15a600c746896308e122f93bf4e193d8615ec5eb5cf49ae513497f71b",
+        "characters": 3311
+      },
+      {
+        "phase": "consumer_review",
+        "sha256": "abc08586351f04f5c7db33137fb7c5d00cd5b2cb6a619a8f409454a11b95d7a1",
+        "characters": 5583
+      }
+    ],
+    "configured_max_output_tokens_per_call": 1024
+  },
+  "totals": {
+    "real_llm_attempts": 8,
+    "successful_real_llm_responses": 8,
+    "provider_errors": 0,
+    "unknown_usage_attempts": 0,
+    "reported_tokens": {
+      "input_tokens": 16078,
+      "output_tokens": 9012,
+      "cache_read_input_tokens": 41472,
+      "cache_creation_input_tokens": 0
+    },
+    "provider_api_seconds": 251.6183393751271,
+    "episode_wall_seconds": 256.8744891670067,
+    "world_execute_count": 6,
+    "public_api_calls": 33,
+    "public_api_call_errors": 2,
+    "public_task_data_reads": 5,
+    "controller_valid_proposals_sealed": 1,
+    "sealed_consumer_judgments": 0,
+    "consumer_world_execute_count": 0,
+    "consumer_action_attempts": 0,
+    "officially_scored_tasks": 0,
+    "usd_cost": null
+  },
+  "task": {
+    "task_id": "3c13f5a_3",
+    "status": "INVALID",
+    "phase_costs": [
+      {
+        "phase": "producer",
+        "attempts": 7,
+        "successful_responses": 7,
+        "provider_errors": 0,
+        "unknown_usage_attempts": 0,
+        "reported_tokens": {
+          "input_tokens": 14669,
+          "output_tokens": 7559,
+          "cache_read_input_tokens": 41472,
+          "cache_creation_input_tokens": 0
+        },
+        "provider_api_seconds": 209.84743487508968,
+        "returned_models": [
+          "qwen3.8-max"
+        ],
+        "responses": [
+          {
+            "attempt": 1,
+            "http_status": 200,
+            "elapsed_seconds": 15.786558332969435,
+            "model": "qwen3.8-max",
+            "reported_usage": {
+              "input_tokens": 764,
+              "cache_creation_input_tokens": 0,
+              "cache_read_input_tokens": 0,
+              "output_tokens": 511
+            }
+          },
+          {
+            "attempt": 2,
+            "http_status": 200,
+            "elapsed_seconds": 33.480485582957044,
+            "model": "qwen3.8-max",
+            "reported_usage": {
+              "input_tokens": 4120,
+              "cache_creation_input_tokens": 0,
+              "cache_read_input_tokens": 0,
+              "output_tokens": 1148
+            }
+          },
+          {
+            "attempt": 3,
+            "http_status": 200,
+            "elapsed_seconds": 23.268170707975514,
+            "model": "qwen3.8-max",
+            "reported_usage": {
+              "input_tokens": 1572,
+              "cache_creation_input_tokens": 0,
+              "cache_read_input_tokens": 4096,
+              "output_tokens": 773
+            }
+          },
+          {
+            "attempt": 4,
+            "http_status": 200,
+            "elapsed_seconds": 32.465846208971925,
+            "model": "qwen3.8-max",
+            "reported_usage": {
+              "input_tokens": 5444,
+              "cache_creation_input_tokens": 0,
+              "cache_read_input_tokens": 5120,
+              "output_tokens": 1178
+            }
+          },
+          {
+            "attempt": 5,
+            "http_status": 200,
+            "elapsed_seconds": 6.992041958030313,
+            "model": "qwen3.8-max",
+            "reported_usage": {
+              "input_tokens": 520,
+              "cache_creation_input_tokens": 0,
+              "cache_read_input_tokens": 10496,
+              "output_tokens": 292
+            }
+          },
+          {
+            "attempt": 6,
+            "http_status": 200,
+            "elapsed_seconds": 9.01668779202737,
+            "model": "qwen3.8-max",
+            "reported_usage": {
+              "input_tokens": 854,
+              "cache_creation_input_tokens": 0,
+              "cache_read_input_tokens": 10496,
+              "output_tokens": 359
+            }
+          },
+          {
+            "attempt": 7,
+            "http_status": 200,
+            "elapsed_seconds": 88.7699807920726,
+            "model": "qwen3.8-max",
+            "reported_usage": {
+              "input_tokens": 1395,
+              "cache_creation_input_tokens": 0,
+              "cache_read_input_tokens": 11264,
+              "output_tokens": 3298
+            }
+          }
+        ]
+      },
+      {
+        "phase": "consumer_review",
+        "attempts": 1,
+        "successful_responses": 1,
+        "provider_errors": 0,
+        "unknown_usage_attempts": 0,
+        "reported_tokens": {
+          "input_tokens": 1409,
+          "output_tokens": 1453,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0
+        },
+        "provider_api_seconds": 41.77090450003743,
+        "returned_models": [
+          "qwen3.8-max"
+        ],
+        "responses": [
+          {
+            "attempt": 1,
+            "http_status": 200,
+            "elapsed_seconds": 41.76444358401932,
+            "model": "qwen3.8-max",
+            "reported_usage": {
+              "input_tokens": 1409,
+              "cache_creation_input_tokens": 0,
+              "cache_read_input_tokens": 0,
+              "output_tokens": 1453
+            }
+          }
+        ]
+      }
+    ],
+    "world_observation_steps": [
+      {
+        "phase": "producer",
+        "step": 1,
+        "api_calls": 4,
+        "public_task_data_reads": 0
+      },
+      {
+        "phase": "producer",
+        "step": 2,
+        "api_calls": 6,
+        "public_task_data_reads": 0
+      },
+      {
+        "phase": "producer",
+        "step": 3,
+        "api_calls": 7,
+        "public_task_data_reads": 1
+      },
+      {
+        "phase": "producer",
+        "step": 4,
+        "api_calls": 4,
+        "public_task_data_reads": 0
+      },
+      {
+        "phase": "producer",
+        "step": 5,
+        "api_calls": 4,
+        "public_task_data_reads": 0
+      },
+      {
+        "phase": "producer",
+        "step": 6,
+        "api_calls": 8,
+        "public_task_data_reads": 4
+      }
+    ],
+    "proposal": {
+      "path": "episodes/3c13f5a_3/proposal.json",
+      "sha256": "899b77381ab580733ae5b16430452e09256b43bb38ad27ce8a7e960fef4d8dad",
+      "request_rows": 3,
+      "uncertainty_items": 4,
+      "source_steps_per_row": [
+        [
+          1,
+          3,
+          4,
+          5
+        ],
+        [
+          1,
+          3,
+          4,
+          5
+        ],
+        [
+          1,
+          3,
+          4,
+          5
+        ]
+      ],
+      "actual_public_read_steps": [
+        3,
+        6
+      ],
+      "controller_schema_and_minimum_read_gate_passed": true,
+      "claim_specific_provenance_limit": "Every row cited step 3, a directory listing, but omitted step 6 where the bill file and contact details were read. Gate acceptance is not verification that each claimed amount/recipient is supported by cited steps."
+    },
+    "consumer_review": {
+      "real_responses": 1,
+      "blocked_before_world_execute": true,
+      "blocked_code_prefix": "import apis",
+      "controller_error": {
+        "type": "ValueError",
+        "message": "Import outside public computation allowlist"
+      },
+      "schema_validation_rejections": 0,
+      "sealed_judgment": false
+    },
+    "consumer_action_attempts": 0,
+    "official_final_success": null,
+    "raw_log": "episodes/3c13f5a_3/raw.jsonl",
+    "raw_result": "episodes/3c13f5a_3/result.json"
+  },
+  "conclusion": "The compact-prompt development continuation obtained a controller-valid sealed producer proposal, then stopped when the first consumer-review code block imported apis and safe_code rejected that import before any consumer world action. The proposal source-step citations do not establish claim-specific provenance. No judgment, use/rework, task outcome, role update, or method effect was observed."
+}

@@ -1,0 +1,33 @@
+{
+  "event": "cooperbench_task2800_remote_readonly_feasibility",
+  "timestamp_utc": "2026-09-23T10:59:59.905446+00:00",
+  "scope": "one known configured project remote host, no broad scan or remote mutation",
+  "provenance": {
+    "ssh_config_hosts": [
+      "10.103.16.12",
+      "github.com"
+    ],
+    "historical_route_doc": "docs/coordination/SCIENTIST_TODO.md:1047-1049",
+    "historical_route": "dengkw@10.103.16.12",
+    "shervin_ssh_alias_configured": false,
+    "task_image": "akhatua/cooperbench-pallets-click:task2800"
+  },
+  "probe": {
+    "method": "SSH BatchMode=yes ConnectTimeout=5 ConnectionAttempts=1; read-only remote commands only if authentication succeeds",
+    "elapsed_seconds": 4.9175,
+    "exit_code": 255,
+    "stderr": "ssh: connect to host 10.103.16.12 port 22: Operation timed out",
+    "remote_command_executed": false
+  },
+  "result": {
+    "status": "REMOTE_UNREACHABLE_FROM_THIS_MAC_AT_PROBE_TIME",
+    "remote_os_arch": "UNKNOWN",
+    "remote_docker_cli": "UNKNOWN",
+    "remote_docker_daemon": "UNKNOWN",
+    "remote_registry_reachability": "UNKNOWN",
+    "remote_image_manifest": "NOT_CHECKED",
+    "image_downloaded": false,
+    "container_started": false,
+    "remote_state_changed": false
+  }
+}

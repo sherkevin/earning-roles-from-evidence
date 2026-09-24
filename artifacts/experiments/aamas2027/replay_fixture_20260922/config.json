@@ -1,0 +1,28 @@
+{
+  "timestamp": "2026-09-22T11:44:42.279040+00:00",
+  "experiment_type": "posthoc_native_infrastructure_fixture_no_new_LLM",
+  "source_trace": "artifacts/experiments/aamas2027/dev_20260922/episodes/acquire_692c77d_retry1/public_trace.json",
+  "source_sha256": "e83176d7b40d754196fbee937dbce72df00df25c2bb8ae4aa5448016afd723f5",
+  "script_sha256": "5a2bc500e11f7371e659b9161fb3ba4480646ca76bccc8ac6b35f7bf096763e8",
+  "task_id": "692c77d_1",
+  "selection": "First family in previously frozen acquisition order; use declared valid replacement trace without outcome-based fixture search",
+  "prefix_rule": "floor(number of saved public steps/2)",
+  "modes": [
+    "full_prefix_a",
+    "full_prefix_b",
+    "database_only"
+  ],
+  "max_worlds": 3,
+  "database_only_continuation_steps": 1,
+  "model_api_calls": 0,
+  "new_candidate_generation": false,
+  "ground_truth_loaded": false,
+  "official_evaluator_invoked": false,
+  "benchmark_commit": "42b5bcf3cd334fee33f0c37c02070a9f5807add5",
+  "environment_seed": 100,
+  "model_seed": null,
+  "model_checkpoint": null,
+  "runtime": "/Users/jingwu/work/AppWorld/.venv-b1-api/bin/python",
+  "source_intervention": "Replay existing code, not newly generated code; log native API use and wall time; do not repair any observed failure",
+  "expected_interpretation": "Exact code-prefix replay may reconstruct more state than copying DBs alone; agreement is limited to this fixture and not a policy or transfer result"
+}

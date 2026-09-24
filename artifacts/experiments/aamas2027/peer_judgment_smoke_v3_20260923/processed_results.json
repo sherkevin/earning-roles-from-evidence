@@ -1,0 +1,112 @@
+{
+  "experiment_id": "peer_judgment_smoke_v3_20260923",
+  "status": "COMPLETED_TRANSPORT_UNKNOWN_DEVELOPMENT_SMOKE",
+  "scope": "One fresh train sibling for runtime observation-pipeline integration; no method or confirmatory conclusion.",
+  "fixed_task_ids_in_order": [
+    "3c13f5a_3"
+  ],
+  "provenance": {
+    "source_manifest": "source_manifest.json",
+    "source_config_path": "configs/aamas2027/peer_judgment_smoke_v3.json",
+    "source_config_sha256": "e73fd0d8daa8119c89bcc3c1035d3d1ab87a88d2cc8c4f690b80d2b26b14449a",
+    "frozen_config_path": "frozen_config.json",
+    "frozen_config_sha256": "e73fd0d8daa8119c89bcc3c1035d3d1ab87a88d2cc8c4f690b80d2b26b14449a",
+    "frozen_config_byte_equal_to_source": true,
+    "runner_at_execution_path": "runner_at_execution.py",
+    "runner_at_execution_sha256": "6813ade1082e0fda02ec2068f01014bf0279fa126dc018496b07010f71ff4004",
+    "runner_snapshot_source_manifest_episode_header_and_current_source_match": true,
+    "config_source_manifest_episode_header_and_frozen_copy_match": true,
+    "v2_runner_and_results_hashes_match_amendment_and_manifest": true,
+    "v2_results_hash_matches_episode_header": true,
+    "appworld_source_commit": "42b5bcf3cd334fee33f0c37c02070a9f5807add5",
+    "appworld_package_version": "0.2.0.dev0",
+    "project_git_head_at_execution": "ddc95f1a3d6cb89dce5f78618babb542d0286266",
+    "model_request": "qwen3.8-max",
+    "world_seed": 100,
+    "evaluator_loaded_in_solver": false
+  },
+  "native_cpu_guard_fixture_separate_from_model_episode": {
+    "artifact_root": "artifacts/aamas2027/runtime_checks/peer_guard_v3_native_20260923",
+    "fixture_sha256": "52a9dce2b4e792f5ef699c630ba72b855b63afe8301b5326e3cbac8c66b9f36f",
+    "initial_failure_preserved": "results_initial_failure.json",
+    "initial_failure_reason": "APPWORLD_ROOT omitted; AppWorld task directory resolved under earning-roles and did not exist; no world created.",
+    "retry_config": "retry_config.json",
+    "retry_requires_appworld_root": true,
+    "successful_result": "results.json",
+    "native_guard_enabled": true,
+    "llm_api_calls": 0,
+    "docs_ok": true,
+    "task_data_get_ok": true,
+    "public_get_calls": 2,
+    "public_task_data_read_observations": 1,
+    "audit_events": 2,
+    "persisted_api_events": 2,
+    "does_not_establish_live_model_handoff": true
+  },
+  "totals": {
+    "native_tasks_attempted": 1,
+    "attempted_real_llm_calls": 2,
+    "successful_real_llm_responses": 0,
+    "provider_errors": 2,
+    "unknown_usage_attempts": 2,
+    "reported_tokens_from_responses": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "cache_creation_input_tokens": 0
+    },
+    "producer_api_seconds": 240.24935012403876,
+    "episode_wall_seconds": 247.16147154197097,
+    "world_execute_count": 0,
+    "public_task_data_reads": 0,
+    "sealed_proposals": 0,
+    "consumer_review_attempts": 0,
+    "sealed_consumer_judgments": 0,
+    "consumer_action_attempts": 0,
+    "officially_scored_tasks": 0,
+    "usd_cost": null
+  },
+  "tasks": [
+    {
+      "task_id": "3c13f5a_3",
+      "status": "INVALID",
+      "failure_classification": "UNKNOWN_TRANSPORT",
+      "error": {
+        "type": "TimeoutError",
+        "message": "The read operation timed out"
+      },
+      "producer_attempts": [
+        {
+          "attempt": 1,
+          "model_requested": "qwen3.8-max",
+          "outcome": "TimeoutError",
+          "elapsed_seconds": 120.11792500002775,
+          "reported_usage": null
+        },
+        {
+          "attempt": 2,
+          "model_requested": "qwen3.8-max",
+          "outcome": "TimeoutError",
+          "elapsed_seconds": 120.12040820799302,
+          "reported_usage": null
+        }
+      ],
+      "timeout_retry": {
+        "used": true,
+        "backoff_seconds": 2,
+        "before_any_world_execute": true,
+        "charged_after_attempt": 1
+      },
+      "successful_responses": 0,
+      "world_execute_count": 0,
+      "public_task_data_reads": 0,
+      "producer_proposals_sealed": 0,
+      "consumer_review_attempts": 0,
+      "consumer_action_attempts": 0,
+      "official_final_success": null,
+      "raw_log": "episodes/3c13f5a_3/raw.jsonl",
+      "raw_result": "episodes/3c13f5a_3/result.json"
+    }
+  ],
+  "conclusion": "The CPU-only native guard fixture verified two public GETs and deferred audit persistence without LLM calls. The real v3 episode stopped on two 120-second producer transport timeouts before its first response or world execution. It therefore provides no live producer handoff, consumer judgment, task result, or evidence about peer-judged role learning."
+}

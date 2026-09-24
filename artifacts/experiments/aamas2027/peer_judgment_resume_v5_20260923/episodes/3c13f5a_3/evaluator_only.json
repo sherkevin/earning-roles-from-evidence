@@ -1,0 +1,34 @@
+{
+  "success": false,
+  "difficulty": 3,
+  "num_tests": 6,
+  "passes": [
+    {
+      "requirement": "assert model changes match venmo.Notification, venmo.PaymentRequest.",
+      "label": "no_op_fail"
+    },
+    {
+      "requirement": "obtain added, updated, removed venmo.PaymentRequest records using models.changed_records,\nand assert 0 were updated or removed.",
+      "label": "no_op_pass"
+    },
+    {
+      "requirement": "assert all added payment requests's receivers match private_data.roommate_venmo_user_ids.",
+      "label": "no_op_fail"
+    },
+    {
+      "requirement": "assert all added payment requests's amounts\nmatch private_data.this_month_bill_share (tolerance=0.51)",
+      "label": "no_op_fail"
+    },
+    {
+      "requirement": "assert all added payment requests's notes match public_data.note (normalize_text=True).",
+      "label": "no_op_fail"
+    }
+  ],
+  "failures": [
+    {
+      "requirement": "assert answers match.",
+      "trace": "```python\nwith test(\n    \"\"\"\n    assert answers match.\n    \"\"\"\n):\n    test.answer(predicted_answer, ground_truth_answer)\n```\n----------\nAssertionError:\n\"created three venmo payment requests of $32.00 each for the april 2023 cable bill (total $128 split equally among jennifer and her three roommates), each with the note 'i paid for cable bill.': connor brown (connorbrow@gmail.com, request id 6097), edwin wilson (ed_wilson@gmail.com, request id 6098), and martin blackburn (mar_blac@gmail.com, request id 6099).\"\n==\n'null'",
+      "label": "no_op_fail"
+    }
+  ]
+}

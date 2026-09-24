@@ -1,0 +1,15 @@
+{
+  "task_id": "3c13f5a_3",
+  "experiment_name": "pj3_guard_native_20260923",
+  "native_guard_enabled": true,
+  "llm_api_calls": 0,
+  "docs_ok": false,
+  "task_data_get_ok": false,
+  "audit_events": 0,
+  "persisted_api_events": 0,
+  "error": {
+    "type": "Exception",
+    "message": "The task directory (/Users/jingwu/work/earning-roles/data/tasks/3c13f5a_3) doesn't exist.",
+    "traceback": "Traceback (most recent call last):\n  File \"/Users/jingwu/work/earning-roles/artifacts/aamas2027/runtime_checks/peer_guard_v3_native_20260923/fixture.py\", line 31, in main\n    with AppWorld(task_id=cfg[\"task_id\"], experiment_name=cfg[\"experiment_name\"],\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/jingwu/work/AppWorld/src/appworld/environment.py\", line 652, in __init__\n    self.task = Task.load(\n                ^^^^^^^^^^\n  File \"/Users/jingwu/work/AppWorld/src/appworld/task.py\", line 108, in load\n    raise Exception(f\"The task directory ({task_directory}) doesn't exist.\")\nException: The task directory (/Users/jingwu/work/earning-roles/data/tasks/3c13f5a_3) doesn't exist.\n"
+  }
+}

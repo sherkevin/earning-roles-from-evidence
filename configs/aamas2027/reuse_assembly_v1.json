@@ -1,0 +1,97 @@
+{
+  "schema_version": "1.0",
+  "created": "2026-09-24",
+  "status": "conditional_engineering_lock",
+  "scientific_claim_status": "not_locked_no_positive_result",
+  "story": {
+    "question": "When can an actual recipient's situated judgment of a delivered contribution become reliable evidence for the producer's future responsibility during agent-workflow co-evolution?",
+    "required_chain": [
+      "dependent_task",
+      "producer_artifact",
+      "recipient_judgment",
+      "actual_use_or_repair",
+      "source_aware_role_evidence",
+      "future_responsibility",
+      "team_quality_and_full_cost"
+    ],
+    "scientific_intervention": "judgment_to_role_update"
+  },
+  "primary_benchmark": {
+    "name": "CooperBench",
+    "repo": "https://github.com/cooperbench/CooperBench",
+    "commit": "63b9d44d9f39a02fccf5bf0052db48a917a011fd",
+    "license_observation": "MIT declared by pyproject.toml/dataset frontmatter; root LICENSE absent at pinned commit",
+    "role": "primary_candidate",
+    "allowed_reuse": ["task_specification", "independent_adapter", "native_test_interface"],
+    "copy_prohibited_until_license_resolution": true,
+    "gates": {
+      "vertical_producer_consumer_trace": "TODO",
+      "scorer_or_native_test_audit": "partial_native_pass_official_open",
+      "task_root_split": "TODO",
+      "same_information_controls": "TODO",
+      "recipient_use_rework_attribution": "TODO"
+    }
+  },
+  "secondary_benchmark": {
+    "name": "AgentWorld",
+    "repo": "https://github.com/openagents-org/agentworld",
+    "commit": "df5237da96a3ef00f602950baa362d14d3a618fe",
+    "license": "MPL-2.0 (inherits Kaetram notice)",
+    "role": "secondary_external_validity_candidate",
+    "reason_not_primary": [
+      "preset skills/usernames/roles",
+      "new_character identity reset",
+      "many verifiers inspect final state only",
+      "Node/Yarn/server/MongoDB environment cost"
+    ]
+  },
+  "runtime": {
+    "name": "OpenHands Software Agent SDK",
+    "repo": "https://github.com/OpenHands/software-agent-sdk",
+    "commit": "e21d77673b738f056676044600c4ad81c5a575c8",
+    "version": "1.49.5",
+    "license": "MIT",
+    "smoke": {
+      "model": "openhands.sdk.testing.TestLLM",
+      "paid_api": false,
+      "events": 5,
+      "action_events": 1,
+      "observation_events": 1,
+      "persistence": true,
+      "pre_post_hooks": "passed",
+      "status": "FINISHED"
+    },
+    "reuse_only": ["agent", "tool", "workspace", "conversation", "event", "callback", "persistence"]
+  },
+  "functions": [
+    {"id": "F1", "name": "benchmark_task_root_adapter", "status": "TODO"},
+    {"id": "F2", "name": "agent_runtime_tool_workspace", "status": "smoke_pass"},
+    {"id": "F3", "name": "versioned_episode_checkpoint_replay", "status": "TODO"},
+    {"id": "F4", "name": "producer_artifact_provenance_receipt", "status": "protocol_fixture_pass"},
+    {"id": "F5", "name": "recipient_pre_action_judgment_seal", "status": "protocol_fixture_pass"},
+    {"id": "F6", "name": "post_action_use_repair_attribution", "status": "protocol_fixture_pass"},
+    {"id": "F7", "name": "lawful_terminal_correction", "status": "TODO"},
+    {"id": "F8", "name": "public_source_aware_role_evidence", "status": "TODO"},
+    {"id": "F9", "name": "third_party_future_assignment", "status": "TODO"},
+    {"id": "F10", "name": "same_information_baselines", "status": "design_ready"},
+    {"id": "F11", "name": "scorer_merge_policy", "status": "TODO"},
+    {"id": "F12", "name": "raw_jsonl_cost_replay_log", "status": "protocol_fixture_pass"}
+  ],
+  "baselines": [
+    {"id": "B0", "name": "pooled_single_agent", "mandatory": true},
+    {"id": "B1", "name": "fixed_or_no_role", "mandatory": true},
+    {"id": "B2", "name": "raw_recipient_acceptance", "mandatory": true},
+    {"id": "B3", "name": "same_information_contextual_trust_or_bandit", "mandatory": true},
+    {"id": "B4", "name": "terminal_only_feedback", "mandatory": true},
+    {"id": "B5", "name": "closest_faithful_peer_feedback_control", "mandatory": false},
+    {"id": "P", "name": "source_aware_peer_judged_role_update", "mandatory": true}
+  ],
+  "next_zero_model_gates": [
+    "verify_cooperbench_scorer_or_native_test_audit",
+    "replay_one_click_task_dependency_without_llm",
+    "implement_artifact_receipt_judgment_gate_role_ledger_fixture",
+    "prove_recipient_only_vs_handoff_information_match",
+    "prove_third_party_assignment_can_change_without_private_judge_record"
+  ],
+  "evidence_root": "references/aamas/reuse_design_20260924/"
+}

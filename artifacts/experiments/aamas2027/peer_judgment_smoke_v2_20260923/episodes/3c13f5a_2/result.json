@@ -1,0 +1,46 @@
+{
+  "task_id": "3c13f5a_2",
+  "status": "INVALID",
+  "global_stop": false,
+  "experiment_names": {
+    "producer": "pj2_prod_c3dca5e2bed5ddeab4",
+    "consumer": "pj2_cons_c3dca5e2bed5ddeab4"
+  },
+  "error": {
+    "type": "ValueError",
+    "message": "REPL name blocked: dir",
+    "traceback": "Traceback (most recent call last):\n  File \"/Users/jingwu/work/earning-roles/scripts/aamas_peer_judgment_smoke_v2.py\", line 546, in episode\n    proposal_raw, producer_steps = phase_loop(\n                                   ^^^^^^^^^^^\n  File \"/Users/jingwu/work/earning-roles/scripts/aamas_peer_judgment_smoke_v2.py\", line 387, in phase_loop\n    safe_code(code)\n  File \"/Users/jingwu/work/earning-roles/scripts/aamas_peer_judgment_smoke_v2.py\", line 158, in safe_code\n    raise ValueError(f\"REPL name blocked: {node.id}\")\nValueError: REPL name blocked: dir\n"
+  },
+  "official_final_success": null,
+  "usd_cost": null,
+  "phase_costs": {
+    "producer": {
+      "attempts": 5,
+      "tokens": {
+        "input_tokens": 7471,
+        "output_tokens": 2785,
+        "cache_read_input_tokens": 12288,
+        "cache_creation_input_tokens": 0
+      },
+      "unknown_usage_attempts": 0,
+      "api_errors": 0,
+      "error_codes": [],
+      "returned_models": [
+        "qwen3.8-max",
+        "qwen3.8-max",
+        "qwen3.8-max",
+        "qwen3.8-max",
+        "qwen3.8-max"
+      ],
+      "api_seconds": 81.870215207804
+    }
+  },
+  "validation_rejections": {
+    "producer": 0,
+    "consumer_review": 0
+  },
+  "timeout_retry_used": false,
+  "world_execute_count": 4,
+  "attempted_calls": 5,
+  "wall_seconds": 89.15430691698566
+}

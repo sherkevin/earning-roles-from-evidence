@@ -1,0 +1,1121 @@
+{
+  "timestamp": "2026-09-22T09:49:51.069604+00:00",
+  "contract_sha256": "c9c793b3208fb884d78bd11e6d7a5ed6a6eaaf2630693bb3221bdc95bb75c5b3",
+  "episodes_completed": 21,
+  "transport_amendment_sha256": "7f5b5e1b91e060859d251ba71c288cf755bf465165242bfe9856bd74ce610336",
+  "train_validation_complete": true,
+  "validation_pairs": [
+    {
+      "family": "692c77d",
+      "empty": true,
+      "memory": true,
+      "difference": 0,
+      "assertion_difference": 0.0,
+      "runtime_valid": false
+    },
+    {
+      "family": "aa8502b",
+      "empty": true,
+      "memory": true,
+      "difference": 0,
+      "assertion_difference": 0.0,
+      "runtime_valid": true
+    },
+    {
+      "family": "6ea6792",
+      "empty": true,
+      "memory": true,
+      "difference": 0,
+      "assertion_difference": 0.0,
+      "runtime_valid": true
+    },
+    {
+      "family": "771d8fc",
+      "empty": true,
+      "memory": true,
+      "difference": 0,
+      "assertion_difference": 0.0,
+      "runtime_valid": true
+    },
+    {
+      "family": "7d7fbf6",
+      "empty": true,
+      "memory": true,
+      "difference": 0,
+      "assertion_difference": 0.0,
+      "runtime_valid": true
+    },
+    {
+      "family": "287e338",
+      "empty": true,
+      "memory": true,
+      "difference": 0,
+      "assertion_difference": 0.0,
+      "runtime_valid": true
+    }
+  ],
+  "unchanged_package_controls": [
+    {
+      "family": "692c77d",
+      "success_flip": false,
+      "runtime_valid": true
+    },
+    {
+      "family": "771d8fc",
+      "success_flip": false,
+      "runtime_valid": true
+    }
+  ],
+  "validation_wins": 0,
+  "validation_losses": 0,
+  "dev_gate_pass": false,
+  "acquisition_infrastructure_valid": true,
+  "memory_package_valid": true,
+  "attempted_episode_calls": 323,
+  "episode_api_errors": 7,
+  "episode_usage": {
+    "input_tokens": 322710,
+    "output_tokens": 48256,
+    "cache_read_input_tokens": 2253696,
+    "cache_creation_input_tokens": 0
+  },
+  "total_attempted_calls_including_induction": 329,
+  "total_known_usage_including_induction": {
+    "input_tokens": 364833,
+    "output_tokens": 64383,
+    "cache_read_input_tokens": 2253696,
+    "cache_creation_input_tokens": 0
+  },
+  "total_api_seconds_including_failed_attempts": 1880.9180965486448,
+  "total_unknown_usage_attempts": 6,
+  "induction_results": [
+    {
+      "family": "287e338",
+      "source_task": "287e338_1",
+      "source_trace_sha256": "562812b3ebbccbbafe971d53f322c967c722ac5e5a6aaaf84e4607394470ae21",
+      "training_success": true,
+      "candidate": {
+        "title": "Find most frequent artist in personalized recommendations",
+        "applicability": "Music-service tasks asking which artist appears most in personalized recommendations returned as paginated songs with nested artists.",
+        "procedure": [
+          "Check recommendation API docs for authentication, pagination limits, and nested artist response shape.",
+          "Login and keep the access token required for personalized recommendations.",
+          "Fetch pages using max allowed page size; stop on empty or short page.",
+          "Flatten artists arrays from all songs.",
+          "Count occurrences by stable artist ID while storing display names.",
+          "Return the display name of the highest-count artist.",
+          "Confirm aggregation covered all pages before answering."
+        ],
+        "pitfalls": [
+          "Personalized data may require a valid access token.",
+          "Recommendations may be songs, not artist rankings; aggregate nested artists.",
+          "Page size may be capped; invalid limits can fail.",
+          "One page may omit the top artist.",
+          "Counting songs can misrank artists with multiple tracks.",
+          "Tie handling was not demonstrated."
+        ],
+        "evidence_steps": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      },
+      "error": null,
+      "usage": {
+        "input_tokens": 4307,
+        "output_tokens": 2652,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0
+      },
+      "attempted_calls": 1,
+      "api_errors": 0,
+      "api_seconds": 60.55034750001505,
+      "unknown_usage_attempts": 0
+    },
+    {
+      "family": "692c77d",
+      "source_task": "692c77d_1",
+      "source_trace_sha256": "d1581e7af53879bf3bd1f9e253bc249f1ac64a4d987b9059641252f33bf7adae",
+      "training_success": false,
+      "candidate": null,
+      "error": {
+        "type": "ValueError",
+        "message": "Invalid acquisition infrastructure; do not infer a task-failure label"
+      },
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0
+      },
+      "attempted_calls": 0,
+      "api_errors": 0,
+      "api_seconds": 0.0,
+      "unknown_usage_attempts": 0
+    },
+    {
+      "family": "692c77d",
+      "source_task": "692c77d_1",
+      "source_job_id": "acquire_692c77d_retry1",
+      "source_trace_sha256": "e83176d7b40d754196fbee937dbce72df00df25c2bb8ae4aa5448016afd723f5",
+      "training_success": true,
+      "candidate": {
+        "title": "Bulk set maximum rating for liked playlist items",
+        "applicability": "Authenticated media APIs with user playlists, liked items, per-item reviews or ratings, and create/update endpoints.",
+        "procedure": [
+          "Login and retain the access token for subsequent calls.",
+          "Read API docs for playlist library, liked items, review listing, review creation, and review update.",
+          "Paginate playlist library with the largest allowed page size; stop when a page returns fewer items.",
+          "Collect item IDs from all playlists into a set.",
+          "Paginate liked items similarly and build a liked-ID set.",
+          "Intersect playlist IDs with liked IDs to form targets.",
+          "For each target, query existing reviews filtered to the authenticated user.",
+          "Update any existing review whose rating is below the target maximum; create a new review only when none exists.",
+          "Re-query each target's user review to confirm the final rating."
+        ],
+        "pitfalls": [
+          "Do not rate all liked items; restrict to items present in user playlists.",
+          "Do not assume an existing review exists; missing reviews require creation.",
+          "Do not create duplicate reviews before checking existing user reviews.",
+          "Respect rating bounds and only raise lower ratings when required.",
+          "Pagination defaults may be small; incomplete collection causes missed targets.",
+          "Verify after mutation because success messages alone may not prove final state."
+        ],
+        "evidence_steps": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          12,
+          13,
+          14,
+          15
+        ]
+      },
+      "error": null,
+      "usage": {
+        "input_tokens": 8579,
+        "output_tokens": 2110,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0
+      },
+      "attempted_calls": 1,
+      "api_errors": 0,
+      "api_seconds": 47.312228332972154,
+      "error_codes": [],
+      "unknown_usage_attempts": 0
+    },
+    {
+      "family": "6ea6792",
+      "source_task": "6ea6792_1",
+      "source_trace_sha256": "c2c8572437fdbe2a1aea258c4850367a3d1d16e12166e400b1fd9ed86bae65e8",
+      "training_success": true,
+      "candidate": {
+        "title": "Bulk approval of pending requests by contact group",
+        "applicability": "Use when approving pending payment or similar requests limited to people identified by contact relationship.",
+        "procedure": [
+          "Inspect API descriptions and endpoint docs before acting; confirm login, listing, filtering, approval, and verification parameters.",
+          "Authenticate to each required service and retain the returned access token.",
+          "Identify targets from a contact source by relationship labels; enumerate relationship values first if available.",
+          "Fetch contacts for each needed relationship with pagination, using maximum page size until a short or empty page.",
+          "Fetch pending received requests with status filtering and pagination; collect all pages before deciding.",
+          "Build a target identifier set from contact fields, normalize case, and match sender identifiers.",
+          "Check balance or funding source if approvals debit funds; omit optional funding identifiers unless required.",
+          "Approve selected requests individually and record responses.",
+          "Re-query pending requests with the same filters and confirm no target requests remain."
+        ],
+        "pitfalls": [
+          "Do not approve requests outside the requested relationship set.",
+          "Do not assume one page contains all records.",
+          "Do not rely on display names alone when stable identifiers exist.",
+          "Do not consider approvals complete without response checks and a follow-up query."
+        ],
+        "evidence_steps": [
+          2,
+          4,
+          5,
+          8,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20
+        ]
+      },
+      "error": null,
+      "usage": {
+        "input_tokens": 8085,
+        "output_tokens": 3186,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0
+      },
+      "attempted_calls": 1,
+      "api_errors": 0,
+      "api_seconds": 72.58654516702518,
+      "unknown_usage_attempts": 0
+    },
+    {
+      "family": "771d8fc",
+      "source_task": "771d8fc_1",
+      "source_trace_sha256": "e86006509e74c275df5d091fe56d58d6e72fa5eccd679806a8907cf334578a42",
+      "training_success": true,
+      "candidate": {
+        "title": "Delete contact-specific phone messages",
+        "applicability": "Use when all text and voice messages tied to one contact identifier must be removed from a phone messaging account after authorized login.",
+        "procedure": [
+          "List API descriptions to find login, search, delete, and verification operations for both message types.",
+          "Obtain credentials through the authorized credential source, log in, and reuse the returned token.",
+          "Check search docs for contact filtering, pagination bounds, and sorting.",
+          "For each message type, page through results filtered by the contact identifier until an empty or short page ends pagination.",
+          "Collect all message IDs, then delete each with the matching type-specific delete call.",
+          "Log deletion outcomes and rerun the same filtered searches to confirm no remaining records before completion."
+        ],
+        "pitfalls": [
+          "Text and voice messages may require separate endpoints and ID fields.",
+          "Default page limits can hide records; paginate fully.",
+          "A delete response alone is insufficient; verify with fresh searches.",
+          "Do not embed credentials or target identifiers in reusable logic."
+        ],
+        "evidence_steps": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ]
+      },
+      "error": null,
+      "usage": {
+        "input_tokens": 8732,
+        "output_tokens": 3041,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0
+      },
+      "attempted_calls": 1,
+      "api_errors": 0,
+      "api_seconds": 68.665289125056,
+      "unknown_usage_attempts": 0
+    },
+    {
+      "family": "7d7fbf6",
+      "source_task": "7d7fbf6_1",
+      "source_trace_sha256": "7d7f5be7d44f6863b2970d18d5ccb60d03ba5af022e07810690aee1d423610c3",
+      "training_success": true,
+      "candidate": {
+        "title": "Compress and clean subdirectories via authenticated file API",
+        "applicability": "Use when an authenticated file API supports listing, compression, existence checks, and deletion, and subdirectories must become archives in a designated output directory.",
+        "procedure": [
+          "Discover operations and read parameter docs before acting.",
+          "Authenticate with authorized credentials without echoing secrets; keep the token.",
+          "List target shallow and recursively to identify subdirectories and existing archives.",
+          "Derive archive names from subdirectory names; choose noncolliding output paths.",
+          "Compress each subdirectory separately with explicit archive paths.",
+          "Verify each archive exists before deleting its source directory.",
+          "Delete source directories only after verification.",
+          "Re-list destination to confirm only archives remain."
+        ],
+        "pitfalls": [
+          "Do not assume listing defaults; inspect docs and both views.",
+          "Do not delete sources before archive existence is confirmed.",
+          "Do not rely on default archive location when output path matters.",
+          "Do not expose secrets or tokens.",
+          "Distinguish preexisting archives from new outputs before overwriting."
+        ],
+        "evidence_steps": [
+          1,
+          2,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18
+        ]
+      },
+      "error": null,
+      "usage": {
+        "input_tokens": 5461,
+        "output_tokens": 3467,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0
+      },
+      "attempted_calls": 1,
+      "api_errors": 0,
+      "api_seconds": 82.5639251669636,
+      "unknown_usage_attempts": 0
+    },
+    {
+      "family": "aa8502b",
+      "source_task": "aa8502b_1",
+      "source_trace_sha256": "d680023eb7e64cda959c45ce7fb553f4500c5977f171247b91c9f2ac9c1ae940",
+      "training_success": true,
+      "candidate": {
+        "title": "Bulk follow creators from liked content",
+        "applicability": "Authenticated media-library tasks where liked items expose nested creators and follow endpoints exist; use after login and respect pagination limits.",
+        "procedure": [
+          "Inspect API docs to identify login, liked-item, follow-status, and follow-action endpoints.",
+          "Authenticate and retain the returned access token for authorized calls.",
+          "Fetch all liked items by paginating with the maximum allowed page size until an empty or short page appears.",
+          "Extract creator identifiers from each item, deduplicating by stable ID rather than display name.",
+          "Fetch current followed creators with the same pagination pattern and build an already-followed ID set.",
+          "Follow only missing IDs and capture per-item success or failure.",
+          "Re-fetch the followed list and verify every target ID is present before completion."
+        ],
+        "pitfalls": [
+          "Do not treat the first page as complete; default limits may be small.",
+          "Do not match creators by name; use IDs and handle multiple creators per item.",
+          "Do not assume mutations succeeded without a post-action read.",
+          "Do not call private endpoints without a valid token."
+        ],
+        "evidence_steps": [
+          1,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ]
+      },
+      "error": null,
+      "usage": {
+        "input_tokens": 6959,
+        "output_tokens": 1671,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0
+      },
+      "attempted_calls": 1,
+      "api_errors": 0,
+      "api_seconds": 40.72292408300564,
+      "unknown_usage_attempts": 0
+    }
+  ],
+  "per_episode_results": [
+    {
+      "id": "acquire_287e338",
+      "task_id": "287e338_1",
+      "arm": "empty",
+      "stage": "acquire",
+      "official_success": true,
+      "passed_assertions": 2,
+      "failed_assertions": 0,
+      "assertion_fraction": 1.0,
+      "scorer_available": true,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "attempted_calls": 7,
+      "usage": {
+        "input_tokens": 9693,
+        "output_tokens": 1319,
+        "cache_read_input_tokens": 35200,
+        "cache_creation_input_tokens": 0
+      },
+      "api_errors": 0,
+      "unknown_usage_attempts": 0,
+      "returned_models": [
+        "qwen3.8-max"
+      ],
+      "api_seconds": 44.91983725025784,
+      "wall_seconds": 46.45796083298046,
+      "runtime_error": null,
+      "usd_cost": null,
+      "native_output": "/Users/jingwu/work/AppWorld/experiments/outputs/aamas_acq_20260922_acquire_287e338",
+      "memory_sha256": null
+    },
+    {
+      "id": "acquire_692c77d",
+      "task_id": "692c77d_1",
+      "arm": "empty",
+      "stage": "acquire",
+      "official_success": false,
+      "passed_assertions": 1,
+      "failed_assertions": 6,
+      "assertion_fraction": 0.14285714285714285,
+      "scorer_available": true,
+      "task_completed": false,
+      "stop_reason": "transport_failure",
+      "attempted_calls": 9,
+      "usage": {
+        "input_tokens": 11482,
+        "output_tokens": 1094,
+        "cache_read_input_tokens": 29824,
+        "cache_creation_input_tokens": 0
+      },
+      "api_errors": 2,
+      "unknown_usage_attempts": 2,
+      "returned_models": [
+        "qwen3.8-max"
+      ],
+      "api_seconds": 38.1960301263025,
+      "wall_seconds": 40.23889533407055,
+      "runtime_error": null,
+      "usd_cost": null,
+      "native_output": "/Users/jingwu/work/AppWorld/experiments/outputs/aamas_acq_20260922_acquire_692c77d",
+      "memory_sha256": null
+    },
+    {
+      "id": "acquire_692c77d_retry1",
+      "task_id": "692c77d_1",
+      "arm": "empty",
+      "stage": "acquire_transport_repair",
+      "official_success": true,
+      "passed_assertions": 7,
+      "failed_assertions": 0,
+      "assertion_fraction": 1.0,
+      "scorer_available": true,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "attempted_calls": 16,
+      "usage": {
+        "input_tokens": 16290,
+        "output_tokens": 2800,
+        "cache_read_input_tokens": 110208,
+        "cache_creation_input_tokens": 0
+      },
+      "api_errors": 1,
+      "unknown_usage_attempts": 1,
+      "error_codes": [
+        429
+      ],
+      "returned_models": [
+        "qwen3.8-max"
+      ],
+      "api_seconds": 82.75423737498932,
+      "wall_seconds": 105.17867349996231,
+      "runtime_error": null,
+      "usd_cost": null,
+      "native_output": "/Users/jingwu/work/AppWorld/experiments/outputs/aamas_acq_20260922_acquire_692c77d_retry1",
+      "memory_sha256": null
+    },
+    {
+      "id": "acquire_6ea6792",
+      "task_id": "6ea6792_1",
+      "arm": "empty",
+      "stage": "acquire",
+      "official_success": true,
+      "passed_assertions": 6,
+      "failed_assertions": 0,
+      "assertion_fraction": 1.0,
+      "scorer_available": true,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "attempted_calls": 20,
+      "usage": {
+        "input_tokens": 20582,
+        "output_tokens": 3160,
+        "cache_read_input_tokens": 132096,
+        "cache_creation_input_tokens": 0
+      },
+      "api_errors": 0,
+      "unknown_usage_attempts": 0,
+      "returned_models": [
+        "qwen3.8-max"
+      ],
+      "api_seconds": 102.48170812730677,
+      "wall_seconds": 104.514866124955,
+      "runtime_error": null,
+      "usd_cost": null,
+      "native_output": "/Users/jingwu/work/AppWorld/experiments/outputs/aamas_acq_20260922_acquire_6ea6792",
+      "memory_sha256": null
+    },
+    {
+      "id": "acquire_771d8fc",
+      "task_id": "771d8fc_1",
+      "arm": "empty",
+      "stage": "acquire",
+      "official_success": true,
+      "passed_assertions": 6,
+      "failed_assertions": 0,
+      "assertion_fraction": 1.0,
+      "scorer_available": true,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "attempted_calls": 13,
+      "usage": {
+        "input_tokens": 15842,
+        "output_tokens": 1710,
+        "cache_read_input_tokens": 80768,
+        "cache_creation_input_tokens": 0
+      },
+      "api_errors": 0,
+      "unknown_usage_attempts": 0,
+      "returned_models": [
+        "qwen3.8-max"
+      ],
+      "api_seconds": 56.03021487593651,
+      "wall_seconds": 57.99401791591663,
+      "runtime_error": null,
+      "usd_cost": null,
+      "native_output": "/Users/jingwu/work/AppWorld/experiments/outputs/aamas_acq_20260922_acquire_771d8fc",
+      "memory_sha256": null
+    },
+    {
+      "id": "acquire_7d7fbf6",
+      "task_id": "7d7fbf6_1",
+      "arm": "empty",
+      "stage": "acquire",
+      "official_success": true,
+      "passed_assertions": 8,
+      "failed_assertions": 0,
+      "assertion_fraction": 1.0,
+      "scorer_available": true,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "attempted_calls": 18,
+      "usage": {
+        "input_tokens": 17527,
+        "output_tokens": 3595,
+        "cache_read_input_tokens": 101504,
+        "cache_creation_input_tokens": 0
+      },
+      "api_errors": 0,
+      "unknown_usage_attempts": 0,
+      "returned_models": [
+        "qwen3.8-max"
+      ],
+      "api_seconds": 104.9610280834604,
+      "wall_seconds": 107.12638858403079,
+      "runtime_error": null,
+      "usd_cost": null,
+      "native_output": "/Users/jingwu/work/AppWorld/experiments/outputs/aamas_acq_20260922_acquire_7d7fbf6",
+      "memory_sha256": null
+    },
+    {
+      "id": "acquire_aa8502b",
+      "task_id": "aa8502b_1",
+      "arm": "empty",
+      "stage": "acquire",
+      "official_success": true,
+      "passed_assertions": 4,
+      "failed_assertions": 0,
+      "assertion_fraction": 1.0,
+      "scorer_available": true,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "attempted_calls": 13,
+      "usage": {
+        "input_tokens": 13576,
+        "output_tokens": 1747,
+        "cache_read_input_tokens": 86656,
+        "cache_creation_input_tokens": 0
+      },
+      "api_errors": 0,
+      "unknown_usage_attempts": 0,
+      "returned_models": [
+        "qwen3.8-max"
+      ],
+      "api_seconds": 62.59730616805609,
+      "wall_seconds": 64.91361483302899,
+      "runtime_error": null,
+      "usd_cost": null,
+      "native_output": "/Users/jingwu/work/AppWorld/experiments/outputs/aamas_acq_20260922_acquire_aa8502b",
+      "memory_sha256": null
+    },
+    {
+      "id": "null_empty_692c77d",
+      "task_id": "692c77d_2",
+      "arm": "empty",
+      "stage": "unchanged_control",
+      "official_success": true,
+      "passed_assertions": 7,
+      "failed_assertions": 0,
+      "assertion_fraction": 1.0,
+      "scorer_available": true,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "attempted_calls": 18,
+      "usage": {
+        "input_tokens": 16202,
+        "output_tokens": 3119,
+        "cache_read_input_tokens": 151552,
+        "cache_creation_input_tokens": 0
+      },
+      "api_errors": 0,
+      "unknown_usage_attempts": 0,
+      "error_codes": [],
+      "returned_models": [
+        "qwen3.8-max"
+      ],
+      "api_seconds": 92.65977016487159,
+      "wall_seconds": 94.90747912495863,
+      "runtime_error": null,
+      "usd_cost": null,
+      "native_output": "/Users/jingwu/work/AppWorld/experiments/outputs/aamas_acq_20260922_fa1213bbc254b719",
+      "memory_sha256": null
+    },
+    {
+      "id": "null_empty_771d8fc",
+      "task_id": "771d8fc_2",
+      "arm": "empty",
+      "stage": "unchanged_control",
+      "official_success": true,
+      "passed_assertions": 6,
+      "failed_assertions": 0,
+      "assertion_fraction": 1.0,
+      "scorer_available": true,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "attempted_calls": 14,
+      "usage": {
+        "input_tokens": 13598,
+        "output_tokens": 1314,
+        "cache_read_input_tokens": 87936,
+        "cache_creation_input_tokens": 0
+      },
+      "api_errors": 0,
+      "unknown_usage_attempts": 0,
+      "error_codes": [],
+      "returned_models": [
+        "qwen3.8-max"
+      ],
+      "api_seconds": 49.11847675207537,
+      "wall_seconds": 51.15749824990053,
+      "runtime_error": null,
+      "usd_cost": null,
+      "native_output": "/Users/jingwu/work/AppWorld/experiments/outputs/aamas_acq_20260922_debb09a4fc96f9f8",
+      "memory_sha256": null
+    },
+    {
+      "id": "validate_empty_287e338",
+      "task_id": "287e338_2",
+      "arm": "empty",
+      "stage": "validate",
+      "official_success": true,
+      "passed_assertions": 2,
+      "failed_assertions": 0,
+      "assertion_fraction": 1.0,
+      "scorer_available": true,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "attempted_calls": 12,
+      "usage": {
+        "input_tokens": 11731,
+        "output_tokens": 1611,
+        "cache_read_input_tokens": 74624,
+        "cache_creation_input_tokens": 0
+      },
+      "api_errors": 0,
+      "unknown_usage_attempts": 0,
+      "error_codes": [],
+      "returned_models": [
+        "qwen3.8-max"
+      ],
+      "api_seconds": 69.5848881242564,
+      "wall_seconds": 71.51362266601063,
+      "runtime_error": null,
+      "usd_cost": null,
+      "native_output": "/Users/jingwu/work/AppWorld/experiments/outputs/aamas_acq_20260922_9f4b67e9572aa868",
+      "memory_sha256": null
+    },
+    {
+      "id": "validate_empty_692c77d",
+      "task_id": "692c77d_2",
+      "arm": "empty",
+      "stage": "validate",
+      "official_success": true,
+      "passed_assertions": 7,
+      "failed_assertions": 0,
+      "assertion_fraction": 1.0,
+      "scorer_available": true,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "attempted_calls": 20,
+      "usage": {
+        "input_tokens": 20587,
+        "output_tokens": 3270,
+        "cache_read_input_tokens": 167680,
+        "cache_creation_input_tokens": 0
+      },
+      "api_errors": 0,
+      "unknown_usage_attempts": 0,
+      "error_codes": [],
+      "returned_models": [
+        "qwen3.8-max"
+      ],
+      "api_seconds": 91.41197320853826,
+      "wall_seconds": 93.89943749993108,
+      "runtime_error": null,
+      "usd_cost": null,
+      "native_output": "/Users/jingwu/work/AppWorld/experiments/outputs/aamas_acq_20260922_validate_empty_692c77d",
+      "memory_sha256": null
+    },
+    {
+      "id": "validate_empty_6ea6792",
+      "task_id": "6ea6792_2",
+      "arm": "empty",
+      "stage": "validate",
+      "official_success": true,
+      "passed_assertions": 6,
+      "failed_assertions": 0,
+      "assertion_fraction": 1.0,
+      "scorer_available": true,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "attempted_calls": 20,
+      "usage": {
+        "input_tokens": 21684,
+        "output_tokens": 4049,
+        "cache_read_input_tokens": 145664,
+        "cache_creation_input_tokens": 0
+      },
+      "api_errors": 0,
+      "unknown_usage_attempts": 0,
+      "error_codes": [],
+      "returned_models": [
+        "qwen3.8-max"
+      ],
+      "api_seconds": 113.31490570609458,
+      "wall_seconds": 115.27911704196595,
+      "runtime_error": null,
+      "usd_cost": null,
+      "native_output": "/Users/jingwu/work/AppWorld/experiments/outputs/aamas_acq_20260922_validate_empty_6ea6792",
+      "memory_sha256": null
+    },
+    {
+      "id": "validate_empty_771d8fc",
+      "task_id": "771d8fc_2",
+      "arm": "empty",
+      "stage": "validate",
+      "official_success": true,
+      "passed_assertions": 6,
+      "failed_assertions": 0,
+      "assertion_fraction": 1.0,
+      "scorer_available": true,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "attempted_calls": 14,
+      "usage": {
+        "input_tokens": 13280,
+        "output_tokens": 1567,
+        "cache_read_input_tokens": 79232,
+        "cache_creation_input_tokens": 0
+      },
+      "api_errors": 0,
+      "unknown_usage_attempts": 0,
+      "error_codes": [],
+      "returned_models": [
+        "qwen3.8-max"
+      ],
+      "api_seconds": 48.43252562487032,
+      "wall_seconds": 50.51258920796681,
+      "runtime_error": null,
+      "usd_cost": null,
+      "native_output": "/Users/jingwu/work/AppWorld/experiments/outputs/aamas_acq_20260922_b16e19f3324aad6f",
+      "memory_sha256": null
+    },
+    {
+      "id": "validate_empty_7d7fbf6",
+      "task_id": "7d7fbf6_2",
+      "arm": "empty",
+      "stage": "validate",
+      "official_success": true,
+      "passed_assertions": 8,
+      "failed_assertions": 0,
+      "assertion_fraction": 1.0,
+      "scorer_available": true,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "attempted_calls": 15,
+      "usage": {
+        "input_tokens": 14012,
+        "output_tokens": 2703,
+        "cache_read_input_tokens": 78592,
+        "cache_creation_input_tokens": 0
+      },
+      "api_errors": 0,
+      "unknown_usage_attempts": 0,
+      "error_codes": [],
+      "returned_models": [
+        "qwen3.8-max"
+      ],
+      "api_seconds": 78.42160225333646,
+      "wall_seconds": 80.21377925004344,
+      "runtime_error": null,
+      "usd_cost": null,
+      "native_output": "/Users/jingwu/work/AppWorld/experiments/outputs/aamas_acq_20260922_a1d01150f084d15d",
+      "memory_sha256": null
+    },
+    {
+      "id": "validate_empty_aa8502b",
+      "task_id": "aa8502b_2",
+      "arm": "empty",
+      "stage": "validate",
+      "official_success": true,
+      "passed_assertions": 4,
+      "failed_assertions": 0,
+      "assertion_fraction": 1.0,
+      "scorer_available": true,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "attempted_calls": 15,
+      "usage": {
+        "input_tokens": 12356,
+        "output_tokens": 1768,
+        "cache_read_input_tokens": 99968,
+        "cache_creation_input_tokens": 0
+      },
+      "api_errors": 1,
+      "unknown_usage_attempts": 1,
+      "error_codes": [
+        429
+      ],
+      "returned_models": [
+        "qwen3.8-max"
+      ],
+      "api_seconds": 57.31299629074056,
+      "wall_seconds": 79.10103124997113,
+      "runtime_error": null,
+      "usd_cost": null,
+      "native_output": "/Users/jingwu/work/AppWorld/experiments/outputs/aamas_acq_20260922_validate_empty_aa8502b",
+      "memory_sha256": null
+    },
+    {
+      "id": "validate_memory_287e338",
+      "task_id": "287e338_2",
+      "arm": "memory",
+      "stage": "validate",
+      "official_success": true,
+      "passed_assertions": 2,
+      "failed_assertions": 0,
+      "assertion_fraction": 1.0,
+      "scorer_available": true,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "attempted_calls": 8,
+      "usage": {
+        "input_tokens": 12548,
+        "output_tokens": 1265,
+        "cache_read_input_tokens": 51968,
+        "cache_creation_input_tokens": 0
+      },
+      "api_errors": 0,
+      "unknown_usage_attempts": 0,
+      "error_codes": [],
+      "returned_models": [
+        "qwen3.8-max"
+      ],
+      "api_seconds": 40.419668914866634,
+      "wall_seconds": 42.36950075009372,
+      "runtime_error": null,
+      "usd_cost": null,
+      "native_output": "/Users/jingwu/work/AppWorld/experiments/outputs/aamas_acq_20260922_9098eb6d86e5c5c8",
+      "memory_sha256": "b87235c98027bbbae712e16ee5b89bdabf1a6804be7ffc0cb50322886df74fac"
+    },
+    {
+      "id": "validate_memory_692c77d",
+      "task_id": "692c77d_2",
+      "arm": "memory",
+      "stage": "validate",
+      "official_success": true,
+      "passed_assertions": 7,
+      "failed_assertions": 0,
+      "assertion_fraction": 1.0,
+      "scorer_available": true,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "attempted_calls": 18,
+      "usage": {
+        "input_tokens": 16207,
+        "output_tokens": 2396,
+        "cache_read_input_tokens": 169472,
+        "cache_creation_input_tokens": 0
+      },
+      "api_errors": 1,
+      "unknown_usage_attempts": 0,
+      "error_codes": [
+        "RuntimeError"
+      ],
+      "returned_models": [
+        "qwen3.8-max"
+      ],
+      "api_seconds": 77.20487812487409,
+      "wall_seconds": 79.11849079199601,
+      "runtime_error": null,
+      "usd_cost": null,
+      "native_output": "/Users/jingwu/work/AppWorld/experiments/outputs/aamas_acq_20260922_validate_memory_692c77d",
+      "memory_sha256": "b87235c98027bbbae712e16ee5b89bdabf1a6804be7ffc0cb50322886df74fac",
+      "scoring_output": "/Users/jingwu/work/AppWorld/experiments/outputs/aamas_score_20260922_60709333326b12ad",
+      "rescoring_provenance": {
+        "original_result_sha256": "6b72e03ad8d6ded7dc5803e15d6fbe6eab2c2a0d09b1412091d1448b87d17a3d",
+        "db_files_byte_identical": true,
+        "new_llm_calls": 0,
+        "scorer_source_unchanged": true
+      }
+    },
+    {
+      "id": "validate_memory_6ea6792",
+      "task_id": "6ea6792_2",
+      "arm": "memory",
+      "stage": "validate",
+      "official_success": true,
+      "passed_assertions": 6,
+      "failed_assertions": 0,
+      "assertion_fraction": 1.0,
+      "scorer_available": true,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "attempted_calls": 18,
+      "usage": {
+        "input_tokens": 16775,
+        "output_tokens": 2926,
+        "cache_read_input_tokens": 144640,
+        "cache_creation_input_tokens": 0
+      },
+      "api_errors": 1,
+      "unknown_usage_attempts": 1,
+      "error_codes": [
+        429
+      ],
+      "returned_models": [
+        "qwen3.8-max"
+      ],
+      "api_seconds": 83.21736662613694,
+      "wall_seconds": 105.33158825000282,
+      "runtime_error": null,
+      "usd_cost": null,
+      "native_output": "/Users/jingwu/work/AppWorld/experiments/outputs/aamas_acq_20260922_5c486ea8bc4bbae3",
+      "memory_sha256": "b87235c98027bbbae712e16ee5b89bdabf1a6804be7ffc0cb50322886df74fac"
+    },
+    {
+      "id": "validate_memory_771d8fc",
+      "task_id": "771d8fc_2",
+      "arm": "memory",
+      "stage": "validate",
+      "official_success": true,
+      "passed_assertions": 6,
+      "failed_assertions": 0,
+      "assertion_fraction": 1.0,
+      "scorer_available": true,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "attempted_calls": 15,
+      "usage": {
+        "input_tokens": 14812,
+        "output_tokens": 1366,
+        "cache_read_input_tokens": 101248,
+        "cache_creation_input_tokens": 0
+      },
+      "api_errors": 1,
+      "unknown_usage_attempts": 1,
+      "error_codes": [
+        429
+      ],
+      "returned_models": [
+        "qwen3.8-max"
+      ],
+      "api_seconds": 46.375503376009874,
+      "wall_seconds": 68.73618941695895,
+      "runtime_error": null,
+      "usd_cost": null,
+      "native_output": "/Users/jingwu/work/AppWorld/experiments/outputs/aamas_acq_20260922_219d8412dec633fb",
+      "memory_sha256": "b87235c98027bbbae712e16ee5b89bdabf1a6804be7ffc0cb50322886df74fac"
+    },
+    {
+      "id": "validate_memory_7d7fbf6",
+      "task_id": "7d7fbf6_2",
+      "arm": "memory",
+      "stage": "validate",
+      "official_success": true,
+      "passed_assertions": 8,
+      "failed_assertions": 0,
+      "assertion_fraction": 1.0,
+      "scorer_available": true,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "attempted_calls": 26,
+      "usage": {
+        "input_tokens": 17267,
+        "output_tokens": 3816,
+        "cache_read_input_tokens": 207872,
+        "cache_creation_input_tokens": 0
+      },
+      "api_errors": 0,
+      "unknown_usage_attempts": 0,
+      "error_codes": [],
+      "returned_models": [
+        "qwen3.8-max"
+      ],
+      "api_seconds": 115.6933382084826,
+      "wall_seconds": 118.30622450006194,
+      "runtime_error": null,
+      "usd_cost": null,
+      "native_output": "/Users/jingwu/work/AppWorld/experiments/outputs/aamas_acq_20260922_72ab4c6f78bf4d95",
+      "memory_sha256": "b87235c98027bbbae712e16ee5b89bdabf1a6804be7ffc0cb50322886df74fac"
+    },
+    {
+      "id": "validate_memory_aa8502b",
+      "task_id": "aa8502b_2",
+      "arm": "memory",
+      "stage": "validate",
+      "official_success": true,
+      "passed_assertions": 4,
+      "failed_assertions": 0,
+      "assertion_fraction": 1.0,
+      "scorer_available": true,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "attempted_calls": 14,
+      "usage": {
+        "input_tokens": 16659,
+        "output_tokens": 1661,
+        "cache_read_input_tokens": 116992,
+        "cache_creation_input_tokens": 0
+      },
+      "api_errors": 0,
+      "unknown_usage_attempts": 0,
+      "error_codes": [],
+      "returned_models": [
+        "qwen3.8-max"
+      ],
+      "api_seconds": 53.408581792144105,
+      "wall_seconds": 55.0963259160053,
+      "runtime_error": null,
+      "usd_cost": null,
+      "native_output": "/Users/jingwu/work/AppWorld/experiments/outputs/aamas_acq_20260922_validate_memory_aa8502b",
+      "memory_sha256": "b87235c98027bbbae712e16ee5b89bdabf1a6804be7ffc0cb50322886df74fac",
+      "scoring_output": "/Users/jingwu/work/AppWorld/experiments/outputs/aamas_score_20260922_095e210c53aa10b6",
+      "rescoring_provenance": {
+        "original_result_sha256": "c5d4932865350ebb0cf9d129b64f76954b507e7408b9d52bfec0f9e594383775",
+        "db_files_byte_identical": true,
+        "new_llm_calls": 0,
+        "scorer_source_unchanged": true
+      }
+    }
+  ],
+  "boundary": "Small fixed development acquisition probe; not Q1 interaction, role emergence, transfer qualification or confirmatory evidence."
+}

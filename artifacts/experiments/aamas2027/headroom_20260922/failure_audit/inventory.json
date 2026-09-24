@@ -1,0 +1,5328 @@
+{
+  "timestamp": "2026-09-22T12:00:07.478108+00:00",
+  "completed_tasks": 38,
+  "final_population": false,
+  "new_benchmark_LLM_calls": 0,
+  "ground_truth_solution_read": false,
+  "valid_failure_ids": [
+    "3ab5b8b_3",
+    "3ab5b8b_1"
+  ],
+  "unannotated_failure_ids": [],
+  "infrastructure_flagged_ids": [
+    "68ee2c9_1",
+    "df61dc5_1",
+    "530b157_2"
+  ],
+  "rows": [
+    {
+      "id": "headroom_00_57c3486_1",
+      "task_id": "57c3486_1",
+      "official_success": true,
+      "passed_assertions": 5,
+      "failed_assertions": 0,
+      "attempted_calls": 16,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "964a89e527f211e2725cb24e7773d3129a03ceb4d530506f361462ef6404d975",
+      "public_steps": 16,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "spotify.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "spotify.show_following_artists"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [
+            "spotify.search_songs"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 11,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 12,
+          "endpoint_calls": [
+            "spotify.show_liked_songs"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 13,
+          "endpoint_calls": [
+            "spotify.like_song"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 14,
+          "endpoint_calls": [
+            "spotify.show_liked_songs"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 15,
+          "endpoint_calls": [
+            "spotify.show_liked_songs"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 16,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_01_3ab5b8b_3",
+      "task_id": "3ab5b8b_3",
+      "official_success": false,
+      "passed_assertions": 4,
+      "failed_assertions": 2,
+      "attempted_calls": 15,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 1,
+      "error_codes": [
+        429
+      ],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "a564697ba971143449c7a2eee287137ea93be1e819b4bab9fe203bdb4e022e16",
+      "public_steps": 14,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "spotify.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "spotify.show_album_library"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [
+            "spotify.show_liked_albums"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 11,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 12,
+          "endpoint_calls": [
+            "spotify.show_downloaded_songs"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 13,
+          "endpoint_calls": [
+            "spotify.download_song"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 14,
+          "endpoint_calls": [
+            "spotify.show_downloaded_songs"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 15,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ],
+      "manual_annotation": {
+        "classification": "predicate_entity_scope",
+        "status": "public_trace_hypothesis_not_proven_counterfactual",
+        "public_evidence": [
+          {
+            "steps": [
+              6,
+              8,
+              9
+            ],
+            "observation": "Queries liked albums and intersects album IDs with the album library."
+          },
+          {
+            "steps": [
+              13,
+              14
+            ],
+            "observation": "Downloads songs of the selected album; validates membership in its own selected target set."
+          }
+        ],
+        "interpretation": "The executed condition attaches liked to album, whereas the instruction can be read as selecting liked songs in the album library. Official scoring rejects the final state. Exact causal attribution would require a separate declared intervention; task-language ambiguity is retained.",
+        "boundary": "A postcondition over a self-selected target set need not check the original task predicate. This is not producer-consumer incompatibility evidence.",
+        "reusable_design_input": "A competent semantic interface must expose selection entity and source predicate, not only output ID type; first test common-interface explanations before claiming learned compatibility.",
+        "task_id": "3ab5b8b_3",
+        "trace_sha256": "a564697ba971143449c7a2eee287137ea93be1e819b4bab9fe203bdb4e022e16",
+        "new_benchmark_LLM_calls": 0,
+        "ground_truth_solution_read": false,
+        "timestamp": "2026-09-22T09:36:23.905256+00:00"
+      }
+    },
+    {
+      "id": "headroom_02_3ab5b8b_2",
+      "task_id": "3ab5b8b_2",
+      "official_success": true,
+      "passed_assertions": 6,
+      "failed_assertions": 0,
+      "attempted_calls": 14,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "083d34f59ec77ea7d3a21d6d20e84139c35b42210aa67127b36000b967eb75a5",
+      "public_steps": 14,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "spotify.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "spotify.show_liked_songs"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [
+            "spotify.show_song_library"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [
+            "spotify.download_song"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": true
+        },
+        {
+          "step": 11,
+          "endpoint_calls": [
+            "spotify.download_song"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 12,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 13,
+          "endpoint_calls": [
+            "spotify.show_downloaded_songs"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 14,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_03_383cbac_2",
+      "task_id": "383cbac_2",
+      "official_success": true,
+      "passed_assertions": 2,
+      "failed_assertions": 0,
+      "attempted_calls": 12,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "61ebf396e63c8366aaee3e384c2863a63b2d555d5dd62c35fd8aa8e2d046921e",
+      "public_steps": 12,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "venmo.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [
+            "venmo.show_social_feed"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [
+            "venmo.show_transactions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 11,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 12,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_04_68ee2c9_3",
+      "task_id": "68ee2c9_3",
+      "official_success": true,
+      "passed_assertions": 5,
+      "failed_assertions": 0,
+      "attempted_calls": 19,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "3c5f3faccba6dba98ed07f7e0e7fa05b7b4a8fdeacaf08775aa653c86adcf53f",
+      "public_steps": 19,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "file_system.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [
+            "file_system.show_directory"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 11,
+          "endpoint_calls": [
+            "file_system.show_file"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 12,
+          "endpoint_calls": [
+            "api_docs.show_api_doc",
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 13,
+          "endpoint_calls": [
+            "file_system.directory_exists"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 14,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 15,
+          "endpoint_calls": [
+            "file_system.move_file"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 16,
+          "endpoint_calls": [
+            "file_system.move_file"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 17,
+          "endpoint_calls": [
+            "file_system.show_directory",
+            "file_system.show_directory"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 18,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 19,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_05_4fab96f_1",
+      "task_id": "4fab96f_1",
+      "official_success": true,
+      "passed_assertions": 8,
+      "failed_assertions": 0,
+      "attempted_calls": 20,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "d3a06b472224b347dab41c5d92718600ae3fa0abac49d109541ae0c8aa3f1b2a",
+      "public_steps": 20,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "api_docs.show_app_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "venmo.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [
+            "venmo.show_sent_payment_requests"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 11,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 12,
+          "endpoint_calls": [
+            "phone.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 13,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 14,
+          "endpoint_calls": [
+            "phone.show_contact_relationships"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 15,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 16,
+          "endpoint_calls": [
+            "phone.search_contacts"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 17,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 18,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 19,
+          "endpoint_calls": [
+            "venmo.remind_payment_request"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 20,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_06_6bdbc26_1",
+      "task_id": "6bdbc26_1",
+      "official_success": true,
+      "passed_assertions": 2,
+      "failed_assertions": 0,
+      "attempted_calls": 10,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "506634e2fd818b881977a81c89d77360b1cd92b5d603aed5b40787f7345036d4",
+      "public_steps": 10,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "spotify.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "spotify.show_current_song"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [
+            "spotify.show_artist"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_07_4ec8de5_3",
+      "task_id": "4ec8de5_3",
+      "official_success": true,
+      "passed_assertions": 2,
+      "failed_assertions": 0,
+      "attempted_calls": 18,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "8bcfb33ba7ba22e80f4614c0d6b31385b6f018236d3209839c01698a325be9a1",
+      "public_steps": 18,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "spotify.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "spotify.show_song_library"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [
+            "spotify.show_song"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 11,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 12,
+          "endpoint_calls": [
+            "spotify.show_album_library"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 13,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 14,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 15,
+          "endpoint_calls": [
+            "spotify.show_song"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 16,
+          "endpoint_calls": [
+            "spotify.show_song"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 17,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 18,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_08_37a8675_1",
+      "task_id": "37a8675_1",
+      "official_success": true,
+      "passed_assertions": 6,
+      "failed_assertions": 0,
+      "attempted_calls": 22,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "4007186470a29aca74ae62c031c337639e95d7a84634b4fcc3bee95c70234425",
+      "public_steps": 22,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "venmo.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [
+            "phone.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 11,
+          "endpoint_calls": [
+            "phone.search_contacts"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 12,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 13,
+          "endpoint_calls": [
+            "venmo.search_users"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 14,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 15,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 16,
+          "endpoint_calls": [
+            "venmo.show_venmo_balance"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 17,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 18,
+          "endpoint_calls": [
+            "venmo.show_payment_cards"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 19,
+          "endpoint_calls": [
+            "venmo.create_transaction"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": true
+        },
+        {
+          "step": 20,
+          "endpoint_calls": [
+            "venmo.create_transaction"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": true
+        },
+        {
+          "step": 21,
+          "endpoint_calls": [
+            "venmo.create_transaction"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 22,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_09_23cf851_1",
+      "task_id": "23cf851_1",
+      "official_success": true,
+      "passed_assertions": 2,
+      "failed_assertions": 0,
+      "attempted_calls": 9,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "498b94bfd09c68df2d900bec12e70e1cde4f8998c76477620cb08c71e06dd438",
+      "public_steps": 9,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "venmo.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "venmo.show_transactions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_10_0d8a4ee_1",
+      "task_id": "0d8a4ee_1",
+      "official_success": true,
+      "passed_assertions": 5,
+      "failed_assertions": 0,
+      "attempted_calls": 22,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "c455f97b6ca1fab9b174be9770cbf593e3de974b726f066b1930d7d1aff71d7c",
+      "public_steps": 22,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "api_docs.show_api_doc",
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "phone.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "phone.show_contact_relationships"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [
+            "phone.search_contacts"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 11,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 12,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 13,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 14,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 15,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 16,
+          "endpoint_calls": [
+            "venmo.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 17,
+          "endpoint_calls": [
+            "venmo.search_users"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 18,
+          "endpoint_calls": [
+            "venmo.search_users"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 19,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 20,
+          "endpoint_calls": [
+            "phone.send_text_message"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 21,
+          "endpoint_calls": [
+            "phone.send_text_message"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 22,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_11_4fab96f_3",
+      "task_id": "4fab96f_3",
+      "official_success": true,
+      "passed_assertions": 8,
+      "failed_assertions": 0,
+      "attempted_calls": 21,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "dea69da7f76e3106b9c74c28e6778a5b63c1b20576c8ba33932928cc602622c4",
+      "public_steps": 21,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "venmo.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 11,
+          "endpoint_calls": [
+            "phone.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 12,
+          "endpoint_calls": [
+            "phone.show_contact_relationships"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 13,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 14,
+          "endpoint_calls": [
+            "phone.search_contacts"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 15,
+          "endpoint_calls": [
+            "venmo.show_sent_payment_requests"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 16,
+          "endpoint_calls": [
+            "venmo.show_sent_payment_requests"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 17,
+          "endpoint_calls": [
+            "venmo.show_sent_payment_requests"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 18,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 19,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 20,
+          "endpoint_calls": [
+            "venmo.remind_payment_request"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 21,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_12_3ab5b8b_1",
+      "task_id": "3ab5b8b_1",
+      "official_success": false,
+      "passed_assertions": 3,
+      "failed_assertions": 3,
+      "attempted_calls": 14,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "b9a08ab9b4474dff287790c3321cf4a865dcb32d40253b0aa1a4d94a73bc963c",
+      "public_steps": 14,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "spotify.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "spotify.show_liked_playlists"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [
+            "spotify.show_downloaded_songs"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 11,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 12,
+          "endpoint_calls": [
+            "spotify.download_song"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 13,
+          "endpoint_calls": [
+            "spotify.show_downloaded_songs"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 14,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ],
+      "manual_annotation": {
+        "timestamp": "2026-09-22T09:56:13.976869+00:00",
+        "task_id": "3ab5b8b_1",
+        "classification": "predicate_entity_scope",
+        "status": "public_trace_hypothesis_not_proven_counterfactual",
+        "public_evidence": [
+          {
+            "steps": [
+              6,
+              7,
+              11
+            ],
+            "observation": "Queries liked playlists and collects every nested song ID; no intersection with liked-song IDs appears."
+          },
+          {
+            "steps": [
+              12,
+              13
+            ],
+            "observation": "Downloads the self-selected set and checks it is included in downloaded songs."
+          }
+        ],
+        "interpretation": "The executed liked predicate applies to playlists rather than songs. The final official score rejects three of six assertions. The wording has an attachment ambiguity; no gold solution or repair oracle was read.",
+        "boundary": "Both failed siblings in this family share this observed scope choice; the song-library sibling succeeds where the candidate entity kinds coincide. This does not identify a learned-update or partner interaction.",
+        "reusable_design_input": "Represent both action-target kind and each selection-predicate entity kind; type-correct output IDs alone cannot expose this error. Compare against a competent common semantic interface before claiming reusable qualification.",
+        "trace_sha256": "b9a08ab9b4474dff287790c3321cf4a865dcb32d40253b0aa1a4d94a73bc963c",
+        "new_benchmark_LLM_calls": 0,
+        "ground_truth_solution_read": false
+      }
+    },
+    {
+      "id": "headroom_13_37a8675_3",
+      "task_id": "37a8675_3",
+      "official_success": true,
+      "passed_assertions": 6,
+      "failed_assertions": 0,
+      "attempted_calls": 23,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 1,
+      "error_codes": [
+        429
+      ],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "75cb18f7d997247bd5569ace06488ff9c3afce3d5251cdcf47a4572c14e43fd6",
+      "public_steps": 22,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "api_docs.show_app_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "venmo.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [
+            "phone.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": true
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 11,
+          "endpoint_calls": [
+            "phone.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 12,
+          "endpoint_calls": [
+            "phone.search_contacts"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 13,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 14,
+          "endpoint_calls": [
+            "venmo.search_users"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 15,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 16,
+          "endpoint_calls": [
+            "venmo.show_venmo_balance"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 17,
+          "endpoint_calls": [
+            "venmo.show_payment_cards"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 18,
+          "endpoint_calls": [
+            "phone.get_current_date_and_time"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": true
+        },
+        {
+          "step": 19,
+          "endpoint_calls": [
+            "phone.get_current_date_and_time"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 20,
+          "endpoint_calls": [
+            "venmo.create_transaction"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": true
+        },
+        {
+          "step": 22,
+          "endpoint_calls": [
+            "venmo.create_transaction"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 23,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_14_6171bbc_3",
+      "task_id": "6171bbc_3",
+      "official_success": true,
+      "passed_assertions": 7,
+      "failed_assertions": 0,
+      "attempted_calls": 16,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "4917216741d62672c06f4c430dd5c4f49a2c7b2f7d08052106581aeccf896691",
+      "public_steps": 16,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "spotify.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "spotify.show_playlist_library"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "api_docs.show_api_doc",
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [
+            "api_docs.show_api_doc",
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [
+            "spotify.show_playlist"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [
+            "spotify.show_song"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 11,
+          "endpoint_calls": [
+            "api_docs.show_api_doc",
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 12,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 13,
+          "endpoint_calls": [
+            "spotify.create_playlist"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 14,
+          "endpoint_calls": [
+            "spotify.add_song_to_playlist"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 15,
+          "endpoint_calls": [
+            "spotify.show_playlist"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 16,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_15_396c5a2_2",
+      "task_id": "396c5a2_2",
+      "official_success": true,
+      "passed_assertions": 6,
+      "failed_assertions": 0,
+      "attempted_calls": 11,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "d6ee73e68d22417fe84d0e1a4bf1e509e91d9ef355cf112f19340465610b0e33",
+      "public_steps": 11,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "spotify.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "api_docs.show_api_doc",
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "spotify.search_artists"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "spotify.search_songs"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "spotify.search_songs"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [
+            "spotify.add_to_queue"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [
+            "spotify.show_song_queue"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 11,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_16_6171bbc_2",
+      "task_id": "6171bbc_2",
+      "official_success": true,
+      "passed_assertions": 7,
+      "failed_assertions": 0,
+      "attempted_calls": 11,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "1d3bd13f57ebf4fe4ce9ec51b2ce5b1bd4a195cdbd2e1b815e2270f1baf7259e",
+      "public_steps": 11,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords",
+            "spotify.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "spotify.show_playlist_library"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "spotify.show_song"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [
+            "spotify.create_playlist",
+            "spotify.add_song_to_playlist"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [
+            "spotify.show_playlist"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 11,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_17_d4e9306_3",
+      "task_id": "d4e9306_3",
+      "official_success": true,
+      "passed_assertions": 6,
+      "failed_assertions": 0,
+      "attempted_calls": 14,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "3af3696671f93b534e1d573786454523b920ea797d9d91aa4930ea20d270eb4e",
+      "public_steps": 14,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "spotify.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "spotify.show_liked_songs"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "spotify.show_liked_albums"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [
+            "spotify.follow_artist"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 11,
+          "endpoint_calls": [
+            "spotify.follow_artist"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": true
+        },
+        {
+          "step": 12,
+          "endpoint_calls": [
+            "spotify.follow_artist"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 13,
+          "endpoint_calls": [
+            "spotify.show_following_artists"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 14,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_18_6c2c621_1",
+      "task_id": "6c2c621_1",
+      "official_success": true,
+      "passed_assertions": 8,
+      "failed_assertions": 0,
+      "attempted_calls": 20,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "5e09050dc80a056995e5a49dd6d299ff7eab4e16aeeab9c32993c89f332826ee",
+      "public_steps": 20,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "simple_note.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "simple_note.search_notes"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [
+            "file_system.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 11,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 12,
+          "endpoint_calls": [
+            "file_system.create_directory"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 13,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 14,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 15,
+          "endpoint_calls": [
+            "simple_note.show_note"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 16,
+          "endpoint_calls": [
+            "simple_note.show_note",
+            "file_system.create_file"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 17,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 18,
+          "endpoint_calls": [
+            "file_system.show_directory"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 19,
+          "endpoint_calls": [
+            "file_system.show_file"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 20,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_19_4ec8de5_2",
+      "task_id": "4ec8de5_2",
+      "official_success": true,
+      "passed_assertions": 2,
+      "failed_assertions": 0,
+      "attempted_calls": 16,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "9416006aad1196d0e960af7e06ddb1ad6893064a74f63c36d935b9b88db310aa",
+      "public_steps": 16,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "spotify.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [
+            "spotify.show_song_library"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [
+            "spotify.show_song"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 11,
+          "endpoint_calls": [
+            "spotify.show_album_library"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 12,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 13,
+          "endpoint_calls": [
+            "spotify.show_song"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 14,
+          "endpoint_calls": [
+            "spotify.show_song"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 15,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 16,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_20_37a8675_2",
+      "task_id": "37a8675_2",
+      "official_success": true,
+      "passed_assertions": 6,
+      "failed_assertions": 0,
+      "attempted_calls": 24,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "7294344345791b62c15691fda90ffca87c55d574e249f3a68b2bbff4c2adba32",
+      "public_steps": 24,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "phone.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "phone.search_contacts"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [
+            "api_docs.show_api_doc",
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [
+            "venmo.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 11,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 12,
+          "endpoint_calls": [
+            "venmo.search_users"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 13,
+          "endpoint_calls": [
+            "venmo.create_transaction"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": true
+        },
+        {
+          "step": 14,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 15,
+          "endpoint_calls": [
+            "venmo.show_venmo_balance"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 16,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 17,
+          "endpoint_calls": [
+            "venmo.show_payment_cards"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 18,
+          "endpoint_calls": [
+            "venmo.create_transaction"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": true
+        },
+        {
+          "step": 19,
+          "endpoint_calls": [
+            "phone.get_current_date_and_time"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 20,
+          "endpoint_calls": [
+            "venmo.create_transaction"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": true
+        },
+        {
+          "step": 21,
+          "endpoint_calls": [
+            "venmo.create_transaction"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 22,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 23,
+          "endpoint_calls": [
+            "venmo.show_transaction"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 24,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_21_fac291d_2",
+      "task_id": "fac291d_2",
+      "official_success": true,
+      "passed_assertions": 2,
+      "failed_assertions": 0,
+      "attempted_calls": 11,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "055549e453b1dfee89018f05c036a467b02ccf6cb7d7a155ad6d7df7f3618de1",
+      "public_steps": 11,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "spotify.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "spotify.show_song_library"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [
+            "spotify.show_album_library"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [
+            "spotify.show_playlist_library"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 11,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_22_383cbac_3",
+      "task_id": "383cbac_3",
+      "official_success": true,
+      "passed_assertions": 2,
+      "failed_assertions": 0,
+      "attempted_calls": 11,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "8a8dd67542f0b8d8d1da74065f82257fd6fbab18fefabd6a6039aa12f026e7ae",
+      "public_steps": 11,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords",
+            "venmo.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "venmo.show_social_feed"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [
+            "venmo.show_social_feed"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 11,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_23_0d8a4ee_3",
+      "task_id": "0d8a4ee_3",
+      "official_success": true,
+      "passed_assertions": 5,
+      "failed_assertions": 0,
+      "attempted_calls": 23,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "d2cffaecd869f74090f74b65d5814f0b8b0fb55bbcb8ba48468f867e69398d47",
+      "public_steps": 23,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "phone.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [
+            "phone.show_contact_relationships"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [
+            "phone.search_contacts"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 11,
+          "endpoint_calls": [
+            "phone.search_contacts"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 12,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 13,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 14,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 15,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 16,
+          "endpoint_calls": [
+            "venmo.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 17,
+          "endpoint_calls": [
+            "venmo.search_users"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 18,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 19,
+          "endpoint_calls": [
+            "venmo.search_users"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 20,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 21,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 22,
+          "endpoint_calls": [
+            "phone.send_text_message"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 23,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_24_4fab96f_2",
+      "task_id": "4fab96f_2",
+      "official_success": true,
+      "passed_assertions": 8,
+      "failed_assertions": 0,
+      "attempted_calls": 21,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "8d9115199a35df3e3c59a2ef649a7532e61ab8ec4b6c7f26870ad24a18373845",
+      "public_steps": 21,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "venmo.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [
+            "venmo.show_sent_payment_requests"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 11,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 12,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 13,
+          "endpoint_calls": [
+            "phone.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 14,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 15,
+          "endpoint_calls": [
+            "phone.show_contact_relationships"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 16,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 17,
+          "endpoint_calls": [
+            "phone.search_contacts"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 18,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 19,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 20,
+          "endpoint_calls": [
+            "venmo.remind_payment_request"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 21,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_25_68ee2c9_1",
+      "task_id": "68ee2c9_1",
+      "official_success": false,
+      "passed_assertions": 3,
+      "failed_assertions": 2,
+      "attempted_calls": 18,
+      "task_completed": false,
+      "stop_reason": "transport_failure",
+      "api_errors": 3,
+      "error_codes": [
+        "TimeoutError",
+        "TimeoutError",
+        "URLError"
+      ],
+      "infrastructure_valid": false,
+      "public_trace_sha256": "764bca2f5b7bae15570770e9918f20cdc8c16f0954eb8d16cf22c31e87f8739c",
+      "public_steps": 15,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "file_system.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [
+            "file_system.show_directory"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [
+            "file_system.show_file"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 11,
+          "endpoint_calls": [
+            "file_system.show_file"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 12,
+          "endpoint_calls": [
+            "file_system.move_file",
+            "file_system.show_file"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 13,
+          "endpoint_calls": [
+            "file_system.move_file"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 14,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 16,
+          "endpoint_calls": [
+            "file_system.directory_exists"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_26_df61dc5_1",
+      "task_id": "df61dc5_1",
+      "official_success": false,
+      "passed_assertions": 2,
+      "failed_assertions": 5,
+      "attempted_calls": 2,
+      "task_completed": false,
+      "stop_reason": "transport_failure",
+      "api_errors": 2,
+      "error_codes": [
+        "URLError",
+        "URLError"
+      ],
+      "infrastructure_valid": false,
+      "public_trace_sha256": "d65af4cf8edaec7d59f4c969b3f680d6606841f3eb8780849f40ac7006b70967",
+      "public_steps": 0,
+      "step_inventory": []
+    },
+    {
+      "id": "headroom_27_68ee2c9_2",
+      "task_id": "68ee2c9_2",
+      "official_success": true,
+      "passed_assertions": 5,
+      "failed_assertions": 0,
+      "attempted_calls": 19,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "ca845df4e01705319550bb98eaf3469f231ed72e2273868f53d306fc3d37d5d6",
+      "public_steps": 19,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "file_system.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "file_system.show_directory"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [
+            "file_system.show_file"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 11,
+          "endpoint_calls": [
+            "api_docs.show_api_doc",
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 12,
+          "endpoint_calls": [
+            "file_system.directory_exists",
+            "file_system.create_directory"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 13,
+          "endpoint_calls": [
+            "file_system.move_file"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 14,
+          "endpoint_calls": [
+            "file_system.move_file"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 15,
+          "endpoint_calls": [
+            "file_system.show_directory",
+            "file_system.show_directory"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 16,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 17,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 18,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 19,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_28_b119b1f_1",
+      "task_id": "b119b1f_1",
+      "official_success": true,
+      "passed_assertions": 6,
+      "failed_assertions": 0,
+      "attempted_calls": 6,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "bac49b193f273b70ece0d6eef91594920b08f70316d338c825c88f0030686bc7",
+      "public_steps": 6,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords",
+            "spotify.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "api_docs.show_api_doc",
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "spotify.show_current_song"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "spotify.previous_song",
+            "spotify.show_current_song"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_29_530b157_3",
+      "task_id": "530b157_3",
+      "official_success": true,
+      "passed_assertions": 10,
+      "failed_assertions": 0,
+      "attempted_calls": 19,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "d5a0a802f184a5eebefd64b7ce6ac017fa4b9d538ebb4597fb5e34c68310ea2f",
+      "public_steps": 19,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "phone.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [
+            "phone.search_contacts"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [
+            "phone.search_text_messages"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 11,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 12,
+          "endpoint_calls": [
+            "venmo.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 13,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 14,
+          "endpoint_calls": [
+            "venmo.search_users"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 15,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 16,
+          "endpoint_calls": [
+            "venmo.create_transaction"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 17,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 18,
+          "endpoint_calls": [
+            "phone.send_text_message"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 19,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_30_b119b1f_2",
+      "task_id": "b119b1f_2",
+      "official_success": true,
+      "passed_assertions": 6,
+      "failed_assertions": 0,
+      "attempted_calls": 13,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "efb0342bb6b69f4c42e50851bebd6fff2ed38650e3f717c72fa79a3cf424745b",
+      "public_steps": 13,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "spotify.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "spotify.show_current_song"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [
+            "spotify.show_song_queue"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 11,
+          "endpoint_calls": [
+            "spotify.show_current_song",
+            "spotify.next_song"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 12,
+          "endpoint_calls": [
+            "spotify.show_current_song"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 13,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_31_23cf851_2",
+      "task_id": "23cf851_2",
+      "official_success": true,
+      "passed_assertions": 2,
+      "failed_assertions": 0,
+      "attempted_calls": 10,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "5d466ddcb49896e8d186ab5b273a9d3e4818bcfa3e6feef0e8db5778f52d0141",
+      "public_steps": 10,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "venmo.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "venmo.show_transactions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_32_df61dc5_2",
+      "task_id": "df61dc5_2",
+      "official_success": true,
+      "passed_assertions": 7,
+      "failed_assertions": 0,
+      "attempted_calls": 20,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "64a709704153658065d15c184371ea3c4b85ff5baa752847fb91bb6ec9b50333",
+      "public_steps": 20,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "venmo.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [
+            "phone.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 11,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 12,
+          "endpoint_calls": [
+            "phone.show_contact_relationships"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 13,
+          "endpoint_calls": [
+            "phone.search_contacts"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 14,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 15,
+          "endpoint_calls": [
+            "venmo.show_transactions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 16,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 17,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 18,
+          "endpoint_calls": [
+            "venmo.like_transaction"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 19,
+          "endpoint_calls": [
+            "venmo.show_transactions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 20,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_33_6c2c621_2",
+      "task_id": "6c2c621_2",
+      "official_success": true,
+      "passed_assertions": 8,
+      "failed_assertions": 0,
+      "attempted_calls": 19,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "71adef42d456fe78c9399efaeb8a3a2d2b5b900696dc267eb611a5ae3f72dd2c",
+      "public_steps": 19,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "simple_note.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "simple_note.search_notes"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [
+            "file_system.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 11,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 12,
+          "endpoint_calls": [
+            "file_system.create_directory"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 13,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 14,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 15,
+          "endpoint_calls": [
+            "simple_note.show_note",
+            "file_system.create_file"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 16,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 17,
+          "endpoint_calls": [
+            "file_system.show_directory"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 18,
+          "endpoint_calls": [
+            "file_system.show_file"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 19,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_34_0d8a4ee_2",
+      "task_id": "0d8a4ee_2",
+      "official_success": true,
+      "passed_assertions": 5,
+      "failed_assertions": 0,
+      "attempted_calls": 20,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "3a3dbc2af2fea030a2c3a43e7b0325710a8f1c1d60df5c9b7b3f631b04ee2e7a",
+      "public_steps": 20,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "phone.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "phone.show_contact_relationships"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [
+            "phone.search_contacts"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [
+            "phone.search_contacts"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 11,
+          "endpoint_calls": [
+            "phone.search_contacts"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 12,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 13,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 14,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 15,
+          "endpoint_calls": [
+            "venmo.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 16,
+          "endpoint_calls": [
+            "venmo.search_users"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 17,
+          "endpoint_calls": [
+            "venmo.search_users",
+            "venmo.search_users"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 18,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 19,
+          "endpoint_calls": [
+            "phone.send_text_message"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 20,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_35_23cf851_3",
+      "task_id": "23cf851_3",
+      "official_success": true,
+      "passed_assertions": 2,
+      "failed_assertions": 0,
+      "attempted_calls": 9,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "73e156bb4938bfa5d02bee3f44dd8074be71ff3a3549df9d6112eca6dcb49710",
+      "public_steps": 9,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "api_docs.show_app_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "venmo.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "venmo.show_transactions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_36_50e1ac9_1",
+      "task_id": "50e1ac9_1",
+      "official_success": true,
+      "passed_assertions": 2,
+      "failed_assertions": 0,
+      "attempted_calls": 15,
+      "task_completed": true,
+      "stop_reason": "supervisor_completed",
+      "api_errors": 0,
+      "error_codes": [],
+      "infrastructure_valid": true,
+      "public_trace_sha256": "e10689f6b685fc92e1130fc7ed1822830f70a13540394244c76ab098fea66899",
+      "public_steps": 15,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "spotify.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "spotify.show_song_library"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 8,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 9,
+          "endpoint_calls": [
+            "spotify.show_album_library"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 10,
+          "endpoint_calls": [
+            "spotify.show_playlist_library"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 11,
+          "endpoint_calls": [
+            "api_docs.show_api_doc",
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 12,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 13,
+          "endpoint_calls": [
+            "spotify.show_song"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 14,
+          "endpoint_calls": [],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 15,
+          "endpoint_calls": [
+            "supervisor.complete_task"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    },
+    {
+      "id": "headroom_37_530b157_2",
+      "task_id": "530b157_2",
+      "official_success": false,
+      "passed_assertions": 1,
+      "failed_assertions": 9,
+      "attempted_calls": 9,
+      "task_completed": false,
+      "stop_reason": "transport_failure",
+      "api_errors": 2,
+      "error_codes": [
+        "URLError",
+        "URLError"
+      ],
+      "infrastructure_valid": false,
+      "public_trace_sha256": "f4e1b58927114f20f484763dc0b4fe72e9318a043577d3fedb1465233519de05",
+      "public_steps": 7,
+      "step_inventory": [
+        {
+          "step": 1,
+          "endpoint_calls": [
+            "api_docs.show_api_descriptions"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 2,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 3,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 4,
+          "endpoint_calls": [
+            "api_docs.show_api_doc"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 5,
+          "endpoint_calls": [
+            "supervisor.show_account_passwords"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 6,
+          "endpoint_calls": [
+            "phone.login"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        },
+        {
+          "step": 7,
+          "endpoint_calls": [
+            "phone.search_contacts"
+          ],
+          "python_syntax_error": false,
+          "execution_error_flag": false
+        }
+      ]
+    }
+  ],
+  "interpretation": "Observed behaviors only. Causal repairs and capability transfer remain untested."
+}

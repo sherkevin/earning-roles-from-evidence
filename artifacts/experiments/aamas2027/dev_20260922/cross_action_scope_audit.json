@@ -1,0 +1,24 @@
+{
+  "timestamp": "2026-09-22T11:49:31.618138+00:00",
+  "analysis_type": "posthoc_public_trace_and_artifact_scope_audit",
+  "source_task": "692c77d_1",
+  "source_trace_sha256": "e83176d7b40d754196fbee937dbce72df00df25c2bb8ae4aa5448016afd723f5",
+  "artifact_sha256": "7d7061848a196069ffc183ff49d4a34a7eccd984255f194e8e6a05c929bd17fa",
+  "source_evidence_steps": [
+    5,
+    7,
+    8
+  ],
+  "source_operation": "playlist_song_ids & liked_song_ids",
+  "candidate_quote": "Intersect playlist IDs with liked IDs to form targets.",
+  "finding": "Source code intersects song IDs collected from playlists with liked song IDs. Candidate wording says playlist IDs, which is ambiguous or incorrectly typed if taken literally. Previous line says collect item IDs, so it need not induce wrong behavior.",
+  "related_observed_failures": [
+    "3ab5b8b_1",
+    "3ab5b8b_3"
+  ],
+  "related_analysis": "The dev empty agent selected liked container objects. The existing successful training trace contains information relevant to the alternative interpretation, but applicability across actions and any benefit are untested. The candidate was not injected into these dev tasks.",
+  "treatment_edited": false,
+  "model_calls": 0,
+  "official_gold_read": false,
+  "inference_boundary": "No new success claim, causal repair, capability transfer or partner interaction; no retroactive pass of the failed original acquisition gate."
+}

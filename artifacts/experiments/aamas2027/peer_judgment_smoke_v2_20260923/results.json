@@ -1,0 +1,98 @@
+{
+  "task_ids_attempted": [
+    "22cc237_2",
+    "3c13f5a_2"
+  ],
+  "results": [
+    {
+      "task_id": "22cc237_2",
+      "status": "INVALID",
+      "global_stop": false,
+      "experiment_names": {
+        "producer": "pj2_prod_4e0c0992fa8cb98598",
+        "consumer": "pj2_cons_4e0c0992fa8cb98598"
+      },
+      "error": {
+        "type": "TimeoutError",
+        "message": "The read operation timed out",
+        "traceback": "Traceback (most recent call last):\n  File \"/Users/jingwu/work/earning-roles/scripts/aamas_peer_judgment_smoke_v2.py\", line 546, in episode\n    proposal_raw, producer_steps = phase_loop(\n                                   ^^^^^^^^^^^\n  File \"/Users/jingwu/work/earning-roles/scripts/aamas_peer_judgment_smoke_v2.py\", line 342, in phase_loop\n    answer = generate_with_retry(api, messages, raw, max_tokens, state)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/jingwu/work/earning-roles/scripts/aamas_peer_judgment_smoke_v2.py\", line 314, in generate_with_retry\n    return api.generate(messages, max_tokens=max_tokens)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/jingwu/work/earning-roles/scripts/aamas_real_probe.py\", line 142, in generate\n    with urllib.request.urlopen(req, timeout=120) as response:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/jingwu/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/urllib/request.py\", line 215, in urlopen\n    return opener.open(url, data, timeout)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/jingwu/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/urllib/request.py\", line 515, in open\n    response = self._open(req, data)\n               ^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/jingwu/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/urllib/request.py\", line 532, in _open\n    result = self._call_chain(self.handle_open, protocol, protocol +\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/jingwu/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/urllib/request.py\", line 492, in _call_chain\n    result = func(*args)\n             ^^^^^^^^^^^\n  File \"/Users/jingwu/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/urllib/request.py\", line 1392, in https_open\n    return self.do_open(http.client.HTTPSConnection, req,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/jingwu/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/urllib/request.py\", line 1348, in do_open\n    r = h.getresponse()\n        ^^^^^^^^^^^^^^^\n  File \"/Users/jingwu/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/http/client.py\", line 1450, in getresponse\n    response.begin()\n  File \"/Users/jingwu/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/http/client.py\", line 336, in begin\n    version, status, reason = self._read_status()\n                              ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/jingwu/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/http/client.py\", line 297, in _read_status\n    line = str(self.fp.readline(_MAXLINE + 1), \"iso-8859-1\")\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/jingwu/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/socket.py\", line 720, in readinto\n    return self._sock.recv_into(b)\n           ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/jingwu/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/ssl.py\", line 1263, in recv_into\n    return self.read(nbytes, buffer)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/jingwu/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/ssl.py\", line 1115, in read\n    return self._sslobj.read(len, buffer)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTimeoutError: The read operation timed out\n"
+      },
+      "official_final_success": null,
+      "usd_cost": null,
+      "phase_costs": {
+        "producer": {
+          "attempts": 2,
+          "tokens": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "unknown_usage_attempts": 2,
+          "api_errors": 2,
+          "error_codes": [
+            "TimeoutError",
+            "TimeoutError"
+          ],
+          "returned_models": [],
+          "api_seconds": 240.34289716696367
+        }
+      },
+      "validation_rejections": {
+        "producer": 0,
+        "consumer_review": 0
+      },
+      "timeout_retry_used": true,
+      "world_execute_count": 0,
+      "attempted_calls": 2,
+      "wall_seconds": 248.58799570892006
+    },
+    {
+      "task_id": "3c13f5a_2",
+      "status": "INVALID",
+      "global_stop": false,
+      "experiment_names": {
+        "producer": "pj2_prod_c3dca5e2bed5ddeab4",
+        "consumer": "pj2_cons_c3dca5e2bed5ddeab4"
+      },
+      "error": {
+        "type": "ValueError",
+        "message": "REPL name blocked: dir",
+        "traceback": "Traceback (most recent call last):\n  File \"/Users/jingwu/work/earning-roles/scripts/aamas_peer_judgment_smoke_v2.py\", line 546, in episode\n    proposal_raw, producer_steps = phase_loop(\n                                   ^^^^^^^^^^^\n  File \"/Users/jingwu/work/earning-roles/scripts/aamas_peer_judgment_smoke_v2.py\", line 387, in phase_loop\n    safe_code(code)\n  File \"/Users/jingwu/work/earning-roles/scripts/aamas_peer_judgment_smoke_v2.py\", line 158, in safe_code\n    raise ValueError(f\"REPL name blocked: {node.id}\")\nValueError: REPL name blocked: dir\n"
+      },
+      "official_final_success": null,
+      "usd_cost": null,
+      "phase_costs": {
+        "producer": {
+          "attempts": 5,
+          "tokens": {
+            "input_tokens": 7471,
+            "output_tokens": 2785,
+            "cache_read_input_tokens": 12288,
+            "cache_creation_input_tokens": 0
+          },
+          "unknown_usage_attempts": 0,
+          "api_errors": 0,
+          "error_codes": [],
+          "returned_models": [
+            "qwen3.8-max",
+            "qwen3.8-max",
+            "qwen3.8-max",
+            "qwen3.8-max",
+            "qwen3.8-max"
+          ],
+          "api_seconds": 81.870215207804
+        }
+      },
+      "validation_rejections": {
+        "producer": 0,
+        "consumer_review": 0
+      },
+      "timeout_retry_used": false,
+      "world_execute_count": 4,
+      "attempted_calls": 5,
+      "wall_seconds": 89.15430691698566
+    }
+  ],
+  "no_confirmation_claim": true
+}

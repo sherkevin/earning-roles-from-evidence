@@ -1,0 +1,57 @@
+Error in sys.excepthook:
+Traceback (most recent call last):
+  File "/Users/jingwu/work/AppWorld/src/appworld/requester.py", line 898, in updated_excepthook
+    pre_excepthook(exc_type, exc_value, traceback)
+  File "/Users/jingwu/work/AppWorld/src/appworld/requester.py", line 891, in pre_excepthook
+    Requester.close_all()
+  File "/Users/jingwu/work/AppWorld/src/appworld/requester.py", line 449, in close_all
+    unset_local_date_and_time(time_freezer_or_id)
+  File "/Users/jingwu/work/AppWorld/src/appworld/apps/lib/apis/local_remote.py", line 69, in unset_local_date_and_time
+    freezer.stop()
+  File "/Users/jingwu/work/AppWorld/src/appworld/common/time.py", line 118, in stop
+    self._freezer.stop()
+  File "/Users/jingwu/work/AppWorld/.venv-b1-api/lib/python3.12/site-packages/freezegun/api.py", line 807, in stop
+    freeze_factories.pop()
+IndexError: pop from empty list
+
+Original exception was:
+Traceback (most recent call last):
+  File "/Users/jingwu/work/earning-roles/scripts/aamas_replay_fixture.py", line 41, in main
+    with AppWorld(task_id=config['task_id'],experiment_name=experiment,
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jingwu/work/AppWorld/src/appworld/environment.py", line 854, in __exit__
+    self.close()
+  File "/Users/jingwu/work/AppWorld/src/appworld/environment.py", line 1388, in close
+    self._unset_datetime()
+  File "/Users/jingwu/work/AppWorld/src/appworld/environment.py", line 878, in _unset_datetime
+    unset_local_date_and_time(self.time_freezer)
+  File "/Users/jingwu/work/AppWorld/src/appworld/apps/lib/apis/local_remote.py", line 69, in unset_local_date_and_time
+    freezer.stop()
+  File "/Users/jingwu/work/AppWorld/src/appworld/common/time.py", line 118, in stop
+    self._freezer.stop()
+  File "/Users/jingwu/work/AppWorld/.venv-b1-api/lib/python3.12/site-packages/freezegun/api.py", line 836, in stop
+    if module_attribute in self.fake_names:
+                           ^^^^^^^^^^^^^^^
+AttributeError: '_freeze_time' object has no attribute 'fake_names'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/jingwu/work/earning-roles/scripts/aamas_replay_fixture.py", line 99, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/Users/jingwu/work/earning-roles/scripts/aamas_replay_fixture.py", line 75, in main
+    AppWorld.close_all()
+  File "/Users/jingwu/work/AppWorld/src/appworld/environment.py", line 1410, in close_all
+    ApiCollection.close_all()
+  File "/Users/jingwu/work/AppWorld/src/appworld/collections/apis.py", line 211, in close_all
+    Requester.close_all()
+  File "/Users/jingwu/work/AppWorld/src/appworld/requester.py", line 449, in close_all
+    unset_local_date_and_time(time_freezer_or_id)
+  File "/Users/jingwu/work/AppWorld/src/appworld/apps/lib/apis/local_remote.py", line 69, in unset_local_date_and_time
+    freezer.stop()
+  File "/Users/jingwu/work/AppWorld/src/appworld/common/time.py", line 118, in stop
+    self._freezer.stop()
+  File "/Users/jingwu/work/AppWorld/.venv-b1-api/lib/python3.12/site-packages/freezegun/api.py", line 807, in stop
+    freeze_factories.pop()
+IndexError: pop from empty list

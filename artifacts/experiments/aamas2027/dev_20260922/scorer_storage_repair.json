@@ -1,0 +1,12 @@
+{
+  "timestamp": "2026-09-22T09:02:12.069352+00:00",
+  "type": "storage_and_scoring_repair",
+  "source": "AppWorld src/appworld/apps/lib/models/db.py:346",
+  "defect": "Substring memory anywhere in changes_file_path is rejected, including an ordinary experiment arm name.",
+  "action": "Future native experiment paths use a neutral job hash. Existing complete saved DB change files are copied byte-identically to a neutral path and evaluated by the unchanged official scorer in a fresh process.",
+  "new_model_calls_for_rescoring": 0,
+  "original_results_retained": true,
+  "scientific_policy_unchanged": true,
+  "input_world_and_prompts_unchanged": true,
+  "runner_sha256": "b9bba5e37e02e3d888bbc1ff9cf8c16bb59ed733ba65bcec575f37755205cf5c"
+}

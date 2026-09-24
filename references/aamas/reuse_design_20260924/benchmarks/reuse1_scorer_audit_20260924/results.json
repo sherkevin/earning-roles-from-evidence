@@ -1,0 +1,321 @@
+{
+  "experiment_id": "reuse1_cooperbench_task2800_scorer_audit_20260924",
+  "finished_at_utc": "2026-09-24T05:13:16Z",
+  "model_api_calls": 0,
+  "docker_attempted": false,
+  "llm_api_attempted": false,
+  "results": [
+    {
+      "label": "sample_integrity",
+      "type": "sha256",
+      "rows": [
+        {
+          "path": "Dockerfile",
+          "exists": true,
+          "expected_sha256": "ece1d628a3cfe491ad2f9b93906ded5296bf100077d5111bbc699e62b1fb586c",
+          "actual_sha256": "ece1d628a3cfe491ad2f9b93906ded5296bf100077d5111bbc699e62b1fb586c",
+          "match": true
+        },
+        {
+          "path": "setup.sh",
+          "exists": true,
+          "expected_sha256": "cf7ad527e1ab932b4598af7ce10eee3b72ff55d7b14e53c180a56dabf8734ab4",
+          "actual_sha256": "cf7ad527e1ab932b4598af7ce10eee3b72ff55d7b14e53c180a56dabf8734ab4",
+          "match": true
+        },
+        {
+          "path": "runner.sh",
+          "exists": true,
+          "expected_sha256": "4755a39855b9df524408a203cc15ee211a90f1399829edfd325fca54d63bef9e",
+          "actual_sha256": "4755a39855b9df524408a203cc15ee211a90f1399829edfd325fca54d63bef9e",
+          "match": true
+        },
+        {
+          "path": "run_tests.sh",
+          "exists": true,
+          "expected_sha256": "4795e7f8b4c69eea7403c1b8712b00d47b92442cd92ece9051188506e88d284e",
+          "actual_sha256": "4795e7f8b4c69eea7403c1b8712b00d47b92442cd92ece9051188506e88d284e",
+          "match": true
+        },
+        {
+          "path": "combined.patch",
+          "exists": true,
+          "expected_sha256": "d7f0477dfe77af4107d5087be3ecf9fbeeeb85de51851d7bcdf4676cf49046b8",
+          "actual_sha256": "d7f0477dfe77af4107d5087be3ecf9fbeeeb85de51851d7bcdf4676cf49046b8",
+          "match": true
+        },
+        {
+          "path": "feature1/feature.md",
+          "exists": true,
+          "expected_sha256": "dfe8289f9ecf94afa48e111ac6d1e21f53f0d2abd4f722df001df6be37139eb4",
+          "actual_sha256": "dfe8289f9ecf94afa48e111ac6d1e21f53f0d2abd4f722df001df6be37139eb4",
+          "match": true
+        },
+        {
+          "path": "feature1/feature.patch",
+          "exists": true,
+          "expected_sha256": "7be1f0107baf925d7d105dabd519ebd96d629da47dc4489b39e3c75b4bdb848a",
+          "actual_sha256": "7be1f0107baf925d7d105dabd519ebd96d629da47dc4489b39e3c75b4bdb848a",
+          "match": true
+        },
+        {
+          "path": "feature1/tests.patch",
+          "exists": true,
+          "expected_sha256": "685d8cb338cd0d64bfbde4a0de63f665f84c81ba8d9656a215d2c6b1ed519f8c",
+          "actual_sha256": "685d8cb338cd0d64bfbde4a0de63f665f84c81ba8d9656a215d2c6b1ed519f8c",
+          "match": true
+        },
+        {
+          "path": "feature7/feature.md",
+          "exists": true,
+          "expected_sha256": "9bc12c7277204288a0b53518be01da13d6d2a1cfde2f46b1c1f28481b078d59b",
+          "actual_sha256": "9bc12c7277204288a0b53518be01da13d6d2a1cfde2f46b1c1f28481b078d59b",
+          "match": true
+        },
+        {
+          "path": "feature7/feature.patch",
+          "exists": true,
+          "expected_sha256": "0142a7293f22e396939a50f175589fdea534e36f1ab7db5e20463bf9eb4d2c80",
+          "actual_sha256": "0142a7293f22e396939a50f175589fdea534e36f1ab7db5e20463bf9eb4d2c80",
+          "match": true
+        },
+        {
+          "path": "feature7/tests.patch",
+          "exists": true,
+          "expected_sha256": "1435860039fe40b0cd0b8099d7785a4b68e536253301034548adac44c0a9e43f",
+          "actual_sha256": "1435860039fe40b0cd0b8099d7785a4b68e536253301034548adac44c0a9e43f",
+          "match": true
+        }
+      ],
+      "all_match": true
+    },
+    {
+      "label": "patch_check",
+      "type": "git_apply_check",
+      "checks": [
+        {
+          "path": "feature1/feature.patch",
+          "returncode": 0,
+          "stderr": ""
+        },
+        {
+          "path": "feature7/feature.patch",
+          "returncode": 0,
+          "stderr": ""
+        },
+        {
+          "path": "combined.patch",
+          "returncode": 0,
+          "stderr": ""
+        },
+        {
+          "path": "feature1/tests.patch",
+          "returncode": 0,
+          "stderr": ""
+        },
+        {
+          "path": "feature7/tests.patch",
+          "returncode": 0,
+          "stderr": ""
+        }
+      ],
+      "all_pass": true
+    },
+    {
+      "label": "base_tests_feature1",
+      "type": "native_pytest",
+      "patches": [
+        "references/aamas/cooperbench_20260923/samples/pallets_click_task2800/feature1/tests.patch"
+      ],
+      "apply": [
+        {
+          "path": "references/aamas/cooperbench_20260923/samples/pallets_click_task2800/feature1/tests.patch",
+          "returncode": 0,
+          "stderr": ""
+        }
+      ],
+      "test_returncode": 1,
+      "stdout": "........................................F...........................     [100%]\n=================================== FAILURES ===================================\n______________________________ test_files_closed _______________________________\n\nrunner = <click.testing.CliRunner object at 0x10826f100>\n\n    @pytest.mark.filterwarnings(\"default\")\n    def test_files_closed(runner) -> None:\n        with runner.isolated_filesystem():\n            config_file = \"foo.txt\"\n            with open(config_file, \"w\") as f:\n                f.write(\"bar\")\n    \n            @click.group()\n            @click.option(\n                \"--config-file\",\n                default=config_file,\n                type=click.File(mode=\"r\"),\n            )\n            @click.pass_context\n            def cli(ctx, config_file):\n                pass\n    \n            with warnings.catch_warnings(record=True) as current_warnings:\n                assert not current_warnings, \"There should be no warnings to start\"\n                _get_completions(cli, args=[], incomplete=\"\")\n>               assert not current_warnings, \"There should be no warnings after either\"\nE               AssertionError: There should be no warnings after either\nE               assert not [<warnings.WarningMessage object at 0x108149430>]\n\ntests/test_shell_completion.py:442: AssertionError\n=========================== short test summary info ============================\nFAILED tests/test_shell_completion.py::test_files_closed - AssertionError: Th...\n1 failed, 67 passed in 0.13s\n",
+      "stderr": "",
+      "wall_seconds": 0.998
+    },
+    {
+      "label": "base_tests_feature7",
+      "type": "native_pytest",
+      "patches": [
+        "references/aamas/cooperbench_20260923/samples/pallets_click_task2800/feature7/tests.patch"
+      ],
+      "apply": [
+        {
+          "path": "references/aamas/cooperbench_20260923/samples/pallets_click_task2800/feature7/tests.patch",
+          "returncode": 0,
+          "stderr": "/Users/jingwu/work/earning-roles/references/aamas/cooperbench_20260923/samples/pallets_click_task2800/feature7/tests.patch:140: new blank line at EOF.\n+\nwarning: 1 line adds whitespace errors.\n"
+        }
+      ],
+      "test_returncode": 1,
+      "stdout": "........................................FFFFF........................... [100%]\n=================================== FAILURES ===================================\n________________________ test_validate_nesting_disabled ________________________\n\n    def test_validate_nesting_disabled():\n        \"\"\"Test that validate_nesting=False allows normal context usage.\"\"\"\n    \n        @click.group(invoke_without_command=True)\n        def cli():\n            pass\n    \n        @cli.command()\n        def sub():\n            pass\n    \n        # Should work normally without validation\n>       ctx = cli.make_context(\"cli\", [], validate_nesting=False)\n\ntests/test_shell_completion.py:431: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <Group cli>, info_name = 'cli', args = [], parent = None\nextra = {'validate_nesting': False}\n\n    def make_context(\n        self,\n        info_name: str | None,\n        args: list[str],\n        parent: Context | None = None,\n        **extra: t.Any,\n    ) -> Context:\n        \"\"\"This function when given an info name and arguments will kick\n        off the parsing and create a new :class:`Context`.  It does not\n        invoke the actual command callback though.\n    \n        To quickly customize the context class used without overriding\n        this method, set the :attr:`context_class` attribute.\n    \n        :param info_name: the info name for this invocation.  Generally this\n                          is the most descriptive name for the script or\n                          command.  For the toplevel script it's usually\n                          the name of the script, for commands below it's\n                          the name of the command.\n        :param args: the arguments to parse as list of strings.\n        :param parent: the parent context if available.\n        :param extra: extra keyword arguments forwarded to the context\n                      constructor.\n    \n        .. versionchanged:: 8.0\n            Added the :attr:`context_class` attribute.\n        \"\"\"\n        for key, value in self.context_settings.items():\n            if key not in extra:\n                extra[key] = value\n    \n>       ctx = self.context_class(self, info_name=info_name, parent=parent, **extra)\nE       TypeError: __init__() got an unexpected keyword argument 'validate_nesting'\n\n/var/folders/18/6x97xlvs65gg9v7vkvlbpfkr0000gn/T/reuse1_cb_base_tests_feature7_2lsna33l/click/src/click/core.py:1152: TypeError\n_________________ test_validate_nesting_enabled_proper_cleanup _________________\n\n    def test_validate_nesting_enabled_proper_cleanup():\n        \"\"\"Test that validate_nesting=True allows proper context cleanup.\"\"\"\n    \n        @click.group(invoke_without_command=True)\n        def cli():\n            pass\n    \n        @cli.command()\n        def sub():\n            pass\n    \n>       ctx = cli.make_context(\"cli\", [], validate_nesting=True)\n\ntests/test_shell_completion.py:450: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <Group cli>, info_name = 'cli', args = [], parent = None\nextra = {'validate_nesting': True}\n\n    def make_context(\n        self,\n        info_name: str | None,\n        args: list[str],\n        parent: Context | None = None,\n        **extra: t.Any,\n    ) -> Context:\n        \"\"\"This function when given an info name and arguments will kick\n        off the parsing and create a new :class:`Context`.  It does not\n        invoke the actual command callback though.\n    \n        To quickly customize the context class used without overriding\n        this method, set the :attr:`context_class` attribute.\n    \n        :param info_name: the info name for this invocation.  Generally this\n                          is the most descriptive name for the script or\n                          command.  For the toplevel script it's usually\n                          the name of the script, for commands below it's\n                          the name of the command.\n        :param args: the arguments to parse as list of strings.\n        :param parent: the parent context if available.\n        :param extra: extra keyword arguments forwarded to the context\n                      constructor.\n    \n        .. versionchanged:: 8.0\n            Added the :attr:`context_class` attribute.\n        \"\"\"\n        for key, value in self.context_settings.items():\n            if key not in extra:\n                extra[key] = value\n    \n>       ctx = self.context_class(self, info_name=info_name, parent=parent, **extra)\nE       TypeError: __init__() got an unexpected keyword argument 'validate_nesting'\n\n/var/folders/18/6x97xlvs65gg9v7vkvlbpfkr0000gn/T/reuse1_cb_base_tests_feature7_2lsna33l/click/src/click/core.py:1152: TypeError\n___________________ test_validate_nesting_multiple_children ____________________\n\n    def test_validate_nesting_multiple_children():\n        \"\"\"Test validation with multiple child contexts.\"\"\"\n    \n        @click.group(invoke_without_command=True)\n        def cli():\n            pass\n    \n        @cli.command()\n        def sub1():\n            pass\n    \n        @cli.command()\n        def sub2():\n            pass\n    \n>       ctx = cli.make_context(\"cli\", [], validate_nesting=True)\n\ntests/test_shell_completion.py:473: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <Group cli>, info_name = 'cli', args = [], parent = None\nextra = {'validate_nesting': True}\n\n    def make_context(\n        self,\n        info_name: str | None,\n        args: list[str],\n        parent: Context | None = None,\n        **extra: t.Any,\n    ) -> Context:\n        \"\"\"This function when given an info name and arguments will kick\n        off the parsing and create a new :class:`Context`.  It does not\n        invoke the actual command callback though.\n    \n        To quickly customize the context class used without overriding\n        this method, set the :attr:`context_class` attribute.\n    \n        :param info_name: the info name for this invocation.  Generally this\n                          is the most descriptive name for the script or\n                          command.  For the toplevel script it's usually\n                          the name of the script, for commands below it's\n                          the name of the command.\n        :param args: the arguments to parse as list of strings.\n        :param parent: the parent context if available.\n        :param extra: extra keyword arguments forwarded to the context\n                      constructor.\n    \n        .. versionchanged:: 8.0\n            Added the :attr:`context_class` attribute.\n        \"\"\"\n        for key, value in self.context_settings.items():\n            if key not in extra:\n                extra[key] = value\n    \n>       ctx = self.context_class(self, info_name=info_name, parent=parent, **extra)\nE       TypeError: __init__() got an unexpected keyword argument 'validate_nesting'\n\n/var/folders/18/6x97xlvs65gg9v7vkvlbpfkr0000gn/T/reuse1_cb_base_tests_feature7_2lsna33l/click/src/click/core.py:1152: TypeError\n______________________ test_validate_nesting_inheritance _______________________\n\n    def test_validate_nesting_inheritance():\n        \"\"\"Test that validate_nesting is inherited by child contexts.\"\"\"\n    \n        @click.group(invoke_without_command=True)\n        def cli():\n            pass\n    \n        @cli.command()\n        def sub():\n            pass\n    \n        @cli.command()\n        def subsub():\n            pass\n    \n        # Parent with validation enabled\n>       ctx = cli.make_context(\"cli\", [], validate_nesting=True)\n\ntests/test_shell_completion.py:511: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <Group cli>, info_name = 'cli', args = [], parent = None\nextra = {'validate_nesting': True}\n\n    def make_context(\n        self,\n        info_name: str | None,\n        args: list[str],\n        parent: Context | None = None,\n        **extra: t.Any,\n    ) -> Context:\n        \"\"\"This function when given an info name and arguments will kick\n        off the parsing and create a new :class:`Context`.  It does not\n        invoke the actual command callback though.\n    \n        To quickly customize the context class used without overriding\n        this method, set the :attr:`context_class` attribute.\n    \n        :param info_name: the info name for this invocation.  Generally this\n                          is the most descriptive name for the script or\n                          command.  For the toplevel script it's usually\n                          the name of the script, for commands below it's\n                          the name of the command.\n        :param args: the arguments to parse as list of strings.\n        :param parent: the parent context if available.\n        :param extra: extra keyword arguments forwarded to the context\n                      constructor.\n    \n        .. versionchanged:: 8.0\n            Added the :attr:`context_class` attribute.\n        \"\"\"\n        for key, value in self.context_settings.items():\n            if key not in extra:\n                extra[key] = value\n    \n>       ctx = self.context_class(self, info_name=info_name, parent=parent, **extra)\nE       TypeError: __init__() got an unexpected keyword argument 'validate_nesting'\n\n/var/folders/18/6x97xlvs65gg9v7vkvlbpfkr0000gn/T/reuse1_cb_base_tests_feature7_2lsna33l/click/src/click/core.py:1152: TypeError\n____________________ test_validate_nesting_context_manager _____________________\n\n    def test_validate_nesting_context_manager():\n        \"\"\"Test validation with context managers.\"\"\"\n    \n        @click.group(invoke_without_command=True)\n        def cli():\n            pass\n    \n        @cli.command()\n        def sub():\n            pass\n    \n>       ctx = cli.make_context(\"cli\", [], validate_nesting=True)\n\ntests/test_shell_completion.py:541: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <Group cli>, info_name = 'cli', args = [], parent = None\nextra = {'validate_nesting': True}\n\n    def make_context(\n        self,\n        info_name: str | None,\n        args: list[str],\n        parent: Context | None = None,\n        **extra: t.Any,\n    ) -> Context:\n        \"\"\"This function when given an info name and arguments will kick\n        off the parsing and create a new :class:`Context`.  It does not\n        invoke the actual command callback though.\n    \n        To quickly customize the context class used without overriding\n        this method, set the :attr:`context_class` attribute.\n    \n        :param info_name: the info name for this invocation.  Generally this\n                          is the most descriptive name for the script or\n                          command.  For the toplevel script it's usually\n                          the name of the script, for commands below it's\n                          the name of the command.\n        :param args: the arguments to parse as list of strings.\n        :param parent: the parent context if available.\n        :param extra: extra keyword arguments forwarded to the context\n                      constructor.\n    \n        .. versionchanged:: 8.0\n            Added the :attr:`context_class` attribute.\n        \"\"\"\n        for key, value in self.context_settings.items():\n            if key not in extra:\n                extra[key] = value\n    \n>       ctx = self.context_class(self, info_name=info_name, parent=parent, **extra)\nE       TypeError: __init__() got an unexpected keyword argument 'validate_nesting'\n\n/var/folders/18/6x97xlvs65gg9v7vkvlbpfkr0000gn/T/reuse1_cb_base_tests_feature7_2lsna33l/click/src/click/core.py:1152: TypeError\n=========================== short test summary info ============================\nFAILED tests/test_shell_completion.py::test_validate_nesting_disabled - TypeE...\nFAILED tests/test_shell_completion.py::test_validate_nesting_enabled_proper_cleanup\nFAILED tests/test_shell_completion.py::test_validate_nesting_multiple_children\nFAILED tests/test_shell_completion.py::test_validate_nesting_inheritance - Ty...\nFAILED tests/test_shell_completion.py::test_validate_nesting_context_manager\n5 failed, 67 passed in 0.21s\n",
+      "stderr": "",
+      "wall_seconds": 0.492
+    },
+    {
+      "label": "gold_feature1",
+      "type": "native_pytest",
+      "patches": [
+        "references/aamas/cooperbench_20260923/samples/pallets_click_task2800/feature1/feature.patch",
+        "references/aamas/cooperbench_20260923/samples/pallets_click_task2800/feature1/tests.patch"
+      ],
+      "apply": [
+        {
+          "path": "references/aamas/cooperbench_20260923/samples/pallets_click_task2800/feature1/feature.patch",
+          "returncode": 0,
+          "stderr": ""
+        },
+        {
+          "path": "references/aamas/cooperbench_20260923/samples/pallets_click_task2800/feature1/tests.patch",
+          "returncode": 0,
+          "stderr": ""
+        }
+      ],
+      "test_returncode": 0,
+      "stdout": "....................................................................     [100%]\n68 passed in 0.09s\n",
+      "stderr": "",
+      "wall_seconds": 0.498
+    },
+    {
+      "label": "gold_feature7",
+      "type": "native_pytest",
+      "patches": [
+        "references/aamas/cooperbench_20260923/samples/pallets_click_task2800/feature7/feature.patch",
+        "references/aamas/cooperbench_20260923/samples/pallets_click_task2800/feature7/tests.patch"
+      ],
+      "apply": [
+        {
+          "path": "references/aamas/cooperbench_20260923/samples/pallets_click_task2800/feature7/feature.patch",
+          "returncode": 0,
+          "stderr": ""
+        },
+        {
+          "path": "references/aamas/cooperbench_20260923/samples/pallets_click_task2800/feature7/tests.patch",
+          "returncode": 0,
+          "stderr": "/Users/jingwu/work/earning-roles/references/aamas/cooperbench_20260923/samples/pallets_click_task2800/feature7/tests.patch:140: new blank line at EOF.\n+\nwarning: 1 line adds whitespace errors.\n"
+        }
+      ],
+      "test_returncode": 0,
+      "stdout": "........................................................................ [100%]\n72 passed in 0.10s\n",
+      "stderr": "",
+      "wall_seconds": 0.358
+    },
+    {
+      "label": "combined_tests_feature1",
+      "type": "native_pytest",
+      "patches": [
+        "references/aamas/cooperbench_20260923/samples/pallets_click_task2800/combined.patch",
+        "references/aamas/cooperbench_20260923/samples/pallets_click_task2800/feature1/tests.patch"
+      ],
+      "apply": [
+        {
+          "path": "references/aamas/cooperbench_20260923/samples/pallets_click_task2800/combined.patch",
+          "returncode": 0,
+          "stderr": "/Users/jingwu/work/earning-roles/references/aamas/cooperbench_20260923/samples/pallets_click_task2800/combined.patch:189: trailing whitespace.\n \n/Users/jingwu/work/earning-roles/references/aamas/cooperbench_20260923/samples/pallets_click_task2800/combined.patch:242: trailing whitespace.\n \n/Users/jingwu/work/earning-roles/references/aamas/cooperbench_20260923/samples/pallets_click_task2800/combined.patch:244: trailing whitespace.\n        attributes including parameters, options, command metadata, and \n/Users/jingwu/work/earning-roles/references/aamas/cooperbench_20260923/samples/pallets_click_task2800/combined.patch:247: trailing whitespace.\n \n/Users/jingwu/work/earning-roles/references/aamas/cooperbench_20260923/samples/pallets_click_task2800/combined.patch:252: trailing whitespace.\n \nwarning: squelched 16 whitespace errors\nwarning: 21 lines add whitespace errors.\n"
+        },
+        {
+          "path": "references/aamas/cooperbench_20260923/samples/pallets_click_task2800/feature1/tests.patch",
+          "returncode": 0,
+          "stderr": ""
+        }
+      ],
+      "test_returncode": 0,
+      "stdout": "....................................................................     [100%]\n68 passed in 0.10s\n",
+      "stderr": "",
+      "wall_seconds": 0.366
+    },
+    {
+      "label": "combined_tests_feature7",
+      "type": "native_pytest",
+      "patches": [
+        "references/aamas/cooperbench_20260923/samples/pallets_click_task2800/combined.patch",
+        "references/aamas/cooperbench_20260923/samples/pallets_click_task2800/feature7/tests.patch"
+      ],
+      "apply": [
+        {
+          "path": "references/aamas/cooperbench_20260923/samples/pallets_click_task2800/combined.patch",
+          "returncode": 0,
+          "stderr": "/Users/jingwu/work/earning-roles/references/aamas/cooperbench_20260923/samples/pallets_click_task2800/combined.patch:189: trailing whitespace.\n \n/Users/jingwu/work/earning-roles/references/aamas/cooperbench_20260923/samples/pallets_click_task2800/combined.patch:242: trailing whitespace.\n \n/Users/jingwu/work/earning-roles/references/aamas/cooperbench_20260923/samples/pallets_click_task2800/combined.patch:244: trailing whitespace.\n        attributes including parameters, options, command metadata, and \n/Users/jingwu/work/earning-roles/references/aamas/cooperbench_20260923/samples/pallets_click_task2800/combined.patch:247: trailing whitespace.\n \n/Users/jingwu/work/earning-roles/references/aamas/cooperbench_20260923/samples/pallets_click_task2800/combined.patch:252: trailing whitespace.\n \nwarning: squelched 16 whitespace errors\nwarning: 21 lines add whitespace errors.\n"
+        },
+        {
+          "path": "references/aamas/cooperbench_20260923/samples/pallets_click_task2800/feature7/tests.patch",
+          "returncode": 0,
+          "stderr": "/Users/jingwu/work/earning-roles/references/aamas/cooperbench_20260923/samples/pallets_click_task2800/feature7/tests.patch:140: new blank line at EOF.\n+\nwarning: 1 line adds whitespace errors.\n"
+        }
+      ],
+      "test_returncode": 0,
+      "stdout": "........................................................................ [100%]\n72 passed in 0.11s\n",
+      "stderr": "",
+      "wall_seconds": 0.393
+    },
+    {
+      "label": "gold_merge",
+      "type": "git_merge",
+      "base_sha": "91e13e625a5825f50f6fae410f73dbcf10d1c40e",
+      "steps": [
+        {
+          "step": "apply_feature1",
+          "returncode": 0,
+          "stderr": ""
+        },
+        {
+          "step": "apply_feature7",
+          "returncode": 0,
+          "stderr": ""
+        }
+      ],
+      "merge_returncode": 1,
+      "merge_stdout": "Auto-merging src/click/core.py\nAuto-merging src/click/shell_completion.py\nCONFLICT (content): Merge conflict in src/click/shell_completion.py\nAutomatic merge failed; fix conflicts and then commit the result.\n",
+      "merge_stderr": "",
+      "status": "M  src/click/core.py\nUU src/click/shell_completion.py\n",
+      "conflict_files": [
+        "src/click/shell_completion.py"
+      ],
+      "expected_conflict": true
+    },
+    {
+      "label": "static_api_audit",
+      "type": "source_scan",
+      "facts": {
+        "coop_preassigns_feature": true,
+        "coop_records_conversation": true,
+        "coop_records_structured_acceptance": false,
+        "eval_has_lead_fallback": true,
+        "eval_filters_test_files": true,
+        "eval_tests_merged_tree_clean_only": true,
+        "eval_outputs_both_passed": true,
+        "runner_has_role_update_field": false,
+        "runner_has_acceptance_field": false,
+        "eval_fallback_strategy_template": true,
+        "eval_has_lead_fallback_detail": "lead-only fallback tests agent1 patch against both feature suites after merge conflict/missing input"
+      }
+    },
+    {
+      "label": "py_compile",
+      "type": "syntax",
+      "files": [
+        {
+          "path": "references/aamas/cooperbench_20260923/runner_coop.py",
+          "returncode": 0,
+          "stderr": ""
+        },
+        {
+          "path": "references/aamas/cooperbench_20260923/runner_team.py",
+          "returncode": 0,
+          "stderr": ""
+        },
+        {
+          "path": "references/aamas/cooperbench_20260923/eval_sandbox.py",
+          "returncode": 0,
+          "stderr": ""
+        }
+      ],
+      "all_pass": true
+    }
+  ]
+}

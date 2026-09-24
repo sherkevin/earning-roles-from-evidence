@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "frozen_at_utc": "2026-09-23 06:57:02 UTC",
+  "status": "PROSPECTIVE_DEVELOPMENT_OBSERVATION_SMOKE_ONLY",
+  "decision": "docs/user/decisions/0006-study-peer-judged-role-formation.md",
+  "question": "Can independent LLM producer and consumer agents perform an attributable, lawful native AppWorld handoff and record the actual consumer's pre-action judgment and subsequent use/rework?",
+  "not_tested": [
+    "judgment-to-role update",
+    "future responsibility assignment",
+    "longitudinal agent-workflow co-evolution",
+    "method advantage or paper novelty"
+  ],
+  "project_code_commit": "ddc95f1a3d6cb89dce5f78618babb542d0286266",
+  "appworld_source_commit": "42b5bcf3cd334fee33f0c37c02070a9f5807add5",
+  "appworld_data_version": "0.2.0",
+  "dataset_split": "train; evaluator inspected by research side; development only",
+  "native_task_ids_in_order": [
+    "22cc237_1",
+    "3c13f5a_1"
+  ],
+  "selection_rule": "Two prospectively chosen distinct train families with natural information-preparation to Venmo-action dependencies; run both in order regardless of first result unless a declared global infrastructure stop occurs; no favorable replacement.",
+  "world_seed": 100,
+  "agents": {
+    "producer": "Separate LLM history and separate initial AppWorld world; public read operations only; deliver a structured, source-linked recipient/amount proposal; its world changes are discarded and any write invalidates the observation.",
+    "consumer": "Separate LLM history and fresh initial AppWorld world; receive only the explicit producer deliverable; may inspect public state before declaring accept/rework/reject; log judgment before write actions; only consumer may execute task changes."
+  },
+  "provider_name": "内部",
+  "provider_endpoint_expected": "https://idealab.alibaba-inc.com/api/code",
+  "model_request": "qwen3.8-max",
+  "temperature": 0,
+  "max_output_tokens_per_call": 2048,
+  "attempted_call_caps_per_episode": {
+    "producer": 12,
+    "consumer_review": 8,
+    "consumer_action": 18,
+    "total": 38
+  },
+  "global_attempt_cap": 76,
+  "transport_rule": "All attempts, errors, retries and unknown token use count against caps. Retry only provider 429/503 within the remaining cap, with at most two retries and logged finite backoff; other transport failure is UNKNOWN, never a task failure.",
+  "legal_feedback": "Task instruction, API documentation and public runtime observations only. Producer artifact crosses to consumer. Neither agent sees private_data, ground truth, evaluator code, evaluator outcome, or the other's hidden messages/runtime variables. Official evaluator runs after consumer judgment and action are frozen; outcome is scientific analysis only.",
+  "pre_action_judgment_schema": {
+    "verdict": [
+      "accept",
+      "rework",
+      "reject",
+      "unknown"
+    ],
+    "intends_to_use_proposal": "boolean or null if unknown",
+    "review_reason": "text with public evidence references",
+    "planned_repair": "text or null"
+  },
+  "outcomes": [
+    "valid_independent_handoff",
+    "pre_action_judgment_recorded",
+    "proposal_actually_used",
+    "repair_or_rejection_recorded",
+    "official_final_success",
+    "attempted_calls_tokens_errors_and_wall_time"
+  ],
+  "stop_rule": "Run exactly two task IDs unless the named provider, pinned benchmark or isolation boundary fails. Preserve all partial traces and stop reason; no post hoc task substitution or promotion to confirmation.",
+  "output_root": "artifacts/experiments/aamas2027/peer_judgment_smoke_v1_20260923",
+  "cost_currency": "USD unavailable unless provider pricing is independently verified; report attempts/tokens/time and unknown usage without inventing price"
+}

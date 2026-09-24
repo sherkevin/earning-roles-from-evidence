@@ -1,0 +1,142 @@
+{
+  "version": 4,
+  "status": "FROZEN_PROSPECTIVE_A0_DEVELOPMENT_DIAGNOSTIC_V4",
+  "frozen_at_utc": "2026-09-23 09:24:06 UTC",
+  "protocol_path": "docs/scientist/analysis/AAMAS_PEER_JUDGMENT_A0_V4_PROTOCOL_20260923.md",
+  "protocol_sha256": "9012e02bb26109f5a3ecdadd973fa1fb6e406f907fd562476d4ec94c54bd8c9e",
+  "public_inventory_path": "artifacts/analysis/aamas2027/peer_judgment_train_dev_candidates_20260923.json",
+  "public_inventory_sha256": "d435e59b7a793658913ab16591067aba5522c311f8705c1beb317985145eaffb",
+  "research_status": "Post-v3 development rerun on the same four known train tasks, not independent confirmation or a method-effect comparison. All four IDs/pairs/order preserved; A0 remains stateless with no role update, learned assignment, or R0 result-conditioned actor prompt.",
+  "prior_exposure": {
+    "6ea6792_1": "Previously exposed to an R0 single-agent development run; this A0 run tests a different peer handoff, not unseen generalization.",
+    "6ea6792_2": "Previously exposed to an R0 single-agent development run; not an A0 task.",
+    "all_v4_ids": "All four task IDs were attempted in A0 v3; v4 is a disclosed instrument-development rerun. No task is a new sample or unseen confirmation."
+  },
+  "episodes_in_order": [
+    {
+      "task_id": "2a163ab_1",
+      "family": "2a163ab",
+      "producer_id": "A",
+      "consumer_id": "B",
+      "public_spec_sha256": "1bcdb368753f6a03bf76df5db83d79428a22bc3eb8525dbc1bd51136541a4c9c"
+    },
+    {
+      "task_id": "afc0fce_1",
+      "family": "afc0fce",
+      "producer_id": "B",
+      "consumer_id": "C",
+      "public_spec_sha256": "38695334c722a78e7f85b0feb1e886bbea001a20bc65191f410fd5a9db8a4b38"
+    },
+    {
+      "task_id": "6ea6792_1",
+      "family": "6ea6792",
+      "producer_id": "A",
+      "consumer_id": "D",
+      "public_spec_sha256": "d47968083680b51cefb4996b9a63cfa185ea6ea716637ba827d7e5e2e296abd7"
+    },
+    {
+      "task_id": "60d0b5b_1",
+      "family": "60d0b5b",
+      "producer_id": "D",
+      "consumer_id": "C",
+      "public_spec_sha256": "1a040c4f7fd218548da13b18c95bf430cc1f550975b420fc8f7c48159f6d6a7c"
+    }
+  ],
+  "appworld_source_commit": "42b5bcf3cd334fee33f0c37c02070a9f5807add5",
+  "appworld_data_version": "0.2.0",
+  "world_seed": 100,
+  "provider_name": "内部",
+  "provider_endpoint_expected": "https://idealab.alibaba-inc.com/api/code",
+  "model_request": "qwen3.8-max",
+  "temperature": 0,
+  "max_output_tokens_per_call": 8192,
+  "attempted_call_caps_per_episode": {
+    "producer": 12,
+    "consumer_review": 5,
+    "consumer_action": 7,
+    "total": 24
+  },
+  "global_task_attempt_cap": 96,
+  "transport_rule": {
+    "service_errors": "At most two byte-identical 429/503 same-request retries with 1 then 2 second backoff, each charged to the current phase cap.",
+    "timeout": "At most one byte-identical timeout retry per episode, only if the timed-out request returned no response, no new code was parsed or world.executed for that request, messages and parameters are unchanged, and the current phase has remaining attempts. Prior completed world steps do not forbid retry. The failed attempt and retry both count against that phase cap; a second timeout is UNKNOWN.",
+    "other": "No retry when response or execution state is uncertain; other transport uncertainty is UNKNOWN, never a semantic task failure."
+  },
+  "artifact_rule": "Malformed code/artifact or missing public source is rejected with secret-free feedback in the same actor history and phase cap. At phase exhaustion preserve evidence and mark UNKNOWN. A0 does not substitute tasks or borrow attempts.",
+  "provenance_rule": "Every candidate action requires selection and target claims and one claim for every non-secret API argument. Each claim has typed source_refs resolving to public task_spec, API-doc or exact public GET observation path/value; derived values state operands and transform. The online validator checks reference integrity and exact public literals where possible, not semantic correctness, search completeness, or hidden answers. All rows receive later human review.",
+  "coverage_rule": "Always declare scope, exhaustive true/false/null, pagination and stopping basis with typed public source_refs. For last/all tasks completeness is assessed offline from the full public trace; controller existence checks are not completeness proof.",
+  "initial_equality_probe": [
+    "controller-only native ModelCollection.model_hashes() for all loaded task app models",
+    "supervisor.show_active_task",
+    "phone.get_current_date_and_time"
+  ],
+  "initial_equality_limit": "Controller-only model hashes must match at producer/consumer initialization and remain unchanged through producer read/auth phase. Public task/date probes must also match; no task/model rows or hash values enter actor prompts. This checks loaded native model state, not a separate causal influence test.",
+  "legal_feedback": "Task instruction, public API docs, public runtime GETs, and the sealed producer artifact only. No private evaluator, ground truth, R0 memory/results, other actor history, or official score enters actor prompts. Evaluator import occurs only after action and role event have been sealed.",
+  "online_terminal_feedback": false,
+  "role_updates_enabled": false,
+  "scorer_isolation": "Official evaluator is imported only after actor worlds close, action audit/use and role event are sealed; no evaluator content is fed back to an actor or to A0 retry rules.",
+  "stops": {
+    "same_infrastructure_error_in_consecutive_episodes": 2,
+    "minimum_complete_observation_chains_to_continue_to_A1": 3,
+    "on_unsafe_write_or_state_mismatch": "Stop globally; preserve current and unstarted IDs.",
+    "on_task_cap": "UNKNOWN; never infer semantic failure or replace ID."
+  },
+  "preflight": {
+    "provider_health": "One real qwen3.8-max call in a separate log/budget, required before A0 task calls.",
+    "native_fixture": "Zero LLM calls; native SafetyGuard on; verify public GET, producer write blocked, consumer write allowed in separate reset world, deferred logging, and secret redaction.",
+    "paths": {
+      "provider_health": "artifacts/aamas2027/runtime_checks/peer_a0_health_v4_20260923",
+      "native_fixture": "artifacts/aamas2027/runtime_checks/peer_a0_native_v4_20260923"
+    }
+  },
+  "output_root": "artifacts/experiments/aamas2027/peer_judgment_a0_v4_20260923",
+  "cost_currency": "USD unverified: preserve attempts, all reported token classes, unknown usage, errors, world calls, log events and wall time; do not invent USD.",
+  "official_result_interpretation": "Official terminal failure is recorded separately from publicly attributable producer, consumer or shared defects. A consumer complete_task answer error is consumer_finalization_error, never automatic producer debit.",
+  "no_action_policy": "Candidate actions may be empty only with an evidenced no_action object. Never invent an action merely to satisfy the schema.",
+  "manual_review": "Review all task rows and coverage against public sources before exposing official scores; label supported/unsupported/indeterminate and producer/consumer/shared/unknown responsibility. A0 is too small for calibrated role or efficacy claims.",
+  "supersedes_v1_pre_execution": {
+    "path": "configs/aamas2027/peer_judgment_a0_v1.json",
+    "sha256": "83f17ef3f014f8b953a918a7d11883b84d91d89f8f9975f99f446ca578fbf2ac",
+    "reason": "Before any task or provider call: specify complete-chain censoring and native model-hash equality; preserve initial failed zero-LLM fixture from wrong Python interpreter."
+  },
+  "complete_observation_chain_rule": "Count only if a valid producer artifact, pre-action judgment, actual-use record, and role event are sealed, consumer task_completed is true, and the action phase did not exhaust its seven-call cap. Cap-exhausted or transport-unknown action is censored/incomplete even if some writes occurred; never a semantic failure.",
+  "producer_no_task_write_rule": "Reject any audited producer public call other than GET or POST /auth/token; additionally require all native model hashes unchanged between producer initialization and sealed delivery. No exceptions are inferred from scorer labels.",
+  "action_transition_rule": "Log exact attempted API argument matches separately from API success and from controller-only before/after native model-hash changes. A generic changed-model witness is not per-action proof. Keep per-action confirmed state transitions unknown unless a public readback can identify them; official evaluator remains offline.",
+  "supersedes_v2_pre_execution": {
+    "path": "configs/aamas2027/peer_judgment_a0_v2.json",
+    "sha256": "526341487d6b4113b11342a7a8c0a19734f7743476e50e785b70f59e12a7e671",
+    "reason": "Before any provider/task call: preserve failed zero-LLM fixture runs, correct native requester/logger signatures, and increase nominal output cap based on synthetic-only schema-size check."
+  },
+  "synthetic_size_fixture": {
+    "path": "artifacts/aamas2027/runtime_checks/peer_a0_schema_size_20260923/result.json",
+    "sha256": "422a5d68c3991e5e6b0173b706e44ec126f4f408420a419b3b645b59dcd85e56",
+    "result": "14 generic synthetic actions ~3075 cl100k proxy tokens; 28 actions ~6071. This is an estimate, not Qwen token count or actual provider hard cap. No task results used."
+  },
+  "public_login_guidance": {
+    "apply_equally_to": "producer and consumer initial prompts",
+    "text": "If an app requires authentication, first inspect its public api_docs login signature; use actor-callable supervisor account/profile and account-password APIs to find the corresponding app username and credential; username format can differ by app. Call the documented /auth/token endpoint. Do not guess or hardcode credentials. Never include credentials, tokens or passwords in a proposal, role event or report.",
+    "scope": "Generic public API usage only; no concrete account, entity, action or answer is supplied. Producer remains read-only except POST /auth/token."
+  },
+  "no_outcome_cherry_pick": "Execute the same four v3 IDs, pairs and order; report all starts, completions, UNKNOWN states and unstarted IDs. No v3-to-v4 difference is a method effect or independent sample.",
+  "v3_completed_run_pins": {
+    "config": {
+      "path": "configs/aamas2027/peer_judgment_a0_v3.json",
+      "sha256": "6333ff5c48f80a6839700a13f34107bea75c869da673cb8e199db68eb58ca8f3"
+    },
+    "runner_at_execution": {
+      "path": "artifacts/experiments/aamas2027/peer_judgment_a0_v3_20260923/runner_at_execution.py",
+      "sha256": "6c178af6dc882646fa52a8138949ff2846560b975ed96aca58a67c97bdc169fe"
+    },
+    "results": {
+      "path": "artifacts/experiments/aamas2027/peer_judgment_a0_v3_20260923/results.json",
+      "sha256": "dd2c4e2446c96d10cf4cc3d4dafab6cb8afc09a50b322498fed2095591a74483"
+    },
+    "interpretation": "A0 v3 attempted all four fixed IDs with 32 task LLM attempts; three producer caps and one producer timeout; zero complete observation chains. v4 is post-outcome development."
+  },
+  "pre_execution_revision": "At 2026-09-23 09:24 UTC, before any v4 provider or task call, the draft protocol/config were revised to state print-visible exploration and prompt evidence-sufficient producer sealing; no frozen v3 artifact changed. This is a prospective instrument change, not outcome selection within v4.",
+  "exploration_visibility_guidance": {
+    "apply_equally_to": "producer and consumer initial prompts",
+    "text": "In every exploratory Python call, print the returned public API result or the relevant non-secret fields so the next model turn can inspect it. Keep passwords and access tokens only in private REPL variables; never print them. A call whose result is not printed is not visible evidence in the next turn."
+  },
+  "producer_seal_guidance": "The producer has at most 12 attempted LLM calls. Once public evidence suffices for a supported candidate or evidenced no_action, seal <proposal> while attempts remain. State scope and uncertainty honestly; do not explore unrelated APIs merely to use the budget. If no public evidence supports a candidate or no_action by the cap, leave the episode UNKNOWN; never manufacture an action or assert no_action without evidence."
+}

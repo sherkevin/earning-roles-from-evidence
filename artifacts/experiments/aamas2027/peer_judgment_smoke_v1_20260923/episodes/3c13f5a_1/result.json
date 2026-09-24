@@ -1,0 +1,36 @@
+{
+  "task_id": "3c13f5a_1",
+  "status": "INVALID",
+  "global_stop": false,
+  "experiment_names": {
+    "producer": "pj_prod_5756c7921d78110b25",
+    "consumer": "pj_cons_5756c7921d78110b25"
+  },
+  "error": {
+    "type": "ValueError",
+    "message": "Proposal row lacks grounded recipient, amount or source",
+    "traceback": "Traceback (most recent call last):\n  File \"/Users/jingwu/work/earning-roles/scripts/aamas_peer_judgment_smoke.py\", line 452, in episode\n    proposal = validate_proposal(proposal_raw, {row[\"step\"] for row in producer_steps}, secrets)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/jingwu/work/earning-roles/scripts/aamas_peer_judgment_smoke.py\", line 263, in validate_proposal\n    raise ValueError(\"Proposal row lacks grounded recipient, amount or source\")\nValueError: Proposal row lacks grounded recipient, amount or source\n"
+  },
+  "official_final_success": null,
+  "usd_cost": null,
+  "phase_costs": {
+    "producer": {
+      "attempts": 1,
+      "tokens": {
+        "input_tokens": 3664,
+        "output_tokens": 2824,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0
+      },
+      "unknown_usage_attempts": 0,
+      "api_errors": 0,
+      "error_codes": [],
+      "returned_models": [
+        "qwen3.8-max"
+      ],
+      "api_seconds": 96.7867809580639
+    }
+  },
+  "attempted_calls": 1,
+  "wall_seconds": 101.15044887503609
+}

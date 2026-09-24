@@ -1,0 +1,90 @@
+{
+  "experiment_id": "cooperbench_task2800_official_docker_preflight_20260923",
+  "created_at_utc": "2026-09-23T10:53:25.776772+00:00",
+  "mode": "zero_llm_engineering_preflight",
+  "upstream_commit": "63b9d44d9f39a02fccf5bf0052db48a917a011fd",
+  "sample": "pallets_click_task/task2800/feature1+feature7",
+  "task_image": "akhatua/cooperbench-pallets-click:task2800",
+  "click_base_commit": "d8763b93021c416549b5f8b4b5497234619410db",
+  "model_api_calls_allowed": 0,
+  "max_manifest_attempts_per_endpoint": 2,
+  "max_compressed_image_bytes": 2147483648,
+  "colima_cpu": 2,
+  "colima_memory_gib": 4,
+  "colima_disk_gib": 30,
+  "max_total_wall_minutes": 30,
+  "no_existing_container_changes": true,
+  "stop_on_system_permission_or_login": true,
+  "planned_steps": [
+    "anonymous Docker Hub metadata and OCI manifest check",
+    "brew install colima docker only if manifest is reachable/arm64/under limit",
+    "start isolated Colima Docker VZ VM within bounds",
+    "docker version, pull pinned task tag",
+    "install pinned CooperBench scorer in isolated venv if needed",
+    "official test_merged with two reference feature patches, zero LLM"
+  ],
+  "environment": {
+    "platform": "macOS-26.3.2-arm64-arm-64bit",
+    "machine": "arm64",
+    "python": "3.9.6",
+    "path_tools": {
+      "brew": "/opt/homebrew/bin/brew",
+      "colima": null,
+      "limactl": null,
+      "docker": null,
+      "uv": "/opt/homebrew/bin/uv",
+      "python3.12": "/Users/jingwu/.local/bin/python3.12",
+      "redis-server": null
+    },
+    "system": {
+      "sw_vers": {
+        "argv": [
+          "sw_vers"
+        ],
+        "returncode": 0,
+        "stdout": "ProductName:\t\tmacOS\nProductVersion:\t\t26.3.2\nBuildVersion:\t\t25D2140",
+        "stderr": ""
+      },
+      "hv_support": {
+        "argv": [
+          "sysctl",
+          "-n",
+          "kern.hv_support"
+        ],
+        "returncode": 0,
+        "stdout": "1",
+        "stderr": ""
+      },
+      "memory_bytes": {
+        "argv": [
+          "sysctl",
+          "-n",
+          "hw.memsize"
+        ],
+        "returncode": 0,
+        "stdout": "25769803776",
+        "stderr": ""
+      },
+      "cpu_count": {
+        "argv": [
+          "sysctl",
+          "-n",
+          "hw.ncpu"
+        ],
+        "returncode": 0,
+        "stdout": "15",
+        "stderr": ""
+      },
+      "disk": {
+        "argv": [
+          "df",
+          "-h",
+          "."
+        ],
+        "returncode": 0,
+        "stdout": "Filesystem      Size    Used   Avail Capacity iused ifree %iused  Mounted on\n/dev/disk3s1   926Gi   479Gi   382Gi    56%    5.8M  4.0G    0%   /System/Volumes/Data",
+        "stderr": ""
+      }
+    }
+  }
+}

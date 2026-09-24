@@ -1,0 +1,33 @@
+{
+  "timestamp": "2026-09-22T11:47:57.964848+00:00",
+  "status": "PARTIAL_FIXTURE_WITH_RETAINED_NATIVE_TEARDOWN_FAILURE",
+  "task_id": "692c77d_1",
+  "config_sha256": "616c982bda3e0ae9560e8e17d62ece13f598a00dc671691e7f53ea729bad947c",
+  "new_LLM_calls": 0,
+  "official_evaluator_invoked": false,
+  "prefix_length": 7,
+  "prefix_db_equal": true,
+  "full_observations_equal": true,
+  "final_db_equal": true,
+  "source_observations_equal": true,
+  "complete_task_both": true,
+  "native_api_calls": {
+    "full_prefix_a": 45,
+    "full_prefix_b": 45,
+    "database_only": 0
+  },
+  "first_database_only_continuation": {
+    "mode": "database_only",
+    "step": 8,
+    "code": "playlist_song_ids = set()\nfor p in playlists:\n    for sid in p.get(\"song_ids\", []):\n        playlist_song_ids.add(sid)\nprint(\"All playlist songs:\", sorted(playlist_song_ids))\ntarget_songs = playlist_song_ids & liked_song_ids\nprint(\"Liked songs in playlists:\", sorted(target_songs))",
+    "observation": "Execution failed. Traceback:\n  File \"<python-input>\", line 2, in <module>\n    for p in playlists:\n             ^^^^^^^^^\nNameError: name 'playlists' is not defined"
+  },
+  "controller_exit_code": 1,
+  "teardown_errors": [
+    "AttributeError: _freeze_time object has no attribute fake_names",
+    "IndexError: pop from empty list"
+  ],
+  "failure_log_sha256": "4c00b477e237a73291260ac5a0b4e14c239b25e583cfe7b2502a8949e3d852e2",
+  "raw_sha256": "76af447a014b42ade32f979e24aa6dd94504083f8d7813b5b642b51d6b545901",
+  "interpretation": "Saved code-prefix replay reconstructed identical native observations and DB states in two fresh worlds if equality fields are true. Database-only fresh-shell continuation lacked playlists. A further native teardown failure prevents claiming the entire fixture passed. Neither validates arbitrary replay, model determinism, a useful learned update or a free counterfactual oracle."
+}

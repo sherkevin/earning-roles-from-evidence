@@ -1,0 +1,29 @@
+{
+  "timestamp": "2026-09-22T09:56:13.976869+00:00",
+  "task_id": "3ab5b8b_1",
+  "classification": "predicate_entity_scope",
+  "status": "public_trace_hypothesis_not_proven_counterfactual",
+  "public_evidence": [
+    {
+      "steps": [
+        6,
+        7,
+        11
+      ],
+      "observation": "Queries liked playlists and collects every nested song ID; no intersection with liked-song IDs appears."
+    },
+    {
+      "steps": [
+        12,
+        13
+      ],
+      "observation": "Downloads the self-selected set and checks it is included in downloaded songs."
+    }
+  ],
+  "interpretation": "The executed liked predicate applies to playlists rather than songs. The final official score rejects three of six assertions. The wording has an attachment ambiguity; no gold solution or repair oracle was read.",
+  "boundary": "Both failed siblings in this family share this observed scope choice; the song-library sibling succeeds where the candidate entity kinds coincide. This does not identify a learned-update or partner interaction.",
+  "reusable_design_input": "Represent both action-target kind and each selection-predicate entity kind; type-correct output IDs alone cannot expose this error. Compare against a competent common semantic interface before claiming reusable qualification.",
+  "trace_sha256": "b9a08ab9b4474dff287790c3321cf4a865dcb32d40253b0aa1a4d94a73bc963c",
+  "new_benchmark_LLM_calls": 0,
+  "ground_truth_solution_read": false
+}

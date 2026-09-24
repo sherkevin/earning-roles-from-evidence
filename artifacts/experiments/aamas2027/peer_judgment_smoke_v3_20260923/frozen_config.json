@@ -1,0 +1,69 @@
+{
+  "version": 3,
+  "frozen_at_utc": "2026-09-23 07:40:09 UTC",
+  "status": "PROSPECTIVE_RUNTIME_REPAIR_SMOKE_ONLY",
+  "decision": "docs/user/decisions/0006-study-peer-judged-role-formation.md",
+  "question": "After fixing controller audit I/O, can one independent producer and actual consumer perform a source-grounded delivery, sealed pre-action judgment, and observable use/rework on a fresh native AppWorld task?",
+  "dataset_split": "train; evaluator inspected by research side; development only",
+  "selection_rule": "One fresh _3 sibling of the prospectively selected 3c13f5a train family is used solely to test the repaired native observation pipeline; the transport-only 22cc237 family is omitted from this integration retest by this predeclared rule, not replaced on the basis of a favorable task score. No confirmation claim or task substitution.",
+  "native_task_ids_in_order": [
+    "3c13f5a_3"
+  ],
+  "not_tested": [
+    "judgment-to-role update",
+    "future responsibility assignment",
+    "longitudinal agent-workflow co-evolution",
+    "method advantage or paper novelty",
+    "confirmatory generalization"
+  ],
+  "appworld_source_commit": "42b5bcf3cd334fee33f0c37c02070a9f5807add5",
+  "appworld_data_version": "0.2.0",
+  "world_seed": 100,
+  "provider_name": "内部",
+  "provider_endpoint_expected": "https://idealab.alibaba-inc.com/api/code",
+  "model_request": "qwen3.8-max",
+  "temperature": 0,
+  "max_output_tokens_per_call": 2048,
+  "attempted_call_caps_per_episode": {
+    "producer": 12,
+    "consumer_review": 8,
+    "consumer_action": 18,
+    "total": 38
+  },
+  "global_attempt_cap": 38,
+  "transport_rule": {
+    "service_errors": "Retry provider 429/503 at most twice per request, each attempt charged within its phase cap, with logged backoff of 1 then 2 seconds.",
+    "timeout": "Exactly one retry of a provider TimeoutError per episode, only before any AppWorld world.execute call; retry is charged within the current phase cap and logged with a 2-second backoff. A second timeout or any timeout after a world.execute call is UNKNOWN transport failure.",
+    "other": "No retry; transport failure is UNKNOWN, never scored as a task failure."
+  },
+  "validation_repair_rule": {
+    "producer": "Require at least one executed public task-data GET and at least one such read step in every proposal row's source_steps. A rejected proposal or malformed terminal artifact receives a specific, secret-free validation error as the next user message in the same producer history. The initial invalid response and every repair attempt count within the unchanged producer cap; the controller never invents evidence or source steps.",
+    "consumer_review": "A rejected or malformed judgment receives a specific, secret-free validation error as the next user message in the same consumer review history. Every repair attempt counts within the unchanged review cap. Judgment is sealed before any consumer write.",
+    "exhaustion": "If no valid artifact appears within the phase cap, preserve all calls and observations and mark the episode INVALID/UNKNOWN. Action budget exhaustion after a sealed judgment still preserves state, use analysis and offline evaluation."
+  },
+  "public_read_observation_definition": "A producer world.execute step whose audited API calls include at least one successful GET to a task-data app other than api_docs, supervisor or admin; API documentation and auth calls do not qualify as source evidence.",
+  "legal_feedback": "Task instruction, API documentation and public runtime observations only. The explicit validated producer artifact crosses to the consumer. Neither agent sees private_data, ground truth, evaluator code or outcome, or the other's hidden messages/runtime variables. The official evaluator runs only after consumer judgment and action are frozen and is for analysis only.",
+  "pre_action_judgment_schema": {
+    "verdict": [
+      "accept",
+      "rework",
+      "reject",
+      "unknown"
+    ],
+    "intends_to_use_proposal": "boolean, or null exactly when verdict is unknown",
+    "review_reason": "text with public evidence references",
+    "planned_repair": "text or null"
+  },
+  "output_root": "artifacts/experiments/aamas2027/peer_judgment_smoke_v3_20260923",
+  "cost_currency": "USD unavailable unless provider pricing is independently verified; report attempts, tokens, errors, unknown usage and wall time without inventing price",
+  "amends_v2": {
+    "config": "configs/aamas2027/peer_judgment_smoke_v2.json",
+    "config_sha256": "1b089c9d0978f44a8dccaac919048ae06aa7a8fe94cc06b6630e1bb90ba77573",
+    "runner_at_execution": "artifacts/experiments/aamas2027/peer_judgment_smoke_v2_20260923/runner_at_execution.py",
+    "runner_at_execution_sha256": "83c06393378d88ce0a6953f2d28efb35df7d2b3a09c415eb3132c221fb89f09d",
+    "results": "artifacts/experiments/aamas2027/peer_judgment_smoke_v2_20260923/results.json",
+    "results_sha256": "f872b7452fc21f83e623970d5d26ef8239a13743c16510a1734804e2f8cbf363",
+    "retained_outcomes": "22cc237_2: two provider TimeoutErrors (one declared retry), no response/world action. 3c13f5a_2: five qwen responses and four world executes but public API docs reads failed under native SafetyGuard because the controller wrote audit logs from inside the guarded callback; no proposal, consumer judgment or score. All v2 outputs remain INVALID and untouched."
+  },
+  "runtime_repair": "Requester audit events are buffered in memory while AppWorld SafetyGuard is active, then flushed after world.execute returns and native guard is disabled. The native guard remains enabled. A repeat Path.mkdir guard failure stops as an infrastructure error. Frozen v1/v2 observations remain unchanged."
+}

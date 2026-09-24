@@ -1,0 +1,99 @@
+{
+  "check_id": "reuse_benchmark_source_integrity_20260924",
+  "llm_calls": 0,
+  "files": {
+    "references/aamas/reuse_design_20260924/benchmarks/agentworld/LICENSE": {
+      "sha256": "1f256ecad192880510e84ad60474eab7589218784b9a50bc7ceee34c2b91f1d5",
+      "bytes": 16725
+    },
+    "references/aamas/reuse_design_20260924/benchmarks/agentworld/README.md": {
+      "sha256": "3c5c56ab74d70d24dddffbcbc62797a7d8a4c709f8c16fc9b58e85ad3bc8a62f",
+      "bytes": 13505
+    },
+    "references/aamas/reuse_design_20260924/benchmarks/agentworld/base_agent.py": {
+      "sha256": "cba4ca696428f17d4c3c62f76e1c64cdf14d16681135749d9dc3edfb35b162dd",
+      "bytes": 27095,
+      "py_compile": "pass"
+    },
+    "references/aamas/reuse_design_20260924/benchmarks/agentworld/experiment.py": {
+      "sha256": "01ab6877db809c94e9113b0cbb3ea3200a74ecfc5bdf8ea8acffdaa1537eab94",
+      "bytes": 13271,
+      "py_compile": "pass"
+    },
+    "references/aamas/reuse_design_20260924/benchmarks/agentworld/task_00_combined_workshop.yaml": {
+      "sha256": "cab446aa79722952f9157c7f780e353c6794c745ca5a308a2f764f71b518aa3e",
+      "bytes": 10658
+    },
+    "references/aamas/reuse_design_20260924/benchmarks/agentworld/task_01_magic_staff.yaml": {
+      "sha256": "7c3b79da53eb6508fe2e25a75d005ada8182bc48697b4977adf0a0b4749143f2",
+      "bytes": 4759
+    },
+    "references/aamas/reuse_design_20260924/benchmarks/agentworld/task_verifier.py": {
+      "sha256": "ec58d8b022ffb29bb3289b17f17da51f68ecf833187a28c10c9295357e6e0bd3",
+      "bytes": 97468,
+      "py_compile": "pass"
+    },
+    "references/aamas/reuse_design_20260924/benchmarks/cooperbench/dataset_README.md": {
+      "sha256": "08dbfcd69419edef935ab8aa4cf1d3af37d150397a34095bc94c9b844725299e",
+      "bytes": 5931
+    },
+    "references/aamas/reuse_design_20260924/benchmarks/cooperbench/eval_sandbox.py": {
+      "sha256": "cd69b9ce6fd04425a31e8e45ecb3eb8dbf379cef9c746107aecd0d92a5f438fc",
+      "bytes": 28475,
+      "py_compile": "pass"
+    },
+    "references/aamas/reuse_design_20260924/benchmarks/cooperbench/runner_coop.py": {
+      "sha256": "519102b19f00ed214b0a8808177a90c34d1392748f417ba38ad53518775383b9",
+      "bytes": 15444,
+      "py_compile": "pass"
+    },
+    "references/aamas/reuse_design_20260924/benchmarks/cooperbench/runner_team.py": {
+      "sha256": "91d5cdf96364de0d505ded0f1a41bfa2f1311ca6739f8b36818bfda88025f78d",
+      "bytes": 17699,
+      "py_compile": "pass"
+    },
+    "references/aamas/reuse_design_20260924/benchmarks/marble/marble_LICENSE": {
+      "sha256": "389d00652aaea7a870e1128c95df7171580f347856b3993f8a0890f1a1cf09ae",
+      "bytes": 1066
+    },
+    "references/aamas/reuse_design_20260924/benchmarks/marble/marble_coding_config_1.yaml": {
+      "sha256": "8c1a1ca875b587ce38315d6c3b83948be947b413ca589cd81951be9f51cb9c3b",
+      "bytes": 5472
+    }
+  },
+  "yaml": {
+    "task_00_combined_workshop.yaml": {
+      "parse": "pass",
+      "agents": 10,
+      "max_action_steps": 40,
+      "success_criteria": 10
+    },
+    "task_01_magic_staff.yaml": {
+      "parse": "pass",
+      "agents": 3,
+      "max_action_steps": 25,
+      "success_criteria": 6
+    }
+  },
+  "symbols": {
+    "references/aamas/reuse_design_20260924/benchmarks/cooperbench/eval_sandbox.py": {
+      "test_merged": true,
+      "test_solo": true,
+      "evaluate_merge": true
+    },
+    "references/aamas/reuse_design_20260924/benchmarks/cooperbench/runner_coop.py": {
+      "execute_coop": true,
+      "_extract_conversation": true
+    },
+    "references/aamas/reuse_design_20260924/benchmarks/agentworld/experiment.py": {
+      "single_agent_upper_bound": true,
+      "no_communication": true,
+      "no_roles": true,
+      "random_agent": true
+    },
+    "references/aamas/reuse_design_20260924/benchmarks/agentworld/task_verifier.py": {
+      "verify_task": true,
+      "process_folder": true
+    }
+  }
+}

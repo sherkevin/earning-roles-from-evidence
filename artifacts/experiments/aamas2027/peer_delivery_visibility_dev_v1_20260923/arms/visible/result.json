@@ -1,0 +1,52 @@
+{
+  "arm": "visible",
+  "task_id": "3c13f5a_3",
+  "status": "UNKNOWN",
+  "error": {
+    "type": "PhaseExhausted",
+    "message": "consumer_review attempted-call cap exhausted after 8 world steps",
+    "traceback": "Traceback (most recent call last):\n  File \"/Users/jingwu/work/earning-roles/scripts/aamas_delivery_visibility_dev_v1.py\", line 413, in arm_episode\n    plan, review_steps = a0.phase_loop(world,parser,apis['consumer_review'],\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/jingwu/work/earning-roles/scripts/aamas_peer_judgment_a0_v4.py\", line 605, in phase_loop\n    raise PhaseExhausted(f\"{phase} attempted-call cap exhausted after {len(steps)} world steps\")\naamas_peer_judgment_a0_v4.PhaseExhausted: consumer_review attempted-call cap exhausted after 8 world steps\n"
+  },
+  "global_stop": false,
+  "action_sealed": false,
+  "task_completed": false,
+  "official_score_available_in_actor_process": false,
+  "usd_cost": null,
+  "stop_reason": "consumer_review attempted-call cap exhausted after 8 world steps",
+  "stop_phase": "consumer_review",
+  "infrastructure_error_category": "phase_cap",
+  "phase_costs": {
+    "consumer_review": {
+      "attempts": 8,
+      "tokens": {
+        "input_tokens": 12385,
+        "output_tokens": 2054,
+        "cache_read_input_tokens": 45696,
+        "cache_creation_input_tokens": 0
+      },
+      "unknown_usage_attempts": 0,
+      "api_errors": 0,
+      "error_codes": [],
+      "returned_models": [
+        "qwen3.8-max",
+        "qwen3.8-max",
+        "qwen3.8-max",
+        "qwen3.8-max",
+        "qwen3.8-max",
+        "qwen3.8-max",
+        "qwen3.8-max",
+        "qwen3.8-max"
+      ],
+      "api_seconds": 66.59407400107011
+    }
+  },
+  "attempted_task_calls": 8,
+  "world_execute_count": 8,
+  "validation_rejections": {
+    "producer": 0,
+    "consumer_review": 0,
+    "consumer_action": 0
+  },
+  "timeout_retry_used": false,
+  "wall_seconds": 82.77617604203988
+}

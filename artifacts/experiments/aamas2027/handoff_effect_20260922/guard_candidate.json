@@ -1,0 +1,26 @@
+{
+  "candidate": {
+    "guard": "exclude_already_done",
+    "evidence": "Exception: Response status code is 422: {\"message\":\"The song is already downloaded.\"}",
+    "rationale": "The public error shows the song is already downloaded, and the available downloaded-songs read can identify already-done song_ids to exclude before attempting remaining downloads."
+  },
+  "status": "SCHEMA_VALID_NOT_YET_VERIFIED",
+  "raw_text": "{\n  \"guard\": \"exclude_already_done\",\n  \"evidence\": \"Exception: Response status code is 422: {\\\"message\\\":\\\"The song is already downloaded.\\\"}\",\n  \"rationale\": \"The public error shows the song is already downloaded, and the available downloaded-songs read can identify already-done song_ids to exclude before attempting remaining downloads.\"\n}",
+  "source_public_event": {
+    "code": "all_song_ids = role_handoff_ids\nresults = {}\nfor song_id in sorted(all_song_ids):\n    res = apis.spotify.download_song(song_id=song_id, access_token=access_token)\n    results[song_id] = res\nprint(results)",
+    "observation": "Execution failed. Traceback:\n  File \"<python-input>\", line 4, in <module>\n    res = apis.spotify.download_song(song_id=song_id, access_token=access_token)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nException: Response status code is 422:\n{\"message\":\"The song is already downloaded.\"}",
+    "available_public_read": "apis.spotify.show_downloaded_songs(access_token=access_token, page_index=page, page_limit=20) returns current downloaded records with song_id; paginate until fewer than20.",
+    "expected_goal": "execute requested downloads; do not change the semantic target set or suppress unrelated errors"
+  },
+  "source_event_sha256": "0dd5109deb467b3b67712e3b1edf568fb368da516ff6eb76878bf3dc522065d5",
+  "attempted_calls": 1,
+  "usage": {
+    "input_tokens": 361,
+    "output_tokens": 399,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  },
+  "errors": 0,
+  "unknown_usage_attempts": 0,
+  "boundary": "dev-public-error-derived, not independent training or evaluator truth"
+}

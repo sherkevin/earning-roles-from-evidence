@@ -1,0 +1,70 @@
+{
+  "experiment_id": "peer_judgment_smoke_v1_20260923",
+  "status": "COMPLETED_NEGATIVE_OBSERVATION_SMOKE",
+  "config_sha256": "a17fc1fa22d7bd6df10aa6799915042a2f8ece0fea9f39b20f0574130eff7f5c",
+  "runner_sha256": "2eaaab855ed207515f7833cc4bac89b475f5235af95cd09f667d442f7fe63780",
+  "task_count": 2,
+  "total_attempted_llm_calls": 2,
+  "successful_llm_responses": 1,
+  "sealed_proposals": 0,
+  "sealed_consumer_judgments": 0,
+  "officially_scored_tasks": 0,
+  "tasks": [
+    {
+      "task_id": "22cc237_1",
+      "status": "INVALID",
+      "official_final_success": null,
+      "error_type": "TimeoutError",
+      "error_message": "The read operation timed out",
+      "attempted_calls": 1,
+      "unknown_usage_attempts": 1,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0
+      },
+      "returned_models": [],
+      "api_seconds": 120.10150787502062,
+      "wall_seconds": 125.45237562502734,
+      "script_sha256": "2eaaab855ed207515f7833cc4bac89b475f5235af95cd09f667d442f7fe63780",
+      "public_read_steps": 0,
+      "proposal_reported_source_steps": [],
+      "consumer_judgment_count": 0,
+      "response_model": null,
+      "source_config_sha256": "722178646940ac20473cca9bb6d4dc24d28a8df516b11a2c184afe437d2676de"
+    },
+    {
+      "task_id": "3c13f5a_1",
+      "status": "INVALID",
+      "official_final_success": null,
+      "error_type": "ValueError",
+      "error_message": "Proposal row lacks grounded recipient, amount or source",
+      "attempted_calls": 1,
+      "unknown_usage_attempts": 0,
+      "usage": {
+        "input_tokens": 3664,
+        "output_tokens": 2824,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0
+      },
+      "returned_models": [
+        "qwen3.8-max"
+      ],
+      "api_seconds": 96.7867809580639,
+      "wall_seconds": 101.15044887503609,
+      "script_sha256": "2eaaab855ed207515f7833cc4bac89b475f5235af95cd09f667d442f7fe63780",
+      "public_read_steps": 0,
+      "proposal_reported_source_steps": [
+        [
+          1
+        ]
+      ],
+      "consumer_judgment_count": 0,
+      "response_model": "qwen3.8-max",
+      "source_config_sha256": "722178646940ac20473cca9bb6d4dc24d28a8df516b11a2c184afe437d2676de"
+    }
+  ],
+  "conclusion": "The API succeeded once, but no valid grounded proposal or consumer judgment was obtained. This tests observation-protocol feasibility only and does not evaluate role learning.",
+  "source_config_sha256": "722178646940ac20473cca9bb6d4dc24d28a8df516b11a2c184afe437d2676de"
+}

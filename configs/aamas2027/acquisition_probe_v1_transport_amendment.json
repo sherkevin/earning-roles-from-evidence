@@ -1,0 +1,34 @@
+{
+  "frozen_at": "2026-09-22T08:48:55.926182+00:00",
+  "reason": "acquire_692c77d terminated with two logged HTTP429 Throttling.AllocationQuota responses; no validation calls/results exist",
+  "scope": "Transport only; same tasks/model/prompt/environment seed/memory induction policy and success gate. Preserve original v1.",
+  "acquisition_source_jobs": {
+    "692c77d": "acquire_692c77d_retry1"
+  },
+  "additional_jobs": [
+    {
+      "id": "acquire_692c77d_retry1",
+      "task_id": "692c77d_1",
+      "arm": "empty",
+      "stage": "acquire_transport_repair"
+    }
+  ],
+  "task_parallelism": 1,
+  "retryable_status_codes": [
+    429,
+    503
+  ],
+  "retry_backoff_seconds": [
+    20,
+    40
+  ],
+  "maximum_consecutive_retryable_errors": 3,
+  "attempts_per_episode_including_retries": 30,
+  "validity": "Complete official evaluation with no runtime failure and no terminal transport failure. Recovered 429/503 permitted uniformly after bounded backoff; preserve all attempts/errors and unknown usage. No other error waiver.",
+  "reuse": "Other five complete donor trajectories and their first induction results reused byte-for-byte. No trace concatenation; repaired family has not yet received an induction API call.",
+  "max_native_episodes": 33,
+  "max_episode_attempts": 990,
+  "max_induction_attempts": 6,
+  "on_repair_failure": "No replacement family/model and no scientific failure verdict. Close as infrastructure incomplete.",
+  "independent_review": "Independent design reviewer agreed before validation; no outcome-based sample selection."
+}
