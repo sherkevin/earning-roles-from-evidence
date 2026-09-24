@@ -130,11 +130,11 @@ AgentBoard 用细粒度 progress rate 记录 agent 在长轨迹中的进展，�
 | protocol smoke | 4–6 个 roots，每个 1–2 个 pair，1 seed，7 个 arms | 检查 receipt、judgment seal、use/rework、scorer 和 assignment 是否可重放 | 否 |
 | development pilot | 6–10 个 roots，至少 12–20 个 pair episodes，2 seeds，7 个 arms | 只估计成本、失败率、judgment 可用性和方差；冻结实现和分析规则 | 否 |
 | confirmation minimum | 至少 20 个互不重叠的 task roots，约 40 个 pair episodes，2 seeds，7 个 arms | 论文主分析的最低可辩护规模；按 root 做 block bootstrap/置信区间 | 可以，但只支持中等或较大效应 |
-| confirmation target | 尽可能覆盖全部 30 个 roots，约 60 个 pair episodes，2 seeds，7 个 arms | 跨仓库/语言/冲突类型的稳健性与失败边界 | 最理想 |
+| confirmation target | 若 development 使用 6 个 roots，则保留 24 个 held-out roots；若 development 使用 10 个，则保留 20 个；每个 root 约 2 个 pair episodes，2 seeds，7 个 arms | 跨仓库/语言/冲突类型的稳健性与失败边界 | 最理想 |
 
 这里的“7 个 arms”是 `B0–B5 + P`，所以 confirmation minimum 大约是 `40 × 2 × 7 = 560` 个 arm-episodes；每个 arm-episode 内还有 producer、recipient 和 assignment 的多次 API 调用。这个数字看起来大，但它不是 560 个独立组织：主要独立单位仍是 task root，pair 和 seed 是 root 内的重复观测，分析时必须按 root 聚类，不能把 560 当成样本量。
 
-如果实际 API 成本只能支持 12–14 个 confirmation roots，就只能称为 development/limited confirmation，不能声称跨仓库的稳定 role-learning 效果。反过来，也不应为了凑到 1000 个调用而重复同一 root、同一 pair 或同一身份；重复不会创造新的独立证据。
+benchmark inventory 的 30 个 roots 应覆盖 development 和 confirmation 的总池；若要让 confirmation 真正独立，development 用掉的 roots 不能再进入主确认分析。若实际 API 成本只能支持 12–14 个 held-out confirmation roots，就只能称为 development/limited confirmation，不能声称跨仓库的稳定 role-learning 效果。反过来，也不应为了凑到 1000 个调用而重复同一 root、同一 pair 或同一身份；重复不会创造新的独立证据。
 
 baseline 的合理量级是 **5–8 个对照臂（包含 proposed arm 后总共 6–9 个 arms）**。少于 4 个通常无法区分 pooled upper bound、固定协作、artifact 边际价值和普通 contextual trust；超过 8 个若没有新的识别问题，容易变成成本很高的 baseline 展示。我们的核心矩阵定为 6 个 baseline 加 1 个 proposed arm，已经足够干净：
 
