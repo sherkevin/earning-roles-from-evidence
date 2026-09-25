@@ -38,6 +38,11 @@ python3 -m pytest -q references/aamas/streamjev_20260924
 `torch.randn` 缓存向量，只能支持 runtime probe，不能支持真实数据准确率或完整
 端到端 p95 结论。
 
+审查还复现了一个 runner 边界缺陷：当 `selected_only_rls.py` 使用没有 regime switch
+的短 horizon 时，汇总器会把 `post_switch_expected_reward=None` 转成 float 而崩溃。
+这不影响长 horizon 的协议 smoke，但在修复或明确 horizon 前不能把该 runner 当作
+稳健的通用实验入口。
+
 已有真实 AppWorld v4/v5 case `3c13f5a_3` 确实记录了 producer proposal、consumer
 accept/use 和实际执行，但官方结果为 `5 assertions passed, 1 failed,
 success=false`。它证明 `o_t,j_t,y_t` 可以采集；它没有证明 judge→online update→future
