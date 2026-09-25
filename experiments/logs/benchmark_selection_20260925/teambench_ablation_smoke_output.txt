@@ -1,0 +1,164 @@
+TeamBench Ablation Study
+Model: mock
+Tasks: ['CR2_style_enforce']
+Seeds: [0]
+Conditions: ['oracle', 'restricted', 'full', 'team_no_plan', 'team_no_verify']
+============================================================
+
+[1/5] oracle x CR2_style_enforce (seed=0)
+  [oracle] Turn 0: 1 tool calls, done=False
+  [oracle] Turn 1: 0 tool calls, done=True
+  FAIL (partial=0.15, 0.0s, 2 turns)
+
+[2/5] restricted x CR2_style_enforce (seed=0)
+  [restricted] Turn 0: 1 tool calls, done=False
+  [restricted] Turn 1: 0 tool calls, done=True
+  FAIL (partial=0.15, 0.0s, 2 turns)
+
+[3/5] full x CR2_style_enforce (seed=0)
+
+==================================================
+  PHASE 1: PLANNING
+==================================================
+  [planner] Turn 0: 1 tool calls, done=False
+  [planner] Turn 1: 0 tool calls, done=True
+
+==================================================
+  PHASE 2: EXECUTION
+==================================================
+  [executor] Turn 0: 1 tool calls, done=False
+  [executor] Turn 1: 0 tool calls, done=True
+
+==================================================
+  PHASE 3: VERIFICATION (attempt 1)
+==================================================
+  [verifier] Turn 0: 1 tool calls, done=False
+  [verifier] Turn 1: 1 tool calls, done=False
+  [verifier] Turn 2: 1 tool calls, done=False
+  [verifier] Turn 3: 1 tool calls, done=False
+  [verifier] Turn 4: 1 tool calls, done=False
+  [verifier] Turn 5: 1 tool calls, done=False
+  [verifier] Turn 6: 1 tool calls, done=False
+  [verifier] Turn 7: 1 tool calls, done=False
+  [verifier] Turn 8: 1 tool calls, done=False
+  [verifier] Turn 9: 1 tool calls, done=False
+  [verifier] Turn 10: 1 tool calls, done=False
+  [verifier] Turn 11: 1 tool calls, done=False
+  [verifier] Turn 12: 1 tool calls, done=False
+  [verifier] Turn 13: 1 tool calls, done=False
+  [verifier] Turn 14: 1 tool calls, done=False
+  [verifier] Turn 15: 1 tool calls, done=False
+  [verifier] Turn 16: 1 tool calls, done=False
+  [verifier] Turn 17: 1 tool calls, done=False
+  [verifier] Turn 18: 1 tool calls, done=False
+  [verifier] Turn 19: 1 tool calls, done=False
+
+  VERDICT: FAIL — starting remediation loop 1
+  [orchestrator] Saved workspace snapshot to /tmp/ablation_runs/CR2_style_enforce/20260925_094013_7667c234/workspace_snapshots/pre_remediation_0
+  [executor] Turn 0: 1 tool calls, done=False
+  [executor] Turn 1: 0 tool calls, done=True
+
+==================================================
+  PHASE 3: VERIFICATION (attempt 2)
+==================================================
+  [verifier] Turn 0: 1 tool calls, done=False
+  [verifier] Turn 1: 1 tool calls, done=False
+  [verifier] Turn 2: 1 tool calls, done=False
+  [verifier] Turn 3: 1 tool calls, done=False
+  [verifier] Turn 4: 1 tool calls, done=False
+  [verifier] Turn 5: 1 tool calls, done=False
+  [verifier] Turn 6: 1 tool calls, done=False
+  [verifier] Turn 7: 1 tool calls, done=False
+  [verifier] Turn 8: 1 tool calls, done=False
+  [verifier] Turn 9: 1 tool calls, done=False
+  [verifier] Turn 10: 1 tool calls, done=False
+  [verifier] Turn 11: 1 tool calls, done=False
+  [verifier] Turn 12: 1 tool calls, done=False
+  [verifier] Turn 13: 1 tool calls, done=False
+  [verifier] Turn 14: 1 tool calls, done=False
+  [verifier] Turn 15: 1 tool calls, done=False
+  [verifier] Turn 16: 1 tool calls, done=False
+  [verifier] Turn 17: 1 tool calls, done=False
+  [verifier] Turn 18: 1 tool calls, done=False
+  [verifier] Turn 19: 1 tool calls, done=False
+
+  VERDICT: FAIL — starting remediation loop 2
+  [orchestrator] Saved workspace snapshot to /tmp/ablation_runs/CR2_style_enforce/20260925_094013_7667c234/workspace_snapshots/pre_remediation_1
+  [executor] Turn 0: 1 tool calls, done=False
+  [executor] Turn 1: 0 tool calls, done=True
+
+==================================================
+  PHASE 3: VERIFICATION (attempt 3)
+==================================================
+  [verifier] Turn 0: 1 tool calls, done=False
+  [verifier] Turn 1: 1 tool calls, done=False
+  [verifier] Turn 2: 1 tool calls, done=False
+  [verifier] Turn 3: 1 tool calls, done=False
+  [verifier] Turn 4: 1 tool calls, done=False
+  [verifier] Turn 5: 1 tool calls, done=False
+  [verifier] Turn 6: 1 tool calls, done=False
+  [verifier] Turn 7: 1 tool calls, done=False
+  [verifier] Turn 8: 1 tool calls, done=False
+  [verifier] Turn 9: 1 tool calls, done=False
+  [verifier] Turn 10: 1 tool calls, done=False
+  [verifier] Turn 11: 1 tool calls, done=False
+  [verifier] Turn 12: 1 tool calls, done=False
+  [verifier] Turn 13: 1 tool calls, done=False
+  [verifier] Turn 14: 1 tool calls, done=False
+  [verifier] Turn 15: 1 tool calls, done=False
+  [verifier] Turn 16: 1 tool calls, done=False
+  [verifier] Turn 17: 1 tool calls, done=False
+  [verifier] Turn 18: 1 tool calls, done=False
+  [verifier] Turn 19: 1 tool calls, done=False
+
+  FINAL VERDICT: FAIL (exhausted 2 remediation attempts)
+  FAIL (partial=0.15, 0.1s, 68 turns)
+
+[4/5] team_no_plan x CR2_style_enforce (seed=0)
+  [executor] Turn 0: 1 tool calls, done=False
+  [executor] Turn 1: 0 tool calls, done=True
+  [verifier] Turn 0: 1 tool calls, done=False
+  [verifier] Turn 1: 1 tool calls, done=False
+  [verifier] Turn 2: 1 tool calls, done=False
+  [verifier] Turn 3: 1 tool calls, done=False
+  [verifier] Turn 4: 1 tool calls, done=False
+  [verifier] Turn 5: 1 tool calls, done=False
+  [verifier] Turn 6: 1 tool calls, done=False
+  [verifier] Turn 7: 1 tool calls, done=False
+  [verifier] Turn 8: 1 tool calls, done=False
+  [verifier] Turn 9: 1 tool calls, done=False
+  [verifier] Turn 10: 1 tool calls, done=False
+  [verifier] Turn 11: 1 tool calls, done=False
+  [verifier] Turn 12: 1 tool calls, done=False
+  [verifier] Turn 13: 1 tool calls, done=False
+  [verifier] Turn 14: 1 tool calls, done=False
+  [verifier] Turn 15: 1 tool calls, done=False
+  [verifier] Turn 16: 1 tool calls, done=False
+  [verifier] Turn 17: 1 tool calls, done=False
+  [verifier] Turn 18: 1 tool calls, done=False
+  [verifier] Turn 19: 1 tool calls, done=False
+  FAIL (partial=0.15, 0.0s, 22 turns)
+
+[5/5] team_no_verify x CR2_style_enforce (seed=0)
+  [planner] Turn 0: 1 tool calls, done=False
+  [planner] Turn 1: 0 tool calls, done=True
+  [executor] Turn 0: 1 tool calls, done=False
+  [executor] Turn 1: 0 tool calls, done=True
+  FAIL (partial=0.23, 0.0s, 4 turns)
+
+============================================================
+ABLATION COMPLETE
+============================================================
+  Condition           Passes  Total  Rate
+  oracle                    0      1  0.0%
+  restricted                0      1  0.0%
+  full                      0      1  0.0%
+  team_no_plan              0      1  0.0%
+  team_no_verify            0      1  0.0%
+
+  Metrics:
+  TNI:                0.0000  (Teamwork provides minimal improvement.)
+  Planning Value:     +0.0000
+  Verification Value: -0.0800
+
+  Report: /tmp/teambench_ablation_smoke

@@ -1,0 +1,39 @@
+{
+  "benchmark": "PeerRoleBench-TB-gate",
+  "substrate": {
+    "name": "TeamBench",
+    "repo": "https://github.com/ybkim95/TeamBench",
+    "commit": "d185aef1916fd86a9ba554d581fd256319a973af",
+    "license": "MIT"
+  },
+  "tasks": [
+    {"task_id": "CR2_style_enforce", "seed": 0, "family": "Code Review", "reason": "easy, high-TNI control"},
+    {"task_id": "DIST1_queue_race", "seed": 0, "family": "Distributed Systems", "reason": "expert, team-helpful control"}
+  ],
+  "persistent_peers": ["peer_01", "peer_02", "peer_03"],
+  "eligible_role": "executor",
+  "selector_observation": ["task_id", "brief", "candidate_id", "candidate_version", "arrived_ledger_summary"],
+  "selector_forbidden": ["spec.md", "hidden_tests", "grade.sh", "expected_score", "future_task_outcome"],
+  "recipient_judgments": ["accept", "repair", "reject", "redo"],
+  "feedback_visibility": "selected_only_delayed_until_next_episode",
+  "conditions": [
+    "random",
+    "static_best",
+    "terminal_only",
+    "recipient_judgment"
+  ],
+  "required_event_order": [
+    "assignment",
+    "artifact_produced",
+    "recipient_judgment_sealed",
+    "terminal_grade",
+    "ledger_update",
+    "next_assignment"
+  ],
+  "gate_questions": [
+    "Does recipient judgment add predictive information beyond producer identity and task context?",
+    "Does the delayed ledger change the next assignment?",
+    "Does the change improve held-out terminal score or cumulative regret under the same call budget?"
+  ],
+  "stop_rule": "If the three gate questions cannot be answered from event logs, do not scale the benchmark or claim learning from others' judgment."
+}
