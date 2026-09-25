@@ -1,5 +1,11 @@
 # 开源 Jev / System-One 决策模型审计
 
+> **历史候选审计（2026-09-24）。** 本文保留源码事实、版本和复用线索；其中
+> “Kev 首选实现底座”“AnyJev + Qwen 共享主线”等选择已被
+> [`ADR 0010`](../../../docs/user/decisions/0010-reframe-streaming-jev-training.md)
+> 和 [`ADR 0012`](../../../docs/user/decisions/0012-do-not-lock-laya-or-rls.md)
+> 取代。当前不能把本文的候选选择当作已确定 backbone 或论文方法。
+
 审计日期：2026-09-24
 
 更新：本报告是在“只服务 earning-roles 单项目”约束下形成的。由于工具选择项目也需要同一框架和模型，当前共享主线已由 [ADR 0009](../../../docs/user/decisions/0009-adopt-anyjev-shared-selector-stack.md) 改为 AnyJev + Qwen3-4B；Kev 保留为外部强基线和后续消融。

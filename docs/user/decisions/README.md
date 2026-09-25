@@ -14,3 +14,4 @@ User decision records and external-operation summaries.
 - [0009 — Adopt AnyJev as the shared dynamic-selector stack](0009-adopt-anyjev-shared-selector-stack.md): use pinned AnyJev with Qwen3-4B for both peer and tool selection, while implementing event-level residual updates outside AnyJev's scheduled refit loop.
 - [0010 — Reframe the contribution as streaming JEV training](0010-reframe-streaming-jev-training.md): demote AnyJev/Qwen to baselines and make trainable real-time adaptation of a small JEV-style model the research direction.
 - [0011 — 按决策价值控制实验节奏](0011-bound-experiments-by-decision-value.md): 先分析现有结果，以单一问题、明确对照、资源上限和停止条件安排下一轮，逐项记录与关闭问题。
+- [0012 — 不锁定 Laya，也不把 RLS 当成论文创新](0012-do-not-lock-laya-or-rls.md): Laya 保留为候选 encoder/静态基线，RLS 保留为强基线，最终创新机制和 backbone 待真实闭环与判别实验。

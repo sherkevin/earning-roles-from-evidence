@@ -1,5 +1,11 @@
 # AnyJev shared-stack integration note
 
+> **Historical baseline note (2026-09-24).** This file records the companion
+> project's pinned AnyJev/Qwen integration and smoke evidence. It is a scheduled
+> refit and shared-protocol baseline, not the selected backbone or the final
+> real-time training method. The current decision boundary is in
+> [`ADR 0012`](../../../docs/user/decisions/0012-do-not-lock-laya-or-rls.md).
+
 Date: 2026-09-24
 
 The companion tool-selection audit selected [AnyJev](https://github.com/nokia-applied-research/AnyJev) at commit `a59a69eaa91e62dc9b42924f8491f76d1b1972ea` (Apache-2.0). This repository adopts the same framework and `Qwen/Qwen3-4B` base model for peer selection so that improvements are comparable across the two projects.

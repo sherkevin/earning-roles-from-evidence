@@ -1,7 +1,8 @@
 # Stream-JEV v2：可上线的 selected-only 在线参数学习范式
 
 **日期：** 2026-09-24  
-**状态：** 当前工程主线；需经过校正合成实验和真实回放小批量实验后才能冻结。
+**状态：** 当前工程 baseline 规范，不是已冻结的论文方法。Laya 仍是候选 encoder，
+RLS 仍是强基线；创新边界见 [`streamjev_novelty_boundary_20260925.md`](streamjev_novelty_boundary_20260925.md)。
 
 ## 先给结论
 
