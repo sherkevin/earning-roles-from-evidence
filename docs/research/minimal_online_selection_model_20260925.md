@@ -126,12 +126,12 @@ $$
 
 $$
 B_k=
-\left\{
-(x_t,C_t,a_t,o_t,y_t):\tau_t=k
-\right\}.
+\left(
+(x_t,C_t,a_t,o_t,y_t)
+\right)_{t:\tau_t=k}.
 $$
 
-**Case：** \(B_3\) 包含第 \(1\) 轮的任务 JSON、候选集合、agent B、返回 JSON 和标签 \(1\)；还未返回的标签不在 \(B_3\) 中。
+**Case：** \(B_3\) 是包含第 \(1\) 轮 source index 的有序反馈列表；它包含任务 JSON、候选集合、agent B、返回 JSON 和标签 \(1\)。还未返回的标签不在 \(B_3\) 中。
 
 ### 2.6 更新
 

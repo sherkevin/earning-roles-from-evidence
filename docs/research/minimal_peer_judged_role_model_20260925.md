@@ -54,10 +54,14 @@ $$
 实际 consumer/judge 的身份为 \(j_t\)：
 
 $$
-j_t\in\mathcal J_t.
+j_t=\operatorname{owner}(x_t),
+\qquad j_t\ne a_t.
 $$
 
-**Case：** \(j_1=\texttt{agentA@v3}\)，因为 A 是后续要使用这份交付物的 owner。
+**Case：** \(x_1\) 的 owner 是 \(\texttt{agentA@v3}\)，所以
+\(j_1=\texttt{agentA@v3}\)，且它不同于 producer
+\(a_1=\texttt{agentB@v2}\)。如果 owner 不在上下文中，必须由冻结的任务分配器
+单独产生；不能事后按标签反推 judge。
 
 判断先按预先冻结的规则映射为标量质量；判断语义仍来自 consumer 对交付物的接受、
 使用或返工行为：
@@ -92,9 +96,9 @@ $$
 
 $$
 B_k=
-\left\{
-(x_t,C_t,a_t,j_t,o_t,y_t):\tau_t=k
-\right\}.
+\left(
+(x_t,C_t,a_t,j_t,o_t,y_t)
+\right)_{t:\tau_t=k}.
 $$
 
 **Case：** \(B_3\) 包含
@@ -114,7 +118,7 @@ $$
 
 ## 2. 目标和约束
 
-长期目标是实际协作质量：
+长期目标是预先冻结的协作评分，不自动等同于客观任务成功：
 
 $$
 J_T(\pi,U)
@@ -124,7 +128,7 @@ J_T(\pi,U)
 \right].
 $$
 
-**Case：** 三轮判断为 \(\texttt{use},\texttt{rework},\texttt{use}\)，对应标签
+**Case：** 三轮判断为 \(\texttt{use},\texttt{rework},\texttt{use}\)，对应协作评分
 \(1,0.5,1\)，该轨迹的经验效用为 \(5/6\)。
 
 更新后的旧任务风险不能显著变坏。给定锁定的旧任务集合
