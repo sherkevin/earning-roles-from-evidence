@@ -3,6 +3,10 @@
 **日期：** 2026-09-25  
 **状态：** 数学问题定义与设计边界；不锁定 backbone，也不锁定最终训练算法。
 
+完整 peer-role 建模见 [`earning_roles_controlled_process_model_20260925.md`](earning_roles_controlled_process_model_20260925.md)。
+本文的 CDS-CB 形式是其中在动作不改变未来隐藏状态、且每个 tick 只选一个候选时的
+可执行降阶版本。
+
 **记号规范：** 本文保留解释性推导；严格区分决策索引 `t`、反馈到达索引 `k`、
 潜在结果、实际标签和状态更新的规范见
 [`streamjev_math_spec_v2_20260925.md`](streamjev_math_spec_v2_20260925.md)。后续
