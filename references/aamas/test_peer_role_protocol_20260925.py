@@ -6,6 +6,7 @@ from peer_role_protocol_20260925 import (
     LaterAssignment,
     PeerRoleLedger,
     RecipientJudgment,
+    RoleEvidenceUpdate,
     TerminalOutcome,
 )
 
@@ -55,16 +56,18 @@ def test_vertical_slice_requires_the_declared_order():
     ledger.record_judgment(judgment())
     ledger.record_action(action())
     ledger.record_outcome(TerminalOutcome("o1", "d1", True, "native-v1"))
+    ledger.record_evidence_update(RoleEvidenceUpdate("ev1", "j1", "a1", "o1", "u1", 3.0))
     ledger.record_assignment(
-        LaterAssignment("as1", "root-2", 2, "agent-a", "citation-review", ("j1",))
+        LaterAssignment("as1", "root-2", 2, "agent-a", "citation-review", ("ev1",))
     )
     assert ledger.snapshot() == {
-        "event_count": 5,
+        "event_count": 6,
         "last_hash": ledger.events[-1]["record_hash"],
         "delivery_count": 1,
         "judgment_count": 1,
         "action_count": 1,
         "outcome_count": 1,
+        "evidence_count": 1,
         "assignment_count": 1,
     }
 
@@ -96,11 +99,18 @@ def test_action_and_assignment_require_attributable_evidence():
         )
 
 
+def test_action_mode_cannot_claim_use_without_artifact_use():
+    with pytest.raises(ValueError, match="used_artifact=true"):
+        ConsumerAction("a1", "d1", "agent-b", False, DIGEST, action="use")
+
+
 def test_assignment_cannot_precede_the_delivery_it_cites():
     ledger = PeerRoleLedger()
     ledger.record_delivery(delivery())
     ledger.record_judgment(judgment())
+    ledger.record_action(action())
+    ledger.record_evidence_update(RoleEvidenceUpdate("ev1", "j1", "a1", None, "u1", 2.0))
     with pytest.raises(ValueError, match="after the cited delivery"):
         ledger.record_assignment(
-            LaterAssignment("as1", "root-0", 1, "agent-a", "review", ("j1",))
+            LaterAssignment("as1", "root-0", 1, "agent-a", "review", ("ev1",))
         )

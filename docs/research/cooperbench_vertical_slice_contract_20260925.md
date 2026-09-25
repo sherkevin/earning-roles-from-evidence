@@ -91,7 +91,21 @@ CooperBench 原生 scorer 在 conflict 或 missing input 时可能运行 agent1 
 
 ### 5. Public role evidence update
 
-更新器只能读取已封存的 recipient judgment、consumer action 和合法到达的 terminal correction，并记录 `feedback_delay`、`update_version`、`update_latency`。隐藏 truth、未选 producer 的标签和 evaluator 私有字段不能进入 pre-action state。
+必须显式写入一条 `role_evidence_update`，而不是让 later assignment 直接引用 judgment：
+
+```json
+{
+  "event_type": "role_evidence_update",
+  "evidence_id": "ev-001",
+  "judgment_id": "j-001",
+  "action_id": "a-001",
+  "outcome_id": "o-001",
+  "update_version": "u-v1",
+  "arrived_at": 4.2
+}
+```
+
+`outcome_id` 可以为空，表示先形成 situated evidence、以后再由 terminal correction 追加更新；但 later assignment 只能引用 `evidence_id`。更新器只能读取已封存的 recipient judgment、consumer action 和合法到达的 terminal correction，并记录 `feedback_delay`、`update_version`、`update_latency`。隐藏 truth、未选 producer 的标签和 evaluator 私有字段不能进入 pre-action state。
 
 ### 6. Later assignment
 
@@ -110,7 +124,7 @@ CooperBench 原生 scorer 在 conflict 或 missing input 时可能运行 agent1 
 }
 ```
 
-只有当 assignment 引用先前证据且其选择与 no-role-update 对照不同，才有资格声称“判断影响了未来职责”。
+只有当 assignment 引用先前 `role_evidence_update` 且其选择与 no-role-update 对照不同，才有资格声称“判断影响了未来职责”。
 
 ## 最小 matched baseline
 

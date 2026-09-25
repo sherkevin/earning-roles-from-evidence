@@ -12,7 +12,8 @@ BBB、LLMRouterBench、ASlib SAT12-ALL 属于另一个工具选择/动态 JEV �
 
 本项目应遵守已经接受的[决议 0008](../user/decisions/0008-freeze-benchmarks-and-baselines.md)：
 
-- **角色形成主 substrate：** CooperBench 薄适配；
+- **任务 substrate 候选：** CooperBench task roots；角色形成协议层需要由本项目单独定义；
+- **角色形成主协议：** 暂命名 `PeerRoleBench-v0`，只有通过 vertical-slice gate 后才正式冻结；
 - **选择器 benchmark：** DecisionBench；
 - **外部有效性：** AgentWorld；
 - **威胁与控制：** MARBLE/MultiAgentBench、TeamBench、AgentNet 等同信息对照。
@@ -37,9 +38,11 @@ producer delivery
 
 ## Benchmark 层次
 
-### 1. CooperBench：角色形成主 substrate
+### 1. CooperBench：代码协作 task substrate 候选
 
-固定审计版本为 `63b9d44d9f39a02fccf5bf0052db48a917a011fd`，但当前仍是**有条件候选**，不是已经完成的主 benchmark。
+固定审计版本为 `63b9d44d9f39a02fccf5bf0052db48a917a011fd`。它提供真实代码库、base commit、feature patch、冲突压力和 native tests，但不是已经完成的 role-learning benchmark。
+
+我们需要在其上新增 `PeerRoleBench-v0` 协议层；在该层通过前，不能把 CooperBench 本身称为本项目主 benchmark。
 
 进入科学实验前必须通过：
 
@@ -50,15 +53,30 @@ producer delivery
 
 已知问题包括 feature owner 预分配、缺少原生 recipient acceptance/role update 字段，以及 merge conflict 时的 fallback。`both_passed` 不能单独证明 recipient 使用了 producer 的交付物。
 
-### 2. DecisionBench：选择器 benchmark
+### 2. PeerRoleBench-v0：待验证的角色形成协议
+
+它不是从零重造代码任务，而是复用 CooperBench 的 task roots，同时新增：
+
+- persistent、可交换的 agent identities；
+- producer receipt 与 artifact lineage；
+- terminal outcome 不可见时的 recipient judgment；
+- use/repair/reject/independent-redo action；
+- 独立 terminal scorer，并禁用或单列 `solo-agent1` fallback；
+- 显式 role-evidence update；
+- 下一 task-root 上由 evidence 影响的 later assignment；
+- 按 task-root/repository 的 held-out split。
+
+只有这些事件都能被机器审计，且 P 与 no-role-update / recipient-redo 对照有相同任务、信息和成本，才可以把它作为 role-learning benchmark。当前它仍是协议候选。
+
+### 3. DecisionBench：选择器 benchmark
 
 DecisionBench 用来测量 peer-selection 的适应、探索、成本和 calibration。它可以回答“选择器是否改善了选择”，但单独不能证明 role formation，因为公开实现没有从 recipient use 更新 peer profile 并改变后续职责的完整链条。
 
-### 3. AgentWorld：外部有效性
+### 4. AgentWorld：外部有效性
 
 AgentWorld 用来检验 stateful multi-agent transfer。它的 preset skills、resources 和 usernames 需要随机化或做成可交换的，否则无法把预设角色差异解释成 role learning。它不是第一阶段的主证据。
 
-### 4. CooperBench/DecisionBench 之外的公开工作
+### 5. CooperBench/DecisionBench 之外的公开工作
 
 MARBLE/MultiAgentBench、TeamBench 可提供固定角色、确定性 grader、role violation 和 verifier disagreement 控制；AgentNet 是 decentralized routing、dynamic graph 和 experience-based update 的重要威胁 baseline。它们用于控制和外部比较，不替代主 substrate。
 

@@ -22,6 +22,7 @@ from typing import Any, Mapping
 
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 JUDGMENTS = {"accept", "accept_with_rework", "reject_redo", "reject_reroute"}
+ACTIONS = {"use", "repair", "reject", "independent_redo"}
 
 
 def _hash_payload(payload: Mapping[str, Any]) -> str:
@@ -87,15 +88,22 @@ class ConsumerAction:
     input_artifact_sha256: str
     output_artifact_sha256: str | None = None
     repair_cost: float = 0.0
+    action: str = "use"
 
     def __post_init__(self) -> None:
         if not self.action_id or not self.delivery_id or not self.consumer_id:
             raise ValueError("action identifiers are required")
+        if self.action not in ACTIONS:
+            raise ValueError(f"action must be one of {sorted(ACTIONS)}")
         _artifact_hash(self.input_artifact_sha256)
         if self.output_artifact_sha256 is not None:
             _artifact_hash(self.output_artifact_sha256)
         if float(self.repair_cost) < 0:
             raise ValueError("repair_cost must be non-negative")
+        if self.action in {"use", "repair"} and not self.used_artifact:
+            raise ValueError("use/repair actions must mark used_artifact=true")
+        if self.action in {"reject", "independent_redo"} and self.used_artifact:
+            raise ValueError("reject/independent_redo actions cannot mark artifact as used")
 
 
 @dataclass(frozen=True)
@@ -108,6 +116,22 @@ class TerminalOutcome:
     def __post_init__(self) -> None:
         if not self.outcome_id or not self.delivery_id or not self.scorer_version:
             raise ValueError("terminal outcome identifiers and scorer_version are required")
+
+
+@dataclass(frozen=True)
+class RoleEvidenceUpdate:
+    evidence_id: str
+    judgment_id: str
+    action_id: str
+    outcome_id: str | None
+    update_version: str
+    arrived_at: float
+
+    def __post_init__(self) -> None:
+        if not self.evidence_id or not self.judgment_id or not self.action_id:
+            raise ValueError("evidence identifiers are required")
+        if not self.update_version or float(self.arrived_at) < 0:
+            raise ValueError("update_version and non-negative arrived_at are required")
 
 
 @dataclass(frozen=True)
@@ -137,6 +161,7 @@ class PeerRoleLedger:
         self.judgments: dict[str, RecipientJudgment] = {}
         self.actions: dict[str, ConsumerAction] = {}
         self.outcomes: dict[str, TerminalOutcome] = {}
+        self.evidence: dict[str, RoleEvidenceUpdate] = {}
         self.assignments: dict[str, LaterAssignment] = {}
 
     def _append(self, event_type: str, payload: Mapping[str, Any]) -> None:
@@ -194,14 +219,33 @@ class PeerRoleLedger:
         self.outcomes[outcome.outcome_id] = outcome
         self._append("terminal_outcome", outcome.__dict__)
 
+    def record_evidence_update(self, evidence: RoleEvidenceUpdate) -> None:
+        if evidence.evidence_id in self.evidence:
+            raise ValueError("duplicate evidence_id")
+        judgment = self.judgments.get(evidence.judgment_id)
+        action = self.actions.get(evidence.action_id)
+        if judgment is None or action is None:
+            raise ValueError("evidence must cite a recorded judgment and action")
+        if judgment.delivery_id != action.delivery_id:
+            raise ValueError("judgment and action must refer to the same delivery")
+        if evidence.outcome_id is not None:
+            outcome = self.outcomes.get(evidence.outcome_id)
+            if outcome is None or outcome.delivery_id != judgment.delivery_id:
+                raise ValueError("evidence outcome must cite the same delivery")
+        self.evidence[evidence.evidence_id] = evidence
+        self._append("role_evidence_update", evidence.__dict__)
+
     def record_assignment(self, assignment: LaterAssignment) -> None:
         if assignment.assignment_id in self.assignments:
             raise ValueError("duplicate assignment_id")
         cited = set(assignment.evidence_ids)
-        known = {j.judgment_id for j in self.judgments.values()}
+        known = set(self.evidence)
         if not cited <= known:
             raise ValueError("assignment cites unknown role evidence")
-        cited_deliveries = [self.deliveries[self.judgments[e].delivery_id] for e in cited]
+        cited_deliveries = [
+            self.deliveries[self.judgments[self.evidence[e].judgment_id].delivery_id]
+            for e in cited
+        ]
         if not all(assignment.task_index > delivery.task_index for delivery in cited_deliveries):
             raise ValueError("assignment must occur after the cited delivery")
         self.assignments[assignment.assignment_id] = assignment
@@ -215,5 +259,6 @@ class PeerRoleLedger:
             "judgment_count": len(self.judgments),
             "action_count": len(self.actions),
             "outcome_count": len(self.outcomes),
+            "evidence_count": len(self.evidence),
             "assignment_count": len(self.assignments),
         }
