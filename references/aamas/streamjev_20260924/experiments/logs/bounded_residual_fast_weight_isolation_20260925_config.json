@@ -1,0 +1,46 @@
+{
+  "experiment_id": "bounded_residual_fast_weight_isolation_20260925",
+  "seeds": [
+    20260925,
+    20260942,
+    20260959,
+    20260976,
+    20260993
+  ],
+  "horizon": 2000,
+  "methods": [
+    "static",
+    "associative",
+    "online_rls",
+    "rfw_tr"
+  ],
+  "scenarios": [
+    "stationary",
+    "switch"
+  ],
+  "candidate": {
+    "m": 7,
+    "alpha": 0.995,
+    "eta": 0.25,
+    "epsilon": 0.05,
+    "omega_max": 4.0,
+    "rho": 1.0
+  },
+  "feedback": {
+    "selected_only": true,
+    "delay": 1,
+    "propensity_clip": 4.0
+  },
+  "policy": {
+    "type": "epsilon_greedy",
+    "epsilon": 0.1
+  },
+  "runtime": {
+    "started_at_utc": "2026-09-25T07:04:03.626846+00:00",
+    "python": "3.9.6",
+    "numpy": "1.26.4",
+    "git_commit": "a9b9fb31bb3a715f5093e43aeac4ab92f84c2c29",
+    "command": "python3 references/aamas/streamjev_20260924/experiments/bounded_residual_fast_weight_isolation_20260925.py"
+  },
+  "interpretation": "Synthetic preflight only; no real-data claim."
+}
