@@ -39,6 +39,11 @@ Contextual Bandit（CDS-CB，受约束延迟选择性反馈上下文 bandit）**
 - `y_t`：被选择候选的观测标签。二值正确性是 `y_t∈{0,1}` 的特例，软标签
   和多值质量分数也可以使用。
 
+标签可以带噪，但需要明确它与目标的关系，例如
+`E[y_t | x_t,C_{i,t},a_t] = u_{i,t}(a_t)`，或存在已知校准映射。若“执行正确性”
+与最终论文 utility 不是同一个量，必须把二者的映射写进评测协议，而不能把二值
+标签自动等同于全部任务价值。
+
 选择策略从 `C_t` 中采样：
 
 ```text
@@ -59,9 +64,9 @@ S_{i,t} = (θ_{i,t}, m_{i,t}, R_{i,t}, v^model_t, v^schema_t),
 
 其中：
 
-- `θ_t`：相对慢的 scorer 或可写参数；
-- `m_t`：每条反馈可更新的 fast state；
-- `R_t`：有限 replay/reservoir 或可合并的统计量；
+- `θ_{i,t}`：相对慢的 scorer 或可写参数；
+- `m_{i,t}`：每条反馈可更新的 fast state；
+- `R_{i,t}`：有限 replay/reservoir 或可合并的统计量；
 - `v^model_t`、`v^schema_t`：模型和特征协议版本。
 
 决策时可见的信息是过滤：
@@ -71,7 +76,7 @@ F^dec_{i,t} = σ(x_≤t, C_{i,≤t}, a_<t,
                  {e_s : selector(s)=i, τ_s < t}),
 ```
 
-其中 `e_s` 只包含已经到达的反馈事件。策略必须对 `F^dec_t` 可测，不能读取
+其中 `e_s` 只包含已经到达的反馈事件。策略必须对 `F^dec_{i,t}` 可测，不能读取
 未来标签、未执行候选的事后真值或 oracle 排名。
 
 候选打分可抽象成：
@@ -91,8 +96,8 @@ s_{i,t}(c) = f_{θ_{i,t},m_{i,t}}(φ_{i,t}(c), C_{i,t}),
 `τ_t=t+D_t`。到达的事件保存决策时快照，而不是重新用新模型编码：
 
 ```text
-e_t = (event_id, x_t, C_t, a_t, p_t,
-       φ_t(a_t), y_t, t, τ_t,
+e_t = (event_id, selector_id=i, x_t, C_{i,t}, a_t, p_t,
+       φ_{i,t}(a_t), y_t, t, τ_t,
        candidate_version, model_version, schema_version).
 ```
 
@@ -123,13 +128,13 @@ S_{h+} = U_ψ(S_{h-}, A_h).
 
 ```text
 J_pre(A) = liminf_{T→∞} (1/T) E[ Σ_{t=1}^T
-              ( u_t(a_t) - λ_c cost_t(a_t) ) ].
+              ( u_{i,t}(a_t) - λ_c cost_t(a_t) ) ].
 ```
 
 有限窗口中报告 prequential regret：
 
 ```text
-Reg_T = Σ_{t=1}^T [ max_{c∈C_t} u_t(c) - u_t(a_t) ].
+Reg_T = Σ_{t=1}^T [ max_{c∈C_{i,t}} u_{i,t}(c) - u_{i,t}(a_t) ].
 ```
 
 如果真实 oracle utility 只能在评测集获得，训练过程仍只能看到 selected-only
@@ -182,6 +187,22 @@ L(ψ, θ_0) = E_stream[
 
 这只是目标函数形式，不预设如何求解。`ψ` 可以表示离线学习到的更新规则，
 `θ_0` 表示静态初始化；线上只允许使用到达事件更新 `S`。
+
+若要训练一个新的更新规则，离线阶段应采用**流式双层目标**，而不是把所有标签
+混合后做普通监督学习。对一条训练 stream `ξ`，划分 support 前缀 `P` 和 query
+后缀 `Q`。在 `P` 上只按真实到达时间运行 `U_ψ`，在 `Q` 上才计算未来表现：
+
+```text
+ψ*, θ₀* = argmin E_ξ [
+      (1/|Q|) Σ_{t∈Q} ℓ(y_t, π_{ψ,θ₀}(·|F^dec_t))
+    + λ_old RetLoss(D_old, S_{ξ,|P|})
+    + λ_u Cost_update(U_ψ)
+]
+```
+
+`Q` 中的标签是外层评估信号，不能在对应决策之前泄漏给 `U_ψ`。这个定义把“学习
+如何更新”与“用当前标签拟合当前样本”区分开来，也是判断新训练方法是否真的在
+优化未来 prequential utility 的最小形式。
 
 ### 3.4 选中反馈下的可识别性
 
