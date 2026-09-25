@@ -3,7 +3,11 @@
 **日期：** 2026-09-25  
 **状态：** 数学问题定义与设计边界；不锁定 backbone，也不锁定最终训练算法。
 
+当前最小原始符号边界见[最小在线选择模型](minimal_online_selection_model_20260925.md)。
+
 完整 peer-role 建模见 [`earning_roles_controlled_process_model_20260925.md`](earning_roles_controlled_process_model_20260925.md)。
+若标签来自真实 consumer/peer judge，最小故事模型见
+[`minimal_peer_judged_role_model_20260925.md`](minimal_peer_judged_role_model_20260925.md)，其中显式保留 judge 身份。
 本文的 CDS-CB 形式是其中在动作不改变未来隐藏状态、且每个 tick 只选一个候选时的
 可执行降阶版本。
 

@@ -114,21 +114,18 @@ $$
 
 ## 2. 目标和约束
 
-长期目标是实际协作效用，而不是孤立拟合 judge 标签：
+长期目标是实际协作质量：
 
 $$
 J_T(\pi,U)
 =
 \mathbb E\!\left[
-\frac1T\sum_{t=1}^{T}
-R(x_t,a_t,o_t,j_t,y_t)
+\frac1T\sum_{t=1}^{T}y_t
 \right].
 $$
 
-**Case：** \(R=y\) 时，consumer 使用交付而无需返工为 \(1\)，
-返工为 \(0.5\)，拒绝为 \(0\)；三轮结果为
-\(\texttt{use},\texttt{rework},\texttt{use}\) 时，经验效用为
-\((1+0.5+1)/3=5/6\)。
+**Case：** 三轮判断为 \(\texttt{use},\texttt{rework},\texttt{use}\)，对应标签
+\(1,0.5,1\)，该轨迹的经验效用为 \(5/6\)。
 
 更新后的旧任务风险不能显著变坏。给定锁定的旧任务集合
 \(\mathcal D_{\mathrm{old}}\)，定义：

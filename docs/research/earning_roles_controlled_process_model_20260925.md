@@ -2,6 +2,14 @@
 
 日期：2026-09-25
 
+## 记号边界
+
+本文是“动作会改变未来协作状态”时的扩展模型。基础 selector/tool 契约采用
+[最小在线选择模型](minimal_online_selection_model_20260925.md)；AAMAS 的
+peer-judged role 主问题采用[最小 peer-judged role 模型](minimal_peer_judged_role_model_20260925.md)，
+显式保留真实 consumer/judge。本文中的隐藏状态、belief 和图状态只有在实验显示
+它们不能由可见上下文解释时才加入；它们不是基础模型的默认输入。
+
 ## 结论
 
 当前的 CDS-CB（受约束延迟选择性反馈上下文 bandit）是单步选择器的正确模型，

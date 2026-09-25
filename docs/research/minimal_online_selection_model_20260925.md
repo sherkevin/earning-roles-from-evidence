@@ -1,99 +1,128 @@
 # 最小在线选择模型：符号、依赖与贯穿案例
 
-日期：2026-09-25  
-状态：earning-roles 的数学建模候选；用于替换过度展开的控制过程版本。
+日期：2026-09-25
 
 ## 建模原则
 
-先只保留在线选择真正需要的原始概念：任务上下文、候选集合、被选候选、即时输出、延迟质量反馈和在线状态。模型参数、表示函数和更新器是函数，不是新的环境输入；日志字段、propensity、图、版本号和 belief 暂不作为原始符号。
+只把在线数据生成链中不可再删的概念作为原始符号。模型参数、表示函数和更新器是函数，不是新的环境输入。历史并入当前上下文；候选身份和版本并入候选对象；propensity 是策略的派生量，不进入基础定义。只有实验证明动作会改变未来任务分布时，才增加显式隐藏状态。
 
-只有实验确认“动作会改变未来任务分布”以后，才增加状态转移；只有需要离线逆倾向评估时，才从策略中派生 propensity。这样不会把工程实现字段误当成问题定义。
+下面所有公式都用同一个 peer-selection case 解释：
 
-## 0. 一组贯穿案例
+- 任务上下文是 JSON：\(\{\texttt{task}:\texttt{summarize ticket T17},\texttt{stage}:\texttt{draft}\}\)；
+- 两个候选是 \(\texttt{agentA@v3}\) 与 \(\texttt{agentB@v2}\)；
+- 执行后的交付物由 evaluator 判定是否正确；
+- evaluator 在两轮后返回标签。
 
-下面固定一个 peer-selection 案例，所有公式都用它实例化。
+这份文档是共享的 selector/tool 最小核。若研究问题要求“从另一个 agent 的判断学习
+角色”，不能把 judge 藏进 evaluator；该主故事的最小扩展见
+[minimal_peer_judged_role_model_20260925.md](minimal_peer_judged_role_model_20260925.md)，
+其中显式保留 (j_t)。
 
-在第 (t=1) 次决策：
+## 1. 原始符号
 
-- 任务上下文 (x_1) 是 JSON：
-  `{"task":"summarize ticket T17","stage":"draft"}`；
-- 候选集合 (C_1={	exttt{agentA@v3},	exttt{agentB@v2}})；候选对象自身包含身份和版本，不另定义 (V_t)；
-- 候选 agent 返回交付物后，外部 evaluator 给出二值质量标签；
-- 反馈延迟两轮，即 (delta_1=2)。
-
-tool-selection 只需把 (x_1) 换成工具任务 JSON，把候选换成工具对象；数学符号不变。
-
-## 1. 原始输入和动作
-
-第 (t) 次决策的任务上下文是 (x_t)，当前可执行候选集合是 (C_t)：
+第 \(t\) 次决策的可见上下文和候选集合为：
 
 $$
-x_tinmathcal X,
+x_t\in\mathcal X,
 \qquad
-C_tsubseteqmathcal A.
+C_t\subseteq\mathcal A.
 $$
 
-**Case：** (x_1) 就是上面的 JSON；(C_1) 的两个元素分别是 `agentA@v3` 和 `agentB@v2`。如果候选版本变化，就形成新的候选元素，例如 `agentB@v3`，不再额外引入版本符号。
+**Case：** \(x_1\) 是上面的任务 JSON；\(C_1=\{\texttt{agentA@v3},\texttt{agentB@v2}\}\)。如果版本变化，直接把 \(\texttt{agentB@v3}\) 当作新的候选元素，不额外定义版本变量。
 
-策略从当前集合中选择一个动作 (a_t)：
+候选对象可以写成：
 
 $$
-a_tsim pi_{	heta_t}(,cdotmid x_t,C_t),
+c=(\mathrm{id},\mathrm{description},\mathrm{version}).
+$$
+
+**Case：** \(\texttt{agentB@v2}\) 的三个字段分别是 agent 身份、角色描述和实现版本。
+
+在线状态 \(s_t\) 是算法内部可写状态，例如选择头的参数及其统计量；它不是新的任务输入。
+
+## 2. 从输入到反馈的最小链
+
+### 2.1 表示
+
+给定待评估的 backbone \(\phi\)，候选表示为：
+
+$$
+z_{t,a}=\phi(x_t,a)\in\mathbb R^d,
 \qquad
-a_tin C_t.
+a\in C_t.
 $$
 
-**Case：** 对 (C_1) 计算两个候选分数，若 (epsilon)-greedy 策略以 (0.9) 概率选择最高分候选、以 (0.1) 概率均匀探索，某次运行采样得到 (a_1=	exttt{agentB@v2})。
-
-候选表示由一个待选择的 backbone (phi_omega) 生成：
+**Case：** 把任务 JSON 的 text 与候选描述拼接后输入候选 encoder。为说明符号，假设一次 toy encoder 输出 \(d=4\)：
 
 $$
-z_{t,a}=phi_omega(x_t,a)inmathbb R^d,
-\qquad ain C_t.
+z_{1,\texttt{agentA@v3}}=(0.20,0.70,0.10,0.40),
+\qquad
+z_{1,\texttt{agentB@v2}}=(0.80,0.10,0.40,0.20).
 $$
 
-**Case：** 将 (x_1) 的 `task`、`stage` 和候选 agent 的描述文本拼接后输入候选 encoder；为便于说明，假设一次实验得到 (d=4) 的 toy 表示 (z_{1,	exttt{agentB@v2}}=(0.8,0.1,0.4,0.2))。这个四维向量只是符号实例，不代表最终 backbone 已经选定。
+这两个四维向量只是实例化，不代表最终 backbone 已经确定。
 
-## 2. 即时输出和潜在质量
+### 2.2 选择
 
-执行 (a_t) 后可能立即得到原始输出 (o_t)：
+策略从当前候选集合中选择一个动作：
 
 $$
-o_tsim P_O(,cdotmid x_t,a_t).
+a_t\sim\pi(\,\cdot\mid x_t,C_t,s_t),
+\qquad
+a_t\in C_t.
 $$
 
-**Case：** (a_1=	exttt{agentB@v2}) 返回
-`{"text":"The ticket is about login timeout","citations":["log-17"]}`；若某个 benchmark 只有最终标签而没有中间输出，则令 (o_t=ot)。
+**Case：** 当前选择头给 agent A 的分数为 \(0.50\)，给 agent B 的分数为 \(0.60\)，并使用带探索的 softmax；一次运行可能采样 \(a_1=\texttt{agentB@v2}\)。
 
-如果需要在同一 episode 内继续决策，下一次上下文直接包含已经观察到的输出：
+### 2.3 即时输出
+
+执行动作后立即获得原始输出：
+
+$$
+o_t\sim P_O(\,\cdot\mid x_t,a_t).
+$$
+
+**Case：** \(a_1=\texttt{agentB@v2}\) 返回 JSON：\(\{\texttt{text}:\texttt{The ticket is about login timeout},\texttt{citations}:[\texttt{log-17}]\}\)。没有中间输出的 benchmark 令 \(o_t=\bot\)。
+
+若同一 episode 还要继续决策，已观察到的输出并入下一次上下文：
 
 $$
 x_{t+1}=\operatorname{append}(x_t,a_t,o_t).
 $$
 
-**Case：** 动态 JEV 在第一次 provider call 后把 provider 名称和返回 JSON 追加到问题上下文，得到第二次 call 的 (x_2)。earning-roles 的独立任务流则由外部产生新的 (x_{t+1})，不强行假设动作改变下一题。
+**Case：** 动态 JEV 的第二次 provider call 的输入包含第一次 call 的 provider 名称和返回 JSON；独立的 peer 任务流可由外部直接提供新的 \(x_{t+1}\)。
 
-每个候选在该次任务上都有一个潜在质量 (y_t(a))，但在线只会执行并评价被选候选：
+### 2.4 质量
+
+每个候选对当前任务都有一个潜在质量 \(y_t(a)\)，但在线只执行一个候选：
 
 $$
-y_t(a)in[0,1]quad(ain C_t),
+y_t(a)\in[0,1]\quad(a\in C_t),
 \qquad
 y_t=y_t(a_t).
 $$
 
-**Case：** evaluator 检查 agent B 的 JSON 是否解决 T17，得到 (y_1=1)；没有执行 agent A，所以 (y_1(	exttt{agentA@v3})) 不可见，不得写入训练日志。
+**Case：** evaluator 检查 agent B 的 JSON 是否解决 T17，得到 \(y_1=1\)。agent A 没有被执行，因此 \(y_1(\texttt{agentA@v3})\) 不可见。
 
-## 3. 延迟反馈和在线更新
-
-反馈从决策到可用的延迟为 (delta_tge0)，到达时刻为：
+实际标签来自执行输出，而不是和输出脱钩的第二个输入：
 
 $$
-	au_t=t+delta_t.
+y_t=\rho(x_t,a_t,o_t).
 $$
 
-**Case：** 第 (1) 轮选择 B，evaluator 需要两轮才返回结果，因此 (delta_1=2)，标签在第 (3) 轮结束时可用。
+**Case：** \(\rho\) 读取上述 JSON；文本和引用都满足检查规则时输出 \(1\)，否则输出 \(0\)。如果 evaluator 本身带随机性，它属于 \(\rho\) 的实现，不再另加一个输入符号。
 
-时刻 (k) 新到达的反馈集合只由上述原始字段组成：
+### 2.5 延迟
+
+标签从执行到可用的延迟为 \(\delta_t\ge0\)，到达时刻为：
+
+$$
+\tau_t=t+\delta_t.
+$$
+
+**Case：** 第 \(1\) 轮执行 B，evaluator 两轮后返回，因此 \(\delta_1=2\)，标签在第 \(3\) 轮可用。
+
+第 \(k\) 轮新到达的反馈集合是：
 
 $$
 B_k=
@@ -102,108 +131,94 @@ B_k=
 \right\}.
 $$
 
-**Case：** (B_3) 包含
-`(x_1, {agentA@v3,agentB@v2}, agentB@v2, {"text":...}, 1)`；没有到达的标签不在 (B_3) 中。
+**Case：** \(B_3\) 包含第 \(1\) 轮的任务 JSON、候选集合、agent B、返回 JSON 和标签 \(1\)；还未返回的标签不在 \(B_3\) 中。
 
-令 (s_t) 表示在线选择器的可写状态（例如线性头参数及其统计量），更新器为 (U_psi)：
+### 2.6 更新
 
-$$
-s_{k+1}=U_psi(s_k,B_k).
-$$
-
-**Case：** 初始 (s_0) 是零初始化的选择头；第 (3) 轮收到 (B_3) 后，RLS、online SGD 或候选的新型更新器各自把同一个 (B_3) 转成 (s_4)。因此三种训练方法可以在同一数据协议下公平比较。
-
-注意：(phi_omega,pi_{	heta_t},U_psi) 是可替换的函数；(x_t,C_t,a_t,o_t,y_t,delta_t) 才是这个在线问题的原始数据概念。
-
-## 4. 优化目标
-
-在 (T) 次选择上的平均真实效用为：
+在线更新器读取当前状态和已经到达的反馈：
 
 $$
-J_T(pi,U_psi)
+s_{k+1}=U(s_k,B_k).
+$$
+
+**Case：** \(s_0\) 是零初始化的线性选择头及其统计量。RLS、online SGD 或候选的新更新器都接收同一个 \(B_3\)，得到下一状态；因此它们在相同数据协议下比较。
+
+## 3. 优化目标和硬约束
+
+未来选择的平均质量是：
+
+$$
+J_T(\pi,U)
 =
 \mathbb E\!\left[
 \frac1T\sum_{t=1}^{T}y_t(a_t)
 \right].
 $$
 
-**Case：** 若三次实际选择的标签为 (1,0,1)，则该条轨迹的经验效用为 (2/3)；未选择候选的潜在标签不能进入这条在线求和。
+**Case：** 一条三轮轨迹的实际标签是 \(1,0,1\)，其经验效用是 \(2/3\)；未执行候选的潜在标签不能进入在线求和。
 
-最终要寻找的是同时决定“如何选”和“如何更新”的一对函数：
-
-$$
-(\pi^\star,U^\star)
-=
-\underset{\pi,U}{\operatorname{argmax}}
-\;J_T(\pi,U).
-$$
-
-**Case：** 在同一个真实数据流、相同候选集合和相同探索率下，比较 `RLS`、`online SGD` 和新更新器；哪个组合在未来窗口的平均 (y_t) 更高，才有资格继续作为候选方法。
-
-## 5. 稳定性和实时性约束
-
-在更新前固定一份旧任务集合 (mathcal D_{m old})，令 (L_{m old}(s)) 为状态 (s) 在该集合上的选择损失。最大遗忘定义为：
+固定更新前的旧任务集合 \(\mathcal D_{\mathrm{old}}\)，令 \(L_{\mathrm{old}}(s)\) 表示状态 \(s\) 在该集合上的选择损失。最大遗忘定义为：
 
 $$
-F_T
-=
+F_T=
 \left[
 \max_{0\le k\le T}
-\bigl(L_{\rm old}(s_k)-L_{\rm old}(s_0)\bigr)
+\bigl(L_{\mathrm{old}}(s_k)-L_{\mathrm{old}}(s_0)\bigr)
 \right]_+.
 $$
 
-**Case：** (mathcal D_{m old}) 是 100 个已锁定的历史任务；更新前选择准确率为 (0.82)，更新过程中最低为 (0.79)，则这条运行的 (F_T=0.03)。
+**Case：** 旧任务集合包含 100 个已锁定任务，更新前准确率为 \(0.82\)，更新期间最低为 \(0.79\)，则 \(F_T=0.03\)。
 
 更新延迟约束为：
 
 $$
-Q_{0.95}\!\left(\operatorname{latency}(U_\psi)\right)
-\le B_{\rm update}.
+Q_{0.95}\!\left(
+\operatorname{latency}(U)
+\right)
+\le B_{\mathrm{update}}.
 $$
 
-**Case：** 若产品预算 (B_{m update}=10\mathrm{ms})，测得 1000 次更新的 p95 为 (4.1\mathrm{ms})，则满足实时约束。
+**Case：** 预算 \(B_{\mathrm{update}}=10\mathrm{ms}\)，1000 次更新的 p95 为 \(4.1\mathrm{ms}\)，则满足实时约束。
 
-因此最小约束优化问题是：
+最小约束优化问题是：
 
 $$
 \begin{aligned}
-\underset{\pi,U_\psi}{\operatorname{maximize}}\quad
-&J_T(\pi,U_\psi)\\
+\underset{\pi,U}{\operatorname{maximize}}\quad
+&J_T(\pi,U)\\
 \text{subject to}\quad
-&F_T\le\varepsilon_{\rm old},\\
-&Q_{0.95}\!\left(\operatorname{latency}(U_\psi)\right)
-\le B_{\rm update}.
+&F_T\le\varepsilon_{\mathrm{old}},\\
+&Q_{0.95}\!\left(\operatorname{latency}(U)\right)
+\le B_{\mathrm{update}}.
 \end{aligned}
 $$
 
-**Case：** 若允许最大遗忘 (\varepsilon_{\rm old}=0.02)，则上一个 (F_T=0.03) 的方法即使效用更高，也不能作为最终方案。
+**Case：** 若允许最大遗忘 \(\varepsilon_{\mathrm{old}}=0.02\)，前述 \(F_T=0.03\) 的方法即使平均效用较高，也不能作为最终方案。
 
-## 6. 何时才增加隐藏状态或更多符号
+## 4. 只在证据出现后增加的概念
 
-上述模型把动作影响未来的部分吸收到下一次上下文 (x_{t+1}) 中。只有实验显示“选择不同 peer 会改变未来任务分布”，才增加显式转移：
-
-$$
-x_{t+1}\sim P_X(\,cdot\mid x_t,a_t,o_t).
-$$
-
-**Case：** 如果选择 agent A 会使后续任务进入“需要返工”阶段，而选择 agent B 不会，且这一变化无法从 (x_{t+1}) 直接观察，就需要把隐藏环境状态单独建模；在此证据出现前，不引入 (Z_t) 或 belief (b_t)。
-
-同理，propensity 只是由策略派生的量：
+如果实验显示选择不同 peer 会改变未来任务分布，才增加显式转移：
 
 $$
-p_t=\pi_{\theta_t}(a_t\mid x_t,C_t),
+x_{t+1}\sim P_X(\,\cdot\mid x_t,a_t,o_t).
 $$
 
-**Case：** 只有做 IPS 离线评估时才记录 (p_t)；它不是在线选择问题的新增原始输入。候选图、候选版本和完整事件日志也遵循同一原则：能放进 (x_t) 或候选对象的，不另起符号。
+**Case：** 选择 agent A 会使下一阶段进入返工状态，而选择 agent B 不会，且该状态无法从当前 \(x_{t+1}\) 直接观察；这时再引入隐藏环境状态和 belief。没有该证据时，直接使用第 1--3 节的模型。
+
+如果需要 IPS 离线评估，propensity 由策略派生：
+
+$$
+p_t=\pi(a_t\mid x_t,C_t,s_t).
+$$
+
+**Case：** 只有在评估日志策略与目标策略的差异时记录 \(p_t\)；它不是在线选择问题的新原始输入。
 
 ## 结论
 
-当前应冻结的数学对象只有：
+基础问题只需要：
 
 $$
 \boxed{(x_t,C_t,a_t,o_t,y_t,\delta_t,s_t)}.
 $$
 
-其中 (x_t,C_t) 是任务输入，(a_t) 是动作，(o_t) 是可选的即时观测，(y_t) 是被选动作的延迟质量，(delta_t) 是延迟，(s_t) 是在线可写状态。backbone 是 (phi_omega)，训练方法是 (U_psi)；二者仍应通过真实数据上的受控比较确定。
-
+\(x_t,C_t\) 是输入，\(a_t\) 是动作，\(o_t\) 是可选即时输出，\(y_t\) 是被选动作的延迟质量，\(\delta_t\) 是延迟，\(s_t\) 是在线可写状态。backbone 是 \(\phi\)，训练方法是 \(U\)；二者必须在同一数据协议和约束下由实验确定。
