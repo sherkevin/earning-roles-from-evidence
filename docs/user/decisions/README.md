@@ -16,3 +16,4 @@ User decision records and external-operation summaries.
 - [0011 — 按决策价值控制实验节奏](0011-bound-experiments-by-decision-value.md): 先分析现有结果，以单一问题、明确对照、资源上限和停止条件安排下一轮，逐项记录与关闭问题。
 - [0012 — 不锁定 Laya，也不把 RLS 当成论文创新](0012-do-not-lock-laya-or-rls.md): Laya 保留为候选 encoder/静态基线，RLS 保留为强基线，最终创新机制和 backbone 待真实闭环与判别实验。
 - [0013 — Freeze the minimal symbol boundary for online selection](0013-minimal-symbol-boundary.md): use a seven-item selector/tool kernel and an eight-item peer-judged role extension with explicit judge identity; add hidden state only when data requires it.
+- [0014 — Treat the linear associative recurrence as a validated kernel, not the final method](0014-linear-associative-smoke-gate.md): the recurrence is executable and cheaper than dense RLS in a local probe, but its selection gain is negligible, so keep it as a baseline pending a stronger feature/state design.
