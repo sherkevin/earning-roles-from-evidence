@@ -93,6 +93,33 @@ $$
 这不是把特征维度加倍就能自动解决的问题。加倍只是把正负坐标分别存储；
 S/Z 仍然只做一个标量 kernel average。
 
+还有一个更具体的统计量错配。若目标是拟合环境里的线性 reward，平方损失的
+加权岭回归应维护
+
+$$
+A_k=\lambda A_{k^-}+\sum_r w_r\phi(x_r)\phi(x_r)^\top,
+\qquad
+b_k=\lambda b_{k^-}+\sum_r w_r y_r\phi(x_r),
+\qquad
+\hat w_k=A_k^{-1}b_k.
+$$
+
+当前的 S 相当于 b，但 Z 是 \(\sum_r w_r\phi(x_r)\)，不是
+\(\sum_r w_r\phi(x_r)\phi(x_r)^\top\)。因此它不是 RLS 的低成本近似，而是
+attention 的归一化核回归。即使只保留对角近似，也应使用
+
+$$
+D_k=\lambda D_{k^-}+\sum_r w_r(\phi(x_r)\odot\phi(x_r)),
+\qquad
+\hat w_{k,i}=\frac{b_{k,i}}{D_{k,i}+\rho},
+\qquad
+\hat y(q)=\phi(q)^\top\hat w_k.
+$$
+
+这个对角形式仍然不是最终方案，但它是一个可证伪的最小对照：如果它在固定
+theta、长 horizon 的 world 上恢复了排序能力，说明当前失败的一个直接原因是
+分母统计量选错；如果它仍接近 uniform，再继续查 feature map 和共享 context。
+
 ## 3. 菜单结构：候选区分信号被公共项淹没
 
 同一个菜单中的候选共享当前任务上下文，因此
