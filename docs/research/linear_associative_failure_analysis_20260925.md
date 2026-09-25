@@ -225,6 +225,19 @@ $$
 共同导致了上一轮结果接近 uniform。固定 theta 实验还说明，估计器和策略必须分开
 评估：associative 在可控策略下有排序信号，但上一轮 softmax 没有把信号转成动作。
 
+随后在同一个 stationary world 上只替换行为策略，保持 associative estimator、反馈
+延迟和随机种子不变：
+
+| policy | expected reward | regret | rank hit | entropy |
+|---|---:|---:|---:|---:|
+| temperature-1 softmax | 0.369360 | 0.109680 | 0.743525 | 1.386260 |
+| epsilon-greedy, epsilon=0.1 | 0.450058 | 0.028983 | 0.647475 | 0.349516 |
+
+这说明上一轮的主要决策损失确实来自 calibration：softmax 的 rank hit 并不低，
+但熵几乎等于 \(\log 4\)，没有把排序转成集中选择。epsilon-greedy 的 rank hit
+反而略低，却因为真正利用了当前最高分而取得更高 reward。因此 estimator quality、
+policy calibration 和 exploration coverage 必须作为三个独立指标报告。
+
 ## 7. 改进顺序
 
 第一步的固定 theta 隔离已经完成。它保留当前 kernel 作为可用 baseline，但确认
