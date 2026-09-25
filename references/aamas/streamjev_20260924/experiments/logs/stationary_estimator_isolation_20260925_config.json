@@ -1,0 +1,37 @@
+{
+  "experiment_id": "stationary_estimator_isolation_20260925",
+  "seeds": [
+    20260925,
+    20260942,
+    20260959,
+    20260976,
+    20260993
+  ],
+  "horizon": 2000,
+  "methods": [
+    "static",
+    "associative",
+    "diag_ls",
+    "online_rls"
+  ],
+  "world": {
+    "fixed_theta": true,
+    "regime_switches": false,
+    "feedback_delay": 1,
+    "unselected_labels_delivered": false,
+    "oracle_truth_delivered": false
+  },
+  "policy": {
+    "type": "epsilon_greedy",
+    "epsilon": 0.1,
+    "tie_split": true
+  },
+  "runtime": {
+    "started_at_utc": "2026-09-25T05:56:18.723980+00:00",
+    "python": "3.9.6",
+    "numpy": "1.26.4",
+    "git_commit": "81e9d13a55107e3d1f8bb9435076017d51c91399",
+    "command": "python3 references/aamas/streamjev_20260924/experiments/stationary_estimator_isolation_20260925.py"
+  },
+  "interpretation": "Estimator isolation only; synthetic data and no paper claim."
+}
