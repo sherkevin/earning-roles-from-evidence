@@ -1,0 +1,57 @@
+{
+  "benchmark_name": "PeerSelect-IPD",
+  "status": "proposed_primary_mechanism_track",
+  "source": {
+    "name": "shMARL / graph-ipd",
+    "repository": "https://github.com/geronest/graph-ipd",
+    "paper": "https://arxiv.org/abs/2608.28977",
+    "commit": "00ef417f60053569175b2b50d0f0e25ff8eb7007",
+    "license": "MIT"
+  },
+  "scientific_scope": "Mechanism benchmark for local peer selection with selected-only online feedback; it is not by itself the artifact-judgment benchmark.",
+  "native_protocol": {
+    "graph": ["ring", "line", "Erdos-Renyi", "Watts-Strogatz", "Barabasi-Albert"],
+    "persistent_agents": true,
+    "candidate_set": "current undirected neighbors",
+    "selector_input": ["candidate local action history", "optional opponent identity"],
+    "selector_output": "probability over eligible neighbors",
+    "feedback": "selected pair IPD payoff",
+    "online_update": "SAC partner-selection network plus DQN action policy"
+  },
+  "required_conditions": [
+    "random matching",
+    "fixed/static score selector",
+    "no-history selector",
+    "history-only selector",
+    "identity-aware selector",
+    "source graph-ipd SAC/DQN selector",
+    "proposed lightweight real-time updater"
+  ],
+  "required_metrics": [
+    "mean selected payoff",
+    "cumulative regret against per-context best eligible peer",
+    "partner-selection precision@1 and precision@k",
+    "exploration coverage over eligible neighbors",
+    "post-shift recovery time",
+    "decision latency p50/p95",
+    "update latency p50/p95",
+    "memory footprint"
+  ],
+  "smoke_gate": {
+    "source_config": "configs/smoke/smoke_ps.yaml",
+    "command": "python bin/train_ray.py smoke_ps --set_id smoke --run_id patched_check",
+    "steps": 200,
+    "repetitions": 2,
+    "agents": 4,
+    "device": "cpu",
+    "result": "completed after local one-line argument-passing patch to upstream postprocessing",
+    "evidence": "experiments/logs/benchmark_selection_20260925/graph_ipd_smoke_ps_patched_summary.json"
+  },
+  "transfer_track": {
+    "name": "ArtifactRole-TB",
+    "source": "TeamBench task roots",
+    "purpose": "producer delivery, recipient judgment/use/rework, independent terminal grader, later assignment",
+    "status": "requires thin adapter and vertical-slice gate",
+    "do_not_claim": "Do not use PeerSelect-IPD alone as evidence for learning roles from others' artifact judgment."
+  }
+}

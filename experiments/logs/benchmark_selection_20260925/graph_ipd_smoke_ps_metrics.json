@@ -1,0 +1,124 @@
+{
+  "benchmark": "shMARL/graph-ipd",
+  "commit": "00ef417f60053569175b2b50d0f0e25ff8eb7007",
+  "config": "smoke_ps",
+  "set_id": "smoke",
+  "run_id": "patched_check",
+  "local_patch": "pass results_dir into plot_iteration; fixes upstream NameError in postprocessing",
+  "hardware": "local CPU; Python 3.9 isolated venv",
+  "steps_per_repeat": 200,
+  "repeats": 2,
+  "agents": 4,
+  "select_partner": true,
+  "tests_excluding_ray_models": {
+    "command": "python -m pytest tests/test_utils.py tests/test_states.py tests/test_env.py tests/test_colors.py -q",
+    "result": "6 passed in 2.07s"
+  },
+  "selector_rows": [
+    {
+      "": 12,
+      "iteration": 0,
+      "model": "sac_ps_dqn",
+      "idx_agent": 0,
+      "sum_reward": 18.1,
+      "D": 3.0,
+      "C": 47.0
+    },
+    {
+      "": 13,
+      "iteration": 0,
+      "model": "sac_ps_dqn",
+      "idx_agent": 1,
+      "sum_reward": 18.299999999999994,
+      "D": 3.0,
+      "C": 47.0
+    },
+    {
+      "": 14,
+      "iteration": 0,
+      "model": "sac_ps_dqn",
+      "idx_agent": 2,
+      "sum_reward": 16.999999999999996,
+      "D": 4.0,
+      "C": 46.0
+    },
+    {
+      "": 15,
+      "iteration": 0,
+      "model": "sac_ps_dqn",
+      "idx_agent": 3,
+      "sum_reward": 21.4,
+      "D": 2.0,
+      "C": 48.0
+    },
+    {
+      "": 12,
+      "iteration": 1,
+      "model": "sac_ps_dqn",
+      "idx_agent": 0,
+      "sum_reward": 2.8,
+      "D": 18.0,
+      "C": 32.0
+    },
+    {
+      "": 13,
+      "iteration": 1,
+      "model": "sac_ps_dqn",
+      "idx_agent": 1,
+      "sum_reward": 2.200000000000001,
+      "D": 19.0,
+      "C": 31.0
+    },
+    {
+      "": 14,
+      "iteration": 1,
+      "model": "sac_ps_dqn",
+      "idx_agent": 2,
+      "sum_reward": 29.4,
+      "D": 3.0,
+      "C": 47.0
+    },
+    {
+      "": 15,
+      "iteration": 1,
+      "model": "sac_ps_dqn",
+      "idx_agent": 3,
+      "sum_reward": 4.000000000000001,
+      "D": 12.0,
+      "C": 38.0
+    }
+  ],
+  "selector_sum_reward_mean": 14.149999999999999,
+  "selector_sum_reward_by_iteration": [
+    18.699999999999996,
+    9.6
+  ],
+  "artifact_files": [
+    "actionpairs.npy",
+    "dynamics_agent_actioninfos.png",
+    "dynamics_agent_actions.png",
+    "dynamics_agent_rewardsum.png",
+    "dynamics_selector_actioninfos.png",
+    "dynamics_selector_actions.png",
+    "dynamics_selector_rewardsum.png",
+    "experiment_summary.txt",
+    "iterations.npy",
+    "networks/imgs/agents_run0_step200.png",
+    "networks/imgs/agents_run1_step200.png",
+    "networks/imgs/selection_actioninfo_run0_step200.png",
+    "networks/imgs/selection_actioninfo_run1_step200.png",
+    "networks/imgs/selection_lasthistory_run0_step200.png",
+    "networks/imgs/selection_lasthistory_run1_step200.png",
+    "networks/netparam.npy",
+    "networks/nets.npy",
+    "selections.npy",
+    "smoke_ps.yaml",
+    "summary_agent_processed.csv",
+    "summary_agent_processed_peragent.csv",
+    "summary_agent_raw.gz",
+    "summary_selector_processed.csv",
+    "summary_selector_processed_peragent.csv",
+    "summary_selector_raw.gz"
+  ],
+  "interpretation": "Smoke verifies graph construction, candidate partner selection, SAC selector updates, selected interaction recording, and postprocessing. It is not a quality comparison and is not evidence that the proposed method wins."
+}
