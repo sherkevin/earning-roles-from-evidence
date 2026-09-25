@@ -236,7 +236,22 @@ $$
 这说明上一轮的主要决策损失确实来自 calibration：softmax 的 rank hit 并不低，
 但熵几乎等于 \(\log 4\)，没有把排序转成集中选择。epsilon-greedy 的 rank hit
 反而略低，却因为真正利用了当前最高分而取得更高 reward。因此 estimator quality、
-policy calibration 和 exploration coverage 必须作为三个独立指标报告。
+ policy calibration 和 exploration coverage 必须作为三个独立指标报告。
+
+## 6.2 删除 context 不是直接修复
+
+在同一个 stationary world 上把长期特征从 [1, context, candidate_vector] 改成
+candidate_vector-only，并保持 epsilon-greedy、反馈和种子不变：
+
+| feature mode | expected reward | regret | rank hit |
+|---|---:|---:|---:|
+| full | 0.450058 | 0.028983 | 0.647475 |
+| candidate-only | 0.448583 | 0.030457 | 0.608125 |
+
+因此“共享 context 稀释候选差异”是真实机制，但“删除 context 就能恢复效果”没有
+得到支持。context 同时承担按任务检索历史证据的作用。正确的方向是让 context
+进入当前 query，让 peer/version identity 进入稳定 key，而不是把 context 从所有
+表示中粗暴删除。
 
 ## 7. 改进顺序
 
@@ -244,8 +259,8 @@ policy calibration 和 exploration coverage 必须作为三个独立指标报告
 需要同时报告 estimator 的 MSE、排序命中率和 policy 的 expected reward，不能只看
 一个 aggregate reward。
 
-第二步做表示和统计量消融：去掉 bias 和共享 context 的 key 部分，加入候选身份/版本，
-同时对比当前一次矩归一化、对角二阶统计量和 RLS 的协方差状态。加入
+第二步做表示和统计量消融：保留 context 作为当前 query，加入候选身份/版本作为
+稳定 key，同时对比当前一次矩归一化、对角二阶统计量和 RLS 的协方差状态。继续
 比较 signed kernel、二阶低秩特征和一个冻结的小型 learned key/query encoder。
 必须保留 selected-only 约束，不能偷偷使用未选候选标签。
 
