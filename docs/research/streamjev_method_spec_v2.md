@@ -3,6 +3,8 @@
 **日期：** 2026-09-24  
 **状态：** 当前工程 baseline 规范，不是已冻结的论文方法。Laya 仍是候选 encoder，
 RLS 仍是强基线；创新边界见 [`streamjev_novelty_boundary_20260925.md`](streamjev_novelty_boundary_20260925.md)。
+问题的无模型数学定义见 [`streamjev_problem_formulation_20260925.md`](streamjev_problem_formulation_20260925.md)，
+backbone 与更新方法的筛选规则见 [`backbone_method_math_selection_20260925.md`](backbone_method_math_selection_20260925.md)。
 
 ## 先给结论
 
