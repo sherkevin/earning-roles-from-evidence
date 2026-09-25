@@ -3,6 +3,11 @@
 **日期：** 2026-09-25  
 **状态：** 数学问题定义与设计边界；不锁定 backbone，也不锁定最终训练算法。
 
+**记号规范：** 本文保留解释性推导；严格区分决策索引 `t`、反馈到达索引 `k`、
+潜在结果、实际标签和状态更新的规范见
+[`streamjev_math_spec_v2_20260925.md`](streamjev_math_spec_v2_20260925.md)。后续
+实验和论文公式以该规范为准。
+
 为便于后续检索和对比，暂将问题称为 **Constrained Delayed Selective-Feedback
 Contextual Bandit（CDS-CB，受约束延迟选择性反馈上下文 bandit）**。这个名字是
 问题类别，不是论文方法名。
