@@ -13,8 +13,8 @@ references/aamas/streamjev_20260924/experiments/logs/linear_associative_smoke_20
 
 1. S/Z 的递推确实可执行，和显式指数衰减求和一致；
 2. 当前方法不是一个会学习表示或参数的训练框架，而是一个固定特征核的在线核回归器；
-3. 这个固定核没有表达环境使用的 signed linear reward，且菜单内约 65% 的核质量来自所有候选共享的 bias/context；
-4. 因此四个候选的分数几乎相同，softmax 策略接近 uniform，反馈没有转化为有效的选择差异；
+3. 这个固定核在本次非平稳短流中没有充分表达和利用 signed linear reward，且菜单内约 65% 的核质量来自所有候选共享的 bias/context；
+4. 在温度为 1 的 softmax 下，四个候选的分数几乎相同，策略接近 uniform，反馈没有转化为有效的选择差异；
 5. regime 切换、延迟、只有约 100 条 selected-only 标签和较短 horizon 进一步降低了可识别性；
 6. 线性注意力的结合律只解决固定状态的计算复杂度，不能自动提供表达能力、抗遗忘或准确率。
 
@@ -200,14 +200,39 @@ decision/source time 进入状态。这个实现满足因果性，但旧标签�
 - 不是只要调一个温度就能解决：温度最多放大已有分数，不能补回被核抹掉的
   signed direction 和候选交互。
 
+## 6.1 新的固定 theta 隔离实验改变了结论边界
+
+随后运行了固定单一 theta、2000 步、一步 selected-only 延迟的隔离实验，并让
+所有方法使用同一种 epsilon-greedy 策略。结果为：
+
+| method | expected reward | regret | prediction MSE | rank hit |
+|---|---:|---:|---:|---:|
+| static | 0.368636 | 0.110405 | 0.074983 | 0.250000 |
+| associative | 0.450058 | 0.028983 | 0.037748 | 0.647475 |
+| diagonal LS | 0.402190 | 0.076851 | 0.126985 | 0.413075 |
+| OnlineRLSHead | 0.457843 | 0.021197 | 0.081980 | 0.794025 |
+
+这说明当前 associative kernel 不是完全不能学习：在 stationary、长 horizon 和
+可利用的策略下，它明显超过 static；但它仍弱于 RLS，排序命中率也明显更低。
+因此原来的失败不能简单归结为“kernel 没有表达能力”，更准确的说法是：
+
+$$
+\text{固定核的弱表达能力}
++\text{短流非平稳污染}
++\text{温度 1 的策略压平}
+$$
+
+共同导致了上一轮结果接近 uniform。固定 theta 实验还说明，估计器和策略必须分开
+评估：associative 在可控策略下有排序信号，但上一轮 softmax 没有把信号转成动作。
+
 ## 7. 改进顺序
 
-第一步先做可识别性隔离，不改动态机制：固定单一 theta，取消 regime switch，
-把 horizon 提高到至少 5000，分别比较当前核、RLS 和 oracle；报告候选排序命中率、
-score margin、校准误差，而不只看平均 reward。如果当前核在 stationary world
-仍接近 uniform，就可以直接否定当前 phi。
+第一步的固定 theta 隔离已经完成。它保留当前 kernel 作为可用 baseline，但确认
+需要同时报告 estimator 的 MSE、排序命中率和 policy 的 expected reward，不能只看
+一个 aggregate reward。
 
-第二步做表示消融：去掉 bias 和共享 context 的 key 部分，加入候选身份/版本，
+第二步做表示和统计量消融：去掉 bias 和共享 context 的 key 部分，加入候选身份/版本，
+同时对比当前一次矩归一化、对角二阶统计量和 RLS 的协方差状态。加入
 比较 signed kernel、二阶低秩特征和一个冻结的小型 learned key/query encoder。
 必须保留 selected-only 约束，不能偷偷使用未选候选标签。
 
