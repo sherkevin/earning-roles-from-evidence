@@ -23,6 +23,12 @@ from typing import Any, Mapping
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 JUDGMENTS = {"accept", "accept_with_rework", "reject_redo", "reject_reroute"}
 ACTIONS = {"use", "repair", "reject", "independent_redo"}
+DECISION_ACTION = {
+    "accept": "use",
+    "accept_with_rework": "repair",
+    "reject_redo": "independent_redo",
+    "reject_reroute": "reject",
+}
 
 
 def _hash_payload(payload: Mapping[str, Any]) -> str:
@@ -38,6 +44,39 @@ def _artifact_hash(value: str) -> str:
 
 
 @dataclass(frozen=True)
+class PeerSelection:
+    """The selector decision that makes a delivery attributable.
+
+    ``candidate_ids`` is the complete eligible local neighborhood observed by
+    the selector.  Keeping it in the event is necessary for replay and for
+    distinguishing exploration from an oracle that saw all agents.
+    """
+
+    selection_id: str
+    task_id: str
+    task_index: int
+    selector_id: str
+    role: str
+    candidate_ids: tuple[str, ...]
+    chosen_peer_id: str
+    propensity: float
+
+    def __post_init__(self) -> None:
+        if not self.selection_id or not self.task_id or not self.selector_id or not self.role:
+            raise ValueError("selection identifiers and role are required")
+        if int(self.task_index) < 0:
+            raise ValueError("task_index must be non-negative")
+        if not self.candidate_ids or len(set(self.candidate_ids)) != len(self.candidate_ids):
+            raise ValueError("candidate_ids must be non-empty and unique")
+        if self.chosen_peer_id not in self.candidate_ids:
+            raise ValueError("chosen_peer_id must be an eligible candidate")
+        if self.chosen_peer_id == self.selector_id:
+            raise ValueError("selector cannot choose itself")
+        if not (0.0 < float(self.propensity) <= 1.0):
+            raise ValueError("propensity must be in (0, 1]")
+
+
+@dataclass(frozen=True)
 class Delivery:
     delivery_id: str
     task_id: str
@@ -46,6 +85,7 @@ class Delivery:
     artifact_sha256: str
     source_event_id: str
     task_index: int
+    selection_id: str | None = None
 
     def __post_init__(self) -> None:
         if not self.delivery_id or not self.task_id or not self.source_event_id:
@@ -112,10 +152,16 @@ class TerminalOutcome:
     delivery_id: str
     success: bool
     scorer_version: str
+    partial_score: float | None = None
+    score_payload_sha256: str | None = None
 
     def __post_init__(self) -> None:
         if not self.outcome_id or not self.delivery_id or not self.scorer_version:
             raise ValueError("terminal outcome identifiers and scorer_version are required")
+        if self.partial_score is not None and not 0.0 <= float(self.partial_score) <= 1.0:
+            raise ValueError("partial_score must be in [0, 1]")
+        if self.score_payload_sha256 is not None:
+            _artifact_hash(self.score_payload_sha256)
 
 
 @dataclass(frozen=True)
@@ -155,14 +201,21 @@ class LaterAssignment:
 class PeerRoleLedger:
     """Append-only state machine for one or more task episodes."""
 
-    def __init__(self) -> None:
+    def __init__(self, *, require_selection: bool = False, require_terminal_outcome: bool = False) -> None:
+        # The default remains compatible with the original contract tests.  A
+        # benchmark runner should turn both switches on so an ablation cannot
+        # silently bypass attribution or leak a terminal label into learning.
+        self.require_selection = require_selection
+        self.require_terminal_outcome = require_terminal_outcome
         self.events: list[dict[str, Any]] = []
+        self.selections: dict[str, PeerSelection] = {}
         self.deliveries: dict[str, Delivery] = {}
         self.judgments: dict[str, RecipientJudgment] = {}
         self.actions: dict[str, ConsumerAction] = {}
         self.outcomes: dict[str, TerminalOutcome] = {}
         self.evidence: dict[str, RoleEvidenceUpdate] = {}
         self.assignments: dict[str, LaterAssignment] = {}
+        self.started_tasks: dict[tuple[str, int], int] = {}
 
     def _append(self, event_type: str, payload: Mapping[str, Any]) -> None:
         record = {
@@ -173,9 +226,35 @@ class PeerRoleLedger:
         record["record_hash"] = _hash_payload(record)
         self.events.append(record)
 
+    def record_selection(self, selection: PeerSelection) -> None:
+        if selection.selection_id in self.selections:
+            raise ValueError("duplicate selection_id")
+        key = (selection.task_id, selection.task_index)
+        if any((s.task_id, s.task_index) == key for s in self.selections.values()):
+            raise ValueError("one selection is required per task episode")
+        self.selections[selection.selection_id] = selection
+        self._append("peer_selection", selection.__dict__)
+
+    def record_task_start(self, task_id: str, task_index: int) -> None:
+        key = (task_id, int(task_index))
+        if key in self.started_tasks:
+            raise ValueError("duplicate task start")
+        self.started_tasks[key] = len(self.events)
+        self._append("task_start", {"task_id": task_id, "task_index": int(task_index)})
+
     def record_delivery(self, delivery: Delivery) -> None:
         if delivery.delivery_id in self.deliveries:
             raise ValueError("duplicate delivery_id")
+        if self.require_selection:
+            if not delivery.selection_id:
+                raise ValueError("strict ledger requires a selection_id")
+            selection = self.selections.get(delivery.selection_id)
+            if selection is None:
+                raise ValueError("delivery must reference a recorded selection")
+            if (selection.task_id, selection.task_index) != (delivery.task_id, delivery.task_index):
+                raise ValueError("selection and delivery task episode must match")
+            if selection.chosen_peer_id != delivery.producer_id:
+                raise ValueError("delivery producer must be the selected peer")
         self.deliveries[delivery.delivery_id] = delivery
         self._append("producer_delivery", delivery.__dict__)
 
@@ -189,6 +268,8 @@ class PeerRoleLedger:
             raise ValueError("only the recorded recipient may judge the delivery")
         if judgment.observed_artifact_sha256 != delivery.artifact_sha256:
             raise ValueError("judgment must cite the delivered artifact digest")
+        if any(j.delivery_id == judgment.delivery_id for j in self.judgments.values()):
+            raise ValueError("one recipient judgment is allowed per delivery")
         if any(a.delivery_id == judgment.delivery_id for a in self.actions.values()):
             raise ValueError("judgment must precede consumer action")
         self.judgments[judgment.judgment_id] = judgment
@@ -206,6 +287,12 @@ class PeerRoleLedger:
             raise ValueError("action must cite the delivered artifact digest")
         if not any(j.delivery_id == action.delivery_id for j in self.judgments.values()):
             raise ValueError("consumer action requires a prior recipient judgment")
+        if any(a.delivery_id == action.delivery_id for a in self.actions.values()):
+            raise ValueError("one consumer action is allowed per delivery")
+        if self.require_selection:
+            judgment = next(j for j in self.judgments.values() if j.delivery_id == action.delivery_id)
+            if DECISION_ACTION[judgment.decision] != action.action:
+                raise ValueError("consumer action does not match recipient judgment")
         self.actions[action.action_id] = action
         self._append("consumer_action", action.__dict__)
 
@@ -216,6 +303,8 @@ class PeerRoleLedger:
             raise ValueError("outcome must reference a recorded delivery")
         if not any(a.delivery_id == outcome.delivery_id for a in self.actions.values()):
             raise ValueError("terminal outcome requires a consumer action")
+        if any(o.delivery_id == outcome.delivery_id for o in self.outcomes.values()):
+            raise ValueError("one terminal outcome is allowed per delivery")
         self.outcomes[outcome.outcome_id] = outcome
         self._append("terminal_outcome", outcome.__dict__)
 
@@ -228,6 +317,8 @@ class PeerRoleLedger:
             raise ValueError("evidence must cite a recorded judgment and action")
         if judgment.delivery_id != action.delivery_id:
             raise ValueError("judgment and action must refer to the same delivery")
+        if self.require_terminal_outcome and evidence.outcome_id is None:
+            raise ValueError("strict ledger requires terminal outcome before evidence update")
         if evidence.outcome_id is not None:
             outcome = self.outcomes.get(evidence.outcome_id)
             if outcome is None or outcome.delivery_id != judgment.delivery_id:
@@ -248,6 +339,15 @@ class PeerRoleLedger:
         ]
         if not all(assignment.task_index > delivery.task_index for delivery in cited_deliveries):
             raise ValueError("assignment must occur after the cited delivery")
+        if self.require_selection:
+            if any((assignment.task_id, assignment.task_index) == key for key in self.started_tasks):
+                raise ValueError("assignment must be recorded before the assigned task starts")
+            producers = {
+                self.deliveries[self.judgments[self.evidence[e].judgment_id].delivery_id].producer_id
+                for e in cited
+            }
+            if producers != {assignment.agent_id}:
+                raise ValueError("assignment agent must match the cited producer")
         self.assignments[assignment.assignment_id] = assignment
         self._append("later_assignment", assignment.__dict__)
 
