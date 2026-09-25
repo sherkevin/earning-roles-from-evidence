@@ -1,0 +1,40 @@
+{
+  "experiment_id": "linear_associative_smoke_20260925",
+  "seed_count": 5,
+  "base_seed": 20260925,
+  "horizon": 100,
+  "methods": [
+    "static",
+    "online_rls",
+    "no_feedback",
+    "associative"
+  ],
+  "environment": {
+    "world": "selected_only_rls.make_world",
+    "menu_size": 4,
+    "delays": [
+      1,
+      8
+    ],
+    "unselected_labels_delivered": false,
+    "oracle_argmax_delivered": false
+  },
+  "associative": {
+    "feature_map": "concat(max(x,0),max(-x,0))",
+    "forgetting": 0.985,
+    "ridge": 0.1,
+    "prior": 0.5,
+    "ips_weight": "min(8,1/propensity)",
+    "batch_decay": "one decay per arrival timestamp"
+  },
+  "runtime": {
+    "started_at_utc": "2026-09-25T05:25:42.185121+00:00",
+    "python": "3.9.6",
+    "numpy": "1.26.4",
+    "platform": "macOS-26.3.2-arm64-arm-64bit",
+    "git_commit": "ebe32b1c43a47ce65b09f91298c57851b53a6d20",
+    "command": "python3 references/aamas/streamjev_20260924/experiments/linear_associative_smoke.py --seeds 5 --horizon 100",
+    "cwd": "/Users/jingwu/work/earning-roles"
+  },
+  "notes": "Synthetic falsification smoke only; truth fields are evaluation-only."
+}
