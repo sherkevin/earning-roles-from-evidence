@@ -27,3 +27,4 @@
 - [done] 2026-09-26 材料v3显式职责与实际病例回归完成，合并80项通过（0新API/0GPU）。[独立状态审查](docs/research/n03_minimal_state_independent_review_20260926.md)与[CROSS3审查](docs/research/n03_cross3_candidate_audit_20260926.md)完成；后者代码交付切面NO-GO，保留原计划→实现资产，不伪称有第二root。
 - [done] 2026-09-26 [N03前置设计](docs/research/n03_preflight_design_20260926.md)将本人经历与见证、交付与消费评分、同信息基线对应起来；明确尚缺评分/状态实现和合格root，未运行N03。下一步先审计划交付的真实增量，不为凑任务造协作。
 - [done] 2026-09-26 独立收口审查PASS，两项成本/经验连续性澄清已落实；无新API/GPU。80项工程测试、冻结结果hash、链接和文档一致性检查通过，科学要求仍pending。GitHub普通HTTPS Git连接超时，API确认远程仍为原HEAD；尝试经认证Git Data API发布同一有界checkpoint，不force覆盖远程。
+- [done] 2026-09-26 检查点`ffe81bc59226fa9fe45e3dbc9f77a977d318ecb8`已发布至远程`codex/aamas-real-validation-20260922`并回读一致；使用Git Data API的非force快进，tree/commit与本地完全一致。见[发布回执](artifacts/analysis/aamas2027/checkpoint_20260926/receipt.json)。第三方克隆和4538个嵌套历史fixture文件保留本地，完整索引随检查点；持久目标active，下一步仍为N03任务/状态资格。
