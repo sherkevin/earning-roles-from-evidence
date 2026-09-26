@@ -1,0 +1,22 @@
+{
+  "review_id": "pipe3_v1_v2_independent_review_20260927",
+  "reviewer": "independent_subagent",
+  "reviewed_artifacts": [
+    "experiments/logs/n03_pipe3_qualification_20260926/summary.json",
+    "experiments/logs/n03_pipe3_qualification_20260926_v2/summary.json",
+    "docs/research/n03_pipe3_qualification_20260926.md"
+  ],
+  "conclusion": "v2 strict producer boundary is justified for the stated PIPE3 specification and the four-cell parent matrix is a valid attribution smoke gate, but it is not benchmark qualification or learning evidence",
+  "evidence": {
+    "v1_threat": "recipient_only adoption passed because Python datetime.fromisoformat accepts a space separator even though the PIPE3 contract requires a T separator",
+    "v2_separation": "baseline=000, producer_only=100, recipient_only=010, both=111",
+    "scope": "one structural root and seed 0; controlled parent-generated variants; no LLM candidate, native grader, or GPU"
+  },
+  "remaining_gates": [
+    "cover producer JSONL multi-event and field-completeness constraints",
+    "cover recipient action casing, processed_at, exceptions, and multi-event behavior",
+    "cover pipeline value transformation, UTF-8 content, and sink business result",
+    "fix actor/recipient writable paths, hidden scoring, and event ledger",
+    "repeat on additional seeds before benchmark freeze"
+  ]
+}

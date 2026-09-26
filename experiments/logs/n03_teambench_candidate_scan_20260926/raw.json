@@ -1,0 +1,6455 @@
+{
+  "experiment_id": "n03_teambench_candidate_scan_20260926",
+  "source_commit": "d185aef1916fd86a9ba554d581fd256319a973af",
+  "scientific_claim_allowed": false,
+  "llm_calls": 0,
+  "gpu_jobs": 0,
+  "candidate_execution": false,
+  "candidates": [
+    {
+      "task_id": "CROSS5_event_schema",
+      "task_yaml": {
+        "task_id": "CROSS5_event_schema",
+        "category": "Cross-System",
+        "difficulty": "hard",
+        "tni_pattern": "D",
+        "parameterized": "true"
+      },
+      "task_files": [
+        {
+          "path": "tasks/CROSS5_event_schema/brief.md",
+          "sha256": "7018e29689df51ebeafbf8666ba3717cfb65f05aa7c1d7488cdcb68edc32072d",
+          "bytes": 287,
+          "lines": 7,
+          "keyword_counts": {
+            "producer": 1,
+            "consumer": 1,
+            "consume": 1,
+            "planner": 2,
+            "schema": 2,
+            "bug": 1
+          },
+          "markers": [
+            {
+              "line": 1,
+              "text": "# CROSS5: Event Schema Fix",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 3,
+              "text": "Fix field name mismatches and encoding bugs between a Python event producer and Java event",
+              "keywords": [
+                "producer",
+                "bug"
+              ]
+            },
+            {
+              "line": 4,
+              "text": "consumer. The Planner has read both codebases and the canonical schema to identify which",
+              "keywords": [
+                "consumer",
+                "consume",
+                "planner",
+                "schema"
+              ]
+            },
+            {
+              "line": 7,
+              "text": "Follow the Planner's guidance precisely.",
+              "keywords": [
+                "planner"
+              ]
+            }
+          ]
+        },
+        {
+          "path": "tasks/CROSS5_event_schema/grade.sh",
+          "sha256": "e50181c30ecc31f769e1f5a8489b5aa14d250a58735e2ad72139a5a551e55353",
+          "bytes": 7228,
+          "lines": 212,
+          "keyword_counts": {
+            "producer": 36,
+            "consumer": 12,
+            "consume": 12,
+            "schema": 9
+          },
+          "markers": [
+            {
+              "line": 2,
+              "text": "# CROSS5 grader: verify Python producer + Java consumer event schema reconciliation",
+              "keywords": [
+                "producer",
+                "consumer",
+                "consume",
+                "schema"
+              ]
+            },
+            {
+              "line": 34,
+              "text": "# ── C1: Producer uses correct eventId field name ────────────────────────",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 37,
+              "text": "src = open(\"producer/event_producer.py\").read()",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 50,
+              "text": "check \"C1\" \"Producer uses 'eventId' field name (not event_id)\" \"pass\"",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 52,
+              "text": "check \"C1\" \"Producer still uses snake_case 'event_id'\" \"fail\"",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 55,
+              "text": "# ── C2: Producer uses correct timestamp field name ──────────────────────",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 58,
+              "text": "src = open(\"producer/event_producer.py\").read()",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 66,
+              "text": "check \"C2\" \"Producer uses 'timestamp' field name (not created_at)\" \"pass\"",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 68,
+              "text": "check \"C2\" \"Producer still uses 'created_at' field name\" \"fail\"",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 71,
+              "text": "# ── C3: Producer uses correct payload field name ────────────────────────",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 74,
+              "text": "src = open(\"producer/event_producer.py\").read()",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 81,
+              "text": "check \"C3\" \"Producer uses 'payload' field name (not data)\" \"pass\"",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 83,
+              "text": "check \"C3\" \"Producer still uses 'data' field name\" \"fail\"",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 86,
+              "text": "# ── C4: Producer uses correct sourceService field name ──────────────────",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 89,
+              "text": "src = open(\"producer/event_producer.py\").read()",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 96,
+              "text": "check \"C4\" \"Producer uses 'sourceService' field name (not source_service)\" \"pass\"",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 98,
+              "text": "check \"C4\" \"Producer still uses snake_case 'source_service'\" \"fail\"",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 101,
+              "text": "# ── C5: Producer uses correct correlationId field name ──────────────────",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 104,
+              "text": "src = open(\"producer/event_producer.py\").read()",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 111,
+              "text": "check \"C5\" \"Producer uses 'correlationId' field name (not correlation_id)\" \"pass\"",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 113,
+              "text": "check \"C5\" \"Producer still uses snake_case 'correlation_id'\" \"fail\"",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 116,
+              "text": "# ── C6: Producer sends epoch milliseconds (not ISO-8601) ────────────────",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 119,
+              "text": "src = open(\"producer/event_producer.py\").read()",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 133,
+              "text": "check \"C6\" \"Producer sends epoch milliseconds (not ISO-8601 strings)\" \"pass\"",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 135,
+              "text": "check \"C6\" \"Producer still sends ISO-8601 timestamp strings\" \"fail\"",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 138,
+              "text": "# ── C7: Consumer base64-decodes binary payloads (not hex) ───────────────",
+              "keywords": [
+                "consumer",
+                "consume"
+              ]
+            },
+            {
+              "line": 141,
+              "text": "src = open(\"consumer/src/main/java/EventConsumer.java\").read()",
+              "keywords": [
+                "consumer",
+                "consume"
+              ]
+            },
+            {
+              "line": 150,
+              "text": "check \"C7\" \"Consumer uses Base64 decoding (not hex decoding)\" \"pass\"",
+              "keywords": [
+                "consumer",
+                "consume"
+              ]
+            },
+            {
+              "line": 152,
+              "text": "check \"C7\" \"Consumer still uses hex decoding for binary payloads\" \"fail\"",
+              "keywords": [
+                "consumer",
+                "consume"
+              ]
+            },
+            {
+              "line": 155,
+              "text": "# ── C8: event_schema.json is unchanged ──────────────────────────────────",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 158,
+              "text": "# Verify schema wasn't modified by checking it still has required fields",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 159,
+              "text": "schema = json.load(open(\"schema/event_schema.json\"))",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 161,
+              "text": "props = set(schema.get(\"properties\", {}).keys())",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 167,
+              "text": "check \"C8\" \"event_schema.json is unchanged and valid\" \"pass\"",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 169,
+              "text": "check \"C8\" \"event_schema.json was modified or is invalid\" \"fail\"",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 172,
+              "text": "# ── C9: Producer Python file has valid syntax ───────────────────────────",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 173,
+              "text": "if python3 -c \"import ast; ast.parse(open('producer/event_producer.py').read())\" 2>/dev/null; then",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 174,
+              "text": "check \"C9\" \"Producer Python file has valid syntax\" \"pass\"",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 176,
+              "text": "check \"C9\" \"Producer Python file has syntax errors\" \"fail\"",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 179,
+              "text": "# ── C10: Consumer Java file has valid syntax (basic check) ──────────────",
+              "keywords": [
+                "consumer",
+                "consume"
+              ]
+            },
+            {
+              "line": 182,
+              "text": "src = open(\"consumer/src/main/java/EventConsumer.java\").read()",
+              "keywords": [
+                "consumer",
+                "consume"
+              ]
+            },
+            {
+              "line": 184,
+              "text": "if \"class EventConsumer\" in src:",
+              "keywords": [
+                "consumer",
+                "consume"
+              ]
+            },
+            {
+              "line": 192,
+              "text": "check \"C10\" \"Consumer Java file has valid structure\" \"pass\"",
+              "keywords": [
+                "consumer",
+                "consume"
+              ]
+            },
+            {
+              "line": 194,
+              "text": "check \"C10\" \"Consumer Java file has structural issues\" \"fail\"",
+              "keywords": [
+                "consumer",
+                "consume"
+              ]
+            }
+          ]
+        },
+        {
+          "path": "tasks/CROSS5_event_schema/spec.md",
+          "sha256": "81ba9a46c4c2dbe6f07f6f39144cb7f3eb56ac0dd13e79556cc28840a9e77107",
+          "bytes": 2294,
+          "lines": 51,
+          "keyword_counts": {
+            "producer": 14,
+            "consumer": 16,
+            "publish": 1,
+            "consume": 17,
+            "schema": 21,
+            "bug": 1
+          },
+          "markers": [
+            {
+              "line": 1,
+              "text": "# CROSS5: Event Schema Reconciliation",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 5,
+              "text": "A Python event producer and a Java event consumer are failing to communicate because of",
+              "keywords": [
+                "producer",
+                "consumer",
+                "consume"
+              ]
+            },
+            {
+              "line": 7,
+              "text": "event schema.",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 11,
+              "text": "- **Python Producer** (`producer/event_producer.py`): Publishes events with snake_case fields",
+              "keywords": [
+                "producer",
+                "publish"
+              ]
+            },
+            {
+              "line": 13,
+              "text": "- **Java Consumer** (`consumer/src/main/java/EventConsumer.java`): Consumes events expecting",
+              "keywords": [
+                "consumer",
+                "consume"
+              ]
+            },
+            {
+              "line": 15,
+              "text": "- **Event Schema** (`schema/event_schema.json`): The canonical schema definition (source of truth)",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 21,
+              "text": "The producer and consumer must agree on the field names defined in `event_schema.json`.",
+              "keywords": [
+                "producer",
+                "consumer",
+                "consume",
+                "schema"
+              ]
+            },
+            {
+              "line": 22,
+              "text": "The schema is the source of truth. Fix whichever side is wrong for each field.",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 24,
+              "text": "1. The event ID field: schema says `eventId`, producer sends `event_id`, consumer expects `eventId`",
+              "keywords": [
+                "producer",
+                "consumer",
+                "consume",
+                "schema"
+              ]
+            },
+            {
+              "line": 25,
+              "text": "2. The timestamp field: schema says `timestamp`, producer sends `created_at`, consumer expects `timestamp`",
+              "keywords": [
+                "producer",
+                "consumer",
+                "consume",
+                "schema"
+              ]
+            },
+            {
+              "line": 26,
+              "text": "3. The payload field: schema says `payload`, producer sends `data`, consumer expects `payload`",
+              "keywords": [
+                "producer",
+                "consumer",
+                "consume",
+                "schema"
+              ]
+            },
+            {
+              "line": 27,
+              "text": "4. The source field: schema says `sourceService`, producer sends `source_service`, consumer expects `sourceService`",
+              "keywords": [
+                "producer",
+                "consumer",
+                "consume",
+                "schema"
+              ]
+            },
+            {
+              "line": 28,
+              "text": "5. The correlation ID: schema says `correlationId`, producer sends `correlation_id`, consumer expects `correlationId`",
+              "keywords": [
+                "producer",
+                "consumer",
+                "consume",
+                "schema"
+              ]
+            },
+            {
+              "line": 30,
+              "text": "### Encoding Bugs (fix 2)",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 32,
+              "text": "6. **Timestamp encoding**: Producer sends ISO-8601 strings (`\"2024-01-15T10:30:00Z\"`).",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 33,
+              "text": "Consumer expects epoch milliseconds (`1705312200000`). The schema specifies epoch",
+              "keywords": [
+                "consumer",
+                "consume",
+                "schema"
+              ]
+            },
+            {
+              "line": 34,
+              "text": "milliseconds. Fix the producer to send epoch milliseconds.",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 36,
+              "text": "7. **Binary payload encoding**: Producer base64-encodes binary payloads. Consumer",
+              "keywords": [
+                "producer",
+                "consumer",
+                "consume"
+              ]
+            },
+            {
+              "line": 37,
+              "text": "hex-decodes them. The schema specifies base64 encoding. Fix the consumer to",
+              "keywords": [
+                "consumer",
+                "consume",
+                "schema"
+              ]
+            },
+            {
+              "line": 42,
+              "text": "- `schema/event_schema.json` — Canonical event schema (source of truth)",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 44,
+              "text": "- `tests/EventConsumerTest.java` — Java consumer unit tests",
+              "keywords": [
+                "consumer",
+                "consume"
+              ]
+            },
+            {
+              "line": 48,
+              "text": "- The schema is the source of truth for field names and encoding",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 49,
+              "text": "- Some fixes go in the producer, some in the consumer — read the schema carefully",
+              "keywords": [
+                "producer",
+                "consumer",
+                "consume",
+                "schema"
+              ]
+            },
+            {
+              "line": 50,
+              "text": "- Do NOT change `event_schema.json`",
+              "keywords": [
+                "schema"
+              ]
+            }
+          ]
+        },
+        {
+          "path": "tasks/CROSS5_event_schema/task.yaml",
+          "sha256": "db494e2069c94379a7c47d33840317afd6c35948d2ab45d34b3476eb506ed76d",
+          "bytes": 246,
+          "lines": 8,
+          "keyword_counts": {
+            "producer": 1,
+            "consumer": 1,
+            "consume": 1,
+            "schema": 1,
+            "bug": 1
+          },
+          "markers": [
+            {
+              "line": 1,
+              "text": "task_id: CROSS5_event_schema",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 5,
+              "text": "description: \"Event producer (Python) + consumer (Java) with 5 field mismatches + 2 encoding bugs\"",
+              "keywords": [
+                "producer",
+                "consumer",
+                "consume",
+                "bug"
+              ]
+            }
+          ]
+        }
+      ],
+      "generator": {
+        "path": "generators/gen_cross5_event_schema.py",
+        "sha256": "9aae8d48398c86eb1ef3a9b2403a2890844f9f4624e495a0aee1a565961fdc69",
+        "bytes": 20612,
+        "lines": 446,
+        "literal_workspace_files": [
+          "consumer/pom.xml",
+          "producer/__init__.py",
+          "producer/event_producer.py",
+          "producer/requirements.txt",
+          "schema/event_schema.json",
+          "tests/EventConsumerTest.java",
+          "tests/__init__.py",
+          "tests/test_roundtrip.py"
+        ],
+        "contains_dynamic_file_keys": true,
+        "keyword_counts": {
+          "producer": 29,
+          "consumer": 30,
+          "processor": 1,
+          "publish": 3,
+          "consume": 36,
+          "schema": 23,
+          "bug": 12,
+          "do not modify": 1
+        },
+        "markers": [
+          {
+            "line": 2,
+            "text": "Parameterized generator for CROSS5: Event Schema Reconciliation.",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 4,
+            "text": "Each seed produces a Python event producer + Java event consumer with 5 field name",
+            "keywords": [
+              "producer",
+              "consumer",
+              "consume"
+            ]
+          },
+          {
+            "line": 5,
+            "text": "mismatches and 2 encoding bugs. The schema is the source of truth.",
+            "keywords": [
+              "schema",
+              "bug"
+            ]
+          },
+          {
+            "line": 73,
+            "text": "SCHEMA_VERSIONS = [\"1.0.0\", \"1.1.0\", \"1.2.0\", \"2.0.0\", \"2.1.0\"]",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 76,
+            "text": "\"com.events.consumer\",",
+            "keywords": [
+              "consumer",
+              "consume"
+            ]
+          },
+          {
+            "line": 79,
+            "text": "\"io.events.processor\",",
+            "keywords": [
+              "processor"
+            ]
+          },
+          {
+            "line": 80,
+            "text": "\"org.eventbus.consumer\",",
+            "keywords": [
+              "consumer",
+              "consume"
+            ]
+          },
+          {
+            "line": 85,
+            "text": "task_id = \"CROSS5_event_schema\"",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 94,
+            "text": "schema_version = SCHEMA_VERSIONS[seed % len(SCHEMA_VERSIONS)]",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 97,
+            "text": "workspace_files = self._make_workspace(domain, schema_version, java_package)",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 99,
+            "text": "tasks_dir = os.path.join(os.path.dirname(__file__), \"..\", \"tasks\", \"CROSS5_event_schema\")",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 106,
+            "text": "task_id=\"CROSS5_event_schema\",",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 112,
+            "text": "\"encoding_bugs_fixed\": 2,",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 115,
+            "text": "\"schema_version\": schema_version,",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 124,
+            "text": "def _make_workspace(self, domain: dict, schema_version: str, java_package: str) -> dict:",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 133,
+            "text": "# ── schema/event_schema.json (source of truth, DO NOT MODIFY) ────",
+            "keywords": [
+              "schema",
+              "do not modify"
+            ]
+          },
+          {
+            "line": 140,
+            "text": "files[\"schema/event_schema.json\"] = (",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 142,
+            "text": "f'  \"schemaVersion\": \"{schema_version}\",\\n'",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 144,
+            "text": "'  \"description\": \"Canonical event schema. This is the source of truth.\",\\n'",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 163,
+            "text": "# ── producer/event_producer.py (BUGGY: 5 field names + 1 encoding) ──",
+            "keywords": [
+              "producer",
+              "bug"
+            ]
+          },
+          {
+            "line": 164,
+            "text": "files[\"producer/__init__.py\"] = \"\"",
+            "keywords": [
+              "producer"
+            ]
+          },
+          {
+            "line": 165,
+            "text": "files[\"producer/event_producer.py\"] = (",
+            "keywords": [
+              "producer"
+            ]
+          },
+          {
+            "line": 167,
+            "text": "f'Event producer for {svc_name}.\\n'",
+            "keywords": [
+              "producer"
+            ]
+          },
+          {
+            "line": 168,
+            "text": "f'Publishes {evt_type} events.\\n'",
+            "keywords": [
+              "publish"
+            ]
+          },
+          {
+            "line": 176,
+            "text": "'class EventProducer:\\n'",
+            "keywords": [
+              "producer"
+            ]
+          },
+          {
+            "line": 186,
+            "text": "'        BUG 1: Uses \"event_id\" instead of \"eventId\"\\n'",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 187,
+            "text": "'        BUG 2: Uses \"created_at\" instead of \"timestamp\"\\n'",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 188,
+            "text": "'        BUG 3: Uses \"data\" instead of \"payload\"\\n'",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 189,
+            "text": "'        BUG 4: Uses \"source_service\" instead of \"sourceService\"\\n'",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 190,
+            "text": "'        BUG 5: Uses \"correlation_id\" instead of \"correlationId\"\\n'",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 191,
+            "text": "'        BUG 6: Sends ISO-8601 string instead of epoch milliseconds\\n'",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 208,
+            "text": "'    def publish(self, payload: dict, binary_data: bytes = None) -> str:\\n'",
+            "keywords": [
+              "publish"
+            ]
+          },
+          {
+            "line": 214,
+            "text": "# ── consumer/src/main/java/EventConsumer.java (BUGGY: hex decoding) ──",
+            "keywords": [
+              "consumer",
+              "consume",
+              "bug"
+            ]
+          },
+          {
+            "line": 226,
+            "text": "files[f\"consumer/src/main/java/EventConsumer.java\"] = (",
+            "keywords": [
+              "consumer",
+              "consume"
+            ]
+          },
+          {
+            "line": 234,
+            "text": "f' * Consumes {evt_type} events from the message bus.\\n'",
+            "keywords": [
+              "consume"
+            ]
+          },
+          {
+            "line": 236,
+            "text": "' * Uses camelCase field names as defined in the schema.\\n'",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 237,
+            "text": "' * BUG: Uses hex decoding for binary attachments instead of Base64.\\n'",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 239,
+            "text": "'public class EventConsumer {\\n'",
+            "keywords": [
+              "consumer",
+              "consume"
+            ]
+          },
+          {
+            "line": 249,
+            "text": "'    public void consume(String jsonMessage) {\\n'",
+            "keywords": [
+              "consume"
+            ]
+          },
+          {
+            "line": 261,
+            "text": "'        // BUG: Uses hex decoding instead of Base64\\n'",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 270,
+            "text": "'     * The schema specifies Base64 encoding, not hex.\\n'",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 291,
+            "text": "# ── consumer/pom.xml (minimal, for structure) ────────────────────",
+            "keywords": [
+              "consumer",
+              "consume"
+            ]
+          },
+          {
+            "line": 292,
+            "text": "files[\"consumer/pom.xml\"] = (",
+            "keywords": [
+              "consumer",
+              "consume"
+            ]
+          },
+          {
+            "line": 297,
+            "text": "'  <artifactId>event-consumer</artifactId>\\n'",
+            "keywords": [
+              "consumer",
+              "consume"
+            ]
+          },
+          {
+            "line": 313,
+            "text": "'End-to-end roundtrip tests: producer -> JSON -> consumer field expectations.\\n'",
+            "keywords": [
+              "producer",
+              "consumer",
+              "consume"
+            ]
+          },
+          {
+            "line": 321,
+            "text": "'from producer.event_producer import EventProducer\\n'",
+            "keywords": [
+              "producer"
+            ]
+          },
+          {
+            "line": 325,
+            "text": "'def producer():\\n'",
+            "keywords": [
+              "producer"
+            ]
+          },
+          {
+            "line": 326,
+            "text": "f'    return EventProducer(\"{svc_name}\")\\n'",
+            "keywords": [
+              "producer"
+            ]
+          },
+          {
+            "line": 329,
+            "text": "'def test_event_has_eventId(producer):\\n'",
+            "keywords": [
+              "producer"
+            ]
+          },
+          {
+            "line": 331,
+            "text": "f'    event = producer.create_event({{\"test\": \"data\"}})\\n'",
+            "keywords": [
+              "producer"
+            ]
+          },
+          {
+            "line": 336,
+            "text": "'def test_event_has_timestamp_as_epoch(producer):\\n'",
+            "keywords": [
+              "producer"
+            ]
+          },
+          {
+            "line": 338,
+            "text": "f'    event = producer.create_event({{\"test\": \"data\"}})\\n'",
+            "keywords": [
+              "producer"
+            ]
+          },
+          {
+            "line": 344,
+            "text": "'def test_event_has_payload(producer):\\n'",
+            "keywords": [
+              "producer"
+            ]
+          },
+          {
+            "line": 346,
+            "text": "f'    event = producer.create_event({{\"key\": \"value\"}})\\n'",
+            "keywords": [
+              "producer"
+            ]
+          },
+          {
+            "line": 351,
+            "text": "'def test_event_has_sourceService(producer):\\n'",
+            "keywords": [
+              "producer"
+            ]
+          },
+          {
+            "line": 353,
+            "text": "f'    event = producer.create_event({{\"test\": \"data\"}})\\n'",
+            "keywords": [
+              "producer"
+            ]
+          },
+          {
+            "line": 358,
+            "text": "'def test_event_has_correlationId(producer):\\n'",
+            "keywords": [
+              "producer"
+            ]
+          },
+          {
+            "line": 360,
+            "text": "f'    event = producer.create_event({{\"test\": \"data\"}})\\n'",
+            "keywords": [
+              "producer"
+            ]
+          },
+          {
+            "line": 365,
+            "text": "'def test_binary_attachment_is_base64(producer):\\n'",
+            "keywords": [
+              "producer"
+            ]
+          },
+          {
+            "line": 369,
+            "text": "'    event = producer.create_event({\"test\": \"data\"}, binary_data=test_data)\\n'",
+            "keywords": [
+              "producer"
+            ]
+          },
+          {
+            "line": 376,
+            "text": "'def test_event_serializes_to_valid_json(producer):\\n'",
+            "keywords": [
+              "producer"
+            ]
+          },
+          {
+            "line": 378,
+            "text": "f'    json_str = producer.publish({{\"key\": \"value\"}})\\n'",
+            "keywords": [
+              "producer",
+              "publish"
+            ]
+          },
+          {
+            "line": 386,
+            "text": "# ── tests/EventConsumerTest.java ─────────────────────────────────",
+            "keywords": [
+              "consumer",
+              "consume"
+            ]
+          },
+          {
+            "line": 387,
+            "text": "files[\"tests/EventConsumerTest.java\"] = (",
+            "keywords": [
+              "consumer",
+              "consume"
+            ]
+          },
+          {
+            "line": 394,
+            "text": "' * Unit tests for EventConsumer.\\n'",
+            "keywords": [
+              "consumer",
+              "consume"
+            ]
+          },
+          {
+            "line": 395,
+            "text": "' * These verify the consumer correctly parses schema-compliant events.\\n'",
+            "keywords": [
+              "consumer",
+              "consume",
+              "schema"
+            ]
+          },
+          {
+            "line": 397,
+            "text": "'public class EventConsumerTest {\\n'",
+            "keywords": [
+              "consumer",
+              "consume"
+            ]
+          },
+          {
+            "line": 400,
+            "text": "'        testBasicConsume();\\n'",
+            "keywords": [
+              "consume"
+            ]
+          },
+          {
+            "line": 405,
+            "text": "'    static void testBasicConsume() {\\n'",
+            "keywords": [
+              "consume"
+            ]
+          },
+          {
+            "line": 413,
+            "text": "'        EventConsumer consumer = new EventConsumer();\\n'",
+            "keywords": [
+              "consumer",
+              "consume"
+            ]
+          },
+          {
+            "line": 414,
+            "text": "'        consumer.consume(event.toString());\\n'",
+            "keywords": [
+              "consumer",
+              "consume"
+            ]
+          },
+          {
+            "line": 416,
+            "text": "'        assert consumer.getEventId().equals(\"test-uuid-123\") : \"eventId mismatch\";\\n'",
+            "keywords": [
+              "consumer",
+              "consume"
+            ]
+          },
+          {
+            "line": 417,
+            "text": "'        assert consumer.getTimestamp() == 1705312200000L : \"timestamp mismatch\";\\n'",
+            "keywords": [
+              "consumer",
+              "consume"
+            ]
+          },
+          {
+            "line": 418,
+            "text": "f'        assert consumer.getSourceService().equals(\"{svc_name}\") : \"sourceService mismatch\";\\n'",
+            "keywords": [
+              "consumer",
+              "consume"
+            ]
+          },
+          {
+            "line": 419,
+            "text": "'        assert consumer.getCorrelationId().equals(\"corr-uuid-456\") : \"correlationId mismatch\";\\n'",
+            "keywords": [
+              "consumer",
+              "consume"
+            ]
+          },
+          {
+            "line": 434,
+            "text": "'        EventConsumer consumer = new EventConsumer();\\n'",
+            "keywords": [
+              "consumer",
+              "consume"
+            ]
+          },
+          {
+            "line": 435,
+            "text": "'        consumer.consume(event.toString());\\n'",
+            "keywords": [
+              "consumer",
+              "consume"
+            ]
+          },
+          {
+            "line": 437,
+            "text": "'        byte[] decoded = consumer.getBinaryAttachment();\\n'",
+            "keywords": [
+              "consumer",
+              "consume"
+            ]
+          },
+          {
+            "line": 444,
+            "text": "files[\"producer/requirements.txt\"] = \"pytest\\n\"",
+            "keywords": [
+              "producer"
+            ]
+          }
+        ]
+      },
+      "static_only": true
+    },
+    {
+      "task_id": "PIPE3_stream_processing",
+      "task_yaml": {
+        "task_id": "PIPE3_stream_processing",
+        "category": "Data Engineering",
+        "difficulty": "hard",
+        "tni_pattern": "D",
+        "parameterized": "true"
+      },
+      "task_files": [
+        {
+          "path": "tasks/PIPE3_stream_processing/brief.md",
+          "sha256": "c4793373b6f05619a754e8b47690b9fd1147a5c1d55d45d4d541981ffbf6c120",
+          "bytes": 392,
+          "lines": 7,
+          "keyword_counts": {
+            "producer": 1,
+            "processor": 1,
+            "sink": 1,
+            "planner": 2,
+            "bug": 1
+          },
+          "markers": [
+            {
+              "line": 3,
+              "text": "Fix 3 serialization mismatch bugs across a producer-processor-sink pipeline.",
+              "keywords": [
+                "producer",
+                "processor",
+                "sink",
+                "bug"
+              ]
+            },
+            {
+              "line": 5,
+              "text": "and character encoding. The Planner has traced the data flow to identify each mismatch.",
+              "keywords": [
+                "planner"
+              ]
+            },
+            {
+              "line": 7,
+              "text": "Follow the Planner's guidance precisely. Run `pytest tests/` to verify the full pipeline works.",
+              "keywords": [
+                "planner"
+              ]
+            }
+          ]
+        },
+        {
+          "path": "tasks/PIPE3_stream_processing/grade.sh",
+          "sha256": "4b7f4c4feb18cb77ee43beb63cb61e6bec6ef249c466715a231212b4a55facbb",
+          "bytes": 13617,
+          "lines": 428,
+          "keyword_counts": {
+            "producer": 22,
+            "processor": 25,
+            "sink": 9,
+            "bug": 5
+          },
+          "markers": [
+            {
+              "line": 2,
+              "text": "# PIPE3 grader: verify all 3 serialization mismatch bugs are fixed",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 43,
+              "text": "# C2: Bug 1 — datetime serialization uses ISO 8601 (T separator)",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 52,
+              "text": "producer = importlib.import_module(\"producer\")",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 83,
+              "text": "serialized = producer.serialize_event(event)",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 96,
+              "text": "# C3: Bug 1 — processor can parse producer output",
+              "keywords": [
+                "producer",
+                "processor",
+                "bug"
+              ]
+            },
+            {
+              "line": 104,
+              "text": "producer = importlib.import_module(\"producer\")",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 105,
+              "text": "processor = importlib.import_module(\"processor\")",
+              "keywords": [
+                "processor"
+              ]
+            },
+            {
+              "line": 131,
+              "text": "serialized = producer.serialize_event(event)",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 134,
+              "text": "parsed = processor.parse_timestamp(data[ts_field])",
+              "keywords": [
+                "processor"
+              ]
+            },
+            {
+              "line": 139,
+              "text": "check \"C3\" \"Processor can parse producer datetime output\" \"pass\"",
+              "keywords": [
+                "producer",
+                "processor"
+              ]
+            },
+            {
+              "line": 141,
+              "text": "check \"C3\" \"Processor fails to parse producer datetime (fromisoformat error)\" \"fail\"",
+              "keywords": [
+                "producer",
+                "processor"
+              ]
+            },
+            {
+              "line": 145,
+              "text": "# C4: Bug 2 — processor output is bare objects (no envelope)",
+              "keywords": [
+                "processor",
+                "bug"
+              ]
+            },
+            {
+              "line": 153,
+              "text": "producer = importlib.import_module(\"producer\")",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 154,
+              "text": "processor = importlib.import_module(\"processor\")",
+              "keywords": [
+                "processor"
+              ]
+            },
+            {
+              "line": 185,
+              "text": "producer.produce_events([event], prod_path)",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 186,
+              "text": "processor.process_events(prod_path, proc_path)",
+              "keywords": [
+                "processor"
+              ]
+            },
+            {
+              "line": 202,
+              "text": "check \"C4\" \"Processor output is bare objects (no envelope)\" \"pass\"",
+              "keywords": [
+                "processor"
+              ]
+            },
+            {
+              "line": 204,
+              "text": "check \"C4\" \"Processor output still wrapped in {data: ...} envelope\" \"fail\"",
+              "keywords": [
+                "processor"
+              ]
+            },
+            {
+              "line": 208,
+              "text": "# C5: Bug 3 — processor writes UTF-8 (not latin-1)",
+              "keywords": [
+                "processor",
+                "bug"
+              ]
+            },
+            {
+              "line": 216,
+              "text": "producer = importlib.import_module(\"producer\")",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 217,
+              "text": "processor = importlib.import_module(\"processor\")",
+              "keywords": [
+                "processor"
+              ]
+            },
+            {
+              "line": 250,
+              "text": "producer.produce_events([event], prod_path)",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 251,
+              "text": "processor.process_events(prod_path, proc_path)",
+              "keywords": [
+                "processor"
+              ]
+            },
+            {
+              "line": 260,
+              "text": "check \"C5\" \"Processor writes UTF-8 (non-ASCII preserved)\" \"pass\"",
+              "keywords": [
+                "processor"
+              ]
+            },
+            {
+              "line": 262,
+              "text": "check \"C5\" \"Processor still writes latin-1 (UnicodeDecodeError on read)\" \"fail\"",
+              "keywords": [
+                "processor"
+              ]
+            },
+            {
+              "line": 266,
+              "text": "# C6: Full pipeline (produce -> process -> sink) works end-to-end",
+              "keywords": [
+                "sink"
+              ]
+            },
+            {
+              "line": 274,
+              "text": "producer = importlib.import_module(\"producer\")",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 275,
+              "text": "processor = importlib.import_module(\"processor\")",
+              "keywords": [
+                "processor"
+              ]
+            },
+            {
+              "line": 276,
+              "text": "sink = importlib.import_module(\"sink\")",
+              "keywords": [
+                "sink"
+              ]
+            },
+            {
+              "line": 305,
+              "text": "producer.produce_events(events, prod_path)",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 306,
+              "text": "processor.process_events(prod_path, proc_path)",
+              "keywords": [
+                "processor"
+              ]
+            },
+            {
+              "line": 307,
+              "text": "loaded = sink.load_processed_events(proc_path)",
+              "keywords": [
+                "sink"
+              ]
+            },
+            {
+              "line": 312,
+              "text": "check \"C6\" \"Full pipeline (produce->process->sink) works end-to-end\" \"pass\"",
+              "keywords": [
+                "sink"
+              ]
+            },
+            {
+              "line": 340,
+              "text": "for f in ['producer.py', 'processor.py', 'sink.py', 'models.py']:",
+              "keywords": [
+                "producer",
+                "processor",
+                "sink"
+              ]
+            },
+            {
+              "line": 362,
+              "text": "producer = importlib.import_module(\"producer\")",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 363,
+              "text": "processor = importlib.import_module(\"processor\")",
+              "keywords": [
+                "processor"
+              ]
+            },
+            {
+              "line": 364,
+              "text": "sink = importlib.import_module(\"sink\")",
+              "keywords": [
+                "sink"
+              ]
+            },
+            {
+              "line": 398,
+              "text": "producer.produce_events(events, prod_path)",
+              "keywords": [
+                "producer"
+              ]
+            },
+            {
+              "line": 399,
+              "text": "processor.process_events(prod_path, proc_path)",
+              "keywords": [
+                "processor"
+              ]
+            },
+            {
+              "line": 400,
+              "text": "loaded = sink.load_processed_events(proc_path)",
+              "keywords": [
+                "sink"
+              ]
+            }
+          ]
+        },
+        {
+          "path": "tasks/PIPE3_stream_processing/spec.md",
+          "sha256": "9a62bdb2485a5f387b9de61a31fe93cb0e7dc7cb13bcf935634b08e7f926bc58",
+          "bytes": 3323,
+          "lines": 52,
+          "keyword_counts": {
+            "producer": 7,
+            "consumer": 2,
+            "processor": 13,
+            "sink": 9,
+            "downstream": 1,
+            "consume": 2,
+            "integrat": 1,
+            "schema": 1,
+            "bug": 10
+          },
+          "markers": [
+            {
+              "line": 4,
+              "text": "Fix 3 serialization mismatch bugs in a stream processing pipeline where a producer",
+              "keywords": [
+                "producer",
+                "bug"
+              ]
+            },
+            {
+              "line": 5,
+              "text": "generates events, a processor transforms them, and a sink writes the final output.",
+              "keywords": [
+                "processor",
+                "sink"
+              ]
+            },
+            {
+              "line": 9,
+              "text": "1. **Datetime serialization**: The producer serializes datetime fields using `default=str` (which produces `\"2023-11-14 22:13:20\"` format). The processor expects ISO 8601 format (`\"2023-11-14T22:13:20\"`). Fix the producer to use `.isoformat",
+              "keywords": [
+                "producer",
+                "processor"
+              ]
+            },
+            {
+              "line": 10,
+              "text": "2. **Envelope stripping**: The processor wraps its output in `{\"data\": <payload>}` envelopes. The sink expects bare payload objects (no wrapper). Fix the processor to emit bare objects, OR fix the sink to unwrap the envelope.",
+              "keywords": [
+                "processor",
+                "sink"
+              ]
+            },
+            {
+              "line": 11,
+              "text": "3. **Encoding consistency**: The processor writes output strings with latin-1 encoding for special characters (accented names, currency symbols). The sink reads with UTF-8 decoding, causing `UnicodeDecodeError` on non-ASCII content. Fix the",
+              "keywords": [
+                "processor",
+                "sink"
+              ]
+            },
+            {
+              "line": 15,
+              "text": "- `producer.py` — Event producer (Bug 1: datetime serialization)",
+              "keywords": [
+                "producer",
+                "bug"
+              ]
+            },
+            {
+              "line": 16,
+              "text": "- `processor.py` — Event transformer (Bug 2: envelope wrapping; Bug 3: latin-1 encoding)",
+              "keywords": [
+                "processor",
+                "bug"
+              ]
+            },
+            {
+              "line": 17,
+              "text": "- `sink.py` — Output writer expecting bare UTF-8 JSON objects",
+              "keywords": [
+                "sink"
+              ]
+            },
+            {
+              "line": 18,
+              "text": "- `models.py` — Shared event schema definitions",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 26,
+              "text": "In a producer-processor-sink pipeline, each component must agree on:",
+              "keywords": [
+                "producer",
+                "processor",
+                "sink"
+              ]
+            },
+            {
+              "line": 31,
+              "text": "### The 3 Bugs",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 33,
+              "text": "| Component | Bug | Symptom |",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 35,
+              "text": "| Producer | `json.dumps(default=str)` for datetime | Processor's `datetime.fromisoformat()` fails on space-separated format |",
+              "keywords": [
+                "producer",
+                "processor"
+              ]
+            },
+            {
+              "line": 36,
+              "text": "| Processor | Wraps output in `{\"data\": ...}` | Sink tries to access fields directly on the envelope, gets KeyError |",
+              "keywords": [
+                "processor",
+                "sink"
+              ]
+            },
+            {
+              "line": 37,
+              "text": "| Processor | Writes with `encoding='latin-1'` | Sink's UTF-8 read raises UnicodeDecodeError on `\"Müller\"`, `\"€\"` |",
+              "keywords": [
+                "processor",
+                "sink"
+              ]
+            },
+            {
+              "line": 40,
+              "text": "These are the 3 most common integration bugs in stream processing pipelines:",
+              "keywords": [
+                "integrat",
+                "bug"
+              ]
+            },
+            {
+              "line": 43,
+              "text": "and every non-Python consumer.",
+              "keywords": [
+                "consumer",
+                "consume"
+              ]
+            },
+            {
+              "line": 44,
+              "text": "- **envelope wrapping**: Some processors add metadata wrappers; downstream consumers",
+              "keywords": [
+                "consumer",
+                "processor",
+                "downstream",
+                "consume"
+              ]
+            },
+            {
+              "line": 45,
+              "text": "must either expect the wrapper or the processor must be configured to emit bare objects.",
+              "keywords": [
+                "processor"
+              ]
+            },
+            {
+              "line": 50,
+              "text": "- The datetime bug only manifests for datetime objects, not date-only or string timestamps.",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 51,
+              "text": "- The envelope bug is masked when the sink reads test data that happens to have a `\"data\"` key.",
+              "keywords": [
+                "sink",
+                "bug"
+              ]
+            },
+            {
+              "line": 52,
+              "text": "- The encoding bug only triggers on non-ASCII characters; pure ASCII data passes fine.",
+              "keywords": [
+                "bug"
+              ]
+            }
+          ]
+        },
+        {
+          "path": "tasks/PIPE3_stream_processing/task.yaml",
+          "sha256": "18ef89e46e0aff2a9c3dd21fd41d79b1084ea66e5fcbc57a8eefb34065c6d1fb",
+          "bytes": 252,
+          "lines": 8,
+          "keyword_counts": {
+            "producer": 1,
+            "processor": 1,
+            "sink": 1
+          },
+          "markers": [
+            {
+              "line": 5,
+              "text": "description: \"Stream processing pipeline with producer + processor + sink; 3 serialization mismatches\"",
+              "keywords": [
+                "producer",
+                "processor",
+                "sink"
+              ]
+            }
+          ]
+        }
+      ],
+      "generator": {
+        "path": "generators/gen_pipe3_stream_processing.py",
+        "sha256": "1f23d6c7471fbde16f8f7e6141fff573eb4e5e4caf14d55656114e57467c44b2",
+        "bytes": 17780,
+        "lines": 524,
+        "literal_workspace_files": [
+          "models.py",
+          "processor.py",
+          "producer.py",
+          "sink.py",
+          "tests/__init__.py",
+          "tests/test_pipeline.py",
+          "tests/test_serialization.py"
+        ],
+        "contains_dynamic_file_keys": false,
+        "keyword_counts": {
+          "producer": 11,
+          "processor": 14,
+          "sink": 14,
+          "schema": 2,
+          "bug": 18
+        },
+        "markers": [
+          {
+            "line": 5,
+            "text": "transactions) with different field names and schemas, but the same 3 serialization",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 6,
+            "text": "mismatch bugs:",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 7,
+            "text": "1. Producer uses json.dumps(default=str) for datetime (produces space-separated format)",
+            "keywords": [
+              "producer"
+            ]
+          },
+          {
+            "line": 8,
+            "text": "2. Processor wraps output in {\"data\": ...} envelope but sink expects bare objects",
+            "keywords": [
+              "processor",
+              "sink"
+            ]
+          },
+          {
+            "line": 9,
+            "text": "3. Processor writes with latin-1 encoding but sink reads UTF-8",
+            "keywords": [
+              "processor",
+              "sink"
+            ]
+          },
+          {
+            "line": 90,
+            "text": "\"bugs_fixed\": [",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 105,
+            "text": "files[\"producer.py\"] = self._producer(d)",
+            "keywords": [
+              "producer"
+            ]
+          },
+          {
+            "line": 106,
+            "text": "files[\"processor.py\"] = self._processor(d)",
+            "keywords": [
+              "processor"
+            ]
+          },
+          {
+            "line": 107,
+            "text": "files[\"sink.py\"] = self._sink(d)",
+            "keywords": [
+              "sink"
+            ]
+          },
+          {
+            "line": 116,
+            "text": "Shared event schema for {d[\"name\"]} pipeline.",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 144,
+            "text": "def _producer(self, d: dict) -> str:",
+            "keywords": [
+              "producer"
+            ]
+          },
+          {
+            "line": 146,
+            "text": "Event producer for {d[\"name\"]} pipeline.",
+            "keywords": [
+              "producer"
+            ]
+          },
+          {
+            "line": 150,
+            "text": "Bug 1: Uses json.dumps(default=str) for datetime serialization, which produces",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 162,
+            "text": "Bug: default=str converts datetime to \"YYYY-MM-DD HH:MM:SS\" (space-separated).",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 163,
+            "text": "The processor expects ISO 8601 format \"YYYY-MM-DDTHH:MM:SS\" (T-separated).",
+            "keywords": [
+              "processor"
+            ]
+          },
+          {
+            "line": 173,
+            "text": "# Bug 1: default=str produces \"2023-11-14 22:13:20\" not ISO 8601",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 184,
+            "text": "def _processor(self, d: dict) -> str:",
+            "keywords": [
+              "processor"
+            ]
+          },
+          {
+            "line": 186,
+            "text": "Event processor for {d[\"name\"]} pipeline.",
+            "keywords": [
+              "processor"
+            ]
+          },
+          {
+            "line": 188,
+            "text": "Reads JSON events from producer, transforms them, and writes processed output.",
+            "keywords": [
+              "producer"
+            ]
+          },
+          {
+            "line": 190,
+            "text": "Bug 2: Wraps output in {{\"data\": ...}} envelope, but sink expects bare objects.",
+            "keywords": [
+              "sink",
+              "bug"
+            ]
+          },
+          {
+            "line": 191,
+            "text": "Bug 3: Writes output with latin-1 encoding, but sink reads UTF-8.",
+            "keywords": [
+              "sink",
+              "bug"
+            ]
+          },
+          {
+            "line": 224,
+            "text": "Bug 2: Wraps each output line in {{\"data\": ...}} envelope.",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 225,
+            "text": "Bug 3: Opens output file with latin-1 encoding.",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 230,
+            "text": "# Bug 3: latin-1 encoding — will corrupt non-ASCII characters for UTF-8 reader",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 239,
+            "text": "# Bug 2: wrapping in envelope — sink expects bare objects",
+            "keywords": [
+              "sink",
+              "bug"
+            ]
+          },
+          {
+            "line": 246,
+            "text": "def _sink(self, d: dict) -> str:",
+            "keywords": [
+              "sink"
+            ]
+          },
+          {
+            "line": 248,
+            "text": "Output sink for {d[\"name\"]} pipeline.",
+            "keywords": [
+              "sink"
+            ]
+          },
+          {
+            "line": 313,
+            "text": "from producer import serialize_event, produce_events",
+            "keywords": [
+              "producer"
+            ]
+          },
+          {
+            "line": 314,
+            "text": "from processor import process_events",
+            "keywords": [
+              "processor"
+            ]
+          },
+          {
+            "line": 315,
+            "text": "from sink import load_processed_events, write_summary",
+            "keywords": [
+              "sink"
+            ]
+          },
+          {
+            "line": 331,
+            "text": "\"\"\"Full pipeline: produce -> process -> sink.\"\"\"",
+            "keywords": [
+              "sink"
+            ]
+          },
+          {
+            "line": 395,
+            "text": "Targeted serialization tests for each of the 3 bugs.",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 403,
+            "text": "from producer import serialize_event",
+            "keywords": [
+              "producer"
+            ]
+          },
+          {
+            "line": 404,
+            "text": "from processor import parse_timestamp, transform_event, process_events",
+            "keywords": [
+              "processor"
+            ]
+          },
+          {
+            "line": 405,
+            "text": "from sink import load_processed_events",
+            "keywords": [
+              "sink"
+            ]
+          },
+          {
+            "line": 420,
+            "text": "class TestBug1DatetimeFormat:",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 421,
+            "text": "\"\"\"Bug 1: Producer must use ISO 8601 (T-separated), not space-separated.\"\"\"",
+            "keywords": [
+              "producer",
+              "bug"
+            ]
+          },
+          {
+            "line": 443,
+            "text": "def test_processor_can_parse_producer_output(self):",
+            "keywords": [
+              "producer",
+              "processor"
+            ]
+          },
+          {
+            "line": 444,
+            "text": "\"\"\"The processor's parse_timestamp must work on producer output.\"\"\"",
+            "keywords": [
+              "producer",
+              "processor"
+            ]
+          },
+          {
+            "line": 453,
+            "text": "class TestBug2NoEnvelope:",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 454,
+            "text": "\"\"\"Bug 2: Processor must emit bare objects, not wrapped in {{\"data\": ...}}.\"\"\"",
+            "keywords": [
+              "processor",
+              "bug"
+            ]
+          },
+          {
+            "line": 471,
+            "text": "f\"Processor output must be bare object, not envelope. \"",
+            "keywords": [
+              "processor"
+            ]
+          },
+          {
+            "line": 478,
+            "text": "def test_sink_can_load_processed(self, tmp_path):",
+            "keywords": [
+              "sink"
+            ]
+          },
+          {
+            "line": 492,
+            "text": "class TestBug3Utf8Encoding:",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 493,
+            "text": "\"\"\"Bug 3: Processor must write UTF-8, not latin-1.\"\"\"",
+            "keywords": [
+              "processor",
+              "bug"
+            ]
+          },
+          {
+            "line": 508,
+            "text": "# Sink reads UTF-8 — must not raise UnicodeDecodeError",
+            "keywords": [
+              "sink"
+            ]
+          }
+        ]
+      },
+      "static_only": true
+    },
+    {
+      "task_id": "MULTI3_polyglot",
+      "task_yaml": {
+        "task_id": "MULTI3_polyglot",
+        "domain": "multi_language",
+        "difficulty": "hard",
+        "parameterized": "true"
+      },
+      "task_files": [
+        {
+          "path": "tasks/MULTI3_polyglot/brief.md",
+          "sha256": "78d3b3f9cdc283367dded863d0ec15ef78b596e0aac0b51df4536f9d0c784964",
+          "bytes": 532,
+          "lines": 14,
+          "keyword_counts": {
+            "consumer": 1,
+            "processor": 2,
+            "backend": 2,
+            "frontend": 2,
+            "consume": 1,
+            "schema": 2,
+            "bug": 2,
+            "do not modify": 1
+          },
+          "markers": [
+            {
+              "line": 1,
+              "text": "# MULTI3: Polyglot Interface Bug Fix (Brief)",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 3,
+              "text": "The Config Sync data pipeline is broken. The backend processor and",
+              "keywords": [
+                "processor",
+                "backend"
+              ]
+            },
+            {
+              "line": 4,
+              "text": "frontend handler disagree on the wire format, causing data to be lost or",
+              "keywords": [
+                "frontend"
+              ]
+            },
+            {
+              "line": 7,
+              "text": "Fix the bugs so that `python3 tests/test_contract.py` passes all tests.",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 10,
+              "text": "- `backend/processor.py` — Python data serializer",
+              "keywords": [
+                "processor",
+                "backend"
+              ]
+            },
+            {
+              "line": 11,
+              "text": "- `frontend/handler.py` — Python data consumer",
+              "keywords": [
+                "consumer",
+                "frontend",
+                "consume"
+              ]
+            },
+            {
+              "line": 12,
+              "text": "- `shared/schema.json` — shared interface schema (may also be wrong)",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 14,
+              "text": "Do NOT modify `tests/test_contract.py`.",
+              "keywords": [
+                "do not modify"
+              ]
+            }
+          ]
+        },
+        {
+          "path": "tasks/MULTI3_polyglot/grade.sh",
+          "sha256": "9ba4f1a2460e27020c354e48ebab42cfe8b353736f2c27f018de5e36694eaa34",
+          "bytes": 9380,
+          "lines": 199,
+          "keyword_counts": {
+            "processor": 5,
+            "backend": 16,
+            "frontend": 15,
+            "schema": 19,
+            "bug": 1
+          },
+          "markers": [
+            {
+              "line": 2,
+              "text": "# Seed-aware grader for MULTI3_polyglot: Polyglot Interface Bug Fix.",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 33,
+              "text": "for pkg in backend frontend shared tests; do",
+              "keywords": [
+                "backend",
+                "frontend"
+              ]
+            },
+            {
+              "line": 43,
+              "text": "WRONG_SCHEMA_FIELD=\"service\"",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 44,
+              "text": "CORRECT_SCHEMA_FIELD=\"service_name\"",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 50,
+              "text": "WRONG_SCHEMA_FIELD=$(python3 -c \"import json; d=json.load(open('$EXPECTED')); print(d.get('wrong_schema_field','service'))\" 2>/dev/null || echo \"service\")",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 51,
+              "text": "CORRECT_SCHEMA_FIELD=$(python3 -c \"import json; d=json.load(open('$EXPECTED')); print(d.get('correct_schema_field','service_name'))\" 2>/dev/null || echo \"service_name\")",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 72,
+              "text": "check \"test -f '$WORKSPACE/backend/processor.py'\" \"missing_processor\"",
+              "keywords": [
+                "processor",
+                "backend"
+              ]
+            },
+            {
+              "line": 73,
+              "text": "check \"test -f '$WORKSPACE/frontend/handler.py'\" \"missing_handler\"",
+              "keywords": [
+                "frontend"
+              ]
+            },
+            {
+              "line": 74,
+              "text": "check \"test -f '$WORKSPACE/shared/schema.json'\" \"missing_schema\"",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 75,
+              "text": "check \"python3 -m py_compile '$WORKSPACE/backend/processor.py' && \\",
+              "keywords": [
+                "processor",
+                "backend"
+              ]
+            },
+            {
+              "line": 76,
+              "text": "python3 -m py_compile '$WORKSPACE/frontend/handler.py'\" \"syntax_errors\"",
+              "keywords": [
+                "frontend"
+              ]
+            },
+            {
+              "line": 81,
+              "text": "check \"cd '$WORKSPACE' && run_test() { python3 -m unittest tests.test_contract.${TEST_CLASS}.\\$1 -q 2>/dev/null; }; run_test test_processor_imports\" \\",
+              "keywords": [
+                "processor"
+              ]
+            },
+            {
+              "line": 82,
+              "text": "\"processor_import_error\"",
+              "keywords": [
+                "processor"
+              ]
+            },
+            {
+              "line": 87,
+              "text": "# Check 7-8: schema validity (maps to unittest schema tests)",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 89,
+              "text": "check \"cd '$WORKSPACE' && python3 -m unittest tests.test_contract.${TEST_CLASS}.test_schema_json_valid -q 2>/dev/null\" \\",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 90,
+              "text": "\"schema_invalid\"",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 91,
+              "text": "check \"cd '$WORKSPACE' && python3 -m unittest tests.test_contract.${TEST_CLASS}.test_schema_fields_match_spec -q 2>/dev/null\" \\",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 92,
+              "text": "\"schema_wrong_fields\"",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 95,
+              "text": "# Check 9: schema.json correct/wrong field names (direct JSON check)",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 99,
+              "text": "s = json.load(open('$WORKSPACE/shared/schema.json'))",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 101,
+              "text": "assert '${CORRECT_SCHEMA_FIELD}' in rf, 'missing correct field'",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 102,
+              "text": "assert '${WRONG_SCHEMA_FIELD}' not in rf, 'wrong field still present'",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 103,
+              "text": "\\\"\" \"schema_field_alias_wrong\"",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 106,
+              "text": "# Check 10: backend emits correct ID field name",
+              "keywords": [
+                "backend"
+              ]
+            },
+            {
+              "line": 108,
+              "text": "check \"cd '$WORKSPACE' && python3 -m unittest tests.test_contract.${TEST_CLASS}.test_backend_id_field_name -q 2>/dev/null\" \\",
+              "keywords": [
+                "backend"
+              ]
+            },
+            {
+              "line": 109,
+              "text": "\"backend_wrong_id_key\"",
+              "keywords": [
+                "backend"
+              ]
+            },
+            {
+              "line": 112,
+              "text": "# Check 11: backend date format is ISO-8601",
+              "keywords": [
+                "backend"
+              ]
+            },
+            {
+              "line": 114,
+              "text": "check \"cd '$WORKSPACE' && python3 -m unittest tests.test_contract.${TEST_CLASS}.test_backend_date_format -q 2>/dev/null\" \\",
+              "keywords": [
+                "backend"
+              ]
+            },
+            {
+              "line": 115,
+              "text": "\"backend_wrong_date_format\"",
+              "keywords": [
+                "backend"
+              ]
+            },
+            {
+              "line": 118,
+              "text": "# Check 12: backend null handling (None not sentinel)",
+              "keywords": [
+                "backend"
+              ]
+            },
+            {
+              "line": 120,
+              "text": "check \"cd '$WORKSPACE' && python3 -m unittest tests.test_contract.${TEST_CLASS}.test_backend_null_is_none -q 2>/dev/null\" \\",
+              "keywords": [
+                "backend"
+              ]
+            },
+            {
+              "line": 121,
+              "text": "\"backend_null_sentinel\"",
+              "keywords": [
+                "backend"
+              ]
+            },
+            {
+              "line": 124,
+              "text": "# Check 13: backend envelope uses 'data' key",
+              "keywords": [
+                "backend"
+              ]
+            },
+            {
+              "line": 127,
+              "text": "\"backend_wrong_envelope\"",
+              "keywords": [
+                "backend"
+              ]
+            },
+            {
+              "line": 130,
+              "text": "# Check 14: backend bool fields remain bool (not int) — only if test exists",
+              "keywords": [
+                "backend"
+              ]
+            },
+            {
+              "line": 134,
+              "text": "\"backend_bool_as_int\"",
+              "keywords": [
+                "backend"
+              ]
+            },
+            {
+              "line": 138,
+              "text": "# Check 15: frontend reads correct ID field name",
+              "keywords": [
+                "frontend"
+              ]
+            },
+            {
+              "line": 140,
+              "text": "check \"cd '$WORKSPACE' && python3 -m unittest tests.test_contract.${TEST_CLASS}.test_frontend_id_field_read -q 2>/dev/null\" \\",
+              "keywords": [
+                "frontend"
+              ]
+            },
+            {
+              "line": 141,
+              "text": "\"frontend_wrong_id_read\"",
+              "keywords": [
+                "frontend"
+              ]
+            },
+            {
+              "line": 144,
+              "text": "# Check 16: frontend handles None in nullable field without crashing",
+              "keywords": [
+                "frontend"
+              ]
+            },
+            {
+              "line": 146,
+              "text": "check \"cd '$WORKSPACE' && python3 -m unittest tests.test_contract.${TEST_CLASS}.test_frontend_null_guard -q 2>/dev/null\" \\",
+              "keywords": [
+                "frontend"
+              ]
+            },
+            {
+              "line": 147,
+              "text": "\"frontend_null_crash\"",
+              "keywords": [
+                "frontend"
+              ]
+            },
+            {
+              "line": 150,
+              "text": "# Check 17: frontend parses dates as datetime.date",
+              "keywords": [
+                "frontend"
+              ]
+            },
+            {
+              "line": 152,
+              "text": "check \"cd '$WORKSPACE' && python3 -m unittest tests.test_contract.${TEST_CLASS}.test_frontend_date_parse -q 2>/dev/null\" \\",
+              "keywords": [
+                "frontend"
+              ]
+            },
+            {
+              "line": 153,
+              "text": "\"frontend_wrong_date_parse\"",
+              "keywords": [
+                "frontend"
+              ]
+            },
+            {
+              "line": 156,
+              "text": "# Check 18: frontend reads records from 'data' envelope key",
+              "keywords": [
+                "frontend"
+              ]
+            },
+            {
+              "line": 158,
+              "text": "check \"cd '$WORKSPACE' && python3 -m unittest tests.test_contract.${TEST_CLASS}.test_frontend_envelope_read -q 2>/dev/null\" \\",
+              "keywords": [
+                "frontend"
+              ]
+            },
+            {
+              "line": 159,
+              "text": "\"frontend_wrong_envelope\"",
+              "keywords": [
+                "frontend"
+              ]
+            }
+          ]
+        },
+        {
+          "path": "tasks/MULTI3_polyglot/setup.sh",
+          "sha256": "56ff357a53d6262c8308032fc898e312fbc9ab362de6792436401fd5b10c0670",
+          "bytes": 438,
+          "lines": 17,
+          "keyword_counts": {
+            "backend": 1,
+            "frontend": 1
+          },
+          "markers": [
+            {
+              "line": 13,
+              "text": "for pkg in backend frontend shared tests; do",
+              "keywords": [
+                "backend",
+                "frontend"
+              ]
+            }
+          ]
+        },
+        {
+          "path": "tasks/MULTI3_polyglot/spec.md",
+          "sha256": "3953c11de671fa9f835312451ff797d1c59a5a1d27a174832bbbacc90cdbadb6",
+          "bytes": 4369,
+          "lines": 128,
+          "keyword_counts": {
+            "consumer": 1,
+            "processor": 3,
+            "backend": 18,
+            "frontend": 15,
+            "consume": 2,
+            "planner": 1,
+            "schema": 14,
+            "bug": 5,
+            "do not modify": 2
+          },
+          "markers": [
+            {
+              "line": 1,
+              "text": "# MULTI3: Polyglot Interface Bug Fix — Full Specification (Planner Only)",
+              "keywords": [
+                "planner",
+                "bug"
+              ]
+            },
+            {
+              "line": 6,
+              "text": "backend (`backend/processor.py`) serializes internal records into a wire format",
+              "keywords": [
+                "processor",
+                "backend"
+              ]
+            },
+            {
+              "line": 7,
+              "text": "defined by `shared/schema.json`.  The Python frontend (`frontend/handler.py`)",
+              "keywords": [
+                "frontend",
+                "schema"
+              ]
+            },
+            {
+              "line": 8,
+              "text": "consumes that wire format.",
+              "keywords": [
+                "consume"
+              ]
+            },
+            {
+              "line": 10,
+              "text": "The system has **4 bugs** spread across the two components and",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 11,
+              "text": "the shared schema. All bugs must be fixed so that `python3 -m pytest",
+              "keywords": [
+                "schema",
+                "bug"
+              ]
+            },
+            {
+              "line": 21,
+              "text": "Every response from the backend is wrapped in an envelope:",
+              "keywords": [
+                "backend"
+              ]
+            },
+            {
+              "line": 57,
+              "text": "## Bug Inventory",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 59,
+              "text": "- **Backend layer**: Backend serializer formats dates as MM/DD/YYYY instead of YYYY-MM-DD (ISO-8601)",
+              "keywords": [
+                "backend"
+              ]
+            },
+            {
+              "line": 60,
+              "text": "- **Backend layer**: Backend serializer emits the ID field under the wrong key name",
+              "keywords": [
+                "backend"
+              ]
+            },
+            {
+              "line": 61,
+              "text": "- **Frontend layer**: Frontend does not guard against None values in nullable fields, causing AttributeError",
+              "keywords": [
+                "frontend"
+              ]
+            },
+            {
+              "line": 62,
+              "text": "- **Schema layer**: shared/schema.json uses a wrong field name that disagrees with spec",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 64,
+              "text": "### Additional schema bug",
+              "keywords": [
+                "schema",
+                "bug"
+              ]
+            },
+            {
+              "line": 66,
+              "text": "`shared/schema.json` declares one field under the wrong name",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 67,
+              "text": "(`\"service\"` instead of `\"service_name\"`). The schema must",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 76,
+              "text": "backend/",
+              "keywords": [
+                "backend"
+              ]
+            },
+            {
+              "line": 77,
+              "text": "processor.py       # Python backend — serialize + batch functions",
+              "keywords": [
+                "processor",
+                "backend"
+              ]
+            },
+            {
+              "line": 78,
+              "text": "frontend/",
+              "keywords": [
+                "frontend"
+              ]
+            },
+            {
+              "line": 79,
+              "text": "handler.py         # Python frontend consumer — deserialize + display",
+              "keywords": [
+                "consumer",
+                "frontend",
+                "consume"
+              ]
+            },
+            {
+              "line": 81,
+              "text": "schema.json        # Interface contract (JSON Schema-style)",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 83,
+              "text": "test_contract.py   # Test suite — DO NOT MODIFY",
+              "keywords": [
+                "do not modify"
+              ]
+            },
+            {
+              "line": 107,
+              "text": "1. `test_processor_imports` — backend module imports cleanly",
+              "keywords": [
+                "processor",
+                "backend"
+              ]
+            },
+            {
+              "line": 108,
+              "text": "2. `test_handler_imports` — frontend module imports cleanly",
+              "keywords": [
+                "frontend"
+              ]
+            },
+            {
+              "line": 109,
+              "text": "3. `test_schema_json_valid` — schema.json is valid JSON with required keys",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 110,
+              "text": "4. `test_schema_fields_match_spec` — schema field names match the spec contract",
+              "keywords": [
+                "schema"
+              ]
+            },
+            {
+              "line": 111,
+              "text": "5. `test_backend_id_field_name` — backend emits correct ID key `\"config_id\"`",
+              "keywords": [
+                "backend"
+              ]
+            },
+            {
+              "line": 112,
+              "text": "6. `test_backend_date_format` — backend formats dates as `YYYY-MM-DD`",
+              "keywords": [
+                "backend"
+              ]
+            },
+            {
+              "line": 113,
+              "text": "7. `test_backend_null_is_none` — backend emits `null` not sentinel string for `note`",
+              "keywords": [
+                "backend"
+              ]
+            },
+            {
+              "line": 114,
+              "text": "8. `test_envelope_key` — backend wraps records under `\"data\"` key",
+              "keywords": [
+                "backend"
+              ]
+            },
+            {
+              "line": 115,
+              "text": "9. `test_bool_is_bool` — backend emits Python `bool` not `int` for boolean fields",
+              "keywords": [
+                "backend"
+              ]
+            },
+            {
+              "line": 116,
+              "text": "10. `test_frontend_id_field_read` — frontend reads ID from correct key `\"config_id\"`",
+              "keywords": [
+                "frontend"
+              ]
+            },
+            {
+              "line": 117,
+              "text": "11. `test_frontend_null_guard` — frontend handles `None` in `note` without crash",
+              "keywords": [
+                "frontend"
+              ]
+            },
+            {
+              "line": 118,
+              "text": "12. `test_frontend_date_parse` — frontend parses `updated_at` as `datetime.date`",
+              "keywords": [
+                "frontend"
+              ]
+            },
+            {
+              "line": 119,
+              "text": "13. `test_frontend_envelope_read` — frontend reads records from `\"data\"` key",
+              "keywords": [
+                "frontend"
+              ]
+            },
+            {
+              "line": 126,
+              "text": "- Do NOT modify `tests/test_contract.py`",
+              "keywords": [
+                "do not modify"
+              ]
+            },
+            {
+              "line": 128,
+              "text": "- `shared/schema.json` is informational — tests read it but the pipeline code must also be consistent with it",
+              "keywords": [
+                "schema"
+              ]
+            }
+          ]
+        },
+        {
+          "path": "tasks/MULTI3_polyglot/task.yaml",
+          "sha256": "da91e05b8759be5099c7e769fabe846d97b7c826f466217a8cbd37637a8c19e6",
+          "bytes": 314,
+          "lines": 11,
+          "keyword_counts": {
+            "backend": 1,
+            "frontend": 1,
+            "schema": 1,
+            "bug": 1
+          },
+          "markers": [
+            {
+              "line": 8,
+              "text": "tags: [polyglot, cross-language, contract, serialization, schema, backend, frontend, boundary-bug]",
+              "keywords": [
+                "backend",
+                "frontend",
+                "schema",
+                "bug"
+              ]
+            }
+          ]
+        }
+      ],
+      "generator": {
+        "path": "generators/gen_multi3_polyglot.py",
+        "sha256": "8ecfde93d5e4a1631e3e86dea5864645463ef5a4efb106e4d2a66b478b06919c",
+        "bytes": 50632,
+        "lines": 1207,
+        "literal_workspace_files": [
+          "backend/processor.py",
+          "frontend/handler.py",
+          "shared/schema.json",
+          "tests/test_contract.py"
+        ],
+        "contains_dynamic_file_keys": false,
+        "keyword_counts": {
+          "consumer": 5,
+          "processor": 25,
+          "backend": 97,
+          "frontend": 81,
+          "downstream": 1,
+          "consume": 7,
+          "planner": 1,
+          "schema": 95,
+          "bug": 97,
+          "do not modify": 4
+        },
+        "markers": [
+          {
+            "line": 2,
+            "text": "Parameterized generator for MULTI3: Polyglot Interface Bug Fix.",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 5,
+            "text": "contract between a Python backend and a Python \"frontend\" handler (simulating",
+            "keywords": [
+              "backend",
+              "frontend"
+            ]
+          },
+          {
+            "line": 6,
+            "text": "a JS/shell consumer). Bugs exist at the serialization boundary where data is",
+            "keywords": [
+              "consumer",
+              "consume",
+              "bug"
+            ]
+          },
+          {
+            "line": 7,
+            "text": "produced by the backend and consumed by the frontend.",
+            "keywords": [
+              "backend",
+              "frontend",
+              "consume"
+            ]
+          },
+          {
+            "line": 11,
+            "text": "- Different bug set (3-5 bugs from pool): wrong field name, wrong encoding,",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 14,
+            "text": "- Workspace: backend/processor.py + frontend/handler.py + shared/schema.json",
+            "keywords": [
+              "processor",
+              "backend",
+              "frontend",
+              "schema"
+            ]
+          },
+          {
+            "line": 20,
+            "text": "1. backend/processor.py imports without error",
+            "keywords": [
+              "processor",
+              "backend"
+            ]
+          },
+          {
+            "line": 21,
+            "text": "2. frontend/handler.py imports without error",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 22,
+            "text": "3. shared/schema.json is valid JSON",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 23,
+            "text": "4. schema.json fields match spec contract (correct field names)",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 24,
+            "text": "5. Backend serialize() returns dict with correct field names",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 25,
+            "text": "6. Backend encodes dates in ISO-8601 format (YYYY-MM-DD)",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 26,
+            "text": "7. Backend handles None/null correctly (uses None not sentinel string)",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 27,
+            "text": "8. Frontend deserialize() reads correct field names",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 28,
+            "text": "9. Frontend handles null values correctly (maps None to default)",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 101,
+            "text": "# ── Bug pool ──────────────────────────────────────────────────────────────────",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 102,
+            "text": "# Each bug: (bug_id, layer, description_template, what_is_wrong, fix_description)",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 104,
+            "text": "BUG_POOL = [",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 105,
+            "text": "# Backend bugs",
+            "keywords": [
+              "backend",
+              "bug"
+            ]
+          },
+          {
+            "line": 107,
+            "text": "\"backend_wrong_id_key\",",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 108,
+            "text": "\"backend\",",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 109,
+            "text": "\"Backend serializer emits the ID field under the wrong key name\",",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 114,
+            "text": "\"backend_date_format\",",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 115,
+            "text": "\"backend\",",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 116,
+            "text": "\"Backend serializer formats dates as MM/DD/YYYY instead of YYYY-MM-DD (ISO-8601)\",",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 121,
+            "text": "\"backend_null_sentinel\",",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 122,
+            "text": "\"backend\",",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 123,
+            "text": "\"Backend serializer encodes None values as the string 'NULL' instead of JSON null\",",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 128,
+            "text": "\"backend_bool_as_int\",",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 129,
+            "text": "\"backend\",",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 130,
+            "text": "\"Backend serializer encodes boolean fields as integers (0/1) instead of true/false\",",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 135,
+            "text": "\"backend_wrong_envelope\",",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 136,
+            "text": "\"backend\",",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 137,
+            "text": "\"Backend wraps the record list under the key 'result' instead of 'data'\",",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 141,
+            "text": "# Frontend bugs",
+            "keywords": [
+              "frontend",
+              "bug"
+            ]
+          },
+          {
+            "line": 143,
+            "text": "\"frontend_wrong_id_read\",",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 144,
+            "text": "\"frontend\",",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 145,
+            "text": "\"Frontend reads the ID field using the wrong key name\",",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 150,
+            "text": "\"frontend_date_parse\",",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 151,
+            "text": "\"frontend\",",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 152,
+            "text": "\"Frontend parses dates assuming MM/DD/YYYY format instead of YYYY-MM-DD\",",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 157,
+            "text": "\"frontend_null_crash\",",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 158,
+            "text": "\"frontend\",",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 159,
+            "text": "\"Frontend does not guard against None values in nullable fields, causing AttributeError\",",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 164,
+            "text": "\"frontend_wrong_envelope\",",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 165,
+            "text": "\"frontend\",",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 166,
+            "text": "\"Frontend reads records from the 'result' key instead of the 'data' key\",",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 171,
+            "text": "\"schema_wrong_field_name\",",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 172,
+            "text": "\"schema\",",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 173,
+            "text": "\"shared/schema.json uses a wrong field name that disagrees with spec\",",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 174,
+            "text": "\"schema_field_wrong\",",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 175,
+            "text": "\"Correct the field name in schema.json to match the spec contract\",",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 179,
+            "text": "# ── Bug selection rules ───────────────────────────────────────────────────────",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 180,
+            "text": "# We always inject 3-5 bugs. The combination varies per seed.",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 181,
+            "text": "# We guarantee at least 1 backend bug, 1 frontend bug, 1 schema bug.",
+            "keywords": [
+              "backend",
+              "frontend",
+              "schema",
+              "bug"
+            ]
+          },
+          {
+            "line": 182,
+            "text": "BUG_COMBOS = [",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 183,
+            "text": "# seed%5 -> list of bug_ids to inject",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 184,
+            "text": "[\"backend_wrong_id_key\",   \"backend_date_format\",   \"frontend_null_crash\",    \"schema_wrong_field_name\"],",
+            "keywords": [
+              "backend",
+              "frontend",
+              "schema"
+            ]
+          },
+          {
+            "line": 185,
+            "text": "[\"backend_null_sentinel\",  \"backend_wrong_envelope\",\"frontend_wrong_envelope\",\"frontend_date_parse\",    \"schema_wrong_field_name\"],",
+            "keywords": [
+              "backend",
+              "frontend",
+              "schema"
+            ]
+          },
+          {
+            "line": 186,
+            "text": "[\"backend_bool_as_int\",    \"backend_date_format\",   \"frontend_wrong_id_read\", \"frontend_null_crash\",    \"schema_wrong_field_name\"],",
+            "keywords": [
+              "backend",
+              "frontend",
+              "schema"
+            ]
+          },
+          {
+            "line": 187,
+            "text": "[\"backend_wrong_id_key\",   \"backend_null_sentinel\", \"frontend_wrong_envelope\",\"schema_wrong_field_name\"],",
+            "keywords": [
+              "backend",
+              "frontend",
+              "schema"
+            ]
+          },
+          {
+            "line": 188,
+            "text": "[\"backend_bool_as_int\",    \"backend_wrong_envelope\",\"frontend_date_parse\",    \"frontend_null_crash\",    \"schema_wrong_field_name\"],",
+            "keywords": [
+              "backend",
+              "frontend",
+              "schema"
+            ]
+          },
+          {
+            "line": 191,
+            "text": "# Wrong field-name alternatives (for backend_wrong_id_key / frontend_wrong_id_read)",
+            "keywords": [
+              "backend",
+              "frontend"
+            ]
+          },
+          {
+            "line": 199,
+            "text": "# Wrong schema field-name alts (for schema_wrong_field_name)",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 200,
+            "text": "WRONG_SCHEMA_FIELD_ALTS = {",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 221,
+            "text": "# Pick bug combo",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 222,
+            "text": "bug_combo_idx = seed % len(BUG_COMBOS)",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 223,
+            "text": "active_bug_ids = set(BUG_COMBOS[bug_combo_idx])",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 224,
+            "text": "active_bugs = [b for b in BUG_POOL if b[0] in active_bug_ids]",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 233,
+            "text": "wrong_schema_pair = rng.choice(WRONG_SCHEMA_FIELD_ALTS[domain_key])",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 234,
+            "text": "wrong_schema_field, wrong_schema_name = wrong_schema_pair",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 240,
+            "text": "processor_py = self._gen_processor(",
+            "keywords": [
+              "processor"
+            ]
+          },
+          {
+            "line": 242,
+            "text": "bool_field, wrong_id_key, active_bug_ids",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 246,
+            "text": "wrong_id_key, active_bug_ids",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 248,
+            "text": "schema_json = self._gen_schema(",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 249,
+            "text": "domain_key, entity, fields, wrong_schema_field, wrong_schema_name,",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 250,
+            "text": "active_bug_ids",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 258,
+            "text": "\"backend/processor.py\": processor_py,",
+            "keywords": [
+              "processor",
+              "backend"
+            ]
+          },
+          {
+            "line": 259,
+            "text": "\"frontend/handler.py\":  handler_py,",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 260,
+            "text": "\"shared/schema.json\":   schema_json,",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 267,
+            "text": "\"bug_count\": len(active_bugs),",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 268,
+            "text": "\"active_bug_ids\": sorted(active_bug_ids),",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 276,
+            "text": "\"wrong_schema_field\": wrong_schema_name,",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 277,
+            "text": "\"correct_schema_field\": wrong_schema_field,",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 278,
+            "text": "\"bugs\": [",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 285,
+            "text": "for b in active_bugs",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 291,
+            "text": "wrong_schema_field, wrong_schema_name, active_bug_ids)",
+            "keywords": [
+              "schema",
+              "bug"
+            ]
+          },
+          {
+            "line": 292,
+            "text": "brief_md = self._gen_brief(domain_display, entity, len(active_bugs))",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 333,
+            "text": "# ── backend/processor.py ──────────────────────────────────────────────────",
+            "keywords": [
+              "processor",
+              "backend"
+            ]
+          },
+          {
+            "line": 335,
+            "text": "def _gen_processor(self, domain_key: str, entity: str, fields: list,",
+            "keywords": [
+              "processor"
+            ]
+          },
+          {
+            "line": 338,
+            "text": "active_bugs: set) -> str:",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 340,
+            "text": "Generate backend/processor.py with injected bugs.",
+            "keywords": [
+              "processor",
+              "backend",
+              "bug"
+            ]
+          },
+          {
+            "line": 342,
+            "text": "Bugs that may appear here:",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 343,
+            "text": "- backend_wrong_id_key    : emits id under wrong_id_key instead of id_field",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 344,
+            "text": "- backend_date_format     : uses '%m/%d/%Y' instead of '%Y-%m-%d'",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 345,
+            "text": "- backend_null_sentinel   : uses 'NULL' string for None",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 346,
+            "text": "- backend_bool_as_int     : casts bool to int(val) before emitting",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 347,
+            "text": "- backend_wrong_envelope  : wraps list under 'result' instead of 'data'",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 354,
+            "text": "emitted_id_key = wrong_id_key if \"backend_wrong_id_key\" in active_bugs else id_field",
+            "keywords": [
+              "backend",
+              "bug"
+            ]
+          },
+          {
+            "line": 357,
+            "text": "date_fmt = \"'%m/%d/%Y'\" if \"backend_date_format\" in active_bugs else \"'%Y-%m-%d'\"",
+            "keywords": [
+              "backend",
+              "bug"
+            ]
+          },
+          {
+            "line": 361,
+            "text": "\"'NULL'\" if \"backend_null_sentinel\" in active_bugs else \"None\"",
+            "keywords": [
+              "backend",
+              "bug"
+            ]
+          },
+          {
+            "line": 366,
+            "text": "\"# BUG: bool cast to int — should remain bool\"",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 367,
+            "text": "if \"backend_bool_as_int\" in active_bugs else \"\"",
+            "keywords": [
+              "backend",
+              "bug"
+            ]
+          },
+          {
+            "line": 371,
+            "text": "envelope_key = \"'result'\" if \"backend_wrong_envelope\" in active_bugs else \"'data'\"",
+            "keywords": [
+              "backend",
+              "bug"
+            ]
+          },
+          {
+            "line": 383,
+            "text": "elif ftype == \"bool\" and \"backend_bool_as_int\" in active_bugs:",
+            "keywords": [
+              "backend",
+              "bug"
+            ]
+          },
+          {
+            "line": 386,
+            "text": "f\"# BUG: should be bool, not int\"",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 399,
+            "text": "backend/processor.py — Data processor (Python backend).",
+            "keywords": [
+              "processor",
+              "backend"
+            ]
+          },
+          {
+            "line": 403,
+            "text": "- Serialize them into the wire format defined by shared/schema.json",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 406,
+            "text": "WARNING: This file contains intentional bugs for the TeamBench exercise.",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 440,
+            "text": "Contract (from shared/schema.json):",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 487,
+            "text": "# ── frontend/handler.py ───────────────────────────────────────────────────",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 491,
+            "text": "wrong_id_key: str, active_bugs: set) -> str:",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 493,
+            "text": "Generate frontend/handler.py with injected bugs.",
+            "keywords": [
+              "frontend",
+              "bug"
+            ]
+          },
+          {
+            "line": 495,
+            "text": "Bugs that may appear here:",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 496,
+            "text": "- frontend_wrong_id_read  : reads id using wrong_id_key instead of id_field",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 497,
+            "text": "- frontend_date_parse     : parses with '%m/%d/%Y' instead of '%Y-%m-%d'",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 498,
+            "text": "- frontend_null_crash     : no None-guard on nullable field access",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 499,
+            "text": "- frontend_wrong_envelope : reads from 'result' key instead of 'data'",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 506,
+            "text": "read_id_key = wrong_id_key if \"frontend_wrong_id_read\" in active_bugs else id_field",
+            "keywords": [
+              "frontend",
+              "bug"
+            ]
+          },
+          {
+            "line": 509,
+            "text": "date_parse = \"'%m/%d/%Y'\" if \"frontend_date_parse\" in active_bugs else \"'%Y-%m-%d'\"",
+            "keywords": [
+              "frontend",
+              "bug"
+            ]
+          },
+          {
+            "line": 512,
+            "text": "env_key = \"'result'\" if \"frontend_wrong_envelope\" in active_bugs else \"'data'\"",
+            "keywords": [
+              "frontend",
+              "bug"
+            ]
+          },
+          {
+            "line": 515,
+            "text": "if \"frontend_null_crash\" in active_bugs:",
+            "keywords": [
+              "frontend",
+              "bug"
+            ]
+          },
+          {
+            "line": 519,
+            "text": "f\"  # BUG: crashes when {null_fname} is None — missing None-guard\"",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 553,
+            "text": "frontend/handler.py — Data consumer handler (Python, simulating a frontend consumer).",
+            "keywords": [
+              "consumer",
+              "frontend",
+              "consume"
+            ]
+          },
+          {
+            "line": 556,
+            "text": "- Accept the wire-format envelope from the backend",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 558,
+            "text": "- Expose helper functions for downstream display/processing logic",
+            "keywords": [
+              "downstream"
+            ]
+          },
+          {
+            "line": 560,
+            "text": "WARNING: This file contains intentional bugs for the TeamBench exercise.",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 576,
+            "text": "Contract (from shared/schema.json):",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 624,
+            "text": "# ── shared/schema.json ────────────────────────────────────────────────────",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 626,
+            "text": "def _gen_schema(self, domain_key: str, entity: str, fields: list,",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 627,
+            "text": "wrong_schema_field: str, wrong_schema_name: str,",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 628,
+            "text": "active_bugs: set) -> str:",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 630,
+            "text": "Generate shared/schema.json with an injected field-name bug if active.",
+            "keywords": [
+              "schema",
+              "bug"
+            ]
+          },
+          {
+            "line": 634,
+            "text": "schema_fields = {}",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 636,
+            "text": "# Apply the wrong field name if the schema bug is active",
+            "keywords": [
+              "schema",
+              "bug"
+            ]
+          },
+          {
+            "line": 638,
+            "text": "wrong_schema_name",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 639,
+            "text": "if \"schema_wrong_field_name\" in active_bugs and fname == wrong_schema_field",
+            "keywords": [
+              "schema",
+              "bug"
+            ]
+          },
+          {
+            "line": 642,
+            "text": "schema_fields[emitted_name] = {",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 648,
+            "text": "schema = {",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 649,
+            "text": "\"$schema\": \"http://json-schema.org/draft-07/schema\",",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 652,
+            "text": "f\"Interface contract between backend/processor.py and \"",
+            "keywords": [
+              "processor",
+              "backend"
+            ]
+          },
+          {
+            "line": 653,
+            "text": "f\"frontend/handler.py for domain '{domain_key}'\"",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 665,
+            "text": "\"record_fields\": schema_fields,",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 673,
+            "text": "return json.dumps(schema, indent=2)",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 683,
+            "text": "Design principle: backend tests use self.wire (produced by the buggy",
+            "keywords": [
+              "backend",
+              "bug"
+            ]
+          },
+          {
+            "line": 684,
+            "text": "backend, so backend bugs cause those tests to fail). Frontend tests use",
+            "keywords": [
+              "backend",
+              "frontend",
+              "bug"
+            ]
+          },
+          {
+            "line": 686,
+            "text": "frontend bugs fail *only* the frontend tests without cascading from",
+            "keywords": [
+              "frontend",
+              "bug"
+            ]
+          },
+          {
+            "line": 687,
+            "text": "unrelated backend bugs.",
+            "keywords": [
+              "backend",
+              "bug"
+            ]
+          },
+          {
+            "line": 695,
+            "text": "# Build the internal record (original) — used as input to backend.",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 716,
+            "text": "# Build the correct wire dict (hardcoded, independent of backend bugs).",
+            "keywords": [
+              "backend",
+              "bug"
+            ]
+          },
+          {
+            "line": 717,
+            "text": "# This is what a *fixed* backend would produce — used by frontend tests.",
+            "keywords": [
+              "backend",
+              "frontend"
+            ]
+          },
+          {
+            "line": 738,
+            "text": "# Correct envelope (what a fixed backend+envelope produces)",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 801,
+            "text": "wire = processor.serialize_record(rec)",
+            "keywords": [
+              "processor"
+            ]
+          },
+          {
+            "line": 809,
+            "text": "# Test 8: Frontend bool passthrough (uses correct_wire to isolate)",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 811,
+            "text": "def test_frontend_bool_passthrough(self):",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 812,
+            "text": "\\\"\\\"\\\"Frontend handler must preserve bool type for {bool_fname}.\\\"\\\"\\\"",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 823,
+            "text": "# spec_fields list literal for schema test",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 828,
+            "text": "Tests cover backend serialization, frontend deserialization, schema validity,",
+            "keywords": [
+              "backend",
+              "frontend",
+              "schema"
+            ]
+          },
+          {
+            "line": 832,
+            "text": "- Backend tests use self.wire (output of buggy backend) so backend bugs fail them.",
+            "keywords": [
+              "backend",
+              "bug"
+            ]
+          },
+          {
+            "line": 833,
+            "text": "- Frontend tests use self.correct_wire (hardcoded correct wire dict) so frontend",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 834,
+            "text": "bugs fail independently without cascading from backend bugs.",
+            "keywords": [
+              "backend",
+              "bug"
+            ]
+          },
+          {
+            "line": 836,
+            "text": "Do NOT modify this file.",
+            "keywords": [
+              "do not modify"
+            ]
+          },
+          {
+            "line": 853,
+            "text": "import backend.processor as processor",
+            "keywords": [
+              "processor",
+              "backend"
+            ]
+          },
+          {
+            "line": 854,
+            "text": "import frontend.handler as handler",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 861,
+            "text": "# Internal (datastore) record — input to the backend",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 865,
+            "text": "# Wire produced by the backend under test (may be buggy)",
+            "keywords": [
+              "backend",
+              "bug"
+            ]
+          },
+          {
+            "line": 866,
+            "text": "self.wire = processor.serialize_record(self.original)",
+            "keywords": [
+              "processor"
+            ]
+          },
+          {
+            "line": 867,
+            "text": "# Envelope produced by the backend under test",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 868,
+            "text": "self.envelope = processor.serialize_batch([self.original])",
+            "keywords": [
+              "processor"
+            ]
+          },
+          {
+            "line": 870,
+            "text": "# Correct wire dict — hardcoded, independent of backend bugs.",
+            "keywords": [
+              "backend",
+              "bug"
+            ]
+          },
+          {
+            "line": 871,
+            "text": "# Frontend tests use this so they are isolated from backend bugs.",
+            "keywords": [
+              "backend",
+              "frontend",
+              "bug"
+            ]
+          },
+          {
+            "line": 880,
+            "text": "def test_processor_imports(self):",
+            "keywords": [
+              "processor"
+            ]
+          },
+          {
+            "line": 881,
+            "text": "\"\"\"backend/processor.py must import without error.\"\"\"",
+            "keywords": [
+              "processor",
+              "backend"
+            ]
+          },
+          {
+            "line": 883,
+            "text": "self.assertIsNotNone(importlib.import_module(\"backend.processor\"))",
+            "keywords": [
+              "processor",
+              "backend"
+            ]
+          },
+          {
+            "line": 886,
+            "text": "\"\"\"frontend/handler.py must import without error.\"\"\"",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 888,
+            "text": "self.assertIsNotNone(importlib.import_module(\"frontend.handler\"))",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 891,
+            "text": "# Test 2: schema.json validity and field names",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 893,
+            "text": "def test_schema_json_valid(self):",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 894,
+            "text": "\"\"\"shared/schema.json must be parseable JSON with required top-level keys.\"\"\"",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 895,
+            "text": "schema_path = os.path.join(_WORKSPACE, \"shared\", \"schema.json\")",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 896,
+            "text": "self.assertTrue(os.path.exists(schema_path), msg=\"shared/schema.json not found\")",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 897,
+            "text": "with open(schema_path) as f:",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 898,
+            "text": "schema = json.load(f)",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 899,
+            "text": "self.assertIn(\"record_fields\", schema, msg=\"schema.json missing 'record_fields' key\")",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 900,
+            "text": "self.assertIn(\"envelope\", schema, msg=\"schema.json missing 'envelope' key\")",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 902,
+            "text": "def test_schema_fields_match_spec(self):",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 903,
+            "text": "\"\"\"shared/schema.json record_fields must list all spec-defined field names.\"\"\"",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 904,
+            "text": "schema_path = os.path.join(_WORKSPACE, \"shared\", \"schema.json\")",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 905,
+            "text": "with open(schema_path) as f:",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 906,
+            "text": "schema = json.load(f)",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 907,
+            "text": "record_fields = schema[\"record_fields\"]",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 913,
+            "text": "f\"schema.json missing required field {{field_name!r}} — \"",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 919,
+            "text": "# Test 3: Backend emits correct ID field name",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 921,
+            "text": "def test_backend_id_field_name(self):",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 929,
+            "text": "# Test 4: Backend date format is ISO-8601 (YYYY-MM-DD)",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 931,
+            "text": "def test_backend_date_format(self):",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 947,
+            "text": "# Test 5: Backend null handling — None, not sentinel string",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 949,
+            "text": "def test_backend_null_is_none(self):",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 961,
+            "text": "# Test 6: Backend envelope uses 'data' key",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 975,
+            "text": "# Test 9: Frontend reads correct ID field name (uses correct_wire)",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 977,
+            "text": "def test_frontend_id_field_read(self):",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 986,
+            "text": "msg=f\"Frontend read wrong value for {id_field}: {{recovered[{repr(id_field)}]!r}}\"",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 990,
+            "text": "# Test 10: Frontend null guard — no crash on None (uses correct_wire)",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 992,
+            "text": "def test_frontend_null_guard(self):",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 1008,
+            "text": "# Test 11: Frontend parses dates as datetime.date (uses correct_wire)",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 1010,
+            "text": "def test_frontend_date_parse(self):",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 1024,
+            "text": "# Test 12: Frontend reads records from 'data' envelope key",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 1026,
+            "text": "def test_frontend_envelope_read(self):",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 1052,
+            "text": "wrong_schema_field: str, wrong_schema_name: str,",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 1053,
+            "text": "active_bugs: set) -> str:",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 1063,
+            "text": "bug_list_items = []",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 1064,
+            "text": "for bug_id in sorted(active_bugs):",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 1065,
+            "text": "bug = next(b for b in BUG_POOL if b[0] == bug_id)",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 1066,
+            "text": "bug_list_items.append(f\"- **{bug[1].capitalize()} layer**: {bug[2]}\")",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 1067,
+            "text": "bug_list = \"\\n\".join(bug_list_items)",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 1069,
+            "text": "return f\"\"\"# MULTI3: Polyglot Interface Bug Fix — Full Specification (Planner Only)",
+            "keywords": [
+              "planner",
+              "bug"
+            ]
+          },
+          {
+            "line": 1074,
+            "text": "backend (`backend/processor.py`) serializes internal records into a wire format",
+            "keywords": [
+              "processor",
+              "backend"
+            ]
+          },
+          {
+            "line": 1075,
+            "text": "defined by `shared/schema.json`.  The Python frontend (`frontend/handler.py`)",
+            "keywords": [
+              "frontend",
+              "schema"
+            ]
+          },
+          {
+            "line": 1076,
+            "text": "consumes that wire format.",
+            "keywords": [
+              "consume"
+            ]
+          },
+          {
+            "line": 1078,
+            "text": "The system has **{len(active_bugs)} bugs** spread across the two components and",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 1079,
+            "text": "the shared schema. All bugs must be fixed so that `python3 -m pytest",
+            "keywords": [
+              "schema",
+              "bug"
+            ]
+          },
+          {
+            "line": 1089,
+            "text": "Every response from the backend is wrapped in an envelope:",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 1119,
+            "text": "## Bug Inventory",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 1121,
+            "text": "{bug_list}",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 1123,
+            "text": "### Additional schema bug",
+            "keywords": [
+              "schema",
+              "bug"
+            ]
+          },
+          {
+            "line": 1125,
+            "text": "`shared/schema.json` declares one field under the wrong name",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 1126,
+            "text": "(`\"{wrong_schema_name}\"` instead of `\"{wrong_schema_field}\"`). The schema must",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 1135,
+            "text": "backend/",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 1136,
+            "text": "processor.py       # Python backend — serialize + batch functions",
+            "keywords": [
+              "processor",
+              "backend"
+            ]
+          },
+          {
+            "line": 1137,
+            "text": "frontend/",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 1138,
+            "text": "handler.py         # Python frontend consumer — deserialize + display",
+            "keywords": [
+              "consumer",
+              "frontend",
+              "consume"
+            ]
+          },
+          {
+            "line": 1140,
+            "text": "schema.json        # Interface contract (JSON Schema-style)",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 1142,
+            "text": "test_contract.py   # Test suite — DO NOT MODIFY",
+            "keywords": [
+              "do not modify"
+            ]
+          },
+          {
+            "line": 1149,
+            "text": "After all {len(active_bugs)} fixes:",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 1166,
+            "text": "1. `test_processor_imports` — backend module imports cleanly",
+            "keywords": [
+              "processor",
+              "backend"
+            ]
+          },
+          {
+            "line": 1167,
+            "text": "2. `test_handler_imports` — frontend module imports cleanly",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 1168,
+            "text": "3. `test_schema_json_valid` — schema.json is valid JSON with required keys",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 1169,
+            "text": "4. `test_schema_fields_match_spec` — schema field names match the spec contract",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 1170,
+            "text": "5. `test_backend_id_field_name` — backend emits correct ID key `\"{id_field}\"`",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 1171,
+            "text": "6. `test_backend_date_format` — backend formats dates as `YYYY-MM-DD`",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 1172,
+            "text": "7. `test_backend_null_is_none` — backend emits `null` not sentinel string for `{null_fname}`",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 1173,
+            "text": "8. `test_envelope_key` — backend wraps records under `\"data\"` key",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 1174,
+            "text": "9. `test_bool_is_bool` — backend emits Python `bool` not `int` for boolean fields",
+            "keywords": [
+              "backend"
+            ]
+          },
+          {
+            "line": 1175,
+            "text": "10. `test_frontend_id_field_read` — frontend reads ID from correct key `\"{id_field}\"`",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 1176,
+            "text": "11. `test_frontend_null_guard` — frontend handles `None` in `{null_fname}` without crash",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 1177,
+            "text": "12. `test_frontend_date_parse` — frontend parses `{date_fname}` as `datetime.date`",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 1178,
+            "text": "13. `test_frontend_envelope_read` — frontend reads records from `\"data\"` key",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 1185,
+            "text": "- Do NOT modify `tests/test_contract.py`",
+            "keywords": [
+              "do not modify"
+            ]
+          },
+          {
+            "line": 1187,
+            "text": "- `shared/schema.json` is informational — tests read it but the pipeline code must also be consistent with it",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 1192,
+            "text": "def _gen_brief(self, domain_display: str, entity: str, bug_count: int) -> str:",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 1193,
+            "text": "return f\"\"\"# MULTI3: Polyglot Interface Bug Fix (Brief)",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 1195,
+            "text": "The {domain_display} data pipeline is broken. The backend processor and",
+            "keywords": [
+              "processor",
+              "backend"
+            ]
+          },
+          {
+            "line": 1196,
+            "text": "frontend handler disagree on the wire format, causing data to be lost or",
+            "keywords": [
+              "frontend"
+            ]
+          },
+          {
+            "line": 1199,
+            "text": "Fix the bugs so that `python3 tests/test_contract.py` passes all tests.",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 1202,
+            "text": "- `backend/processor.py` — Python data serializer",
+            "keywords": [
+              "processor",
+              "backend"
+            ]
+          },
+          {
+            "line": 1203,
+            "text": "- `frontend/handler.py` — Python data consumer",
+            "keywords": [
+              "consumer",
+              "frontend",
+              "consume"
+            ]
+          },
+          {
+            "line": 1204,
+            "text": "- `shared/schema.json` — shared interface schema (may also be wrong)",
+            "keywords": [
+              "schema"
+            ]
+          },
+          {
+            "line": 1206,
+            "text": "Do NOT modify `tests/test_contract.py`.",
+            "keywords": [
+              "do not modify"
+            ]
+          }
+        ]
+      },
+      "static_only": true
+    },
+    {
+      "task_id": "DIST3_idempotency",
+      "task_yaml": {
+        "task_id": "DIST3_idempotency",
+        "category": "Distributed",
+        "difficulty": "hard",
+        "tni_pattern": "C",
+        "parameterized": "true"
+      },
+      "task_files": [
+        {
+          "path": "tasks/DIST3_idempotency/analysis_guidance.md",
+          "sha256": "7db19e871856e9865b7582bf7e6d315af9a62692b6e8407d581bb0848af5a797",
+          "bytes": 2462,
+          "lines": 71,
+          "keyword_counts": {
+            "executor": 1,
+            "already": 1
+          },
+          "markers": [
+            {
+              "line": 8,
+              "text": "- `cat payments/balance.py` — note: GET only, already safe to retry",
+              "keywords": [
+                "already"
+              ]
+            },
+            {
+              "line": 68,
+              "text": "## Tell Executor",
+              "keywords": [
+                "executor"
+              ]
+            }
+          ]
+        },
+        {
+          "path": "tasks/DIST3_idempotency/brief.md",
+          "sha256": "a9884d3e914ac1954714bf41db354a7e4acb56659d808abf3689d57f5a5c283d",
+          "bytes": 398,
+          "lines": 11,
+          "keyword_counts": {
+            "planner": 1,
+            "already": 1,
+            "do not modify": 1
+          },
+          "markers": [
+            {
+              "line": 4,
+              "text": "The Planner has identified which operations need idempotency and how to implement",
+              "keywords": [
+                "planner"
+              ]
+            },
+            {
+              "line": 7,
+              "text": "Do NOT modify `payments/balance.py` — it is already idempotent.",
+              "keywords": [
+                "already",
+                "do not modify"
+              ]
+            }
+          ]
+        },
+        {
+          "path": "tasks/DIST3_idempotency/grade.sh",
+          "sha256": "4b02ebdb5223aeab39d75dc57804935b0fba10bd35aa6a5d987448a5d583a1f3",
+          "bytes": 8519,
+          "lines": 231,
+          "keyword_counts": {},
+          "markers": []
+        },
+        {
+          "path": "tasks/DIST3_idempotency/spec.md",
+          "sha256": "fc491ae6b3db5a819b103cccd5a9fb0bd3bf6b9967eeb4deb80374b1a404544d",
+          "bytes": 1471,
+          "lines": 29,
+          "keyword_counts": {
+            "already": 2
+          },
+          "markers": [
+            {
+              "line": 11,
+              "text": "5. The balance query endpoint must NOT be modified (it is already safe to retry)",
+              "keywords": [
+                "already"
+              ]
+            },
+            {
+              "line": 20,
+              "text": "- `payments/balance.py` — Balance query (ALREADY IDEMPOTENT — do not change)",
+              "keywords": [
+                "already"
+              ]
+            }
+          ]
+        },
+        {
+          "path": "tasks/DIST3_idempotency/task.yaml",
+          "sha256": "1006afeceec71b4aa9c323596a8076e25be7b20a005e41b5b72dac1fdb474589",
+          "bytes": 242,
+          "lines": 8,
+          "keyword_counts": {},
+          "markers": []
+        }
+      ],
+      "generator": {
+        "path": "generators/gen_dist3_idempotency.py",
+        "sha256": "6e100b94f27c9cbcc4deeb268c8f31c10ec69517afef0170c771e40360a72674",
+        "bytes": 24129,
+        "lines": 698,
+        "literal_workspace_files": [
+          "payments/__init__.py",
+          "payments/balance.py",
+          "payments/charges.py",
+          "payments/database.py",
+          "payments/idempotency.py",
+          "payments/ledger.py",
+          "payments/refunds.py",
+          "payments/webhooks.py",
+          "tests/__init__.py",
+          "tests/test_balance.py",
+          "tests/test_charges.py",
+          "tests/test_concurrent.py",
+          "tests/test_idempotency.py",
+          "tests/test_ledger.py",
+          "tests/test_refunds.py",
+          "tests/test_webhooks.py"
+        ],
+        "contains_dynamic_file_keys": false,
+        "keyword_counts": {
+          "executor": 1,
+          "already": 5
+        },
+        "markers": [
+          {
+            "line": 5,
+            "text": "challenge: 4 non-idempotent operations that must be fixed, plus 1 already-",
+            "keywords": [
+              "already"
+            ]
+          },
+          {
+            "line": 238,
+            "text": "# --- payments/idempotency.py (empty stub — executor must implement) ---",
+            "keywords": [
+              "executor"
+            ]
+          },
+          {
+            "line": 350,
+            "text": "# --- payments/balance.py (CORRECT — already idempotent, read-only) ---",
+            "keywords": [
+              "already"
+            ]
+          },
+          {
+            "line": 356,
+            "text": "\"\"\"{ctx[\"balance_desc\"]}. This is already idempotent (read-only).\"\"\"",
+            "keywords": [
+              "already"
+            ]
+          },
+          {
+            "line": 572,
+            "text": "\"\"\"Balance endpoint must NOT have idempotency_key parameter (already idempotent).\"\"\"",
+            "keywords": [
+              "already"
+            ]
+          },
+          {
+            "line": 576,
+            "text": "\"(it is already idempotent as a read-only operation)\"",
+            "keywords": [
+              "already"
+            ]
+          }
+        ]
+      },
+      "static_only": true
+    },
+    {
+      "task_id": "NEG3_tech_debt",
+      "task_yaml": {
+        "task_id": "NEG3_tech_debt",
+        "domain": "software",
+        "difficulty": "medium",
+        "parameterized": "true"
+      },
+      "task_files": [
+        {
+          "path": "tasks/NEG3_tech_debt/brief.md",
+          "sha256": "cda4b4897fd8601cd79552d6a926b1955405d9928ae55fa6e0f9f9b546d7e534",
+          "bytes": 523,
+          "lines": 12,
+          "keyword_counts": {},
+          "markers": []
+        },
+        {
+          "path": "tasks/NEG3_tech_debt/grade.sh",
+          "sha256": "4d6822a19f3de1903ce9e42cf75b912317069f6c3599c91c8a96974e46934a8b",
+          "bytes": 9220,
+          "lines": 286,
+          "keyword_counts": {
+            "bug": 6
+          },
+          "markers": [
+            {
+              "line": 229,
+              "text": "# 13. Debug comment block removed (only if TD010 in plan)",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 239,
+              "text": "assert 'DEBUG BLOCK' not in src, 'Debug block still present — TD010 not fixed'",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 240,
+              "text": "assert '# import pdb' not in src, 'Debug block still present — TD010 not fixed'",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 241,
+              "text": "print('NO_DEBUG_BLOCK_OK')",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 242,
+              "text": "\\\"\" \"debug_block_not_removed\"",
+              "keywords": [
+                "bug"
+              ]
+            }
+          ]
+        },
+        {
+          "path": "tasks/NEG3_tech_debt/setup.sh",
+          "sha256": "028e30f15501ef90ce779ecb1006a6ab33e9761068234550c120b5b1314cf02e",
+          "bytes": 98,
+          "lines": 6,
+          "keyword_counts": {},
+          "markers": []
+        },
+        {
+          "path": "tasks/NEG3_tech_debt/spec.md",
+          "sha256": "de0b673f1821de035737da4b2decec00a14956fabf76f869dacae9e5905c0094",
+          "bytes": 3994,
+          "lines": 89,
+          "keyword_counts": {
+            "processor": 1,
+            "bug": 3
+          },
+          "markers": [
+            {
+              "line": 32,
+              "text": "| TD010 | Dead code: commented-out debug block | Low    | Low    | 1h |    50 |",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 33,
+              "text": "| TD001 | Dead code: unused legacy processor | Low    | Low    | 1h |    50 |",
+              "keywords": [
+                "processor"
+              ]
+            },
+            {
+              "line": 81,
+              "text": "| `no_debug_block` | Debug comment block removed (if TD010 fixed) |",
+              "keywords": [
+                "bug"
+              ]
+            }
+          ]
+        },
+        {
+          "path": "tasks/NEG3_tech_debt/task.yaml",
+          "sha256": "b50fbdb34aecf8d70ff9a58a8265a95d577d6cd793dd6244cd0242c95b2ab121",
+          "bytes": 269,
+          "lines": 11,
+          "keyword_counts": {},
+          "markers": []
+        }
+      ],
+      "generator": {
+        "path": "generators/gen_neg3_tech_debt.py",
+        "sha256": "de7a13be8c0046edb482c6238e9ae6053aa7c16dd850adf6b64e5dc80634c097",
+        "bytes": 35345,
+        "lines": 947,
+        "literal_workspace_files": [
+          "prioritize.py",
+          "service.py",
+          "tech_debt.json",
+          "tests/__init__.py",
+          "tests/test_service.py",
+          "utils.py"
+        ],
+        "contains_dynamic_file_keys": false,
+        "keyword_counts": {
+          "processor": 3,
+          "bug": 29
+        },
+        "markers": [
+          {
+            "line": 79,
+            "text": "\"title\": \"Dead code: unused legacy processor\",",
+            "keywords": [
+              "processor"
+            ]
+          },
+          {
+            "line": 80,
+            "text": "\"description\": \"A legacy data processor function is never called but remains in the codebase, increasing cognitive load.\",",
+            "keywords": [
+              "processor"
+            ]
+          },
+          {
+            "line": 124,
+            "text": "\"description\": \"Several bare `except:` clauses silently swallow exceptions, making debugging impossible.\",",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 178,
+            "text": "\"title\": \"Dead code: commented-out debug block\",",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 179,
+            "text": "\"description\": \"A large commented-out debug block (50+ lines) was never removed and confuses readers.\",",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 183,
+            "text": "\"fix_description\": \"Remove the commented-out debug block entirely.\",",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 184,
+            "text": "\"grade_check\": \"no_debug_comment_block\",",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 361,
+            "text": "has_debug_comment = \"TD010\" in item_ids",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 390,
+            "text": "\"\"\"Legacy processor — no longer used since v1.2.\"\"\"",
+            "keywords": [
+              "processor"
+            ]
+          },
+          {
+            "line": 401,
+            "text": "debug_block = \"\"",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 402,
+            "text": "if has_debug_comment:",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 403,
+            "text": "debug_block = '''        # ---- DEBUG BLOCK (do not commit) ----",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 405,
+            "text": "# print(\"DEBUG: entering process\")",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 406,
+            "text": "# print(f\"DEBUG: data={data}\")",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 407,
+            "text": "# print(f\"DEBUG: type={type(data)}\")",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 409,
+            "text": "#     print(f\"DEBUG:   {k!r} -> {v!r}\")",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 410,
+            "text": "# print(\"DEBUG: validation start\")",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 415,
+            "text": "#         print(f\"DEBUG: missing field {field!r}\")",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 416,
+            "text": "# print(f\"DEBUG: validation ok={is_ok}\")",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 417,
+            "text": "# print(\"DEBUG: processing start\")",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 419,
+            "text": "# print(f\"DEBUG: result={result}\")",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 420,
+            "text": "# print(\"DEBUG: done\")",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 421,
+            "text": "# ---- END DEBUG BLOCK ----",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 470,
+            "text": "return None  # BUG: sometimes returns None, sometimes dict",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 473,
+            "text": "return record  # BUG: returns full dict in this branch",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 490,
+            "text": "except:  # noqa: E722  BUG: bare except swallows all errors",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 498,
+            "text": "except:  # noqa: E722  BUG: bare except swallows all errors",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 590,
+            "text": "{debug_block}{validation_inline}",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 624,
+            "text": "# ── validate_input helper (only if dup is fixed) — not present in buggy version",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 921,
+            "text": "| `no_debug_block` | Debug comment block removed (if TD010 fixed) |",
+            "keywords": [
+              "bug"
+            ]
+          }
+        ]
+      },
+      "static_only": true
+    },
+    {
+      "task_id": "INFRA2_cicd_repair",
+      "task_yaml": {
+        "task_id": "INFRA2_cicd_repair",
+        "category": "Pipeline/Integration",
+        "domain": "Pipeline/Integration",
+        "difficulty": "hard",
+        "tni_pattern": "B",
+        "parameterized": "true"
+      },
+      "task_files": [
+        {
+          "path": "tasks/INFRA2_cicd_repair/brief.md",
+          "sha256": "61c362744b6784e3e327083771a489883550583b90d0d5bfbca9ddff1839dca5",
+          "bytes": 273,
+          "lines": 10,
+          "keyword_counts": {
+            "planner": 1,
+            "do not modify": 1
+          },
+          "markers": [
+            {
+              "line": 8,
+              "text": "**Do NOT modify** application source files.",
+              "keywords": [
+                "do not modify"
+              ]
+            },
+            {
+              "line": 10,
+              "text": "Follow the Planner's guidance precisely.",
+              "keywords": [
+                "planner"
+              ]
+            }
+          ]
+        },
+        {
+          "path": "tasks/INFRA2_cicd_repair/grade.sh",
+          "sha256": "9c1ea25d6a1925ae13918c645f667b0edc3644985a52c5827a1a9ab7f2df7e16",
+          "bytes": 10931,
+          "lines": 292,
+          "keyword_counts": {
+            "integrat": 3,
+            "bug": 18
+          },
+          "markers": [
+            {
+              "line": 3,
+              "text": "#   real bugs are fixed, flaky-test patterns preserved.",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 14,
+              "text": "#   C9  continue-on-error: true on integration test is PRESERVED",
+              "keywords": [
+                "integrat"
+              ]
+            },
+            {
+              "line": 79,
+              "text": "BUGS=$(python3 -c \"",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 82,
+              "text": "print(' '.join(e.get('bugs', [])))",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 118,
+              "text": "bugs = '${BUGS}'.split()",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 119,
+              "text": "if 'missing_env_var' not in bugs:",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 134,
+              "text": "bugs = '${BUGS}'.split()",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 135,
+              "text": "if 'wrong_artifact_path' not in bugs:",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 168,
+              "text": "bugs = '${BUGS}'.split()",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 169,
+              "text": "if 'bad_conditional' not in bugs:",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 193,
+              "text": "bugs = '${BUGS}'.split()",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 194,
+              "text": "if 'bad_conditional' not in bugs:",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 206,
+              "text": "bugs = '${BUGS}'.split()",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 207,
+              "text": "if 'shallow_clone' not in bugs:",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 235,
+              "text": "# ── C9: continue-on-error preserved on integration test ───────────────────────",
+              "keywords": [
+                "integrat"
+              ]
+            },
+            {
+              "line": 252,
+              "text": "check \"C9\" \"continue-on-error: true preserved on integration test step\" \"${result}\"",
+              "keywords": [
+                "integrat"
+              ]
+            }
+          ]
+        },
+        {
+          "path": "tasks/INFRA2_cicd_repair/spec.md",
+          "sha256": "bd3ff34ad024f381592fc67248a0546b0ddec3bcc1a0fb57f664ce903626cd53",
+          "bytes": 1750,
+          "lines": 38,
+          "keyword_counts": {
+            "integrat": 3,
+            "bug": 8
+          },
+          "markers": [
+            {
+              "line": 6,
+              "text": "pipeline runs correctly. The pipeline has real configuration bugs that must",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 11,
+              "text": "1. Fix all real configuration bugs identified in the postmortem",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 12,
+              "text": "2. Preserve `continue-on-error: true` on the integration test step (known-flaky external dep)",
+              "keywords": [
+                "integrat"
+              ]
+            },
+            {
+              "line": 20,
+              "text": "- `postmortem.md` — incident analysis distinguishing real bugs from intentional patterns",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 25,
+              "text": "The pipeline contains both real bugs AND intentional \"workarounds\" that look",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 26,
+              "text": "like bugs but must be preserved. A naive agent that fixes everything it sees",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 28,
+              "text": "flaky integration tests and the extended timeout on legitimately slow tests.",
+              "keywords": [
+                "integrat"
+              ]
+            },
+            {
+              "line": 30,
+              "text": "The `postmortem.md` file documents exactly which items are real bugs vs",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 35,
+              "text": "- `continue-on-error: true` on the integration test step is **intentional** — do NOT remove it",
+              "keywords": [
+                "integrat"
+              ]
+            },
+            {
+              "line": 37,
+              "text": "- `postmortem.md` is the authoritative source for what is a bug vs intentional",
+              "keywords": [
+                "bug"
+              ]
+            },
+            {
+              "line": 38,
+              "text": "- The Docker image tag bug introduces non-determinism; pin to the specific tag shown in postmortem",
+              "keywords": [
+                "bug"
+              ]
+            }
+          ]
+        },
+        {
+          "path": "tasks/INFRA2_cicd_repair/task.yaml",
+          "sha256": "66249cf97e5ee3dac42d49ffb86f7675e585a5e63fd2677688f3bb41290cab60",
+          "bytes": 563,
+          "lines": 14,
+          "keyword_counts": {
+            "integrat": 2,
+            "bug": 1
+          },
+          "markers": [
+            {
+              "line": 2,
+              "text": "domain: Pipeline/Integration",
+              "keywords": [
+                "integrat"
+              ]
+            },
+            {
+              "line": 3,
+              "text": "category: Pipeline/Integration",
+              "keywords": [
+                "integrat"
+              ]
+            },
+            {
+              "line": 6,
+              "text": "description: \"Fix broken GitHub Actions CI/CD pipeline: 4-5 real bugs (docker tag, missing env var, wrong artifact path, bad conditional, shallow clone) plus 2 flaky-test patterns that must be preserved (continue-on-error, long timeout)\"",
+              "keywords": [
+                "bug"
+              ]
+            }
+          ]
+        }
+      ],
+      "generator": {
+        "path": "generators/gen_infra2_cicd_repair.py",
+        "sha256": "1d4aabbb477b9161a76e2ce2d09445e8211e21a78fdb220fff87beabd0d12549",
+        "bytes": 26540,
+        "lines": 636,
+        "literal_workspace_files": [
+          ".github/workflows/ci.yml",
+          "README.md",
+          "postmortem.md"
+        ],
+        "contains_dynamic_file_keys": false,
+        "keyword_counts": {
+          "publish": 4,
+          "integrat": 33,
+          "planner": 2,
+          "executor": 1,
+          "bug": 87,
+          "do not modify": 2
+        },
+        "markers": [
+          {
+            "line": 4,
+            "text": "GitHub Actions workflow with 4-5 real bugs that must be fixed, plus 2",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 6,
+            "text": "flaky test, long timeout for a slow integration test).",
+            "keywords": [
+              "integrat"
+            ]
+          },
+          {
+            "line": 9,
+            "text": "spec.md   — postmortem distinguishing real bugs vs flaky-test false alarms,",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 10,
+            "text": "plus exact fixes for each real bug",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 16,
+            "text": "Real bugs (4-5 depending on bug_set):",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 25,
+            "text": "F1. continue-on-error: true on integration test (known-flaky external dep)",
+            "keywords": [
+              "integrat"
+            ]
+          },
+          {
+            "line": 55,
+            "text": "\"integration_test\": \"pytest tests/integration/ -v --timeout=90\",",
+            "keywords": [
+              "integrat"
+            ]
+          },
+          {
+            "line": 56,
+            "text": "\"integration_step\": \"Run integration tests\",",
+            "keywords": [
+              "integrat"
+            ]
+          },
+          {
+            "line": 79,
+            "text": "\"integration_test\": \"npm run test:integration\",",
+            "keywords": [
+              "integrat"
+            ]
+          },
+          {
+            "line": 80,
+            "text": "\"integration_step\": \"Run integration tests\",",
+            "keywords": [
+              "integrat"
+            ]
+          },
+          {
+            "line": 103,
+            "text": "\"integration_test\": \"go test ./integration/... -v -timeout 3m\",",
+            "keywords": [
+              "integrat"
+            ]
+          },
+          {
+            "line": 104,
+            "text": "\"integration_step\": \"Run integration tests\",",
+            "keywords": [
+              "integrat"
+            ]
+          },
+          {
+            "line": 119,
+            "text": "\"artifact_wrong\": \"target/debug/\",",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 124,
+            "text": "\"secret_step\": \"Publish crate\",",
+            "keywords": [
+              "publish"
+            ]
+          },
+          {
+            "line": 125,
+            "text": "\"secret_cmd\": \"cargo publish --token $CRATES_IO_TOKEN\",",
+            "keywords": [
+              "publish"
+            ]
+          },
+          {
+            "line": 127,
+            "text": "\"integration_test\": \"cargo test --test integration -- --nocapture\",",
+            "keywords": [
+              "integrat"
+            ]
+          },
+          {
+            "line": 128,
+            "text": "\"integration_step\": \"Run integration tests\",",
+            "keywords": [
+              "integrat"
+            ]
+          },
+          {
+            "line": 148,
+            "text": "\"secret_step\": \"Publish artifact\",",
+            "keywords": [
+              "publish"
+            ]
+          },
+          {
+            "line": 149,
+            "text": "\"secret_cmd\": \"./gradlew publish\",",
+            "keywords": [
+              "publish"
+            ]
+          },
+          {
+            "line": 151,
+            "text": "\"integration_test\": \"./gradlew integrationTest\",",
+            "keywords": [
+              "integrat"
+            ]
+          },
+          {
+            "line": 152,
+            "text": "\"integration_step\": \"Run integration tests\",",
+            "keywords": [
+              "integrat"
+            ]
+          },
+          {
+            "line": 161,
+            "text": "# Bug sets — always includes at least 4 real bugs, seed 0 includes all 5",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 162,
+            "text": "BUG_SETS = [",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 173,
+            "text": "domain = \"Pipeline/Integration\"",
+            "keywords": [
+              "integrat"
+            ]
+          },
+          {
+            "line": 184,
+            "text": "bug_set_idx = seed % len(BUG_SETS)",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 186,
+            "text": "bugs = BUG_SETS[bug_set_idx]",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 190,
+            "text": "workspace_files = self._make_workspace(cfg, bugs, branch_name)",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 191,
+            "text": "spec_md = self._clean(self._make_spec(cfg, bugs, branch_name))",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 203,
+            "text": "\"bugs\": bugs,",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 215,
+            "text": "metadata={\"difficulty\": \"hard\", \"category\": \"Pipeline/Integration\"},",
+            "keywords": [
+              "integrat"
+            ]
+          },
+          {
+            "line": 220,
+            "text": "def _make_workspace(self, cfg: dict, bugs: list, branch_name: str) -> dict:",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 222,
+            "text": "files[\".github/workflows/ci.yml\"] = self._make_workflow(cfg, bugs, branch_name)",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 223,
+            "text": "files[\"postmortem.md\"] = self._clean(self._make_postmortem(cfg, bugs, branch_name))",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 227,
+            "text": "def _make_workflow(self, cfg: dict, bugs: list, branch_name: str) -> str:",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 228,
+            "text": "has_wrong_docker = \"wrong_docker_tag\" in bugs",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 229,
+            "text": "has_missing_env = \"missing_env_var\" in bugs",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 230,
+            "text": "has_wrong_artifact = \"wrong_artifact_path\" in bugs",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 231,
+            "text": "has_bad_cond = \"bad_conditional\" in bugs",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 232,
+            "text": "has_shallow = \"shallow_clone\" in bugs",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 241,
+            "text": "\"# BUG B4: always() runs even when tests fail; \"",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 250,
+            "text": "f\"      # BUG B2: env block missing — ${cfg['secret_var']} \"",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 259,
+            "text": "f\"      # BUG B1: :{cfg['wrong_tag']} is non-deterministic; \"",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 282,
+            "text": "# BUG B5: fetch-depth: 1 (shallow clone) breaks git describe versioning",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 301,
+            "text": "- name: {cfg['integration_step']}",
+            "keywords": [
+              "integrat"
+            ]
+          },
+          {
+            "line": 302,
+            "text": "# INTENTIONAL (F1): continue-on-error is deliberate — this integration",
+            "keywords": [
+              "integrat"
+            ]
+          },
+          {
+            "line": 306,
+            "text": "run: {cfg['integration_test']}",
+            "keywords": [
+              "integrat"
+            ]
+          },
+          {
+            "line": 323,
+            "text": "# BUG B3: wrong path — build writes to {cfg['artifact_dir']} not {cfg['artifact_wrong']}",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 334,
+            "text": "def _make_postmortem(self, cfg: dict, bugs: list, branch_name: str) -> str:",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 335,
+            "text": "has_wrong_docker = \"wrong_docker_tag\" in bugs",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 336,
+            "text": "has_missing_env = \"missing_env_var\" in bugs",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 337,
+            "text": "has_wrong_artifact = \"wrong_artifact_path\" in bugs",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 338,
+            "text": "has_bad_cond = \"bad_conditional\" in bugs",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 339,
+            "text": "has_shallow = \"shallow_clone\" in bugs",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 341,
+            "text": "real_bugs = []",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 343,
+            "text": "real_bugs.append(",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 349,
+            "text": "real_bugs.append(",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 355,
+            "text": "real_bugs.append(",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 361,
+            "text": "real_bugs.append(",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 367,
+            "text": "real_bugs.append(",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 373,
+            "text": "real_section = \"\\n\".join(real_bugs) if real_bugs else \"_(none)_\"",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 381,
+            "text": "This postmortem distinguishes genuine configuration bugs from known-acceptable",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 384,
+            "text": "## Real Bugs (Must Be Fixed)",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 390,
+            "text": "- **F1 (continue_on_error_flaky)**: The `{cfg['integration_step']}` step has",
+            "keywords": [
+              "integrat"
+            ]
+          },
+          {
+            "line": 403,
+            "text": "- This postmortem is the authoritative reference for what is a bug vs intentional.",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 405,
+            "text": "- Do NOT modify application source code — only `.github/workflows/ci.yml`.",
+            "keywords": [
+              "do not modify"
+            ]
+          },
+          {
+            "line": 410,
+            "text": "- All real bugs fixed; flaky-test patterns preserved unchanged",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 439,
+            "text": "5. Runs integration tests (known-flaky, `continue-on-error: true`)",
+            "keywords": [
+              "integrat"
+            ]
+          },
+          {
+            "line": 447,
+            "text": "- Integration tests may fail transiently due to external dependencies — this is expected.",
+            "keywords": [
+              "integrat"
+            ]
+          },
+          {
+            "line": 454,
+            "text": "def _make_spec(self, cfg: dict, bugs: list, branch_name: str) -> str:",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 455,
+            "text": "has_wrong_docker = \"wrong_docker_tag\" in bugs",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 456,
+            "text": "has_missing_env = \"missing_env_var\" in bugs",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 457,
+            "text": "has_wrong_artifact = \"wrong_artifact_path\" in bugs",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 458,
+            "text": "has_bad_cond = \"bad_conditional\" in bugs",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 459,
+            "text": "has_shallow = \"shallow_clone\" in bugs",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 461,
+            "text": "bug_rows = []",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 463,
+            "text": "bug_rows.append(",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 468,
+            "text": "bug_rows.append(",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 473,
+            "text": "bug_rows.append(",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 478,
+            "text": "bug_rows.append(",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 483,
+            "text": "bug_rows.append(",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 487,
+            "text": "bug_table = \"\\n\".join(bug_rows)",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 489,
+            "text": "details = self._spec_bug_details(cfg, bugs, branch_name)",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 492,
+            "text": "# INFRA2_cicd_repair: CI/CD Pipeline Repair — Full Specification (Planner Only)",
+            "keywords": [
+              "planner"
+            ]
+          },
+          {
+            "line": 497,
+            "text": "(`.github/workflows/ci.yml`) with **{len(bugs)} real configuration bugs** and",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 500,
+            "text": "The executor only receives the brief; this spec provides the full analysis.",
+            "keywords": [
+              "executor"
+            ]
+          },
+          {
+            "line": 505,
+            "text": "- `postmortem.md` — incident analysis distinguishing real bugs vs flaky patterns",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 508,
+            "text": "## Real Bugs (Must Be Fixed)",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 512,
+            "text": "{bug_table}",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 514,
+            "text": "### Bug Details",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 520,
+            "text": "### F1 — `continue-on-error: true` on `{cfg['integration_step']}`",
+            "keywords": [
+              "integrat"
+            ]
+          },
+          {
+            "line": 522,
+            "text": "This is **intentional** — the integration tests are known-flaky due to",
+            "keywords": [
+              "integrat"
+            ]
+          },
+          {
+            "line": 534,
+            "text": "1. All {len(bugs)} real bugs are fixed in `.github/workflows/ci.yml`",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 535,
+            "text": "2. `continue-on-error: true` on `{cfg['integration_step']}` is preserved",
+            "keywords": [
+              "integrat"
+            ]
+          },
+          {
+            "line": 542,
+            "text": "- This spec is the authoritative analysis of bugs vs intentional patterns",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 547,
+            "text": "def _spec_bug_details(self, cfg: dict, bugs: list, branch_name: str) -> str:",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 550,
+            "text": "if \"wrong_docker_tag\" in bugs:",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 552,
+            "text": "#### Bug B1 — Non-Deterministic Docker Tag",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 563,
+            "text": "if \"missing_env_var\" in bugs:",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 565,
+            "text": "#### Bug B2 — Missing Environment Variable Injection",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 580,
+            "text": "if \"wrong_artifact_path\" in bugs:",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 582,
+            "text": "#### Bug B3 — Wrong Artifact Upload Path",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 593,
+            "text": "if \"bad_conditional\" in bugs:",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 595,
+            "text": "#### Bug B4 — Incorrect Step Conditional",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 608,
+            "text": "if \"shallow_clone\" in bugs:",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 610,
+            "text": "#### Bug B5 — Shallow Clone Breaks Versioning",
+            "keywords": [
+              "bug"
+            ]
+          },
+          {
+            "line": 633,
+            "text": "**Do NOT modify:** `README.md` or any application source files.",
+            "keywords": [
+              "do not modify"
+            ]
+          },
+          {
+            "line": 635,
+            "text": "Follow the Planner's guidance precisely.",
+            "keywords": [
+              "planner"
+            ]
+          }
+        ]
+      },
+      "static_only": true
+    }
+  ]
+}

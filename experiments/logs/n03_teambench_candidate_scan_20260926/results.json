@@ -1,0 +1,95 @@
+{
+  "experiment_id": "n03_teambench_candidate_scan_20260926",
+  "source_commit": "d185aef1916fd86a9ba554d581fd256319a973af",
+  "scientific_claim_allowed": false,
+  "candidate_execution": false,
+  "decision": "PIPE3_PRIMARY_CONDITIONAL",
+  "decision_scope": "static qualification only; no benchmark task is frozen yet",
+  "candidates": [
+    {
+      "task_id": "PIPE3_stream_processing",
+      "status": "primary_conditional",
+      "role_cut": {
+        "producer": ["producer.py"],
+        "recipient": ["processor.py"],
+        "read_only_support": ["models.py", "sink.py"]
+      },
+      "evidence": {
+        "upstream_artifact": "producer emits JSONL events",
+        "downstream_work": "processor parses, transforms, and writes output that sink reads",
+        "independent_defects": "producer datetime serialization; processor envelope and encoding",
+        "native_adoption_path": "source grader exercises produce -> process -> sink and non-ASCII cases",
+        "root_difference_from_dist1": "serialization/stream pipeline, not queue priority/consumer integration"
+      },
+      "blockers": [
+        "native score mixes producer and processor fixes and must be split into producer-quality, recipient-adoption, and recipient-own-work checks",
+        "the prompt must state that processor fixes are recipient work and cannot be blamed on the producer",
+        "same-information baselines and persistent agent state are not yet wired"
+      ],
+      "next_action": "write a versioned qualification card and run one parent-side contract/scorer smoke test; no LLM call"
+    },
+    {
+      "task_id": "MULTI3_polyglot",
+      "status": "secondary_conditional",
+      "role_cut": {
+        "producer": ["backend/processor.py"],
+        "recipient": ["frontend/handler.py", "shared/schema.json"],
+        "read_only_support": ["tests/test_contract.py"]
+      },
+      "evidence": {
+        "upstream_artifact": "backend serializes records into an envelope",
+        "downstream_work": "frontend deserializes, parses, and displays records",
+        "independent_defects": "generated combinations guarantee backend, frontend, and schema defects",
+        "native_adoption_path": "round-trip and frontend tests use a canonical wire object independent of backend output",
+        "root_difference_from_dist1": "schema/interface contract, not queue priority/consumer integration"
+      },
+      "blockers": [
+        "schema ownership must be fixed before assignment; shared/schema.json cannot be silently treated as producer work",
+        "the generated test suite intentionally isolates some bugs, so recipient adoption must be measured separately from unit checks",
+        "seed combinations are variants of one interface root"
+      ],
+      "next_action": "keep as a fallback until PIPE3 contract smoke test reports a failure"
+    },
+    {
+      "task_id": "CROSS5_event_schema",
+      "status": "fallback_conditional",
+      "role_cut": {
+        "producer": ["producer/event_producer.py"],
+        "recipient": ["consumer/src/main/java/EventConsumer.java"],
+        "read_only_support": ["schema/event_schema.json"]
+      },
+      "evidence": {
+        "upstream_artifact": "Python producer publishes schema fields and binary payload",
+        "downstream_work": "Java consumer parses fields and decodes binary payload",
+        "independent_defects": "producer field/timestamp mismatches and consumer binary decoding bug",
+        "native_adoption_path": "producer-to-consumer path is described, but native grader only checks Java structure",
+        "root_difference_from_dist1": "cross-language schema reconciliation"
+      },
+      "blockers": [
+        "Java consumer behavior is not executed by the native grader",
+        "Maven/org.json availability and no-network reproducibility must be qualified",
+        "static source checks cannot stand in for selected delivery adoption"
+      ],
+      "next_action": "do not use unless a fixed-dependency consumer worker can execute the real Java path"
+    },
+    {
+      "task_id": "DIST3_idempotency",
+      "status": "no_go",
+      "reason": "single payment service and shared store; no independent downstream owner consumes an upstream delivery"
+    },
+    {
+      "task_id": "NEG3_tech_debt",
+      "status": "no_go",
+      "reason": "prioritization/repair selection has no producer artifact, recipient integration, or attributable handoff"
+    },
+    {
+      "task_id": "INFRA2_cicd_repair",
+      "status": "diagnostic_only",
+      "reason": "planner-to-executor information split is useful, but the workflow is one repair artifact and does not provide a downstream consumer judgment"
+    }
+  ],
+  "review_notes": [
+    "This file records static source facts and design decisions only; it is not efficacy evidence.",
+    "No generator, candidate, grader, test suite, LLM API, or GPU job was run in this scan."
+  ]
+}

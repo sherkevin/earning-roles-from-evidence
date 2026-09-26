@@ -22,3 +22,4 @@ User decision records and external-operation summaries.
 - [0017 — N02 开发接入评分范围](0017-n02-development-scoring-scope.md): 原严格资格门仍开放；两个真实接入实例只用隔离 consumer 行为分，保留非对抗假设与独立交付质量未测边界。
 - [0018 — 一次最终生成配置验证](0018-one-final-bounded-generation-configuration-test.md): 显式修订已触发的v2止损，关闭thinking验证剩余接入机会；跨版最多4次，失败不再生成v4。
 - [0019 — 判断与责任结果分开](0019-separate-judgment-from-responsibility-outcomes.md): 正常集成不当上游缺陷；判断、实际修改、原交付检查、最终质量及成本分别记录，旧repair映射不再默认作正确性标签。
+- [0020 — PIPE3 作为第二任务 root 的条件性主候选](0020-pipe3-primary-conditional-candidate.md): 父进程四格控制矩阵可分离 producer 质量、recipient 自有工作和 sink adoption；进入下一资格门，不等于 benchmark 冻结。

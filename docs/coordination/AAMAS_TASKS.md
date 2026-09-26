@@ -13,8 +13,10 @@ the recipient's assigned integration. Fresh identical producers have no
 persistent personal state. See the [N02 analysis](../research/n02_real_closed_loop_review_20260926.md).
 
 No more N02 inference, no N03 sampling, and no new A800 job at this checkpoint.
-Next: explicit ownership, task-scoped outcome coverage, a minimal persistent
-experience design, and one second-root qualification audit. N03/N04 require
+The static second-root scan and parent-side PIPE3 smoke now keep PIPE3 as the
+primary conditional candidate, MULTI3 as fallback, and CROSS5 as a Java-runtime
+fallback; DIST3/NEG3 are closed for this story. Next is one PIPE3 task-contract
+and isolation qualification, still without an LLM call. N03/N04 require
 qualified data and same-information strong baselines; backbone/update remain
 open. These are task prerequisites under the active goal, not an operational
 pause or a scientific result. The dated entries below preserve prior states.
@@ -481,5 +483,7 @@ Update order: change requirements only with rationale; update this ledger's gap/
 - [done] N03-pre-b — [独立状态审查](../research/n03_minimal_state_independent_review_20260926.md)给出可交换执行核下无ID预测增益的条件推导；采纳本人经历与他人见证分离、所有对照同记忆规则。容量/实现/updater仍未冻结；旧声誉影响新判断建议作为单独通道。
 - [done] N03-pre-c — [CROSS3审查](../research/n03_cross3_candidate_audit_20260926.md)否决其代码交付→下游实现切面：consumer/publisher已完成。保留诊断计划→原代码修复候选及接口/测试资产，但未取得第二个合格root；不新增adapter或实验。发现oneof口径冲突、候选STATUS_MAP被当真值等评分缺口。
 - [done] N03-pre-d design — [前置设计](../research/n03_preflight_design_20260926.md)明确合法经历、见证通道、义务/指标对应、强基线与停止条件。设计文件已齐，不等于评分/状态实现、任务root和新实验卡合格；N03采样仍未开始。
-- [open] N03-next — 给计划→实现候选做一张前瞻资格卡，审查原公开要求直接转发是否已能解释诊断价值；若不能形成与主线相符的可测问题则关闭。当前不加新任务/模型搜索，不扩N02、不创建GPU队列。
+- [done] N03-next-a — 对 TeamBench 固定源码做候选 root 静态扫描：PIPE3 保留为主候选，MULTI3 为备选，CROSS5 受 Java consumer 评分缺口限制；DIST3/NEG3 关闭，INFRA2 只作 diagnostic-only。无 generator/candidate/grader/pytest/LLM/GPU 执行；见 [静态筛选报告](../research/n03_teambench_candidate_scan_20260926.md) 及 [结构化结果](../../experiments/logs/n03_teambench_candidate_scan_20260926/results.json)。
+- [done] N03-next-b — PIPE3 seed 0 父进程 contract/scorer smoke test 已完成。v1 暴露 `fromisoformat()` 掩盖 producer 格式缺陷；保留 v1 后，v2 按 spec 加入严格边界，四格矩阵成功分离 producer 质量、recipient 自有工作和 sink adoption。见 [v1/v2资格报告](../research/n03_pipe3_qualification_20260926.md)；无 LLM/pytest/native grader/GPU。
+- [open] N03-next-c — 固定 PIPE3 的 actor/recipient 可写路径、隐藏评分和事件账本，做一次无 LLM 的任务契约/隔离资格；若失败才转 MULTI3，不扩 N02，不创建 GPU 队列。
 - [done] N03收口复审 — [独立JSON回执](../../experiments/logs/n03_ownership_contract_checks_20260926/independent_review.json)复算预算/用量并核对80项测试源码hash；两项建议已修正：同次调用的集成/返工子成本无法测时为null，fresh-call消费必须带入判断时同一经验快照。数学审查进一步限定同peer下次被选时点与同采样器条件。文档收口PASS不等于N03采样/训练准入。
