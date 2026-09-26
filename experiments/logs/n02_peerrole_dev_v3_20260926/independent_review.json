@@ -1,0 +1,90 @@
+{
+  "review_id": "n02-v3-independent-postrun-20260926",
+  "reviewed_at_utc": "2026-09-26T14:05:54Z",
+  "reviewer": "n00_evidence_reconcile",
+  "scope": "Read-only evidence reconciliation and source review; only this review file was written. No model, candidate-code or GPU execution.",
+  "verdict": {
+    "n02_development_integration": "Two real episodes completed the declared narrow consumer-scoring loop.",
+    "full_benchmark_or_method_gate": "Not established.",
+    "n03_existing_evidence_analysis": "GO",
+    "n03_new_learning_signal_collection": "NO-GO until the responsibility, coverage and peer-state issues below are resolved in a prospective contract.",
+    "n02_attempt_budget": "Exhausted: v1 one UNKNOWN + v2 one UNKNOWN + v3 two complete = four attempts; no N02 top-up."
+  },
+  "verified_evidence": {
+    "real_requests": 6,
+    "complete_http200_end_turn_responses": 6,
+    "input_tokens": 14369,
+    "output_tokens": 3527,
+    "usage_complete_for_all_six": true,
+    "thinking_deltas_in_v3": 0,
+    "ledger_events": 15,
+    "ledger_hash_chain_and_raw_event_agreement": true,
+    "frozen_source_snapshot_hashes_match": true,
+    "delivery_sealed_materialized_and_launch_source_hashes_match": true,
+    "consumer_scores": ["4/4 PASS", "4/4 PASS"],
+    "native_grader_executed": false,
+    "episodes_share_one_structural_root": true,
+    "verification_method": "Parsed stored JSON/JSONL, recomputed hashes, compared sealed files and requests, and read source; did not rerun candidates or evaluators."
+  },
+  "causal_chain": {
+    "completed": [
+      "Execution-before-selection was avoided: each selected peer was recorded before task start and its real producer request.",
+      "Actual delivery digests were attached to the recipient request and sealed judgment before consumer source generation.",
+      "Each sealed consumer source was evaluated through the isolated public worker and parent-owned four-check scorer.",
+      "First outcome and evidence preceded the later assignment, which the second selection consumed with the same peer and propensity.",
+      "Agent C received the actual prior judgment from A about B, with the correct judge and producer metadata."
+    ],
+    "not_demonstrated": [
+      "A change in selection probability or responsibility caused by feedback.",
+      "Reliable peer judgment, independent producer correctness, role formation, or cross-root generalization."
+    ],
+    "probability_observation": {
+      "both_actions": "repair",
+      "both_controller_updates": "0.5 -> 0.5",
+      "second_menu": ["agent_A", "agent_B"],
+      "second_probabilities": [0.5, 0.5],
+      "second_draw": 0.015814129906057794,
+      "second_choice": "agent_A",
+      "interpretation": "The updater and assignment plumbing executed, but the uniform probabilities and this selection were unchanged by the observed feedback. Do not change the update mapping post hoc to manufacture movement."
+    }
+  },
+  "findings": [
+    {
+      "id": "F1-responsibility-and-action",
+      "evidence": ["materials_0.json", "materials_1.json", "episode_0/judgment_request.json", "episode_0/judgment.json", "episode_1/judgment.json", "episode_0/sealed_consumer.json", "episode_1/sealed_consumer.json"],
+      "observation": "Producer rights were queue.py and priority.py only. The recipient payload merged these files with its own original consumer.py, exposed only recipient writable_paths, and did not preserve an explicit source-owner map. Episode 0 incorrectly treated the recipient's consumer.py permission as the producer's omission. Both final artifacts changed only consumer.py; producer files remained byte-identical.",
+      "conclusion": "The judgments identified real integration work, but accept_with_rework and full consumer-call duration do not establish repair of a defective peer delivery. This is a responsibility/measurement ambiguity, not evidence that the whole judgment was useless.",
+      "next": "Expose producer-owned delivery paths and consumer-owned integration obligations explicitly. Retain raw judgment/action and separately derive actual producer-file edits and integration work. Keep full call time/token costs; do not call them marginal peer-caused repair overhead or relabel old repair decisions as correct accept decisions."
+    },
+    {
+      "id": "F2-scoring-coverage",
+      "evidence": ["episode_0/sealed_source/mqueue/priority.py", "episode_0/consumer_score.json", "source_snapshot/scripts/peerrolebench_consumer_worker.py", "../n02_posthoc_priority_import_20260926/config.json", "../n02_posthoc_priority_import_20260926/summary.json"],
+      "observation": "Episode 0 PriorityTask declares a defaulted seq field before non-default message. The separate post-hoc execution recorded TypeError on Python 3.9.6. The frozen consumer worker imports queue and consumer only, so priority.py is outside its four-check coverage and was retained unchanged. Judgment 0 nevertheless asserted priority.py was correctly fixed.",
+      "conclusion": "The stored 4/4 is valid for the declared consumer checks and is not full delivery or full DIST1 correctness. The reviewer did not rerun the defect on the evaluation Python 3.12 runtime. The observed import failure and static source show a meaningful missed defect; the post-hoc result must remain separate from frozen scores and online feedback.",
+      "next": "Before new signal collection, map every judged producer obligation to a separate measured or explicitly unmeasured outcome. At minimum qualify importability for delivered modules and relevant producer-interface behavior separately from consumer success, in the evaluation runtime. Reuse pinned upstream specifications where possible; do not silently redefine the benchmark or rescore v3."
+    },
+    {
+      "id": "F3-evidence-subject",
+      "evidence": ["state.json", "episode_1/judgment_request.json", "episode_1/judgment.json", "raw.jsonl"],
+      "observation": "Prior evidence correctly says judge A, producer B, seed 0; the current producer is A. C says the prior evidence confirms the same issue while reviewing the shared consumer template.",
+      "conclusion": "No metadata-level peer misattribution is present. The rationale supports cross-instance issue reuse but does not prove C mistook B for A, nor that C learned A's capability from B's result. The two interpretations cannot be resolved from the prose alone.",
+      "next": "Preserve evidence subject/judge/context when sharing. Separate reusable task advice from claims about a named peer, and record any cited prior evidence IDs and intended subject. Do not manufacture a wrong-peer finding or a positive role-learning finding."
+    },
+    {
+      "id": "F4-peer-identifiability",
+      "evidence": ["config.json", "episode_0/producer_request.json", "episode_1/producer_request.json", "source_snapshot/scripts/peerrolebench_real_closed_loop.py"],
+      "observation": "The card uses identical models, fresh calls and no skills/code memory. Producer prompts contain neither peer identity nor peer-specific history; only bookkeeping distinguishes peers at a fixed task.",
+      "conclusion": "This is sufficient for dispatch plumbing, but the implemented protocol supplies no persistent peer-specific state capable of producing learnable differences. Scaling it unchanged risks attributing task or call variation to exchangeable peer labels. The review does not claim stochastic API calls must return identical text.",
+      "next": "Before N03 collection, specify the naturally accumulated private experience/state that makes a peer's future work depend on its own past, with equal initial resources and no preset expertise. If that is intentionally absent, restrict the next question to artifact/judgment quality rather than pre-execution peer learning."
+    }
+  ],
+  "next_step_boundary": "Complete the minimal observation/peer-state contract work without further N02 calls. Then freeze a separate N03 question and bounded card within the original 24-attempt development ceiling, counting all four N02 attempts. Keep these two v3 instances as same-root integration evidence; no training or efficacy claim follows from their 4/4 scores.",
+  "reusable_assets": ["Real provider/SSE transport with disabled-thinking evidence", "source ownership and action adapter foundation", "qualified listed runtime boundaries", "parent consumer scorer", "hash-linked protocol ledger and raw cost records"],
+  "input_sha256": {
+    "config.json": "ce9c127301c585815f0bafc4f099fcc79416fa78059f36f404608616a2131b08",
+    "raw.jsonl": "915375fc98ef58b8d0cac47b117973e5d635bdfc41bfc98e3183e31da37ef53e",
+    "ledger.json": "c411440dbf6057270ed355fbf0817e7a03764c4810eb039f3b96043d1af9ee07",
+    "state.json": "6a2ec7b43e6ee727b546f5f1af83580030ab9bbf482654ac4cf3cd1c7ba411c4",
+    "posthoc_priority_summary": "b538c98bb4adaa84b2eda7a4158f7e53adfa199472289ecdb05ce09b604be300"
+  }
+}

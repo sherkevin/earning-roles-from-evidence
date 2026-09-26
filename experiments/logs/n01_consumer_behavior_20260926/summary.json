@@ -1,0 +1,149 @@
+{
+  "fixture_discrimination_passed": false,
+  "results": [
+    {
+      "version": "dist1-consumer-behavior-v1",
+      "required_check_ids": [
+        "empty_consumer",
+        "payload_and_ack",
+        "retry_after_handler_failure",
+        "drain"
+      ],
+      "checks": [
+        {
+          "id": "empty_consumer",
+          "status": "PASS"
+        },
+        {
+          "id": "payload_and_ack",
+          "status": "PASS"
+        },
+        {
+          "id": "retry_after_handler_failure",
+          "status": "PASS"
+        },
+        {
+          "id": "drain",
+          "status": "PASS"
+        }
+      ],
+      "status": "PASS",
+      "coverage_complete": true,
+      "arm": "fixed",
+      "worker_exit_code": 0,
+      "wall_seconds": 0.11711191700000001
+    },
+    {
+      "status": "UNKNOWN",
+      "error": "TimeoutError('worker response exceeded 3 seconds')",
+      "coverage_complete": false,
+      "arm": "original_consumer",
+      "worker_exit_code": -9,
+      "wall_seconds": 6.177869875
+    },
+    {
+      "version": "dist1-consumer-behavior-v1",
+      "required_check_ids": [
+        "empty_consumer",
+        "payload_and_ack",
+        "retry_after_handler_failure",
+        "drain"
+      ],
+      "checks": [
+        {
+          "id": "empty_consumer",
+          "status": "PASS"
+        },
+        {
+          "id": "payload_and_ack",
+          "status": "FAIL",
+          "reason": "Consumer never acknowledged its successful receipt"
+        },
+        {
+          "id": "retry_after_handler_failure",
+          "status": "PASS"
+        },
+        {
+          "id": "drain",
+          "status": "PASS"
+        }
+      ],
+      "status": "FAIL",
+      "coverage_complete": true,
+      "arm": "no_ack",
+      "worker_exit_code": 0,
+      "wall_seconds": 0.14790054099999939
+    },
+    {
+      "version": "dist1-consumer-behavior-v1",
+      "required_check_ids": [
+        "empty_consumer",
+        "payload_and_ack",
+        "retry_after_handler_failure",
+        "drain"
+      ],
+      "checks": [
+        {
+          "id": "empty_consumer",
+          "status": "PASS"
+        },
+        {
+          "id": "payload_and_ack",
+          "status": "PASS"
+        },
+        {
+          "id": "retry_after_handler_failure",
+          "status": "FAIL",
+          "reason": "Failed message must remain retryable"
+        },
+        {
+          "id": "drain",
+          "status": "PASS"
+        }
+      ],
+      "status": "FAIL",
+      "coverage_complete": true,
+      "arm": "no_nack",
+      "worker_exit_code": 0,
+      "wall_seconds": 0.11814345799999959
+    },
+    {
+      "version": "dist1-consumer-behavior-v1",
+      "required_check_ids": [
+        "empty_consumer",
+        "payload_and_ack",
+        "retry_after_handler_failure",
+        "drain"
+      ],
+      "checks": [
+        {
+          "id": "empty_consumer",
+          "status": "PASS"
+        },
+        {
+          "id": "payload_and_ack",
+          "status": "PASS"
+        },
+        {
+          "id": "retry_after_handler_failure",
+          "status": "PASS"
+        },
+        {
+          "id": "drain",
+          "status": "FAIL",
+          "reason": "Drain lost, duplicated or changed payloads"
+        }
+      ],
+      "status": "FAIL",
+      "coverage_complete": true,
+      "arm": "drops_falsy",
+      "worker_exit_code": 0,
+      "wall_seconds": 0.11084854200000027
+    }
+  ],
+  "native_score_changed": false,
+  "native_score_executed_in_this_run": false,
+  "benchmark_qualified": false,
+  "scientific_claim_allowed": false,
+  "remaining": "This single seed demonstrates sensitivity to reviewed consumer defects, not untrusted execution safety, full queue correctness or method efficacy."
+}

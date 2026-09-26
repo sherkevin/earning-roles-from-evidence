@@ -1,0 +1,24 @@
+{
+  "created_at": "2026-09-25T14:01:49.022471+00:00",
+  "mode": "fixture_protocol_smoke",
+  "teambench_commit": "d185aef",
+  "tasks": [
+    "CR2_style_enforce",
+    "DIST1_queue_race"
+  ],
+  "conditions": [
+    "random",
+    "static_best",
+    "terminal_only",
+    "recipient_judgment"
+  ],
+  "peers": [
+    "peer_01_noop",
+    "peer_02_repair",
+    "peer_03_partial"
+  ],
+  "episodes_per_task_condition": 2,
+  "real_llm_calls": 0,
+  "scientific_claim_allowed": false,
+  "reason": "fixture peers and only two task families; used to validate the causal adapter"
+}

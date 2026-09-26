@@ -1,0 +1,26 @@
+{"ok": true, "value": null}
+{"ok": true, "value": false}
+{"ok": true, "value": {"handler_events": [], "processed_count": 0, "processed_messages": [], "queue_events": [{"op": "get", "args": [], "value": null}], "queue_size": 0, "queue_empty": true}}
+{"ok": true, "value": null}
+{"ok": true, "value": null}
+{"ok": true, "value": [{"job": "payload-object", "values": [3, 1]}, "57fc3251-18ba-4fbe-9933-ae0f321be892"]}
+{"ok": true, "value": null}
+{"ok": true, "value": true}
+{"ok": true, "value": {"handler_events": [{"message": {"job": "payload-object", "values": [3, 1]}, "failed": false}], "processed_count": 1, "processed_messages": [{"job": "payload-object", "values": [3, 1]}], "queue_events": [{"op": "get", "args": [], "value": [{"job": "payload-object", "values": [3, 1]}, "57fc3251-18ba-4fbe-9933-ae0f321be892"]}, {"op": "nack", "args": ["57fc3251-18ba-4fbe-9933-ae0f321be892"], "value": null}, {"op": "get", "args": [], "value": [{"job": "payload-object", "values": [3, 1]}, "3079bc5d-531a-4234-af5a-cdc0be96aeb4"]}, {"op": "ack", "args": ["3079bc5d-531a-4234-af5a-cdc0be96aeb4"], "value": null}], "queue_size": 0, "queue_empty": true}}
+{"ok": true, "value": null}
+{"ok": true, "value": null}
+{"ok": true, "value": null}
+{"ok": true, "value": null}
+{"ok": true, "value": null}
+{"ok": true, "value": false}
+{"ok": true, "value": {"handler_events": [{"message": {"job": "retryable", "value": 0}, "failed": true}], "processed_count": 0, "processed_messages": [], "queue_events": [{"op": "get", "args": [], "value": [{"job": "retryable", "value": 0}, "8e9ca1cd-2d61-4405-b388-667eedc2b9a1"]}, {"op": "nack", "args": ["8e9ca1cd-2d61-4405-b388-667eedc2b9a1"], "value": null}], "queue_size": 1, "queue_empty": false}}
+{"ok": true, "value": true}
+{"ok": true, "value": {"handler_events": [{"message": {"job": "retryable", "value": 0}, "failed": true}, {"message": {"job": "retryable", "value": 0}, "failed": false}], "processed_count": 1, "processed_messages": [{"job": "retryable", "value": 0}], "queue_events": [{"op": "get", "args": [], "value": [{"job": "retryable", "value": 0}, "8e9ca1cd-2d61-4405-b388-667eedc2b9a1"]}, {"op": "nack", "args": ["8e9ca1cd-2d61-4405-b388-667eedc2b9a1"], "value": null}, {"op": "get", "args": [], "value": [{"job": "retryable", "value": 0}, "507c590f-7bec-4693-8a3b-5745b4007d60"]}, {"op": "ack", "args": ["507c590f-7bec-4693-8a3b-5745b4007d60"], "value": null}], "queue_size": 0, "queue_empty": true}}
+{"ok": true, "value": false}
+{"ok": true, "value": null}
+{"ok": true, "value": null}
+{"ok": true, "value": null}
+{"ok": true, "value": null}
+{"ok": true, "value": null}
+{"ok": true, "value": null}
+{"ok": true, "value": {"handler_events": [{"message": 0, "failed": false}, {"message": false, "failed": false}, {"message": "", "failed": false}, {"message": {"nested": [1, 2]}, "failed": false}], "processed_count": 4, "processed_messages": [0, false, "", {"nested": [1, 2]}], "queue_events": [{"op": "get", "args": [], "value": [0, "93a5efd3-0232-455d-b313-c926690e3366"]}, {"op": "ack", "args": ["93a5efd3-0232-455d-b313-c926690e3366"], "value": null}, {"op": "get", "args": [], "value": [false, "328f299f-5dbc-4d4b-b663-4bfdba381d07"]}, {"op": "ack", "args": ["328f299f-5dbc-4d4b-b663-4bfdba381d07"], "value": null}, {"op": "get", "args": [], "value": ["", "d74f26ba-ad5a-4e38-b11b-b23ca4d29223"]}, {"op": "ack", "args": ["d74f26ba-ad5a-4e38-b11b-b23ca4d29223"], "value": null}, {"op": "get", "args": [], "value": [{"nested": [1, 2]}, "41fc7fa7-2f19-43f9-8a66-c0068fe6f4b6"]}, {"op": "ack", "args": ["41fc7fa7-2f19-43f9-8a66-c0068fe6f4b6"], "value": null}, {"op": "get", "args": [], "value": null}, {"op": "get", "args": [], "value": null}], "queue_size": 0, "queue_empty": true}}

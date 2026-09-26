@@ -1,0 +1,51 @@
+{
+  "purpose": "N01 actual-boundary canary and known consumer mutations",
+  "command": [
+    "scripts/peerrolebench_runtime_qualification.py",
+    "--output",
+    "experiments/logs/n01_runtime_qualification_20260926_v3"
+  ],
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "git_commit": "29477209a22c0f2c14782c0e2c3234b14a50ad0e",
+  "working_tree_dirty": true,
+  "source_sha256": {
+    "peerrolebench_runtime_qualification.py": "0cedae0dc1dd94898d2355e6063ff51273a26b66a3c0bf49351a630a18f60cea",
+    "peerrolebench_sandbox.py": "b717e7e1cc425e7e39e17b485d2ab38b03e6e758d09b83001a32c6fb2f18ee27",
+    "peerrolebench_worker_limits.py": "16217095d159a53ed2b6916882b4dbc27bbcc287d16862390d6391abe3656690",
+    "peerrolebench_runtime_probe_worker.py": "0f9180a7939b33bb58471b64ab33a4efc5f8c62d8eab9a7dba7ec8ce659dba98",
+    "peerrolebench_consumer_worker.py": "55189685aa24e61548133e20995dec7cbaa0cfe00254e610d9d31a9e8bde6482",
+    "peerrolebench_consumer_checks.py": "2c95b300d9e91d452d76907d39706e816dc458b2b534dcfe49200ae23dbc500e",
+    "peerrolebench_task_contract.py": "6ab5f760c812626311e3cdb3d963f5fcb70fc9fdc2de4e890bd94909c3504e8a",
+    "peerrolebench_tb_vertical_slice.py": "77a3e699add298bcf3e846f4d62468e15d0fcf7a1b3135ec62912af1796a1ca3"
+  },
+  "source_pin": "d185aef1916fd86a9ba554d581fd256319a973af",
+  "task": "DIST1_queue_race",
+  "seed": 0,
+  "arms": [
+    "fixed",
+    "original_consumer",
+    "no_ack",
+    "no_nack",
+    "drops_falsy"
+  ],
+  "llm_calls": 0,
+  "gpu_jobs": 0,
+  "native_grader_invoked": false,
+  "scientific_claim_allowed": false,
+  "qualification_scope": "listed engineering boundaries; no claim of adversarial scoring security",
+  "checks": [
+    "public_read",
+    "scratch_write",
+    "source_write_denied",
+    "private_read_denied",
+    "private_write_denied",
+    "symlink_denied",
+    "parent_scorer_denied",
+    "network_denied",
+    "fork_denied",
+    "memory_limited",
+    "partial_line_timeout",
+    "output_cap"
+  ]
+}

@@ -17,3 +17,8 @@ User decision records and external-operation summaries.
 - [0012 — 不锁定 Laya，也不把 RLS 当成论文创新](0012-do-not-lock-laya-or-rls.md): Laya 保留为候选 encoder/静态基线，RLS 保留为强基线，最终创新机制和 backbone 待真实闭环与判别实验。
 - [0013 — Freeze the minimal symbol boundary for online selection](0013-minimal-symbol-boundary.md): use a seven-item selector/tool kernel and an eight-item peer-judged role extension with explicit judge identity; add hidden state only when data requires it.
 - [0014 — Treat the linear associative recurrence as a validated kernel, not the final method](0014-linear-associative-smoke-gate.md): the recurrence is executable and cheaper than dense RLS in a local probe, but its selection gain is negligible, so keep it as a baseline pending a stronger feature/state design.
+- [0015 — Select before execution and bind later assignment](0015-select-before-execution-and-bind-later-assignment.md): make peer choice before work begins, grade the actual consumer output, and require later assignment plus propensity to be consumed by the next selection.
+- [0016 — 持续目标与小任务复核](0016-persistent-aamas-goal-and-small-task-review.md): 持续推进 N00–N05，每个小任务核对故事、方法与证据，GPU 实验使用星云 A800，题目摘要作为内部研究草稿同步形成。
+- [0017 — N02 开发接入评分范围](0017-n02-development-scoring-scope.md): 原严格资格门仍开放；两个真实接入实例只用隔离 consumer 行为分，保留非对抗假设与独立交付质量未测边界。
+- [0018 — 一次最终生成配置验证](0018-one-final-bounded-generation-configuration-test.md): 显式修订已触发的v2止损，关闭thinking验证剩余接入机会；跨版最多4次，失败不再生成v4。
+- [0019 — 判断与责任结果分开](0019-separate-judgment-from-responsibility-outcomes.md): 正常集成不当上游缺陷；判断、实际修改、原交付检查、最终质量及成本分别记录，旧repair映射不再默认作正确性标签。

@@ -1,0 +1,111 @@
+{
+  "experiment_id": "n02_peerrole_dev_v2_20260926",
+  "purpose": "Two real API integration episodes, not efficacy or final benchmark validation",
+  "source_commit": "d185aef1916fd86a9ba554d581fd256319a973af",
+  "task_id": "DIST1_queue_race",
+  "task_seeds": [
+    0,
+    1
+  ],
+  "policy_seed": 20260926,
+  "agents": [
+    "agent_A",
+    "agent_B",
+    "agent_C"
+  ],
+  "graph": [
+    [
+      "agent_A",
+      "agent_B"
+    ],
+    [
+      "agent_A",
+      "agent_C"
+    ],
+    [
+      "agent_B",
+      "agent_C"
+    ]
+  ],
+  "first_consumer": "agent_A",
+  "second_consumer": "the uninvolved agent after the first uniform draw",
+  "agent_initial_state": "same model, prompts, limits; no preset expertise",
+  "history_rule": "controller stores attributable judgment and action only; second consumer receives first evidence; model calls otherwise fresh; no skills or code memory",
+  "provider": "内部",
+  "model": "qwen3.8-max",
+  "temperature": 0,
+  "max_tokens": {
+    "producer": 4096,
+    "judgment": 1024,
+    "consumer": 4096
+  },
+  "maximum_task_requests": 6,
+  "maximum_episode_attempts": 2,
+  "maximum_retries": 0,
+  "request_timeout_seconds": 300,
+  "tool_calls_per_agent": 0,
+  "native_grader_invoked": false,
+  "scorer": "dist1-consumer-behavior-v2",
+  "objective_producer_quality": "not independently measured",
+  "source_review": "human/agent static inspection of sealed source before sandbox execution; no introspection or external IO",
+  "source_import_allowlist": [
+    "__future__",
+    "collections",
+    "dataclasses",
+    "functools",
+    "heapq",
+    "itertools",
+    "math",
+    "mqueue",
+    "queue",
+    "threading",
+    "time",
+    "typing",
+    "uuid"
+  ],
+  "update": {
+    "kind": "integration-only judgment action score, no trained model",
+    "initial_score": 0.5,
+    "action_values": {
+      "use": 1.0,
+      "repair": 0.5,
+      "independent_redo": 0.0
+    },
+    "step_size": 0.5,
+    "policy": "0.5 uniform + 0.5 softmax(scores)",
+    "terminal_role": "requires observed completion; not used as producer correctness target"
+  },
+  "stop_rules": [
+    "any visibility leak",
+    "first episode incomplete, invalid or UNKNOWN: no second episode",
+    "any malformed, truncated or empty model response: no retry",
+    "two planned attempts exhausted: do not top up to four"
+  ],
+  "budget_accounting": "attempts count toward N02 limit4 and N03 total24; no GPU",
+  "claims": {
+    "efficacy": false,
+    "role_formation": false,
+    "cross_root_generalization": false,
+    "backbone_selected": false,
+    "method_innovation": false
+  },
+  "stream": true,
+  "amendment": {
+    "reason": "v1 first producer returned no bytes before120s; subsequent short nonstream and SSE health requests succeeded; long-request cause unresolved",
+    "prior_run": "experiments/logs/n02_peerrole_dev_v1_20260926",
+    "prior_attempts": 1,
+    "scope": "one bounded recovery of the same two planned instances; no further recovery after another incomplete episode",
+    "maximum_total_episode_attempts_across_versions": 3,
+    "maximum_new_task_requests": 6,
+    "separate_health_requests": 2,
+    "quality_fields_unchanged": [
+      "source_commit",
+      "task_seeds",
+      "model",
+      "max_tokens",
+      "temperature",
+      "update"
+    ],
+    "known_exposure": "v1 task request may have executed remotely despite no response; unknown usage preserved"
+  }
+}

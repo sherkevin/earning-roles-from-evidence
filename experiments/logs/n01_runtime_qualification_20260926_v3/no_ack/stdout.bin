@@ -1,0 +1,23 @@
+{"ok": true, "value": null}
+{"ok": true, "value": false}
+{"ok": true, "value": {"handler_events": [], "processed_count": 0, "processed_messages": [], "queue_events": [{"op": "get", "args": [], "value": [null, null]}], "queue_size": 0, "queue_empty": true}}
+{"ok": true, "value": null}
+{"ok": true, "value": null}
+{"ok": true, "value": [{"job": "payload-object", "values": [3, 1]}, "fd9b78a64c9a4e38bb65d537a6f0f9d6"]}
+{"ok": true, "value": null}
+{"ok": true, "value": true}
+{"ok": true, "value": {"handler_events": [{"message": {"job": "payload-object", "values": [3, 1]}, "failed": false}], "processed_count": 1, "processed_messages": [{"job": "payload-object", "values": [3, 1]}], "queue_events": [{"op": "get", "args": [], "value": [{"job": "payload-object", "values": [3, 1]}, "fd9b78a64c9a4e38bb65d537a6f0f9d6"]}, {"op": "nack", "args": ["fd9b78a64c9a4e38bb65d537a6f0f9d6"], "value": null}, {"op": "get", "args": [], "value": [{"job": "payload-object", "values": [3, 1]}, "b4864ec27cff401c99cab1fa4f29241b"]}], "queue_size": 0, "queue_empty": true}}
+{"ok": true, "value": null}
+{"ok": true, "value": null}
+{"ok": false, "error_type": "HandlerRetry", "message": "Public driver requested one handler failure"}
+{"ok": true, "value": {"handler_events": [{"message": {"job": "retryable", "value": 0}, "failed": true}], "processed_count": 0, "processed_messages": [], "queue_events": [{"op": "get", "args": [], "value": [{"job": "retryable", "value": 0}, "3b8d8d3ca23a48fb9844ebd0d2969114"]}, {"op": "nack", "args": ["3b8d8d3ca23a48fb9844ebd0d2969114"], "value": null}], "queue_size": 1, "queue_empty": false}}
+{"ok": true, "value": true}
+{"ok": true, "value": {"handler_events": [{"message": {"job": "retryable", "value": 0}, "failed": true}, {"message": {"job": "retryable", "value": 0}, "failed": false}], "processed_count": 1, "processed_messages": [{"job": "retryable", "value": 0}], "queue_events": [{"op": "get", "args": [], "value": [{"job": "retryable", "value": 0}, "3b8d8d3ca23a48fb9844ebd0d2969114"]}, {"op": "nack", "args": ["3b8d8d3ca23a48fb9844ebd0d2969114"], "value": null}, {"op": "get", "args": [], "value": [{"job": "retryable", "value": 0}, "263507a1c3894516af42ea67ba6a6603"]}], "queue_size": 0, "queue_empty": true}}
+{"ok": true, "value": false}
+{"ok": true, "value": null}
+{"ok": true, "value": null}
+{"ok": true, "value": null}
+{"ok": true, "value": null}
+{"ok": true, "value": null}
+{"ok": true, "value": null}
+{"ok": true, "value": {"handler_events": [{"message": 0, "failed": false}, {"message": false, "failed": false}, {"message": "", "failed": false}, {"message": {"nested": [1, 2]}, "failed": false}], "processed_count": 4, "processed_messages": [0, false, "", {"nested": [1, 2]}], "queue_events": [{"op": "get", "args": [], "value": [0, "f4710b83b92546feb90894082e6a21b8"]}, {"op": "get", "args": [], "value": [false, "e16b03a28d944c44a3b902b9f09b67e2"]}, {"op": "get", "args": [], "value": ["", "fd9544b61b524079b947368f7d9d5a6e"]}, {"op": "get", "args": [], "value": [{"nested": [1, 2]}, "5bc48286ddeb48f9a73406ff7dc4c7b2"]}, {"op": "get", "args": [], "value": [null, null]}, {"op": "get", "args": [], "value": [null, null]}], "queue_size": 0, "queue_empty": true}}

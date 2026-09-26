@@ -1,0 +1,250 @@
+{
+  "canaries": {
+    "public_read": {
+      "passed": true,
+      "observed": {
+        "ok": true,
+        "value": 15
+      }
+    },
+    "scratch_write": {
+      "passed": true,
+      "observed": {
+        "ok": true,
+        "value": 22
+      }
+    },
+    "source_write_denied": {
+      "passed": true,
+      "observed": {
+        "ok": false,
+        "error_type": "PermissionError"
+      }
+    },
+    "private_read_denied": {
+      "passed": true,
+      "observed": {
+        "ok": false,
+        "error_type": "PermissionError"
+      }
+    },
+    "private_write_denied": {
+      "passed": true,
+      "observed": {
+        "ok": false,
+        "error_type": "PermissionError"
+      }
+    },
+    "symlink_denied": {
+      "passed": true,
+      "observed": {
+        "ok": false,
+        "error_type": "PermissionError"
+      }
+    },
+    "parent_scorer_denied": {
+      "passed": true,
+      "observed": {
+        "ok": false,
+        "error_type": "PermissionError"
+      }
+    },
+    "network_denied": {
+      "passed": true,
+      "observed": {
+        "ok": false,
+        "error_type": "PermissionError"
+      }
+    },
+    "fork_denied": {
+      "passed": true,
+      "observed": {
+        "ok": false,
+        "error_type": "BlockingIOError"
+      }
+    },
+    "partial_line_timeout": {
+      "passed": true,
+      "error": "TimeoutError('Worker RPC/session deadline exceeded')"
+    },
+    "output_cap": {
+      "passed": true,
+      "error": "ValueError('Worker response buffer cap exceeded')"
+    },
+    "memory_limited": {
+      "passed": true,
+      "error": "RuntimeError('Worker process tree exceeded RSS watchdog')"
+    }
+  },
+  "arms": [
+    {
+      "version": "dist1-consumer-behavior-v1",
+      "required_check_ids": [
+        "empty_consumer",
+        "payload_and_ack",
+        "retry_after_handler_failure",
+        "drain"
+      ],
+      "checks": [
+        {
+          "id": "empty_consumer",
+          "status": "PASS"
+        },
+        {
+          "id": "payload_and_ack",
+          "status": "PASS"
+        },
+        {
+          "id": "retry_after_handler_failure",
+          "status": "PASS"
+        },
+        {
+          "id": "drain",
+          "status": "PASS"
+        }
+      ],
+      "status": "PASS",
+      "observed_behavioral_failure": false,
+      "coverage_complete": true,
+      "arm": "fixed"
+    },
+    {
+      "version": "dist1-consumer-behavior-v1",
+      "required_check_ids": [
+        "empty_consumer",
+        "payload_and_ack",
+        "retry_after_handler_failure",
+        "drain"
+      ],
+      "checks": [
+        {
+          "id": "empty_consumer",
+          "status": "FAIL",
+          "reason": "Empty queue must not invoke handler"
+        },
+        {
+          "id": "payload_and_ack",
+          "status": "FAIL",
+          "reason": "Handler must receive the message, not (message, receipt)"
+        },
+        {
+          "id": "retry_after_handler_failure",
+          "status": "FAIL",
+          "reason": ""
+        },
+        {
+          "id": "drain",
+          "status": "UNKNOWN",
+          "reason": "RuntimeError('Worker process tree exceeded RSS watchdog')"
+        }
+      ],
+      "status": "UNKNOWN",
+      "observed_behavioral_failure": true,
+      "coverage_complete": false,
+      "arm": "original_consumer"
+    },
+    {
+      "version": "dist1-consumer-behavior-v1",
+      "required_check_ids": [
+        "empty_consumer",
+        "payload_and_ack",
+        "retry_after_handler_failure",
+        "drain"
+      ],
+      "checks": [
+        {
+          "id": "empty_consumer",
+          "status": "PASS"
+        },
+        {
+          "id": "payload_and_ack",
+          "status": "FAIL",
+          "reason": "Consumer never acknowledged its successful receipt"
+        },
+        {
+          "id": "retry_after_handler_failure",
+          "status": "PASS"
+        },
+        {
+          "id": "drain",
+          "status": "PASS"
+        }
+      ],
+      "status": "FAIL",
+      "observed_behavioral_failure": true,
+      "coverage_complete": true,
+      "arm": "no_ack"
+    },
+    {
+      "version": "dist1-consumer-behavior-v1",
+      "required_check_ids": [
+        "empty_consumer",
+        "payload_and_ack",
+        "retry_after_handler_failure",
+        "drain"
+      ],
+      "checks": [
+        {
+          "id": "empty_consumer",
+          "status": "PASS"
+        },
+        {
+          "id": "payload_and_ack",
+          "status": "PASS"
+        },
+        {
+          "id": "retry_after_handler_failure",
+          "status": "FAIL",
+          "reason": "Failed message must remain retryable"
+        },
+        {
+          "id": "drain",
+          "status": "PASS"
+        }
+      ],
+      "status": "FAIL",
+      "observed_behavioral_failure": true,
+      "coverage_complete": true,
+      "arm": "no_nack"
+    },
+    {
+      "version": "dist1-consumer-behavior-v1",
+      "required_check_ids": [
+        "empty_consumer",
+        "payload_and_ack",
+        "retry_after_handler_failure",
+        "drain"
+      ],
+      "checks": [
+        {
+          "id": "empty_consumer",
+          "status": "PASS"
+        },
+        {
+          "id": "payload_and_ack",
+          "status": "PASS"
+        },
+        {
+          "id": "retry_after_handler_failure",
+          "status": "PASS"
+        },
+        {
+          "id": "drain",
+          "status": "FAIL",
+          "reason": "Drain lost, duplicated or changed payloads"
+        }
+      ],
+      "status": "FAIL",
+      "observed_behavioral_failure": true,
+      "coverage_complete": true,
+      "arm": "drops_falsy"
+    }
+  ],
+  "listed_runtime_checks_passed": true,
+  "fixture_discrimination_passed": true,
+  "qualified_for_listed_development_checks": true,
+  "strict_N01_gate_passed": false,
+  "benchmark_qualified": false,
+  "scientific_claim_allowed": false,
+  "native_score_available": false
+}

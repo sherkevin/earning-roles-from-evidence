@@ -1,0 +1,88 @@
+{
+  "results": [
+    {
+      "arm": "authored_correct_control",
+      "checks": [
+        {
+          "check": "import",
+          "status": "PASS",
+          "response": {
+            "ok": true,
+            "value": {
+              "class_name": "PriorityTask"
+            }
+          }
+        },
+        {
+          "check": "original_constructor_equal_priority",
+          "status": "PASS",
+          "response": {
+            "ok": true,
+            "value": [
+              [
+                2,
+                3
+              ],
+              {
+                "task": 1
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "arm": "episode_0",
+      "checks": [
+        {
+          "check": "import",
+          "status": "FAIL",
+          "response": {
+            "ok": false,
+            "error_type": "TypeError",
+            "message": "non-default argument 'message' follows default argument",
+            "errno": null
+          }
+        },
+        {
+          "check": "original_constructor_equal_priority",
+          "status": "FAIL",
+          "response": {
+            "ok": false,
+            "error_type": "TypeError",
+            "message": "non-default argument 'message' follows default argument",
+            "errno": null
+          }
+        }
+      ]
+    },
+    {
+      "arm": "episode_1",
+      "checks": [
+        {
+          "check": "import",
+          "status": "PASS",
+          "response": {
+            "ok": true,
+            "value": {
+              "class_name": "PriorityEvent"
+            }
+          }
+        },
+        {
+          "check": "original_constructor_equal_priority",
+          "status": "FAIL",
+          "response": {
+            "ok": false,
+            "error_type": "TypeError",
+            "message": "PriorityEvent.__init__() missing 1 required positional argument: '_seq'",
+            "errno": null
+          }
+        }
+      ]
+    }
+  ],
+  "grade_changed": false,
+  "posthoc_diagnostic": true,
+  "scientific_claim_allowed": false
+}

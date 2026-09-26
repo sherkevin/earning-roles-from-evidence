@@ -1,0 +1,51 @@
+{
+  "purpose": "N01 actual-boundary canary and known consumer mutations",
+  "command": [
+    "scripts/peerrolebench_runtime_qualification.py",
+    "--output",
+    "experiments/logs/n01_runtime_qualification_20260926"
+  ],
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "git_commit": "29477209a22c0f2c14782c0e2c3234b14a50ad0e",
+  "working_tree_dirty": true,
+  "source_sha256": {
+    "peerrolebench_runtime_qualification.py": "e5b3a245c2d2203d738930ec03e6be3934e70c37a6297069e7be55841c1cb511",
+    "peerrolebench_sandbox.py": "6ecf3e471a40409b03405a9adbac874791c9ca4d00263c7babee99192bc3e950",
+    "peerrolebench_worker_limits.py": "443c321388276db904332c0faf3c4f7b09a7b65f64eb43845224fb53be2ce64e",
+    "peerrolebench_runtime_probe_worker.py": "ff39cc88e5fcae3431e6ec084b0bc02cfbb7952f734006c9a9ead6e92aea6b0d",
+    "peerrolebench_consumer_worker.py": "55189685aa24e61548133e20995dec7cbaa0cfe00254e610d9d31a9e8bde6482",
+    "peerrolebench_consumer_checks.py": "2c95b300d9e91d452d76907d39706e816dc458b2b534dcfe49200ae23dbc500e",
+    "peerrolebench_task_contract.py": "6ab5f760c812626311e3cdb3d963f5fcb70fc9fdc2de4e890bd94909c3504e8a",
+    "peerrolebench_tb_vertical_slice.py": "77a3e699add298bcf3e846f4d62468e15d0fcf7a1b3135ec62912af1796a1ca3"
+  },
+  "source_pin": "d185aef1916fd86a9ba554d581fd256319a973af",
+  "task": "DIST1_queue_race",
+  "seed": 0,
+  "arms": [
+    "fixed",
+    "original_consumer",
+    "no_ack",
+    "no_nack",
+    "drops_falsy"
+  ],
+  "llm_calls": 0,
+  "gpu_jobs": 0,
+  "native_grader_invoked": false,
+  "scientific_claim_allowed": false,
+  "qualification_scope": "listed engineering boundaries; no claim of adversarial scoring security",
+  "checks": [
+    "public_read",
+    "scratch_write",
+    "source_write_denied",
+    "private_read_denied",
+    "private_write_denied",
+    "symlink_denied",
+    "parent_scorer_denied",
+    "network_denied",
+    "fork_denied",
+    "memory_limited",
+    "partial_line_timeout",
+    "output_cap"
+  ]
+}

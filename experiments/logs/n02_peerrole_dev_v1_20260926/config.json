@@ -1,0 +1,122 @@
+{
+  "created_utc": "2026-09-26T13:32:19.773891+00:00",
+  "card": {
+    "experiment_id": "n02_peerrole_dev_v1_20260926",
+    "purpose": "Two real API integration episodes, not efficacy or final benchmark validation",
+    "source_commit": "d185aef1916fd86a9ba554d581fd256319a973af",
+    "task_id": "DIST1_queue_race",
+    "task_seeds": [
+      0,
+      1
+    ],
+    "policy_seed": 20260926,
+    "agents": [
+      "agent_A",
+      "agent_B",
+      "agent_C"
+    ],
+    "graph": [
+      [
+        "agent_A",
+        "agent_B"
+      ],
+      [
+        "agent_A",
+        "agent_C"
+      ],
+      [
+        "agent_B",
+        "agent_C"
+      ]
+    ],
+    "first_consumer": "agent_A",
+    "second_consumer": "the uninvolved agent after the first uniform draw",
+    "agent_initial_state": "same model, prompts, limits; no preset expertise",
+    "history_rule": "controller stores attributable judgment and action only; second consumer receives first evidence; model calls otherwise fresh; no skills or code memory",
+    "provider": "内部",
+    "model": "qwen3.8-max",
+    "temperature": 0,
+    "max_tokens": {
+      "producer": 4096,
+      "judgment": 1024,
+      "consumer": 4096
+    },
+    "maximum_task_requests": 6,
+    "maximum_episode_attempts": 2,
+    "maximum_retries": 0,
+    "request_timeout_seconds": 120,
+    "tool_calls_per_agent": 0,
+    "native_grader_invoked": false,
+    "scorer": "dist1-consumer-behavior-v2",
+    "objective_producer_quality": "not independently measured",
+    "source_review": "human/agent static inspection of sealed source before sandbox execution; no introspection or external IO",
+    "source_import_allowlist": [
+      "__future__",
+      "collections",
+      "dataclasses",
+      "functools",
+      "heapq",
+      "itertools",
+      "math",
+      "mqueue",
+      "queue",
+      "threading",
+      "time",
+      "typing",
+      "uuid"
+    ],
+    "update": {
+      "kind": "integration-only judgment action score, no trained model",
+      "initial_score": 0.5,
+      "action_values": {
+        "use": 1.0,
+        "repair": 0.5,
+        "independent_redo": 0.0
+      },
+      "step_size": 0.5,
+      "policy": "0.5 uniform + 0.5 softmax(scores)",
+      "terminal_role": "requires observed completion; not used as producer correctness target"
+    },
+    "stop_rules": [
+      "any visibility leak",
+      "first episode incomplete, invalid or UNKNOWN: no second episode",
+      "any malformed, truncated or empty model response: no retry",
+      "two planned attempts exhausted: do not top up to four"
+    ],
+    "budget_accounting": "attempts count toward N02 limit4 and N03 total24; no GPU",
+    "claims": {
+      "efficacy": false,
+      "role_formation": false,
+      "cross_root_generalization": false,
+      "backbone_selected": false,
+      "method_innovation": false
+    }
+  },
+  "source_hashes": {
+    "scripts/peerrolebench_runtime_probe_worker.py": "0f9180a7939b33bb58471b64ab33a4efc5f8c62d8eab9a7dba7ec8ce659dba98",
+    "scripts/peerrolebench_real_closed_loop.py": "a57f6edd2c256962b7992dd23f5ff3e2e8021ea4a174d5ee4ae493d8cc35991e",
+    "scripts/peerrolebench_task_contract.py": "6ab5f760c812626311e3cdb3d963f5fcb70fc9fdc2de4e890bd94909c3504e8a",
+    "scripts/peerrolebench_worker_limits.py": "16217095d159a53ed2b6916882b4dbc27bbcc287d16862390d6391abe3656690",
+    "scripts/peerrolebench_isolation_canary.py": "7b9ff5b762ee091ffe79c35a1b6edfcefd79e2797754685a310d2e096b79be18",
+    "scripts/peerrolebench_real_judgment_probe.py": "a5bef0ba497ce1b25424e32ba64792138080c00a7c78a336251cda6b0a0d4274",
+    "scripts/peerrolebench_consumer_qualification.py": "399c5c11a580fffb9f959fb871d9c02319e3e3f1ff38886c121d38053ff9438e",
+    "scripts/peerrolebench_consumer_checks.py": "f95107f0cec2589079e57e255d8f64dc443b25e7a07e15139f4a00cc66da8112",
+    "scripts/peerrolebench_consumer_worker.py": "600d8d13f5cd4465dd1baebb7e16eda398dcc9a78532b02d927439a7af8a0409",
+    "scripts/peerrolebench_sandbox.py": "b717e7e1cc425e7e39e17b485d2ab38b03e6e758d09b83001a32c6fb2f18ee27",
+    "scripts/peerrolebench_runtime_qualification.py": "0cedae0dc1dd94898d2355e6063ff51273a26b66a3c0bf49351a630a18f60cea",
+    "scripts/peerrolebench_tb_vertical_slice.py": "77a3e699add298bcf3e846f4d62468e15d0fcf7a1b3135ec62912af1796a1ca3",
+    "scripts/aamas_real_probe.py": "b9bba5e37e02e3d888bbc1ff9cf8c16bb59ed733ba65bcec575f37755205cf5c",
+    "references/aamas/peer_role_protocol_20260925.py": "65f909fb7fb013a089b3830b243ff9c486a2b7c1fbfcfcbda9777eb4adf85ff6",
+    "tools/peerrole-runtime/package-lock.json": "7cdae083b7ce369a56adaca5504164fcff854102bc102123e3af5790b139de3c",
+    "configs/aamas2027/n02_peerrole_dev_v1.json": "c8e92b7d21d5c4a7b1907a656e47a2935ad42a9e19425011d85ef2320960b198"
+  },
+  "git_head": "29477209a22c0f2c14782c0e2c3234b14a50ad0e",
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "command": [
+    "scripts/peerrolebench_real_closed_loop.py",
+    "prepare",
+    "--output",
+    "experiments/logs/n02_peerrole_dev_v1_20260926"
+  ],
+  "scientific_claim_allowed": false
+}

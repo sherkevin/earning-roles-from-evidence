@@ -1,0 +1,44 @@
+{
+  "command": [
+    "/opt/homebrew/Cellar/node/26.0.0/bin/node",
+    "/Users/jingwu/work/earning-roles/tools/peerrole-runtime/node_modules/@anthropic-ai/sandbox-runtime/dist/cli.js",
+    "--settings",
+    "/Users/jingwu/work/earning-roles/experiments/logs/n02_posthoc_priority_sandbox_20260926/episode_0/settings.json",
+    "--",
+    "/Users/jingwu/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/bin/python3.12",
+    "-I",
+    "-B",
+    "/private/var/folders/18/6x97xlvs65gg9v7vkvlbpfkr0000gn/T/peerrole-worker-j17pnmqz/driver/limits.py",
+    "/private/var/folders/18/6x97xlvs65gg9v7vkvlbpfkr0000gn/T/peerrole-worker-j17pnmqz/driver/worker.py",
+    "/private/var/folders/18/6x97xlvs65gg9v7vkvlbpfkr0000gn/T/peerrole-worker-j17pnmqz/public",
+    "TaskQueue",
+    "TaskConsumer"
+  ],
+  "environment": {
+    "PATH": "/opt/homebrew/Cellar/node/26.0.0/bin:/usr/bin:/bin",
+    "LANG": "C",
+    "CLAUDE_CODE_TMPDIR": "/private/var/folders/18/6x97xlvs65gg9v7vkvlbpfkr0000gn/T/peerrole-worker-j17pnmqz/scratch",
+    "PEERROLE_SCRATCH": "/private/var/folders/18/6x97xlvs65gg9v7vkvlbpfkr0000gn/T/peerrole-worker-j17pnmqz/scratch"
+  },
+  "runtime_version": "0.0.77",
+  "runtime_lock_sha256": "7cdae083b7ce369a56adaca5504164fcff854102bc102123e3af5790b139de3c",
+  "worker_sha256": "8c0b7133e5da6c4c70993c94ec03b5955ae2e990daa5ee826b3212dceffd8013",
+  "limits_sha256": "16217095d159a53ed2b6916882b4dbc27bbcc287d16862390d6391abe3656690",
+  "sources": {
+    "mqueue/consumer.py": "f18a4c397f20e58c166c6cb0a210ba645708b108903c12a580754bc4f0de2bdb",
+    "mqueue/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "mqueue/config.py": "850c494b054bf1c96c374019a696f25e6129e9c19a8d24d753680612c992f48c",
+    "mqueue/queue.py": "a5560c91995bc6fa9b8d66821b700b3465c107b3a72345312efd6c347525c5a2",
+    "mqueue/priority.py": "57918ff9ebbb1c2637506f0043ecfa378ce56a9c04ae1e5afdd346f3ca8efda9"
+  },
+  "rpc_timeout_seconds": 5,
+  "session_timeout_seconds": 40,
+  "max_response_line_bytes": 65536,
+  "max_total_output_bytes": 1048576,
+  "rss_watchdog_bytes": 536870912,
+  "rss_poll_seconds": 0.1,
+  "rss_limit_is_hard": false,
+  "psutil_version": "7.2.2",
+  "source_read_only": true,
+  "same_process_instrumentation_tamper_proof": false
+}

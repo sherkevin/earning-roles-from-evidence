@@ -1,6 +1,23 @@
 # AAMAS 2027 task ledger
 
-Updated: 2026-09-24 (user resumed bounded real-data / real-API iteration; prior pause preserved below as history). Owner: scientist; one engineer owns execution. Authority: [REQUIREMENTS.md](../paper/aamas2027/REQUIREMENTS.md), version 1.5.8. This is the sole active AAMAS gap/status/execution ledger. Role TODOs are historical pointers. Bounded read-only critiques inform the current direction; they did not execute experiments.
+Updated: 2026-09-26 (persistent goal active; N02 attempted budget exhausted; N03 qualification work underway). Owner: scientist; one engineer owns execution. Authority: [REQUIREMENTS.md](../paper/aamas2027/REQUIREMENTS.md), version 1.5.8. This is the sole active AAMAS gap/status/execution ledger. Role TODOs are historical pointers. Bounded read-only critiques inform the current direction; they did not execute experiments.
+
+## Current checkpoint — 2026-09-26
+
+N00 is reconciled. Strict N01 benchmark qualification remains open. N02 has used
+all four attempted episodes: v1/v2 each ended UNKNOWN; v3 completed two limited
+real producer→judgment→consumer→outcome→assignment chains with six complete
+responses. No probability or selected-peer change was caused by feedback.
+Consumer 4/4 scores omit priority-module faults; declared repair changed only
+the recipient's assigned integration. Fresh identical producers have no
+persistent personal state. See the [N02 analysis](../research/n02_real_closed_loop_review_20260926.md).
+
+No more N02 inference, no N03 sampling, and no new A800 job at this checkpoint.
+Next: explicit ownership, task-scoped outcome coverage, a minimal persistent
+experience design, and one second-root qualification audit. N03/N04 require
+qualified data and same-information strong baselines; backbone/update remain
+open. These are task prerequisites under the active goal, not an operational
+pause or a scientific result. The dated entries below preserve prior states.
 
 ## Active resumption — 2026-09-22
 
@@ -400,3 +417,69 @@ Update order: change requirements only with rationale; update this ledger's gap/
 - 2026-09-22 / Next-design rule: Before any further Mac execution, a new versioned contract must be created on Shervin. Candidate directions under discussion: (1) select a legitimate intermediate-capability backbone; (2) select a harder but predeclared development task family; (3) combine both. The next experiment must preserve fixed evaluation boundaries and must not reduce prompts, budgets, or choose models based on observed favorable outcomes.
 
 - 2026-09-22 / Device ownership reminder: Shervin remains the only canonical location for TODO, contracts, reports, experiment conclusions, and paper materials. U-CGPCVWR0-0024.local is execution-only. Every Mac experiment must synchronize compact result, run log, raw evidence pack, and metadata back to Shervin before conclusions are recorded.
+
+## 2026-09-26 · 下一步计划：先验证反馈的价值，再选择训练方案
+
+状态：按用户“给出下一步计划”登记的待执行路线；不是新的 benchmark/method 冻结决议。本地工作沿用页首的恢复执行记录。以下 N 编号是执行顺序，不替换本文件原有 G0–G7 科学门。
+
+当前证据：[causal_v2](../../experiments/logs/peerrolebench_tb_vertical_20260926_causal_v2/summary.json) 完成 16 个程序夹具 episode，顺序、后续 assignment 消费和 consumer 产物检查通过，仍为 `scientific_claim_allowed=false`。当前 judgment 由 fixture peer 身份决定，返工成本是 0/1 占位；均分 0.8958 不能说明真实 peer 选择或角色学习有效。[ADR 0015](../user/decisions/0015-select-before-execution-and-bind-later-assignment.md) 已确定执行前选择语义，最终 benchmark、backbone 与训练方法仍未确定。
+
+下一阶段要回答：真实消费者在使用交付物时给出的判断，是否包含“这个 peer 在这个任务/消费者情境下是否合适”的信息，并能改善后续责任分配的质量与成本？单纯学到哪个 peer 总体最好，不足以证明 learning roles from others' situated judgments。
+
+- [open] N00 — 同步现有证据与项目状态。依赖：无。更新收敛报告、协议审计和 vertical-slice 报告，逐项区分已修复的执行顺序/产物/概率问题与仍缺失的科学证据，保留所有失败日志。产出：一致的状态说明及代码、日志索引。验收：不再把协议 fixture 通过写成 G2 科学门完成，不混用旧、新 gate 编号，不把 TeamBench 称为已冻结主 benchmark。
+- [open] N01 — 让一个候选任务基底达到真实接入条件。依赖：N00。优先复用已下载的 TeamBench 两个任务家族、原生 scorer 和现有隔离运行组件；写明任务来源/版本/许可证、真实上下游依赖、可见信息和任务 root 划分。初始采用 3 个同构常驻 agent、相同资源和局部邻居，不预设专家角色。补齐执行进程的文件/网络边界，分别测试正常产物、已知错误产物及越权读取；测试文件哈希检查不能代替隔离。产出：可重跑的任务契约与隔离/评分资格报告。验收：agent/候选代码读不到 hidden tests、expected、grader 和其他样本的 reports，原生评分语义保持一致；确实存在交付、使用及返工空间。失败则关闭该候选的当前接入尝试，明确失败原因后只评估一个替代基底，避免无限修补。正式 benchmark 替换须另写 ADR，不能静默覆盖 ADR 0008。
+- [open] N02 — 完成最多 4 个真实 episode 的接入检查。依赖：N01。先冻结实验卡中的 IDs、每角色调用/token/工具步数上限、超时和重试上限，再通过“内部”真实 API 执行 producer → consumer judgment → 实际 use/repair/redo → 独立评分 → 更新 → 下一次执行前选择。4 是尝试数上限，失败也占预算；连续两次基础设施 UNKNOWN 或任何信息泄漏立即停止。产出：逐调用原始响应、输入可见性、交付/消费产物、完整成本、选择概率及错误记录。验收：至少一条可追溯的真实跨任务链，且将交付质量、消费者返工成本和最终质量分别记录；诊断用交付评分不提前回流给 agent。该步只验证接入与可观测性，不判断学习效果。
+- [open] N03 — 用一条小数据流检验是否存在值得学习的信号。依赖：N02。在开始前冻结开发样本及分析规则，采用有覆盖的随机探索并记录真实 propensity，总开发尝试数暂以 24 个 episode 为上限，包含 N02；接口变更导致旧样本不兼容时保留旧样本为接入证据，不补跑到满额。在线只反馈实际选中 peer 的结果。先对同一份日志做按时间分割的离线诊断，比较总体 peer 可靠性、任务/消费者情境信息、真实 judgment 的增量预测，并在可比任务/时间组内打乱 judgment 来源作负对照。产出：逐样本失败归因、预测差异/不确定性、返工与成本分解。验收：判断是否有上下文相关的可学信号和足够的得分/成本变化；24 条最多提供探索性线索，不支持显著性、因果收益或角色形成结论。结果不确定时先判断是覆盖不足、诊断模型不足还是观测目标不合适，再决定下一轮，不自动扩大训练；离线重放不冒充多策略真实执行。
+- [open] N04 — 冻结第一轮公平效果比较，再收紧方法。依赖：N03 的资格与分析结论。最小比较包含不更新、只用终局反馈的上下文选择器、使用 situated judgment 的候选，以及接收相同合法信息的强 contextual trust/bandit；固定信息、探索、任务机会与总预算，每个条件保留独立历史。必要的去情境/打乱来源消融按单一待答问题安排。至少包含一个由先前未直接评价该 peer 的消费者作出的后续分配，明确它合法获取了哪些他人证据，并给强基线相同信息。产出：冻结 baseline/开发实验卡及可证伪的方法规格。验收：能区分总体最强 peer、消费者私有信任和基于他人判断的情境分工；若只有固定 peer 胜出，或与强 bandit 无差别，不据此宣称新角色学习机制。小批量只用于决定继续、修改或淘汰，正式确认使用独立保留的任务 roots。
+- [open] N05 — 根据真实失败模式选择 backbone 与一个训练创新候选。依赖：数据资格通过，N03/N04 已明确待解决的预测或更新瓶颈；数学与先例分析可并行，训练须待实验卡冻结。优先资格核查 Laya 候选与一种简单可复现表示，不做无目标模型扫选。每个公式明确假设、输入来源、实例、更新复杂度和可证伪边界；一次只保留一个 challenger，与 RLS、online SGD、周期重拟合按相同信息与预算比较。产出：backbone 选择依据、算法/训练/上线规格以及一张有资源上限的 A800 实验卡。验收同时包含新情境质量、旧情境保留、反馈到更新生效的端到端 p95 和运行成本；限值在看结果前填写，不能只报一次矩阵更新耗时。共享 selected-only 事件、延迟队列、版本、快照与训练运行接口，peer/tool 两项目保留各自目标和评测。未胜过强基线时保留工程价值，不把现成模块组合称为算法创新。
+
+本轮产出仅为状态核查和下一步计划，没有新增 LLM 请求、模型训练或星云作业。计划采用 paper-writer 的 benchmark/baseline → method → 正式实验顺序，N02/N03 属于开发资格诊断。独立只读审查强调：先记录真实返工成本；先从一条探索日志诊断信号；强 contextual bandit 必须进入首次效果比较。
+
+### 2026-09-26 · 已接受计划的执行回执
+
+- [done] N00 — 三份证据报告与旧协议审计已对齐。causal_v2 为 16 条程序夹具、0 次 LLM 调用、同 task/seed 四条件终局分数相同；真实 judgment 探针为 3 次尝试/2 次响应；AppWorld 单例真实使用证据保留。新增协议加固禁止同来源反馈重放和 selection 后补 assignment。复核：修复了实验对象与证据解释错误，未建立角色学习收益；G2 继续开放。
+- [done] N01-a — 新建任务材料与评分证据契约，读取当前 GeneratedTask 的 spec/brief、严格白名单分发 source，保留 native score 并分开 passed/failed/skipped/error/timeout。与协议合并检查 37 项通过；[检查回执](../../experiments/logs/n01_material_contract_20260926/raw.jsonl) 标明系执行后归档。复核：只有材料/分类保证，未实现进程隔离，尚未接入真实执行。
+- [doing] N01-b — 独立审查发现 DIST1 原生测试未调用实际 consumer，故需一个版本化的消费者行为检查，原生分数仍保留；同时修正 repair/redo 消费副本权限、结构 root 与必需测试清单。每项修复须对应失败用例，不以新增测试数量替代任务资格。
+- [doing] N01-c — 检查本机现成 sandbox 的实际边界；先仅以自建无敏感 canary 验证文件、网络和子进程约束。候选与评分处于同进程会泄漏 hidden checks，必须分别说明 actor 隔离与独立评分隔离。不能把 sandbox 命令存在当作 gate 通过。
+- [done] W01 — 官方 2027 模板下的题目/摘要提案已编译为一页 PDF，匿名、无溢出，保留内部 pre-results 标记及 submission guard。主张仍为待验证假设，backbone/update 未确定。官方类文件未改；TeX 的 incomplete-ifx 兼容性警告已显式记录，不能声称构建毫无警告。
+- [open] W02 — 将 2026 官方模板链接失效和 2027 下载复核写入来源记录；归档模板依赖修复及可重跑构建说明。2026 与 2027 年份不得混用。
+
+本回执新增的是工程/写作产物，未启动真实 LLM 或 A800 实验。N01 科学资格尚未完成；后续依旧是最多 4 次接入、总上限 24 次开发尝试，不能用本轮检查抵扣或冒充真实样本。
+
+### 2026-09-26 · 接续执行：消费者评分与运行边界
+
+- [done] N01-b — 动作/材料契约检查 44 项通过；新增 consumer 行为检查能识别未 ack、未 nack、丢弃 falsy payload 和原始 consumer 错误。原生 score 未重跑，不能宣称其数值不变。先前超时丢失结果的失败日志保留。复核：修复的是测量对象，不是方法效果。
+- [done] N01-c1 — 根据 Anthropic sandbox-runtime 的固定源码与回归测试，补充根 vnode 的精确读取许可后，自建 canary 的公共读写通过，私有读写、符号链接、网络和子进程越权均被拒绝。仅验证这些列举边界；生产运行与同进程评分隔离尚未过门。
+- [done] W02 — 官方来源复核与模板依赖构建记录已归档，2026 ZIP 为 404，2027 ZIP 哈希与原始归档一致；没有把 2027 模板冒称 2026。
+- [doing] N01-c2 — 复用固定版本 sandbox-runtime，将公共 consumer worker 接入实际运行边界；限制输入输出、超时与资源，复跑同一组必要 mutation/canary。产出：精确 runtime 配置、原始记录与剩余风险；不写通用 sandbox 框架。
+- [doing] N01-c3 — 独立只读审查评分隔离是否构成接入止损条件。必须区分候选代码能观察到的公开调用、父进程断言和 native pytest 的同进程 gold。未经明确记录，不能将 N01 原有门槛静默降低后宣布通过。
+- [open] N01-d — 合并运行/审查证据后给出接入 GO/NO-GO，并明确限定开发诊断与正式 benchmark 的不同资格；若止损，保留可复用材料/协议/评分组件，下一次只评估一个替代基底。
+
+当前持久目标仍 active，backbone 与训练方法未确定。上述工作只服务于真实同伴判断的可测性，不替代 N02–N05。
+
+- [done] N01-c2/c3 — 实际 sandbox-runtime v0.0.77 的十二项访问/资源检查与五个产物分辨通过；v1 资源API失败、v2清理失败、v3通过分别保留。独立审查发现子进程资源异常误作FAIL，修复后七项定向检查与既有五十九项全部通过。完整原生评分隔离仍不合格，不将工程检查升格。
+- [done] N01-d — 按 [ADR 0017](../user/decisions/0017-n02-development-scoring-scope.md) 明确缩小开发接入范围：native grader 不执行、不反馈；父进程 consumer 行为评分服务于接入，原 N01/N02 完整验收保持开放。
+- [doing] N02-dev-v1 — 固定两个同root实例、最多六次真实API请求，首轮独立固定seed随机选择、第二轮未参与者消费他人证据；先冻结卡与源码哈希，再执行，无隐含重试，失败不补满预算。独立交付质量未测，修复后成功不能当原producer正确标签。
+
+- [done] N02-dev-v1 stopped — 首个 producer 真实请求在120秒无响应字节后超时（curl28、HTTP000），usage未知；1个episode尝试、1个真实请求、0交付、0判断/消费/更新，第二个实例未启动。未重启原运行；冻结源码、输入和错误保留。
+- [done] N02 transport diagnosis — 两条无认证HEAD在约0.22秒完成TLS/HTTP返回500，只说明端点可达；随后单独记录的短请求HTTP200、66input/25output；一次SSE兼容性短请求亦HTTP200、66input/25output。两次health不当benchmark样本；短请求成功不能证明原120秒超时原因。
+- [doing] N02-dev-v2 transport amendment — 仅增加SSE原始流、连接阶段计时、禁用curlrc及300秒明确上限；任务/模型/提示/输出cap/评分/更新不改。先冻结新版卡与parser检查，再一次有界恢复相同两个实例，至多总计3个episode尝试；新版本任何未完成都停，不再自动恢复。该修订在看到任务结果前做出，原UNKNOWN仍保留。
+
+### 2026-09-26 · N02 最终收口与 N03 设计准备
+
+- [done] N02-dev-v2 stopped — 首次producer请求300秒未完成；1.176秒首字节、HTTP200、3149个thinking_delta但0最终text、无message_stop/完整usage，按UNKNOWN保留。未启动第二实例。
+- [done] N02-dev-v3 — [ADR0018](../user/decisions/0018-one-final-bounded-generation-configuration-test.md)显式记录一次止损例外与关闭thinking干预。第3/4次episode均完成限定链，6次真实完整响应、14369input/3527output、68.870秒模型时间；无额外重试。两次consumer均4/4，但无独立producer完整正确率或native分。15事件哈希链及未来assignment消费经独立审查。
+- [done] N02分析 — [详细报告](../research/n02_real_closed_loop_review_20260926.md)分开四次尝试与三次health/config探针：11次API尝试、已知14518input/3579output，另2次usage未知。repair的0.5映射等于先验，概率/同抽样选人均未变化；旧结果不改，N02预算4/4关闭，完整科学验收仍未通过。
+- [done] N02责任/覆盖诊断 — 两轮仅改consumer.py，正常集成不能标为producer返工；独立sandbox事后检查发现两轮priority接口均有缺陷，原consumer4/4未覆盖。原分不回改；诊断不冒充在线标签。peer模型fresh且无个人状态，不能直接扩大peer适配学习采样。
+- [doing] N03-pre-a — 材料v3增加显式producer/recipient职责；扩大的repair写权限不改变原任务归属，原N02冻结源码与payload不变。回归实际病例与权限路径；提示有效性仍待新卡实测。
+- [doing] N03-pre-b — 独立审查最小持久经验与第三方评价分离，明确可交换调用下的不可识别条件、反例、时间/root边界和同信息对照；只做设计，不冻结backbone/update。
+- [doing] N03-pre-c — 只审已下载TeamBench CROSS3作为第二结构root的原生依赖/评分资格；若已有consumer没有独立工作，不通过人为删代码制造协作。先取得source evidence再决定，不写无目的runner。
+- [open] N03-pre-d — 前置结果汇成责任→指标、经验→未来行为、baseline→替代解释表；合格后冻结新卡。开发总尝试上限24含已用4，剩余最多20，不自动补满。严格N01、最终benchmark与N02完整验收的未满足项继续列报。
+- [open] N05/A800 — 只有真实信号和具体训练瓶颈成立才选择一个训练challenger并冻结资源卡；本轮没有新GPU作业。API agent与未来本地训练的selector是不同组件。
+
+- [done] N03-pre-a — 公开材料v3保留原始职责，repair权限不转移责任；真实冻结病例与六种seed/action路径回归通过，合并检查80项。只是工程资格，尚未实测提示修正效果。见[回执](../../experiments/logs/n03_ownership_contract_checks_20260926/summary.json)及[ADR0019](../user/decisions/0019-separate-judgment-from-responsibility-outcomes.md)。
+- [done] N03-pre-b — [独立状态审查](../research/n03_minimal_state_independent_review_20260926.md)给出可交换执行核下无ID预测增益的条件推导；采纳本人经历与他人见证分离、所有对照同记忆规则。容量/实现/updater仍未冻结；旧声誉影响新判断建议作为单独通道。
+- [done] N03-pre-c — [CROSS3审查](../research/n03_cross3_candidate_audit_20260926.md)否决其代码交付→下游实现切面：consumer/publisher已完成。保留诊断计划→原代码修复候选及接口/测试资产，但未取得第二个合格root；不新增adapter或实验。发现oneof口径冲突、候选STATUS_MAP被当真值等评分缺口。
+- [done] N03-pre-d design — [前置设计](../research/n03_preflight_design_20260926.md)明确合法经历、见证通道、义务/指标对应、强基线与停止条件。设计文件已齐，不等于评分/状态实现、任务root和新实验卡合格；N03采样仍未开始。
+- [open] N03-next — 给计划→实现候选做一张前瞻资格卡，审查原公开要求直接转发是否已能解释诊断价值；若不能形成与主线相符的可测问题则关闭。当前不加新任务/模型搜索，不扩N02、不创建GPU队列。
+- [done] N03收口复审 — [独立JSON回执](../../experiments/logs/n03_ownership_contract_checks_20260926/independent_review.json)复算预算/用量并核对80项测试源码hash；两项建议已修正：同次调用的集成/返工子成本无法测时为null，fresh-call消费必须带入判断时同一经验快照。数学审查进一步限定同peer下次被选时点与同采样器条件。文档收口PASS不等于N03采样/训练准入。

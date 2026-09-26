@@ -1,0 +1,1868 @@
+id:1
+:HTTP_STATUS/200
+event: message_start
+data: {"type": "message_start", "message": {"id": "38f533c6-6749-9326-a2f9-834d5ee06dfb", "type": "message", "role": "assistant", "content": [], "model": "qwen3.8-max", "stop_reason": null, "stop_sequence": null, "usage": {"input_tokens": 0, "output_tokens": 0}}}
+
+event: content_block_start
+data: {"type": "content_block_start", "index": 0, "content_block": {"type": "text", "text": ""}}
+
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "{\""}}
+
+
+id:2
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "source_files"}}
+
+
+id:3
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\":{\"m"}}
+
+
+id:4
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "queue/queue"}}
+
+
+id:5
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ".py\":\"\\\"\\\""}}
+
+
+id:6
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\\"\\"}}
+
+
+id:7
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "nTask message queue"}}
+
+
+id:8
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " with"}}
+
+
+id:9
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " acknowledgment support.\\n"}}
+
+
+id:10
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\\"\\\"\\\"\\n"}}
+
+
+id:11
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "import"}}
+
+
+id:12
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " threading\\nimport uuid"}}
+
+
+id:13
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\nfrom collections import"}}
+
+
+id:14
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " deque\\n"}}
+
+
+id:15
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "from typing import Any"}}
+
+
+id:16
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ", Optional, Tuple"}}
+
+
+id:17
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\n\\n\\nc"}}
+
+
+id:18
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "lass QueueFull"}}
+
+
+id:19
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "(Exception):\\n   "}}
+
+
+id:20
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " \\\"\\\"\\\"Raised"}}
+
+
+id:21
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " when the queue has"}}
+
+
+id:22
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " reached its"}}
+
+
+id:23
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " capacity.\\\"\\\"\\\"\\"}}
+
+
+id:24
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n\\n\\nc"}}
+
+
+id:25
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "lass QueueEmpty"}}
+
+
+id:26
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "(Exception):\\n   "}}
+
+
+id:27
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " \\\"\\\"\\\""}}
+
+
+id:28
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "Raised when the queue"}}
+
+
+id:29
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " is empty.\\\""}}
+
+
+id:30
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\\"\\\"\\n\\n"}}
+
+
+id:31
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\nclass Task"}}
+
+
+id:32
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "Queue:\\n   "}}
+
+
+id:33
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " \\\"\\\"\\\"Thread"}}
+
+
+id:34
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "-safe task queue with"}}
+
+
+id:35
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " configurable"}}
+
+
+id:36
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " capacity and ack/n"}}
+
+
+id:37
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "ack support"}}
+
+
+id:38
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ".\\\"\\\"\\\"\\n"}}
+
+
+id:39
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\n    def"}}
+
+
+id:40
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " __init__(self"}}
+
+
+id:41
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ","}}
+
+
+id:42
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " capacity: int ="}}
+
+
+id:43
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " 50"}}
+
+
+id:44
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "0):\\n       "}}
+
+
+id:45
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " self._capacity ="}}
+
+
+id:46
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " capacity\\n        self"}}
+
+
+id:47
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "._queue"}}
+
+
+id:48
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ": deque = deque"}}
+
+
+id:49
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "()\\"}}
+
+
+id:50
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n        self._"}}
+
+
+id:51
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "in_flight"}}
+
+
+id:52
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ": dict = {}\\"}}
+
+
+id:53
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n        self._"}}
+
+
+id:54
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "lock"}}
+
+
+id:55
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " = threading.Lock()\\"}}
+
+
+id:56
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n\\n    def"}}
+
+
+id:57
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " put(self, message"}}
+
+
+id:58
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ": Any"}}
+
+
+id:59
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ") -> None:\\"}}
+
+
+id:60
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n       "}}
+
+
+id:61
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " \\\"\\\"\\\"\\n"}}
+
+
+id:62
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "        Enqueue a"}}
+
+
+id:63
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " task message.\\n"}}
+
+
+id:64
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\n"}}
+
+
+id:65
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "        Raises QueueFull"}}
+
+
+id:66
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " if the queue is"}}
+
+
+id:67
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " at capacity.\\n"}}
+
+
+id:68
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "       "}}
+
+
+id:69
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " The capacity check and"}}
+
+
+id:70
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " append"}}
+
+
+id:71
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " are performed atomically"}}
+
+
+id:72
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " under the lock.\\"}}
+
+
+id:73
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n        \\\"\\\""}}
+
+
+id:74
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\\"\\"}}
+
+
+id:75
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n        with self"}}
+
+
+id:76
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "._"}}
+
+
+id:77
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "lock:\\n           "}}
+
+
+id:78
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " if len(self._"}}
+
+
+id:79
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "queue)"}}
+
+
+id:80
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " + len(self._"}}
+
+
+id:81
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "in"}}
+
+
+id:82
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "_flight) >= self"}}
+
+
+id:83
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "._capacity:\\"}}
+
+
+id:84
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n                raise Queue"}}
+
+
+id:85
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "Full(\\n                   "}}
+
+
+id:86
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " f\\\"TaskQueue"}}
+
+
+id:87
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " at"}}
+
+
+id:88
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " capacity ({self._"}}
+
+
+id:89
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "capacity})\\\"\\n"}}
+
+
+id:90
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "                )\\n"}}
+
+
+id:91
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "           "}}
+
+
+id:92
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " self._queue.append"}}
+
+
+id:93
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "(message)\\"}}
+
+
+id:94
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n\\n    def"}}
+
+
+id:95
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " get(self) ->"}}
+
+
+id:96
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " Optional"}}
+
+
+id:97
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "[Tuple[Any,"}}
+
+
+id:98
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " str"}}
+
+
+id:99
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "]]:\\n       "}}
+
+
+id:100
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " \\\"\\\"\\\"\\n"}}
+
+
+id:101
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "        De"}}
+
+
+id:102
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "queue and return the"}}
+
+
+id:103
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " next"}}
+
+
+id:104
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " task message along with"}}
+
+
+id:105
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " a receipt token,\\"}}
+
+
+id:106
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n        or None"}}
+
+
+id:107
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " if"}}
+
+
+id:108
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " empty.\\n\\n"}}
+
+
+id:109
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "        The message is"}}
+
+
+id:110
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " moved to an in"}}
+
+
+id:111
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "-flight dictionary"}}
+
+
+id:112
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " and is only permanently"}}
+
+
+id:113
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\n        removed when"}}
+
+
+id:114
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " ack(receipt)"}}
+
+
+id:115
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " is called. If"}}
+
+
+id:116
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " the"}}
+
+
+id:117
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " consumer crashes, nack"}}
+
+
+id:118
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "(receipt)\\n"}}
+
+
+id:119
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "       "}}
+
+
+id:120
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " can be used to"}}
+
+
+id:121
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " re-"}}
+
+
+id:122
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "queue the message.\\"}}
+
+
+id:123
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n        \\\"\\\""}}
+
+
+id:124
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\\"\\n        with"}}
+
+
+id:125
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " self"}}
+
+
+id:126
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "._lock:\\n"}}
+
+
+id:127
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "           "}}
+
+
+id:128
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " if not self._"}}
+
+
+id:129
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "queue:\\"}}
+
+
+id:130
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n                return None"}}
+
+
+id:131
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\n            message ="}}
+
+
+id:132
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " self"}}
+
+
+id:133
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "._queue.popleft"}}
+
+
+id:134
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "()\\n           "}}
+
+
+id:135
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " receipt = str(uuid"}}
+
+
+id:136
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ".uuid4())\\"}}
+
+
+id:137
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n"}}
+
+
+id:138
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "            self._in"}}
+
+
+id:139
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "_flight[receipt]"}}
+
+
+id:140
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " = message\\n"}}
+
+
+id:141
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "            return (message"}}
+
+
+id:142
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ", receipt)\\n"}}
+
+
+id:143
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\n"}}
+
+
+id:144
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "    def ack(self"}}
+
+
+id:145
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ", receipt: str"}}
+
+
+id:146
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ") -> None:\\"}}
+
+
+id:147
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n       "}}
+
+
+id:148
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " \\\"\\\"\\\"\\n"}}
+
+
+id:149
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "       "}}
+
+
+id:150
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " Acknowledge successful processing"}}
+
+
+id:151
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " of"}}
+
+
+id:152
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " a message.\\n"}}
+
+
+id:153
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "        Removes"}}
+
+
+id:154
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " the message from the"}}
+
+
+id:155
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " in"}}
+
+
+id:156
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "-flight dictionary permanently.\\"}}
+
+
+id:157
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n"}}
+
+
+id:158
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "        \\\"\\\"\\\"\\"}}
+
+
+id:159
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n        with self"}}
+
+
+id:160
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "._lock:\\"}}
+
+
+id:161
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n            self._"}}
+
+
+id:162
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "in_flight.pop(re"}}
+
+
+id:163
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "ceipt,"}}
+
+
+id:164
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " None)\\n\\n"}}
+
+
+id:165
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "    def nack(self"}}
+
+
+id:166
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ", receipt: str"}}
+
+
+id:167
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ")"}}
+
+
+id:168
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " -> None:\\n"}}
+
+
+id:169
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "       "}}
+
+
+id:170
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " \\\"\\\"\\\"\\n"}}
+
+
+id:171
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "       "}}
+
+
+id:172
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " Negative-acknowledge"}}
+
+
+id:173
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " a message (processing"}}
+
+
+id:174
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " failed).\\n       "}}
+
+
+id:175
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " Returns the message to"}}
+
+
+id:176
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " the front of the"}}
+
+
+id:177
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " queue for redelivery"}}
+
+
+id:178
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ".\\"}}
+
+
+id:179
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n        \\\"\\\""}}
+
+
+id:180
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\\"\\"}}
+
+
+id:181
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n        with self"}}
+
+
+id:182
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "._"}}
+
+
+id:183
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "lock:\\n           "}}
+
+
+id:184
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " message = self._"}}
+
+
+id:185
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "in"}}
+
+
+id:186
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "_flight.pop(receipt"}}
+
+
+id:187
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ","}}
+
+
+id:188
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " None)\\n           "}}
+
+
+id:189
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " if message is not"}}
+
+
+id:190
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " None"}}
+
+
+id:191
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ":\\n                self"}}
+
+
+id:192
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "._"}}
+
+
+id:193
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "queue.appendleft(message"}}
+
+
+id:194
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ")\\"}}
+
+
+id:195
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n\\n    def"}}
+
+
+id:196
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " size"}}
+
+
+id:197
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "(self) -> int"}}
+
+
+id:198
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ":\\"}}
+
+
+id:199
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n        \\\"\\\""}}
+
+
+id:200
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\\"Return"}}
+
+
+id:201
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " the current number of"}}
+
+
+id:202
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " tasks in the queue"}}
+
+
+id:203
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " (not including in"}}
+
+
+id:204
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "-flight"}}
+
+
+id:205
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ").\\\"\\\"\\\"\\"}}
+
+
+id:206
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n        with self"}}
+
+
+id:207
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "._lock:\\n"}}
+
+
+id:208
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "           "}}
+
+
+id:209
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " return len(self._"}}
+
+
+id:210
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "queue)\\"}}
+
+
+id:211
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n\\n    def"}}
+
+
+id:212
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " is"}}
+
+
+id:213
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "_empty(self) ->"}}
+
+
+id:214
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " bool:\\"}}
+
+
+id:215
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n        \\\"\\\""}}
+
+
+id:216
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\\"Return"}}
+
+
+id:217
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " True if the queue"}}
+
+
+id:218
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " has no tasks"}}
+
+
+id:219
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " waiting.\\\"\\\"\\\"\\"}}
+
+
+id:220
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n        with self"}}
+
+
+id:221
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "._lock"}}
+
+
+id:222
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ":\\n            return"}}
+
+
+id:223
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " len"}}
+
+
+id:224
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "(self._queue)"}}
+
+
+id:225
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " == 0\\n"}}
+
+
+id:226
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\n    def is"}}
+
+
+id:227
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "_full(self) ->"}}
+
+
+id:228
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " bool:\\"}}
+
+
+id:229
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n        \\\"\\\""}}
+
+
+id:230
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\\"Return"}}
+
+
+id:231
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " True if the queue"}}
+
+
+id:232
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " is"}}
+
+
+id:233
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " at capacity.\\\"\\\""}}
+
+
+id:234
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\\"\\"}}
+
+
+id:235
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n        with self"}}
+
+
+id:236
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "._lock:\\n"}}
+
+
+id:237
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "           "}}
+
+
+id:238
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " return len(self._"}}
+
+
+id:239
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "queue)"}}
+
+
+id:240
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " + len(self._"}}
+
+
+id:241
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "in_flight) >="}}
+
+
+id:242
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " self._capacity"}}
+
+
+id:243
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\n\",\"mqueue"}}
+
+
+id:244
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "/p"}}
+
+
+id:245
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "riority.py\":\"\\\""}}
+
+
+id:246
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\\"\\\"\\"}}
+
+
+id:247
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "nPriority-ordered"}}
+
+
+id:248
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " task"}}
+
+
+id:249
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " message wrapper.\\n"}}
+
+
+id:250
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\n"}}
+
+
+id:251
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "Uses a dataclass"}}
+
+
+id:252
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " with ordering so that"}}
+
+
+id:253
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " tasks can be placed"}}
+
+
+id:254
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " in a heap.\\"}}
+
+
+id:255
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "nA"}}
+
+
+id:256
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " deterministic, type-safe"}}
+
+
+id:257
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " tie-breaker ("}}
+
+
+id:258
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "sequence number"}}
+
+
+id:259
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ") is used for"}}
+
+
+id:260
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\nequal-p"}}
+
+
+id:261
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "riority"}}
+
+
+id:262
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " messages to avoid comparing"}}
+
+
+id:263
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " arbitrary payload types.\\"}}
+
+
+id:264
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n\\\"\\\"\\\"\\"}}
+
+
+id:265
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "nimport itertools\\n"}}
+
+
+id:266
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "from"}}
+
+
+id:267
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " dataclasses import data"}}
+
+
+id:268
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "class, field\\n"}}
+
+
+id:269
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "from typing import Any"}}
+
+
+id:270
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\n\\n_counter ="}}
+
+
+id:271
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " itertools"}}
+
+
+id:272
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ".count()\\n\\n"}}
+
+
+id:273
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\n@dataclass"}}
+
+
+id:274
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "(order=True)\\nc"}}
+
+
+id:275
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "lass PriorityTask:\\"}}
+
+
+id:276
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n    \\\"\\\""}}
+
+
+id:277
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\\"Lower urgency number"}}
+
+
+id:278
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " = higher priority ("}}
+
+
+id:279
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "0=critical,"}}
+
+
+id:280
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " "}}
+
+
+id:281
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "9=low)\\"}}
+
+
+id:282
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n\\n    FIX"}}
+
+
+id:283
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ": A monotonic"}}
+
+
+id:284
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " sequence number"}}
+
+
+id:285
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " is used as a"}}
+
+
+id:286
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " tie-breaker so"}}
+
+
+id:287
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " that"}}
+
+
+id:288
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\n    payloads of"}}
+
+
+id:289
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " any type (dict"}}
+
+
+id:290
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ","}}
+
+
+id:291
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " list, etc.)"}}
+
+
+id:292
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " are"}}
+
+
+id:293
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " never compared.\\n"}}
+
+
+id:294
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "    The message field"}}
+
+
+id:295
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " is excluded from comparison"}}
+
+
+id:296
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " entirely.\\n   "}}
+
+
+id:297
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " \\\"\\\"\\\"\\n"}}
+
+
+id:298
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "   "}}
+
+
+id:299
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " urgency: int\\n"}}
+
+
+id:300
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "   "}}
+
+
+id:301
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " seq: int ="}}
+
+
+id:302
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " field(default_factory=lambda"}}
+
+
+id:303
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ":"}}
+
+
+id:304
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " next(_counter))"}}
+
+
+id:305
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\n    message"}}
+
+
+id:306
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ": Any = field"}}
+
+
+id:307
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "(compare"}}
+
+
+id:308
+:HTTP_STATUS/200
+event: content_block_delta
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "=False)\\n\"}}"}}
+
+
+id:309
+:HTTP_STATUS/200
+event: content_block_stop
+data: {"type": "content_block_stop", "index": 0}
+
+event: message_delta
+data: {"type": "message_delta", "delta": {"stop_reason": "end_turn", "stop_sequence": null}, "usage": {"output_tokens": 964, "input_tokens": 1975, "cache_read_input_tokens": 0, "cache_creation_input_tokens": 0}}
+
+event: message_stop
+data: {"type": "message_stop"}
+
+
+data: [DONE]
+

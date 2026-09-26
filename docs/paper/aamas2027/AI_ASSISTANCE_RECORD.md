@@ -238,3 +238,72 @@ no score. The scorer barrier in the run therefore means no **explicit scoring
 call** until the actors were terminal, not no evaluator-module import. The
 deviation and its same-environment zero-LLM import probe are preserved in
 `protocol_import_deviation.json` alongside the report.
+
+On 2026-09-26 the user authorized the persistent N00–N05 research route with
+a direction check after every small task and Nebula A800 as the training
+platform. AI assistance reconciled fixture versus real evidence, strengthened
+the selection/assignment protocol, and wrote versioned task-material and
+consumer-action contracts. Source audit found that native TeamBench DIST1
+grading does not execute the delivered consumer. Separate parent-side behavior
+checks, a public worker, and pinned upstream sandbox-runtime integration were
+therefore added. Authored positive/negative fixtures, failed resource/cleanup
+attempts and the successful listed-boundary qualification are archived; none
+are model efficacy samples. The combined protocol/material/error-classification
+regression passed 66 checks. Independent read-only review identified a resource
+error being mislabeled as capability failure; the correction retains UNKNOWN.
+
+The official 2027 template was reverified against its archived hash. A separate
+one-page prospective title/abstract proposal was compiled and visually inspected;
+it is explicitly internal, has a submission guard, reports no efficacy, and
+leaves the backbone and update algorithm undetermined. The 2026 template link
+returned404 and was not relabeled. A local hyperxmp dependency repair and the
+remaining incomplete-ifx warning are recorded with the build artifact.
+
+ADR0017 limits the next two real development episodes to the independently
+executed consumer checks, without running native pytest or claiming adversarial
+trace security. In N02-dev-v1 the first producer's real request timed out after
+120.063seconds without response bytes. It is1 attempted episode,1 task request,
+unknown token usage,0 deliveries/judgments/actions/outcomes/updates and1 unstarted
+instance. It remains a failed integration, not a task quality result. Subsequent
+unauthenticated connection diagnostics and two separately logged real health
+requests established current short-request and SSE connectivity. Each health
+request reported66 input/25 output tokens. A versioned transport amendment adds
+raw SSE, timing and a300-second cap while retaining the model, task, prompts,
+token requests and scoring; its outcome is recorded separately in the task ledger.
+
+### 2026-09-26 N02 closure and N03 prerequisites
+
+The streaming v2 request returned HTTP200 but no final text or completed usage
+within300 seconds; its UNKNOWN is retained. ADR0018 explicitly documents one
+bounded stop-rule exception: disable thinking, retaining the four-attempt
+integration ceiling. V3 completed two limited real chains with six responses,
+14369 input/3527 output tokens and68.870 seconds of model-call time. Including
+three separately logged health/configuration calls, known usage is14518 input/
+3579 output tokens plus two requests with unknown usage. The source archive
+also records that the disabled-thinking documentation was independently fetched
+after the probe, despite the earlier config citation; it is not preverified provenance.
+
+An independent reviewer checked response completeness, raw/source hashes,
+15 ledger events and consumed future assignment. Repair scores remained at the
+0.5 prior; no selection probabilities or same-draw choices changed. A post-hoc
+sandbox audit found priority-module errors omitted by the four consumer checks.
+Both declared repairs only changed recipient-owned integration. These records
+remain diagnostics and do not overwrite original grades or become online labels.
+
+The assistant added a descriptive ownership-change classifier and explicit
+actor-facing responsibility metadata, with regression tests using the frozen
+real cases. A separate review examines persistent personal experience versus
+shared about-peer evidence; fresh identical producers have no implemented
+identity-dependent retained state. No N03 sampling or new GPU job is started.
+Benchmark/baseline and final backbone/update remain open. The current LaTeX
+proposal is prospective and contains no new efficacy claims.
+
+Independent N03 design reviews distinguish personal execution experience from
+third-party evidence and reject CROSS3 as a second code-delivery root because
+its downstream implementation is already complete. Its original plan-to-code
+path remains an unqualified reuse candidate, not a benchmark switch. The
+ownership regression suite passed80 engineering checks with no new inference.
+Closeout review corrected unobservable within-call cost decomposition and
+required transmitting the same consumer experience snapshot across fresh
+judgment/action calls. These are design/measurement corrections, not new
+learning results or a final method.

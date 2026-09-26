@@ -1,0 +1,92 @@
+{
+  "canaries": {
+    "public_read": {
+      "passed": true,
+      "observed": {
+        "ok": true,
+        "value": 15
+      }
+    },
+    "scratch_write": {
+      "passed": true,
+      "observed": {
+        "ok": true,
+        "value": 22
+      }
+    },
+    "source_write_denied": {
+      "passed": true,
+      "observed": {
+        "ok": false,
+        "error_type": "PermissionError"
+      }
+    },
+    "private_read_denied": {
+      "passed": true,
+      "observed": {
+        "ok": false,
+        "error_type": "PermissionError"
+      }
+    },
+    "private_write_denied": {
+      "passed": true,
+      "observed": {
+        "ok": false,
+        "error_type": "PermissionError"
+      }
+    },
+    "symlink_denied": {
+      "passed": true,
+      "observed": {
+        "ok": false,
+        "error_type": "PermissionError"
+      }
+    },
+    "parent_scorer_denied": {
+      "passed": true,
+      "observed": {
+        "ok": false,
+        "error_type": "PermissionError"
+      }
+    },
+    "network_denied": {
+      "passed": true,
+      "observed": {
+        "ok": false,
+        "error_type": "PermissionError"
+      }
+    },
+    "fork_denied": {
+      "passed": true,
+      "observed": {
+        "ok": false,
+        "error_type": "BlockingIOError"
+      }
+    },
+    "partial_line_timeout": {
+      "passed": true,
+      "error": "TimeoutError('Worker RPC/session deadline exceeded')"
+    },
+    "output_cap": {
+      "passed": true,
+      "error": "ValueError('Worker response buffer cap exceeded')"
+    },
+    "memory_limited": {
+      "passed": true,
+      "error": "RuntimeError('Worker process tree exceeded RSS watchdog')"
+    }
+  },
+  "arms": [],
+  "error": {
+    "type": "PermissionError",
+    "message": "[Errno 1] Operation not permitted",
+    "traceback": "Traceback (most recent call last):\n  File \"/Users/jingwu/work/earning-roles/scripts/peerrolebench_runtime_qualification.py\", line 95, in main\n    log(\"canary_result\", {\"name\": name, **result})\n  File \"/Users/jingwu/work/earning-roles/scripts/peerrolebench_sandbox.py\", line 226, in __exit__\n    self.close()\n  File \"/Users/jingwu/work/earning-roles/scripts/peerrolebench_sandbox.py\", line 211, in close\n    os.killpg(self.proc.pid, signal.SIGKILL)\nPermissionError: [Errno 1] Operation not permitted\n"
+  },
+  "listed_runtime_checks_passed": true,
+  "fixture_discrimination_passed": false,
+  "qualified_for_listed_development_checks": false,
+  "strict_N01_gate_passed": false,
+  "benchmark_qualified": false,
+  "scientific_claim_allowed": false,
+  "native_score_available": false
+}

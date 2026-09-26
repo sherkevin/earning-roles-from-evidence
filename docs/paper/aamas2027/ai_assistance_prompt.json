@@ -9,7 +9,7 @@
   "continuation_prompt": "继续",
   "q1_novelty_prompt": "Q1里我们的真正创新点是什么，你要和现在已经发表的论文对比",
   "q1_fusion_prompt": "我们之前的 earning roles from evidence 的核心创新点是否可以融合进来形成一条紧密自洽的故事线和创新线",
-  "last_updated": "2026-09-23",
+  "last_updated": "2026-09-26",
   "problem_diagnosis_prompt": "问题出在哪里",
   "report_reassessment_prompt": "你仔细阅读一下我们的这份报告，你认为提出的评判是否正确？我们现在到底还有什么不足，要客观公正地给出来，我们一起来讨论",
   "latest_progress_prompt": "获取最新进展",
@@ -26,5 +26,6 @@
   "empirical_iteration_authorization_prompt": "只说是不行的，要真的去做，你可以做真实数据验证，看看该方案可不可行，整体的迭代流程是：1. 优化故事线 2. 确定创新点 3. 围绕创新点确定自洽紧密的方法论 4. 我们的真实数据集去做小批量实验验证 5. 查看结果，综合考虑故事线，方法论，实验结果是否满足要求，如果可行就确定，不可行就继续讨论，持续迭代，那你说的这些问题都解决掉，最终目的是提高中稿率，有任何需要我协助或者澄清的就告诉我，我们的实验是调用llm api来做的，你可以使用 [@Remote Desktop Commander](plugin://app-6a057d268ebc81919918d37eec718425@openai-curated-remote) 控制 local device（macos）这台机器去调用idealab（cc-switch有对应配置，名字叫“内部”）的模型，整体的协作怎么好用怎么来（本台机器没有api，只有macos可以连上idealab）",
   "pause_and_push_prompt": "先不做了，先把现状都写到文档里，然后推送到远程github仓库",
   "empirical_iteration_resumption_prompt": "拉取最新进展，阅读项目。只说是不行的，要真的去做，你可以做真实数据验证，看看该方案可不可行，整体的迭代流程是：1. 优化故事线 2. 确定创新点 3. 围绕创新点确定自洽紧密的方法论 4. 我们的真实数据集去做小批量实验验证 5. 查看结果，综合考虑故事线，方法论，实验结果是否满足要求，如果可行就确定，不可行就继续讨论，持续迭代，那你说的这些问题都解决掉，最终目的是提高中稿率，有任何需要我协助或者澄清的就告诉我，我们的实验是调用llm api来做的，你可以使用idealab（cc-switch有对应配置，名字叫“内部”）的模型",
-  "peer_judged_coevolution_prompt": "不好，这是个伪命题，因为 workflow 里的 agent 自然是与该 workflow 共生的，这个问题不好，不如原来的问题，还是继续研究原来的问题"
+  "peer_judged_coevolution_prompt": "不好，这是个伪命题，因为 workflow 里的 agent 自然是与该 workflow 共生的，这个问题不好，不如原来的问题，还是继续研究原来的问题",
+  "persistent_aamas_goal_prompt": "我同意按照这个计划持续地去做，做完一个小任务就回头看一下是不是跑偏了。\n\n注意我们的最终目标是实现方法论、故事线跟实验的完美融合。特别注意：\n\n1. benchmark 和 baseline 的选择要合适；\n2. 我们的整个流程、故事线、方法论以及实验，都要完美符合 AAMAS 的审美品味要求。这是一个持续而持久的任务，你可以设置一个目标，持续地去做。至于实验，我们会选用星云的 A800 的卡去做。可以看 [$nebula-support](/Users/jingwu/.agents/skills/nebula-support/SKILL.md) ，并且有星云（Nebula）的 CLI 可以用\n3. 我们做的每一步都要有意义，都要能推动我们的项目往前走。如果遇到真正的问题不得不停下来的话，可以去做调研，参考别人的方法，还有我的 vault 仓库里面的笔记，我们做的每一步都要往前推动，让我们的项目能够被 aamas 接收\n4. 另外，你可以着眼去写题目和摘要了。可以先下载今年 AAMAS 的论文模板，使用 latex 去写。"
 }

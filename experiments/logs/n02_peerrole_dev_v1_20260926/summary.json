@@ -1,0 +1,52 @@
+{
+  "kind": "postrun analysis of unchanged frozen v1",
+  "analyzed_utc": "2026-09-26T13:49:30.733612+00:00",
+  "attempted_episodes": 1,
+  "task_request_attempts": 1,
+  "returned_responses": 0,
+  "unknown_usage_attempts": 1,
+  "complete_chains": 0,
+  "state": {
+    "consumers": [
+      "agent_A",
+      "agent_C"
+    ],
+    "selected": [
+      "agent_B"
+    ],
+    "propensities": [
+      0.5
+    ],
+    "initial_draw": 0.07290849869234961,
+    "next_draw": 0.015814129906057794,
+    "statuses": [
+      "UNKNOWN",
+      "unstarted"
+    ],
+    "shared_evidence": [],
+    "scores": {
+      "agent_A": 0.5,
+      "agent_B": 0.5,
+      "agent_C": 0.5
+    }
+  },
+  "observed_failure": [
+    {
+      "elapsed_seconds": 120.06274599999999,
+      "http_status": "000",
+      "exit_code": 28,
+      "stderr": "curl: (28) Operation timed out after 120006 milliseconds with 0 bytes received\n",
+      "stage": "producer",
+      "directory": "episode_0",
+      "usage": null,
+      "usage_complete": false
+    }
+  ],
+  "scientific_claim_allowed": false,
+  "input_hashes": {
+    "config.json": "52071054486e6f09ec13e07fa17759f17913c6dc8b72b7dd0ef512e8637c09b6",
+    "raw.jsonl": "4a9c91a646cef13cda35a4ce1233356c705aed0646d9cbbc39a88d1fd2fbfc2a",
+    "state.json": "325e17ecc1358b9b68971a8834ecc49ea9fb9e5fd27665635b610fee862cc4bc",
+    "ledger.json": "bc8925de8cf9862f12a5e87724a928d15d2cf493f74fac43f7e7bb700e900f76"
+  }
+}

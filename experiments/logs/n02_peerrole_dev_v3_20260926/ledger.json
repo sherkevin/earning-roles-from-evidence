@@ -1,0 +1,212 @@
+[
+  {
+    "event_type": "peer_selection",
+    "payload": {
+      "selection_id": "selection-0",
+      "task_id": "DIST1_queue_race",
+      "task_index": 0,
+      "selector_id": "agent_A",
+      "role": "producer",
+      "candidate_ids": [
+        "agent_B",
+        "agent_C"
+      ],
+      "chosen_peer_id": "agent_B",
+      "propensity": 0.5
+    },
+    "previous_hash": "GENESIS",
+    "record_hash": "7fd029bf856a149313b288e1a0bc26e4f4ecf3113f00576ad01c8e554635a3c6"
+  },
+  {
+    "event_type": "task_start",
+    "payload": {
+      "task_id": "DIST1_queue_race",
+      "task_index": 0
+    },
+    "previous_hash": "7fd029bf856a149313b288e1a0bc26e4f4ecf3113f00576ad01c8e554635a3c6",
+    "record_hash": "5073e4c5ebdd185242cca1454e80029f7c15fe581ef8e81e911634957d708ca2"
+  },
+  {
+    "event_type": "producer_delivery",
+    "payload": {
+      "delivery_id": "delivery-0",
+      "task_id": "DIST1_queue_race",
+      "producer_id": "agent_B",
+      "recipient_id": "agent_A",
+      "artifact_sha256": "22151c18471bf6a4e909cfc457b53288c60b4712927b26cbd4a6fc778da23f8b",
+      "source_event_id": "producer-request-0",
+      "task_index": 0,
+      "selection_id": "selection-0"
+    },
+    "previous_hash": "5073e4c5ebdd185242cca1454e80029f7c15fe581ef8e81e911634957d708ca2",
+    "record_hash": "cf008ef5fba1cab7e237fde95e7619cb265fc6aedf4c681c5743ecc91ed5981e"
+  },
+  {
+    "event_type": "recipient_judgment",
+    "payload": {
+      "judgment_id": "judgment-0",
+      "delivery_id": "delivery-0",
+      "consumer_id": "agent_A",
+      "decision": "accept_with_rework",
+      "observed_artifact_sha256": "22151c18471bf6a4e909cfc457b53288c60b4712927b26cbd4a6fc778da23f8b",
+      "terminal_outcome_available": false,
+      "repair_note": "Update TaskConsumer.run_once() to: 1) Unpack the (message, receipt) tuple from self._queue.get(), 2) Wrap self._handler(message) in try/except, 3) Call self._queue.ack(receipt) on success, 4) Call self._queue.nack(receipt) on exception to re-queue the message."
+    },
+    "previous_hash": "cf008ef5fba1cab7e237fde95e7619cb265fc6aedf4c681c5743ecc91ed5981e",
+    "record_hash": "cd02c35d5cc6def513623ee74ae3238250e1486271c7da3f207230ef3f6b6da3"
+  },
+  {
+    "event_type": "consumer_action",
+    "payload": {
+      "action_id": "action-0",
+      "delivery_id": "delivery-0",
+      "consumer_id": "agent_A",
+      "used_artifact": true,
+      "input_artifact_sha256": "22151c18471bf6a4e909cfc457b53288c60b4712927b26cbd4a6fc778da23f8b",
+      "output_artifact_sha256": "9a90d3facaaf3f9678cda433231235401df6a7e7c363bf3c393def265305c9a1",
+      "repair_cost": 10.409021875,
+      "action": "repair"
+    },
+    "previous_hash": "cd02c35d5cc6def513623ee74ae3238250e1486271c7da3f207230ef3f6b6da3",
+    "record_hash": "e82e8fe3a874d8dcef73883d18aa0bb8959f7265ac64ab92f42ecb5bc56f4cdc"
+  },
+  {
+    "event_type": "terminal_outcome",
+    "payload": {
+      "outcome_id": "outcome-0",
+      "delivery_id": "delivery-0",
+      "success": true,
+      "scorer_version": "dist1-consumer-behavior-v2",
+      "partial_score": 1.0,
+      "score_payload_sha256": "a6ccabf0d6e08dc2d96db743773fa622bbc6ba3315ce938b421cb14ac9015467"
+    },
+    "previous_hash": "e82e8fe3a874d8dcef73883d18aa0bb8959f7265ac64ab92f42ecb5bc56f4cdc",
+    "record_hash": "6a2d218ca9977c4da167c033115aadcaa9078b5f91de5a8aff6b0a00b6e63dc0"
+  },
+  {
+    "event_type": "role_evidence_update",
+    "payload": {
+      "evidence_id": "evidence-0",
+      "judgment_id": "judgment-0",
+      "action_id": "action-0",
+      "outcome_id": "outcome-0",
+      "update_version": "integration-action-score-v1",
+      "arrived_at": 1790431231.113652
+    },
+    "previous_hash": "6a2d218ca9977c4da167c033115aadcaa9078b5f91de5a8aff6b0a00b6e63dc0",
+    "record_hash": "b28d9fe5d145638057c8913d5e2e44a534a1ac45e95738472c63a4b01010b8ce"
+  },
+  {
+    "event_type": "later_assignment",
+    "payload": {
+      "assignment_id": "assignment-1",
+      "task_id": "DIST1_queue_race",
+      "task_index": 1,
+      "agent_id": "agent_A",
+      "role": "producer",
+      "evidence_ids": [
+        "evidence-0"
+      ],
+      "decision_propensity": 0.5
+    },
+    "previous_hash": "b28d9fe5d145638057c8913d5e2e44a534a1ac45e95738472c63a4b01010b8ce",
+    "record_hash": "89d5a2a42a9095d93c62ab40c0128b0776f5938f95bba77072aa0e17ab89cfd2"
+  },
+  {
+    "event_type": "peer_selection",
+    "payload": {
+      "selection_id": "selection-1",
+      "task_id": "DIST1_queue_race",
+      "task_index": 1,
+      "selector_id": "agent_C",
+      "role": "producer",
+      "candidate_ids": [
+        "agent_A",
+        "agent_B"
+      ],
+      "chosen_peer_id": "agent_A",
+      "propensity": 0.5
+    },
+    "previous_hash": "89d5a2a42a9095d93c62ab40c0128b0776f5938f95bba77072aa0e17ab89cfd2",
+    "record_hash": "2d9d9ef158531ef087bb01d5d7de4fb37f58c488bb9d9e7f5a094aa3e95a9bbc"
+  },
+  {
+    "event_type": "task_start",
+    "payload": {
+      "task_id": "DIST1_queue_race",
+      "task_index": 1
+    },
+    "previous_hash": "2d9d9ef158531ef087bb01d5d7de4fb37f58c488bb9d9e7f5a094aa3e95a9bbc",
+    "record_hash": "f711e3faa19fe4e97dedb4efdc17b71b2cc5fe10320b6a50f8f03b9e1d5bd801"
+  },
+  {
+    "event_type": "producer_delivery",
+    "payload": {
+      "delivery_id": "delivery-1",
+      "task_id": "DIST1_queue_race",
+      "producer_id": "agent_A",
+      "recipient_id": "agent_C",
+      "artifact_sha256": "02c208d782e178f613c0fc59eae02619d01719061ccc88127f7f1f1580747006",
+      "source_event_id": "producer-request-1",
+      "task_index": 1,
+      "selection_id": "selection-1"
+    },
+    "previous_hash": "f711e3faa19fe4e97dedb4efdc17b71b2cc5fe10320b6a50f8f03b9e1d5bd801",
+    "record_hash": "0163c232c2c4e592e16f5f6722b987c4ffd9018115537ad22522daf8f34ac5ff"
+  },
+  {
+    "event_type": "recipient_judgment",
+    "payload": {
+      "judgment_id": "judgment-1",
+      "delivery_id": "delivery-1",
+      "consumer_id": "agent_C",
+      "decision": "accept_with_rework",
+      "observed_artifact_sha256": "02c208d782e178f613c0fc59eae02619d01719061ccc88127f7f1f1580747006",
+      "terminal_outcome_available": false,
+      "repair_note": "Update EventConsumer.run_once() to: 1) Unpack the (message, receipt) tuple from self._queue.get(), 2) Wrap self._handler(message) in try/except, 3) Call self._queue.ack(receipt) on success, 4) Call self._queue.nack(receipt) on exception to re-queue the message."
+    },
+    "previous_hash": "0163c232c2c4e592e16f5f6722b987c4ffd9018115537ad22522daf8f34ac5ff",
+    "record_hash": "c6c0d1927c813515cd850a7d475a56106ee278c3bcc9b47bb9fc4af6c784314d"
+  },
+  {
+    "event_type": "consumer_action",
+    "payload": {
+      "action_id": "action-1",
+      "delivery_id": "delivery-1",
+      "consumer_id": "agent_C",
+      "used_artifact": true,
+      "input_artifact_sha256": "02c208d782e178f613c0fc59eae02619d01719061ccc88127f7f1f1580747006",
+      "output_artifact_sha256": "38d929bc7d98fd88367f58a0e534f15c71d1b1a7fd8aab615204576db57ecebe",
+      "repair_cost": 8.045380124999998,
+      "action": "repair"
+    },
+    "previous_hash": "c6c0d1927c813515cd850a7d475a56106ee278c3bcc9b47bb9fc4af6c784314d",
+    "record_hash": "ce91f68caed8c60a027406a32ffe3bfffed42447fa97ed4d7fb9cc83649c5c7e"
+  },
+  {
+    "event_type": "terminal_outcome",
+    "payload": {
+      "outcome_id": "outcome-1",
+      "delivery_id": "delivery-1",
+      "success": true,
+      "scorer_version": "dist1-consumer-behavior-v2",
+      "partial_score": 1.0,
+      "score_payload_sha256": "a6ccabf0d6e08dc2d96db743773fa622bbc6ba3315ce938b421cb14ac9015467"
+    },
+    "previous_hash": "ce91f68caed8c60a027406a32ffe3bfffed42447fa97ed4d7fb9cc83649c5c7e",
+    "record_hash": "1efe99bedcb0c0771cad7dd11f23c41e8219c9fdd9c33034a5836c8c9d4f858a"
+  },
+  {
+    "event_type": "role_evidence_update",
+    "payload": {
+      "evidence_id": "evidence-1",
+      "judgment_id": "judgment-1",
+      "action_id": "action-1",
+      "outcome_id": "outcome-1",
+      "update_version": "integration-action-score-v1",
+      "arrived_at": 1790431341.698215
+    },
+    "previous_hash": "1efe99bedcb0c0771cad7dd11f23c41e8219c9fdd9c33034a5836c8c9d4f858a",
+    "record_hash": "e2c5cff92a4a5dfceccbf657b9061459fd88b9230b881314423fd41ea9c580c7"
+  }
+]

@@ -1,0 +1,81 @@
+{
+  "canary_contract_passed": true,
+  "production_sandbox_qualified": false,
+  "same_process_gold_protected": false,
+  "scientific_claim_allowed": false,
+  "records": {
+    "unsandboxed_control": {
+      "name": "unsandboxed_control",
+      "exit_code": 0,
+      "stdout": "{\"child_private_read\": {\"allowed\": true, \"denied_as_permission_error\": false, \"returncode\": 0}, \"loopback_connect\": {\"allowed\": true}, \"private_read\": {\"allowed\": true}, \"private_write\": {\"allowed\": true}, \"public_read\": {\"allowed\": true}, \"public_write\": {\"allowed\": true}, \"symlink_read\": {\"allowed\": true}}\n",
+      "stderr": "",
+      "wall_seconds": 0.22397749999072403,
+      "checks": {
+        "child_private_read": {
+          "allowed": true,
+          "denied_as_permission_error": false,
+          "returncode": 0
+        },
+        "loopback_connect": {
+          "allowed": true
+        },
+        "private_read": {
+          "allowed": true
+        },
+        "private_write": {
+          "allowed": true
+        },
+        "public_read": {
+          "allowed": true
+        },
+        "public_write": {
+          "allowed": true
+        },
+        "symlink_read": {
+          "allowed": true
+        }
+      }
+    },
+    "sandboxed": {
+      "name": "sandboxed",
+      "exit_code": 0,
+      "stdout": "{\"child_private_read\": {\"allowed\": false, \"denied_as_permission_error\": true, \"returncode\": 1}, \"loopback_connect\": {\"allowed\": false, \"errno\": 1, \"error\": \"PermissionError\"}, \"private_read\": {\"allowed\": false, \"errno\": 1, \"error\": \"PermissionError\"}, \"private_write\": {\"allowed\": false, \"errno\": 1, \"error\": \"PermissionError\"}, \"public_read\": {\"allowed\": true}, \"public_write\": {\"allowed\": true}, \"symlink_read\": {\"allowed\": false, \"errno\": 1, \"error\": \"PermissionError\"}}\n",
+      "stderr": "",
+      "wall_seconds": 0.26335466699674726,
+      "checks": {
+        "child_private_read": {
+          "allowed": false,
+          "denied_as_permission_error": true,
+          "returncode": 1
+        },
+        "loopback_connect": {
+          "allowed": false,
+          "errno": 1,
+          "error": "PermissionError"
+        },
+        "private_read": {
+          "allowed": false,
+          "errno": 1,
+          "error": "PermissionError"
+        },
+        "private_write": {
+          "allowed": false,
+          "errno": 1,
+          "error": "PermissionError"
+        },
+        "public_read": {
+          "allowed": true
+        },
+        "public_write": {
+          "allowed": true
+        },
+        "symlink_read": {
+          "allowed": false,
+          "errno": 1,
+          "error": "PermissionError"
+        }
+      }
+    }
+  },
+  "boundary": "This probe checks listed accesses only; native pytest shares candidate and test memory."
+}

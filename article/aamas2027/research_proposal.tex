@@ -1,0 +1,91 @@
+% Internal proposal: this file is intentionally excluded from submission builds.
+\documentclass[sigconf,anonymous]{aamas}
+\input{aamas_metadata}
+\acmSubmissionID{INTERNAL PRE-RESULTS PROPOSAL}
+
+\title[Learning Roles from Situated Peer Judgments]{Learning Roles from Situated Peer Judgments in Multi-Agent Collaboration}
+\ccsdesc[500]{Computing methodologies~Multi-agent systems}
+\keywords{Multiagent coordination, role learning, peer judgment, online adaptation}
+
+\begin{abstract}
+Multi-agent collaboration requires decisions about who should do what, yet a
+team's final outcome does not identify which contributions helped the agents
+that depended on them. We study whether judgments made by actual consumers of
+delivered work can support role formation across tasks among agents without
+assigned expert roles. We define a role as a context-dependent pattern of
+responsibilities supported by an agent's collaboration history. The proposed
+approach links consumer acceptance, actual use, and repair effort to the
+producing agent, with later attributable outcomes correcting mistaken
+judgments. Subsequent collaborators would use this evidence before assigning
+new work, including collaborators who did not directly evaluate the producer.
+This makes transfer across collaborators part of the hypothesis. A small
+decision model updated from delayed feedback on selected peers is a candidate
+implementation; its backbone and update rule remain to be determined. The
+planned evaluation uses tasks with genuine dependencies, independent outcome
+checks, and matched observation and computation budgets. Comparisons with
+contextual trust, bandit selection, and peer-profile adaptation would test
+whether situated judgments improve future team quality and total cost.
+Removing judgments, shuffling their attribution, and withholding their transfer
+would test the proposed mechanism. The central question is when collaboration
+history supports useful divisions of responsibility beyond a private preference
+for the best peer.
+\end{abstract}
+
+\begin{document}
+\maketitle
+
+\noindent\textbf{Internal pre-results proposal --- not for submission.}
+This document fixes a working question and prospective tests. It does not
+report an evaluated learning method. The benchmark, backbone, update mechanism,
+and empirical conclusions remain open.
+
+\section{The Contribution We Need to Establish}
+
+The target is a mechanism that uses situated judgments to change useful future
+responsibilities. It must specify who may observe and share an evaluation,
+what can be updated after delayed evidence arrives, and how the resulting
+state changes a decision before work begins. A role label by itself is not an
+outcome. The intended evidence is a change in actual assignments that improves
+subsequent quality and complete collaboration cost.
+
+The first development task separates a producer's code delivery from a
+recipient's dependent integration work. These are temporary responsibilities,
+not preset expert identities. A short, single-handoff probe can establish an
+executable information boundary; it cannot establish decentralized role
+formation or the full recursive collaboration setting.
+
+\section{Prospective Discriminating Tests}
+
+\paragraph{Task and signal qualification.}
+Use real delivered work and record the recipient's initial judgment, actual
+use, revisions, and completion cost. Keep independent evaluation outside the
+agent observation boundary. Distinguish the quality of a delivery from the
+quality obtained after another agent repairs it. Split by task structure
+rather than treating renamed instances as independent problems.
+
+\paragraph{Future responsibility.}
+Evaluate legal pre-execution assignments on unseen tasks, including decisions
+by collaborators who did not directly judge the candidate. Match initial
+agents, observations, exploration opportunities, memory, and total resources.
+Give the contextual trust or bandit comparator the same evidence. Test whether
+task-dependent divisions of responsibility explain any benefit beyond selecting
+one globally stronger peer.
+
+\paragraph{Mechanism and cost.}
+Remove judgment information, scramble its source within comparable contexts,
+or withhold its transfer while preserving the remaining execution rules. If
+real-time training becomes the contribution, compare one explicit updater with
+online SGD, RLS, and periodic refitting. Measure old-task retention, adaptation,
+and feedback-to-serving latency jointly; inexpensive parameter updates alone
+do not establish useful real-time learning.
+
+\section{Current Evidence Boundary}
+
+The existing executable fixtures test protocol ordering and artifact lineage.
+Their judgments and repairs are programmed, so they do not support learning
+efficacy. Earlier API probes establish narrower transport and interaction
+observations. There is no completed controlled result for the method proposed
+here. All result claims and a final algorithm description must be supplied from
+auditable experiments before this proposal can become a submission manuscript.
+
+\end{document}

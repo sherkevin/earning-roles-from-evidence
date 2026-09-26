@@ -1,0 +1,67 @@
+{
+  "analysis_utc": "2026-09-26T14:05:36.185317+00:00",
+  "task_request_attempts": 6,
+  "successful_responses": 6,
+  "usage": {
+    "input_tokens": 14369,
+    "output_tokens": 3527,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  },
+  "unknown_usage_attempts": 0,
+  "total_model_seconds": 68.87035695899999,
+  "episodes": [
+    {
+      "index": 0,
+      "consumer": "agent_A",
+      "producer": "agent_B",
+      "propensity": 0.5,
+      "decision": "accept_with_rework",
+      "action": "repair",
+      "changed_paths": [
+        "mqueue/consumer.py"
+      ],
+      "producer_files_changed_by_consumer": false,
+      "consumer_behavior_score": 1.0,
+      "consumer_score_scope": "dist1-consumer-behavior-v2",
+      "model_seconds": 36.528328791999996,
+      "consumer_call_seconds": 10.409021875,
+      "producer_objective_quality": null
+    },
+    {
+      "index": 1,
+      "consumer": "agent_C",
+      "producer": "agent_A",
+      "propensity": 0.5,
+      "decision": "accept_with_rework",
+      "action": "repair",
+      "changed_paths": [
+        "mqueue/consumer.py"
+      ],
+      "producer_files_changed_by_consumer": false,
+      "consumer_behavior_score": 1.0,
+      "consumer_score_scope": "dist1-consumer-behavior-v2",
+      "model_seconds": 32.342028166999995,
+      "consumer_call_seconds": 8.045380124999998,
+      "producer_objective_quality": null
+    }
+  ],
+  "completed_limited_chains": 2,
+  "ledger_hash_chain_valid": true,
+  "event_count": 15,
+  "assignment_consumed": true,
+  "controller_scores_changed": false,
+  "counterfactual_no_update_choice_with_same_draw": "agent_A",
+  "different_from_no_update_choice": false,
+  "peer_evidence_transferred": true,
+  "feedback_caused_assignment_change": false,
+  "cross_root_generalization": false,
+  "native_score_executed": false,
+  "scientific_claim_allowed": false,
+  "input_hashes": {
+    "config.json": "ce9c127301c585815f0bafc4f099fcc79416fa78059f36f404608616a2131b08",
+    "raw.jsonl": "915375fc98ef58b8d0cac47b117973e5d635bdfc41bfc98e3183e31da37ef53e",
+    "state.json": "6a2ec7b43e6ee727b546f5f1af83580030ab9bbf482654ac4cf3cd1c7ba411c4",
+    "ledger.json": "c411440dbf6057270ed355fbf0817e7a03764c4810eb039f3b96043d1af9ee07"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "usage": {
+    "input_tokens": 2639,
+    "output_tokens": 550,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  },
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"source_files\":{\"mqueue/consumer.py\":\"\\\"\\\"\\\"Consumer interface for the task queue.\\n\\nThis consumer uses an acknowledgment pattern — it calls get() to receive\\na (message, receipt) tuple, processes the message, and then calls ack(receipt)\\non success or nack(receipt) on failure to re-queue the message.\\n\\\"\\\"\\\"\\nimport threading\\nimport time\\nfrom typing import Any, Callable, Optional\\n\\nfrom mqueue.queue import TaskQueue\\n\\n\\nclass TaskConsumer:\\n    \\\"\\\"\\\"\\n    Consumes tasks from a TaskQueue.\\n\\n    Uses the ack/nack pattern: messages are only confirmed-delivered\\n    when ack(receipt) is called after successful processing.\\n    If the handler raises, nack(receipt) is called to re-queue the message.\\n    \\\"\\\"\\\"\\n\\n    def __init__(\\n        self,\\n        queue: TaskQueue,\\n        handler: Callable[[Any], None],\\n        consumer_id: int = 0,\\n    ):\\n        self._queue = queue\\n        self._handler = handler\\n        self._consumer_id = consumer_id\\n        self._processed: list = []\\n        self._lock = threading.Lock()\\n        self._running = False\\n\\n    def run_once(self) -> bool:\\n        \\\"\\\"\\\"\\n        Process one task from the queue.\\n\\n        Returns True if a task was processed, False if the queue was empty.\\n        \\\"\\\"\\\"\\n        result = self._queue.get()\\n        if result is None:\\n            return False\\n        message, receipt = result\\n        try:\\n            self._handler(message)\\n            self._queue.ack(receipt)\\n            with self._lock:\\n                self._processed.append(message)\\n            return True\\n        except Exception:\\n            self._queue.nack(receipt)\\n            raise\\n\\n    def run_until_empty(self, max_idle_cycles: int = 10) -> None:\\n        \\\"\\\"\\\"Drain the queue, stopping after max_idle_cycles consecutive empty polls.\\\"\\\"\\\"\\n        idle = 0\\n        while idle < max_idle_cycles:\\n            if self.run_once():\\n                idle = 0\\n            else:\\n                idle += 1\\n                time.sleep(0.001)\\n\\n    @property\\n    def processed_count(self) -> int:\\n        return len(self._processed)\\n\\n    @property\\n    def processed_messages(self) -> list:\\n        with self._lock:\\n            return list(self._processed)\\n\"}}"
+    }
+  ],
+  "thinking_delta_count": 0,
+  "model": "qwen3.8-max",
+  "id": "f4dd03d9-9953-97ad-87a3-1cf0597bbba4",
+  "stop_reason": "end_turn",
+  "final_usage_observed": true
+}

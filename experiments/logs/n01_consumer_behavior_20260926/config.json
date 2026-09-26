@@ -1,0 +1,34 @@
+{
+  "kind": "consumer_scorer_mutation_qualification",
+  "command": [
+    "scripts/peerrolebench_consumer_qualification.py",
+    "--output",
+    "experiments/logs/n01_consumer_behavior_20260926"
+  ],
+  "source_commit": "d185aef1916fd86a9ba554d581fd256319a973af",
+  "source_hashes": {
+    "peerrolebench_consumer_qualification.py": "5fa001e858c6f6f99bcb54a575ec9caab227d05b8305541a3f295ce674db9fc8",
+    "peerrolebench_consumer_worker.py": "55189685aa24e61548133e20995dec7cbaa0cfe00254e610d9d31a9e8bde6482",
+    "peerrolebench_consumer_checks.py": "d118b57576f7d213b27048cba0aa0a2dda3d6902fc9e53b728942fdf49382632",
+    "peerrolebench_task_contract.py": "6ab5f760c812626311e3cdb3d963f5fcb70fc9fdc2de4e890bd94909c3504e8a",
+    "peerrolebench_tb_vertical_slice.py": "77a3e699add298bcf3e846f4d62468e15d0fcf7a1b3135ec62912af1796a1ca3"
+  },
+  "task_id": "DIST1_queue_race",
+  "seed": 0,
+  "arms": [
+    "fixed",
+    "original_consumer",
+    "no_ack",
+    "no_nack",
+    "drops_falsy"
+  ],
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "random_seed": null,
+  "execution": "trusted hand-written fixtures only; not sandbox-qualified",
+  "timeout_per_rpc_seconds": 3,
+  "native_grade_invoked": false,
+  "real_llm_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false
+}

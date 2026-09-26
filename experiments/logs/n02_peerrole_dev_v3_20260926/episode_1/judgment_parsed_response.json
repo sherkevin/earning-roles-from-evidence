@@ -1,0 +1,19 @@
+{
+  "usage": {
+    "input_tokens": 2753,
+    "output_tokens": 251,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  },
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"decision\":\"accept_with_rework\",\"confidence\":0.95,\"rationale\":\"The producer fixed queue.py (atomic put, ack/nack get) and priority.py (type-safe tie-breaker), but consumer.py still uses the old fire-and-forget pattern. It calls self._queue.get() and treats the result as a plain message instead of unpacking the (message, receipt) tuple. This will crash under the new API. The prior evidence from seed 0 confirms this exact issue.\",\"repair_plan\":\"Update EventConsumer.run_once() to: 1) Unpack the (message, receipt) tuple from self._queue.get(), 2) Wrap self._handler(message) in try/except, 3) Call self._queue.ack(receipt) on success, 4) Call self._queue.nack(receipt) on exception to re-queue the message.\",\"observed_artifact_sha256\":\"02c208d782e178f613c0fc59eae02619d01719061ccc88127f7f1f1580747006\"}"
+    }
+  ],
+  "thinking_delta_count": 0,
+  "model": "qwen3.8-max",
+  "id": "8316b6cd-ed68-9da6-bdba-38fdc05e2787",
+  "stop_reason": "end_turn",
+  "final_usage_observed": true
+}

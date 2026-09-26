@@ -1,5 +1,14 @@
 # Peer-role benchmark 候选复审与主 benchmark 选择
 
+> **2026-09-26执行证据修正：** 下文“目前最合适”“建议冻结”为当时调研建议，
+> 尚未取得正式资格，不能继续当作已确认选择。DIST1的seed仅属一个结构root，
+> native评分未执行实际consumer；两条真实限定链又暴露priority覆盖与职责归因
+> 缺口。CROSS3代码交付切面因下游本已完成而未准入。当前状态以
+> [N02结果](n02_real_closed_loop_review_20260926.md)、
+> [CROSS3源码审查](n03_cross3_candidate_audit_20260926.md)和
+> [主台账](../coordination/AAMAS_TASKS.md)为准。原表保留作候选来源与复用索引，
+> 未替代ADR0008、未证明存在独立held-out任务。
+
 > 日期：2026-09-25  
 > 状态：建议冻结，等待用户确认后写入新的 ADR
 > 目的：为“从接收方判断中学习 peer role，并把证据用于后续分派”找到可复现、可比较、能直接跑小批量实验的 benchmark。

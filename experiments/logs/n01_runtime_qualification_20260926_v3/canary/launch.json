@@ -1,0 +1,40 @@
+{
+  "command": [
+    "/opt/homebrew/Cellar/node/26.0.0/bin/node",
+    "/Users/jingwu/work/earning-roles/tools/peerrole-runtime/node_modules/@anthropic-ai/sandbox-runtime/dist/cli.js",
+    "--settings",
+    "/Users/jingwu/work/earning-roles/experiments/logs/n01_runtime_qualification_20260926_v3/canary/settings.json",
+    "--",
+    "/Users/jingwu/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/bin/python3.12",
+    "-I",
+    "-B",
+    "/private/var/folders/18/6x97xlvs65gg9v7vkvlbpfkr0000gn/T/peerrole-worker-ut2o7sfe/driver/limits.py",
+    "/private/var/folders/18/6x97xlvs65gg9v7vkvlbpfkr0000gn/T/peerrole-worker-ut2o7sfe/driver/worker.py",
+    "/private/var/folders/18/6x97xlvs65gg9v7vkvlbpfkr0000gn/T/peerrole-worker-ut2o7sfe/public",
+    "TaskQueue",
+    "TaskConsumer"
+  ],
+  "environment": {
+    "PATH": "/opt/homebrew/Cellar/node/26.0.0/bin:/usr/bin:/bin",
+    "LANG": "C",
+    "CLAUDE_CODE_TMPDIR": "/private/var/folders/18/6x97xlvs65gg9v7vkvlbpfkr0000gn/T/peerrole-worker-ut2o7sfe/scratch",
+    "PEERROLE_SCRATCH": "/private/var/folders/18/6x97xlvs65gg9v7vkvlbpfkr0000gn/T/peerrole-worker-ut2o7sfe/scratch"
+  },
+  "runtime_version": "0.0.77",
+  "runtime_lock_sha256": "7cdae083b7ce369a56adaca5504164fcff854102bc102123e3af5790b139de3c",
+  "worker_sha256": "0f9180a7939b33bb58471b64ab33a4efc5f8c62d8eab9a7dba7ec8ce659dba98",
+  "limits_sha256": "16217095d159a53ed2b6916882b4dbc27bbcc287d16862390d6391abe3656690",
+  "sources": {
+    "mqueue/input.py": "02810f18810948baf87417e583747c7684a1dc71880d4f4b520d89516c5e534f"
+  },
+  "rpc_timeout_seconds": 5,
+  "session_timeout_seconds": 40,
+  "max_response_line_bytes": 65536,
+  "max_total_output_bytes": 1048576,
+  "rss_watchdog_bytes": 536870912,
+  "rss_poll_seconds": 0.1,
+  "rss_limit_is_hard": false,
+  "psutil_version": "7.2.2",
+  "source_read_only": true,
+  "same_process_instrumentation_tamper_proof": false
+}

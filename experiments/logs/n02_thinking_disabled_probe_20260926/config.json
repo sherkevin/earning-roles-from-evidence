@@ -1,0 +1,23 @@
+{
+  "purpose": "single parameter compatibility probe, not another benchmark recovery",
+  "request": {
+    "model": "qwen3.8-max",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Respond with exactly OK."
+      }
+    ],
+    "max_tokens": 32,
+    "temperature": 0,
+    "stream": true,
+    "thinking": {
+      "type": "disabled"
+    }
+  },
+  "timeout_seconds": 60,
+  "max_attempts": 1,
+  "source_url": "https://help.aliyun.com/zh/model-studio/anthropic-api-messages",
+  "source_scope": "Alibaba Cloud documents disabled for this model; IdeaLab forwarding unverified until this request",
+  "scientific_claim_allowed": false
+}

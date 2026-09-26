@@ -1,0 +1,150 @@
+{
+  "review_id": "n03-ownership-and-preflight-independent-review-20260926",
+  "reviewed_at_utc": "2026-09-26T14:30:38.342070+00:00",
+  "reviewer": "n03_minimal_state_review",
+  "kind": "read-only review; not an experiment",
+  "is_experiment": false,
+  "scope": "Bounded review of N02 accounting, N03 preflight, ADR0019, responsibility metadata/tests, CROSS3 audit, and self-authored mathematical cases. No API, GPU, candidate execution, generator execution, or pytest rerun. Read/parse/hash operations only; wrote this review and, with parent authorization, corrected three mathematical statements in the reviewer-owned report.",
+  "verdict": {
+    "closeout_documents": "PASS after the two preflight clarifications listed below were applied and reread.",
+    "ownership_metadata": "PASS for preserving original ownership independently of repair permissions; this is not a complete obligation-to-scorer contract.",
+    "cross3_code_delivery_root": "NO-GO remains supported by source reading; consumer/publisher are already implemented.",
+    "cross3_plan_delivery_root": "CONDITIONAL only; information boundaries, diagnostics value and scoring remain unqualified.",
+    "new_n02_calls": "NO; 4/4 episode attempts exhausted.",
+    "new_n03_calls_or_gpu": "NO-GO until prospective state, task and measurement gates are qualified; this review does not authorize collection.",
+    "open_material_errors_in_reviewed_closeout": "None found after corrections. Scientific gates remain open."
+  },
+  "accounting": {
+    "recomputed_from_raw_events": {
+      "episode_attempts": 4,
+      "task_requests": 8,
+      "complete_task_requests": 6,
+      "unknown_usage_requests": 2,
+      "input_tokens": 14369,
+      "output_tokens": 3527
+    },
+    "v3_model_seconds": 68.87035695899999,
+    "probe_usage": [
+      {
+        "run": "n02_provider_health_20260926",
+        "input_tokens": 66,
+        "output_tokens": 25
+      },
+      {
+        "run": "n02_stream_transport_health_20260926",
+        "input_tokens": 66,
+        "output_tokens": 25
+      },
+      {
+        "run": "n02_thinking_disabled_probe_20260926",
+        "input_tokens": 17,
+        "output_tokens": 2
+      }
+    ],
+    "inference_api_attempts_including_probes": 11,
+    "known_input_tokens_including_probes": 14518,
+    "known_output_tokens_including_probes": 3579,
+    "unknown_usage_not_zero_filled": true,
+    "remaining_development_attempt_ceiling": 20,
+    "remaining_budget_is_not_run_approval": true
+  },
+  "checks": {
+    "posthoc_priority_checks_are_not_online_feedback": true,
+    "old_consumer_scores_preserved_and_scope_limited": true,
+    "no_update_comparison_is_deterministic_controller_check_not_live_baseline": true,
+    "memory_not_claimed_as_training_novelty": true,
+    "backbone_and_update_not_frozen": true,
+    "selected_only_and_independent_live_histories_retained": true,
+    "responsibility_deepcopies_preserve_original_ownership_under_repair_permissions": true,
+    "existing_engineering_junit_testcases": 80,
+    "existing_engineering_junit_failures": 0,
+    "existing_engineering_junit_errors": 0,
+    "current_sources_mismatching_logged_engineering_hashes": [],
+    "engineering_tests_rerun_by_reviewer": false,
+    "source_level_cross3_key_findings_checked": [
+      "consumer and publisher implemented",
+      "oneof exactly-one wording conflicts with at-most-one implementation and empty test",
+      "spec/brief distinction exists; changing guidance visibility is prospective adaptation",
+      "code delivery and plan delivery are kept separate"
+    ],
+    "cross3_core_source_hashes_match_audit": true
+  },
+  "findings": [
+    {
+      "id": "R1-cost-decomposition",
+      "severity": "P2",
+      "status": "addressed_and_reread",
+      "location": "docs/user/decisions/0019-separate-judgment-from-responsibility-outcomes.md:26; docs/research/n03_preflight_design_20260926.md:80",
+      "observation": "The initial wording required normal integration and upstream revision costs separately even though one consumer call may perform both. Such a decomposition is not observable from aggregate time/tokens or changed paths.",
+      "resolution": "Parent added independently measurable qualification; subcosts are null for a combined call, complete measured call cost remains, no line-based apportionment or extra inference solely to obtain a decomposition."
+    },
+    {
+      "id": "R2-consumer-memory-continuity",
+      "severity": "P2",
+      "status": "addressed_and_reread",
+      "location": "docs/research/n03_preflight_design_20260926.md:31",
+      "observation": "Judgment explicitly received personal experience, while action initially listed only delivery and sealed judgment. A fresh API call does not retain the earlier model context merely because it is called the same recipient.",
+      "resolution": "Parent explicitly added the same sealed consumer experience snapshot to action input and stated that fresh calls must transmit it."
+    },
+    {
+      "id": "S1-own-next-peer-time",
+      "severity": "P2",
+      "status": "self_corrected_with_authorization_and_reread",
+      "location": "docs/research/n03_minimal_state_independent_review_20260926.md:222",
+      "observation": "The original arrow to o_(t+1) could imply that B personal memory directly enters the next delivery even when A is selected next.",
+      "resolution": "Use the next time t+ that the same peer is selected, explicitly conditional on that time existing and the experience still being retained; the case states it is an analysis index, not future information given to the selector."
+    },
+    {
+      "id": "S2-own-sampling-coupling",
+      "severity": "P2",
+      "status": "self_corrected_with_authorization_and_reread",
+      "location": "docs/research/n03_minimal_state_independent_review_20260926.md:207",
+      "observation": "Equal choice distributions plus the same random number do not ensure equal sampled identities if candidate order or the sampling map differs.",
+      "resolution": "Require the same candidate ordering and sampling algorithm/random-number mapping as well as the same probabilities and random draw."
+    },
+    {
+      "id": "S3-own-cost-nonidentification",
+      "severity": "P3",
+      "status": "self_corrected_and_reread",
+      "location": "docs/research/n03_minimal_state_independent_review_20260926.md:155",
+      "observation": "A universal numerical not-equal symbol was stronger than the supported statement that aggregate consumer cost does not identify marginal producer-caused repair cost. Coincidental equality is possible.",
+      "resolution": "Replaced the numerical inequality by a non-implication about identifiability; the original case and substantive conclusion remain."
+    }
+  ],
+  "remaining_design_assumptions": [
+    "Ownership metadata names file responsibility but does not yet define every interface obligation or qualify its scorer; N03 keeps this open.",
+    "Independent parent scoring after final source sealing is offline measurement unless prospective visibility explicitly permits feedback; no diagnostic gold may silently enter experience.",
+    "Producer and consumer experience may both change future execution; all selector conditions must share the same experience mechanism while retaining their own histories.",
+    "CROSS3 plan-to-implementation adaptation may have no value beyond forwarding public requirements; the proposed direct requirement forwarding baseline is essential.",
+    "Private experience is a candidate source of persistent differences, not proof of specialization or a new realtime training method."
+  ],
+  "self_formula_case_audit": {
+    "formula_blocks": 12,
+    "all_have_immediate_cases": true,
+    "unresolved_temporal_or_attribution_violations_found": false,
+    "conditional_cases_are_not_claimed_as_executed": true,
+    "future_indices_are_for_analysis_only": true,
+    "notes": "Memory updates use only arrived authorized experience; third-party evidence retains judge and subject. The example of consumer A report returning to producer B is a prospective permission-dependent case, not a claim that N02 returned that feedback. Independent audit scores remain offline unless a future card explicitly authorizes disclosure."
+  },
+  "input_sha256": {
+    "docs/research/n02_real_closed_loop_review_20260926.md": "3751c1a2a78b4fabbc0996d01f52b1340959c1df0f89edc5313fb2e327bc52ec",
+    "docs/research/n03_preflight_design_20260926.md": "3cf66f2eb180e8092bd6b9051837102193603aac5ff2944c241d09d259dd5244",
+    "docs/user/decisions/0019-separate-judgment-from-responsibility-outcomes.md": "3c1c923880dee9107f95ab71f654b63839bc2e7ae5b818cdc5cbacc198ec1288",
+    "docs/research/n03_cross3_candidate_audit_20260926.md": "877fb19bd5821d3fdd841600580a37d84f977544d24838fedf0fa7e0d37663de",
+    "docs/research/n03_minimal_state_independent_review_20260926.md": "10640cb9b15d451aa69c1720bcd51282ee0ce92d0c6246db53bf72a1eebafcad",
+    "scripts/peerrolebench_task_contract.py": "6dccb53d8d591ef4c0308d01e0b9e1e971915cf1e724001b5c0160330bd57b0f",
+    "tests/test_peerrolebench_responsibility.py": "da365307ffed45256ee8d62c4ba45e138d57431ea5083a1078a6fbcce12a153a",
+    "experiments/logs/n03_ownership_contract_checks_20260926/config.json": "122e6b611a2f3eda79c4672d0e17c43d6dbec508996d7f335f03bf9f607f8286",
+    "experiments/logs/n03_ownership_contract_checks_20260926/junit.xml": "d3479b65a663bba6ba0480f5df643c465ffbbc2a152c46f4a09fca2573ec5d7b",
+    "experiments/logs/n02_peerrole_dev_v1_20260926/raw.jsonl": "4a9c91a646cef13cda35a4ce1233356c705aed0646d9cbbc39a88d1fd2fbfc2a",
+    "experiments/logs/n02_peerrole_dev_v2_20260926/raw.jsonl": "2c62b1709562ac28cd55d5551a883eaa0591e776b09314909e572b2020ace918",
+    "experiments/logs/n02_peerrole_dev_v3_20260926/raw.jsonl": "915375fc98ef58b8d0cac47b117973e5d635bdfc41bfc98e3183e31da37ef53e",
+    "experiments/logs/n02_peerrole_dev_v3_20260926/independent_review.json": "139c8e1c321dc4c67b1da4abcfcfb379075352b98f2439bdda8af576963bfa26",
+    "experiments/logs/n02_posthoc_priority_sandbox_20260926/summary.json": "93082aa13fd493b3f0c57f9b9ca8650d5cc2046ac490b4ba65c2e2014cf3df3f",
+    "experiments/logs/n02_posthoc_responsibility_20260926/summary.json": "b5ba81cc36b5a26f93251c53b10b7500593b2a008ce873f85fb5f28b5ca2f743"
+  },
+  "historical_outputs_modified": false,
+  "new_api_calls": 0,
+  "new_gpu_jobs": 0,
+  "scientific_claim_allowed": false
+}

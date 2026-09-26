@@ -1,0 +1,34 @@
+{
+  "created_at": "2026-09-26T11:27:58Z",
+  "kind": "engineering_contract_regression",
+  "scope": "consumer action materials, structural task roots, required JUnit testcase inventory",
+  "scientific_claim_allowed": false,
+  "real_llm_calls": 0,
+  "gpu_jobs": 0,
+  "network_calls": 0,
+  "git_head_before_edits": "29477209a22c0f2c14782c0e2c3234b14a50ad0e",
+  "teambench_source_pin": "d185aef1916fd86a9ba554d581fd256319a973af",
+  "python": "3.9.6",
+  "pytest": "8.4.2",
+  "pre_edit_source_sha256": {
+    "scripts/peerrolebench_task_contract.py": "1a2104dc2b6554cccdef1909b6eac2d74028c8bc5dc13b7ccfe60b098d4bf88a",
+    "tests/test_peerrolebench_task_contract.py": "759e8e183eb901f198012fa8837de209604f88191911f3c0583197334add68d4"
+  },
+  "planned_commands": [
+    "python3 -m pytest tests/test_peerrolebench_task_contract.py -vv --tb=short --junitxml=experiments/logs/n01_action_contract_20260926/red.junit.xml",
+    "python3 -m pytest tests/test_peerrolebench_task_contract.py -vv --tb=short --junitxml=experiments/logs/n01_action_contract_20260926/green.junit.xml"
+  ],
+  "acceptance": [
+    "use preserves delivered queue/priority; repair may change a consumer copy; redo starts from original public template",
+    "input delivery and templates remain unchanged and redo does not imply unseen delivery",
+    "all conditions share action permissions",
+    "all seeds of a task family share a pinned structural root and are not independent holdout roots",
+    "missing required testcase ids or duplicate identities cannot establish complete coverage or a positive label"
+  ],
+  "out_of_scope": [
+    "native grader edits",
+    "consumer behavior integration suite",
+    "filesystem/network sandbox",
+    "method-effect evaluation"
+  ]
+}

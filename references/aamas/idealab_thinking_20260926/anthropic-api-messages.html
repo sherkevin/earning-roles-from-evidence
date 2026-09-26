@@ -1,0 +1,1040 @@
+
+
+<!DOCTYPE html><html lang="zh"><head>
+  <meta name="nav-disable" content="flex">
+  
+  <link rel="icon" href="https://img.alicdn.com/imgextra/i2/O1CN01TFs5Qw27uYvfA6gib_!!6000000007857-55-tps-32-32.svg" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="72x72" href="https://img.alicdn.com/imgextra/i4/O1CN01jlcNT71YBfZJJI7qY_!!6000000003021-2-tps-128-128.png">
+  
+
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="applicable-device" content="pc,mobile">
+  <meta name="nav-config" content="footer=default">
+  <meta name="aplus-core" content="aplus.js">
+  <meta name="aplus-ajax" content="chksum">
+  <meta name="aplus-waiting" content="MAN">
+  <meta name="aplus-pvhash" content="1">
+  
+  <meta name="data-spm" content="a2c4g">
+  
+  <script>
+    window.pageStartTime = Date.now();
+  </script>
+
+  
+  <title>
+    Anthropic兼容-Messages-大模型服务平台百炼(Model Studio)-阿里云帮助中心
+  </title>
+  <link rel="canonical" href="https://help.aliyun.com/zh/model-studio/anthropic-api-messages">
+  <meta name="keywords" content="迁移Anthropic应用,查询Anthropic API兼容性,兼容调用通义千问,Anthropic API兼容指南,Anthropic API调用示例,Anthropic API兼容详情">
+  <meta name="description" content="通过兼容 Anthropic 格式的 Messages API 调用模型，查看输入输出参数说明及调用示例。">
+  <meta name="last-modified" content="2026-09-22T01:01:37+08:00">
+  <meta name="date" content="2025-09-12T10:44:09+08:00">
+  <meta property="og:title" content="Anthropic兼容-Messages">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://help.aliyun.com/zh/model-studio/anthropic-api-messages">
+  <meta property="og:image" content="https://img.alicdn.com/imgextra/i1/O1CN012QgtoH1c1Mu70xD3w_!!6000000003540-2-tps-640-640.png">
+  <meta property="og:description" content="通过兼容 Anthropic 格式的 Messages API 调用模型，查看输入输出参数说明及调用示例。">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "url": "https://help.aliyun.com/zh/model-studio/anthropic-api-messages",
+    "publisher": {
+      "@type": "Organization",
+      "name": "阿里云计算",
+      "url": "https://www.aliyun.com/",
+      "logo": "https://img.alicdn.com/imgextra/i1/O1CN01BEqugB1KebzCRyIJl_!!6000000001189-55-tps-48-48.svg"
+    }
+  }
+  </script>
+  
+
+  <link href="https://g.alicdn.com/aliyun-help/help-portal-fe/0.12.63/css/index.css" rel="stylesheet">
+  
+
+  <script>
+    window.globalData = {
+      nodeId: "2980295",
+      website: "cn",
+      language: "zh",
+    }
+    window.$ACE_TRACKER_CONFIG = {
+      "enableHistory": true,
+      "enableHash": false
+    }
+  </script>
+<script>
+    window.__ICE_SSR_ENABLED__=true;
+    window.__ICE_APP_DATA__={};
+window.__ICE_PAGE_PROPS__={"docDetailData":{"storeData":{"siteOverride":{"website":"cn","language":"zh"},"alias":"/model-studio/anthropic-api-messages","nodeId":null,"data":{"lastModifiedTime":1790010097000,"keywords":"迁移Anthropic应用,查询Anthropic API兼容性,兼容调用通义千问,Anthropic API兼容指南,Anthropic API调用示例,Anthropic API兼容详情","docTitle":"Anthropic兼容-Messages","language":"zh","seoTitle":"Anthropic兼容-Messages-大模型服务平台百炼(Model Studio)-阿里云帮助中心","title":"Anthropic兼容-Messages","content":"<div lang=\"zh\" class=\"icms-help-docs-content\">\n<div lang=\"zh\" class=\"icms-help-docs-content\"><p data-tag=\"shortdesc\" class=\"shortdesc\">通过兼容 Anthropic 格式的 Messages API 调用模型，查看输入输出参数说明及调用示例。</p><p>通过修改以下配置，即可将原有的 Anthropic 应用迁移至阿里云百炼：</p>\n<ul>\n<li><code>api_key</code>：替换为<a href=\"/zh/model-studio/get-api-key\">百炼 API Key</a>。</li>\n<li><code>base_url</code>：替换为百炼的兼容端点地址（见下方接入信息）。</li>\n<li><code>model</code>：替换为百炼支持的模型名称（例如 <code>qwen3.7-plus</code>）。</li>\n</ul>\n<div class=\"note note-important\"><div class=\"note-icon-wrapper\"></div><div class=\"note-content\"><p><strong>重要</strong>阿里云百炼为华北<span class=\"help-letter-space\"></span>2（北京）、新加坡、中国香港地域推出了业务空间专属域名，<strong>能够为推理请求提供卓越的性能和更高的稳定性</strong>，建议迁移至新域名：</p><ul>\n<li>华北<span class=\"help-letter-space\"></span>2（北京）地域：从 <code>https://dashscope.aliyuncs.com</code> 迁移至 <code>https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com</code></li>\n<li>新加坡地域：从 <code>https://dashscope-intl.aliyuncs.com</code> 迁移至 <code>https://{WorkspaceId}.ap-southeast-1.maas.aliyuncs.com</code></li>\n</ul><p>其中 <code>{WorkspaceId}</code> 为您的业务空间 ID，可在阿里云百炼控制台的<strong>业务空间详情</strong>页面查看。现有域名仍可正常使用。</p></div></div>\n<section data-tag=\"tabbed-content-box\" outputclass=\"tabbed-content-box\" id=\"sec-tabs\" class=\"tabbed-content-box section\"><section id=\"华北2-北京\" class=\"section\"><h4 id=\"华北2-北京-h4\">华北<span class=\"help-letter-space\"></span>2（北京）</h4><p>SDK 调用配置的 <code>base_url</code>：<code>https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic</code></p><p>HTTP 请求地址：<code>POST https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic/v1/messages</code></p></section><section id=\"新加坡\" class=\"section\"><h4 id=\"新加坡-h4\">新加坡</h4><p>SDK 调用配置的 <code>base_url</code>：<code>https://{WorkspaceId}.ap-southeast-1.maas.aliyuncs.com/apps/anthropic</code></p><p>HTTP 请求地址：<code>POST https://{WorkspaceId}.ap-southeast-1.maas.aliyuncs.com/apps/anthropic/v1/messages</code></p></section><section id=\"美国-弗吉尼亚\" class=\"section\"><h4 id=\"美国-弗吉尼亚-h4\">美国（弗吉尼亚）</h4><p>SDK 调用配置的 <code>base_url</code>：<code>https://{WorkspaceId}.us-east-1.maas.aliyuncs.com/apps/anthropic</code></p><p>HTTP 请求地址：<code>POST https://{WorkspaceId}.us-east-1.maas.aliyuncs.com/apps/anthropic/v1/messages</code></p></section><section id=\"德国-法兰克福\" class=\"section\"><h4 id=\"德国-法兰克福-h4\">德国（法兰克福）</h4><p>SDK 调用配置的 <code>base_url</code>：<code>https://{WorkspaceId}.eu-central-1.maas.aliyuncs.com/apps/anthropic</code></p><p>HTTP 请求地址：<code>POST https://{WorkspaceId}.eu-central-1.maas.aliyuncs.com/apps/anthropic/v1/messages</code></p></section><section id=\"日本-东京\" class=\"section\"><h4 id=\"日本-东京-h4\">日本（东京）</h4><p>SDK 调用配置的 <code>base_url</code>：<code>https://{WorkspaceId}.ap-northeast-1.maas.aliyuncs.com/apps/anthropic</code></p><p>HTTP 请求地址：<code>POST https://{WorkspaceId}.ap-northeast-1.maas.aliyuncs.com/apps/anthropic/v1/messages</code></p></section></section>\n<p>调用时请将<code>{WorkspaceId}</code>替换为真实的<a href=\"/zh/model-studio/regions#h2_migrate_domain\">业务空间<span class=\"help-letter-space\"></span>ID</a>。</p>\n<p>认证方式：通过 <code>x-api-key</code> 请求头或 <code>Authorization: Bearer</code> 请求头传入<a href=\"/zh/model-studio/get-api-key\">百炼 API Key</a>，二者选其一即可。</p>\n<h2 id=\"与-anthropic-官方-api-的主要差异\">与 Anthropic 官方 API 的主要差异 <span id=\"bfr1diff0a1h2\"></span></h2>\n<p>以下差异点汇总自本文正文，从 Anthropic 官方迁移时请重点确认：</p>\n<table style=\"display:table;table-layout:fixed;width:100%\"><colgroup><col style=\"width:25%\"><col style=\"width:75%\"></colgroup><tbody><tr><td><p><strong>差异项</strong></p></td><td><p><strong>说明</strong></p></td></tr><tr><td><p>接入地址（Base URL）</p></td><td><p><code>base_url</code> 需替换为百炼兼容端点（形如 <code>https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic</code>，各地域地址见上方接入信息），其中 <code>{WorkspaceId}</code> 需替换为真实的业务空间 ID。</p></td></tr><tr><td><p>鉴权方式</p></td><td><p><code>api_key</code> 需替换为百炼 API Key；支持通过 <code>x-api-key</code> 或 <code>Authorization: Bearer</code> 请求头传入，二者选其一即可。</p></td></tr><tr><td><p>模型名称</p></td><td><p><code>model</code> 需替换为百炼支持的模型名称（例如 <code>qwen3.7-plus</code>），完整列表见下方 <code>model</code> 参数说明。</p></td></tr><tr><td><p>temperature 取值范围</p></td><td><p>百炼取值范围为 [0, 2)，与 Anthropic 官方的 [0.0, 1.0] 不同，迁移时请确认该参数取值。</p></td></tr><tr><td><p>接口范围</p></td><td><p>仅提供 Messages 接口（<code>/v1/messages</code>），不提供模型列表接口（<code>/v1/models</code>）；客户端的模型发现请求会返回 404，处理方式见下方常见问题。</p></td></tr><tr><td><p>扩展参数</p></td><td><p><code>output_config</code>（结构化输出与思考强度 <code>effort</code>）为百炼平台扩展参数，官方 SDK 类型定义中不包含，需在请求体中透传（见右侧“结构化输出”示例）；<code>thinking.budget_tokens</code> 即将废弃，新接入建议使用 <code>output_config.effort</code> 控制思考强度。</p></td></tr></tbody></table>\n<table bordertype=\"no-border\" style=\"display:table;table-layout:fixed;width:100%\"><colgroup><col style=\"width:50%\"><col style=\"width:50%\"></colgroup><tbody><tr><td><h2>请求体 <span id=\"ac3a4b5c6d7f2\"></span></h2><p><strong>model</strong> <code>string</code> <strong>（必选）</strong></p><p>模型名称，支持范围如下。</p><section class=\"collapse\" id=\"accordion-支持的模型列表\"><p>支持的模型列表</p><div><p><strong>千问<span class=\"help-letter-space\"></span>Max</strong>：qwen3.8-max、qwen3.8-max-0902、qwen3.7-max、qwen3.7-max-2026-05-20、qwen3.7-max-2026-06-08、qwen3.6-max-preview、qwen3-max、qwen3-max-2026-01-23、qwen3-max-preview</p><p><strong>千问<span class=\"help-letter-space\"></span>Plus</strong>：qwen3.7-plus、qwen3.7-plus-2026-05-26、qwen3.6-plus、qwen3.6-plus-2026-04-02、qwen3.5-plus、qwen3.5-plus-2026-04-20、qwen3.5-plus-2026-02-15、qwen-plus、qwen-plus-latest、qwen-plus-2025-09-11</p><p><strong>千问<span class=\"help-letter-space\"></span>Flash</strong>：qwen3.8-flash、qwen3.7-flash、qwen3.7-flash-2026-07-15、qwen3.6-flash、qwen3.6-flash-2026-04-16、qwen3.5-flash、qwen3.5-flash-2026-02-23、qwen-flash、qwen-flash-2025-07-28</p><p><strong>千问<span class=\"help-letter-space\"></span>Turbo</strong>：qwen-turbo</p><p><strong>千问<span class=\"help-letter-space\"></span>Coder</strong>：qwen3-coder-next、qwen3-coder-plus、qwen3-coder-plus-2025-09-23、qwen3-coder-flash</p><p><strong>千问<span class=\"help-letter-space\"></span>VL</strong>：qwen3-vl-plus、qwen3-vl-flash、qwen-vl-max、qwen-vl-plus</p><p><strong>千问开源模型</strong>：qwen3.6-27b、qwen3.5-397b-a17b、qwen3.5-122b-a10b、qwen3.5-27b、qwen3.5-35b-a3b、qwen3.8-2.4t-a95b、qwen3.8-27b</p><strong>第三方模型</strong><p>deepseek-v4.1-flash、deepseek-v4-pro、deepseek-v4-pro-0813、deepseek-v4-flash、deepseek-v4-flash-0731、deepseek-v3.2、kimi-k3、kimi-k2.7-code、kimi-k2.6、kimi-k2.5、kimi-k2-thinking、glm-5.3、glm-5.2、glm-5.1、glm-5、glm-4.7、glm-4.6、MiniMax-M2.5、MiniMax-M2.1</p></div></section><p><strong>max_tokens</strong> <code>integer</code> <strong>（必选）</strong></p><ul>\n<li>\n<p>deepseek-v4.1-flash、deepseek-v4-pro、deepseek-v4-pro-0813、deepseek-v4-flash、deepseek-v4-flash-0731、qwen3.8-max、qwen3.8-flash：模型回复内容和思维链内容之和的最大<span class=\"help-letter-space\"></span>Token<span class=\"help-letter-space\"></span>数，模型输出超过此值时生成将提前停止，<code>stop_reason</code> 为 <code>max_tokens</code>。</p>\n<blockquote>\n<p><code>max_tokens</code> 限制模型回复内容+思考过程的长度。开启深度思考时，<code>max_tokens</code> &gt; <code>thinking.budget_tokens</code></p>\n</blockquote>\n</li>\n<li>\n<p>glm-5.3：<code>max_tokens</code> 为模型回复内容和思维链内容之和的最大<span class=\"help-letter-space\"></span>Token<span class=\"help-letter-space\"></span>数，模型输出超过此值时生成将提前停止，<code>stop_reason</code> 为 <code>max_tokens</code>。glm-5.3 会忽略 <code>thinking.budget_tokens</code> 参数。</p>\n</li>\n<li>\n<p>glm-5.2：不传入 <code>thinking.budget_tokens</code> 参数时，<code>max_tokens</code> 为模型回复内容和思维链内容之和的最大<span class=\"help-letter-space\"></span>Token<span class=\"help-letter-space\"></span>数，模型输出超过此值时生成将提前停止，<code>stop_reason</code> 为 <code>max_tokens</code>；传入 <code>thinking.budget_tokens</code> 参数时，<code>max_tokens</code> 仅为模型回复内容的最大<span class=\"help-letter-space\"></span>Token<span class=\"help-letter-space\"></span>数，思考部分的 Token 数由 <code>thinking.budget_tokens</code> 单独控制。</p>\n</li>\n<li>\n<p>其他模型：模型回复内容的最大 Token 数。若生成内容超过此值，生成将提前停止，<code>stop_reason</code> 为 <code>max_tokens</code>。</p>\n<blockquote>\n<p><code>max_tokens</code> 不限制思考过程的长度。开启深度思考时，思考部分的 Token 数由 <code>thinking.budget_tokens</code> 单独控制。</p>\n</blockquote>\n</li>\n</ul><p><strong>system</strong> <code>string 或 array</code> （可选）</p><p>系统提示词，用于设定模型的角色或行为。</p><p>传入字符串等价于单个 <code>type=\"text\"</code> 的内容块。当需要为系统提示词标记显式缓存断点（参见右侧\"显式缓存\"示例）时，必须传入数组形式。</p><section class=\"collapse\" id=\"accordion-属性\"><p>属性</p><div><p><strong>type</strong> <code>string</code> <strong>（必选）</strong></p><p>固定为 <code>text</code>。</p><p><strong>text</strong> <code>string</code> <strong>（必选）</strong></p><p>系统提示词文本。</p><p><strong>cache_control</strong> <code>object</code> （可选）</p><p>在该内容块上标记显式缓存断点（参见右侧\"显式缓存\"示例），命中后第二次及之后的请求按缓存读取计费。仅包含字段 <code>type</code>，取值固定为 <code>ephemeral</code>。</p></div></section><p><strong>messages</strong> <code>array</code> <strong>（必选）</strong></p><section class=\"collapse\" id=\"accordion-messages-数组元素\"><p>messages 数组元素</p><div><p><strong>role</strong> <code>string</code> <strong>（必选）</strong></p><p>消息角色，可选值：<code>user</code>、<code>assistant</code>、<code>system</code>。</p><p><strong>content</strong> <code>string 或 array</code> <strong>（必选）</strong></p><p>消息内容。可以是纯文本字符串，也可以是结构化内容数组。<code>content</code> 为字符串时，等价于单个 <code>type=\"text\"</code> 的内容块。</p><section class=\"collapse\" id=\"accordion-content-数组元素类型\"><p>content 数组元素类型</p><div><strong>文本信息</strong><section class=\"collapse\" id=\"accordion-属性-2\"><p>属性</p><div><p><strong>type</strong> <code>string</code> <strong>（必选）</strong></p><p>固定为 <code>text</code>。</p><p><strong>text</strong> <code>string</code> <strong>（必选）</strong></p><p>文本内容。</p><p><strong>cache_control</strong> <code>object</code> （可选）</p><p>在该文本块上标记显式缓存断点（参见右侧\"显式缓存\"示例）。仅包含字段 <code>type</code>，取值固定为 <code>ephemeral</code>。</p></div></section><p><strong>图片信息</strong>（需使用视觉模型）</p><section class=\"collapse\" id=\"accordion-属性-3\"><p>属性</p><div><p><strong>type</strong> <code>string</code> <strong>（必选）</strong></p><p>固定为 <code>image</code>。</p><p><strong>source</strong> <code>object</code> <strong>（必选）</strong></p><p>图片数据来源。</p><section class=\"collapse\" id=\"accordion-属性-4\"><p>属性</p><div><p><strong>type</strong> <code>string</code> <strong>（必选）</strong></p><p>取值：<code>url</code>（公网图片地址）、<code>base64</code>（Base64 编码）。</p><p><strong>url</strong> <code>string</code></p><p>图片的公网地址。当 <code>type</code> 为 <code>url</code> 时必填。</p><p><strong>media_type</strong> <code>string</code></p><p>图片的 MIME 类型，如 <code>image/jpeg</code>。当 <code>type</code> 为 <code>base64</code> 时必填。</p><p><strong>data</strong> <code>string</code></p><p>Base64 编码的图片数据。当 <code>type</code> 为 <code>base64</code> 时必填。</p></div></section></div></section><p><strong>视频信息</strong>（需使用视觉模型）</p><section class=\"collapse\" id=\"accordion-属性-5\"><p>属性</p><div><p><strong>type</strong> <code>string</code> <strong>（必选）</strong></p><p>固定为 <code>video</code>。</p><p><strong>source</strong> <code>object</code> <strong>（必选）</strong></p><p>视频数据来源。</p><section class=\"collapse\" id=\"accordion-属性-6\"><p>属性</p><div><p><strong>type</strong> <code>string</code> <strong>（必选）</strong></p><p>取值：<code>url</code>（公网视频地址）、<code>base64</code>（Base64 编码）。</p><p><strong>url</strong> <code>string</code></p><p>视频的公网地址。当 <code>type</code> 为 <code>url</code> 时必填。</p><p><strong>media_type</strong> <code>string</code></p><p>视频的 MIME 类型，如 <code>video/mp4</code>。当 <code>type</code> 为 <code>base64</code> 时必填。</p><p><strong>data</strong> <code>string</code></p><p>Base64 编码的视频数据。当 <code>type</code> 为 <code>base64</code> 时必填。</p></div></section></div></section><p><strong>工具调用信息</strong>（assistant 角色，模型返回的工具调用指令）</p><section class=\"collapse\" id=\"accordion-属性-7\"><p>属性</p><div><p><strong>type</strong> <code>string</code> <strong>（必选）</strong></p><p>固定为 <code>tool_use</code>。</p><p><strong>id</strong> <code>string</code> <strong>（必选）</strong></p><p>工具调用的唯一标识，用于在后续 <code>tool_result</code> 中关联结果。</p><p><strong>name</strong> <code>string</code> <strong>（必选）</strong></p><p>被调用的工具名称。</p><p><strong>input</strong> <code>object</code> <strong>（必选）</strong></p><p>工具调用的入参，结构由 <code>tools</code> 中对应工具的 <code>input_schema</code> 决定。</p><p><strong>cache_control</strong> <code>object</code> （可选）</p><p>在该块上标记显式缓存断点（参见右侧\"显式缓存\"示例）。仅包含字段 <code>type</code>，取值固定为 <code>ephemeral</code>。工具调用内容本身会参与缓存前缀。</p></div></section><p><strong>工具结果信息</strong>（user 角色，工具执行结果回传给模型）</p><section class=\"collapse\" id=\"accordion-属性-8\"><p>属性</p><div><p><strong>type</strong> <code>string</code> <strong>（必选）</strong></p><p>固定为 <code>tool_result</code>。</p><p><strong>tool_use_id</strong> <code>string</code> <strong>（必选）</strong></p><p>对应 <code>tool_use</code> 信息中的 <code>id</code>。</p><p><strong>content</strong> <code>string</code> <strong>（必选）</strong></p><p>工具执行返回的内容。</p><p><strong>cache_control</strong> <code>object</code> （可选）</p><p>在该工具结果块上标记显式缓存断点（参见右侧\"显式缓存\"示例）。仅包含字段 <code>type</code>，取值固定为 <code>ephemeral</code>。</p></div></section></div></section></div></section><p><strong>stream</strong> <code>boolean</code> （可选）</p><p>是否启用流式输出，默认为 <code>false</code>。</p><p><strong>temperature</strong> <code>number</code> （可选）</p><p>控制生成文本的多样性，取值范围 [0, 2)。值越大，生成结果越随机。</p><div class=\"note note-note\"><div class=\"note-icon-wrapper\"></div><div class=\"note-content\"><p><strong>说明</strong>该范围与 Anthropic 官方的 [0.0, 1.0] 不同，从 Anthropic 迁移时请确认该参数取值。</p></div></div><p><strong>top_p</strong> <code>number</code> （可选）</p><p>核采样的概率阈值，控制生成文本的多样性。</p><blockquote>\n<p><code>temperature</code> 与 <code>top_p</code> 均可控制生成文本的多样性，建议只设置其中一个值。更多说明请参见<a href=\"/zh/model-studio/text-generation\">概述</a>。</p>\n</blockquote><p><strong>top_k</strong> <code>integer</code> （可选）</p><p>生成过程中采样候选集的大小。</p><p><strong>stop_sequences</strong> <code>array</code> （可选）</p><p>指定停止生成的文本序列。模型生成到该序列前会停止输出，且不包含该序列本身。</p><div class=\"note note-note\"><div class=\"note-icon-wrapper\"></div><div class=\"note-content\"><p><strong>说明</strong>命中后，响应的 <code>stop_reason</code> 仍为 <code>end_turn</code>，响应不会回填命中的序列。</p></div></div><p><strong>thinking</strong> <code>object</code> （可选）</p><p>深度思考配置。开启后，模型会在生成回复前先进行推理，以提升回答准确度。开启后，响应会包含 <code>thinking</code> 类型的内容块。</p><p>未传入该参数时，是否进行思考由模型默认行为决定：qwen3.8-max、qwen3.8-flash、deepseek-v4 系列、glm 系列默认开启思考；kimi-k2.6、kimi-k2.5 默认关闭思考；kimi-k2.7-code、kimi-k2-thinking、MiniMax-M2.5、MiniMax-M2.1 仅支持思考模式（无法关闭）。各模型对思考模式的支持情况与默认开关，请参见<a href=\"/zh/model-studio/deep-thinking\">深度思考</a>。</p><section class=\"collapse\" id=\"accordion-属性-9\"><p>属性</p><div><p><strong>type</strong> <code>string</code> <strong>（必选）</strong></p><p>可选值：<code>enabled</code>（开启思考模式）、<code>disabled</code>（关闭思考模式）。</p><p><strong>budget_tokens</strong> <code>integer</code> （可选，<strong>即将废弃</strong>）</p><blockquote>\n<p>该参数即将废弃，并将在后续模型中逐步停止支持，新接入建议使用&nbsp;<code>effort</code>控制模型的思考强度。</p>\n</blockquote><p>思考过程可使用的最大 Token 数，与 <code>max_tokens</code> 互不重叠：本参数限制思考，<code>max_tokens</code> 限制最终回复。预算越大，在复杂问题上的分析越充分。当 <code>type</code> 为 <code>enabled</code> 时生效。</p></div></section><p><strong>tools</strong> <code>array</code> （可选）</p><p>工具定义数组，用于 Function Call 场景。</p><section class=\"collapse\" id=\"accordion-tools-数组元素\"><p>tools 数组元素</p><div><p><strong>name</strong> <code>string</code> <strong>（必选）</strong></p><p>工具名称。</p><p><strong>description</strong> <code>string</code> （可选）</p><p>工具的功能描述。</p><p><strong>input_schema</strong> <code>object</code> <strong>（必选）</strong></p><p>工具输入参数的 JSON Schema 定义。</p></div></section><p><strong>tool_choice</strong> <code>object</code> （可选）</p><p>工具选择策略。支持以下值：</p><ul>\n<li><code>{\"type\": \"auto\"}</code>：模型自行决定是否调用工具（默认）。</li>\n<li><code>{\"type\": \"any\"}</code>：强制模型调用任意一个工具。</li>\n<li><code>{\"type\": \"none\"}</code>：禁止模型调用工具。</li>\n<li><code>{\"type\": \"tool\", \"name\": \"tool_name\"}</code>：强制模型调用指定工具。</li>\n</ul><p><strong>output_config</strong> <code>object</code> （可选）</p><p>输出参数设置。</p><section class=\"collapse\" id=\"accordion-属性-10\"><p>属性</p><div><p><strong>effort</strong> <code>string</code> （可选）</p><p>控制模型的推理力度。</p><ul>\n<li>\n<p>glm-5.3（默认值为 <code>max</code>）：</p>\n<p>可选值：</p>\n<ul>\n<li><code>low</code>：低力度推理</li>\n<li><code>high</code>：高力度推理</li>\n<li><code>max</code>：最大力度推理</li>\n</ul>\n<p>传入其它取值会返回错误。</p>\n</li>\n<li>\n<p>glm-5.2、deepseek-v4-pro、deepseek-v4-flash（阿里云直供）（默认值为 <code>max</code>）：</p>\n<p>可选值：</p>\n<ul>\n<li><code>high</code>：高力度推理</li>\n<li><code>max</code>：最大力度推理</li>\n</ul>\n<p><code>low</code>和<code>medium</code>映射为<code>high</code>，<code>xhigh</code>映射为<code>max</code>。</p>\n</li>\n<li>\n<p>qwen3.8-max/qwen3.8-flash（默认值为 <code>xhigh</code>）：</p>\n<p>可选值：</p>\n<ul>\n<li><code>xhigh</code>：高力度推理</li>\n<li><code>medium</code>：中力度推理</li>\n<li><code>low</code>：低力度推理</li>\n</ul>\n<p><code>max</code>&nbsp;、<code>high</code>映射为 <code>xhigh</code>。</p>\n</li>\n</ul><p><strong>format</strong> <code>object</code> （可选）</p><p>结构化输出配置。开启后，模型将输出 JSON 字符串。不同模型的支持力度不同：</p><ul>\n<li><strong>严格结构化输出</strong>：适用于 qwen3.8 系列、qwen3.7 系列、deepseek 系列、glm 系列模型。模型严格按照传入的 JSON Schema 进行强约束输出，确保字段类型与层级完全一致。</li>\n<li><strong>普通结构化输出</strong>：适用于上述以外的其他模型。Schema 的具体字段约束默认不生效，API 会自动将其转换为普通 JSON 模式（仅保证输出为合法的 JSON 字符串）。触发普通 JSON 模式时，请求必须同时满足以下两点约束：1、显式传入 <code>output_config</code> 参数；2、<code>system</code> 或 <code>messages</code> 的内容中必须包含不区分大小写的 \"JSON\" 关键词。若提示词中未包含 \"JSON\" 关键词，API<span class=\"help-letter-space\"></span>将抛出异常：<code>'messages' must contain the word 'json' in some form</code>。</li>\n</ul><section class=\"collapse\" id=\"accordion-属性-11\"><p>属性</p><div><p><strong>type</strong> <code>string</code> <strong>（必选）</strong></p><p>取值固定为 <code>json_schema</code>。</p><p><strong>schema</strong> <code>object</code> <strong>（必选）</strong></p><p>JSON Schema 对象，遵循标准 JSON Schema 规范。需包含 <code>type</code>（数据类型）、<code>properties</code>（字段定义）、<code>required</code>（必填字段名数组）、<code>additionalProperties</code>（必须设为 <code>false</code>）等字段。</p></div></section></div></section></td><td><section data-tag=\"tabbed-content-box\" outputclass=\"tabbed-content-box\" id=\"sec-tabs-2\" class=\"tabbed-content-box section\"><section id=\"基础调用\" class=\"section\"><h4 id=\"基础调用-h4\">基础调用</h4><div outputclass=\"tabbed-codeblock\" data-tag=\"fig\" id=\"fig-code-group\" class=\"tabbed-codeblock-box\"><div class=\"tab-box\"></div><input id=\"fig-code-group-python-tab\" type=\"radio\" name=\"check-fig-code-group\" checked=\"\"><label for=\"fig-code-group-python-tab\">Python</label><div class=\"codeblock-item\"><pre data-tag=\"codeblock\" id=\"code-code-group-python\" outputclass=\"language-python\" code-type=\"xCode\" class=\"pre codeblock language-python\"><code>import anthropic\nimport os\n\nclient = anthropic.Anthropic(\n    api_key=os.getenv(\"DASHSCOPE_API_KEY\"),\n    base_url=\"https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic\",\n)\n\nmessage = client.messages.create(\n    model=\"qwen3.8-max\",\n    max_tokens=1024,\n    system=\"You are a helpful assistant\",\n    messages=[\n        {\n            \"role\": \"user\",\n            \"content\": \"你是谁？\"\n        }\n    ],\n    thinking={\"type\": \"disabled\"},\n)\n\nprint(message.content[0].text)\n</code></pre></div><input id=\"fig-code-group-typescript-tab\" type=\"radio\" name=\"check-fig-code-group\"><label for=\"fig-code-group-typescript-tab\">TypeScript</label><div class=\"codeblock-item\"><pre data-tag=\"codeblock\" id=\"code-code-group-typescript\" outputclass=\"language-typescript\" code-type=\"xCode\" class=\"pre codeblock language-typescript\"><code>import Anthropic from \"@anthropic-ai/sdk\";\n\nconst anthropic = new Anthropic({\n  apiKey: process.env.DASHSCOPE_API_KEY,\n  baseURL: \"https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic\",\n});\n\nasync function main() {\n  const message = await anthropic.messages.create({\n    model: \"qwen3.8-max\",\n    max_tokens: 1024,\n    system: \"You are a helpful assistant\",\n    messages: [{\n      role: \"user\",\n      content: \"你是谁？\"\n    }],\n    thinking: { type: \"disabled\" },\n  });\n\n  console.log(message.content[0].text);\n}\n\nmain().catch(console.error);\n</code></pre></div><input id=\"fig-code-group-curl-tab\" type=\"radio\" name=\"check-fig-code-group\"><label for=\"fig-code-group-curl-tab\">curl</label><div class=\"codeblock-item\"><pre data-tag=\"codeblock\" id=\"code-code-group-curl\" outputclass=\"language-bash\" code-type=\"xCode\" class=\"pre codeblock language-bash\"><code>curl -X POST \"https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic/v1/messages\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"x-api-key: $DASHSCOPE_API_KEY\" \\\n  -d '{\n    \"model\": \"qwen3.8-max\",\n    \"max_tokens\": 1024,\n    \"system\": \"You are a helpful assistant\",\n    \"messages\": [\n        {\n            \"role\": \"user\",\n            \"content\": \"你是谁？\"\n        }\n    ],\n    \"thinking\": {\"type\": \"disabled\"}\n}'\n</code></pre></div></div></section><section id=\"流式输出\" class=\"section\"><h4 id=\"流式输出-h4\">流式输出</h4><div outputclass=\"tabbed-codeblock\" data-tag=\"fig\" id=\"fig-code-group-2\" class=\"tabbed-codeblock-box\"><div class=\"tab-box\"></div><input id=\"fig-code-group-2-python-tab\" type=\"radio\" name=\"check-fig-code-group-2\" checked=\"\"><label for=\"fig-code-group-2-python-tab\">Python</label><div class=\"codeblock-item\"><pre data-tag=\"codeblock\" id=\"code-code-group-2-python\" outputclass=\"language-python\" code-type=\"xCode\" class=\"pre codeblock language-python\"><code>import anthropic\nimport os\n\nclient = anthropic.Anthropic(\n    api_key=os.getenv(\"DASHSCOPE_API_KEY\"),\n    base_url=\"https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic\",\n)\n\nstream = client.messages.create(\n    model=\"qwen3.8-max\",\n    max_tokens=1024,\n    stream=True,\n    messages=[\n        {\n            \"role\": \"user\",\n            \"content\": \"请简单介绍一下人工智能。\"\n        }\n    ],\n    thinking={\"type\": \"disabled\"},\n)\n\nfor chunk in stream:\n    if chunk.type == \"content_block_delta\":\n        if hasattr(chunk.delta, 'text'):\n            print(chunk.delta.text, end=\"\", flush=True)\n</code></pre></div><input id=\"fig-code-group-2-typescript-tab\" type=\"radio\" name=\"check-fig-code-group-2\"><label for=\"fig-code-group-2-typescript-tab\">TypeScript</label><div class=\"codeblock-item\"><pre data-tag=\"codeblock\" id=\"code-code-group-2-typescript\" outputclass=\"language-typescript\" code-type=\"xCode\" class=\"pre codeblock language-typescript\"><code>import Anthropic from \"@anthropic-ai/sdk\";\n\nasync function main() {\n  const anthropic = new Anthropic({\n    apiKey: process.env.DASHSCOPE_API_KEY,\n    baseURL: \"https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic\",\n  });\n\n  const stream = await anthropic.messages.create({\n    model: \"qwen3.8-max\",\n    max_tokens: 1024,\n    stream: true,\n    messages: [{\n      role: \"user\",\n      content: \"请简单介绍一下人工智能。\"\n    }],\n    thinking: { type: \"disabled\" },\n  });\n\n  for await (const chunk of stream) {\n    if (chunk.type === \"content_block_delta\" &amp;&amp; 'text' in chunk.delta) {\n      process.stdout.write(chunk.delta.text);\n    }\n  }\n}\n\nmain().catch(console.error);\n</code></pre></div><input id=\"fig-code-group-2-curl-tab\" type=\"radio\" name=\"check-fig-code-group-2\"><label for=\"fig-code-group-2-curl-tab\">curl</label><div class=\"codeblock-item\"><pre data-tag=\"codeblock\" id=\"code-code-group-2-curl\" outputclass=\"language-bash\" code-type=\"xCode\" class=\"pre codeblock language-bash\"><code>curl -X POST \"https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic/v1/messages\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"x-api-key: $DASHSCOPE_API_KEY\" \\\n  --no-buffer \\\n  -d '{\n    \"model\": \"qwen3.8-max\",\n    \"max_tokens\": 1024,\n    \"stream\": true,\n    \"messages\": [\n        {\n            \"role\": \"user\",\n            \"content\": \"请简单介绍一下人工智能。\"\n        }\n    ],\n    \"thinking\": {\"type\": \"disabled\"}\n}'\n</code></pre></div></div></section><section id=\"深度思考\" class=\"section\"><h4 id=\"深度思考-h4\">深度思考</h4><div outputclass=\"tabbed-codeblock\" data-tag=\"fig\" id=\"fig-code-group-3\" class=\"tabbed-codeblock-box\"><div class=\"tab-box\"></div><input id=\"fig-code-group-3-python-tab\" type=\"radio\" name=\"check-fig-code-group-3\" checked=\"\"><label for=\"fig-code-group-3-python-tab\">Python</label><div class=\"codeblock-item\"><pre data-tag=\"codeblock\" id=\"code-code-group-3-python\" outputclass=\"language-python\" code-type=\"xCode\" class=\"pre codeblock language-python\"><code>import anthropic\nimport os\n\nclient = anthropic.Anthropic(\n    api_key=os.getenv(\"DASHSCOPE_API_KEY\"),\n    base_url=\"https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic\",\n)\n\nstream = client.messages.create(\n    model=\"qwen3.8-max\",\n    max_tokens=2048,\n    stream=True,\n    thinking={\n        \"type\": \"enabled\",\n        \"budget_tokens\": 1024\n    },\n    messages=[\n        {\n            \"role\": \"user\",\n            \"content\": \"分析一下量子计算的发展前景。\"\n        }\n    ]\n)\n\nfor chunk in stream:\n    if chunk.type == \"content_block_delta\":\n        if hasattr(chunk.delta, 'thinking'):\n            print(chunk.delta.thinking, end=\"\", flush=True)\n        elif hasattr(chunk.delta, 'text'):\n            print(chunk.delta.text, end=\"\", flush=True)\n</code></pre></div><input id=\"fig-code-group-3-typescript-tab\" type=\"radio\" name=\"check-fig-code-group-3\"><label for=\"fig-code-group-3-typescript-tab\">TypeScript</label><div class=\"codeblock-item\"><pre data-tag=\"codeblock\" id=\"code-code-group-3-typescript\" outputclass=\"language-typescript\" code-type=\"xCode\" class=\"pre codeblock language-typescript\"><code>import Anthropic from \"@anthropic-ai/sdk\";\n\nasync function main() {\n  const anthropic = new Anthropic({\n    apiKey: process.env.DASHSCOPE_API_KEY,\n    baseURL: \"https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic\",\n  });\n\n  const stream = await anthropic.messages.create({\n    model: \"qwen3.8-max\",\n    max_tokens: 2048,\n    stream: true,\n    thinking: { type: \"enabled\", budget_tokens: 1024 },\n    messages: [{\n      role: \"user\",\n      content: \"分析一下量子计算的发展前景。\"\n    }]\n  });\n\n  for await (const chunk of stream) {\n    if (chunk.type === \"content_block_delta\") {\n      if ('thinking' in chunk.delta) {\n        process.stdout.write(chunk.delta.thinking);\n      } else if ('text' in chunk.delta) {\n        process.stdout.write(chunk.delta.text);\n      }\n    }\n  }\n}\n\nmain().catch(console.error);\n</code></pre></div><input id=\"fig-code-group-3-curl-tab\" type=\"radio\" name=\"check-fig-code-group-3\"><label for=\"fig-code-group-3-curl-tab\">curl</label><div class=\"codeblock-item\"><pre data-tag=\"codeblock\" id=\"code-code-group-3-curl\" outputclass=\"language-bash\" code-type=\"xCode\" class=\"pre codeblock language-bash\"><code>curl -X POST \"https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic/v1/messages\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"x-api-key: $DASHSCOPE_API_KEY\" \\\n  -d '{\n    \"model\": \"qwen3.8-max\",\n    \"max_tokens\": 2048,\n    \"stream\": true,\n    \"thinking\": {\n        \"type\": \"enabled\",\n        \"budget_tokens\": 1024\n    },\n    \"messages\": [\n        {\n            \"role\": \"user\",\n            \"content\": \"分析一下量子计算的发展前景。\"\n        }\n    ]\n}'\n</code></pre></div></div></section><section id=\"图片理解\" class=\"section\"><h4 id=\"图片理解-h4\">图片理解</h4><div outputclass=\"tabbed-codeblock\" data-tag=\"fig\" id=\"fig-code-group-4\" class=\"tabbed-codeblock-box\"><div class=\"tab-box\"></div><input id=\"fig-code-group-4-python-tab\" type=\"radio\" name=\"check-fig-code-group-4\" checked=\"\"><label for=\"fig-code-group-4-python-tab\">Python</label><div class=\"codeblock-item\"><pre data-tag=\"codeblock\" id=\"code-code-group-4-python\" outputclass=\"language-python\" code-type=\"xCode\" class=\"pre codeblock language-python\"><code>import anthropic\nimport os\n\nclient = anthropic.Anthropic(\n    api_key=os.getenv(\"DASHSCOPE_API_KEY\"),\n    base_url=\"https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic\",\n)\n\nstream = client.messages.create(\n    model=\"qwen3.8-max\",\n    max_tokens=1024,\n    stream=True,\n    messages=[\n        {\n            \"role\": \"user\",\n            \"content\": [\n                {\n                    \"type\": \"image\",\n                    \"source\": {\n                        \"type\": \"url\",\n                        \"url\": \"https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20250414/mqqmiy/animal_01.jpg\",\n                    },\n                },\n                {\n                    \"type\": \"text\",\n                    \"text\": \"描述这张图片的内容。\"\n                },\n            ],\n        }\n    ],\n    thinking={\"type\": \"disabled\"},\n)\n\nfor chunk in stream:\n    if chunk.type == \"content_block_delta\":\n        if hasattr(chunk.delta, 'text'):\n            print(chunk.delta.text, end=\"\", flush=True)\n</code></pre></div><input id=\"fig-code-group-4-typescript-tab\" type=\"radio\" name=\"check-fig-code-group-4\"><label for=\"fig-code-group-4-typescript-tab\">TypeScript</label><div class=\"codeblock-item\"><pre data-tag=\"codeblock\" id=\"code-code-group-4-typescript\" outputclass=\"language-typescript\" code-type=\"xCode\" class=\"pre codeblock language-typescript\"><code>import Anthropic from \"@anthropic-ai/sdk\";\n\nasync function main() {\n  const anthropic = new Anthropic({\n    apiKey: process.env.DASHSCOPE_API_KEY,\n    baseURL: \"https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic\",\n  });\n\n  const stream = await anthropic.messages.create({\n    model: \"qwen3.8-max\",\n    max_tokens: 1024,\n    stream: true,\n    messages: [{\n      role: \"user\",\n      content: [\n        {\n          type: \"image\",\n          source: {\n            type: \"url\",\n            url: \"https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20250414/mqqmiy/animal_01.jpg\",\n          },\n        },\n        { type: \"text\", text: \"描述这张图片的内容。\" },\n      ],\n    }],\n    thinking: { type: \"disabled\" },\n  });\n\n  for await (const chunk of stream) {\n    if (chunk.type === \"content_block_delta\" &amp;&amp; 'text' in chunk.delta) {\n      process.stdout.write(chunk.delta.text);\n    }\n  }\n}\n\nmain().catch(console.error);\n</code></pre></div><input id=\"fig-code-group-4-curl-tab\" type=\"radio\" name=\"check-fig-code-group-4\"><label for=\"fig-code-group-4-curl-tab\">curl</label><div class=\"codeblock-item\"><pre data-tag=\"codeblock\" id=\"code-code-group-4-curl\" outputclass=\"language-bash\" code-type=\"xCode\" class=\"pre codeblock language-bash\"><code>curl -X POST \"https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic/v1/messages\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"x-api-key: $DASHSCOPE_API_KEY\" \\\n  -d '{\n    \"model\": \"qwen3.8-max\",\n    \"max_tokens\": 1024,\n    \"stream\": true,\n    \"messages\": [\n        {\n            \"role\": \"user\",\n            \"content\": [\n                {\n                    \"type\": \"image\",\n                    \"source\": {\n                        \"type\": \"url\",\n                        \"url\": \"https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20250414/mqqmiy/animal_01.jpg\"\n                    }\n                },\n                {\n                    \"type\": \"text\",\n                    \"text\": \"描述这张图片的内容。\"\n                }\n            ]\n        }\n    ],\n    \"thinking\": {\"type\": \"disabled\"}\n}'\n</code></pre></div></div></section><section id=\"视频理解\" class=\"section\"><h4 id=\"视频理解-h4\">视频理解</h4><div outputclass=\"tabbed-codeblock\" data-tag=\"fig\" id=\"fig-code-group-5\" class=\"tabbed-codeblock-box\"><div class=\"tab-box\"></div><input id=\"fig-code-group-5-python-tab\" type=\"radio\" name=\"check-fig-code-group-5\" checked=\"\"><label for=\"fig-code-group-5-python-tab\">Python</label><div class=\"codeblock-item\"><pre data-tag=\"codeblock\" id=\"code-code-group-5-python\" outputclass=\"language-python\" code-type=\"xCode\" class=\"pre codeblock language-python\"><code>import anthropic\nimport os\n\nclient = anthropic.Anthropic(\n    api_key=os.getenv(\"DASHSCOPE_API_KEY\"),\n    base_url=\"https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic\",\n)\n\nstream = client.messages.create(\n    model=\"qwen3.8-max\",\n    max_tokens=1024,\n    stream=True,\n    messages=[\n        {\n            \"role\": \"user\",\n            \"content\": [\n                {\n                    \"type\": \"video\",\n                    \"source\": {\n                        \"type\": \"url\",\n                        \"url\": \"https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20251208/zpupby/3e81ef38-98f0-4d55-bbb6-259334ca18d0.mp4\",\n                    },\n                },\n                {\n                    \"type\": \"text\",\n                    \"text\": \"描述这段视频的内容。\"\n                },\n            ],\n        }\n    ],\n    thinking={\"type\": \"disabled\"},\n)\n\nfor chunk in stream:\n    if chunk.type == \"content_block_delta\":\n        if hasattr(chunk.delta, 'text'):\n            print(chunk.delta.text, end=\"\", flush=True)\n</code></pre></div><input id=\"fig-code-group-5-typescript-tab\" type=\"radio\" name=\"check-fig-code-group-5\"><label for=\"fig-code-group-5-typescript-tab\">TypeScript</label><div class=\"codeblock-item\"><pre data-tag=\"codeblock\" id=\"code-code-group-5-typescript\" outputclass=\"language-typescript\" code-type=\"xCode\" class=\"pre codeblock language-typescript\"><code>import Anthropic from \"@anthropic-ai/sdk\";\n\nasync function main() {\n  const anthropic = new Anthropic({\n    apiKey: process.env.DASHSCOPE_API_KEY,\n    baseURL: \"https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic\",\n  });\n\n  const stream = await anthropic.messages.create({\n    model: \"qwen3.8-max\",\n    max_tokens: 1024,\n    stream: true,\n    messages: [{\n      role: \"user\",\n      content: [\n        {\n          type: \"video\",\n          source: {\n            type: \"url\",\n            url: \"https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20251208/zpupby/3e81ef38-98f0-4d55-bbb6-259334ca18d0.mp4\",\n          },\n        },\n        { type: \"text\", text: \"描述这段视频的内容。\" },\n      ],\n    }],\n    thinking: { type: \"disabled\" },\n  });\n\n  for await (const chunk of stream) {\n    if (chunk.type === \"content_block_delta\" &amp;&amp; 'text' in chunk.delta) {\n      process.stdout.write(chunk.delta.text);\n    }\n  }\n}\n\nmain().catch(console.error);\n</code></pre></div><input id=\"fig-code-group-5-curl-tab\" type=\"radio\" name=\"check-fig-code-group-5\"><label for=\"fig-code-group-5-curl-tab\">curl</label><div class=\"codeblock-item\"><pre data-tag=\"codeblock\" id=\"code-code-group-5-curl\" outputclass=\"language-bash\" code-type=\"xCode\" class=\"pre codeblock language-bash\"><code>curl -X POST \"https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic/v1/messages\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"x-api-key: $DASHSCOPE_API_KEY\" \\\n  -d '{\n    \"model\": \"qwen3.8-max\",\n    \"max_tokens\": 1024,\n    \"stream\": true,\n    \"messages\": [\n        {\n            \"role\": \"user\",\n            \"content\": [\n                {\n                    \"type\": \"video\",\n                    \"source\": {\n                        \"type\": \"url\",\n                        \"url\": \"https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20251208/zpupby/3e81ef38-98f0-4d55-bbb6-259334ca18d0.mp4\"\n                    }\n                },\n                {\n                    \"type\": \"text\",\n                    \"text\": \"描述这段视频的内容。\"\n                }\n            ]\n        }\n    ],\n    \"thinking\": {\"type\": \"disabled\"}\n}'\n</code></pre></div></div></section><section id=\"function-call\" class=\"section\"><h4 id=\"function-call-h4\">Function Call</h4><div outputclass=\"tabbed-codeblock\" data-tag=\"fig\" id=\"fig-code-group-6\" class=\"tabbed-codeblock-box\"><div class=\"tab-box\"></div><input id=\"fig-code-group-6-python-tab\" type=\"radio\" name=\"check-fig-code-group-6\" checked=\"\"><label for=\"fig-code-group-6-python-tab\">Python</label><div class=\"codeblock-item\"><pre data-tag=\"codeblock\" id=\"code-code-group-6-python\" outputclass=\"language-python\" code-type=\"xCode\" class=\"pre codeblock language-python\"><code>import anthropic\nimport os\n\nclient = anthropic.Anthropic(\n    api_key=os.getenv(\"DASHSCOPE_API_KEY\"),\n    base_url=\"https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic\",\n)\n\ntools = [\n    {\n        \"name\": \"get_weather\",\n        \"description\": \"获取指定城市的天气信息\",\n        \"input_schema\": {\n            \"type\": \"object\",\n            \"properties\": {\n                \"city\": {\n                    \"type\": \"string\",\n                    \"description\": \"城市名称\"\n                }\n            },\n            \"required\": [\"city\"]\n        }\n    }\n]\n\nmessage = client.messages.create(\n    model=\"qwen3.8-max\",\n    max_tokens=1024,\n    tools=tools,\n    messages=[\n        {\n            \"role\": \"user\",\n            \"content\": \"杭州今天天气怎么样？\"\n        }\n    ]\n)\n\nprint(message.content)\n</code></pre></div><input id=\"fig-code-group-6-typescript-tab\" type=\"radio\" name=\"check-fig-code-group-6\"><label for=\"fig-code-group-6-typescript-tab\">TypeScript</label><div class=\"codeblock-item\"><pre data-tag=\"codeblock\" id=\"code-code-group-6-typescript\" outputclass=\"language-typescript\" code-type=\"xCode\" class=\"pre codeblock language-typescript\"><code>import Anthropic from \"@anthropic-ai/sdk\";\n\nasync function main() {\n  const anthropic = new Anthropic({\n    apiKey: process.env.DASHSCOPE_API_KEY,\n    baseURL: \"https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic\",\n  });\n\n  const message = await anthropic.messages.create({\n    model: \"qwen3.8-max\",\n    max_tokens: 1024,\n    tools: [\n      {\n        name: \"get_weather\",\n        description: \"获取指定城市的天气信息\",\n        input_schema: {\n          type: \"object\",\n          properties: {\n            city: { type: \"string\", description: \"城市名称\" }\n          },\n          required: [\"city\"],\n        },\n      },\n    ],\n    messages: [{\n      role: \"user\",\n      content: \"杭州今天天气怎么样？\"\n    }],\n  });\n\n  console.log(JSON.stringify(message.content, null, 2));\n}\n\nmain().catch(console.error);\n</code></pre></div><input id=\"fig-code-group-6-curl-tab\" type=\"radio\" name=\"check-fig-code-group-6\"><label for=\"fig-code-group-6-curl-tab\">curl</label><div class=\"codeblock-item\"><pre data-tag=\"codeblock\" id=\"code-code-group-6-curl\" outputclass=\"language-bash\" code-type=\"xCode\" class=\"pre codeblock language-bash\"><code>curl -X POST \"https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic/v1/messages\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"x-api-key: $DASHSCOPE_API_KEY\" \\\n  -d '{\n    \"model\": \"qwen3.8-max\",\n    \"max_tokens\": 1024,\n    \"tools\": [\n        {\n            \"name\": \"get_weather\",\n            \"description\": \"获取指定城市的天气信息\",\n            \"input_schema\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"city\": {\n                        \"type\": \"string\",\n                        \"description\": \"城市名称\"\n                    }\n                },\n                \"required\": [\"city\"]\n            }\n        }\n    ],\n    \"messages\": [\n        {\n            \"role\": \"user\",\n            \"content\": \"杭州今天天气怎么样？\"\n        }\n    ]\n}'\n</code></pre></div></div></section><section id=\"显式缓存\" class=\"section\"><h4 id=\"显式缓存-h4\">显式缓存</h4><div outputclass=\"tabbed-codeblock\" data-tag=\"fig\" id=\"fig-code-group-7\" class=\"tabbed-codeblock-box\"><div class=\"tab-box\"></div><input id=\"fig-code-group-7-python-tab\" type=\"radio\" name=\"check-fig-code-group-7\" checked=\"\"><label for=\"fig-code-group-7-python-tab\">Python</label><div class=\"codeblock-item\"><pre data-tag=\"codeblock\" id=\"code-code-group-7-python\" outputclass=\"language-python\" code-type=\"xCode\" class=\"pre codeblock language-python\"><code>import anthropic\nimport os\n\nclient = anthropic.Anthropic(\n    api_key=os.getenv(\"DASHSCOPE_API_KEY\"),\n    base_url=\"https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic\",\n)\n\n# 模拟代码仓库内容，需达到最小可缓存长度（1024 Token）\nlong_text_content = \"&lt;Your Code Here&gt;\" * 400\n\ndef get_completion(user_input):\n    response = client.messages.create(\n        # 选择支持显式缓存的模型\n        model=\"qwen3.8-max\",\n        max_tokens=1024,\n        system=[\n            {\n                \"type\": \"text\",\n                \"text\": long_text_content,\n                # 在 text 块上添加 cache_control 即标记缓存断点；也可放在 messages 数组的 content 块上\n                \"cache_control\": {\"type\": \"ephemeral\"},\n            }\n        ],\n        messages=[\n            {\"role\": \"user\", \"content\": user_input},\n        ],\n    )\n    return response\n\n# 第一次请求：创建缓存\nfirst = get_completion(\"这段代码的内容是什么\")\nprint(f\"创建缓存 Token：{first.usage.cache_creation_input_tokens}\")\nprint(f\"命中缓存 Token：{first.usage.cache_read_input_tokens}\")\nprint(\"=\" * 20)\n# 第二次请求：长内容相同，仅修改提问 → 命中缓存\nsecond = get_completion(\"这段代码可以怎么优化\")\nprint(f\"创建缓存 Token：{second.usage.cache_creation_input_tokens}\")\nprint(f\"命中缓存 Token：{second.usage.cache_read_input_tokens}\")\n</code></pre></div><input id=\"fig-code-group-7-typescript-tab\" type=\"radio\" name=\"check-fig-code-group-7\"><label for=\"fig-code-group-7-typescript-tab\">TypeScript</label><div class=\"codeblock-item\"><pre data-tag=\"codeblock\" id=\"code-code-group-7-typescript\" outputclass=\"language-typescript\" code-type=\"xCode\" class=\"pre codeblock language-typescript\"><code>import Anthropic from \"@anthropic-ai/sdk\";\n\nconst client = new Anthropic({\n  apiKey: process.env.DASHSCOPE_API_KEY,\n  baseURL: \"https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic\",\n});\n\n// 模拟代码仓库内容，需达到最小可缓存长度（1024 Token）\nconst longTextContent = \"&lt;Your Code Here&gt;\".repeat(400);\n\nasync function getCompletion(userInput) {\n  return client.messages.create({\n    // 选择支持显式缓存的模型\n    model: \"qwen3.8-max\",\n    max_tokens: 1024,\n    system: [\n      {\n        type: \"text\",\n        text: longTextContent,\n        // 在 text 块上添加 cache_control 即标记缓存断点；也可放在 messages 数组的 content 块上\n        cache_control: { type: \"ephemeral\" },\n      },\n    ],\n    messages: [{ role: \"user\", content: userInput }],\n  });\n}\n\n// 第一次请求：创建缓存\nconst first = await getCompletion(\"这段代码的内容是什么\");\nconsole.log(`创建缓存 Token：${first.usage.cache_creation_input_tokens}`);\nconsole.log(`命中缓存 Token：${first.usage.cache_read_input_tokens}`);\nconsole.log(\"=\".repeat(20));\n// 第二次请求：长内容相同，仅修改提问 → 命中缓存\nconst second = await getCompletion(\"这段代码可以怎么优化\");\nconsole.log(`创建缓存 Token：${second.usage.cache_creation_input_tokens}`);\nconsole.log(`命中缓存 Token：${second.usage.cache_read_input_tokens}`);\n</code></pre></div><input id=\"fig-code-group-7-curl-tab\" type=\"radio\" name=\"check-fig-code-group-7\"><label for=\"fig-code-group-7-curl-tab\">curl</label><div class=\"codeblock-item\"><pre data-tag=\"codeblock\" id=\"code-code-group-7-curl\" outputclass=\"language-bash\" code-type=\"xCode\" class=\"pre codeblock language-bash\"><code>curl -X POST \"https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic/v1/messages\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"x-api-key: $DASHSCOPE_API_KEY\" \\\n  -d '{\n    \"model\": \"qwen3.8-max\",\n    \"max_tokens\": 1024,\n    \"system\": [\n      {\n        \"type\": \"text\",\n        \"text\": \"&lt;请在此处放置长度 ≥ 1024 Token 的可缓存内容&gt;\",\n        \"cache_control\": {\"type\": \"ephemeral\"}\n      }\n    ],\n    \"messages\": [\n      {\"role\": \"user\", \"content\": \"这段代码的内容是什么\"}\n    ]\n}'\n</code></pre></div></div></section><section id=\"结构化输出\" class=\"section\"><h4 id=\"结构化输出-h4\">结构化输出</h4><div outputclass=\"tabbed-codeblock\" data-tag=\"fig\" id=\"fig-code-group-8\" class=\"tabbed-codeblock-box\"><div class=\"tab-box\"></div><input id=\"fig-code-group-8-python-tab\" type=\"radio\" name=\"check-fig-code-group-8\" checked=\"\"><label for=\"fig-code-group-8-python-tab\">Python</label><div class=\"codeblock-item\"><pre data-tag=\"codeblock\" id=\"code-code-group-8-python\" outputclass=\"language-python\" code-type=\"xCode\" class=\"pre codeblock language-python\"><code>import anthropic\nimport os\n\nclient = anthropic.Anthropic(\n    api_key=os.getenv(\"DASHSCOPE_API_KEY\"),\n    base_url=\"https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic\",\n)\n\nmessage = client.messages.create(\n    model=\"deepseek-v4-pro\",\n    max_tokens=1024,\n    messages=[\n        {\n            \"role\": \"user\",\n            \"content\": \"提取以下邮件的关键信息：张三 (zhangsan@example.com) 对企业版方案感兴趣，希望预约下周二下午 2 点的演示。\"\n        }\n    ],\n    extra_body={\n        \"output_config\": {\n            \"format\": {\n                \"type\": \"json_schema\",\n                \"schema\": {\n                    \"type\": \"object\",\n                    \"properties\": {\n                        \"name\": {\"type\": \"string\"},\n                        \"email\": {\"type\": \"string\"},\n                        \"plan_interest\": {\"type\": \"string\"},\n                        \"demo_requested\": {\"type\": \"boolean\"}\n                    },\n                    \"required\": [\"name\", \"email\", \"plan_interest\", \"demo_requested\"],\n                    \"additionalProperties\": False\n                }\n            }\n        }\n    },\n)\n\n# deepseek-v4-pro 模型会返回 thinking 块，需要找到 type='text' 的内容块\ntext_block = next(block for block in message.content if block.type == \"text\")\nprint(text_block.text)\n</code></pre></div><input id=\"fig-code-group-8-typescript-tab\" type=\"radio\" name=\"check-fig-code-group-8\"><label for=\"fig-code-group-8-typescript-tab\">TypeScript</label><div class=\"codeblock-item\"><pre data-tag=\"codeblock\" id=\"code-code-group-8-typescript\" outputclass=\"language-typescript\" code-type=\"xCode\" class=\"pre codeblock language-typescript\"><code>import Anthropic from \"@anthropic-ai/sdk\";\n\nconst anthropic = new Anthropic({\n  apiKey: process.env.DASHSCOPE_API_KEY,\n  baseURL: \"https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic\",\n});\n\nasync function main() {\n  // output_config 是百炼平台扩展参数，SDK 类型定义中不包含该字段，\n  // 通过交叉类型扩展官方参数类型进行透传，避免不安全的类型断言\n  type MessageCreateParamsWithOutputConfig =\n    Anthropic.MessageCreateParamsNonStreaming &amp; {\n      output_config: {\n        format: {\n          type: \"json_schema\";\n          schema: Record&lt;string, unknown&gt;;\n        };\n      };\n    };\n\n  const params: MessageCreateParamsWithOutputConfig = {\n    model: \"deepseek-v4-pro\",\n    max_tokens: 1024,\n    messages: [{\n      role: \"user\",\n      content: \"提取以下邮件的关键信息：张三 (zhangsan@example.com) 对企业版方案感兴趣，希望预约下周二下午 2 点的演示。\"\n    }],\n    output_config: {\n      format: {\n        type: \"json_schema\",\n        schema: {\n          type: \"object\",\n          properties: {\n            name: { type: \"string\" },\n            email: { type: \"string\" },\n            plan_interest: { type: \"string\" },\n            demo_requested: { type: \"boolean\" }\n          },\n          required: [\"name\", \"email\", \"plan_interest\", \"demo_requested\"],\n          additionalProperties: false\n        }\n      }\n    }\n  };\n  const message = await anthropic.messages.create(params);\n\n  // deepseek-v4-pro 模型会返回 thinking 块，需要找到 type='text' 的内容块\n  const textBlock = message.content.find(\n    (block): block is Anthropic.TextBlock =&gt; block.type === \"text\"\n  );\n  console.log(textBlock?.text);\n}\n\nmain().catch(console.error);\n</code></pre></div><input id=\"fig-code-group-8-curl-tab\" type=\"radio\" name=\"check-fig-code-group-8\"><label for=\"fig-code-group-8-curl-tab\">curl</label><div class=\"codeblock-item\"><pre data-tag=\"codeblock\" id=\"code-code-group-8-curl\" outputclass=\"language-bash\" code-type=\"xCode\" class=\"pre codeblock language-bash\"><code>curl -X POST \"https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic/v1/messages\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"x-api-key: $DASHSCOPE_API_KEY\" \\\n  -d '{\n    \"model\": \"deepseek-v4-pro\",\n    \"max_tokens\": 1024,\n    \"messages\": [\n        {\n            \"role\": \"user\",\n            \"content\": \"提取以下邮件的关键信息：张三 (zhangsan@example.com) 对企业版方案感兴趣，希望预约下周二下午 2 点的演示。\"\n        }\n    ],\n    \"output_config\": {\n        \"format\": {\n            \"type\": \"json_schema\",\n            \"schema\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"name\": {\"type\": \"string\"},\n                    \"email\": {\"type\": \"string\"},\n                    \"plan_interest\": {\"type\": \"string\"},\n                    \"demo_requested\": {\"type\": \"boolean\"}\n                },\n                \"required\": [\"name\", \"email\", \"plan_interest\", \"demo_requested\"],\n                \"additionalProperties\": false\n            }\n        }\n    }\n}'\n</code></pre></div></div></section></section></td></tr></tbody></table>\n<table bordertype=\"no-border\" style=\"display:table;table-layout:fixed;width:100%\"><colgroup><col style=\"width:50%\"><col style=\"width:50%\"></colgroup><tbody><tr><td><h2>非流式响应 <span id=\"ag1a2b3c4d5f0\"></span></h2><p><strong>id</strong> <code>string</code></p><p>消息的唯一标识。</p><p><strong>type</strong> <code>string</code></p><p>固定为 <code>message</code>。</p><p><strong>role</strong> <code>string</code></p><p>固定为 <code>assistant</code>。</p><p><strong>model</strong> <code>string</code></p><p>使用的模型名称。</p><p><strong>content</strong> <code>array</code></p><p>内容数组。</p><section class=\"collapse\" id=\"accordion-content-数组元素类型-2\"><p>content 数组元素类型</p><div><strong>文本信息</strong><section class=\"collapse\" id=\"accordion-属性-12\"><p>属性</p><div><p><strong>type</strong> <code>string</code></p><p>固定为 <code>text</code>。</p><p><strong>text</strong> <code>string</code></p><p>模型生成的文本回复。</p></div></section><p><strong>思考信息</strong>（开启深度思考时返回）</p><section class=\"collapse\" id=\"accordion-属性-13\"><p>属性</p><div><p><strong>type</strong> <code>string</code></p><p>固定为 <code>thinking</code>。</p><p><strong>thinking</strong> <code>string</code></p><p>模型在生成最终回复前的思考过程。</p><p><strong>signature</strong> <code>string</code></p><p>当前固定为空字符串。</p></div></section><p><strong>工具调用信息</strong>（Function Call 场景）</p><section class=\"collapse\" id=\"accordion-属性-14\"><p>属性</p><div><p><strong>type</strong> <code>string</code></p><p>固定为 <code>tool_use</code>。</p><p><strong>id</strong> <code>string</code></p><p>工具调用的唯一标识，用于在后续 <code>tool_result</code> 中关联结果。</p><p><strong>name</strong> <code>string</code></p><p>被调用的工具名称。</p><p><strong>input</strong> <code>object</code></p><p>工具调用的入参。</p></div></section></div></section><p><strong>stop_reason</strong> <code>string</code></p><p>停止原因。可选值：<code>end_turn</code>（正常结束）、<code>max_tokens</code>（达到 Token 上限）、<code>tool_use</code>（工具调用）。</p><p><strong>stop_sequence</strong> <code>string</code></p><p>固定为 <code>null</code>。</p><p><strong>usage</strong> <code>object</code></p><p>Token 用量统计。</p><div class=\"note note-note\"><div class=\"note-icon-wrapper\"></div><div class=\"note-content\"><p><strong>说明</strong>流式调用中，<code>message_start</code> 事件的 <code>usage</code> 仅包含 <code>input_tokens</code> 和 <code>output_tokens</code>；完整 4 个字段在 <code>message_delta</code> 事件中返回。</p></div></div><section class=\"collapse\" id=\"accordion-属性-15\"><p>属性</p><div><p><strong>input_tokens</strong> <code>integer</code></p><p>输入 Token 数量。</p><p><strong>output_tokens</strong> <code>integer</code></p><p>输出 Token 数量。</p><p><strong>cache_creation_input_tokens</strong> <code>integer</code></p><p>缓存创建消耗的输入 Token 数量。</p><p><strong>cache_read_input_tokens</strong> <code>integer</code></p><p>缓存读取消耗的输入 Token 数量。</p></div></section></td><td><strong>响应示例</strong><pre data-tag=\"codeblock\" id=\"code-block\" outputclass=\"language-json\" code-type=\"xCode\" class=\"pre codeblock language-json\"><code>{\n  \"id\": \"msg_e2898f19-fc0e-4cb3-bd9b-5b7dc4ea3bc9\",\n  \"type\": \"message\",\n  \"role\": \"assistant\",\n  \"model\": \"qwen3.8-max\",\n  \"content\": [\n    {\n      \"type\": \"thinking\",\n      \"thinking\": \"让我分析一下这个问题...\",\n      \"signature\": \"\"\n    },\n    {\n      \"type\": \"text\",\n      \"text\": \"你好！我是通义千问...\"\n    }\n  ],\n  \"stop_reason\": \"end_turn\",\n  \"stop_sequence\": null,\n  \"usage\": {\n    \"input_tokens\": 22,\n    \"output_tokens\": 223,\n    \"cache_creation_input_tokens\": 0,\n    \"cache_read_input_tokens\": 0\n  }\n}\n</code></pre></td></tr></tbody></table>\n<table bordertype=\"no-border\" style=\"display:table;table-layout:fixed;width:100%\"><colgroup><col style=\"width:50%\"><col style=\"width:50%\"></colgroup><tbody><tr><td><h2>流式响应 <span id=\"ah1a2b3c4d5e8\"></span></h2><strong>message_start</strong><p>流的第一个事件，标记消息开始。</p><section class=\"collapse\" id=\"accordion-属性-16\"><p>属性</p><div><p><strong>type</strong> <code>string</code></p><p>固定为 <code>message_start</code>。</p><p><strong>message</strong> <code>object</code></p><p>初始消息对象，<code>content</code> 为空数组，<code>usage</code> 仅含 <code>input_tokens</code> 和 <code>output_tokens</code>。</p></div></section><strong>content_block_start</strong><p>每个内容块开始时发送，标记新内容块的索引和类型。</p><section class=\"collapse\" id=\"accordion-属性-17\"><p>属性</p><div><p><strong>type</strong> <code>string</code></p><p>固定为 <code>content_block_start</code>。</p><p><strong>index</strong> <code>integer</code></p><p>内容块索引，从 0 开始，对应该消息 <code>content</code> 数组中的位置。</p><p><strong>content_block</strong> <code>object</code></p><p>内容块的初始对象。<code>type</code> 取值为 <code>text</code>、<code>thinking</code> 或 <code>tool_use</code>。<code>tool_use</code> 类型在此事件中 <code>input</code> 为空对象，完整入参由后续 <code>content_block_delta</code> 增量拼接。</p></div></section><strong>content_block_delta</strong><p>内容块的增量更新事件。同一内容块会发送多个该事件。</p><section class=\"collapse\" id=\"accordion-属性-18\"><p>属性</p><div><p><strong>type</strong> <code>string</code></p><p>固定为 <code>content_block_delta</code>。</p><p><strong>index</strong> <code>integer</code></p><p>所属内容块索引。</p><p><strong>delta</strong> <code>object</code></p><p>增量对象，<code>type</code> 取值：</p><ul>\n<li><code>text_delta</code>：文本增量，含 <code>text</code> 字段。</li>\n<li><code>thinking_delta</code>：思考增量，含 <code>thinking</code> 字段。</li>\n<li><code>signature_delta</code>：签名增量，含 <code>signature</code> 字段（当前固定为空字符串）。</li>\n<li><code>input_json_delta</code>：工具调用入参增量，含 <code>partial_json</code> 字段。</li>\n</ul></div></section><strong>content_block_stop</strong><p>内容块结束事件。</p><section class=\"collapse\" id=\"accordion-属性-19\"><p>属性</p><div><p><strong>type</strong> <code>string</code></p><p>固定为 <code>content_block_stop</code>。</p><p><strong>index</strong> <code>integer</code></p><p>结束的内容块索引。</p></div></section><strong>message_delta</strong><p>消息级更新事件，在所有内容块结束后发送，包含停止原因和完整的 Token 用量统计。</p><section class=\"collapse\" id=\"accordion-属性-20\"><p>属性</p><div><p><strong>type</strong> <code>string</code></p><p>固定为 <code>message_delta</code>。</p><p><strong>delta</strong> <code>object</code></p><p>包含 <code>stop_reason</code> 和 <code>stop_sequence</code>，取值参见上方非流式响应表格。</p><p><strong>usage</strong> <code>object</code></p><p>完整的 Token 用量统计，包含 <code>input_tokens</code>、<code>output_tokens</code>、<code>cache_creation_input_tokens</code>、<code>cache_read_input_tokens</code>。</p></div></section><strong>message_stop</strong><p>流的最后一个事件，标记消息结束。</p><section class=\"collapse\" id=\"accordion-属性-21\"><p>属性</p><div><p><strong>type</strong> <code>string</code></p><p>固定为 <code>message_stop</code>。</p><p>此外，流式响应还会定期发送 <strong>ping</strong> 事件（<code>{\"type\":\"ping\"}</code>）用于保持连接活跃，客户端可忽略。</p></div></section></td><td><strong>流式响应示例</strong><pre data-tag=\"codeblock\" id=\"code-block-2\" outputclass=\"language-json\" code-type=\"xCode\" class=\"pre codeblock language-json\"><code>{\"type\":\"message_start\",\"message\":{\"id\":\"msg_xxx\",\"type\":\"message\",\"role\":\"assistant\",\"model\":\"qwen3.8-max\",\"content\":[],\"usage\":{\"input_tokens\":15,\"output_tokens\":0}}}\n{\"type\":\"content_block_start\",\"index\":0,\"content_block\":{\"type\":\"thinking\",\"thinking\":\"\",\"signature\":\"\"}}\n{\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"Here's a thinking process:\\n\\n1. **Analyze User Input:**\\n   - **Topic:** 人工智能 (Artificial Intelligence / AI)\\n   - **Request:** 请简单介绍一下人工智能。\"}}\n{\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"signature_delta\",\"signature\":\"\"}}\n{\"type\":\"content_block_stop\",\"index\":0}\n{\"type\":\"content_block_start\",\"index\":1,\"content_block\":{\"type\":\"text\",\"text\":\"\"}}\n{\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\"人工智能（Artificial Intelligence，简称<span class=\"help-letter-space\"></span>AI）是计算机科学的重要分支...\"}}\n{\"type\":\"content_block_stop\",\"index\":1}\n{\"type\":\"message_delta\",\"delta\":{\"stop_reason\":\"end_turn\",\"stop_sequence\":null},\"usage\":{\"input_tokens\":15,\"output_tokens\":1078,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0}}\n{\"type\":\"message_stop\"}\n</code></pre></td></tr></tbody></table>\n<h2 id=\"常见问题\">常见问题 <span id=\"faq-ccbaseurl-h2\"></span></h2>\n<p><strong>在 Claude Desktop 或 Claude Code 中配置后，连接测试报错</strong><code>Model discovery — Gateway /v1/models returned HTTP 404</code><strong>，或请求地址出现</strong><code>/v1/v1/models</code><strong>，如何解决？</strong></p>\n<p>Claude Desktop、Claude Code 等客户端的模型发现（model discovery）功能会在配置的 base URL 后自动追加 <code>/v1/models</code>。请按以下两点排查：</p>\n<ul>\n<li><strong>base URL 不要以</strong><code>/v1/</code><strong>结尾</strong>：应填写到 <code>/apps/anthropic</code> 为止（例如华北<span class=\"help-letter-space\"></span>2（北京）填 <code>https://dashscope.aliyuncs.com/apps/anthropic</code>，其余地域的地址见上方“接入信息”）。若误填为 <code>.../apps/anthropic/v1/</code>，客户端追加 <code>/v1/models</code> 后会形成 <code>/v1/v1/models</code> 的重复路径，导致 HTTP 404。因此出现 404 时，请先检查实际请求地址是否出现 <code>/v1/v1/</code> 重复，若有则去掉 base URL 末尾的 <code>/v1/</code>。</li>\n<li><strong>手动添加模型以跳过自动发现</strong>：百炼 Anthropic 兼容端点仅提供 Messages 接口（<code>/v1/messages</code>），不提供模型列表接口（<code>/v1/models</code>），因此模型发现请求本身也会返回 404。请在客户端的 Models 中手动添加模型（例如 <code>qwen3.7-plus</code>）以跳过自动发现。</li>\n</ul></div>\n</div>","path":"https://help.aliyun.com/zh/model-studio/anthropic-api-messages","productNodeVO":{"emptyNode":false,"level":3,"validDocument":true,"headNavEnable":false,"docTitle":"大模型服务平台百炼","id":2400256,"title":"大模型服务平台百炼","url":"/zh/model-studio/"},"alias":"/model-studio/anthropic-api-messages","showType":1,"taskStatus":"NO_TASK_AVAILABLE","website":"cn","level":6,"developerUrl":"https://developer.aliyun.com/modelstudio/","nodeType":1,"version":83,"url":"/zh/model-studio/anthropic-api-messages","tags":[{"value":"1","key":"accept","desc":"已承接"},{"value":false,"key":"autoTranslation","desc":"非自动翻译"},{"value":2980295,"key":"nodeId","desc":"文档ID"}],"userVO":{},"recommendDocs":[],"directoryPath":{"children":[{"children":[{"emptyNode":false,"level":6,"validDocument":true,"headNavEnable":false,"docTitle":"Anthropic兼容-Messages","id":2980295,"title":"Anthropic兼容-Messages","url":"/zh/model-studio/anthropic-api-messages"}],"emptyNode":false,"level":5,"validDocument":true,"headNavEnable":false,"docTitle":"文本生成","id":2712576,"title":"文本生成","url":"/zh/model-studio/qwen-api-reference/"}],"emptyNode":false,"level":3,"validDocument":true,"headNavEnable":false,"docTitle":"大模型服务平台百炼","id":2400256,"title":"大模型服务平台百炼","url":"/zh/model-studio/"},"productUrl":"https://www.aliyun.com/product/bailian","nodeId":2980295,"desc":"通过兼容 Anthropic 格式的 Messages API 调用模型，查看输入输出参数说明及调用示例。"},"breadcrumb":[{"emptyNode":false,"level":3,"validDocument":true,"headNavEnable":false,"docTitle":"大模型服务平台百炼","id":2400256,"title":"大模型服务平台百炼","url":"/zh/model-studio/"},{"emptyNode":false,"level":5,"validDocument":true,"headNavEnable":false,"docTitle":"文本生成","id":2712576,"title":"文本生成","url":"/zh/model-studio/qwen-api-reference/"},{"emptyNode":false,"level":6,"validDocument":true,"headNavEnable":false,"docTitle":"Anthropic兼容-Messages","id":2980295,"title":"Anthropic兼容-Messages","url":"/zh/model-studio/anthropic-api-messages"}],"isMachineTranslation":false,"isNotFound":false,"helpResponseCode":200,"redirectUrl":"","helpDocVersion":1,"reloadFlag":true}}};
+  </script><link href="https://g.alicdn.com/code/npm/@ali/??hmod-ace-2023-box/0.1.0/index.css,hmod-aliyun-com-global-nav-search/0.8.5/index.css,hmod-aliyun-com-global-nav/0.3.18/index.css" rel="stylesheet"/>
+<link href="https://g.alicdn.com/code/npm/@ali/??hmod-ace-2023-box/0.1.0/index.css,hmod-ace-2024-global-footer/0.2.1/index.css" rel="stylesheet"/>
+</head>
+
+<body><script>
+with(document)with(body)with(insertBefore(createElement("script"),firstChild))setAttribute("exparams","category=&userid=&aplus&yunid=&&trid=2150421c17904309098324569e9cf4&asid=AQAAAAC+zrdqKvfoZQAAAAATn8muc7iHtA==",id="tb-beacon-aplus",src=(location>"https"?"//g":"//g")+".alicdn.com/alilog/mlog/aplus_v2.js")
+</script>
+
+  <script>
+    var _performance_domStart = window.performance && window.performance.now();
+  </script>
+  <header><div id="e881bdb2bc21fca3914afc7462937649"><div class="_18a32969382a277c44015217fbc5cb5a_box"><div class="_3bd147f6948a20d6c528ac898ad4ba47_pc de5ef2fee09ebcb2b1dcaf0c982523bc_theme _277ebb348812c9712fac6b680ad5e513_reset _277ebb348812c9712fac6b680ad5e513_aliyun-font-family" data-ai-assistant-text-selection-tooltip="disabled"><header class="_702422913dd5754f065139ec2d2def80_container   "><button class="_17fcaf1a4ee37405e5ad5fbad24204b4_container _17fcaf1a4ee37405e5ad5fbad24204b4_loading" aria-label="打开菜单" data-spm="d_dashboard_trigger" data-tracker-exp="true"><span class="_17fcaf1a4ee37405e5ad5fbad24204b4_burger "><span class="_17fcaf1a4ee37405e5ad5fbad24204b4_middle"></span></span></button><a href="https://www.aliyun.com/" class="_3f46140aade30bc61f3012933357c477_logo _702422913dd5754f065139ec2d2def80_logo" data-tracker-content="LOGO" data-spm="d_logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4608 1024" fill="#ff6a00" width="80"><path d="M3266.56 773.12h327.68v-102.4h-327.68v-102.4H3584V35.84H2846.72v532.48h317.44v102.4h-327.68v102.4h327.68v112.64h-353.28v102.4h814.08v-102.4h-353.28v-112.64zM3276.8 138.24h215.04v112.64H3276.8V138.24z m0 215.04h215.04V460.8H3276.8V353.28zM3174.4 460.8h-215.04V353.28H3174.4V460.8z m0-209.92h-215.04V138.24H3174.4v112.64zM537.6 445.44H1075.2v122.88H537.6z"></path><path d="M1341.44 5.12h-353.28L1075.2 128l256 81.92c46.08 15.36 76.8 61.44 76.8 107.52v389.12c0 46.08-30.72 92.16-76.8 107.52l-256 81.92-87.04 122.88h353.28c148.48 0 266.24-117.76 266.24-266.24V276.48c0-148.48-117.76-271.36-266.24-271.36zM276.48 814.08c-46.08-15.36-76.8-61.44-76.8-107.52V317.44c0-46.08 30.72-92.16 76.8-107.52l256-81.92L619.52 5.12H266.24C117.76 5.12 0 128 0 276.48v471.04c0 148.48 117.76 266.24 266.24 266.24h353.28l-87.04-122.88-256-76.8zM2493.44 250.88h-261.12v537.6h261.12V250.88z m-107.52 430.08h-56.32V353.28h56.32v327.68zM1848.32 988.16h102.4V138.24h107.52L1996.8 419.84v102.4h61.44v225.28c0 15.36-10.24 25.6-25.6 25.6h-25.6v102.4h51.2c56.32 0 102.4-46.08 102.4-102.4v-358.4H2099.2l61.44-281.6v-102.4h-312.32v957.44z"></path><path d="M2206.72 138.24H2560v660.48c0 46.08-35.84 87.04-87.04 87.04h-76.8v102.4h107.52c87.04 0 163.84-71.68 163.84-163.84V138.24h35.84v-102.4h-496.64v102.4zM3763.2 40.96h737.28v102.4H3763.2zM4541.44 527.36v-102.4H3727.36v102.4h204.8l-163.84 358.4v102.4h691.2c30.72 0 51.2-25.6 51.2-51.2 0-10.24 0-15.36-5.12-20.48l-87.04-194.56h-112.64l76.8 163.84h-496.64l163.84-358.4h491.52z"></path></svg></a><div class="e76910c82efe8556eb8a6ce6019c5d00_container"><button class="e76910c82efe8556eb8a6ce6019c5d00_controller" data-spm="dscroll-left"><i class="ee52067fb65534cb06d3b35f654f5441_icon ddd10ed9ffa4788f54781e516c4c6560-button_left"></i></button><div class="e76910c82efe8556eb8a6ce6019c5d00_menu-warp"><nav class="_0b0e00051b37611378e027e6ac3a695a_menus"><a class="_2cdcedb5935313401458d214540870bc_menu" href="https://www.qianwenai.com/" data-spm="d_menu_0">大模型</a><a class="_2cdcedb5935313401458d214540870bc_menu" href="https://www.aliyun.com/product/list" data-spm="d_menu_1">产品</a><a class="_2cdcedb5935313401458d214540870bc_menu" href="https://www.aliyun.com/solution/tech-solution/" data-spm="d_menu_2">解决方案</a><a class="_2cdcedb5935313401458d214540870bc_menu" href="https://www.aliyun.com/benefit" data-spm="d_menu_3">权益</a><a class="_2cdcedb5935313401458d214540870bc_menu" href="https://www.aliyun.com/price" data-spm="d_menu_4">定价</a><a class="_2cdcedb5935313401458d214540870bc_menu" href="https://market.aliyun.com/" data-spm="d_menu_5">AI 应用市场</a><a class="_2cdcedb5935313401458d214540870bc_menu" href="https://partner.aliyun.com/management/v2" data-spm="d_menu_6">伙伴</a><a class="_2cdcedb5935313401458d214540870bc_menu" href="https://www.aliyun.com/service" data-spm="d_menu_7">服务</a><a class="_2cdcedb5935313401458d214540870bc_menu" href="https://www.aliyun.com/about" data-spm="d_menu_8">了解阿里云</a></nav></div><button class="e76910c82efe8556eb8a6ce6019c5d00_controller" data-spm="dscroll-right"><i class="ee52067fb65534cb06d3b35f654f5441_icon ddd10ed9ffa4788f54781e516c4c6560-button_right"></i></button></div><div class="_702422913dd5754f065139ec2d2def80_search-wrap " style="--left-width:0px;--right-width:0px"><div class="global-nav-search _626567c051250ffe2f303af907d3fc83_global-nav-search"><div class="global-search-container _626567c051250ffe2f303af907d3fc83_global-nav-search-desktop-container"><div class="ff4f4a96a12f52ffbdd0d6adbdb6a2b0_position-desktop-search-container"><div><div class="f6fd7e4d3293f0634b9ac54848c275b7_default-search-panel  f6fd7e4d3293f0634b9ac54848c275b7_hidden-default-search-panel"></div><div class="_3b4f5487091623b0b6852e2b46d2729e_search-recommend-panel  _3b4f5487091623b0b6852e2b46d2729e_hidden-search-recommend-panel"><button class="_4b65cdd64479a2fabe582b8c0789821e_search-no-content " type="button">查看 &quot;&quot; 全部搜索结果</button></div></div></div></div><div class="_626567c051250ffe2f303af907d3fc83_global-nav-search-mobile-container"><a class="_626567c051250ffe2f303af907d3fc83_search-button" href="https://www.aliyun.com/search?from=h5-global-nav-search"><span role="img" class="_9a1d73bbcd1a80626a31035a12410804_icon _626567c051250ffe2f303af907d3fc83_search-button-icon"><svg width="1em" height="1em" viewBox="0 0 32 32" focusable="false" color="currentColor" fill="currentColor" class="" data-icon="search"><g><g><path fill-opacity="1" fill-rule="evenodd" d="M14,4C15.3558,4,16.653399999999998,4.262105,17.8926,4.786314C19.089100000000002,5.29242,20.1486,6.00666,21.071,6.92905C21.9933,7.85144,22.7076,8.91087,23.2137,10.10735C23.7379,11.34664,24,12.64419,24,14C24,15.3558,23.7379,16.653399999999998,23.2137,17.892699999999998C22.8382,18.7803,22.3482,19.5925,21.7436,20.3293L27.7072,26.2928L26.293,27.7071L20.3294,21.7435C19.592599999999997,22.3481,18.7803,22.8382,17.8926,23.2137C16.653399999999998,23.7379,15.3558,24,14,24C12.64419,24,11.34664,23.7379,10.10735,23.2137C8.91087,22.7076,7.85144,21.9933,6.92905,21.0709C6.00666,20.1486,5.29242,19.089100000000002,4.786314,17.8926C4.262105,16.653399999999998,4,15.3558,4,14C4,12.64419,4.262105,11.34664,4.786314,10.10735C5.29242,8.91087,6.00666,7.85144,6.92905,6.92905C7.85144,6.00666,8.91087,5.29242,10.10735,4.786314C11.34664,4.262105,12.64419,4,14,4ZM14,6C11.79102,6,9.905439999999999,6.78109,8.34326,8.34326C6.78109,9.905439999999999,6,11.79102,6,14C6,16.209,6.78109,18.0946,8.34326,19.6567C9.905439999999999,21.2189,11.79102,22,14,22C16.209,22,18.0946,21.2189,19.6567,19.6567C21.2189,18.0946,22,16.209,22,14C22,11.79102,21.2189,9.905439999999999,19.6567,8.34326C18.0946,6.78109,16.209,6,14,6Z"></path></g></g></svg></span></a></div></div></div><div class="_174801eef2caf75aeaee91c72b19c09a_container"><a class="global-nav-ai-assistant _174801eef2caf75aeaee91c72b19c09a_item _2d3ef330b3f8055912d355b9a255bfcf_btn" href="https://www.aliyun.com/ai-assistant?displayMode=side" data-spm="dai_assistant" target="_blank"><div class="LogoStyled-aliyun-ai-assistant-rc-8096__sc-1qusfpt-0 cpJKij"><div class="ai-assistant-brand-logo-icon" style="background:no-repeat center/100%  url(https://img.alicdn.com/imgextra/i4/O1CN012X1Rxl1clAgB5waMK_!!6000000003640-2-tps-52-52.png)"><img src="https://img.alicdn.com/imgextra/i2/O1CN01bYc1m81RrcSAyOjMu_!!6000000002165-54-tps-60-60.apng" loading="lazy"/></div><div class="ai-assistant-brand-logo-tooltip "><div class="ai-assistant-logo-tooltip-content">AI 助理</div></div></div></a><button class="_174801eef2caf75aeaee91c72b19c09a_item c017bf0be22012eb313124a5a5408d0f_button"><i class="ee52067fb65534cb06d3b35f654f5441_icon ddd10ed9ffa4788f54781e516c4c6560-intl"></i></button><button class="_174801eef2caf75aeaee91c72b19c09a_item"><i class="ee52067fb65534cb06d3b35f654f5441_icon ddd10ed9ffa4788f54781e516c4c6560-contact f9c0581c7b0803efa9027b0f2d228294_icon"></i></button><a class="_174801eef2caf75aeaee91c72b19c09a_item" href="https://help.aliyun.com/" target="_blank" data-spm="d_quick_access_3">文档</a><a class="_174801eef2caf75aeaee91c72b19c09a_item" href="https://beian.aliyun.com/" target="_blank" data-spm="d_quick_access_4">备案</a><a class="_174801eef2caf75aeaee91c72b19c09a_item" href="https://home.console.aliyun.com/home/dashboard/ProductAndService" target="_blank" data-spm="d_quick_access_5" rel="nofollow">控制台</a><span class="f8312ad103723788906e97b238dccd8c_loading _174801eef2caf75aeaee91c72b19c09a_item"></span></div></header></div><div class="_3bd147f6948a20d6c528ac898ad4ba47_mobile de5ef2fee09ebcb2b1dcaf0c982523bc_theme _277ebb348812c9712fac6b680ad5e513_reset _277ebb348812c9712fac6b680ad5e513_aliyun-font-family"></div><div class="_18a32969382a277c44015217fbc5cb5a_box"></div></div></div></header>
+
+  <div id="app"><div class="MainLayout--mainContainer--FzmzeDI" id="docs-container"><div class="MainLayout--helpBodyHead--fFcCOhC"><div class="HelpBodyHead--helpBodyHeadBox--VWOHGv0 help-body-head" data-spm="help-sub-nav"><div class="HelpBodyHead--helpBodyHead--YgG0_RH help-body-head-content"><div class="HelpBodyHead--helpHeadDocName--eZC8orQ"><a href="/en" data-spm="d_logo">官方文档</a></div><div class="help-tablist"></div><div class="HelpBodyHead--bodyHeadRight--mgSoj67"></div></div><div class="HelpBodyHead--productList--YJ9ism5" style="display:none"><div class="ProductList--allProducts--Z87vhzs"><div class="ProductList--allProductsHead--l2aMmm6"><div class="ProductList--allProductsSearchWrapper--PgTrGTl"><div class="ProductList--allProductsSearch--edTNjmr"><span role="img" class="Icon--icon--jErARdR ProductList--searchIcon--NrFYKki"><svg width="1em" height="1em" viewBox="0 0 32 32" focusable="false" color="currentColor" fill="currentColor" class="" data-icon="document-search"><g fill-rule="evenodd" stroke-width="1"><path d="M19,3 L27,11 L27,29 L5,29 L5,3 L19,3 Z M18,5 L7,5 L7,27 L25,27 L25,12 L18,12 L18,5 Z M20,6.82842636 L20,10 L23.1715736,10 L20,6.82842636 Z"></path><path d="M15.5,13.5 C16.8806419,13.5 18.0591358,13.9881726 19.0354815,14.9645178 C20.0118272,15.9408637 20.5,17.1193577 20.5,18.5 C20.5,19.5346034 20.2258676,20.4556918 19.6776028,21.2632651 L22.1636839,23.7493687 L20.749464,25.1635761 L18.2634125,22.6775026 C17.4558048,23.2258342 16.5346673,23.5 15.5,23.5 C14.1193581,23.5 12.9408642,23.0118272 11.9645183,22.0354815 C10.9881728,21.0591364 10.5,19.8806426 10.5,18.5 C10.5,17.1193576 10.9881728,15.9408636 11.9645183,14.9645181 C12.9408638,13.9881727 14.1193577,13.5 15.5,13.5 Z M15.5,15.5 C14.6716423,15.5 13.9645529,15.7929106 13.3787317,16.3787317 C12.7929106,16.9645527 12.5,17.6716421 12.5,18.5 C12.5,19.3283571 12.7929105,20.0354462 13.3787315,20.6212673 C13.964553,21.2070891 14.6716425,21.5 15.5,21.5 C16.3283577,21.5 17.0354471,21.2070891 17.6212683,20.6212673 C18.2070894,20.0354462 18.5,19.3283571 18.5,18.5 C18.5,17.6716421 18.2070894,16.9645526 17.6212683,16.3787315 C17.0354471,15.7929105 16.3283577,15.5 15.5,15.5 Z"></path></g></svg></span><input placeholder="输入文档关键字查找"></div></div></div><div class="ProductList--allProductsBody--jNYsZlh"></div></div></div></div></div><div class="PcLayout--docsContainer--pwbB9bE"><div class="PcLayout--mobileHelpBodyHead--g_YCRMg"><div class="HelpBodyHead--mobileHeadBlank--_hX8BWJ"></div></div><div class="PcLayout--aliyunAppLayout--_QE36ni"><nav class="aliyun-docs-menu" id="aliyun-docs-menu"><div class="Menu--helpMenuBox--WZ7MX3B" id="help-menu-box" style="width:300px"><div class="Menu--helpMenuInnerBox--kxSXymh aliyun-docs-toc-content" style="width:300px"><div class="Menu--helpMenuDrag--fs9WrRe help-menu-drag-box"></div><div class="Menu--helpMenu--reWzeMt"><div class="help-menu-subproduct"></div><div class="MenuSearch--collapseActionBar--m98Zp_n"><div class="MenuSearch--searchContainer--yxqXL6w"><div class="MenuSearch--searchInputWrapper--xJnk941"><span role="img" class="Icon--icon--jErARdR MenuSearch--searchIcon--YWpGKq9"><svg width="1em" height="1em" viewBox="0 0 32 32" focusable="false" color="currentColor" fill="currentColor" class="" data-icon="document-search"><g fill-rule="evenodd" stroke-width="1"><path d="M19,3 L27,11 L27,29 L5,29 L5,3 L19,3 Z M18,5 L7,5 L7,27 L25,27 L25,12 L18,12 L18,5 Z M20,6.82842636 L20,10 L23.1715736,10 L20,6.82842636 Z"></path><path d="M15.5,13.5 C16.8806419,13.5 18.0591358,13.9881726 19.0354815,14.9645178 C20.0118272,15.9408637 20.5,17.1193577 20.5,18.5 C20.5,19.5346034 20.2258676,20.4556918 19.6776028,21.2632651 L22.1636839,23.7493687 L20.749464,25.1635761 L18.2634125,22.6775026 C17.4558048,23.2258342 16.5346673,23.5 15.5,23.5 C14.1193581,23.5 12.9408642,23.0118272 11.9645183,22.0354815 C10.9881728,21.0591364 10.5,19.8806426 10.5,18.5 C10.5,17.1193576 10.9881728,15.9408636 11.9645183,14.9645181 C12.9408638,13.9881727 14.1193577,13.5 15.5,13.5 Z M15.5,15.5 C14.6716423,15.5 13.9645529,15.7929106 13.3787317,16.3787317 C12.7929106,16.9645527 12.5,17.6716421 12.5,18.5 C12.5,19.3283571 12.7929105,20.0354462 13.3787315,20.6212673 C13.964553,21.2070891 14.6716425,21.5 15.5,21.5 C16.3283577,21.5 17.0354471,21.2070891 17.6212683,20.6212673 C18.2070894,20.0354462 18.5,19.3283571 18.5,18.5 C18.5,17.6716421 18.2070894,16.9645526 17.6212683,16.3787315 C17.0354471,15.7929105 16.3283577,15.5 15.5,15.5 Z"></path></g></svg></span><input placeholder="在目录中筛选" class="MenuSearch--searchInput--vYXA7NN"></div></div></div><div class="help-menu-scroll-container Menu--menuContent--f6GC88t" data-spm="help-menu-undefined"><ul id="common-menu-container">
+ <li id="2400262" class="Menu--level1--UN3zYr3">
+<a href="/zh/model-studio/model-user-guide/">
+<i class="iconfont icon-close-arrow"></i>
+<span class="Menu--menuItemText--a6B4ZGH">用户指南（模型）</span>
+</a>
+</li>
+ <li id="2840916" class="Menu--level1--UN3zYr3">
+<a href="/zh/model-studio/application-user-guide/">
+<i class="iconfont icon-close-arrow"></i>
+<span class="Menu--menuItemText--a6B4ZGH">用户指南（Agent）</span>
+</a>
+</li>
+ <li id="2400264" class="Menu--level1--UN3zYr3">
+<a href="/zh/model-studio/model-api-reference/">
+<i class="iconfont icon-close-arrow"></i>
+<span class="Menu--menuItemText--a6B4ZGH">API参考（模型）</span>
+</a>
+</li>
+ <li id="2863247" class="Menu--level1--UN3zYr3">
+<a href="/zh/model-studio/applicantion-api-reference/">
+<i class="iconfont icon-close-arrow"></i>
+<span class="Menu--menuItemText--a6B4ZGH">API参考（Agent）</span>
+</a>
+</li>
+ <li id="1000000054440" class="Menu--level1--UN3zYr3">
+<a href="/zh/model-studio/cli/">
+<i class="iconfont icon-close-arrow"></i>
+<span class="Menu--menuItemText--a6B4ZGH">CLI</span>
+</a>
+</li>
+</ul></div></div></div></div></nav><main class="aliyun-docs-view" id="aliyun-docs-view"><div class="ProductDetail--contentWrapper--iCunrBZ"><section class="aliyun-docs-content" style="height:auto"><header class="aliyun-docs-view-header"><div class="Header--topBar--LXfTLL5"><div class="BreadCrumb--breadcrumb--cbt4qaF">
+<a href="/">首页</a>
+ <span class="BreadCrumb--arrow--FD7AzzB">
+<i class="help-iconfont help-icon-right-arrow"></i>
+</span>
+ <a href="/zh/model-studio/">大模型服务平台百炼</a>
+ <span class="BreadCrumb--arrow--FD7AzzB">
+<i class="help-iconfont help-icon-right-arrow"></i>
+</span>
+ <a href="/zh/model-studio/model-api-reference/">API参考（模型）</a>
+ <span class="BreadCrumb--arrow--FD7AzzB">
+<i class="help-iconfont help-icon-right-arrow"></i>
+</span>
+ <a href="/zh/model-studio/qwen-api-reference/">文本生成</a>
+ <span class="BreadCrumb--arrow--FD7AzzB">
+<i class="help-iconfont help-icon-right-arrow"></i>
+</span>
+ <span>Anthropic兼容-Messages</span>
+</div></div><div class="Header--title--iTk2tUo"><h1>Anthropic兼容-Messages</h1><div class="Header--actionBar--dvzFYrk"><div class="Header--left--x8TGxDL"><span class="Header--updateTime--YXGPhcZ">更新时间：</span></div><div class="Header--right--l4TSW1E"><span class="Header--copyButtonWrapper--LDbniON"><span class="CopyAsMarkdown--copyButton--SVGoWIG"><span role="img" class="Icon--icon--jErARdR"><svg width="1em" height="1em" viewBox="0 0 32 32" focusable="false" color="currentColor" fill="currentColor" class="" data-icon="copy"><g fill-rule="evenodd" stroke-width="1"><polygon fill-rule="nonzero" points="8 6.80000019 8 4 28 4 28 24 25 24 25 22 26 22 26 6 10 6 10 6.80000019"></polygon><path d="M24,8 L24,28 L4,28 L4,8 L24,8 Z M22,10 L6,10 L6,26 L22,26 L22,10 Z"></path></g></svg></span>复制 MD 格式</span></span><div class="Header--linkButton--LpCRs1O"><div class="OuterUrl--outUrl--ZFzJIhk"><a href="https://www.aliyun.com/product/bailian" target="_blank" rel="noreferrer">产品详情</a></div></div><div class="Contact--contactButton--TBwTX5R"><span class="Contact--favoritesBtn--J8mRVBp" title="收藏本文档" data-spm-click="gostr=/aliyun;locaid=collect"><i class="help-iconfont help-icon-like"></i></span><a href="/my_favorites.html">我的收藏</a></div></div></div></div></header><div class="pc-markdown-container unionContainer" id="pc-markdown-container"><div class="markdown-body"><div lang="zh" class="icms-help-docs-content">
+<div lang="zh" class="icms-help-docs-content"><p data-tag="shortdesc" class="shortdesc">通过兼容 Anthropic 格式的 Messages API 调用模型，查看输入输出参数说明及调用示例。</p><p>通过修改以下配置，即可将原有的 Anthropic 应用迁移至阿里云百炼：</p>
+<ul>
+<li><code>api_key</code>：替换为<a href="/zh/model-studio/get-api-key">百炼 API Key</a>。</li>
+<li><code>base_url</code>：替换为百炼的兼容端点地址（见下方接入信息）。</li>
+<li><code>model</code>：替换为百炼支持的模型名称（例如 <code>qwen3.7-plus</code>）。</li>
+</ul>
+<div class="note note-important"><div class="note-icon-wrapper"></div><div class="note-content"><p><strong>重要</strong>阿里云百炼为华北<span class="help-letter-space"></span>2（北京）、新加坡、中国香港地域推出了业务空间专属域名，<strong>能够为推理请求提供卓越的性能和更高的稳定性</strong>，建议迁移至新域名：</p><ul>
+<li>华北<span class="help-letter-space"></span>2（北京）地域：从 <code>https://dashscope.aliyuncs.com</code> 迁移至 <code>https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com</code></li>
+<li>新加坡地域：从 <code>https://dashscope-intl.aliyuncs.com</code> 迁移至 <code>https://{WorkspaceId}.ap-southeast-1.maas.aliyuncs.com</code></li>
+</ul><p>其中 <code>{WorkspaceId}</code> 为您的业务空间 ID，可在阿里云百炼控制台的<strong>业务空间详情</strong>页面查看。现有域名仍可正常使用。</p></div></div>
+<section data-tag="tabbed-content-box" outputclass="tabbed-content-box" id="sec-tabs" class="tabbed-content-box section"><section id="华北2-北京" class="section"><h4 id="华北2-北京-h4">华北<span class="help-letter-space"></span>2（北京）</h4><p>SDK 调用配置的 <code>base_url</code>：<code>https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic</code></p><p>HTTP 请求地址：<code>POST https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic/v1/messages</code></p></section><section id="新加坡" class="section"><h4 id="新加坡-h4">新加坡</h4><p>SDK 调用配置的 <code>base_url</code>：<code>https://{WorkspaceId}.ap-southeast-1.maas.aliyuncs.com/apps/anthropic</code></p><p>HTTP 请求地址：<code>POST https://{WorkspaceId}.ap-southeast-1.maas.aliyuncs.com/apps/anthropic/v1/messages</code></p></section><section id="美国-弗吉尼亚" class="section"><h4 id="美国-弗吉尼亚-h4">美国（弗吉尼亚）</h4><p>SDK 调用配置的 <code>base_url</code>：<code>https://{WorkspaceId}.us-east-1.maas.aliyuncs.com/apps/anthropic</code></p><p>HTTP 请求地址：<code>POST https://{WorkspaceId}.us-east-1.maas.aliyuncs.com/apps/anthropic/v1/messages</code></p></section><section id="德国-法兰克福" class="section"><h4 id="德国-法兰克福-h4">德国（法兰克福）</h4><p>SDK 调用配置的 <code>base_url</code>：<code>https://{WorkspaceId}.eu-central-1.maas.aliyuncs.com/apps/anthropic</code></p><p>HTTP 请求地址：<code>POST https://{WorkspaceId}.eu-central-1.maas.aliyuncs.com/apps/anthropic/v1/messages</code></p></section><section id="日本-东京" class="section"><h4 id="日本-东京-h4">日本（东京）</h4><p>SDK 调用配置的 <code>base_url</code>：<code>https://{WorkspaceId}.ap-northeast-1.maas.aliyuncs.com/apps/anthropic</code></p><p>HTTP 请求地址：<code>POST https://{WorkspaceId}.ap-northeast-1.maas.aliyuncs.com/apps/anthropic/v1/messages</code></p></section></section>
+<p>调用时请将<code>{WorkspaceId}</code>替换为真实的<a href="/zh/model-studio/regions#h2_migrate_domain">业务空间<span class="help-letter-space"></span>ID</a>。</p>
+<p>认证方式：通过 <code>x-api-key</code> 请求头或 <code>Authorization: Bearer</code> 请求头传入<a href="/zh/model-studio/get-api-key">百炼 API Key</a>，二者选其一即可。</p>
+<h2 id="与-anthropic-官方-api-的主要差异">与 Anthropic 官方 API 的主要差异 <span id="bfr1diff0a1h2"></span></h2>
+<p>以下差异点汇总自本文正文，从 Anthropic 官方迁移时请重点确认：</p>
+<table style="display:table;table-layout:fixed;width:100%"><colgroup><col style="width:25%"><col style="width:75%"></colgroup><tbody><tr><td><p><strong>差异项</strong></p></td><td><p><strong>说明</strong></p></td></tr><tr><td><p>接入地址（Base URL）</p></td><td><p><code>base_url</code> 需替换为百炼兼容端点（形如 <code>https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic</code>，各地域地址见上方接入信息），其中 <code>{WorkspaceId}</code> 需替换为真实的业务空间 ID。</p></td></tr><tr><td><p>鉴权方式</p></td><td><p><code>api_key</code> 需替换为百炼 API Key；支持通过 <code>x-api-key</code> 或 <code>Authorization: Bearer</code> 请求头传入，二者选其一即可。</p></td></tr><tr><td><p>模型名称</p></td><td><p><code>model</code> 需替换为百炼支持的模型名称（例如 <code>qwen3.7-plus</code>），完整列表见下方 <code>model</code> 参数说明。</p></td></tr><tr><td><p>temperature 取值范围</p></td><td><p>百炼取值范围为 [0, 2)，与 Anthropic 官方的 [0.0, 1.0] 不同，迁移时请确认该参数取值。</p></td></tr><tr><td><p>接口范围</p></td><td><p>仅提供 Messages 接口（<code>/v1/messages</code>），不提供模型列表接口（<code>/v1/models</code>）；客户端的模型发现请求会返回 404，处理方式见下方常见问题。</p></td></tr><tr><td><p>扩展参数</p></td><td><p><code>output_config</code>（结构化输出与思考强度 <code>effort</code>）为百炼平台扩展参数，官方 SDK 类型定义中不包含，需在请求体中透传（见右侧“结构化输出”示例）；<code>thinking.budget_tokens</code> 即将废弃，新接入建议使用 <code>output_config.effort</code> 控制思考强度。</p></td></tr></tbody></table>
+<table bordertype="no-border" style="display:table;table-layout:fixed;width:100%"><colgroup><col style="width:50%"><col style="width:50%"></colgroup><tbody><tr><td><h2>请求体 <span id="ac3a4b5c6d7f2"></span></h2><p><strong>model</strong> <code>string</code> <strong>（必选）</strong></p><p>模型名称，支持范围如下。</p><section class="collapse" id="accordion-支持的模型列表"><p>支持的模型列表</p><div><p><strong>千问<span class="help-letter-space"></span>Max</strong>：qwen3.8-max、qwen3.8-max-0902、qwen3.7-max、qwen3.7-max-2026-05-20、qwen3.7-max-2026-06-08、qwen3.6-max-preview、qwen3-max、qwen3-max-2026-01-23、qwen3-max-preview</p><p><strong>千问<span class="help-letter-space"></span>Plus</strong>：qwen3.7-plus、qwen3.7-plus-2026-05-26、qwen3.6-plus、qwen3.6-plus-2026-04-02、qwen3.5-plus、qwen3.5-plus-2026-04-20、qwen3.5-plus-2026-02-15、qwen-plus、qwen-plus-latest、qwen-plus-2025-09-11</p><p><strong>千问<span class="help-letter-space"></span>Flash</strong>：qwen3.8-flash、qwen3.7-flash、qwen3.7-flash-2026-07-15、qwen3.6-flash、qwen3.6-flash-2026-04-16、qwen3.5-flash、qwen3.5-flash-2026-02-23、qwen-flash、qwen-flash-2025-07-28</p><p><strong>千问<span class="help-letter-space"></span>Turbo</strong>：qwen-turbo</p><p><strong>千问<span class="help-letter-space"></span>Coder</strong>：qwen3-coder-next、qwen3-coder-plus、qwen3-coder-plus-2025-09-23、qwen3-coder-flash</p><p><strong>千问<span class="help-letter-space"></span>VL</strong>：qwen3-vl-plus、qwen3-vl-flash、qwen-vl-max、qwen-vl-plus</p><p><strong>千问开源模型</strong>：qwen3.6-27b、qwen3.5-397b-a17b、qwen3.5-122b-a10b、qwen3.5-27b、qwen3.5-35b-a3b、qwen3.8-2.4t-a95b、qwen3.8-27b</p><strong>第三方模型</strong><p>deepseek-v4.1-flash、deepseek-v4-pro、deepseek-v4-pro-0813、deepseek-v4-flash、deepseek-v4-flash-0731、deepseek-v3.2、kimi-k3、kimi-k2.7-code、kimi-k2.6、kimi-k2.5、kimi-k2-thinking、glm-5.3、glm-5.2、glm-5.1、glm-5、glm-4.7、glm-4.6、MiniMax-M2.5、MiniMax-M2.1</p></div></section><p><strong>max_tokens</strong> <code>integer</code> <strong>（必选）</strong></p><ul>
+<li>
+<p>deepseek-v4.1-flash、deepseek-v4-pro、deepseek-v4-pro-0813、deepseek-v4-flash、deepseek-v4-flash-0731、qwen3.8-max、qwen3.8-flash：模型回复内容和思维链内容之和的最大<span class="help-letter-space"></span>Token<span class="help-letter-space"></span>数，模型输出超过此值时生成将提前停止，<code>stop_reason</code> 为 <code>max_tokens</code>。</p>
+<blockquote>
+<p><code>max_tokens</code> 限制模型回复内容+思考过程的长度。开启深度思考时，<code>max_tokens</code> &gt; <code>thinking.budget_tokens</code></p>
+</blockquote>
+</li>
+<li>
+<p>glm-5.3：<code>max_tokens</code> 为模型回复内容和思维链内容之和的最大<span class="help-letter-space"></span>Token<span class="help-letter-space"></span>数，模型输出超过此值时生成将提前停止，<code>stop_reason</code> 为 <code>max_tokens</code>。glm-5.3 会忽略 <code>thinking.budget_tokens</code> 参数。</p>
+</li>
+<li>
+<p>glm-5.2：不传入 <code>thinking.budget_tokens</code> 参数时，<code>max_tokens</code> 为模型回复内容和思维链内容之和的最大<span class="help-letter-space"></span>Token<span class="help-letter-space"></span>数，模型输出超过此值时生成将提前停止，<code>stop_reason</code> 为 <code>max_tokens</code>；传入 <code>thinking.budget_tokens</code> 参数时，<code>max_tokens</code> 仅为模型回复内容的最大<span class="help-letter-space"></span>Token<span class="help-letter-space"></span>数，思考部分的 Token 数由 <code>thinking.budget_tokens</code> 单独控制。</p>
+</li>
+<li>
+<p>其他模型：模型回复内容的最大 Token 数。若生成内容超过此值，生成将提前停止，<code>stop_reason</code> 为 <code>max_tokens</code>。</p>
+<blockquote>
+<p><code>max_tokens</code> 不限制思考过程的长度。开启深度思考时，思考部分的 Token 数由 <code>thinking.budget_tokens</code> 单独控制。</p>
+</blockquote>
+</li>
+</ul><p><strong>system</strong> <code>string 或 array</code> （可选）</p><p>系统提示词，用于设定模型的角色或行为。</p><p>传入字符串等价于单个 <code>type="text"</code> 的内容块。当需要为系统提示词标记显式缓存断点（参见右侧"显式缓存"示例）时，必须传入数组形式。</p><section class="collapse" id="accordion-属性"><p>属性</p><div><p><strong>type</strong> <code>string</code> <strong>（必选）</strong></p><p>固定为 <code>text</code>。</p><p><strong>text</strong> <code>string</code> <strong>（必选）</strong></p><p>系统提示词文本。</p><p><strong>cache_control</strong> <code>object</code> （可选）</p><p>在该内容块上标记显式缓存断点（参见右侧"显式缓存"示例），命中后第二次及之后的请求按缓存读取计费。仅包含字段 <code>type</code>，取值固定为 <code>ephemeral</code>。</p></div></section><p><strong>messages</strong> <code>array</code> <strong>（必选）</strong></p><section class="collapse" id="accordion-messages-数组元素"><p>messages 数组元素</p><div><p><strong>role</strong> <code>string</code> <strong>（必选）</strong></p><p>消息角色，可选值：<code>user</code>、<code>assistant</code>、<code>system</code>。</p><p><strong>content</strong> <code>string 或 array</code> <strong>（必选）</strong></p><p>消息内容。可以是纯文本字符串，也可以是结构化内容数组。<code>content</code> 为字符串时，等价于单个 <code>type="text"</code> 的内容块。</p><section class="collapse" id="accordion-content-数组元素类型"><p>content 数组元素类型</p><div><strong>文本信息</strong><section class="collapse" id="accordion-属性-2"><p>属性</p><div><p><strong>type</strong> <code>string</code> <strong>（必选）</strong></p><p>固定为 <code>text</code>。</p><p><strong>text</strong> <code>string</code> <strong>（必选）</strong></p><p>文本内容。</p><p><strong>cache_control</strong> <code>object</code> （可选）</p><p>在该文本块上标记显式缓存断点（参见右侧"显式缓存"示例）。仅包含字段 <code>type</code>，取值固定为 <code>ephemeral</code>。</p></div></section><p><strong>图片信息</strong>（需使用视觉模型）</p><section class="collapse" id="accordion-属性-3"><p>属性</p><div><p><strong>type</strong> <code>string</code> <strong>（必选）</strong></p><p>固定为 <code>image</code>。</p><p><strong>source</strong> <code>object</code> <strong>（必选）</strong></p><p>图片数据来源。</p><section class="collapse" id="accordion-属性-4"><p>属性</p><div><p><strong>type</strong> <code>string</code> <strong>（必选）</strong></p><p>取值：<code>url</code>（公网图片地址）、<code>base64</code>（Base64 编码）。</p><p><strong>url</strong> <code>string</code></p><p>图片的公网地址。当 <code>type</code> 为 <code>url</code> 时必填。</p><p><strong>media_type</strong> <code>string</code></p><p>图片的 MIME 类型，如 <code>image/jpeg</code>。当 <code>type</code> 为 <code>base64</code> 时必填。</p><p><strong>data</strong> <code>string</code></p><p>Base64 编码的图片数据。当 <code>type</code> 为 <code>base64</code> 时必填。</p></div></section></div></section><p><strong>视频信息</strong>（需使用视觉模型）</p><section class="collapse" id="accordion-属性-5"><p>属性</p><div><p><strong>type</strong> <code>string</code> <strong>（必选）</strong></p><p>固定为 <code>video</code>。</p><p><strong>source</strong> <code>object</code> <strong>（必选）</strong></p><p>视频数据来源。</p><section class="collapse" id="accordion-属性-6"><p>属性</p><div><p><strong>type</strong> <code>string</code> <strong>（必选）</strong></p><p>取值：<code>url</code>（公网视频地址）、<code>base64</code>（Base64 编码）。</p><p><strong>url</strong> <code>string</code></p><p>视频的公网地址。当 <code>type</code> 为 <code>url</code> 时必填。</p><p><strong>media_type</strong> <code>string</code></p><p>视频的 MIME 类型，如 <code>video/mp4</code>。当 <code>type</code> 为 <code>base64</code> 时必填。</p><p><strong>data</strong> <code>string</code></p><p>Base64 编码的视频数据。当 <code>type</code> 为 <code>base64</code> 时必填。</p></div></section></div></section><p><strong>工具调用信息</strong>（assistant 角色，模型返回的工具调用指令）</p><section class="collapse" id="accordion-属性-7"><p>属性</p><div><p><strong>type</strong> <code>string</code> <strong>（必选）</strong></p><p>固定为 <code>tool_use</code>。</p><p><strong>id</strong> <code>string</code> <strong>（必选）</strong></p><p>工具调用的唯一标识，用于在后续 <code>tool_result</code> 中关联结果。</p><p><strong>name</strong> <code>string</code> <strong>（必选）</strong></p><p>被调用的工具名称。</p><p><strong>input</strong> <code>object</code> <strong>（必选）</strong></p><p>工具调用的入参，结构由 <code>tools</code> 中对应工具的 <code>input_schema</code> 决定。</p><p><strong>cache_control</strong> <code>object</code> （可选）</p><p>在该块上标记显式缓存断点（参见右侧"显式缓存"示例）。仅包含字段 <code>type</code>，取值固定为 <code>ephemeral</code>。工具调用内容本身会参与缓存前缀。</p></div></section><p><strong>工具结果信息</strong>（user 角色，工具执行结果回传给模型）</p><section class="collapse" id="accordion-属性-8"><p>属性</p><div><p><strong>type</strong> <code>string</code> <strong>（必选）</strong></p><p>固定为 <code>tool_result</code>。</p><p><strong>tool_use_id</strong> <code>string</code> <strong>（必选）</strong></p><p>对应 <code>tool_use</code> 信息中的 <code>id</code>。</p><p><strong>content</strong> <code>string</code> <strong>（必选）</strong></p><p>工具执行返回的内容。</p><p><strong>cache_control</strong> <code>object</code> （可选）</p><p>在该工具结果块上标记显式缓存断点（参见右侧"显式缓存"示例）。仅包含字段 <code>type</code>，取值固定为 <code>ephemeral</code>。</p></div></section></div></section></div></section><p><strong>stream</strong> <code>boolean</code> （可选）</p><p>是否启用流式输出，默认为 <code>false</code>。</p><p><strong>temperature</strong> <code>number</code> （可选）</p><p>控制生成文本的多样性，取值范围 [0, 2)。值越大，生成结果越随机。</p><div class="note note-note"><div class="note-icon-wrapper"></div><div class="note-content"><p><strong>说明</strong>该范围与 Anthropic 官方的 [0.0, 1.0] 不同，从 Anthropic 迁移时请确认该参数取值。</p></div></div><p><strong>top_p</strong> <code>number</code> （可选）</p><p>核采样的概率阈值，控制生成文本的多样性。</p><blockquote>
+<p><code>temperature</code> 与 <code>top_p</code> 均可控制生成文本的多样性，建议只设置其中一个值。更多说明请参见<a href="/zh/model-studio/text-generation">概述</a>。</p>
+</blockquote><p><strong>top_k</strong> <code>integer</code> （可选）</p><p>生成过程中采样候选集的大小。</p><p><strong>stop_sequences</strong> <code>array</code> （可选）</p><p>指定停止生成的文本序列。模型生成到该序列前会停止输出，且不包含该序列本身。</p><div class="note note-note"><div class="note-icon-wrapper"></div><div class="note-content"><p><strong>说明</strong>命中后，响应的 <code>stop_reason</code> 仍为 <code>end_turn</code>，响应不会回填命中的序列。</p></div></div><p><strong>thinking</strong> <code>object</code> （可选）</p><p>深度思考配置。开启后，模型会在生成回复前先进行推理，以提升回答准确度。开启后，响应会包含 <code>thinking</code> 类型的内容块。</p><p>未传入该参数时，是否进行思考由模型默认行为决定：qwen3.8-max、qwen3.8-flash、deepseek-v4 系列、glm 系列默认开启思考；kimi-k2.6、kimi-k2.5 默认关闭思考；kimi-k2.7-code、kimi-k2-thinking、MiniMax-M2.5、MiniMax-M2.1 仅支持思考模式（无法关闭）。各模型对思考模式的支持情况与默认开关，请参见<a href="/zh/model-studio/deep-thinking">深度思考</a>。</p><section class="collapse" id="accordion-属性-9"><p>属性</p><div><p><strong>type</strong> <code>string</code> <strong>（必选）</strong></p><p>可选值：<code>enabled</code>（开启思考模式）、<code>disabled</code>（关闭思考模式）。</p><p><strong>budget_tokens</strong> <code>integer</code> （可选，<strong>即将废弃</strong>）</p><blockquote>
+<p>该参数即将废弃，并将在后续模型中逐步停止支持，新接入建议使用&nbsp;<code>effort</code>控制模型的思考强度。</p>
+</blockquote><p>思考过程可使用的最大 Token 数，与 <code>max_tokens</code> 互不重叠：本参数限制思考，<code>max_tokens</code> 限制最终回复。预算越大，在复杂问题上的分析越充分。当 <code>type</code> 为 <code>enabled</code> 时生效。</p></div></section><p><strong>tools</strong> <code>array</code> （可选）</p><p>工具定义数组，用于 Function Call 场景。</p><section class="collapse" id="accordion-tools-数组元素"><p>tools 数组元素</p><div><p><strong>name</strong> <code>string</code> <strong>（必选）</strong></p><p>工具名称。</p><p><strong>description</strong> <code>string</code> （可选）</p><p>工具的功能描述。</p><p><strong>input_schema</strong> <code>object</code> <strong>（必选）</strong></p><p>工具输入参数的 JSON Schema 定义。</p></div></section><p><strong>tool_choice</strong> <code>object</code> （可选）</p><p>工具选择策略。支持以下值：</p><ul>
+<li><code>{"type": "auto"}</code>：模型自行决定是否调用工具（默认）。</li>
+<li><code>{"type": "any"}</code>：强制模型调用任意一个工具。</li>
+<li><code>{"type": "none"}</code>：禁止模型调用工具。</li>
+<li><code>{"type": "tool", "name": "tool_name"}</code>：强制模型调用指定工具。</li>
+</ul><p><strong>output_config</strong> <code>object</code> （可选）</p><p>输出参数设置。</p><section class="collapse" id="accordion-属性-10"><p>属性</p><div><p><strong>effort</strong> <code>string</code> （可选）</p><p>控制模型的推理力度。</p><ul>
+<li>
+<p>glm-5.3（默认值为 <code>max</code>）：</p>
+<p>可选值：</p>
+<ul>
+<li><code>low</code>：低力度推理</li>
+<li><code>high</code>：高力度推理</li>
+<li><code>max</code>：最大力度推理</li>
+</ul>
+<p>传入其它取值会返回错误。</p>
+</li>
+<li>
+<p>glm-5.2、deepseek-v4-pro、deepseek-v4-flash（阿里云直供）（默认值为 <code>max</code>）：</p>
+<p>可选值：</p>
+<ul>
+<li><code>high</code>：高力度推理</li>
+<li><code>max</code>：最大力度推理</li>
+</ul>
+<p><code>low</code>和<code>medium</code>映射为<code>high</code>，<code>xhigh</code>映射为<code>max</code>。</p>
+</li>
+<li>
+<p>qwen3.8-max/qwen3.8-flash（默认值为 <code>xhigh</code>）：</p>
+<p>可选值：</p>
+<ul>
+<li><code>xhigh</code>：高力度推理</li>
+<li><code>medium</code>：中力度推理</li>
+<li><code>low</code>：低力度推理</li>
+</ul>
+<p><code>max</code>&nbsp;、<code>high</code>映射为 <code>xhigh</code>。</p>
+</li>
+</ul><p><strong>format</strong> <code>object</code> （可选）</p><p>结构化输出配置。开启后，模型将输出 JSON 字符串。不同模型的支持力度不同：</p><ul>
+<li><strong>严格结构化输出</strong>：适用于 qwen3.8 系列、qwen3.7 系列、deepseek 系列、glm 系列模型。模型严格按照传入的 JSON Schema 进行强约束输出，确保字段类型与层级完全一致。</li>
+<li><strong>普通结构化输出</strong>：适用于上述以外的其他模型。Schema 的具体字段约束默认不生效，API 会自动将其转换为普通 JSON 模式（仅保证输出为合法的 JSON 字符串）。触发普通 JSON 模式时，请求必须同时满足以下两点约束：1、显式传入 <code>output_config</code> 参数；2、<code>system</code> 或 <code>messages</code> 的内容中必须包含不区分大小写的 "JSON" 关键词。若提示词中未包含 "JSON" 关键词，API<span class="help-letter-space"></span>将抛出异常：<code>'messages' must contain the word 'json' in some form</code>。</li>
+</ul><section class="collapse" id="accordion-属性-11"><p>属性</p><div><p><strong>type</strong> <code>string</code> <strong>（必选）</strong></p><p>取值固定为 <code>json_schema</code>。</p><p><strong>schema</strong> <code>object</code> <strong>（必选）</strong></p><p>JSON Schema 对象，遵循标准 JSON Schema 规范。需包含 <code>type</code>（数据类型）、<code>properties</code>（字段定义）、<code>required</code>（必填字段名数组）、<code>additionalProperties</code>（必须设为 <code>false</code>）等字段。</p></div></section></div></section></td><td><section data-tag="tabbed-content-box" outputclass="tabbed-content-box" id="sec-tabs-2" class="tabbed-content-box section"><section id="基础调用" class="section"><h4 id="基础调用-h4">基础调用</h4><div outputclass="tabbed-codeblock" data-tag="fig" id="fig-code-group" class="tabbed-codeblock-box"><div class="tab-box"></div><input id="fig-code-group-python-tab" type="radio" name="check-fig-code-group" checked=""><label for="fig-code-group-python-tab">Python</label><div class="codeblock-item"><pre data-tag="codeblock" id="code-code-group-python" outputclass="language-python" code-type="xCode" class="pre codeblock language-python"><code>import anthropic
+import os
+
+client = anthropic.Anthropic(
+    api_key=os.getenv("DASHSCOPE_API_KEY"),
+    base_url="https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic",
+)
+
+message = client.messages.create(
+    model="qwen3.8-max",
+    max_tokens=1024,
+    system="You are a helpful assistant",
+    messages=[
+        {
+            "role": "user",
+            "content": "你是谁？"
+        }
+    ],
+    thinking={"type": "disabled"},
+)
+
+print(message.content[0].text)
+</code></pre></div><input id="fig-code-group-typescript-tab" type="radio" name="check-fig-code-group"><label for="fig-code-group-typescript-tab">TypeScript</label><div class="codeblock-item"><pre data-tag="codeblock" id="code-code-group-typescript" outputclass="language-typescript" code-type="xCode" class="pre codeblock language-typescript"><code>import Anthropic from "@anthropic-ai/sdk";
+
+const anthropic = new Anthropic({
+  apiKey: process.env.DASHSCOPE_API_KEY,
+  baseURL: "https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic",
+});
+
+async function main() {
+  const message = await anthropic.messages.create({
+    model: "qwen3.8-max",
+    max_tokens: 1024,
+    system: "You are a helpful assistant",
+    messages: [{
+      role: "user",
+      content: "你是谁？"
+    }],
+    thinking: { type: "disabled" },
+  });
+
+  console.log(message.content[0].text);
+}
+
+main().catch(console.error);
+</code></pre></div><input id="fig-code-group-curl-tab" type="radio" name="check-fig-code-group"><label for="fig-code-group-curl-tab">curl</label><div class="codeblock-item"><pre data-tag="codeblock" id="code-code-group-curl" outputclass="language-bash" code-type="xCode" class="pre codeblock language-bash"><code>curl -X POST "https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic/v1/messages" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: $DASHSCOPE_API_KEY" \
+  -d '{
+    "model": "qwen3.8-max",
+    "max_tokens": 1024,
+    "system": "You are a helpful assistant",
+    "messages": [
+        {
+            "role": "user",
+            "content": "你是谁？"
+        }
+    ],
+    "thinking": {"type": "disabled"}
+}'
+</code></pre></div></div></section><section id="流式输出" class="section"><h4 id="流式输出-h4">流式输出</h4><div outputclass="tabbed-codeblock" data-tag="fig" id="fig-code-group-2" class="tabbed-codeblock-box"><div class="tab-box"></div><input id="fig-code-group-2-python-tab" type="radio" name="check-fig-code-group-2" checked=""><label for="fig-code-group-2-python-tab">Python</label><div class="codeblock-item"><pre data-tag="codeblock" id="code-code-group-2-python" outputclass="language-python" code-type="xCode" class="pre codeblock language-python"><code>import anthropic
+import os
+
+client = anthropic.Anthropic(
+    api_key=os.getenv("DASHSCOPE_API_KEY"),
+    base_url="https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic",
+)
+
+stream = client.messages.create(
+    model="qwen3.8-max",
+    max_tokens=1024,
+    stream=True,
+    messages=[
+        {
+            "role": "user",
+            "content": "请简单介绍一下人工智能。"
+        }
+    ],
+    thinking={"type": "disabled"},
+)
+
+for chunk in stream:
+    if chunk.type == "content_block_delta":
+        if hasattr(chunk.delta, 'text'):
+            print(chunk.delta.text, end="", flush=True)
+</code></pre></div><input id="fig-code-group-2-typescript-tab" type="radio" name="check-fig-code-group-2"><label for="fig-code-group-2-typescript-tab">TypeScript</label><div class="codeblock-item"><pre data-tag="codeblock" id="code-code-group-2-typescript" outputclass="language-typescript" code-type="xCode" class="pre codeblock language-typescript"><code>import Anthropic from "@anthropic-ai/sdk";
+
+async function main() {
+  const anthropic = new Anthropic({
+    apiKey: process.env.DASHSCOPE_API_KEY,
+    baseURL: "https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic",
+  });
+
+  const stream = await anthropic.messages.create({
+    model: "qwen3.8-max",
+    max_tokens: 1024,
+    stream: true,
+    messages: [{
+      role: "user",
+      content: "请简单介绍一下人工智能。"
+    }],
+    thinking: { type: "disabled" },
+  });
+
+  for await (const chunk of stream) {
+    if (chunk.type === "content_block_delta" &amp;&amp; 'text' in chunk.delta) {
+      process.stdout.write(chunk.delta.text);
+    }
+  }
+}
+
+main().catch(console.error);
+</code></pre></div><input id="fig-code-group-2-curl-tab" type="radio" name="check-fig-code-group-2"><label for="fig-code-group-2-curl-tab">curl</label><div class="codeblock-item"><pre data-tag="codeblock" id="code-code-group-2-curl" outputclass="language-bash" code-type="xCode" class="pre codeblock language-bash"><code>curl -X POST "https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic/v1/messages" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: $DASHSCOPE_API_KEY" \
+  --no-buffer \
+  -d '{
+    "model": "qwen3.8-max",
+    "max_tokens": 1024,
+    "stream": true,
+    "messages": [
+        {
+            "role": "user",
+            "content": "请简单介绍一下人工智能。"
+        }
+    ],
+    "thinking": {"type": "disabled"}
+}'
+</code></pre></div></div></section><section id="深度思考" class="section"><h4 id="深度思考-h4">深度思考</h4><div outputclass="tabbed-codeblock" data-tag="fig" id="fig-code-group-3" class="tabbed-codeblock-box"><div class="tab-box"></div><input id="fig-code-group-3-python-tab" type="radio" name="check-fig-code-group-3" checked=""><label for="fig-code-group-3-python-tab">Python</label><div class="codeblock-item"><pre data-tag="codeblock" id="code-code-group-3-python" outputclass="language-python" code-type="xCode" class="pre codeblock language-python"><code>import anthropic
+import os
+
+client = anthropic.Anthropic(
+    api_key=os.getenv("DASHSCOPE_API_KEY"),
+    base_url="https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic",
+)
+
+stream = client.messages.create(
+    model="qwen3.8-max",
+    max_tokens=2048,
+    stream=True,
+    thinking={
+        "type": "enabled",
+        "budget_tokens": 1024
+    },
+    messages=[
+        {
+            "role": "user",
+            "content": "分析一下量子计算的发展前景。"
+        }
+    ]
+)
+
+for chunk in stream:
+    if chunk.type == "content_block_delta":
+        if hasattr(chunk.delta, 'thinking'):
+            print(chunk.delta.thinking, end="", flush=True)
+        elif hasattr(chunk.delta, 'text'):
+            print(chunk.delta.text, end="", flush=True)
+</code></pre></div><input id="fig-code-group-3-typescript-tab" type="radio" name="check-fig-code-group-3"><label for="fig-code-group-3-typescript-tab">TypeScript</label><div class="codeblock-item"><pre data-tag="codeblock" id="code-code-group-3-typescript" outputclass="language-typescript" code-type="xCode" class="pre codeblock language-typescript"><code>import Anthropic from "@anthropic-ai/sdk";
+
+async function main() {
+  const anthropic = new Anthropic({
+    apiKey: process.env.DASHSCOPE_API_KEY,
+    baseURL: "https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic",
+  });
+
+  const stream = await anthropic.messages.create({
+    model: "qwen3.8-max",
+    max_tokens: 2048,
+    stream: true,
+    thinking: { type: "enabled", budget_tokens: 1024 },
+    messages: [{
+      role: "user",
+      content: "分析一下量子计算的发展前景。"
+    }]
+  });
+
+  for await (const chunk of stream) {
+    if (chunk.type === "content_block_delta") {
+      if ('thinking' in chunk.delta) {
+        process.stdout.write(chunk.delta.thinking);
+      } else if ('text' in chunk.delta) {
+        process.stdout.write(chunk.delta.text);
+      }
+    }
+  }
+}
+
+main().catch(console.error);
+</code></pre></div><input id="fig-code-group-3-curl-tab" type="radio" name="check-fig-code-group-3"><label for="fig-code-group-3-curl-tab">curl</label><div class="codeblock-item"><pre data-tag="codeblock" id="code-code-group-3-curl" outputclass="language-bash" code-type="xCode" class="pre codeblock language-bash"><code>curl -X POST "https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic/v1/messages" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: $DASHSCOPE_API_KEY" \
+  -d '{
+    "model": "qwen3.8-max",
+    "max_tokens": 2048,
+    "stream": true,
+    "thinking": {
+        "type": "enabled",
+        "budget_tokens": 1024
+    },
+    "messages": [
+        {
+            "role": "user",
+            "content": "分析一下量子计算的发展前景。"
+        }
+    ]
+}'
+</code></pre></div></div></section><section id="图片理解" class="section"><h4 id="图片理解-h4">图片理解</h4><div outputclass="tabbed-codeblock" data-tag="fig" id="fig-code-group-4" class="tabbed-codeblock-box"><div class="tab-box"></div><input id="fig-code-group-4-python-tab" type="radio" name="check-fig-code-group-4" checked=""><label for="fig-code-group-4-python-tab">Python</label><div class="codeblock-item"><pre data-tag="codeblock" id="code-code-group-4-python" outputclass="language-python" code-type="xCode" class="pre codeblock language-python"><code>import anthropic
+import os
+
+client = anthropic.Anthropic(
+    api_key=os.getenv("DASHSCOPE_API_KEY"),
+    base_url="https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic",
+)
+
+stream = client.messages.create(
+    model="qwen3.8-max",
+    max_tokens=1024,
+    stream=True,
+    messages=[
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "image",
+                    "source": {
+                        "type": "url",
+                        "url": "https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20250414/mqqmiy/animal_01.jpg",
+                    },
+                },
+                {
+                    "type": "text",
+                    "text": "描述这张图片的内容。"
+                },
+            ],
+        }
+    ],
+    thinking={"type": "disabled"},
+)
+
+for chunk in stream:
+    if chunk.type == "content_block_delta":
+        if hasattr(chunk.delta, 'text'):
+            print(chunk.delta.text, end="", flush=True)
+</code></pre></div><input id="fig-code-group-4-typescript-tab" type="radio" name="check-fig-code-group-4"><label for="fig-code-group-4-typescript-tab">TypeScript</label><div class="codeblock-item"><pre data-tag="codeblock" id="code-code-group-4-typescript" outputclass="language-typescript" code-type="xCode" class="pre codeblock language-typescript"><code>import Anthropic from "@anthropic-ai/sdk";
+
+async function main() {
+  const anthropic = new Anthropic({
+    apiKey: process.env.DASHSCOPE_API_KEY,
+    baseURL: "https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic",
+  });
+
+  const stream = await anthropic.messages.create({
+    model: "qwen3.8-max",
+    max_tokens: 1024,
+    stream: true,
+    messages: [{
+      role: "user",
+      content: [
+        {
+          type: "image",
+          source: {
+            type: "url",
+            url: "https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20250414/mqqmiy/animal_01.jpg",
+          },
+        },
+        { type: "text", text: "描述这张图片的内容。" },
+      ],
+    }],
+    thinking: { type: "disabled" },
+  });
+
+  for await (const chunk of stream) {
+    if (chunk.type === "content_block_delta" &amp;&amp; 'text' in chunk.delta) {
+      process.stdout.write(chunk.delta.text);
+    }
+  }
+}
+
+main().catch(console.error);
+</code></pre></div><input id="fig-code-group-4-curl-tab" type="radio" name="check-fig-code-group-4"><label for="fig-code-group-4-curl-tab">curl</label><div class="codeblock-item"><pre data-tag="codeblock" id="code-code-group-4-curl" outputclass="language-bash" code-type="xCode" class="pre codeblock language-bash"><code>curl -X POST "https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic/v1/messages" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: $DASHSCOPE_API_KEY" \
+  -d '{
+    "model": "qwen3.8-max",
+    "max_tokens": 1024,
+    "stream": true,
+    "messages": [
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "image",
+                    "source": {
+                        "type": "url",
+                        "url": "https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20250414/mqqmiy/animal_01.jpg"
+                    }
+                },
+                {
+                    "type": "text",
+                    "text": "描述这张图片的内容。"
+                }
+            ]
+        }
+    ],
+    "thinking": {"type": "disabled"}
+}'
+</code></pre></div></div></section><section id="视频理解" class="section"><h4 id="视频理解-h4">视频理解</h4><div outputclass="tabbed-codeblock" data-tag="fig" id="fig-code-group-5" class="tabbed-codeblock-box"><div class="tab-box"></div><input id="fig-code-group-5-python-tab" type="radio" name="check-fig-code-group-5" checked=""><label for="fig-code-group-5-python-tab">Python</label><div class="codeblock-item"><pre data-tag="codeblock" id="code-code-group-5-python" outputclass="language-python" code-type="xCode" class="pre codeblock language-python"><code>import anthropic
+import os
+
+client = anthropic.Anthropic(
+    api_key=os.getenv("DASHSCOPE_API_KEY"),
+    base_url="https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic",
+)
+
+stream = client.messages.create(
+    model="qwen3.8-max",
+    max_tokens=1024,
+    stream=True,
+    messages=[
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "video",
+                    "source": {
+                        "type": "url",
+                        "url": "https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20251208/zpupby/3e81ef38-98f0-4d55-bbb6-259334ca18d0.mp4",
+                    },
+                },
+                {
+                    "type": "text",
+                    "text": "描述这段视频的内容。"
+                },
+            ],
+        }
+    ],
+    thinking={"type": "disabled"},
+)
+
+for chunk in stream:
+    if chunk.type == "content_block_delta":
+        if hasattr(chunk.delta, 'text'):
+            print(chunk.delta.text, end="", flush=True)
+</code></pre></div><input id="fig-code-group-5-typescript-tab" type="radio" name="check-fig-code-group-5"><label for="fig-code-group-5-typescript-tab">TypeScript</label><div class="codeblock-item"><pre data-tag="codeblock" id="code-code-group-5-typescript" outputclass="language-typescript" code-type="xCode" class="pre codeblock language-typescript"><code>import Anthropic from "@anthropic-ai/sdk";
+
+async function main() {
+  const anthropic = new Anthropic({
+    apiKey: process.env.DASHSCOPE_API_KEY,
+    baseURL: "https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic",
+  });
+
+  const stream = await anthropic.messages.create({
+    model: "qwen3.8-max",
+    max_tokens: 1024,
+    stream: true,
+    messages: [{
+      role: "user",
+      content: [
+        {
+          type: "video",
+          source: {
+            type: "url",
+            url: "https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20251208/zpupby/3e81ef38-98f0-4d55-bbb6-259334ca18d0.mp4",
+          },
+        },
+        { type: "text", text: "描述这段视频的内容。" },
+      ],
+    }],
+    thinking: { type: "disabled" },
+  });
+
+  for await (const chunk of stream) {
+    if (chunk.type === "content_block_delta" &amp;&amp; 'text' in chunk.delta) {
+      process.stdout.write(chunk.delta.text);
+    }
+  }
+}
+
+main().catch(console.error);
+</code></pre></div><input id="fig-code-group-5-curl-tab" type="radio" name="check-fig-code-group-5"><label for="fig-code-group-5-curl-tab">curl</label><div class="codeblock-item"><pre data-tag="codeblock" id="code-code-group-5-curl" outputclass="language-bash" code-type="xCode" class="pre codeblock language-bash"><code>curl -X POST "https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic/v1/messages" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: $DASHSCOPE_API_KEY" \
+  -d '{
+    "model": "qwen3.8-max",
+    "max_tokens": 1024,
+    "stream": true,
+    "messages": [
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "video",
+                    "source": {
+                        "type": "url",
+                        "url": "https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20251208/zpupby/3e81ef38-98f0-4d55-bbb6-259334ca18d0.mp4"
+                    }
+                },
+                {
+                    "type": "text",
+                    "text": "描述这段视频的内容。"
+                }
+            ]
+        }
+    ],
+    "thinking": {"type": "disabled"}
+}'
+</code></pre></div></div></section><section id="function-call" class="section"><h4 id="function-call-h4">Function Call</h4><div outputclass="tabbed-codeblock" data-tag="fig" id="fig-code-group-6" class="tabbed-codeblock-box"><div class="tab-box"></div><input id="fig-code-group-6-python-tab" type="radio" name="check-fig-code-group-6" checked=""><label for="fig-code-group-6-python-tab">Python</label><div class="codeblock-item"><pre data-tag="codeblock" id="code-code-group-6-python" outputclass="language-python" code-type="xCode" class="pre codeblock language-python"><code>import anthropic
+import os
+
+client = anthropic.Anthropic(
+    api_key=os.getenv("DASHSCOPE_API_KEY"),
+    base_url="https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic",
+)
+
+tools = [
+    {
+        "name": "get_weather",
+        "description": "获取指定城市的天气信息",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "city": {
+                    "type": "string",
+                    "description": "城市名称"
+                }
+            },
+            "required": ["city"]
+        }
+    }
+]
+
+message = client.messages.create(
+    model="qwen3.8-max",
+    max_tokens=1024,
+    tools=tools,
+    messages=[
+        {
+            "role": "user",
+            "content": "杭州今天天气怎么样？"
+        }
+    ]
+)
+
+print(message.content)
+</code></pre></div><input id="fig-code-group-6-typescript-tab" type="radio" name="check-fig-code-group-6"><label for="fig-code-group-6-typescript-tab">TypeScript</label><div class="codeblock-item"><pre data-tag="codeblock" id="code-code-group-6-typescript" outputclass="language-typescript" code-type="xCode" class="pre codeblock language-typescript"><code>import Anthropic from "@anthropic-ai/sdk";
+
+async function main() {
+  const anthropic = new Anthropic({
+    apiKey: process.env.DASHSCOPE_API_KEY,
+    baseURL: "https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic",
+  });
+
+  const message = await anthropic.messages.create({
+    model: "qwen3.8-max",
+    max_tokens: 1024,
+    tools: [
+      {
+        name: "get_weather",
+        description: "获取指定城市的天气信息",
+        input_schema: {
+          type: "object",
+          properties: {
+            city: { type: "string", description: "城市名称" }
+          },
+          required: ["city"],
+        },
+      },
+    ],
+    messages: [{
+      role: "user",
+      content: "杭州今天天气怎么样？"
+    }],
+  });
+
+  console.log(JSON.stringify(message.content, null, 2));
+}
+
+main().catch(console.error);
+</code></pre></div><input id="fig-code-group-6-curl-tab" type="radio" name="check-fig-code-group-6"><label for="fig-code-group-6-curl-tab">curl</label><div class="codeblock-item"><pre data-tag="codeblock" id="code-code-group-6-curl" outputclass="language-bash" code-type="xCode" class="pre codeblock language-bash"><code>curl -X POST "https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic/v1/messages" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: $DASHSCOPE_API_KEY" \
+  -d '{
+    "model": "qwen3.8-max",
+    "max_tokens": 1024,
+    "tools": [
+        {
+            "name": "get_weather",
+            "description": "获取指定城市的天气信息",
+            "input_schema": {
+                "type": "object",
+                "properties": {
+                    "city": {
+                        "type": "string",
+                        "description": "城市名称"
+                    }
+                },
+                "required": ["city"]
+            }
+        }
+    ],
+    "messages": [
+        {
+            "role": "user",
+            "content": "杭州今天天气怎么样？"
+        }
+    ]
+}'
+</code></pre></div></div></section><section id="显式缓存" class="section"><h4 id="显式缓存-h4">显式缓存</h4><div outputclass="tabbed-codeblock" data-tag="fig" id="fig-code-group-7" class="tabbed-codeblock-box"><div class="tab-box"></div><input id="fig-code-group-7-python-tab" type="radio" name="check-fig-code-group-7" checked=""><label for="fig-code-group-7-python-tab">Python</label><div class="codeblock-item"><pre data-tag="codeblock" id="code-code-group-7-python" outputclass="language-python" code-type="xCode" class="pre codeblock language-python"><code>import anthropic
+import os
+
+client = anthropic.Anthropic(
+    api_key=os.getenv("DASHSCOPE_API_KEY"),
+    base_url="https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic",
+)
+
+# 模拟代码仓库内容，需达到最小可缓存长度（1024 Token）
+long_text_content = "&lt;Your Code Here&gt;" * 400
+
+def get_completion(user_input):
+    response = client.messages.create(
+        # 选择支持显式缓存的模型
+        model="qwen3.8-max",
+        max_tokens=1024,
+        system=[
+            {
+                "type": "text",
+                "text": long_text_content,
+                # 在 text 块上添加 cache_control 即标记缓存断点；也可放在 messages 数组的 content 块上
+                "cache_control": {"type": "ephemeral"},
+            }
+        ],
+        messages=[
+            {"role": "user", "content": user_input},
+        ],
+    )
+    return response
+
+# 第一次请求：创建缓存
+first = get_completion("这段代码的内容是什么")
+print(f"创建缓存 Token：{first.usage.cache_creation_input_tokens}")
+print(f"命中缓存 Token：{first.usage.cache_read_input_tokens}")
+print("=" * 20)
+# 第二次请求：长内容相同，仅修改提问 → 命中缓存
+second = get_completion("这段代码可以怎么优化")
+print(f"创建缓存 Token：{second.usage.cache_creation_input_tokens}")
+print(f"命中缓存 Token：{second.usage.cache_read_input_tokens}")
+</code></pre></div><input id="fig-code-group-7-typescript-tab" type="radio" name="check-fig-code-group-7"><label for="fig-code-group-7-typescript-tab">TypeScript</label><div class="codeblock-item"><pre data-tag="codeblock" id="code-code-group-7-typescript" outputclass="language-typescript" code-type="xCode" class="pre codeblock language-typescript"><code>import Anthropic from "@anthropic-ai/sdk";
+
+const client = new Anthropic({
+  apiKey: process.env.DASHSCOPE_API_KEY,
+  baseURL: "https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic",
+});
+
+// 模拟代码仓库内容，需达到最小可缓存长度（1024 Token）
+const longTextContent = "&lt;Your Code Here&gt;".repeat(400);
+
+async function getCompletion(userInput) {
+  return client.messages.create({
+    // 选择支持显式缓存的模型
+    model: "qwen3.8-max",
+    max_tokens: 1024,
+    system: [
+      {
+        type: "text",
+        text: longTextContent,
+        // 在 text 块上添加 cache_control 即标记缓存断点；也可放在 messages 数组的 content 块上
+        cache_control: { type: "ephemeral" },
+      },
+    ],
+    messages: [{ role: "user", content: userInput }],
+  });
+}
+
+// 第一次请求：创建缓存
+const first = await getCompletion("这段代码的内容是什么");
+console.log(`创建缓存 Token：${first.usage.cache_creation_input_tokens}`);
+console.log(`命中缓存 Token：${first.usage.cache_read_input_tokens}`);
+console.log("=".repeat(20));
+// 第二次请求：长内容相同，仅修改提问 → 命中缓存
+const second = await getCompletion("这段代码可以怎么优化");
+console.log(`创建缓存 Token：${second.usage.cache_creation_input_tokens}`);
+console.log(`命中缓存 Token：${second.usage.cache_read_input_tokens}`);
+</code></pre></div><input id="fig-code-group-7-curl-tab" type="radio" name="check-fig-code-group-7"><label for="fig-code-group-7-curl-tab">curl</label><div class="codeblock-item"><pre data-tag="codeblock" id="code-code-group-7-curl" outputclass="language-bash" code-type="xCode" class="pre codeblock language-bash"><code>curl -X POST "https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic/v1/messages" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: $DASHSCOPE_API_KEY" \
+  -d '{
+    "model": "qwen3.8-max",
+    "max_tokens": 1024,
+    "system": [
+      {
+        "type": "text",
+        "text": "&lt;请在此处放置长度 ≥ 1024 Token 的可缓存内容&gt;",
+        "cache_control": {"type": "ephemeral"}
+      }
+    ],
+    "messages": [
+      {"role": "user", "content": "这段代码的内容是什么"}
+    ]
+}'
+</code></pre></div></div></section><section id="结构化输出" class="section"><h4 id="结构化输出-h4">结构化输出</h4><div outputclass="tabbed-codeblock" data-tag="fig" id="fig-code-group-8" class="tabbed-codeblock-box"><div class="tab-box"></div><input id="fig-code-group-8-python-tab" type="radio" name="check-fig-code-group-8" checked=""><label for="fig-code-group-8-python-tab">Python</label><div class="codeblock-item"><pre data-tag="codeblock" id="code-code-group-8-python" outputclass="language-python" code-type="xCode" class="pre codeblock language-python"><code>import anthropic
+import os
+
+client = anthropic.Anthropic(
+    api_key=os.getenv("DASHSCOPE_API_KEY"),
+    base_url="https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic",
+)
+
+message = client.messages.create(
+    model="deepseek-v4-pro",
+    max_tokens=1024,
+    messages=[
+        {
+            "role": "user",
+            "content": "提取以下邮件的关键信息：张三 (zhangsan@example.com) 对企业版方案感兴趣，希望预约下周二下午 2 点的演示。"
+        }
+    ],
+    extra_body={
+        "output_config": {
+            "format": {
+                "type": "json_schema",
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "name": {"type": "string"},
+                        "email": {"type": "string"},
+                        "plan_interest": {"type": "string"},
+                        "demo_requested": {"type": "boolean"}
+                    },
+                    "required": ["name", "email", "plan_interest", "demo_requested"],
+                    "additionalProperties": False
+                }
+            }
+        }
+    },
+)
+
+# deepseek-v4-pro 模型会返回 thinking 块，需要找到 type='text' 的内容块
+text_block = next(block for block in message.content if block.type == "text")
+print(text_block.text)
+</code></pre></div><input id="fig-code-group-8-typescript-tab" type="radio" name="check-fig-code-group-8"><label for="fig-code-group-8-typescript-tab">TypeScript</label><div class="codeblock-item"><pre data-tag="codeblock" id="code-code-group-8-typescript" outputclass="language-typescript" code-type="xCode" class="pre codeblock language-typescript"><code>import Anthropic from "@anthropic-ai/sdk";
+
+const anthropic = new Anthropic({
+  apiKey: process.env.DASHSCOPE_API_KEY,
+  baseURL: "https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic",
+});
+
+async function main() {
+  // output_config 是百炼平台扩展参数，SDK 类型定义中不包含该字段，
+  // 通过交叉类型扩展官方参数类型进行透传，避免不安全的类型断言
+  type MessageCreateParamsWithOutputConfig =
+    Anthropic.MessageCreateParamsNonStreaming &amp; {
+      output_config: {
+        format: {
+          type: "json_schema";
+          schema: Record&lt;string, unknown&gt;;
+        };
+      };
+    };
+
+  const params: MessageCreateParamsWithOutputConfig = {
+    model: "deepseek-v4-pro",
+    max_tokens: 1024,
+    messages: [{
+      role: "user",
+      content: "提取以下邮件的关键信息：张三 (zhangsan@example.com) 对企业版方案感兴趣，希望预约下周二下午 2 点的演示。"
+    }],
+    output_config: {
+      format: {
+        type: "json_schema",
+        schema: {
+          type: "object",
+          properties: {
+            name: { type: "string" },
+            email: { type: "string" },
+            plan_interest: { type: "string" },
+            demo_requested: { type: "boolean" }
+          },
+          required: ["name", "email", "plan_interest", "demo_requested"],
+          additionalProperties: false
+        }
+      }
+    }
+  };
+  const message = await anthropic.messages.create(params);
+
+  // deepseek-v4-pro 模型会返回 thinking 块，需要找到 type='text' 的内容块
+  const textBlock = message.content.find(
+    (block): block is Anthropic.TextBlock =&gt; block.type === "text"
+  );
+  console.log(textBlock?.text);
+}
+
+main().catch(console.error);
+</code></pre></div><input id="fig-code-group-8-curl-tab" type="radio" name="check-fig-code-group-8"><label for="fig-code-group-8-curl-tab">curl</label><div class="codeblock-item"><pre data-tag="codeblock" id="code-code-group-8-curl" outputclass="language-bash" code-type="xCode" class="pre codeblock language-bash"><code>curl -X POST "https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/apps/anthropic/v1/messages" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: $DASHSCOPE_API_KEY" \
+  -d '{
+    "model": "deepseek-v4-pro",
+    "max_tokens": 1024,
+    "messages": [
+        {
+            "role": "user",
+            "content": "提取以下邮件的关键信息：张三 (zhangsan@example.com) 对企业版方案感兴趣，希望预约下周二下午 2 点的演示。"
+        }
+    ],
+    "output_config": {
+        "format": {
+            "type": "json_schema",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "name": {"type": "string"},
+                    "email": {"type": "string"},
+                    "plan_interest": {"type": "string"},
+                    "demo_requested": {"type": "boolean"}
+                },
+                "required": ["name", "email", "plan_interest", "demo_requested"],
+                "additionalProperties": false
+            }
+        }
+    }
+}'
+</code></pre></div></div></section></section></td></tr></tbody></table>
+<table bordertype="no-border" style="display:table;table-layout:fixed;width:100%"><colgroup><col style="width:50%"><col style="width:50%"></colgroup><tbody><tr><td><h2>非流式响应 <span id="ag1a2b3c4d5f0"></span></h2><p><strong>id</strong> <code>string</code></p><p>消息的唯一标识。</p><p><strong>type</strong> <code>string</code></p><p>固定为 <code>message</code>。</p><p><strong>role</strong> <code>string</code></p><p>固定为 <code>assistant</code>。</p><p><strong>model</strong> <code>string</code></p><p>使用的模型名称。</p><p><strong>content</strong> <code>array</code></p><p>内容数组。</p><section class="collapse" id="accordion-content-数组元素类型-2"><p>content 数组元素类型</p><div><strong>文本信息</strong><section class="collapse" id="accordion-属性-12"><p>属性</p><div><p><strong>type</strong> <code>string</code></p><p>固定为 <code>text</code>。</p><p><strong>text</strong> <code>string</code></p><p>模型生成的文本回复。</p></div></section><p><strong>思考信息</strong>（开启深度思考时返回）</p><section class="collapse" id="accordion-属性-13"><p>属性</p><div><p><strong>type</strong> <code>string</code></p><p>固定为 <code>thinking</code>。</p><p><strong>thinking</strong> <code>string</code></p><p>模型在生成最终回复前的思考过程。</p><p><strong>signature</strong> <code>string</code></p><p>当前固定为空字符串。</p></div></section><p><strong>工具调用信息</strong>（Function Call 场景）</p><section class="collapse" id="accordion-属性-14"><p>属性</p><div><p><strong>type</strong> <code>string</code></p><p>固定为 <code>tool_use</code>。</p><p><strong>id</strong> <code>string</code></p><p>工具调用的唯一标识，用于在后续 <code>tool_result</code> 中关联结果。</p><p><strong>name</strong> <code>string</code></p><p>被调用的工具名称。</p><p><strong>input</strong> <code>object</code></p><p>工具调用的入参。</p></div></section></div></section><p><strong>stop_reason</strong> <code>string</code></p><p>停止原因。可选值：<code>end_turn</code>（正常结束）、<code>max_tokens</code>（达到 Token 上限）、<code>tool_use</code>（工具调用）。</p><p><strong>stop_sequence</strong> <code>string</code></p><p>固定为 <code>null</code>。</p><p><strong>usage</strong> <code>object</code></p><p>Token 用量统计。</p><div class="note note-note"><div class="note-icon-wrapper"></div><div class="note-content"><p><strong>说明</strong>流式调用中，<code>message_start</code> 事件的 <code>usage</code> 仅包含 <code>input_tokens</code> 和 <code>output_tokens</code>；完整 4 个字段在 <code>message_delta</code> 事件中返回。</p></div></div><section class="collapse" id="accordion-属性-15"><p>属性</p><div><p><strong>input_tokens</strong> <code>integer</code></p><p>输入 Token 数量。</p><p><strong>output_tokens</strong> <code>integer</code></p><p>输出 Token 数量。</p><p><strong>cache_creation_input_tokens</strong> <code>integer</code></p><p>缓存创建消耗的输入 Token 数量。</p><p><strong>cache_read_input_tokens</strong> <code>integer</code></p><p>缓存读取消耗的输入 Token 数量。</p></div></section></td><td><strong>响应示例</strong><pre data-tag="codeblock" id="code-block" outputclass="language-json" code-type="xCode" class="pre codeblock language-json"><code>{
+  "id": "msg_e2898f19-fc0e-4cb3-bd9b-5b7dc4ea3bc9",
+  "type": "message",
+  "role": "assistant",
+  "model": "qwen3.8-max",
+  "content": [
+    {
+      "type": "thinking",
+      "thinking": "让我分析一下这个问题...",
+      "signature": ""
+    },
+    {
+      "type": "text",
+      "text": "你好！我是通义千问..."
+    }
+  ],
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "usage": {
+    "input_tokens": 22,
+    "output_tokens": 223,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0
+  }
+}
+</code></pre></td></tr></tbody></table>
+<table bordertype="no-border" style="display:table;table-layout:fixed;width:100%"><colgroup><col style="width:50%"><col style="width:50%"></colgroup><tbody><tr><td><h2>流式响应 <span id="ah1a2b3c4d5e8"></span></h2><strong>message_start</strong><p>流的第一个事件，标记消息开始。</p><section class="collapse" id="accordion-属性-16"><p>属性</p><div><p><strong>type</strong> <code>string</code></p><p>固定为 <code>message_start</code>。</p><p><strong>message</strong> <code>object</code></p><p>初始消息对象，<code>content</code> 为空数组，<code>usage</code> 仅含 <code>input_tokens</code> 和 <code>output_tokens</code>。</p></div></section><strong>content_block_start</strong><p>每个内容块开始时发送，标记新内容块的索引和类型。</p><section class="collapse" id="accordion-属性-17"><p>属性</p><div><p><strong>type</strong> <code>string</code></p><p>固定为 <code>content_block_start</code>。</p><p><strong>index</strong> <code>integer</code></p><p>内容块索引，从 0 开始，对应该消息 <code>content</code> 数组中的位置。</p><p><strong>content_block</strong> <code>object</code></p><p>内容块的初始对象。<code>type</code> 取值为 <code>text</code>、<code>thinking</code> 或 <code>tool_use</code>。<code>tool_use</code> 类型在此事件中 <code>input</code> 为空对象，完整入参由后续 <code>content_block_delta</code> 增量拼接。</p></div></section><strong>content_block_delta</strong><p>内容块的增量更新事件。同一内容块会发送多个该事件。</p><section class="collapse" id="accordion-属性-18"><p>属性</p><div><p><strong>type</strong> <code>string</code></p><p>固定为 <code>content_block_delta</code>。</p><p><strong>index</strong> <code>integer</code></p><p>所属内容块索引。</p><p><strong>delta</strong> <code>object</code></p><p>增量对象，<code>type</code> 取值：</p><ul>
+<li><code>text_delta</code>：文本增量，含 <code>text</code> 字段。</li>
+<li><code>thinking_delta</code>：思考增量，含 <code>thinking</code> 字段。</li>
+<li><code>signature_delta</code>：签名增量，含 <code>signature</code> 字段（当前固定为空字符串）。</li>
+<li><code>input_json_delta</code>：工具调用入参增量，含 <code>partial_json</code> 字段。</li>
+</ul></div></section><strong>content_block_stop</strong><p>内容块结束事件。</p><section class="collapse" id="accordion-属性-19"><p>属性</p><div><p><strong>type</strong> <code>string</code></p><p>固定为 <code>content_block_stop</code>。</p><p><strong>index</strong> <code>integer</code></p><p>结束的内容块索引。</p></div></section><strong>message_delta</strong><p>消息级更新事件，在所有内容块结束后发送，包含停止原因和完整的 Token 用量统计。</p><section class="collapse" id="accordion-属性-20"><p>属性</p><div><p><strong>type</strong> <code>string</code></p><p>固定为 <code>message_delta</code>。</p><p><strong>delta</strong> <code>object</code></p><p>包含 <code>stop_reason</code> 和 <code>stop_sequence</code>，取值参见上方非流式响应表格。</p><p><strong>usage</strong> <code>object</code></p><p>完整的 Token 用量统计，包含 <code>input_tokens</code>、<code>output_tokens</code>、<code>cache_creation_input_tokens</code>、<code>cache_read_input_tokens</code>。</p></div></section><strong>message_stop</strong><p>流的最后一个事件，标记消息结束。</p><section class="collapse" id="accordion-属性-21"><p>属性</p><div><p><strong>type</strong> <code>string</code></p><p>固定为 <code>message_stop</code>。</p><p>此外，流式响应还会定期发送 <strong>ping</strong> 事件（<code>{"type":"ping"}</code>）用于保持连接活跃，客户端可忽略。</p></div></section></td><td><strong>流式响应示例</strong><pre data-tag="codeblock" id="code-block-2" outputclass="language-json" code-type="xCode" class="pre codeblock language-json"><code>{"type":"message_start","message":{"id":"msg_xxx","type":"message","role":"assistant","model":"qwen3.8-max","content":[],"usage":{"input_tokens":15,"output_tokens":0}}}
+{"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":"","signature":""}}
+{"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"Here's a thinking process:\n\n1. **Analyze User Input:**\n   - **Topic:** 人工智能 (Artificial Intelligence / AI)\n   - **Request:** 请简单介绍一下人工智能。"}}
+{"type":"content_block_delta","index":0,"delta":{"type":"signature_delta","signature":""}}
+{"type":"content_block_stop","index":0}
+{"type":"content_block_start","index":1,"content_block":{"type":"text","text":""}}
+{"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"人工智能（Artificial Intelligence，简称<span class="help-letter-space"></span>AI）是计算机科学的重要分支..."}}
+{"type":"content_block_stop","index":1}
+{"type":"message_delta","delta":{"stop_reason":"end_turn","stop_sequence":null},"usage":{"input_tokens":15,"output_tokens":1078,"cache_creation_input_tokens":0,"cache_read_input_tokens":0}}
+{"type":"message_stop"}
+</code></pre></td></tr></tbody></table>
+<h2 id="常见问题">常见问题 <span id="faq-ccbaseurl-h2"></span></h2>
+<p><strong>在 Claude Desktop 或 Claude Code 中配置后，连接测试报错</strong><code>Model discovery — Gateway /v1/models returned HTTP 404</code><strong>，或请求地址出现</strong><code>/v1/v1/models</code><strong>，如何解决？</strong></p>
+<p>Claude Desktop、Claude Code 等客户端的模型发现（model discovery）功能会在配置的 base URL 后自动追加 <code>/v1/models</code>。请按以下两点排查：</p>
+<ul>
+<li><strong>base URL 不要以</strong><code>/v1/</code><strong>结尾</strong>：应填写到 <code>/apps/anthropic</code> 为止（例如华北<span class="help-letter-space"></span>2（北京）填 <code>https://dashscope.aliyuncs.com/apps/anthropic</code>，其余地域的地址见上方“接入信息”）。若误填为 <code>.../apps/anthropic/v1/</code>，客户端追加 <code>/v1/models</code> 后会形成 <code>/v1/v1/models</code> 的重复路径，导致 HTTP 404。因此出现 404 时，请先检查实际请求地址是否出现 <code>/v1/v1/</code> 重复，若有则去掉 base URL 末尾的 <code>/v1/</code>。</li>
+<li><strong>手动添加模型以跳过自动发现</strong>：百炼 Anthropic 兼容端点仅提供 Messages 接口（<code>/v1/messages</code>），不提供模型列表接口（<code>/v1/models</code>），因此模型发现请求本身也会返回 404。请在客户端的 Models 中手动添加模型（例如 <code>qwen3.7-plus</code>）以跳过自动发现。</li>
+</ul></div>
+</div></div><div class="aliyun-docs-pagination"><div class="NextPage--container--cfVcdEE"><span class="NextPage--paginationLeft--WTOmehr"><a href="/zh/model-studio/list-input-items" data-spm-click="gostr=/aliyun;locaid=preDoc"><i class="iconfont icon-prev-arrow"></i>上一篇：获取输入项列表</a></span><span class="NextPage--paginationRight--TgS6P1r"><a href="/zh/model-studio/qwen-api-via-dashscope" data-spm-click="gostr=/aliyun;locaid=nextDoc">下一篇：DashScope<i class="iconfont icon-next-arrow"></i></a></span></div></div></div><div class="RecommendDoc--container--M1qVQax"></div><div class="FeedbackButton--feedbackContainer--njtB22l aliyun-docs-feedback" id="help-doc-feedback"><div class="FeedbackButton--feedbackHelpTip--JxaBwdy">该文章对您有帮助吗？</div><div class="FeedbackButton--feedbackButtonContainer--ujiXFNJ"><div class="FeedbackButton--feedbackButtonBox--GmY1Nor"><button class="FeedbackButton--iconButton--fx4Xcop"><i class="help-iconfont help-icon-tag-empty"></i></button><button class="FeedbackButton--iconButton--fx4Xcop"><i class="help-iconfont help-icon-tag-empty" style="display:inline-block;transform:rotateX(-180deg)"></i></button><button class="FeedbackButton--clickButton--YxH6n96"><i class="help-iconfont help-icon-bianji"></i>反馈</button></div></div></div></section><div class="aliyun-docs-side" id="aliyun-docs-side"><div id="aliyun-docs-side-content" class="aliyun-docs-side-content ProductDetail--rightBox--GGLE5sH"><ul class="Outline--synopsisBox--zm_HamD" id="outline-container"></ul></div><div id="aliyun-docs-side-blank" class="aliyun-docs-side-blank"></div></div></div></main></div></div><div id="aliyun-docs-selection-div"></div></div></div>
+  <footer><div id="211ceb229eaf87a4e7c8802c1904ca2d"><div class="_18a32969382a277c44015217fbc5cb5a_box"><footer class="_49ada0cd752f65901c49f2eed0d6c3d5_container" aria-label="PC 端页尾"><div class="_49ada0cd752f65901c49f2eed0d6c3d5_inner"><div class="_296d5000d6fdcaff9d0bfd209c64fbbc_services"><nav class="_296d5000d6fdcaff9d0bfd209c64fbbc_homepage-footer-main-services" aria-label="页脚导航"><section class="a52e48969cced2d562e47543eeb73ebb_ali-main-services"><h3 class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-title">为什么选择阿里云</h3><a class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-link" href="https://www.aliyun.com/about/what-is-cloud-computing" target="_blank">什么是云计算</a><a class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-link" href="https://infrastructure.aliyun.com/" target="_blank">全球基础设施</a><a class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-link" href="https://www.aliyun.com/why-us/leading-technology" target="_blank">技术领先</a><a class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-link" href="https://www.aliyun.com/why-us/reliability" target="_blank">稳定可靠</a><a class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-link" href="https://www.aliyun.com/why-us/security-compliance" target="_blank">安全合规</a><a class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-link" href="https://www.aliyun.com/analyst-reports" target="_blank">分析师报告</a></section><section class="a52e48969cced2d562e47543eeb73ebb_ali-main-services"><h3 class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-title">大模型</h3><a class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-link" href="https://www.qianwenai.com/" target="_blank">大模型服务平台</a><a class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-link" href="https://www.aliyun.com/product/tongyi" target="_blank">千问大模型</a><a class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-link" href="https://www.qianwenai.com/models" target="_blank">模型市场</a></section><section class="a52e48969cced2d562e47543eeb73ebb_ali-main-services"><h3 class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-title">产品和定价</h3><a class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-link" href="https://www.aliyun.com/product/list" target="_blank">全部产品</a><a class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-link" href="https://free.aliyun.com/" target="_blank">免费试用</a><a class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-link" href="https://www.aliyun.com/product/news/" target="_blank">产品动态</a><a class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-link" href="https://www.aliyun.com/price/detail" target="_blank">产品定价</a><a class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-link" href="https://www.aliyun.com/price/cpq/list" target="_blank">配置报价器</a><a class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-link" href="https://www.aliyun.com/price/cost-management" target="_blank">云上成本管理</a></section><section class="a52e48969cced2d562e47543eeb73ebb_ali-main-services"><h3 class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-title">技术内容</h3><a class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-link" href="https://www.aliyun.com/solution/tech-solution" target="_blank">技术解决方案</a><a class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-link" href="https://help.aliyun.com/" target="_blank">帮助文档</a><a class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-link" href="https://developer.aliyun.com/" target="_blank">开发者社区</a><a class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-link" href="https://tianchi.aliyun.com/" target="_blank">天池大赛</a><a class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-link" href="https://edu.aliyun.com/" target="_blank">阿里云认证</a></section><section class="a52e48969cced2d562e47543eeb73ebb_ali-main-services"><h3 class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-title">权益</h3><a class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-link" href="https://free.aliyun.com/" target="_blank">免费试用</a><a class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-link" href="https://www.aliyun.com/solution/free" target="_blank">解决方案免费试用</a><a class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-link" href="https://university.aliyun.com/" target="_blank">高校计划</a><a class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-link" href="https://dashi.aliyun.com/?ambRef=shouYeDaoHang2&amp;pageCode=yunparterIndex" target="_blank">推荐返现计划</a></section><section class="a52e48969cced2d562e47543eeb73ebb_ali-main-services"><h3 class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-title">服务</h3><a class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-link" href="https://www.aliyun.com/service" target="_blank">基础服务</a><a class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-link" href="https://www.aliyun.com/service/supportplans" target="_blank">企业增值服务</a><a class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-link" href="https://www.aliyun.com/service/devopsimpl/devopsimpl_cloudmigration_public_cn" target="_blank">迁云服务</a><a class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-link" href="https://www.aliyun.com/notice/" target="_blank">官网公告</a><a class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-link" href="https://status.aliyun.com/" target="_blank">健康看板</a><a class="a52e48969cced2d562e47543eeb73ebb_ali-main-services-link" href="https://security.aliyun.com/trust-center" target="_blank">信任中心</a></section></nav><article class="_7b44142961778903dda8af3f769cd06c_focus"><h3 class="_7b44142961778903dda8af3f769cd06c_ali-main-services-title">关注阿里云</h3><p class="_7b44142961778903dda8af3f769cd06c_ali-main-services-desc">关注阿里云公众号或下载阿里云APP，关注云资讯，随时随地运维管控云服务</p><img alt="阿里云APP" src="https://img.alicdn.com/imgextra/i4/O1CN01XLesV31fkf7pYNATb_!!6000000004045-2-tps-400-400.png" class="_7b44142961778903dda8af3f769cd06c_ali-official-code" loading="lazy"/><img alt="阿里云微信" src="https://img.alicdn.com/tfs/TB1AOdINW6qK1RjSZFmXXX0PFXa-258-258.jpg" class="_7b44142961778903dda8af3f769cd06c_ali-official-code" loading="lazy"/><p class="_7b44142961778903dda8af3f769cd06c_consult-text">联系我们：4008013260</p></article></div><div class="_4598709a854bea355ceb6ef9f23f10d4_about-link-wrap"><a href="https://help.aliyun.com/product/67275.html" class="_4598709a854bea355ceb6ef9f23f10d4_ali-about-link" target="_blank">法律声明</a><a href="https://terms.alicdn.com/legal-agreement/terms/platform_service/20220906101446934/20220906101446934.html" class="_4598709a854bea355ceb6ef9f23f10d4_ali-about-link" target="_blank">Cookies 政策</a><a href="https://aliyun.jubao.alibaba.com/?site=10_JTYWGW_XS_CNAQMCMH" class="_4598709a854bea355ceb6ef9f23f10d4_ali-about-link" target="_blank">廉正举报</a><a href="https://report.aliyun.com/" class="_4598709a854bea355ceb6ef9f23f10d4_ali-about-link" target="_blank">安全举报</a><a href="https://www.aliyun.com/contact" class="_4598709a854bea355ceb6ef9f23f10d4_ali-about-link" target="_blank">联系我们</a><a href="https://careers.aliyun.com/" class="_4598709a854bea355ceb6ef9f23f10d4_ali-about-link" target="_blank">加入我们</a></div><section class="_4598709a854bea355ceb6ef9f23f10d4_friend-link-wrap"><h3 hidden="">友情链接</h3><a href="https://www.alibabagroup.com/cn/global/home" class="_4598709a854bea355ceb6ef9f23f10d4_ali-friend-link" target="_blank">阿里巴巴集团</a><a href="https://www.taobao.com/" class="_4598709a854bea355ceb6ef9f23f10d4_ali-friend-link" target="_blank">淘宝网</a><a href="https://www.qianwenai.com/" class="_4598709a854bea355ceb6ef9f23f10d4_ali-friend-link" target="_blank">千问AI平台</a><a href="https://qwenwork.cn/?utm_source=aliyun_web&amp;utm_content=home_bottom" class="_4598709a854bea355ceb6ef9f23f10d4_ali-friend-link" target="_blank">千问办公</a><a href="https://www.tmall.com/" class="_4598709a854bea355ceb6ef9f23f10d4_ali-friend-link" target="_blank">天猫</a><a href="https://www.aliexpress.com/" class="_4598709a854bea355ceb6ef9f23f10d4_ali-friend-link" target="_blank">全球速卖通</a><a href="https://www.alibaba.com/" class="_4598709a854bea355ceb6ef9f23f10d4_ali-friend-link" target="_blank">阿里巴巴国际交易市场</a><a href="https://www.1688.com/" class="_4598709a854bea355ceb6ef9f23f10d4_ali-friend-link" target="_blank">1688</a><a href="https://www.alimama.com/index.htm" class="_4598709a854bea355ceb6ef9f23f10d4_ali-friend-link" target="_blank">阿里妈妈</a><a href="https://www.fliggy.com/" class="_4598709a854bea355ceb6ef9f23f10d4_ali-friend-link" target="_blank">飞猪</a><a href="https://www.aliyun.com/" class="_4598709a854bea355ceb6ef9f23f10d4_ali-friend-link" target="_blank">阿里云计算</a><a href="https://wanwang.aliyun.com/" class="_4598709a854bea355ceb6ef9f23f10d4_ali-friend-link" target="_blank">万网</a><a href="https://mobile.amap.com/" class="_4598709a854bea355ceb6ef9f23f10d4_ali-friend-link" target="_blank">高德</a><a href="https://www.uc.cn/" class="_4598709a854bea355ceb6ef9f23f10d4_ali-friend-link" target="_blank">UC</a><a href="https://www.umeng.com/" class="_4598709a854bea355ceb6ef9f23f10d4_ali-friend-link" target="_blank">友盟</a><a href="https://www.youku.com/" class="_4598709a854bea355ceb6ef9f23f10d4_ali-friend-link" target="_blank">优酷</a><a href="https://www.dingtalk.com/" class="_4598709a854bea355ceb6ef9f23f10d4_ali-friend-link" target="_blank">钉钉</a><a href="https://www.alipay.com/" class="_4598709a854bea355ceb6ef9f23f10d4_ali-friend-link" target="_blank">支付宝</a><a href="https://damo.alibaba.com/" class="_4598709a854bea355ceb6ef9f23f10d4_ali-friend-link" target="_blank">达摩院</a><a href="https://world.taobao.com/" class="_4598709a854bea355ceb6ef9f23f10d4_ali-friend-link" target="_blank">淘宝海外</a><a href="https://www.aliyundrive.com/" class="_4598709a854bea355ceb6ef9f23f10d4_ali-friend-link" target="_blank">阿里云盘</a></section><p class="_4598709a854bea355ceb6ef9f23f10d4_ali-copyright-text">© 2009-现在 Aliyun.com 版权所有 增值电信业务经营许可证： <a href="http://beian.miit.gov.cn/" target="_blank">浙B2-20080101</a> 域名注册服务机构许可： <a href="https://domain.miit.gov.cn/域名注册服务机构/互联网域名/阿里云计算有限公司 " target="_blank">浙D3-20210002</a></p><p class="_4598709a854bea355ceb6ef9f23f10d4_ali-report-wrap"><a href="https://zzlz.gsxt.gov.cn/businessCheck/verifKey.do?showType=p&amp;serial=91330106673959654P-SAIC_SHOW_10000091330106673959654P1782269316568&amp;signData=MEUCIQDTH78jfQrqhsr99oZZLEZ9bvrSnyF%20tsaiBM1kAscJ1AIgWUzC8x%20mPem4t8XfwhDOOOIaNULiW8MBaKLkRHa0eWw%3D" target="_blank" class="_4598709a854bea355ceb6ef9f23f10d4_ali-report-link"><img src="//gw.alicdn.com/tfs/TB1GxwdSXXXXXa.aXXXXXXXXXXX-65-70.gif" class="_4598709a854bea355ceb6ef9f23f10d4_ali-report-img" alt="" loading="lazy"/></a><a href="http://www.beian.gov.cn/portal/registerSystemInfo" target="_blank" class="_4598709a854bea355ceb6ef9f23f10d4_ali-report-link"><img src="//img.alicdn.com/tfs/TB1..50QpXXXXX7XpXXXXXXXXXX-40-40.png" class="_4598709a854bea355ceb6ef9f23f10d4_ali-report-img" alt="浙公网安备 33010602009975号" loading="lazy"/><span class="_4598709a854bea355ceb6ef9f23f10d4_ali-report-link-text">浙公网安备 33010602009975号</span></a><a href="https://beian.miit.gov.cn/" target="_blank" class="_4598709a854bea355ceb6ef9f23f10d4_ali-report-link"><span class="_4598709a854bea355ceb6ef9f23f10d4_ali-report-link-text _4598709a854bea355ceb6ef9f23f10d4_ali-report-link-text-unique">浙B2-20080101-4</span></a></p></div></footer><footer class="_4b41e3343c851a7a8833c9165b249eb2_container" aria-label="移动端页尾"></footer></div></div></footer>
+
+
+
+<script>
+  var _performance_domEnd = window.performance && window.performance.now();
+</script>
+
+
+  <script>
+    window.ALIYUN_PERF && window.ALIYUN_PERF.getPCP().then(rst => {
+      var data = {
+        product: 'help.aliyun.com',
+        ua: navigator.userAgent,
+        device: 'pc',
+        page: 'index',
+        lang: 'zh',
+        cna: '',
+        url: window.location.href,
+        action: 'pcp',
+        userParams1: rst || 0,
+      };
+      let queryStr = Object.keys(data).map(key => data[key] &&
+        `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`).join('&');
+      fetch('https://help-new.cn-wulanchabu.log.aliyuncs.com/logstores/web-tracking/track?APIVersion=0.6.0&' +
+        queryStr);
+    });
+  </script>
+  
+
+  <script crossorigin="" src="https://g.alicdn.com/code/lib/??react/16.8.6/umd/react.production.min.js,react-dom/16.8.6/umd/react-dom.production.min.js"></script>
+  <script src="https://g.alicdn.com/code/lib/lodash.js/4.17.21/lodash.min.js" crossorigin="anonymous"></script>
+  <script>
+  window.resourceBaseUrl="https://g.alicdn.com/aliyun-help/help-portal-fe/0.12.63/"
+</script>
+<script defer="" src="https://g.alicdn.com/aliyun-help/help-portal-fe/0.12.63/js/index.js"></script>
+<script defer src="https://g.alicdn.com/aliyun-help/help-portal-fe/0.12.63/js/vendor.js"></script>
+  
+  <script async="" src="https://g.alicdn.com/dawn/assets-loader/scripts/fast-login.js?tenantName=help-new-aliyun-com"></script>
+  <script async="" src="https://g.alicdn.com/aliyun/perf/js/index.js"></script>
+  <script src="//cloud-assets.alicdn.com/website.js" crossorigin=""></script>
+  
+
+<script src="https://website.alyasset.com/npm.combo/@ali/biu-loader/0.1.9/~~index.js,plugins/global-react.js,plugins/ace-module.js"></script>
+<script src="https://website.alyasset.com/npm.combo/@ali/~~hmod-preact/0.0.1/index.js,hmod-preact-hooks/0.0.1/index.js,hmod-preact-compat/0.0.1/index.js,hmod-preact-bridge/0.1.4/index.js"></script>
+<script src="https://website.alyasset.com/code.combo/aliyun-com/~~lowcode-env-inject/0.1.5/aliyun.prod.pc.zh-CN.js,lowcode-engine/0.1.137/renderer/build/js/index.js"></script>
+<script src="https://g.alicdn.com/code/npm/@ali/??hmod-ace-2023-box/0.1.0/index.js,hmod-aliyun-com-floating-toolbar/0.2.4/index.js,hmod-aliyun-com-global-nav-search/0.8.5/index.js,hmod-aliyun-com-global-nav-search/0.8.5/locales/zh-CN.js,hmod-aliyun-com-global-nav/0.3.18/index.js,hmod-aliyun-com-global-nav/0.3.18/locales/zh-CN.js"></script>
+<script src="https://website.alyasset.com/lowcode/entry/prod/e881bdb2bc21fca3914afc7462937649.js"></script>
+<script src="https://g.alicdn.com/code/npm/@ali/??hmod-ace-2023-box/0.1.0/index.js,hmod-ace-2024-global-footer/0.2.1/index.js,hmod-ace-2024-global-footer/0.2.1/locales/zh-CN.js,hmod-lowcode-normal-page/0.1.0/index.js"></script>
+<script src="https://website.alyasset.com/lowcode/entry/prod/211ceb229eaf87a4e7c8802c1904ca2d.js"></script>
+</body></html>

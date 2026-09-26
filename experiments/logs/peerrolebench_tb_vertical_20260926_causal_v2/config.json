@@ -1,0 +1,41 @@
+{
+  "created_at": "2026-09-26T02:27:00.811763+00:00",
+  "mode": "fixture_protocol_smoke",
+  "teambench_commit": "d185aef",
+  "tasks": [
+    "CR2_style_enforce",
+    "DIST1_queue_race"
+  ],
+  "conditions": [
+    "random",
+    "static_best",
+    "terminal_only",
+    "recipient_judgment"
+  ],
+  "peers": [
+    "peer_01_noop",
+    "peer_02_repair",
+    "peer_03_partial"
+  ],
+  "episodes_per_task_condition": 2,
+  "policy_seed_scheme": "sha256(task|condition|episode|fixture-policy-v2)",
+  "execution_timing": "select_then_execute",
+  "consumer_action_materialized": true,
+  "raw_log_streaming": true,
+  "runtime_dependencies": {
+    "pytest": true,
+    "pytest_timeout": true
+  },
+  "exact_command": "scripts/peerrolebench_tb_vertical_slice.py --output-dir experiments/logs/peerrolebench_tb_vertical_20260926_causal_v2",
+  "git_head": "29477209a22c0f2c14782c0e2c3234b14a50ad0e",
+  "git_status_porcelain_sha256": "8fc73b9ec753665b7d10fce94d5eeeb11e7b6eed631b59deea5290aefd02986f",
+  "source_sha256": {
+    "runner": "c79a29aeedcce99427cc62575f3c4bf636e0f7e54e4ab16d28bb9a4ad49381f1",
+    "protocol": "f34d2a0277c893a199bc42fdb48e01504bc5a08aa335307be21f7caa5bf63a71"
+  },
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "real_llm_calls": 0,
+  "scientific_claim_allowed": false,
+  "reason": "fixture peers and only two task families; used to validate the causal adapter"
+}
