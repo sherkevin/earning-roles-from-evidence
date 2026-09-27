@@ -14,11 +14,15 @@ REQUIRED_SHARED_FLAGS = {
     "same_candidate_set", "same_propensity_stream", "same_model_and_request_budget",
     "same_legal_history", "same_delay_and_reordering", "same_full_cost_accounting",
 }
+SUPPORTED_MANIFEST_VERSIONS = {
+    "peerrolebench-benchmark-baseline-candidate-v1",
+    "peerrolebench-benchmark-baseline-candidate-v2",
+}
 
 
 def validate(manifest: dict) -> dict:
     errors: list[str] = []
-    if manifest.get("manifest_version") != "peerrolebench-benchmark-baseline-candidate-v1":
+    if manifest.get("manifest_version") not in SUPPORTED_MANIFEST_VERSIONS:
         errors.append("manifest_version")
     if manifest.get("status") != "CANDIDATE_NOT_FROZEN":
         errors.append("status_must_remain_candidate")
