@@ -47,3 +47,5 @@ Goal 修改。
   固定两个 root、同信息 baseline、manifest、主指标和停止规则；当前不冻结 benchmark、不启动新 API/A800。
 - [2026-09-27 candidate manifest validation](task_reports/20260927_manifest_validation.md)：
   用机器校验候选 root/split/baseline/信息契约，保持 API/GPU gate 关闭；真实 root 资格仍开放。
+- [2026-09-27 material payload runtime preflight](task_reports/20260927_material_payload_runtime_preflight.md)：
+  DIST1/PIPE3 双 root payload、delivery digest、operator deny 和 lineage 通过 pinned sandbox；live runner/scorer 仍开放。
