@@ -41,3 +41,5 @@ Goal 修改。
   seed 1/2 类名与 transport/malformed mutation 回归通过；seed 2 压力 worker-exit 保留 UNKNOWN，第二 root/baseline/真实 API 链仍开放。
 - [2026-09-27 scorer discrepancy correction](task_reports/20260927_scorer_discrepancy_correction.md)：
   定位并修正 private consumer scorer 的 tuple/list 实现错误；旧错误日志保留，修正回放 PASS 1.0，撤回评分盲点结论。
+- [2026-09-27 second-root audit](task_reports/20260927_second_root_audit.md)：
+  PIPE3 保留为条件性主候选，MULTI3 为低优先级备选；两者都未冻结，强基线和真实 API 链不启动。

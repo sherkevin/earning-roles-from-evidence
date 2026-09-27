@@ -37,9 +37,10 @@ digest 算法和 `PASS/FAIL/UNKNOWN` 规则见
 [`scripts/peerrolebench_hidden_producer_scorer_worker.py`](../../scripts/peerrolebench_hidden_producer_scorer_worker.py)
 和 [`tests/test_peerrolebench_producer_scorer.py`](../../tests/test_peerrolebench_producer_scorer.py)。
 
-同时，对保存的 N02 v3 sealed recipient source 做了独立 consumer worker 回放：旧 parent
-行为 scorer 是 `4/4 PASS`，独立 worker 返回 `FAIL`（`payload_and_ack`，0.75）。这是
-诊断差异，不重写 N02 结果；它直接触发了 ADR 0032 的 producer/recipient outcome 分离。
+同时，对保存的 N02 v3 sealed recipient source 做了独立 consumer worker 回放。首次运行的
+`FAIL/0.75` 不是 scorer 差异，而是 worker 将合法的 Python tuple 误判为 list；修复后同一
+sealed source 返回 `PASS/1.0`。因此这次回放不提供 scorer blind-spot 证据；producer/recipient
+outcome 分离仍由 ownership、编辑路径和事件顺序要求保留。
 
 ## 3. 满足、部分满足与未开始
 

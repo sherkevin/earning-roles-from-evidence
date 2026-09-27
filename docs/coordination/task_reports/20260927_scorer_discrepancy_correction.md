@@ -29,3 +29,11 @@ support，而不是原始 producer template；完整 PASS/FAIL 必须回显并�
 后续论文和 task docs 不再把 `4/4 vs 0.75` 写成科学发现；producer/recipient 分离仍因
 ownership 与 treatment order 保留。下一步继续按 N03-next-r 做第二 root、强基线和真实小链
 资格，不能跳过这次更正。
+
+## 后续边界修补
+
+独立审查又发现空队列的直接 worker 调用可能返回 Python tuple，而 JSON RPC 回放会得到
+list。隐藏 worker 的 `empty()` 现在同时接受 `None`、`(None, None)` 和 `[None, None]`，并
+增加了回归测试；此前的非空 tuple/list 修复继续保留。另补了完整 `PASS/FAIL` 结果的
+delivery digest 不匹配测试，确保错误结果在写入 ledger 前被拒绝。该修改只收紧工程边界，
+不增加任何 benchmark、LLM 或学习证据。

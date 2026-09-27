@@ -110,7 +110,11 @@ def require_ok(answer):
 
 
 def empty(value):
-    return value is None or value == [None, None]
+    """Accept the direct tuple and JSON-list forms of an empty dequeue."""
+    return value is None or (
+        isinstance(value, (tuple, list)) and len(value) == 2
+        and value[0] is None and value[1] is None
+    )
 
 
 def pair(value):

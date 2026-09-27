@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 import sys
+import pytest
 
 ROOT = __import__("pathlib").Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -12,6 +13,8 @@ from peerrolebench_producer_scorer import (  # noqa: E402
     SCORER_VERSION,
     classify,
 )
+from peerrolebench_real_closed_loop import append_producer_score  # noqa: E402
+from peer_role_protocol_20260925 import Delivery, PeerRoleLedger  # noqa: E402
 
 
 def complete_response():
@@ -59,3 +62,15 @@ def test_worker_error_and_schema_mismatch_are_unknown():
     response = complete_response()
     response["value"]["schema_version"] = "future"
     assert classify(response, "a" * 64, "DIST1_queue_race", 0)["status"] == "UNKNOWN"
+
+
+def test_complete_score_digest_mismatch_is_rejected_before_ledger_append(tmp_path):
+    ledger = PeerRoleLedger(require_selection=False, require_terminal_outcome=False)
+    delivery = Delivery("d0", "task", "producer", "recipient", "a" * 64,
+                        "request", 0, "selection")
+    with pytest.raises(ValueError, match="not bound to the delivered artifact"):
+        append_producer_score(tmp_path, ledger, delivery, {
+            "status": "PASS", "label": 1, "quality_score": 1.0,
+            "artifact_sha256": "b" * 64, "scorer_version": "v1",
+            "response_digest": "c" * 64, "coverage_complete": True,
+        })

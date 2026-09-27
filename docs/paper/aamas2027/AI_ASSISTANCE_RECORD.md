@@ -421,14 +421,16 @@ integration, and scientific labels remain open.
 
 ### 2026-09-27 producer-only scorer qualification
 
-A private operator worker was implemented for producer-owned `queue.py` and `priority.py` only;
-it does not import or score the recipient's `consumer.py`. A zero-LLM matrix with the preserved
+An operator worker was implemented for producer-owned `queue.py` and `priority.py` only; it does
+not import or score the recipient's `consumer.py`. A zero-LLM exploratory matrix with the preserved
 buggy source, an independently authored correct control, two targeted near-misses, and a malformed
-source produced the frozen `FAIL/PASS/FAIL/FAIL/UNKNOWN` dispositions. The run is stored under
+source produced `FAIL/PASS/FAIL/FAIL/UNKNOWN` under a version whose allowed outcomes were widened
+after earlier resource outcomes. The run is stored under
 `experiments/logs/n03_producer_scorer_qualification_20260927/`. An initial independent consumer
 replay appeared to disagree with the older parent behavior scorer, but review found a tuple/list
 type bug in the private worker; the corrected replay returns `PASS, 1.0`, and historical logs are
-preserved as an implementation failure. This is an attribution and scorer-qualification result,
+preserved as an implementation failure. The producer matrix is therefore not a clean qualification
+pass and remains an unqualified diagnostic implementation. This is an attribution and scorer-boundary result,
 not benchmark efficacy, role learning, real-time training, or an A800 result.
 
 ### 2026-09-27 producer-score event and replay
