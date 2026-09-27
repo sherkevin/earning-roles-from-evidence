@@ -1,0 +1,115 @@
+[
+  {
+    "event_type": "peer_selection",
+    "payload": {
+      "selection_id": "selection-1-producer_bad",
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 1,
+      "selector_id": "recipient",
+      "role": "producer",
+      "candidate_ids": [
+        "producer"
+      ],
+      "chosen_peer_id": "producer",
+      "propensity": 1.0
+    },
+    "previous_hash": "GENESIS",
+    "record_hash": "19d0eb3d6b84515bd06dbf97a4094ef2fd54bdcf2e392c155baaec057e0ac49a"
+  },
+  {
+    "event_type": "task_start",
+    "payload": {
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 1
+    },
+    "previous_hash": "19d0eb3d6b84515bd06dbf97a4094ef2fd54bdcf2e392c155baaec057e0ac49a",
+    "record_hash": "ff4523179b9393dbbd474501682790b51bee9b12726036e44133af4696c50e27"
+  },
+  {
+    "event_type": "producer_delivery",
+    "payload": {
+      "delivery_id": "delivery-1-producer_bad",
+      "task_id": "PIPE3_stream_processing",
+      "producer_id": "producer",
+      "recipient_id": "recipient",
+      "artifact_sha256": "b88f70a95048b8d2d6b4610833197431d17825a738f9e93e2feae403fd44d0b5",
+      "source_event_id": "produce-1-producer_bad",
+      "task_index": 1,
+      "selection_id": "selection-1-producer_bad"
+    },
+    "previous_hash": "ff4523179b9393dbbd474501682790b51bee9b12726036e44133af4696c50e27",
+    "record_hash": "5ce9a9edc7d6306b3ca424f1e161b6583031d8c958d78e6e8500633322a65d50"
+  },
+  {
+    "event_type": "producer_score",
+    "payload": {
+      "producer_score_id": "producer-score-1-producer_bad",
+      "delivery_id": "delivery-1-producer_bad",
+      "artifact_sha256": "b88f70a95048b8d2d6b4610833197431d17825a738f9e93e2feae403fd44d0b5",
+      "scorer_version": "pipe3-producer-objective-v1",
+      "status": "FAIL",
+      "label": 0,
+      "quality_score": 0.6666666666666666,
+      "score_payload_sha256": "4a850855a0b74188ec251ff8b8f9dc760bd459983b34e81856690696f4cd72db",
+      "coverage_complete": true,
+      "decision_complete": true
+    },
+    "previous_hash": "5ce9a9edc7d6306b3ca424f1e161b6583031d8c958d78e6e8500633322a65d50",
+    "record_hash": "d1c17cf7909e43737fb99851d54e2e9f42b4f38099ee0208083a67fe4d704914"
+  },
+  {
+    "event_type": "recipient_judgment",
+    "payload": {
+      "judgment_id": "judgment-1-producer_bad",
+      "delivery_id": "delivery-1-producer_bad",
+      "consumer_id": "recipient",
+      "decision": "reject_redo",
+      "observed_artifact_sha256": "b88f70a95048b8d2d6b4610833197431d17825a738f9e93e2feae403fd44d0b5",
+      "terminal_outcome_available": false,
+      "repair_note": ""
+    },
+    "previous_hash": "d1c17cf7909e43737fb99851d54e2e9f42b4f38099ee0208083a67fe4d704914",
+    "record_hash": "6feaff14542dd026e16405fa2c8721c436fa53618a02756ee7869bd3cdfbe6fd"
+  },
+  {
+    "event_type": "consumer_action",
+    "payload": {
+      "action_id": "action-1-producer_bad",
+      "delivery_id": "delivery-1-producer_bad",
+      "consumer_id": "recipient",
+      "used_artifact": false,
+      "input_artifact_sha256": "b88f70a95048b8d2d6b4610833197431d17825a738f9e93e2feae403fd44d0b5",
+      "output_artifact_sha256": null,
+      "repair_cost": 0.0,
+      "action": "independent_redo"
+    },
+    "previous_hash": "6feaff14542dd026e16405fa2c8721c436fa53618a02756ee7869bd3cdfbe6fd",
+    "record_hash": "151c7783629904fe11877809684f0dfa76d524cec5b0a9022e11f56f1a4eb54f"
+  },
+  {
+    "event_type": "terminal_outcome",
+    "payload": {
+      "outcome_id": "outcome-1-producer_bad",
+      "delivery_id": "delivery-1-producer_bad",
+      "success": false,
+      "scorer_version": "pipe3-recipient-objective-v1/adoption",
+      "partial_score": 0.5,
+      "score_payload_sha256": "218c254dffb08bad24262ea4b6db78258480b491b9e7b464705df39cc1b50ad1"
+    },
+    "previous_hash": "151c7783629904fe11877809684f0dfa76d524cec5b0a9022e11f56f1a4eb54f",
+    "record_hash": "fa961d145717f5ff6e112607ea9e71d694724193dad0de3e1d9d0b3448a413b4"
+  },
+  {
+    "event_type": "role_evidence_update",
+    "payload": {
+      "evidence_id": "evidence-1-producer_bad",
+      "judgment_id": "judgment-1-producer_bad",
+      "action_id": "action-1-producer_bad",
+      "outcome_id": "outcome-1-producer_bad",
+      "update_version": "pipe3-lineage-preflight-v1",
+      "arrived_at": 1.0
+    },
+    "previous_hash": "fa961d145717f5ff6e112607ea9e71d694724193dad0de3e1d9d0b3448a413b4",
+    "record_hash": "83337170530c935fa21b47b0b92bab23ab32afcc93daa9f3d13f92bfa14d22b9"
+  }
+]

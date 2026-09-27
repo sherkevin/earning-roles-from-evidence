@@ -1,0 +1,77 @@
+{
+  "transport": {
+    "status": "complete"
+  },
+  "request": {
+    "op": "score_recipient",
+    "schema_version": "pipe3-recipient-score-request-v1",
+    "task_id": "PIPE3_stream_processing",
+    "seed": 1,
+    "artifact_sha256": "880e52079f8dd7dd8020ce14b01901faed5f80d5a5bd2d1619314298cb2f786f",
+    "scorer_version": "pipe3-recipient-objective-v1",
+    "mode": "adoption",
+    "event_class": "SensorReading",
+    "timestamp_field": "measured_at",
+    "id_field": "reading_id"
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "schema_version": "pipe3-recipient-score-response-v1",
+      "scorer_version": "pipe3-recipient-objective-v1",
+      "task_id": "PIPE3_stream_processing",
+      "seed": 1,
+      "mode": "adoption",
+      "artifact_sha256": "880e52079f8dd7dd8020ce14b01901faed5f80d5a5bd2d1619314298cb2f786f",
+      "status": "FAIL",
+      "label": 0,
+      "quality_score": 0.5,
+      "decision_complete": true,
+      "coverage_complete": true,
+      "checks": [
+        {
+          "id": "A1_producer_boundary",
+          "status": "PASS"
+        },
+        {
+          "id": "A2_sink_adoption",
+          "status": "FAIL",
+          "reason": "KeyError('reading_id')"
+        }
+      ],
+      "failed_check_ids": [
+        "A2_sink_adoption"
+      ],
+      "observed_check_count": 2,
+      "required_check_ids": [
+        "A1_producer_boundary",
+        "A2_sink_adoption"
+      ]
+    }
+  },
+  "response_digest": "6878d1d3d1979156af1e29a9ec0e337e72cdbaa087b0e7878616c9f7b99dd0c2",
+  "result": {
+    "status": "FAIL",
+    "label": 0,
+    "quality_score": 0.5,
+    "scorer_version": "pipe3-recipient-objective-v1",
+    "mode": "adoption",
+    "decision_complete": true,
+    "coverage_complete": true,
+    "checks": [
+      {
+        "id": "A1_producer_boundary",
+        "status": "PASS"
+      },
+      {
+        "id": "A2_sink_adoption",
+        "status": "FAIL",
+        "reason": "KeyError('reading_id')"
+      }
+    ],
+    "failed_check_ids": [
+      "A2_sink_adoption"
+    ]
+  },
+  "candidate_received_hidden_assertions": false
+}

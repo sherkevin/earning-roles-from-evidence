@@ -1,0 +1,87 @@
+{
+  "transport": {
+    "status": "complete"
+  },
+  "request": {
+    "op": "score_producer",
+    "schema_version": "pipe3-producer-score-request-v1",
+    "task_id": "PIPE3_stream_processing",
+    "seed": 1,
+    "artifact_sha256": "b88f70a95048b8d2d6b4610833197431d17825a738f9e93e2feae403fd44d0b5",
+    "scorer_version": "pipe3-producer-objective-v1",
+    "event_class": "SensorReading",
+    "timestamp_field": "measured_at",
+    "id_field": "reading_id"
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "schema_version": "pipe3-producer-score-response-v1",
+      "scorer_version": "pipe3-producer-objective-v1",
+      "task_id": "PIPE3_stream_processing",
+      "seed": 1,
+      "artifact_sha256": "b88f70a95048b8d2d6b4610833197431d17825a738f9e93e2feae403fd44d0b5",
+      "status": "FAIL",
+      "label": 0,
+      "quality_score": 0.3333333333333333,
+      "decision_complete": true,
+      "coverage_complete": true,
+      "checks": [
+        {
+          "id": "P1_import",
+          "status": "PASS"
+        },
+        {
+          "id": "P2_iso_serialization",
+          "status": "FAIL",
+          "reason": ""
+        },
+        {
+          "id": "P3_batch_output",
+          "status": "FAIL",
+          "reason": "non-ASCII producer value was not preserved"
+        }
+      ],
+      "failed_check_ids": [
+        "P2_iso_serialization",
+        "P3_batch_output"
+      ],
+      "observed_check_count": 3,
+      "required_check_ids": [
+        "P1_import",
+        "P2_iso_serialization",
+        "P3_batch_output"
+      ]
+    }
+  },
+  "response_digest": "a2b2722a7d43aadf50db78f9e004ae955726731198ba42e5bfcc9222060d8261",
+  "result": {
+    "status": "FAIL",
+    "label": 0,
+    "quality_score": 0.3333333333333333,
+    "scorer_version": "pipe3-producer-objective-v1",
+    "decision_complete": true,
+    "coverage_complete": true,
+    "checks": [
+      {
+        "id": "P1_import",
+        "status": "PASS"
+      },
+      {
+        "id": "P2_iso_serialization",
+        "status": "FAIL",
+        "reason": ""
+      },
+      {
+        "id": "P3_batch_output",
+        "status": "FAIL",
+        "reason": "non-ASCII producer value was not preserved"
+      }
+    ],
+    "failed_check_ids": [
+      "P2_iso_serialization",
+      "P3_batch_output"
+    ]
+  },
+  "candidate_received_hidden_assertions": false
+}

@@ -1,0 +1,115 @@
+[
+  {
+    "event_type": "peer_selection",
+    "payload": {
+      "selection_id": "selection-0-both_bad",
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 0,
+      "selector_id": "recipient",
+      "role": "producer",
+      "candidate_ids": [
+        "producer"
+      ],
+      "chosen_peer_id": "producer",
+      "propensity": 1.0
+    },
+    "previous_hash": "GENESIS",
+    "record_hash": "67b6cdebd5184f8e35b6d6bcf41a8dca7281cc81df3a95969164dcef49c2f839"
+  },
+  {
+    "event_type": "task_start",
+    "payload": {
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 0
+    },
+    "previous_hash": "67b6cdebd5184f8e35b6d6bcf41a8dca7281cc81df3a95969164dcef49c2f839",
+    "record_hash": "d251aa205ccf8ab794fa4acf5e8844db00acda9da69c2dbea67422c9682a08af"
+  },
+  {
+    "event_type": "producer_delivery",
+    "payload": {
+      "delivery_id": "delivery-0-both_bad",
+      "task_id": "PIPE3_stream_processing",
+      "producer_id": "producer",
+      "recipient_id": "recipient",
+      "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "source_event_id": "produce-0-both_bad",
+      "task_index": 0,
+      "selection_id": "selection-0-both_bad"
+    },
+    "previous_hash": "d251aa205ccf8ab794fa4acf5e8844db00acda9da69c2dbea67422c9682a08af",
+    "record_hash": "4053fc54e1889561e49f5999d51c5a04c926e6a9344db310c5c6803250c3f268"
+  },
+  {
+    "event_type": "producer_score",
+    "payload": {
+      "producer_score_id": "producer-score-0-both_bad",
+      "delivery_id": "delivery-0-both_bad",
+      "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "scorer_version": "pipe3-producer-objective-v1",
+      "status": "FAIL",
+      "label": 0,
+      "quality_score": 0.6666666666666666,
+      "score_payload_sha256": "6e772f0a24a6cb1e8657805f3f18dd8671e5e642eec52c54e01377acf2dd3255",
+      "coverage_complete": true,
+      "decision_complete": true
+    },
+    "previous_hash": "4053fc54e1889561e49f5999d51c5a04c926e6a9344db310c5c6803250c3f268",
+    "record_hash": "683ce88642c32294243446660cb7e73cd3edb7fc498c33beb438ad3190a4e18d"
+  },
+  {
+    "event_type": "recipient_judgment",
+    "payload": {
+      "judgment_id": "judgment-0-both_bad",
+      "delivery_id": "delivery-0-both_bad",
+      "consumer_id": "recipient",
+      "decision": "reject_redo",
+      "observed_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "terminal_outcome_available": false,
+      "repair_note": ""
+    },
+    "previous_hash": "683ce88642c32294243446660cb7e73cd3edb7fc498c33beb438ad3190a4e18d",
+    "record_hash": "9a8ea7d49c7fd2946fd5de4847ff136b52e3bdcf1fec0ad089457af6bdf27588"
+  },
+  {
+    "event_type": "consumer_action",
+    "payload": {
+      "action_id": "action-0-both_bad",
+      "delivery_id": "delivery-0-both_bad",
+      "consumer_id": "recipient",
+      "used_artifact": false,
+      "input_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "output_artifact_sha256": null,
+      "repair_cost": 0.0,
+      "action": "independent_redo"
+    },
+    "previous_hash": "9a8ea7d49c7fd2946fd5de4847ff136b52e3bdcf1fec0ad089457af6bdf27588",
+    "record_hash": "139e7dc6d05af28fa6335e41935634fb7db7f145eddd305f26aed489e01465c9"
+  },
+  {
+    "event_type": "terminal_outcome",
+    "payload": {
+      "outcome_id": "outcome-0-both_bad",
+      "delivery_id": "delivery-0-both_bad",
+      "success": false,
+      "scorer_version": "pipe3-recipient-objective-v1/adoption",
+      "partial_score": 0.0,
+      "score_payload_sha256": "dbc43fdc77901452cd2313f539778ce9a16881e99ffd964179c9fd559419d587"
+    },
+    "previous_hash": "139e7dc6d05af28fa6335e41935634fb7db7f145eddd305f26aed489e01465c9",
+    "record_hash": "3d596b304db09406930a9fe6975cc5166998f2d9bcd9eee6736ac6c6234d39db"
+  },
+  {
+    "event_type": "role_evidence_update",
+    "payload": {
+      "evidence_id": "evidence-0-both_bad",
+      "judgment_id": "judgment-0-both_bad",
+      "action_id": "action-0-both_bad",
+      "outcome_id": "outcome-0-both_bad",
+      "update_version": "pipe3-lineage-preflight-v1",
+      "arrived_at": 1.0
+    },
+    "previous_hash": "3d596b304db09406930a9fe6975cc5166998f2d9bcd9eee6736ac6c6234d39db",
+    "record_hash": "b5c042e60d69724e244a76ebbc593fc18689fdb9873c6a4f709d546057147362"
+  }
+]

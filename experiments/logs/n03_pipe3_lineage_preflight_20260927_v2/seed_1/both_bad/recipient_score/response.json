@@ -1,0 +1,69 @@
+{
+  "transport": {
+    "status": "complete"
+  },
+  "request": {
+    "op": "score_recipient",
+    "schema_version": "pipe3-recipient-score-request-v1",
+    "task_id": "PIPE3_stream_processing",
+    "seed": 1,
+    "artifact_sha256": "61b39cd5effd28cc62c37b445c0f2111b8ed1938240162d3b48a67cd90cc7fa5",
+    "scorer_version": "pipe3-recipient-objective-v1",
+    "mode": "recipient",
+    "event_class": "SensorReading",
+    "timestamp_field": "measured_at",
+    "id_field": "reading_id"
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "schema_version": "pipe3-recipient-score-response-v1",
+      "scorer_version": "pipe3-recipient-objective-v1",
+      "task_id": "PIPE3_stream_processing",
+      "seed": 1,
+      "mode": "recipient",
+      "artifact_sha256": "61b39cd5effd28cc62c37b445c0f2111b8ed1938240162d3b48a67cd90cc7fa5",
+      "status": "UNKNOWN",
+      "label": null,
+      "quality_score": null,
+      "decision_complete": false,
+      "coverage_complete": false,
+      "checks": [
+        {
+          "id": "R1_process",
+          "status": "UNKNOWN",
+          "reason": "UnicodeEncodeError('latin-1', '{\"data\": {\"reading_id\": \"probe-001\", \"measured_at\": \"2023-11-14T22:13:20\", \"sensor_name\": \"Müller\", \"metric_type\": \"PROBE\", \"location\": \"€probe\", \"processed_at\": \"2026-09-27T15:16:19.869835\"}}\\n', 137, 138, 'ordinal not in range(256)')"
+        },
+        {
+          "id": "R2_shape",
+          "status": "UNKNOWN",
+          "reason": "IndexError('list index out of range')"
+        },
+        {
+          "id": "R3_utf8_semantics",
+          "status": "UNKNOWN",
+          "reason": "IndexError('list index out of range')"
+        }
+      ],
+      "failed_check_ids": [],
+      "observed_check_count": 3,
+      "required_check_ids": [
+        "R1_process",
+        "R2_shape",
+        "R3_utf8_semantics"
+      ]
+    }
+  },
+  "response_digest": "5f046ca94c9b7676a5434b80d58a1772873f68d7bfcd95e26cf7e7b35116a5d4",
+  "result": {
+    "status": "UNKNOWN",
+    "label": null,
+    "quality_score": null,
+    "scorer_version": "pipe3-recipient-objective-v1",
+    "mode": null,
+    "decision_complete": false,
+    "coverage_complete": false,
+    "reason": "scorer_coverage_or_decision_incomplete"
+  },
+  "candidate_received_hidden_assertions": false
+}

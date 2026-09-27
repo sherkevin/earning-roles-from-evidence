@@ -1,0 +1,77 @@
+{
+  "transport": {
+    "status": "complete"
+  },
+  "request": {
+    "op": "score_recipient",
+    "schema_version": "pipe3-recipient-score-request-v1",
+    "task_id": "PIPE3_stream_processing",
+    "seed": 0,
+    "artifact_sha256": "4190e00a62419fa9903a09cadd4b864e7f60efca5d102536349472ddb365ec9a",
+    "scorer_version": "pipe3-recipient-objective-v1",
+    "mode": "adoption",
+    "event_class": "UserEvent",
+    "timestamp_field": "timestamp",
+    "id_field": "event_id"
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "schema_version": "pipe3-recipient-score-response-v1",
+      "scorer_version": "pipe3-recipient-objective-v1",
+      "task_id": "PIPE3_stream_processing",
+      "seed": 0,
+      "mode": "adoption",
+      "artifact_sha256": "4190e00a62419fa9903a09cadd4b864e7f60efca5d102536349472ddb365ec9a",
+      "status": "FAIL",
+      "label": 0,
+      "quality_score": 0.5,
+      "decision_complete": true,
+      "coverage_complete": true,
+      "checks": [
+        {
+          "id": "A1_producer_boundary",
+          "status": "PASS"
+        },
+        {
+          "id": "A2_sink_adoption",
+          "status": "FAIL",
+          "reason": "KeyError('event_id')"
+        }
+      ],
+      "failed_check_ids": [
+        "A2_sink_adoption"
+      ],
+      "observed_check_count": 2,
+      "required_check_ids": [
+        "A1_producer_boundary",
+        "A2_sink_adoption"
+      ]
+    }
+  },
+  "response_digest": "67dde4ad7c9d89c2a497fcfed4e7337c10804f20419b9b55e48aa79d4035d307",
+  "result": {
+    "status": "FAIL",
+    "label": 0,
+    "quality_score": 0.5,
+    "scorer_version": "pipe3-recipient-objective-v1",
+    "mode": "adoption",
+    "decision_complete": true,
+    "coverage_complete": true,
+    "checks": [
+      {
+        "id": "A1_producer_boundary",
+        "status": "PASS"
+      },
+      {
+        "id": "A2_sink_adoption",
+        "status": "FAIL",
+        "reason": "KeyError('event_id')"
+      }
+    ],
+    "failed_check_ids": [
+      "A2_sink_adoption"
+    ]
+  },
+  "candidate_received_hidden_assertions": false
+}

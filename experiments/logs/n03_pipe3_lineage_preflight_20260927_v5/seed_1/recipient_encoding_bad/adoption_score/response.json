@@ -1,0 +1,77 @@
+{
+  "transport": {
+    "status": "complete"
+  },
+  "request": {
+    "op": "score_recipient",
+    "schema_version": "pipe3-recipient-score-request-v1",
+    "task_id": "PIPE3_stream_processing",
+    "seed": 1,
+    "artifact_sha256": "00e70871d59e3b11194e2cb9c977a1b415ab8288bc751c48886f47fd8804bdf1",
+    "scorer_version": "pipe3-recipient-objective-v1",
+    "mode": "adoption",
+    "event_class": "SensorReading",
+    "timestamp_field": "measured_at",
+    "id_field": "reading_id"
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "schema_version": "pipe3-recipient-score-response-v1",
+      "scorer_version": "pipe3-recipient-objective-v1",
+      "task_id": "PIPE3_stream_processing",
+      "seed": 1,
+      "mode": "adoption",
+      "artifact_sha256": "00e70871d59e3b11194e2cb9c977a1b415ab8288bc751c48886f47fd8804bdf1",
+      "status": "FAIL",
+      "label": 0,
+      "quality_score": 0.5,
+      "decision_complete": true,
+      "coverage_complete": true,
+      "checks": [
+        {
+          "id": "A1_producer_boundary",
+          "status": "PASS"
+        },
+        {
+          "id": "A2_sink_adoption",
+          "status": "FAIL",
+          "reason": "UnicodeEncodeError('latin-1', '{\"reading_id\": \"probe-001\", \"measured_at\": \"2023-11-14T22:13:20\", \"sensor_name\": \"Müller\", \"metric_type\": \"PROBE\", \"location\": \"€probe\", \"processed_at\": \"2026-09-27T15:35:04.374002\"}\\n', 128, 129, 'ordinal not in range(256)')"
+        }
+      ],
+      "failed_check_ids": [
+        "A2_sink_adoption"
+      ],
+      "observed_check_count": 2,
+      "required_check_ids": [
+        "A1_producer_boundary",
+        "A2_sink_adoption"
+      ]
+    }
+  },
+  "response_digest": "5be2e7cae0c84685fd306bfac5fe83174586d00471c01a9004a155cdc3e116df",
+  "result": {
+    "status": "FAIL",
+    "label": 0,
+    "quality_score": 0.5,
+    "scorer_version": "pipe3-recipient-objective-v1",
+    "mode": "adoption",
+    "decision_complete": true,
+    "coverage_complete": true,
+    "checks": [
+      {
+        "id": "A1_producer_boundary",
+        "status": "PASS"
+      },
+      {
+        "id": "A2_sink_adoption",
+        "status": "FAIL",
+        "reason": "UnicodeEncodeError('latin-1', '{\"reading_id\": \"probe-001\", \"measured_at\": \"2023-11-14T22:13:20\", \"sensor_name\": \"Müller\", \"metric_type\": \"PROBE\", \"location\": \"€probe\", \"processed_at\": \"2026-09-27T15:35:04.374002\"}\\n', 128, 129, 'ordinal not in range(256)')"
+      }
+    ],
+    "failed_check_ids": [
+      "A2_sink_adoption"
+    ]
+  },
+  "candidate_received_hidden_assertions": false
+}

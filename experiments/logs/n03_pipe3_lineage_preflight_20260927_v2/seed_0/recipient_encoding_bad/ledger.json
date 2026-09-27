@@ -1,0 +1,115 @@
+[
+  {
+    "event_type": "peer_selection",
+    "payload": {
+      "selection_id": "selection-0-recipient_encoding_bad",
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 0,
+      "selector_id": "recipient",
+      "role": "producer",
+      "candidate_ids": [
+        "producer"
+      ],
+      "chosen_peer_id": "producer",
+      "propensity": 1.0
+    },
+    "previous_hash": "GENESIS",
+    "record_hash": "6f72a41230a0f9aaaf17f1c39c120409e1235ab5d05fafa8a6d2e2f5518353b0"
+  },
+  {
+    "event_type": "task_start",
+    "payload": {
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 0
+    },
+    "previous_hash": "6f72a41230a0f9aaaf17f1c39c120409e1235ab5d05fafa8a6d2e2f5518353b0",
+    "record_hash": "d2796a53f08fd56b56dd884f58c936ce25b3119b0e413b65ed09263d4b407049"
+  },
+  {
+    "event_type": "producer_delivery",
+    "payload": {
+      "delivery_id": "delivery-0-recipient_encoding_bad",
+      "task_id": "PIPE3_stream_processing",
+      "producer_id": "producer",
+      "recipient_id": "recipient",
+      "artifact_sha256": "e5084ee161666739bf1ea54353ea225ec590c51b79d74130071aa97c85469a30",
+      "source_event_id": "produce-0-recipient_encoding_bad",
+      "task_index": 0,
+      "selection_id": "selection-0-recipient_encoding_bad"
+    },
+    "previous_hash": "d2796a53f08fd56b56dd884f58c936ce25b3119b0e413b65ed09263d4b407049",
+    "record_hash": "aa1685d3faea71ea00e56818316f11cd71afa5766c1d22b5daec5314a1de64c1"
+  },
+  {
+    "event_type": "producer_score",
+    "payload": {
+      "producer_score_id": "producer-score-0-recipient_encoding_bad",
+      "delivery_id": "delivery-0-recipient_encoding_bad",
+      "artifact_sha256": "e5084ee161666739bf1ea54353ea225ec590c51b79d74130071aa97c85469a30",
+      "scorer_version": "pipe3-producer-objective-v1",
+      "status": "PASS",
+      "label": 1,
+      "quality_score": 1.0,
+      "score_payload_sha256": "a57833b7abda4f51233a412fbb01ba4b30b62a1ef4370172ac4abcf72128b7c3",
+      "coverage_complete": true,
+      "decision_complete": true
+    },
+    "previous_hash": "aa1685d3faea71ea00e56818316f11cd71afa5766c1d22b5daec5314a1de64c1",
+    "record_hash": "59d29bbcbf584088244be9d263d1326552c0e5d487a1db53180c051cb3e82d65"
+  },
+  {
+    "event_type": "recipient_judgment",
+    "payload": {
+      "judgment_id": "judgment-0-recipient_encoding_bad",
+      "delivery_id": "delivery-0-recipient_encoding_bad",
+      "consumer_id": "recipient",
+      "decision": "reject_redo",
+      "observed_artifact_sha256": "e5084ee161666739bf1ea54353ea225ec590c51b79d74130071aa97c85469a30",
+      "terminal_outcome_available": false,
+      "repair_note": ""
+    },
+    "previous_hash": "59d29bbcbf584088244be9d263d1326552c0e5d487a1db53180c051cb3e82d65",
+    "record_hash": "6f8e6994109d1121a682080889ec5de44b47a8e908a8ac7f10a2cbb8cdc6b9cc"
+  },
+  {
+    "event_type": "consumer_action",
+    "payload": {
+      "action_id": "action-0-recipient_encoding_bad",
+      "delivery_id": "delivery-0-recipient_encoding_bad",
+      "consumer_id": "recipient",
+      "used_artifact": false,
+      "input_artifact_sha256": "e5084ee161666739bf1ea54353ea225ec590c51b79d74130071aa97c85469a30",
+      "output_artifact_sha256": null,
+      "repair_cost": 0.0,
+      "action": "independent_redo"
+    },
+    "previous_hash": "6f8e6994109d1121a682080889ec5de44b47a8e908a8ac7f10a2cbb8cdc6b9cc",
+    "record_hash": "f2095c25df01efff034698fb7118ede65512c816d9dbb01103086170a42a4ad3"
+  },
+  {
+    "event_type": "terminal_outcome",
+    "payload": {
+      "outcome_id": "outcome-0-recipient_encoding_bad",
+      "delivery_id": "delivery-0-recipient_encoding_bad",
+      "success": false,
+      "scorer_version": "pipe3-recipient-objective-v1/adoption",
+      "partial_score": 0.5,
+      "score_payload_sha256": "01aa4ffb28f4b8f390eb563d662300abe76f760d9ada310e11c679810777a72e"
+    },
+    "previous_hash": "f2095c25df01efff034698fb7118ede65512c816d9dbb01103086170a42a4ad3",
+    "record_hash": "081a01466e2d358fa2a4f0cadd4911c665f85d8b495346e42eb0e9e1d2bf9cbe"
+  },
+  {
+    "event_type": "role_evidence_update",
+    "payload": {
+      "evidence_id": "evidence-0-recipient_encoding_bad",
+      "judgment_id": "judgment-0-recipient_encoding_bad",
+      "action_id": "action-0-recipient_encoding_bad",
+      "outcome_id": "outcome-0-recipient_encoding_bad",
+      "update_version": "pipe3-lineage-preflight-v1",
+      "arrived_at": 1.0
+    },
+    "previous_hash": "081a01466e2d358fa2a4f0cadd4911c665f85d8b495346e42eb0e9e1d2bf9cbe",
+    "record_hash": "c74c7ab461d5d99ab5088455fffc53fe3446b433ac62259086d0b79196b11b59"
+  }
+]

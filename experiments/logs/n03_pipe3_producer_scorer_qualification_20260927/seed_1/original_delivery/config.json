@@ -1,0 +1,23 @@
+{
+  "scorer_version": "pipe3-producer-objective-v1",
+  "request_schema": "pipe3-producer-score-request-v1",
+  "response_schema": "pipe3-producer-score-response-v1",
+  "worker": "scripts/peerrolebench_pipe3_producer_scorer_worker.py",
+  "worker_sha256": "65d52135aabae9c4831f34bca5f5f69ef2685f4fc312fda3fefebd462dc0fe6f",
+  "task_id": "PIPE3_stream_processing",
+  "seed": 1,
+  "producer_files": [
+    "producer.py"
+  ],
+  "worker_visible_files": [
+    "models.py",
+    "producer.py"
+  ],
+  "rpc_timeout_seconds": 20,
+  "artifact_sha256": "b88f70a95048b8d2d6b4610833197431d17825a738f9e93e2feae403fd44d0b5",
+  "event_class": "SensorReading",
+  "timestamp_field": "measured_at",
+  "id_field": "reading_id",
+  "candidate_received_hidden_assertions": false,
+  "scientific_claim_allowed": false
+}

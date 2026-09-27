@@ -1,0 +1,69 @@
+{
+  "transport": {
+    "status": "complete"
+  },
+  "request": {
+    "op": "score_recipient",
+    "schema_version": "pipe3-recipient-score-request-v1",
+    "task_id": "PIPE3_stream_processing",
+    "seed": 0,
+    "artifact_sha256": "16223542de99f20807fcf97463c16edd8883b0e90df5919942f2da1c6cdedcf5",
+    "scorer_version": "pipe3-recipient-objective-v1",
+    "mode": "recipient",
+    "event_class": "UserEvent",
+    "timestamp_field": "timestamp",
+    "id_field": "event_id"
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "schema_version": "pipe3-recipient-score-response-v1",
+      "scorer_version": "pipe3-recipient-objective-v1",
+      "task_id": "PIPE3_stream_processing",
+      "seed": 0,
+      "mode": "recipient",
+      "artifact_sha256": "16223542de99f20807fcf97463c16edd8883b0e90df5919942f2da1c6cdedcf5",
+      "status": "UNKNOWN",
+      "label": null,
+      "quality_score": null,
+      "decision_complete": false,
+      "coverage_complete": false,
+      "checks": [
+        {
+          "id": "R1_process",
+          "status": "UNKNOWN",
+          "reason": "UnicodeEncodeError('latin-1', '{\"data\": {\"event_id\": \"probe-001\", \"timestamp\": \"2023-11-14T22:13:20\", \"user_name\": \"Müller\", \"action\": \"PROBE\", \"page_url\": \"€probe\", \"processed_at\": \"2026-09-27T15:16:10.458981\"}}\\n', 126, 127, 'ordinal not in range(256)')"
+        },
+        {
+          "id": "R2_shape",
+          "status": "UNKNOWN",
+          "reason": "IndexError('list index out of range')"
+        },
+        {
+          "id": "R3_utf8_semantics",
+          "status": "UNKNOWN",
+          "reason": "IndexError('list index out of range')"
+        }
+      ],
+      "failed_check_ids": [],
+      "observed_check_count": 3,
+      "required_check_ids": [
+        "R1_process",
+        "R2_shape",
+        "R3_utf8_semantics"
+      ]
+    }
+  },
+  "response_digest": "0a3ea6a904cb01303b988a9fb356e0034d0f7f7478d569ee5622dbd01110e54c",
+  "result": {
+    "status": "UNKNOWN",
+    "label": null,
+    "quality_score": null,
+    "scorer_version": "pipe3-recipient-objective-v1",
+    "mode": null,
+    "decision_complete": false,
+    "coverage_complete": false,
+    "reason": "scorer_coverage_or_decision_incomplete"
+  },
+  "candidate_received_hidden_assertions": false
+}

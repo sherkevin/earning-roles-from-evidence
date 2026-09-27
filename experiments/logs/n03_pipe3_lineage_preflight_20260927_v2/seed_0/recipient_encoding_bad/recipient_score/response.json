@@ -1,0 +1,69 @@
+{
+  "transport": {
+    "status": "complete"
+  },
+  "request": {
+    "op": "score_recipient",
+    "schema_version": "pipe3-recipient-score-request-v1",
+    "task_id": "PIPE3_stream_processing",
+    "seed": 0,
+    "artifact_sha256": "976cf822720231e66a38c87c610e39481148d48624f2a87e1afd108cab62ea3a",
+    "scorer_version": "pipe3-recipient-objective-v1",
+    "mode": "recipient",
+    "event_class": "UserEvent",
+    "timestamp_field": "timestamp",
+    "id_field": "event_id"
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "schema_version": "pipe3-recipient-score-response-v1",
+      "scorer_version": "pipe3-recipient-objective-v1",
+      "task_id": "PIPE3_stream_processing",
+      "seed": 0,
+      "mode": "recipient",
+      "artifact_sha256": "976cf822720231e66a38c87c610e39481148d48624f2a87e1afd108cab62ea3a",
+      "status": "UNKNOWN",
+      "label": null,
+      "quality_score": null,
+      "decision_complete": false,
+      "coverage_complete": false,
+      "checks": [
+        {
+          "id": "R1_process",
+          "status": "UNKNOWN",
+          "reason": "UnicodeEncodeError('latin-1', '{\"event_id\": \"probe-001\", \"timestamp\": \"2023-11-14T22:13:20\", \"user_name\": \"Müller\", \"action\": \"PROBE\", \"page_url\": \"€probe\", \"processed_at\": \"2026-09-27T15:16:08.805679\"}\\n', 117, 118, 'ordinal not in range(256)')"
+        },
+        {
+          "id": "R2_shape",
+          "status": "UNKNOWN",
+          "reason": "IndexError('list index out of range')"
+        },
+        {
+          "id": "R3_utf8_semantics",
+          "status": "UNKNOWN",
+          "reason": "IndexError('list index out of range')"
+        }
+      ],
+      "failed_check_ids": [],
+      "observed_check_count": 3,
+      "required_check_ids": [
+        "R1_process",
+        "R2_shape",
+        "R3_utf8_semantics"
+      ]
+    }
+  },
+  "response_digest": "50a402c74823b7de6d1f0a21df4869e697da2e38b961431643798cc3192e408d",
+  "result": {
+    "status": "UNKNOWN",
+    "label": null,
+    "quality_score": null,
+    "scorer_version": "pipe3-recipient-objective-v1",
+    "mode": null,
+    "decision_complete": false,
+    "coverage_complete": false,
+    "reason": "scorer_coverage_or_decision_incomplete"
+  },
+  "candidate_received_hidden_assertions": false
+}

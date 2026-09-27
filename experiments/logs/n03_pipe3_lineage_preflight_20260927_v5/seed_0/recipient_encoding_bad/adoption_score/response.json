@@ -1,0 +1,77 @@
+{
+  "transport": {
+    "status": "complete"
+  },
+  "request": {
+    "op": "score_recipient",
+    "schema_version": "pipe3-recipient-score-request-v1",
+    "task_id": "PIPE3_stream_processing",
+    "seed": 0,
+    "artifact_sha256": "2ce4fae8f1f02e2b9652fabbafe4282bfbec53b4d2f82dbcf14961479a1c03f3",
+    "scorer_version": "pipe3-recipient-objective-v1",
+    "mode": "adoption",
+    "event_class": "UserEvent",
+    "timestamp_field": "timestamp",
+    "id_field": "event_id"
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "schema_version": "pipe3-recipient-score-response-v1",
+      "scorer_version": "pipe3-recipient-objective-v1",
+      "task_id": "PIPE3_stream_processing",
+      "seed": 0,
+      "mode": "adoption",
+      "artifact_sha256": "2ce4fae8f1f02e2b9652fabbafe4282bfbec53b4d2f82dbcf14961479a1c03f3",
+      "status": "FAIL",
+      "label": 0,
+      "quality_score": 0.5,
+      "decision_complete": true,
+      "coverage_complete": true,
+      "checks": [
+        {
+          "id": "A1_producer_boundary",
+          "status": "PASS"
+        },
+        {
+          "id": "A2_sink_adoption",
+          "status": "FAIL",
+          "reason": "UnicodeEncodeError('latin-1', '{\"event_id\": \"probe-001\", \"timestamp\": \"2023-11-14T22:13:20\", \"user_name\": \"Müller\", \"action\": \"PROBE\", \"page_url\": \"€probe\", \"processed_at\": \"2026-09-27T15:34:57.282780\"}\\n', 117, 118, 'ordinal not in range(256)')"
+        }
+      ],
+      "failed_check_ids": [
+        "A2_sink_adoption"
+      ],
+      "observed_check_count": 2,
+      "required_check_ids": [
+        "A1_producer_boundary",
+        "A2_sink_adoption"
+      ]
+    }
+  },
+  "response_digest": "165a60fa2d5342fc30e0306040d1077ecc4e180669856eea08be7c85cd6d8b2e",
+  "result": {
+    "status": "FAIL",
+    "label": 0,
+    "quality_score": 0.5,
+    "scorer_version": "pipe3-recipient-objective-v1",
+    "mode": "adoption",
+    "decision_complete": true,
+    "coverage_complete": true,
+    "checks": [
+      {
+        "id": "A1_producer_boundary",
+        "status": "PASS"
+      },
+      {
+        "id": "A2_sink_adoption",
+        "status": "FAIL",
+        "reason": "UnicodeEncodeError('latin-1', '{\"event_id\": \"probe-001\", \"timestamp\": \"2023-11-14T22:13:20\", \"user_name\": \"Müller\", \"action\": \"PROBE\", \"page_url\": \"€probe\", \"processed_at\": \"2026-09-27T15:34:57.282780\"}\\n', 117, 118, 'ordinal not in range(256)')"
+      }
+    ],
+    "failed_check_ids": [
+      "A2_sink_adoption"
+    ]
+  },
+  "candidate_received_hidden_assertions": false
+}

@@ -38,3 +38,5 @@ User decision records and external-operation summaries.
 - [0033 — correct independent scorer discrepancy](0033-correct-independent-scorer-discrepancy.md): tuple/list 实现错误导致的旧 scorer 差异被撤回；保留因果归因分离决定。
 - [0034 — benchmark/baseline freeze gate](0034-benchmark-baseline-freeze-gate.md): 在两个合格 root、同信息 baseline、manifest 和停止规则通过前，不冻结 benchmark、不启动新 API/A800。
 - [0035 — candidate-origin failure labels](0035-candidate-origin-failure-label.md): 将可归因的候选导入/交付失败标为 `FAIL/0`，与 scorer/环境不可观测的 `UNKNOWN` 分离；历史结果不回写。
+- [0036 — PIPE3 producer/processor boundary](0036-pipe3-producer-processor-boundary.md): producer 只负责语义 JSON 交付与严格时间戳；processor 的 envelope/编码属于独立 recipient/adoption 目标。
+- [0037 — 论文主线、证据选择与创新点的不可降级约束](0037-research-quality-and-mainline-invariants.md): 故事线、benchmark/baseline 和创新点须经证据与双重确认后才能修改，实验失败不能自动降级目标。

@@ -1,0 +1,86 @@
+{
+  "transport": {
+    "status": "complete"
+  },
+  "request": {
+    "op": "score_recipient",
+    "schema_version": "pipe3-recipient-score-request-v1",
+    "task_id": "PIPE3_stream_processing",
+    "seed": 0,
+    "artifact_sha256": "7cc16c2e62c7f17773eeecc7b6dbb6edcee83b32cfa962b50d1bc876b039cc15",
+    "scorer_version": "pipe3-recipient-objective-v1",
+    "mode": "recipient",
+    "event_class": "UserEvent",
+    "timestamp_field": "timestamp",
+    "id_field": "event_id"
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "schema_version": "pipe3-recipient-score-response-v1",
+      "scorer_version": "pipe3-recipient-objective-v1",
+      "task_id": "PIPE3_stream_processing",
+      "seed": 0,
+      "mode": "recipient",
+      "artifact_sha256": "7cc16c2e62c7f17773eeecc7b6dbb6edcee83b32cfa962b50d1bc876b039cc15",
+      "status": "FAIL",
+      "label": 0,
+      "quality_score": 0.6666666666666666,
+      "decision_complete": true,
+      "coverage_complete": true,
+      "checks": [
+        {
+          "id": "R1_process",
+          "status": "PASS",
+          "reason": ""
+        },
+        {
+          "id": "R2_shape",
+          "status": "FAIL"
+        },
+        {
+          "id": "R3_utf8_semantics",
+          "status": "PASS"
+        }
+      ],
+      "failed_check_ids": [
+        "R2_shape"
+      ],
+      "observed_check_count": 3,
+      "required_check_ids": [
+        "R1_process",
+        "R2_shape",
+        "R3_utf8_semantics"
+      ]
+    }
+  },
+  "response_digest": "4c5e61b616cf17d05ebd76293c2b0e96001d0b0b98270bcb5777473e624ffa4e",
+  "result": {
+    "status": "FAIL",
+    "label": 0,
+    "quality_score": 0.6666666666666666,
+    "scorer_version": "pipe3-recipient-objective-v1",
+    "mode": "recipient",
+    "decision_complete": true,
+    "coverage_complete": true,
+    "checks": [
+      {
+        "id": "R1_process",
+        "status": "PASS",
+        "reason": ""
+      },
+      {
+        "id": "R2_shape",
+        "status": "FAIL"
+      },
+      {
+        "id": "R3_utf8_semantics",
+        "status": "PASS"
+      }
+    ],
+    "failed_check_ids": [
+      "R2_shape"
+    ]
+  },
+  "candidate_received_hidden_assertions": false
+}

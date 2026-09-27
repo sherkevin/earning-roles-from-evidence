@@ -1,0 +1,158 @@
+{
+  "qualification_version": "pipe3-producer-scorer-qualification-v3",
+  "scorer_version": "pipe3-producer-objective-v1",
+  "response_schema": "pipe3-producer-score-response-v1",
+  "task_id": "PIPE3_stream_processing",
+  "seeds": [
+    0,
+    1
+  ],
+  "cases": [
+    "authored_correct",
+    "original_delivery",
+    "syntax_failure"
+  ],
+  "negative_controls": [
+    {
+      "case": "trusted_driver_typeerror",
+      "expected": "UNKNOWN",
+      "status": "UNKNOWN",
+      "label": null,
+      "reason": "scorer_worker_error"
+    },
+    {
+      "case": "timeout",
+      "expected": "UNKNOWN",
+      "status": "UNKNOWN",
+      "label": null,
+      "reason": "scorer_worker_error"
+    },
+    {
+      "case": "digest_mutation",
+      "expected": "UNKNOWN",
+      "status": "UNKNOWN",
+      "label": null,
+      "reason": "scorer_artifact_digest_mismatch"
+    },
+    {
+      "case": "decision_incomplete",
+      "expected": "UNKNOWN",
+      "status": "UNKNOWN",
+      "label": null,
+      "reason": "scorer_coverage_or_decision_incomplete"
+    }
+  ],
+  "llm_calls": 0,
+  "gpu_jobs": 0,
+  "native_grader_invoked": false,
+  "candidate_received_hidden_assertions": false,
+  "scientific_claim_allowed": false,
+  "root_status": "CONDITIONAL_NOT_FROZEN",
+  "repeat_count_frozen_before_execution": true,
+  "passed": true,
+  "results": [
+    {
+      "seed": 0,
+      "case": "authored_correct",
+      "expected": "PASS",
+      "status": "PASS",
+      "label": 1,
+      "quality_score": 1.0,
+      "decision_complete": true,
+      "coverage_complete": true,
+      "failure_code": null,
+      "source_path": null,
+      "response_digest": "a57833b7abda4f51233a412fbb01ba4b30b62a1ef4370172ac4abcf72128b7c3",
+      "transport": {
+        "status": "complete"
+      }
+    },
+    {
+      "seed": 0,
+      "case": "original_delivery",
+      "expected": "FAIL",
+      "status": "FAIL",
+      "label": 0,
+      "quality_score": 0.6666666666666666,
+      "decision_complete": true,
+      "coverage_complete": true,
+      "failure_code": null,
+      "source_path": null,
+      "response_digest": "6e772f0a24a6cb1e8657805f3f18dd8671e5e642eec52c54e01377acf2dd3255",
+      "transport": {
+        "status": "complete"
+      }
+    },
+    {
+      "seed": 0,
+      "case": "syntax_failure",
+      "expected": "FAIL",
+      "status": "FAIL",
+      "label": 0,
+      "quality_score": 0.0,
+      "decision_complete": true,
+      "coverage_complete": false,
+      "failure_code": "SYNTAX_ERROR_IN_DELIVERY",
+      "source_path": "producer.py",
+      "response_digest": "7aa797dc701152e348de4635327c4be98f947f9fb56410e0659e58f0c50c037d",
+      "transport": {
+        "status": "complete"
+      }
+    },
+    {
+      "seed": 1,
+      "case": "authored_correct",
+      "expected": "PASS",
+      "status": "PASS",
+      "label": 1,
+      "quality_score": 1.0,
+      "decision_complete": true,
+      "coverage_complete": true,
+      "failure_code": null,
+      "source_path": null,
+      "response_digest": "99aacede226590878539bd1a7bc9dab4843e408bfca93a6f4369c70f2a9e837f",
+      "transport": {
+        "status": "complete"
+      }
+    },
+    {
+      "seed": 1,
+      "case": "original_delivery",
+      "expected": "FAIL",
+      "status": "FAIL",
+      "label": 0,
+      "quality_score": 0.6666666666666666,
+      "decision_complete": true,
+      "coverage_complete": true,
+      "failure_code": null,
+      "source_path": null,
+      "response_digest": "4a850855a0b74188ec251ff8b8f9dc760bd459983b34e81856690696f4cd72db",
+      "transport": {
+        "status": "complete"
+      }
+    },
+    {
+      "seed": 1,
+      "case": "syntax_failure",
+      "expected": "FAIL",
+      "status": "FAIL",
+      "label": 0,
+      "quality_score": 0.0,
+      "decision_complete": true,
+      "coverage_complete": false,
+      "failure_code": "SYNTAX_ERROR_IN_DELIVERY",
+      "source_path": "producer.py",
+      "response_digest": "3e3c477adfe016e95f23d9551e4b54114e76a8712718b2b63f3cd8e968c86bc8",
+      "transport": {
+        "status": "complete"
+      }
+    }
+  ],
+  "scorer_is_qualified": false,
+  "remaining_gates": [
+    "recipient-self and sink-adoption scorers remain separate and unimplemented",
+    "PIPE3 runner root adapter and real ledger replay remain open",
+    "candidate/scorer isolation remains non-adversarial Python instrumentation",
+    "seed 0/1 are one structural root, not independent roots"
+  ]
+}

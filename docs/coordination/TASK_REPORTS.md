@@ -65,3 +65,9 @@ Goal 修改。
   validator 接受候选 v1/v2 版本并拒绝未知版本；v2 机器校验回归通过，benchmark 仍未冻结。
 - [2026-09-27 producer scorer v2 failure matrix](task_reports/20260927_producer_scorer_v2_failure_matrix.md)：
   以新 schema 区分可归因的候选导入/交付 `FAIL/0` 与 scorer/环境 `UNKNOWN`；离线控制矩阵通过，scorer 与 benchmark 资格仍开放。
+- [2026-09-27 PIPE3 producer scorer qualification](task_reports/20260927_pipe3_producer_scorer_qualification.md)：
+  PIPE3 root-specific producer scorer 首轮暴露 raw-Unicode 责任边界错误，修正为 JSON 语义保真后 seed 0/1 矩阵通过；recipient/adoption/runner 仍未资格化。
+- [2026-09-27 PIPE3 lineage preflight](task_reports/20260927_pipe3_lineage_preflight.md)：
+  Qp/Qr/adoption 四格控制和 UNKNOWN no-update replay 在 seed 0/1 通过；正式 runner、过程隔离、第二 root 与 baseline 仍开放。
+- [2026-09-27 decision 0037 mainline invariants](task_reports/20260927_decision_0037_mainline_invariants.md)：
+  固化故事线、benchmark/baseline 证据要求与创新点不可静默降级规则；本任务不改变 Goal 标准。

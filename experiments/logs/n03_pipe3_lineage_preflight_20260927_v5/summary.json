@@ -1,0 +1,301 @@
+{
+  "qualification_version": "pipe3-lineage-preflight-v2",
+  "task_id": "PIPE3_stream_processing",
+  "seeds": [
+    0,
+    1
+  ],
+  "controls": [
+    "all_correct",
+    "producer_bad",
+    "recipient_envelope_bad",
+    "recipient_encoding_bad",
+    "both_bad",
+    "unknown_scorer_no_update"
+  ],
+  "llm_calls": 0,
+  "gpu_jobs": 0,
+  "native_grader_invoked": false,
+  "controller_update_allowed": false,
+  "scientific_claim_allowed": false,
+  "unknown_never_updates": true,
+  "passed": true,
+  "results": [
+    {
+      "seed": 0,
+      "case": "all_correct",
+      "expected": {
+        "qp": 1,
+        "qr": 1,
+        "adoption": 1
+      },
+      "observed": {
+        "qp": 1,
+        "qr": 1,
+        "adoption": 1,
+        "outcome": 1
+      },
+      "status": {
+        "qp": "PASS",
+        "qr": "PASS",
+        "adoption": "PASS"
+      },
+      "ledger_status": "PASS",
+      "ledger_event_count": 8,
+      "update_allowed": false
+    },
+    {
+      "seed": 0,
+      "case": "producer_bad",
+      "expected": {
+        "qp": 0,
+        "qr": 1,
+        "adoption": 0
+      },
+      "observed": {
+        "qp": 0,
+        "qr": 1,
+        "adoption": 0,
+        "outcome": 0
+      },
+      "status": {
+        "qp": "FAIL",
+        "qr": "PASS",
+        "adoption": "FAIL"
+      },
+      "ledger_status": "PASS",
+      "ledger_event_count": 8,
+      "update_allowed": false
+    },
+    {
+      "seed": 0,
+      "case": "recipient_envelope_bad",
+      "expected": {
+        "qp": 1,
+        "qr": 0,
+        "adoption": 0
+      },
+      "observed": {
+        "qp": 1,
+        "qr": 0,
+        "adoption": 0,
+        "outcome": 0
+      },
+      "status": {
+        "qp": "PASS",
+        "qr": "FAIL",
+        "adoption": "FAIL"
+      },
+      "ledger_status": "PASS",
+      "ledger_event_count": 8,
+      "update_allowed": false
+    },
+    {
+      "seed": 0,
+      "case": "recipient_encoding_bad",
+      "expected": {
+        "qp": 1,
+        "qr": 0,
+        "adoption": 0
+      },
+      "observed": {
+        "qp": 1,
+        "qr": 0,
+        "adoption": 0,
+        "outcome": 0
+      },
+      "status": {
+        "qp": "PASS",
+        "qr": "FAIL",
+        "adoption": "FAIL"
+      },
+      "ledger_status": "PASS",
+      "ledger_event_count": 8,
+      "update_allowed": false
+    },
+    {
+      "seed": 0,
+      "case": "both_bad",
+      "expected": {
+        "qp": 0,
+        "qr": 0,
+        "adoption": 0
+      },
+      "observed": {
+        "qp": 0,
+        "qr": 0,
+        "adoption": 0,
+        "outcome": 0
+      },
+      "status": {
+        "qp": "FAIL",
+        "qr": "FAIL",
+        "adoption": "FAIL"
+      },
+      "ledger_status": "PASS",
+      "ledger_event_count": 8,
+      "update_allowed": false
+    },
+    {
+      "seed": 1,
+      "case": "all_correct",
+      "expected": {
+        "qp": 1,
+        "qr": 1,
+        "adoption": 1
+      },
+      "observed": {
+        "qp": 1,
+        "qr": 1,
+        "adoption": 1,
+        "outcome": 1
+      },
+      "status": {
+        "qp": "PASS",
+        "qr": "PASS",
+        "adoption": "PASS"
+      },
+      "ledger_status": "PASS",
+      "ledger_event_count": 8,
+      "update_allowed": false
+    },
+    {
+      "seed": 1,
+      "case": "producer_bad",
+      "expected": {
+        "qp": 0,
+        "qr": 1,
+        "adoption": 0
+      },
+      "observed": {
+        "qp": 0,
+        "qr": 1,
+        "adoption": 0,
+        "outcome": 0
+      },
+      "status": {
+        "qp": "FAIL",
+        "qr": "PASS",
+        "adoption": "FAIL"
+      },
+      "ledger_status": "PASS",
+      "ledger_event_count": 8,
+      "update_allowed": false
+    },
+    {
+      "seed": 1,
+      "case": "recipient_envelope_bad",
+      "expected": {
+        "qp": 1,
+        "qr": 0,
+        "adoption": 0
+      },
+      "observed": {
+        "qp": 1,
+        "qr": 0,
+        "adoption": 0,
+        "outcome": 0
+      },
+      "status": {
+        "qp": "PASS",
+        "qr": "FAIL",
+        "adoption": "FAIL"
+      },
+      "ledger_status": "PASS",
+      "ledger_event_count": 8,
+      "update_allowed": false
+    },
+    {
+      "seed": 1,
+      "case": "recipient_encoding_bad",
+      "expected": {
+        "qp": 1,
+        "qr": 0,
+        "adoption": 0
+      },
+      "observed": {
+        "qp": 1,
+        "qr": 0,
+        "adoption": 0,
+        "outcome": 0
+      },
+      "status": {
+        "qp": "PASS",
+        "qr": "FAIL",
+        "adoption": "FAIL"
+      },
+      "ledger_status": "PASS",
+      "ledger_event_count": 8,
+      "update_allowed": false
+    },
+    {
+      "seed": 1,
+      "case": "both_bad",
+      "expected": {
+        "qp": 0,
+        "qr": 0,
+        "adoption": 0
+      },
+      "observed": {
+        "qp": 0,
+        "qr": 0,
+        "adoption": 0,
+        "outcome": 0
+      },
+      "status": {
+        "qp": "FAIL",
+        "qr": "FAIL",
+        "adoption": "FAIL"
+      },
+      "ledger_status": "PASS",
+      "ledger_event_count": 8,
+      "update_allowed": false
+    }
+  ],
+  "unknown_control": {
+    "status": "UNKNOWN",
+    "complete": false,
+    "missing": [
+      {
+        "stage": "recipient_judgment",
+        "delivery_id": "delivery-unknown"
+      },
+      {
+        "stage": "consumer_action",
+        "delivery_id": "delivery-unknown"
+      },
+      {
+        "stage": "terminal_outcome",
+        "delivery_id": "delivery-unknown"
+      },
+      {
+        "stage": "role_evidence_update",
+        "delivery_id": "delivery-unknown"
+      }
+    ],
+    "snapshot": {
+      "event_count": 4,
+      "last_hash": "b17a468ef5dd32d81b87e1503e8a1376a5f52ff6bbf4ec12060d1cc771191fb1",
+      "delivery_count": 1,
+      "producer_score_count": 1,
+      "judgment_count": 0,
+      "action_count": 0,
+      "outcome_count": 0,
+      "evidence_count": 0,
+      "assignment_count": 0
+    },
+    "producer_score_status": "UNKNOWN",
+    "judgment_count": 0,
+    "action_count": 0,
+    "outcome_count": 0,
+    "evidence_count": 0,
+    "update_allowed": false
+  },
+  "unknown_control_passed": true,
+  "scorer_is_qualified": false,
+  "benchmark_qualified": false,
+  "remaining_gates": [
+    "real runner adapter and candidate/hidden scorer process separation",
+    "second independent structural root and same-information baselines"
+  ]
+}

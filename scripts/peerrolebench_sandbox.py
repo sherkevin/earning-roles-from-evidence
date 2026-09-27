@@ -45,7 +45,8 @@ class SandboxedWorker:
     """
 
     def __init__(self, sources, evidence_dir, log, queue_name="TaskQueue", consumer_name="TaskConsumer",
-                 *, worker_path=None, max_input_bytes=4096, rpc_seconds=None):
+                 *, worker_path=None, max_input_bytes=4096, rpc_seconds=None,
+                 source_prefixes=("mqueue/",)):
         if sys.platform != "darwin":
             raise RuntimeError("This qualified adapter currently supports macOS only")
         if not CLI.is_file() or not PYTHON.is_file():
@@ -69,9 +70,14 @@ class SandboxedWorker:
         self.scratch = self.base / "scratch"
         for directory in (self.source, self.trusted, self.scratch):
             directory.mkdir()
+        if not source_prefixes:
+            raise ValueError("source_prefixes must not be empty")
+        self.source_prefixes = tuple(source_prefixes)
         for name, contents in sources.items():
             path = Path(name)
-            if path.is_absolute() or ".." in path.parts or not name.startswith("mqueue/") or path.suffix != ".py":
+            if (path.is_absolute() or ".." in path.parts
+                    or not any(name.startswith(prefix) for prefix in self.source_prefixes)
+                    or path.suffix != ".py"):
                 raise ValueError("Unexpected candidate source path")
             target = self.source / path
             target.parent.mkdir(parents=True, exist_ok=True)
@@ -111,6 +117,7 @@ class SandboxedWorker:
                     "runtime_lock_sha256": sha(RUNTIME / "package-lock.json"),
                     "worker_sha256": sha(worker), "limits_sha256": sha(launcher),
                     "sources": {name: hashlib.sha256(text.encode()).hexdigest() for name, text in sources.items()},
+                    "source_prefixes": list(self.source_prefixes),
                     "rpc_timeout_seconds": self.rpc_seconds, "session_timeout_seconds": SESSION_SECONDS,
                     "max_input_bytes": self.max_input_bytes, "max_response_line_bytes": MAX_LINE_BYTES,
                     "max_total_output_bytes": MAX_OUTPUT_BYTES,

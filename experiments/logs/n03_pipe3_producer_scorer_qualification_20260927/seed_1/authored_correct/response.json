@@ -1,0 +1,64 @@
+{
+  "transport": {
+    "status": "complete"
+  },
+  "request": {
+    "op": "score_producer",
+    "schema_version": "pipe3-producer-score-request-v1",
+    "task_id": "PIPE3_stream_processing",
+    "seed": 1,
+    "artifact_sha256": "2bad0c0fa181dcefe2b1948faa0e5f03683eb72161d867aff0d2726dd3ad55f0",
+    "scorer_version": "pipe3-producer-objective-v1",
+    "event_class": "SensorReading",
+    "timestamp_field": "measured_at",
+    "id_field": "reading_id"
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "schema_version": "pipe3-producer-score-response-v1",
+      "scorer_version": "pipe3-producer-objective-v1",
+      "task_id": "PIPE3_stream_processing",
+      "seed": 1,
+      "artifact_sha256": "2bad0c0fa181dcefe2b1948faa0e5f03683eb72161d867aff0d2726dd3ad55f0",
+      "status": "UNKNOWN",
+      "label": null,
+      "quality_score": null,
+      "decision_complete": false,
+      "coverage_complete": false,
+      "checks": [
+        {
+          "id": "P1_import",
+          "status": "PASS"
+        },
+        {
+          "id": "P2_iso_serialization",
+          "status": "PASS"
+        },
+        {
+          "id": "P3_batch_output",
+          "status": "UNKNOWN",
+          "reason": "KeyError: 'PEERROLE_SCRATCH'"
+        }
+      ],
+      "failed_check_ids": [],
+      "observed_check_count": 3,
+      "required_check_ids": [
+        "P1_import",
+        "P2_iso_serialization",
+        "P3_batch_output"
+      ]
+    }
+  },
+  "response_digest": "e4d24c45e42e5ee0dfd96bc3c6e0ec17457e5237da65be4bab331cd85be11a6d",
+  "result": {
+    "status": "UNKNOWN",
+    "label": null,
+    "quality_score": null,
+    "scorer_version": "pipe3-producer-objective-v1",
+    "decision_complete": false,
+    "coverage_complete": false,
+    "reason": "scorer_coverage_or_decision_incomplete"
+  },
+  "candidate_received_hidden_assertions": false
+}

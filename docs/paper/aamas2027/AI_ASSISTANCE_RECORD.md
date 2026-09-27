@@ -521,3 +521,29 @@ responses are in `experiments/logs/n03_producer_scorer_v2_qualification_20260927
 This is an engineering qualification only; scorer qualification, benchmark freeze, live
 responsibility evidence, controller update and GPU claims remain open. Historical v1/v2
 responses were not reclassified.
+
+### 2026-09-27 PIPE3 producer scorer qualification
+
+Before any PIPE3 API call, a root-specific producer scorer was added. Its first zero-LLM
+matrix exposed an ownership mistake: requiring literal non-ASCII bytes treated JSON ASCII
+escaping as a producer failure and mixed processor encoding into `Q_p`. The failed v1/v2
+artifacts remain at `experiments/logs/n03_pipe3_producer_scorer_qualification_20260927/` and
+`..._v2/`. After ADR 0036, the v3 matrix checked UTF-8 decodability, decoded semantic field
+preservation, strict `T` timestamps, and JSONL count/order. Seed 0/1 authored-correct controls
+returned `PASS/1`, original producer deliveries returned complete `FAIL/0`, SyntaxError
+deliveries returned candidate-origin `FAIL/0`, and response/timeout/digest mutations remained
+`UNKNOWN`. This qualifies only the producer objective seam; PIPE3 recipient/adoption scorers,
+runner integration, benchmark freeze, real API and GPU evidence remain open.
+
+### 2026-09-27 PIPE3 lineage preflight
+
+The root-specific PIPE3 recipient-self and adoption scorers were exercised on seed 0/1
+with a frozen five-case matrix. The all-correct, producer-only, envelope-only, encoding-only
+and both-bad variants produced the expected `(Q_p, Q_r, adoption)` tuples, while a separate
+UNKNOWN producer-score control stopped the ledger before judgment, action, terminal outcome,
+role evidence or update. Two earlier runs are preserved: v1 had a worker-argument boundary
+error, and v2 incorrectly treated a candidate processor encoding exception as scorer
+uncertainty; the worker was corrected to keep candidate failures as determinate negatives and
+measurement failures as UNKNOWN. This is zero-LLM engineering qualification only. PIPE3 is not
+yet a benchmark, the formal runner and scorer process separation are open, and no real API,
+online learning or A800 result is claimed.
