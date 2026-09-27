@@ -1,0 +1,176 @@
+{
+  "created_utc": "2026-09-27T12:38:44.989340+00:00",
+  "card": {
+    "experiment_id": "n03_peerrole_dev_neutral_v1",
+    "purpose": "N03 bounded real-API candidate card using neutral DIST1 materials; efficacy and benchmark lock remain false",
+    "source_commit": "d185aef1916fd86a9ba554d581fd256319a973af",
+    "task_id": "DIST1_queue_race",
+    "task_seeds": [
+      0,
+      1
+    ],
+    "policy_seed": 20260926,
+    "agents": [
+      "agent_A",
+      "agent_B",
+      "agent_C"
+    ],
+    "graph": [
+      [
+        "agent_A",
+        "agent_B"
+      ],
+      [
+        "agent_A",
+        "agent_C"
+      ],
+      [
+        "agent_B",
+        "agent_C"
+      ]
+    ],
+    "first_consumer": "agent_A",
+    "second_consumer": "the uninvolved agent after the first uniform draw",
+    "agent_initial_state": "same model, prompts, limits; no preset expertise",
+    "history_rule": "controller stores attributable judgment and action only; second consumer receives first evidence; model calls otherwise fresh; no skills or code memory",
+    "provider": "内部",
+    "model": "qwen3.8-max",
+    "temperature": 0,
+    "max_tokens": {
+      "producer": 4096,
+      "judgment": 1024,
+      "consumer": 4096
+    },
+    "maximum_task_requests": 6,
+    "maximum_episode_attempts": 2,
+    "maximum_retries": 0,
+    "request_timeout_seconds": 300,
+    "tool_calls_per_agent": 0,
+    "native_grader_invoked": false,
+    "scorer": "dist1-consumer-behavior-v2",
+    "objective_producer_quality": "not independently measured",
+    "source_review": "human/agent static inspection of sealed source before sandbox execution; no introspection or external IO",
+    "source_import_allowlist": [
+      "__future__",
+      "collections",
+      "dataclasses",
+      "functools",
+      "heapq",
+      "itertools",
+      "math",
+      "mqueue",
+      "queue",
+      "threading",
+      "time",
+      "typing",
+      "uuid"
+    ],
+    "update": {
+      "kind": "integration-only judgment action score, no trained model",
+      "initial_score": 0.5,
+      "action_values": {
+        "use": 1.0,
+        "repair": 0.5,
+        "independent_redo": 0.0
+      },
+      "step_size": 0.5,
+      "policy": "0.5 uniform + 0.5 softmax(scores)",
+      "terminal_role": "requires observed completion; not used as producer correctness target"
+    },
+    "stop_rules": [
+      "any visibility leak",
+      "first episode incomplete, invalid or UNKNOWN: no second episode",
+      "any malformed, truncated or empty model response: no retry",
+      "two planned attempts exhausted: do not top up to four",
+      "producer scorer UNKNOWN or incomplete: record diagnostic only and do not update controller",
+      "do not spend confirmation-root budget from this development card"
+    ],
+    "budget_accounting": "attempts count toward N02 limit4 and N03 total24; no GPU",
+    "claims": {
+      "efficacy": false,
+      "role_formation": false,
+      "cross_root_generalization": false,
+      "backbone_selected": false,
+      "method_innovation": false,
+      "benchmark_qualified": false
+    },
+    "stream": true,
+    "amendment": {
+      "authority": "docs/user/decisions/0018-one-final-bounded-generation-configuration-test.md",
+      "prior_attempts": 2,
+      "prior_versions_terminal": true,
+      "maximum_total_episode_attempts_across_versions": 4,
+      "reason": "continuous thinking without final code under300s; single final generation-configuration intervention",
+      "only_behavior_change": "thinking.type=disabled",
+      "not_comparable_same_condition_replicates": true,
+      "no_more_health_or_recovery": true,
+      "on_any_incomplete_or_invalid_stage": "permanently close this integration route; no v4",
+      "second_instance_allowed_only_after": "complete first legal chain; PASS or FAIL equally eligible"
+    },
+    "thinking": {
+      "type": "disabled"
+    },
+    "material_adapter": "dist1-neutral-v1",
+    "producer_scorer": {
+      "version": "dist1-producer-objective-v1",
+      "status": "diagnostic_only_unqualified",
+      "controller_update_allowed": false
+    }
+  },
+  "card_path": "configs/aamas2027/n03_peerrole_dev_neutral_v1.json",
+  "source_hashes": {
+    "scripts/peerrolebench_runtime_probe_worker.py": "0f9180a7939b33bb58471b64ab33a4efc5f8c62d8eab9a7dba7ec8ce659dba98",
+    "scripts/peerrolebench_pipe3_recipient_probe_worker.py": "d6b37d247554d6081e9035dfb53837d87d6421605dbdc8a03ac46f60638ab99f",
+    "scripts/peerrolebench_pipe3_task_qualification.py": "737fcd51e9d2e8a5207294bccc0673e8586511dcf1ee1c6ec29890738b2325e0",
+    "scripts/peerrolebench_real_closed_loop.py": "24579bed50eb6774638332100298699a9fa5fd6620e4d90e34d391536d5ea6f7",
+    "scripts/peerrolebench_validate_manifest.py": "42cef52a6fea71ec3f0e0d6b240e4f7f8239bef5f5c82f84355ee01d7a7c52d3",
+    "scripts/peerrolebench_ledger_replay_matrix.py": "d9542a898efc1c9a4ddb209fd67e328f517eba0cefb05aa1e0abc4152ea92bf4",
+    "scripts/peerrolebench_task_contract.py": "6dccb53d8d591ef4c0308d01e0b9e1e971915cf1e724001b5c0160330bd57b0f",
+    "scripts/peerrolebench_manifest_provenance.py": "ae4250f75bd18445980db5b39776dd65d4117f4bcf37607c43d402458461c27b",
+    "scripts/peerrolebench_hidden_consumer_scorer_worker.py": "bd087fa14c081df89fd5bbb1238e037808e81d3b2b01b145119eea0306b790d3",
+    "scripts/peerrolebench_worker_limits.py": "16217095d159a53ed2b6916882b4dbc27bbcc287d16862390d6391abe3656690",
+    "scripts/peerrolebench_pipe3_material_preflight.py": "2f0a6fb4b14fee5ea55b6d7e3bb5e66b53f5bfe803541af08bf5d0b344ad2a8f",
+    "scripts/peerrolebench_priority_audit.py": "f6fa1628e165dcd5bde7cfc8dbf61d6a78203245f8c5de5404d504427da8c451",
+    "scripts/peerrolebench_hidden_scorer_probe_worker.py": "0a114f8f204b9682aff519ccf73cd92a86bd290798004350ac219a256525b5ba",
+    "scripts/peerrolebench_isolation_canary.py": "7b9ff5b762ee091ffe79c35a1b6edfcefd79e2797754685a310d2e096b79be18",
+    "scripts/peerrolebench_hidden_producer_scorer_worker.py": "3ed49f730e423032a319e6f22b7c896ade6bea17306016fd2c91c925d51b52bf",
+    "scripts/peerrolebench_pipe3_payload_runtime_preflight.py": "290e9bae4e2fde43b646bd3e1feeb2dfaf4ecfd7367e59353c97ed71d7d3fd17",
+    "scripts/peerrolebench_scorer_ipc_preflight.py": "7be7296e0c8308eb40a68c96c729b94a2fc2d62bb39af455936974d9b1a6d84b",
+    "scripts/peerrolebench_real_judgment_probe.py": "a5bef0ba497ce1b25424e32ba64792138080c00a7c78a336251cda6b0a0d4274",
+    "scripts/peerrolebench_consumer_qualification.py": "399c5c11a580fffb9f959fb871d9c02319e3e3f1ff38886c121d38053ff9438e",
+    "scripts/peerrolebench_consumer_checks.py": "f95107f0cec2589079e57e255d8f64dc443b25e7a07e15139f4a00cc66da8112",
+    "scripts/peerrolebench_priority_worker.py": "8c0b7133e5da6c4c70993c94ec03b5955ae2e990daa5ee826b3212dceffd8013",
+    "scripts/peerrolebench_pipe3_material_adapter.py": "8cad02d117ed3d219a1a067bee339bd4db51ae9cf58cc92ca484f41bc62389a2",
+    "scripts/peerrolebench_dist1_material_adapter.py": "4749a70444c481f77afcc0cae17e8fe64787d674e120c57815a288fdcdced75a",
+    "scripts/peerrolebench_independent_scorer.py": "6ca50ab6837718980ea567422df4812a4a33adb3ea0ff27ce06daeba65be3d71",
+    "scripts/peerrolebench_producer_scorer_qualification.py": "f824c5f0f5b97ee73c79592eb997cf1436664ed47667284308bb1f91a88c604e",
+    "scripts/peerrolebench_pipe3_recipient_runtime_preflight.py": "d96170967d0d85b5e6cab15db3ba3c2fabb62083ef30d586d66e875a5922baa7",
+    "scripts/peerrolebench_consumer_worker.py": "600d8d13f5cd4465dd1baebb7e16eda398dcc9a78532b02d927439a7af8a0409",
+    "scripts/peerrolebench_sandbox.py": "9216f67df8c73330fcacf538f32767715288eb42426f6e64f6539f9b3793bdd4",
+    "scripts/peerrolebench_runtime_qualification.py": "0cedae0dc1dd94898d2355e6063ff51273a26b66a3c0bf49351a630a18f60cea",
+    "scripts/peerrolebench_runner_boundary_qualification.py": "68bfddbcd0d5beae2126a59002c4ed8ed3e874f7c95dcc85553eb719efb7e220",
+    "scripts/peerrolebench_pipe3_payload_probe_worker.py": "31ff0a18cc64406daebd34a7a2348aad59c947bff483d5b9fc4da3343049e368",
+    "scripts/peerrolebench_pipe3_qualification.py": "ebb606b2f382fedbd2e8b5bc2f11bab31c5015f007a533e2ccde0cab62b59e2d",
+    "scripts/peerrolebench_producer_scorer_seed_regression.py": "89db99f26cf00fe12642e6c0b58be5910e7e9d37e33cfec33c06e7dd6c890153",
+    "scripts/peerrolebench_ledger_replay.py": "d2cd8c0bba3045697b2a3e8939e815a51930c4bff4d70e45f8eaa1e22a2412f1",
+    "scripts/peerrolebench_material_payload_probe_worker.py": "60f0d4a8a7f8dd39fe6092ecd8057e8f620358a8ebdc78c1d9cb2a2f1fe293c9",
+    "scripts/peerrolebench_producer_scorer.py": "3e3922f38047e1c9ae8c51155ab410838999bdc061b52fa9cf0e1978199702a3",
+    "scripts/peerrolebench_material_payload_runtime_preflight.py": "f272bf439ab05d9b5624c8dc56536b1ac5774b9482ea12a0b4fcfc8f404ea438",
+    "scripts/peerrolebench_tb_vertical_slice.py": "77a3e699add298bcf3e846f4d62468e15d0fcf7a1b3135ec62912af1796a1ca3",
+    "scripts/aamas_real_probe.py": "b9bba5e37e02e3d888bbc1ff9cf8c16bb59ed733ba65bcec575f37755205cf5c",
+    "references/aamas/peer_role_protocol_20260925.py": "16ea455f825834c224aefc83e148e0c1800202c0e4770f1cca6b106c1302e973",
+    "tools/peerrole-runtime/package-lock.json": "7cdae083b7ce369a56adaca5504164fcff854102bc102123e3af5790b139de3c",
+    "configs/aamas2027/n03_peerrole_dev_neutral_v1.json": "90ec26380c21f241d21c6129d0ba0f152187f80018eb3a9239d43dcc5cbbf5d4"
+  },
+  "git_head": "1f39c60af295cb1670a9c8dabc1215405651fba7",
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "command": [
+    "scripts/peerrolebench_real_closed_loop.py",
+    "prepare",
+    "--card",
+    "configs/aamas2027/n03_peerrole_dev_neutral_v1.json",
+    "--output",
+    "experiments/logs/n03_peerrole_dev_neutral_prepare_20260927"
+  ],
+  "scientific_claim_allowed": false
+}

@@ -1,0 +1,81 @@
+{
+  "agent_payloads": {
+    "producer": {
+      "task_id": "DIST1_queue_race",
+      "seed": 1,
+      "role": "producer",
+      "task_text": {
+        "spec_md": "# DIST1: Concurrent Message Queue\n\n## Goal\nMake the public message queue safe and interoperable under concurrent producer and\nconsumer load.\n\n## Responsibilities\n- The producer owns `mqueue/queue.py` and `mqueue/priority.py` and must preserve their public names and signatures.\n- The recipient owns `mqueue/consumer.py` and must implement its consumer integration.\n- `mqueue/__init__.py` and `mqueue/config.py` are read-only support files.\n\n## Acceptance\nThe queue must keep its capacity bound under concurrent insertion, expose a receipt-based\nacknowledgement path that does not lose unacknowledged messages, and order equal-priority\nitems deterministically without requiring payload values to be comparable. A bounded\nconcurrent workload must complete without message loss. The parent evaluator keeps tests\nprivate; inspect the public interfaces and data flow before editing.\n",
+        "brief_md": "# DIST1 concurrent queue task\n\nRepair the assigned component so the public queue and consumer work correctly under\nconcurrent load. Preserve public compatibility and return only complete text for files\nyou are allowed to change.\n"
+      },
+      "source_files": {
+        "mqueue/queue.py": "\nimport threading\nimport uuid\nfrom collections import deque\nfrom typing import Any, Optional, Tuple\n\n\nclass QueueFull(Exception):\n    pass\n\n\nclass QueueEmpty(Exception):\n    pass\n\n\nclass EventQueue:\n    \n\n    def __init__(self, capacity: int = 1000):\n        self._capacity = capacity\n        self._queue: deque = deque()\n        self._lock = threading.Lock()\n\n    def put(self, message: Any) -> None:\n        \n        \n        \n        \n        if len(self._queue) >= self._capacity:  \n            raise QueueFull(\n                f\"EventQueue at capacity ({self._capacity})\"\n            )\n        self._queue.append(message)  \n                                     \n\n    def get(self) -> Optional[Any]:\n        \n        with self._lock:\n            if not self._queue:\n                return None\n            return self._queue.popleft()  \n\n    def size(self) -> int:\n        \n        return len(self._queue)\n\n    def is_empty(self) -> bool:\n        \n        return len(self._queue) == 0\n\n    def is_full(self) -> bool:\n        \n        return len(self._queue) >= self._capacity\n",
+        "mqueue/priority.py": "\nfrom dataclasses import dataclass\nfrom typing import Any\n\n\n@dataclass(order=True)\nclass PriorityEvent:\n    \n    severity: int   \n    message: Any        \n                        \n",
+        "mqueue/__init__.py": "",
+        "mqueue/config.py": "\n\nCAPACITY = 1000\nTIMEOUT = 5.0          \nN_PRODUCERS = 10\nN_CONSUMERS = 10\nMESSAGES_PER_PRODUCER = 100\n"
+      },
+      "writable_paths": [
+        "mqueue/queue.py",
+        "mqueue/priority.py"
+      ],
+      "required_delivery_paths": []
+    },
+    "recipient": {
+      "task_id": "DIST1_queue_race",
+      "seed": 1,
+      "role": "recipient",
+      "task_text": {
+        "spec_md": "# DIST1: Concurrent Message Queue\n\n## Goal\nMake the public message queue safe and interoperable under concurrent producer and\nconsumer load.\n\n## Responsibilities\n- The producer owns `mqueue/queue.py` and `mqueue/priority.py` and must preserve their public names and signatures.\n- The recipient owns `mqueue/consumer.py` and must implement its consumer integration.\n- `mqueue/__init__.py` and `mqueue/config.py` are read-only support files.\n\n## Acceptance\nThe queue must keep its capacity bound under concurrent insertion, expose a receipt-based\nacknowledgement path that does not lose unacknowledged messages, and order equal-priority\nitems deterministically without requiring payload values to be comparable. A bounded\nconcurrent workload must complete without message loss. The parent evaluator keeps tests\nprivate; inspect the public interfaces and data flow before editing.\n",
+        "brief_md": "# DIST1 concurrent queue task\n\nRepair the assigned component so the public queue and consumer work correctly under\nconcurrent load. Preserve public compatibility and return only complete text for files\nyou are allowed to change.\n"
+      },
+      "source_files": {
+        "mqueue/consumer.py": "\nimport threading\nimport time\nfrom typing import Any, Callable, Optional\n\nfrom mqueue.queue import EventQueue\n\n\nclass EventConsumer:\n    \n\n    def __init__(\n        self,\n        queue: EventQueue,\n        handler: Callable[[Any], None],\n        consumer_id: int = 0,\n    ):\n        self._queue = queue\n        self._handler = handler\n        self._consumer_id = consumer_id\n        self._processed: list = []\n        self._lock = threading.Lock()\n        self._running = False\n\n    def run_once(self) -> bool:\n        \n        \n        \n        message = self._queue.get()\n        if message is None:\n            return False\n        self._handler(message)\n        with self._lock:\n            self._processed.append(message)\n        return True\n\n    def run_until_empty(self, max_idle_cycles: int = 10) -> None:\n        \n        idle = 0\n        while idle < max_idle_cycles:\n            if self.run_once():\n                idle = 0\n            else:\n                idle += 1\n                time.sleep(0.001)\n\n    @property\n    def processed_count(self) -> int:\n        return len(self._processed)\n\n    @property\n    def processed_messages(self) -> list:\n        with self._lock:\n            return list(self._processed)\n",
+        "mqueue/__init__.py": "",
+        "mqueue/config.py": "\n\nCAPACITY = 1000\nTIMEOUT = 5.0          \nN_PRODUCERS = 10\nN_CONSUMERS = 10\nMESSAGES_PER_PRODUCER = 100\n"
+      },
+      "writable_paths": [
+        "mqueue/consumer.py"
+      ],
+      "required_delivery_paths": [
+        "mqueue/queue.py",
+        "mqueue/priority.py"
+      ]
+    }
+  },
+  "manifest": {
+    "schema_version": "peerrolebench-dist1-materials-v1",
+    "task_id": "DIST1_queue_race",
+    "seed": 1,
+    "public_paths": [
+      "mqueue/__init__.py",
+      "mqueue/config.py",
+      "mqueue/consumer.py",
+      "mqueue/priority.py",
+      "mqueue/queue.py"
+    ],
+    "hidden_paths": [
+      "mqueue/producer.py",
+      "tests/__init__.py",
+      "tests/test_capacity.py",
+      "tests/test_concurrent.py",
+      "tests/test_crash_recovery.py",
+      "tests/test_message_loss.py",
+      "tests/test_ordering.py",
+      "tests/test_single_thread.py"
+    ],
+    "producer_writable_paths": [
+      "mqueue/queue.py",
+      "mqueue/priority.py"
+    ],
+    "recipient_writable_paths": [
+      "mqueue/consumer.py"
+    ],
+    "payload_sha256": "607924dbe826d77c17ca193ba389cca6f686df20d409afaf88b73cdbca71c4d2",
+    "task_text_oracle_patterns": [],
+    "source_comment_oracle_patterns": [],
+    "hidden_path_leaks": [],
+    "scientific_task_text_qualified": true,
+    "native_materials_preserved": true,
+    "runtime_dispatch_verified": false
+  }
+}

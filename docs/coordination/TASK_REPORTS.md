@@ -49,3 +49,5 @@ Goal 修改。
   用机器校验候选 root/split/baseline/信息契约，保持 API/GPU gate 关闭；真实 root 资格仍开放。
 - [2026-09-27 material payload runtime preflight](task_reports/20260927_material_payload_runtime_preflight.md)：
   DIST1/PIPE3 双 root payload、delivery digest、operator deny 和 lineage 通过 pinned sandbox；live runner/scorer 仍开放。
+- [2026-09-27 neutral producer scorer preflight](task_reports/20260927_neutral_producer_scorer_preflight.md)：
+  中性 DIST1 producer payload 的独立 P1–P7 检查完整返回 FAIL；仅作 scorer/适配器诊断，controller update 关闭。
