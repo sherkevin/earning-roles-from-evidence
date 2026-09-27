@@ -526,5 +526,6 @@ Update order: change requirements only with rationale; update this ledger's gap/
 - [open] N03-next-l — 扩展 producer scorer 的 targeted near-miss、timeout/permission/transport mutation，并固定 producer-score artifact/event 与 replay causal order；在此之前不接 role update。
 - [open] N03-next-m — 将合格的 producer scorer 以 delivery digest 为输入接入新 runner；保留 recipient `Q_r`、judgment 和 cost 的独立记录。必须先通过 N03-next-l，不能重跑已关闭的 N02 episode budget。
 - [done] N03-next-n — 新增独立 `ProducerScore` protocol event 与 replay constructor：delivery digest/response digest、PASS/FAIL/UNKNOWN、coverage 和 judgment 前顺序均有硬校验；旧 N02 v3 ledger 保持 15-event PASS。尚未接入 controller 或真实 runner，见 [task report](task_reports/20260927_producer_score_event_replay.md)。
-- [open] N03-next-o — 将 producer scorer 的真实 response 接到 delivery→judgment 边界并写入 `ProducerScore`；scorer UNKNOWN/transport failure 只能记录诊断，不能更新 role controller。
+- [done] N03-next-o — runner 的可选 `producer_scorer` 路径已接到 delivery→judgment 边界：只传 producer-owned files，写入独立 `ProducerScore`，UNKNOWN/transport failure 不更新 controller；历史 N02 不重跑。见 [task report](task_reports/20260927_runner_producer_score_boundary.md)。
+- [open] N03-next-p — 为 producer scorer 补齐 P5/P6/P7 targeted near-miss 与 transport mutation，再用新 card 做一条真实 API 链路；在 qualification 和第二 structural root 通过前不做 role update/A800。
 - [done] N03收口复审 — [独立JSON回执](../../experiments/logs/n03_ownership_contract_checks_20260926/independent_review.json)复算预算/用量并核对80项测试源码hash；两项建议已修正：同次调用的集成/返工子成本无法测时为null，fresh-call消费必须带入判断时同一经验快照。数学审查进一步限定同peer下次被选时点与同采样器条件。文档收口PASS不等于N03采样/训练准入。

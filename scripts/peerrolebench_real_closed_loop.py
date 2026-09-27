@@ -3,6 +3,11 @@
 prepare -> generate(0) -> inspect sealed source -> evaluate(0) -> generate(1)
 -> inspect -> evaluate(1). No retries/resume of an attempted generation stage.
 All LLM requests use the existing named provider and preserve raw responses.
+
+When a versioned ``producer_scorer`` is present in the card, generate() also
+scores the immutable producer-owned delivery after it is sealed and before the
+recipient judgment request.  The result is recorded as a separate
+ProducerScore event; it does not drive the legacy controller update.
 """
 from __future__ import annotations
 
@@ -23,13 +28,14 @@ import traceback
 from aamas_real_probe import load_provider
 from peerrolebench_consumer_checks import CHECK_VERSION, run_checks
 from peerrolebench_ledger_replay import LedgerReplayError, replay_ledger_file
+from peerrolebench_producer_scorer import run_producer_scorer
 from peerrolebench_sandbox import ROOT, SandboxedWorker
 from peerrolebench_task_contract import (TEAMBENCH, export_task_materials, load_generated_task,
     attach_selected_delivery, prepare_consumer_action, validate_consumer_result, _digest_files)
 
 sys.path.insert(0, str(ROOT / "references/aamas"))
 from peer_role_protocol_20260925 import (PeerRoleLedger, PeerSelection, Delivery, RecipientJudgment,
-    ConsumerAction, TerminalOutcome, RoleEvidenceUpdate, LaterAssignment)
+    ConsumerAction, TerminalOutcome, RoleEvidenceUpdate, LaterAssignment, ProducerScore)
 
 CARD = ROOT / "configs/aamas2027/n02_peerrole_dev_v1.json"
 DECISIONS = {"accept": "use", "accept_with_rework": "repair", "reject_redo": "independent_redo"}
@@ -130,6 +136,35 @@ def append_event(out, ledger, method, event):
     getattr(ledger, method)(event)
     save(out / "ledger.json", ledger.events)
     log(out, "ledger_event", ledger.events[-1])
+
+
+def producer_interface_names(files, card):
+    """Derive producer interface names from operator-held public source."""
+    producer_files = {path: files[path] for path in ("mqueue/queue.py", "mqueue/priority.py")
+                      if path in files}
+    trees = validate_public_source(producer_files, card)
+    queue_names = [node.name for node in trees["mqueue/queue.py"].body
+                   if isinstance(node, ast.ClassDef) and node.name not in {"QueueFull", "QueueEmpty"}]
+    priority_names = [node.name for node in trees["mqueue/priority.py"].body
+                      if isinstance(node, ast.ClassDef) and "priority" in node.name.lower()]
+    if len(queue_names) != 1 or len(priority_names) != 1:
+        raise ValueError("producer interface class inventory ambiguous")
+    return {"queue": queue_names[0], "priority": priority_names[0]}
+
+
+def append_producer_score(out, ledger, delivery, result):
+    """Append an operator scorer result without turning it into role evidence."""
+    status = result.get("status")
+    if status not in {"PASS", "FAIL", "UNKNOWN"}:
+        raise ValueError("producer scorer returned an invalid status")
+    score = ProducerScore(
+        f"producer-score-{delivery.delivery_id}", delivery.delivery_id,
+        delivery.artifact_sha256, result.get("scorer_version", "unknown"), status,
+        result.get("label"), result.get("quality_score"), result.get("response_digest"),
+        bool(result.get("coverage_complete")),
+    )
+    append_event(out, ledger, "record_producer_score", score)
+    return score
 
 
 def parse_object(text):
@@ -320,6 +355,24 @@ def generate(out, index, config, state):
                         f"producer-request-{index}", index, selection.selection_id)
     append_event(out, ledger, "record_delivery", delivery)
     save(directory / "delivery.json", delivery_files)
+    if card.get("producer_scorer"):
+        producer_source = materials["agent_payloads"]["producer"]["source_files"]
+        producer_result = run_producer_scorer(
+            producer_source, producer_interface_names(producer_source, card),
+            card["task_id"], card["task_seeds"][index], directory / "producer_scorer",
+            lambda event_type, payload: log(out, event_type, payload),
+        )
+        save(directory / "producer_score.json", producer_result)
+        append_producer_score(out, ledger, delivery, producer_result)
+        log(out, "producer_score_recorded", {
+            "delivery_id": delivery.delivery_id,
+            "artifact_sha256": delivery.artifact_sha256,
+            "status": producer_result.get("status"),
+            "label": producer_result.get("label"),
+            "quality_score": producer_result.get("quality_score"),
+            "response_digest": producer_result.get("response_digest"),
+            "controller_update_allowed": False,
+        })
     visible_history = state["shared_evidence"] if index == 1 else []
     judgment_payload = {"task": recipient, "producer_id": peer, "recipient_id": consumer,
                         "artifact_sha256": digest, "legally_shared_prior_evidence": visible_history}

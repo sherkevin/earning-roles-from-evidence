@@ -439,3 +439,11 @@ recipient judgment, and is validated by the outer ledger replay module. A saved 
 still replays as PASS with zero producer-score events; synthetic complete and mutation cases pass.
 The event is not connected to controller updates or a live runner, so no learning, benchmark,
 real-time training, or A800 claim is made.
+
+### 2026-09-27 runner producer-score boundary
+
+The real closed-loop runner now has an opt-in `producer_scorer` card path. After a producer
+delivery is sealed and before recipient judgment, it sends only producer-owned source plus
+operator support to the private scorer, verifies the response, and appends a separate
+`ProducerScore` event. Historical N02 cards do not opt in; no new LLM call, controller update,
+benchmark result, real-time training result, or A800 job was produced in this step.
