@@ -19,7 +19,7 @@ python3 scripts/peerrolebench_baseline_bridge_qualification.py \
 
 ## 发现
 
-旧 ledger 没有 candidate version、context/base score、state/model/schema version、selected time，也没有 feedback arrival/delay/disposition/provenance 或预注册 label mapping。若强行映射，必然补默认值或混淆 hidden scorer 信息，因此 bridge 现在明确拒绝更新。
+旧 ledger 没有 candidate version、context/base score、state/model/schema version、selected time，也没有 judgment/terminal feedback 的 arrival/delay/disposition/provenance 或预注册 label mapping。consumer action 仅作为责任/成本证据，不能被误当成 feedback。若强行映射，必然补默认值或混淆 hidden scorer 信息，因此 bridge 现在明确拒绝更新。
 
 ## Goal 对照
 

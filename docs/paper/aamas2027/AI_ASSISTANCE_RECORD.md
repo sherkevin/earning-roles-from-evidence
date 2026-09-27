@@ -591,3 +591,15 @@ and refuses policy updates instead of filling defaults. This preserves the old
 ledger as integration evidence and identifies the next PIPE3 requirement: a
 public sidecar bound to the append-only ledger by digest. No API or GPU run was
 started and no scientific claim was made.
+
+### 2026-09-28 public policy sidecar schema
+
+To address that bridge gap, the assistant added a versioned public
+`DecisionSidecar`/`FeedbackSidecar` with ledger-record hash binding. It carries
+candidate versions, context/base-score and model/schema snapshots, exact
+propensity, timing, action, public provenance, disposition, and a predeclared
+label-mapping version. Eligible public feedback converts to the policy event;
+UNKNOWN or non-public feedback cannot carry a label or update state. Offline
+tests and a zero-API qualification passed. The sidecar is not yet in the PIPE3
+runner, so benchmark freeze, role efficacy, training and A800 claims remain
+open.

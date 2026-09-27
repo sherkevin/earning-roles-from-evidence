@@ -21,6 +21,7 @@ SELECTION_FIELDS = (
     "encoder_version", "feature_schema", "selected_at",
 )
 FEEDBACK_FIELDS = ("arrived_at", "delay", "disposition", "provenance")
+ACTION_FIELDS = ("action", "used_artifact", "repair_cost")
 
 
 def _records(value: Any) -> list[Mapping[str, Any]]:
@@ -36,6 +37,7 @@ def audit_records(records: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
     missing = Counter()
     selection_count = 0
     feedback_count = 0
+    action_count = 0
     selection_ids: set[str] = set()
     for row in rows:
         kind = row.get("event_type")
@@ -54,7 +56,7 @@ def audit_records(records: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
             if "candidate_versions" in payload and isinstance(ids, list) and isinstance(versions, list):
                 if len(ids) != len(versions):
                     missing["selection.candidate_versions_length"] += 1
-        elif kind in {"recipient_judgment", "consumer_action", "terminal_outcome"}:
+        elif kind in {"recipient_judgment", "terminal_outcome"}:
             feedback_count += 1
             for field in FEEDBACK_FIELDS:
                 if field not in payload:
@@ -63,12 +65,20 @@ def audit_records(records: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
                 missing["feedback.recipient_label_mapping"] += 1
             if kind == "terminal_outcome" and "label" not in payload:
                 missing["feedback.terminal_label_mapping"] += 1
+        elif kind == "consumer_action":
+            # An action is attribution/cost evidence, not a policy feedback
+            # label.  Do not require feedback arrival or label fields here.
+            action_count += 1
+            for field in ACTION_FIELDS:
+                if field not in payload:
+                    missing[f"action.{field}"] += 1
     status = "MAPPABLE" if not missing else "NOT_MAPPABLE"
     return {
         "status": status,
         "record_count": len(rows),
         "selection_count": selection_count,
         "feedback_event_count": feedback_count,
+        "action_event_count": action_count,
         "selection_ids": sorted(selection_ids),
         "missing": dict(sorted(missing.items())),
         "policy_update_allowed": status == "MAPPABLE",

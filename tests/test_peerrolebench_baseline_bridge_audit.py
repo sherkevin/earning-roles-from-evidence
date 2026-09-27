@@ -19,6 +19,8 @@ def test_existing_peer_role_ledger_is_refused_without_fabricated_policy_fields()
     result = audit_records(records)
     assert result["status"] == "NOT_MAPPABLE"
     assert result["policy_update_allowed"] is False
+    assert result["feedback_event_count"] == 2
+    assert result["action_event_count"] == 0
     assert result["missing"]["selection.candidate_versions"] == 1
     assert result["missing"]["feedback.arrived_at"] == 2
     assert result["missing"]["feedback.recipient_label_mapping"] == 1

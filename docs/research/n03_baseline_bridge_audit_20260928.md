@@ -17,7 +17,7 @@ python3 scripts/peerrolebench_baseline_bridge_qualification.py \
 
 代码位置：[`scripts/peerrolebench_baseline_bridge_audit.py`](../../scripts/peerrolebench_baseline_bridge_audit.py)。原始输入 ledger、config、逐记录 JSONL 和 summary 均保留在 qualification 目录。
 
-审查了 15 条冻结事件：2 个 selection、6 个 judgment/action/outcome 反馈事件。结果为：
+审查了 15 条冻结事件：2 个 selection、2 个 recipient judgment、2 个 terminal outcome 和 2 个 consumer action。action 是责任/成本证据，不被当作 policy feedback；结果为：
 
 ```text
 status=NOT_MAPPABLE
@@ -30,7 +30,7 @@ gpu_jobs=0
 缺失字段计数：
 
 - 两个 selection 都缺 `candidate_versions`、`context_key`、`base_scores`、`state_version`、`encoder_version`、`feature_schema`、`selected_at`；
-- 六个反馈事件都缺 `arrived_at`、`delay`、`disposition`、`provenance`；
+- 四个 policy feedback 事件都缺 `arrived_at`、`delay`、`disposition`、`provenance`；
 - 两个 recipient judgment 和两个 terminal outcome 都没有预声明数值 label mapping。
 
 ## 结论
