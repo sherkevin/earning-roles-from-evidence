@@ -18,7 +18,7 @@ python3 scripts/peerrolebench_policy_sidecar_stream_qualification.py \
   --out-dir experiments/logs/n03_policy_sidecar_stream_qualification_20260928_v2
 ```
 
-提交 `1d93fc0` 的代码先执行 v1；提交后 v2 作为最终记录。完整 strict fixture 的 5 个 case 全部通过：canonical 更新 1 次；feedback permutation 与 canonical snapshot 相同；duplicate sidecar 为 INVALID 且 0 次更新；truncated canonical ledger 为 UNKNOWN 且关闭更新；wrong producer/version 为 INVALID 且 0 次更新。
+提交 `1d93fc0` 的代码先执行 v1；提交 `ac1f279` 后的 v2 作为最终记录。完整 strict fixture 的 5 个 case 全部通过：canonical 更新 1 次；feedback permutation 与 canonical snapshot 相同；duplicate sidecar 为 INVALID 且 0 次更新；truncated canonical ledger 为 UNKNOWN 且关闭更新；wrong producer/version 为 INVALID 且 0 次更新。
 
 该 qualification 使用内存中确定性 protocol fixture，`real_api_calls=0`、`gpu_jobs=0`、`scientific_claim_allowed=false`；它证明 replay gate 的工程边界，不证明 benchmark、role efficacy 或实时训练效果。
 
