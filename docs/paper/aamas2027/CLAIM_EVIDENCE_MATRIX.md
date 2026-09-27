@@ -16,7 +16,7 @@
 | scorer truth 与 candidate 隔离 | private expected、公开请求 schema、独立 worker、candidate read denial、response digest | v2 scorer IPC preflight 通过；v1 digest 混淆失败已保留；仍是 fixture truth | “IPC boundary is qualified on a fixture; no real scorer or benchmark result” |
 | producer 交付质量可作为独立标签 | producer-owned artifact、独立 P1–P7 scorer、buggy/correct/near-miss controls、UNKNOWN mutation | seed-0 v6 + seed1/2 source-shape/transport regression；资源失败为 UNKNOWN；仍是 TeamBench-shaped diagnostic，非 benchmark/role-learning label | “operator scorer contract is a qualified diagnostic candidate; no role-learning label/result” |
 | producer score 可安全进入因果链 | delivery-bound digest、judgment 前 producer-score event、replay constructor、UNKNOWN gate | `ProducerScore`、replay 与 runner 可选边界通过 112 项回归；尚未有真实 scorer episode 或 controller update | “producer-score event path is implemented; no live role update” |
-| recipient outcome 不污染 producer attribution | immutable delivery digest、recipient-owned paths、独立 `Q_p`/`Q_r` | ADR0032 与 private worker 已分开；旧 parent scorer 与 independent consumer worker 的 4/4 vs 0.75 差异仍需扩大诊断 | “producer and recipient outcomes are measured separately in the contract” |
+| recipient outcome 不污染 producer attribution | immutable delivery digest、recipient-owned paths、独立 `Q_p`/`Q_r` | ADR0033 更正了首次 consumer scorer 的 tuple/list 实现错误；producer/recipient schema 仍独立，但没有由该回放支持的评分盲点证据 | “producer and recipient outcomes are measured separately in the contract” |
 | peer 具备可学习个体差异 | common init、合法个人经验、matched unseen tasks、identity-renaming control | 当前 peers exchangeable | “当前实验尚未建立该条件” |
 | 真实 API 链路可行 | raw SSE/API、完整 trace、失败与 UNKNOWN 记录 | v3 两条限定链通过 | 可写协议/传输可行性 |
 

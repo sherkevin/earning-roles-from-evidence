@@ -113,6 +113,11 @@ def empty(value):
     return value is None or value == [None, None]
 
 
+def pair(value):
+    """Accept the in-process tuple and its JSON-list representation."""
+    return isinstance(value, (tuple, list)) and len(value) == 2
+
+
 def score(driver):
     results = []
 
@@ -137,7 +142,7 @@ def score(driver):
         require_ok(driver.safe_call("init"))
         require_ok(driver.safe_call("put", message=message))
         first = require_ok(driver.safe_call("get"))
-        assert isinstance(first, list) and len(first) == 2 and first[0] == message
+        assert pair(first) and first[0] == message
         assert first[1] is not None
         require_ok(driver.safe_call("nack", receipt=first[1]))
         assert require_ok(driver.safe_call("consume_once")) is True

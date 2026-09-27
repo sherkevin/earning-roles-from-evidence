@@ -1,7 +1,8 @@
 # 0032：producer quality 必须独立于 recipient outcome
 
 日期：2026-09-27。  
-状态：Accepted as a causal and scoring boundary; 不改变 Goal v1.0。
+状态：Superseded by [0033](0033-correct-independent-scorer-discrepancy.md) for the
+empirical scorer-discrepancy claim; the causal producer/recipient separation remains adopted.
 
 ## 背景
 
@@ -10,9 +11,10 @@ recipient 是否把交付接入成功。它不能同时充当 producer 交付质
 `consumer.py`、返工、重做和返工成本会污染 producer 的归因。原生 TeamBench `grade.sh`
 也会检查整个 workspace，不能直接作为 producer role evidence。
 
-最近的独立 consumer scorer 回放还发现，旧的 parent-side 行为检查给一个保存的 episode
-判为 `4/4 PASS`，独立 worker 在相同 sealed source 上发现 `payload_and_ack` 失败，得到
-`FAIL, 0.75`。这说明 scorer 隔离不仅是工程问题，检查语义也必须分开记录。
+最初的独立 consumer scorer 回放曾报告旧 parent-side 行为检查的 `4/4 PASS` 与 private
+worker 的 `FAIL, 0.75` 差异。后续审查发现 private worker 在同进程里把合法的 tuple
+误判为必须是 JSON list；修正后相同 sealed source 返回 `PASS, 1.0`。原差异不是任务
+质量证据，保留的旧日志只能作为实现失败记录。
 
 ## 决定
 

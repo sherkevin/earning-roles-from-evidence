@@ -425,11 +425,11 @@ A private operator worker was implemented for producer-owned `queue.py` and `pri
 it does not import or score the recipient's `consumer.py`. A zero-LLM matrix with the preserved
 buggy source, an independently authored correct control, two targeted near-misses, and a malformed
 source produced the frozen `FAIL/PASS/FAIL/FAIL/UNKNOWN` dispositions. The run is stored under
-`experiments/logs/n03_producer_scorer_qualification_20260927/`. A separate replay of a preserved
-recipient source exposed a real discrepancy between the older parent behavior scorer (`4/4 PASS`)
-and the independent worker (`payload_and_ack` failure, `0.75`); historical outputs were not edited.
-This is an attribution and scorer-qualification result, not benchmark efficacy, role learning,
-real-time training, or an A800 result.
+`experiments/logs/n03_producer_scorer_qualification_20260927/`. An initial independent consumer
+replay appeared to disagree with the older parent behavior scorer, but review found a tuple/list
+type bug in the private worker; the corrected replay returns `PASS, 1.0`, and historical logs are
+preserved as an implementation failure. This is an attribution and scorer-qualification result,
+not benchmark efficacy, role learning, real-time training, or an A800 result.
 
 ### 2026-09-27 producer-score event and replay
 

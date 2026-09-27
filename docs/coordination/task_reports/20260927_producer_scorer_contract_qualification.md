@@ -69,3 +69,13 @@ recipient 行为当作完整标签，producer correctness 无独立测量；直�
    judgment 保留 producer `Q_p`、recipient `Q_r` 和 cost 三条记录；
 4. 重新评估第二个独立 structural root 和 strong same-information baseline。没有用户决定
    需要，Goal 仍保持 v1.0。
+
+## 后续更正（同日）
+
+本报告原先把一次独立 consumer worker 回放写成旧 parent scorer `4/4` 对 private worker
+`FAIL, 0.75` 的真实差异。该表述已撤回：private worker 在同进程中把合法的 Python tuple
+写死成 JSON list，导致 `payload_and_ack` 自身误判。修正 worker 后对同一保存的 N02 v3
+sealed source 返回 `PASS, 1.0`；原始错误运行保留在
+`experiments/logs/n03_independent_scorer_smoke_20260927/`，修正运行在
+`experiments/logs/n03_independent_scorer_smoke_20260927_v2/`。ADR 0033 记录了这次更正。
+这次错误不改变 producer/recipient 归因分离的协议决定，也不提供评分盲点或科学效果证据。

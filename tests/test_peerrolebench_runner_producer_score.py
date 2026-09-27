@@ -13,6 +13,7 @@ from peerrolebench_real_closed_loop import (  # noqa: E402
     append_event,
     append_producer_score,
     producer_interface_names,
+    producer_scorer_sources,
 )
 from peerrolebench_task_contract import export_task_materials, load_generated_task  # noqa: E402
 from peer_role_protocol_20260925 import (  # noqa: E402
@@ -38,6 +39,16 @@ def test_operator_source_names_are_derived_without_consumer_files():
         "math", "mqueue", "queue", "threading", "time", "typing", "uuid",
     ]}
     assert producer_interface_names(source, card) == {"queue": "TaskQueue", "priority": "PriorityTask"}
+
+
+def test_producer_scorer_receives_actual_delivery_not_template():
+    materials = export_task_materials(load_generated_task("DIST1_queue_race", 0))
+    template = materials["agent_payloads"]["producer"]["source_files"]
+    delivery = {"mqueue/queue.py": template["mqueue/queue.py"] + "\n# delivered-change",
+                "mqueue/priority.py": template["mqueue/priority.py"]}
+    source = producer_scorer_sources(materials, delivery)
+    assert source["mqueue/queue.py"].endswith("# delivered-change")
+    assert "mqueue/consumer.py" not in source
 
 
 def test_unknown_producer_score_is_recorded_but_not_a_label(tmp_path):

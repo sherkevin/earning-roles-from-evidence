@@ -152,11 +152,29 @@ def producer_interface_names(files, card):
     return {"queue": queue_names[0], "priority": priority_names[0]}
 
 
+def producer_scorer_sources(materials, delivery_files):
+    """Return operator support plus the actual producer delivery only."""
+    template = materials["agent_payloads"]["producer"]["source_files"]
+    required = {"mqueue/queue.py", "mqueue/priority.py"}
+    if set(delivery_files) != required:
+        raise ValueError("producer delivery must contain exactly queue.py and priority.py")
+    support = {
+        path: template[path]
+        for path in ("mqueue/__init__.py", "mqueue/config.py")
+        if path in template
+    }
+    support.update(delivery_files)
+    return support
+
+
 def append_producer_score(out, ledger, delivery, result):
     """Append an operator scorer result without turning it into role evidence."""
     status = result.get("status")
     if status not in {"PASS", "FAIL", "UNKNOWN"}:
         raise ValueError("producer scorer returned an invalid status")
+    observed_digest = result.get("artifact_sha256")
+    if status in {"PASS", "FAIL"} and observed_digest != delivery.artifact_sha256:
+        raise ValueError("complete producer score is not bound to the delivered artifact")
     score = ProducerScore(
         f"producer-score-{delivery.delivery_id}", delivery.delivery_id,
         delivery.artifact_sha256, result.get("scorer_version", "unknown"), status,
@@ -356,7 +374,7 @@ def generate(out, index, config, state):
     append_event(out, ledger, "record_delivery", delivery)
     save(directory / "delivery.json", delivery_files)
     if card.get("producer_scorer"):
-        producer_source = materials["agent_payloads"]["producer"]["source_files"]
+        producer_source = producer_scorer_sources(materials, delivery_files)
         producer_result = run_producer_scorer(
             producer_source, producer_interface_names(producer_source, card),
             card["task_id"], card["task_seeds"][index], directory / "producer_scorer",

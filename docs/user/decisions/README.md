@@ -35,3 +35,4 @@ User decision records and external-operation summaries.
 - [0030 — unknown scorer boundary](0030-unknown-scorer-boundary.md): scorer 超时、权限、传输、非法 JSON 或覆盖不完整时只能是 UNKNOWN，不产生 label/evidence/update。
 - [0031 — independent scorer IPC preflight](0031-independent-scorer-ipc-preflight.md): scorer 的 private truth 留在独立 worker，candidate 只能拿公开请求；delivery、ledger 与 response digest 分开记录。
 - [0032 — producer score separate from recipient outcome](0032-producer-score-separate-from-recipient-outcome.md): producer delivery quality 与 recipient integration outcome 分开计量。
+- [0033 — correct independent scorer discrepancy](0033-correct-independent-scorer-discrepancy.md): tuple/list 实现错误导致的旧 scorer 差异被撤回；保留因果归因分离决定。

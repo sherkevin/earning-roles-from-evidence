@@ -30,7 +30,7 @@ Goal 修改。
 - [2026-09-27 scorer IPC preflight](task_reports/20260927_scorer_ipc_preflight.md)：
   记录 digest 混淆失败并修正；独立 private scorer 与 candidate read denial 通过，真实 runner 接入仍开放。
 - [2026-09-27 producer scorer contract qualification](task_reports/20260927_producer_scorer_contract_qualification.md)：
-  producer-only 五格零 LLM 矩阵区分 buggy/correct/near-miss，并发现独立 consumer scorer 与旧 parent scorer 的实际差异；producer event、live runner 和 benchmark 资格仍开放。
+  producer-only 五格零 LLM 矩阵区分 buggy/correct/near-miss；首次 independent consumer scorer 差异由 tuple/list 实现错误造成并已更正，producer event、live runner 和 benchmark 资格仍开放。
 - [2026-09-27 producer-score event replay](task_reports/20260927_producer_score_event_replay.md)：
   新增独立 producer-score protocol event、状态/digest 约束和 replay causal order；旧 N02 ledger 回归通过，真实 runner/controller 接入仍开放。
 - [2026-09-27 runner producer-score boundary](task_reports/20260927_runner_producer_score_boundary.md)：
@@ -39,3 +39,5 @@ Goal 修改。
   P5/P6/P7 扩展到 dict/list、tie-break、10k/20+20 并发和 response mutation；资源失败保留 UNKNOWN，benchmark/scorer qualification 仍未锁定。
 - [2026-09-27 producer scorer seed regression](task_reports/20260927_producer_scorer_seed_regression.md)：
   seed 1/2 类名与 transport/malformed mutation 回归通过；seed 2 压力 worker-exit 保留 UNKNOWN，第二 root/baseline/真实 API 链仍开放。
+- [2026-09-27 scorer discrepancy correction](task_reports/20260927_scorer_discrepancy_correction.md)：
+  定位并修正 private consumer scorer 的 tuple/list 实现错误；旧错误日志保留，修正回放 PASS 1.0，撤回评分盲点结论。
