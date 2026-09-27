@@ -1,0 +1,89 @@
+[
+  {
+    "event_type": "peer_selection",
+    "payload": {
+      "selection_id": "selection-0",
+      "task_id": "DIST1_queue_race",
+      "task_index": 0,
+      "selector_id": "agent_A",
+      "role": "producer",
+      "candidate_ids": [
+        "agent_B",
+        "agent_C"
+      ],
+      "chosen_peer_id": "agent_B",
+      "propensity": 0.5
+    },
+    "previous_hash": "GENESIS",
+    "record_hash": "7fd029bf856a149313b288e1a0bc26e4f4ecf3113f00576ad01c8e554635a3c6"
+  },
+  {
+    "event_type": "task_start",
+    "payload": {
+      "task_id": "DIST1_queue_race",
+      "task_index": 0
+    },
+    "previous_hash": "7fd029bf856a149313b288e1a0bc26e4f4ecf3113f00576ad01c8e554635a3c6",
+    "record_hash": "5073e4c5ebdd185242cca1454e80029f7c15fe581ef8e81e911634957d708ca2"
+  },
+  {
+    "event_type": "producer_delivery",
+    "payload": {
+      "delivery_id": "delivery-0",
+      "task_id": "DIST1_queue_race",
+      "producer_id": "agent_B",
+      "recipient_id": "agent_A",
+      "artifact_sha256": "324762d15d114906ad55702613d14e7306b797922fafa03c5ab26d2d2d0d55e1",
+      "source_event_id": "producer-request-0",
+      "task_index": 0,
+      "selection_id": "selection-0"
+    },
+    "previous_hash": "5073e4c5ebdd185242cca1454e80029f7c15fe581ef8e81e911634957d708ca2",
+    "record_hash": "e3b4a9fa7bf08a25b87824aa398f17d2adac87a6f38c367f18564edb0889d366"
+  },
+  {
+    "event_type": "producer_score",
+    "payload": {
+      "producer_score_id": "producer-score-delivery-0",
+      "delivery_id": "delivery-0",
+      "artifact_sha256": "324762d15d114906ad55702613d14e7306b797922fafa03c5ab26d2d2d0d55e1",
+      "scorer_version": "dist1-producer-objective-v1",
+      "status": "UNKNOWN",
+      "label": null,
+      "quality_score": null,
+      "score_payload_sha256": null,
+      "coverage_complete": false
+    },
+    "previous_hash": "e3b4a9fa7bf08a25b87824aa398f17d2adac87a6f38c367f18564edb0889d366",
+    "record_hash": "7c9bdec0b6521e233e19d8774202938b516f3630694280a39c6bd9ed56c9200d"
+  },
+  {
+    "event_type": "recipient_judgment",
+    "payload": {
+      "judgment_id": "judgment-0",
+      "delivery_id": "delivery-0",
+      "consumer_id": "agent_A",
+      "decision": "accept_with_rework",
+      "observed_artifact_sha256": "324762d15d114906ad55702613d14e7306b797922fafa03c5ab26d2d2d0d55e1",
+      "terminal_outcome_available": false,
+      "repair_note": "Rewrite consumer.py so run_once unpacks the (receipt, message) tuple from get(), calls self._handler(message), then calls self._queue.acknowledge(receipt). Add try/except around the handler so that on failure we call self._queue.nack(receipt) to re-enqueue the message. Track processed messages as the actual message payloads (not tuples). Keep thread safety via the existing lock."
+    },
+    "previous_hash": "7c9bdec0b6521e233e19d8774202938b516f3630694280a39c6bd9ed56c9200d",
+    "record_hash": "72dbf2c39593bdaf857d6c7968225166a3b6d436b723126ee1aeb66f9941885f"
+  },
+  {
+    "event_type": "consumer_action",
+    "payload": {
+      "action_id": "action-0",
+      "delivery_id": "delivery-0",
+      "consumer_id": "agent_A",
+      "used_artifact": true,
+      "input_artifact_sha256": "324762d15d114906ad55702613d14e7306b797922fafa03c5ab26d2d2d0d55e1",
+      "output_artifact_sha256": "a86a1950138c386b6cb0848fcbec4c13c81c7ed3e91f6a5cbd606b793ae9c9c0",
+      "repair_cost": 5.7949508330000015,
+      "action": "repair"
+    },
+    "previous_hash": "72dbf2c39593bdaf857d6c7968225166a3b6d436b723126ee1aeb66f9941885f",
+    "record_hash": "5bbe56b5c939bd2ab488444c7d3a39ca632f08435ce1f39580d4b5504e8da854"
+  }
+]

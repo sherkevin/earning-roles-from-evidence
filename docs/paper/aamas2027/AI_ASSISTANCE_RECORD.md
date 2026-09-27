@@ -442,6 +442,20 @@ still replays as PASS with zero producer-score events; synthetic complete and mu
 The event is not connected to controller updates or a live runner, so no learning, benchmark,
 real-time training, or A800 claim is made.
 
+### 2026-09-27 neutral DIST1 contract probe
+
+One new N03 development card used the versioned neutral DIST1 material adapter and made three
+real `内部` / `qwen3.8-max` requests (producer, judgment, consumer; HTTP 200, thinking disabled).
+The recipient inspected the actual delivery and repaired only `consumer.py`. The producer and
+recipient independently chose a coherent `(receipt, message)` / `acknowledge` interface, but the
+public task text had not fixed return order, empty-queue blocking, or acknowledgement method names;
+the hidden scorers assumed a different contract and both scorer paths became `UNKNOWN`. The runner
+therefore wrote no terminal outcome, role evidence, assignment, or controller update. Raw SSE,
+costs, source hashes, scorer timeout and state are preserved under
+`experiments/logs/n03_peerrole_dev_neutral_prepare_20260927_v2/`. This is a real API and benchmark
+contract failure, not evidence for or against RARE; the next card must version and regression-test
+the public interface before another API request.
+
 ### 2026-09-27 runner producer-score boundary
 
 The real closed-loop runner now has an opt-in `producer_scorer` card path. After a producer
@@ -466,3 +480,19 @@ The same scorer was run on DIST1 seeds 1 and 2 to verify generated class/module 
 hardcoded to seed 0. Seed 1 returned a complete FAIL; seed 2 hit the worker-exit/resource boundary
 and remained UNKNOWN. Injected timeout, permission, and malformed responses also remained UNKNOWN.
 No real API, GPU, benchmark, or role-update result was produced.
+
+### 2026-09-27 neutral DIST1 v2 contract qualification
+
+The v1 live episode exposed a public-contract mismatch: the generated producer and recipient
+used `(receipt, message)`, blocking `get()`, and `acknowledge`, while the private diagnostic
+scorer required `(message, receipt)`, non-blocking empty reads, and `ack`/`nack`. A versioned
+`dist1-neutral-v2` adapter now states the interface explicitly and rejects unknown adapter names
+instead of silently falling back to another material source. The run used no LLM or GPU. Fifteen
+targeted regression tests passed; two-root static provenance and pinned-sandbox payload/delivery/
+operator-denial/lineage preflights passed. A corrected-control producer-scoring matrix returned
+PASS/1.0, buggy and near-miss controls returned FAIL, and malformed or mutated responses returned
+UNKNOWN. These checks qualify an engineering boundary only; `benchmark_frozen`,
+`scorer_is_qualified`, controller update, and scientific claims remain false. The v1 UNKNOWN
+episode is preserved and is not pooled with v2. The v2 prepare artifact is stored at
+`experiments/logs/n03_peerrole_dev_neutral_v2_prepare_20260927/`; no new real API request or GPU
+job has been started yet.

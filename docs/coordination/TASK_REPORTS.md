@@ -53,3 +53,7 @@ Goal 修改。
   中性 DIST1 producer payload 的独立 P1–P7 检查完整返回 FAIL；仅作 scorer/适配器诊断，controller update 关闭。
 - [2026-09-27 controller update gate](task_reports/20260927_controller_update_gate.md)：
   新 diagnostic card 可显式禁止 legacy controller mutation，历史 card 行为保持兼容。
+- [2026-09-27 neutral live episode](task_reports/20260927_neutral_live_episode.md)：
+  三次真实 API 请求完成，但任务公开接口与 hidden scorer 不一致，producer/consumer scorer 均 UNKNOWN；不产生学习证据。
+- [2026-09-27 DIST1 neutral-v2 contract qualification](task_reports/20260927_dist1_v2_contract_qualification.md)：
+  修复并版本化公开队列接口，完成 adapter/provenance/runtime/scorer 的零调用检查；旧 v1 UNKNOWN 保留，v2 仍未冻结 benchmark 或产生科学结果。

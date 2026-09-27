@@ -1,0 +1,34 @@
+{
+  "version": "dist1-consumer-behavior-v2",
+  "required_check_ids": [
+    "empty_consumer",
+    "payload_and_ack",
+    "retry_after_handler_failure",
+    "drain"
+  ],
+  "checks": [
+    {
+      "id": "empty_consumer",
+      "status": "UNKNOWN",
+      "reason": "TimeoutError('Worker RPC/session deadline exceeded')"
+    },
+    {
+      "id": "payload_and_ack",
+      "status": "NOT_RUN",
+      "reason": "Prior transport failure"
+    },
+    {
+      "id": "retry_after_handler_failure",
+      "status": "NOT_RUN",
+      "reason": "Prior transport failure"
+    },
+    {
+      "id": "drain",
+      "status": "NOT_RUN",
+      "reason": "Prior transport failure"
+    }
+  ],
+  "status": "UNKNOWN",
+  "observed_behavioral_failure": false,
+  "coverage_complete": false
+}

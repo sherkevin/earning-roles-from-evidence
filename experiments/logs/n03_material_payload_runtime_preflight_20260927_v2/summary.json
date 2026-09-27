@@ -1,0 +1,126 @@
+{
+  "config": {
+    "experiment_id": "n03_material_payload_runtime_preflight_20260927_v2",
+    "purpose": "candidate DIST1/PIPE3 payload dispatch, delivery binding and operator denial",
+    "manifest_version": "peerrolebench-benchmark-baseline-candidate-v2",
+    "manifest_path": "/Users/jingwu/work/earning-roles/configs/aamas2027/n03_benchmark_baseline_candidate_v2.json",
+    "command": [
+      "scripts/peerrolebench_material_payload_runtime_preflight.py",
+      "--manifest",
+      "configs/aamas2027/n03_benchmark_baseline_candidate_v2.json",
+      "--output",
+      "experiments/logs/n03_material_payload_runtime_preflight_20260927_v2"
+    ],
+    "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+    "platform": "macOS-26.3.2-arm64-arm-64bit",
+    "input_limit_bytes": 65536,
+    "llm_calls": 0,
+    "gpu_jobs": 0,
+    "candidate_code_executed": false,
+    "native_grader_invoked": false,
+    "scientific_claim_allowed": false
+  },
+  "results": [
+    {
+      "root_id": "dist1_queue_delivery_v1",
+      "task_id": "DIST1_queue_race",
+      "seed": 0,
+      "producer_probe": {
+        "ok": true,
+        "role": "producer",
+        "payload_source_names": [
+          "mqueue/__init__.py",
+          "mqueue/config.py",
+          "mqueue/priority.py",
+          "mqueue/queue.py"
+        ],
+        "payload_source_count": 4,
+        "delivery_paths": [],
+        "delivery_sha256": null,
+        "source_root_exists": true,
+        "operator_read": {
+          "ok": false,
+          "error_type": "PermissionError"
+        }
+      },
+      "recipient_probe": {
+        "ok": true,
+        "role": "recipient",
+        "payload_source_names": [
+          "mqueue/__init__.py",
+          "mqueue/config.py",
+          "mqueue/consumer.py"
+        ],
+        "payload_source_count": 3,
+        "delivery_paths": [
+          "mqueue/priority.py",
+          "mqueue/queue.py"
+        ],
+        "delivery_sha256": "552531d45fd8c4218c7d179315cb7ac2af4a1f4ef080d24a8e398129dd413d86",
+        "source_root_exists": true,
+        "operator_read": {
+          "ok": false,
+          "error_type": "PermissionError"
+        }
+      },
+      "delivery_sha256": "552531d45fd8c4218c7d179315cb7ac2af4a1f4ef080d24a8e398129dd413d86",
+      "producer_dispatch_verified": true,
+      "recipient_dispatch_verified": true,
+      "lineage_verified": true
+    },
+    {
+      "root_id": "pipe3_stream_delivery_v1",
+      "task_id": "PIPE3_stream_processing",
+      "seed": 0,
+      "producer_probe": {
+        "ok": true,
+        "role": "producer",
+        "payload_source_names": [
+          "models.py",
+          "producer.py",
+          "sink.py"
+        ],
+        "payload_source_count": 3,
+        "delivery_paths": [],
+        "delivery_sha256": null,
+        "source_root_exists": true,
+        "operator_read": {
+          "ok": false,
+          "error_type": "PermissionError"
+        }
+      },
+      "recipient_probe": {
+        "ok": true,
+        "role": "recipient",
+        "payload_source_names": [
+          "models.py",
+          "processor.py",
+          "sink.py"
+        ],
+        "payload_source_count": 3,
+        "delivery_paths": [
+          "producer.py"
+        ],
+        "delivery_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+        "source_root_exists": true,
+        "operator_read": {
+          "ok": false,
+          "error_type": "PermissionError"
+        }
+      },
+      "delivery_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "producer_dispatch_verified": true,
+      "recipient_dispatch_verified": true,
+      "lineage_verified": true
+    }
+  ],
+  "final_lineage_hash": "cc946199ed07879395cfb6c6d093396055b4bede8f21939cd5de5df9a8600fd7",
+  "runtime_payload_preflight_passed": true,
+  "scientific_claim_allowed": false,
+  "remaining_gates": [
+    "real actor output dispatch in the closed-loop runner",
+    "hidden scorer and operator ledger isolation in live episodes",
+    "multi-event exception/retry/unknown replay",
+    "producer contract and recipient outcome qualification"
+  ]
+}
