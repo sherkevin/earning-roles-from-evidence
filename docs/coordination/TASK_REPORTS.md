@@ -19,3 +19,5 @@ Goal 修改。
 
 - [2026-09-27 Goal reconciliation](task_reports/20260927_goal_reconciliation.md)：
   当前故事、方法、benchmark、实验和论文状态的第一份逐项对照；未请求 Goal 降级。
+- [2026-09-27 recipient runtime probe](task_reports/20260927_recipient_runtime_probe.md)：
+  recipient payload、selected delivery 和有限 lineage hash-chain 的运行时边界检查；未请求 Goal 降级。

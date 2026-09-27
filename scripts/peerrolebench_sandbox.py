@@ -45,7 +45,7 @@ class SandboxedWorker:
     """
 
     def __init__(self, sources, evidence_dir, log, queue_name="TaskQueue", consumer_name="TaskConsumer",
-                 *, worker_path=None):
+                 *, worker_path=None, max_input_bytes=4096):
         if sys.platform != "darwin":
             raise RuntimeError("This qualified adapter currently supports macOS only")
         if not CLI.is_file() or not PYTHON.is_file():
@@ -54,6 +54,9 @@ class SandboxedWorker:
         if manifest["version"] != "0.0.77":
             raise RuntimeError("Unexpected sandbox-runtime version")
         self.log = log
+        if not isinstance(max_input_bytes, int) or max_input_bytes < 4096:
+            raise ValueError("max_input_bytes must be an integer >= 4096")
+        self.max_input_bytes = max_input_bytes
         self.evidence = Path(evidence_dir)
         self.evidence.mkdir(parents=True, exist_ok=False)
         self.temp = tempfile.TemporaryDirectory(prefix="peerrole-worker-")
@@ -106,7 +109,8 @@ class SandboxedWorker:
                     "worker_sha256": sha(worker), "limits_sha256": sha(launcher),
                     "sources": {name: hashlib.sha256(text.encode()).hexdigest() for name, text in sources.items()},
                     "rpc_timeout_seconds": RPC_SECONDS, "session_timeout_seconds": SESSION_SECONDS,
-                    "max_response_line_bytes": MAX_LINE_BYTES, "max_total_output_bytes": MAX_OUTPUT_BYTES,
+                    "max_input_bytes": self.max_input_bytes, "max_response_line_bytes": MAX_LINE_BYTES,
+                    "max_total_output_bytes": MAX_OUTPUT_BYTES,
                     "rss_watchdog_bytes": RSS_LIMIT_BYTES, "rss_poll_seconds": 0.1,
                     "rss_limit_is_hard": False, "psutil_version": psutil.__version__,
                     "source_read_only": True, "same_process_instrumentation_tamper_proof": False}
@@ -146,8 +150,8 @@ class SandboxedWorker:
         if self.closed:
             raise RuntimeError("Worker already closed")
         data = (json.dumps(payload, separators=(",", ":")) + "\n").encode()
-        if len(data) > 4096:
-            raise ValueError("Public operation exceeds 4096-byte input cap")
+        if len(data) > self.max_input_bytes:
+            raise ValueError(f"Public operation exceeds {self.max_input_bytes}-byte input cap")
         deadline = min(time.monotonic() + RPC_SECONDS, self.started + SESSION_SECONDS)
         self.log("worker_request", payload)
         try:

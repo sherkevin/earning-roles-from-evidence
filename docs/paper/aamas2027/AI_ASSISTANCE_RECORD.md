@@ -370,3 +370,10 @@ sandbox stdin/RPC boundary. The worker parsed the actual serialized payload and 
 to read an operator-only ledger file was denied. This is a single producer-boundary
 diagnostic; recipient dispatch, delivery attachment, hidden scorer isolation and real ledger
 replay remain unverified, so no scientific readiness or benchmark claim changed.
+
+The next bounded probe dispatched a recipient payload plus one selected producer delivery
+through a 16-KiB sandbox RPC. The worker verified the delivery allowlist and digest, denied
+operator-only ledger access, and the parent recorded a three-event selection/delivery/
+recipient-dispatch hash-chain fixture. This remains a zero-LLM runtime diagnostic: it does
+not validate generated code, hidden scoring, retries, exceptions, out-of-order replay or
+the scientific benchmark.

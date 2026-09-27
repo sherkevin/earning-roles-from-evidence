@@ -29,3 +29,4 @@ User decision records and external-operation summaries.
 - [0024 — 收窄 PIPE3 前置检查结论](0024-narrow-pipe3-preflight-conclusion.md): 0023 被独立复核收窄为静态契约夹具和 listed canary；任务文本泄露答案，真实 payload/scorer/ledger 仍未验证。
 - [0025 — 单 producer payload 的 IPC 可见性探针通过](0025-single-payload-ipc-probe.md): 一个去 oracle producer payload 通过 sandbox RPC，operator-only ledger 读取被拒；recipient、真实 runner、scorer 和账本回放仍未验证。
 - [0026 — Goal 标准不可因实验失败自动降级](0026-goal-change-control.md): Goal v1.0 是唯一目标标准；每个 task report 必须逐条对照，目标修改必须由用户明确同意并新建 ADR。
+- [0027 — recipient payload 与 selected delivery 的 IPC 探针通过](0027-recipient-delivery-ipc-probe.md): recipient payload、delivery digest/allowlist 和 operator-read denial 通过有界 sandbox RPC；真实 agent/scorer/ledger 仍未验证。

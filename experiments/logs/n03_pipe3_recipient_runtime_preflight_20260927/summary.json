@@ -1,0 +1,78 @@
+{
+  "config": {
+    "experiment_id": "n03_pipe3_recipient_runtime_preflight_20260927",
+    "purpose": "N03 PIPE3 recipient payload, selected delivery attachment and lineage probe",
+    "source_commit": "d185aef1916fd86a9ba554d581fd256319a973af",
+    "seed": 0,
+    "llm_calls": 0,
+    "gpu_jobs": 0,
+    "candidate_code_executed": false,
+    "native_grader_invoked": false,
+    "rpc_input_limit_bytes": 16384,
+    "scientific_claim_allowed": false
+  },
+  "ledger_fixture": {
+    "events": [
+      {
+        "event": {
+          "event_id": "selection-0001",
+          "peer": "producer-0",
+          "recipient": "recipient-0",
+          "propensity": 0.5,
+          "seed": 0
+        },
+        "hash": "b9fd292585d96b4f4abf3708f5bcf2f56953efe8417191000b4084f635e08fad"
+      },
+      {
+        "event": {
+          "event_id": "delivery-0001",
+          "selection_id": "selection-0001",
+          "producer": "producer-0",
+          "recipient": "recipient-0",
+          "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+          "paths": [
+            "producer.py"
+          ]
+        },
+        "hash": "636e7b3f56591180a6279ef84dda80149f2cf1f5f365225d36e3c8f21c087792"
+      },
+      {
+        "event": {
+          "event_id": "recipient-dispatch-0001",
+          "delivery_id": "delivery-0001",
+          "recipient_payload_sha256": "6cb19820bc79c4e6fe622188fac79df84e53a9fdf5620b3781933c3d8bde28a7"
+        },
+        "hash": "5552c3cae0a77ca0784d81764c7ca2777b53500ec163b0f8176d2be5dbd5d473"
+      }
+    ],
+    "unique_event_ids": true,
+    "final_hash": "5552c3cae0a77ca0784d81764c7ca2777b53500ec163b0f8176d2be5dbd5d473",
+    "exact_once_lineage": true
+  },
+  "observed": {
+    "ok": true,
+    "role": "recipient",
+    "payload_source_names": [
+      "models.py",
+      "processor.py",
+      "sink.py"
+    ],
+    "delivery_paths": [
+      "producer.py"
+    ],
+    "delivery_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+    "source_root_exists": true,
+    "operator_read": {
+      "ok": false,
+      "error_type": "PermissionError"
+    }
+  },
+  "recipient_dispatch_verified": true,
+  "runtime_lineage_probe_verified": true,
+  "scientific_claim_allowed": false,
+  "remaining_gates": [
+    "real producer and recipient agent execution with LLM outputs",
+    "hidden scorer and operator ledger process/IPC isolation in the actual runner",
+    "multi-event, missing-field and exception-path replay"
+  ]
+}
