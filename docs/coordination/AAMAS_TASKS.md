@@ -21,6 +21,26 @@ qualified data and same-information strong baselines; backbone/update remain
 open. These are task prerequisites under the active goal, not an operational
 pause or a scientific result. The dated entries below preserve prior states.
 
+## Paper mainline checkpoint — 2026-09-27
+
+The paper work has been returned to the selected story rather than the historical
+allocation/router draft. The internal mainline is recorded in
+[`MAINLINE_V1.md`](../paper/aamas2027/MAINLINE_V1.md), with a claim/evidence matrix
+in [`CLAIM_EVIDENCE_MATRIX.md`](../paper/aamas2027/CLAIM_EVIDENCE_MATRIX.md) and
+the decision contract in [ADR 0022](../user/decisions/0022-paper-mainline-method-and-evaluation-contract.md).
+The only candidate mechanism is responsibility-aware role evidence (RARE): separate
+recipient judgment, recipient action, producer contract checks and final team outcome,
+then update public evidence only for attributable events. RARE is not promoted as a
+validated algorithm; raw acceptance, contextual trust/bandit, terminal-only, RLS,
+online SGD and pooled control remain required comparisons.
+
+`article/aamas2027/mainline_pre_results.tex` is a separate three-page internal draft
+compiled against the official AAMAS class. The historical `main.tex` and
+`supplement.tex` remain preserved. The draft contains no efficacy numbers and states
+that RARE, PeerRoleBench-TB, real-time training and A800 performance are unestablished.
+This closes the writing/claim contract only; N01 qualification, N03 signal design and
+all scientific result gates remain open.
+
 ## Active resumption — 2026-09-22
 
 The current user instruction supersedes the earlier operational pause; see [decision 0001](../user/decisions/0001-resume-real-api-iteration.md). Current work runs in the local `earning-roles` checkout using the named cc-switch provider. The older pause and publication receipts below are historical.

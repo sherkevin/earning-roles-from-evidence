@@ -307,3 +307,25 @@ Closeout review corrected unobservable within-call cost decomposition and
 required transmitting the same consumer experience snapshot across fresh
 judgment/action calls. These are design/measurement corrections, not new
 learning results or a final method.
+
+### 2026-09-27 paper-mainline reset
+
+After the user returned the active task to the paper, AI assistance audited the current
+task ledger, requirements, convergence review, N02 report, and preserved LaTeX sources.
+It confirmed that the old `main.tex` is a historical allocation/router draft and that the
+one-page proposal is the only previously current peer-role manuscript. The assistant then
+wrote the internal mainline contract in `docs/paper/aamas2027/MAINLINE_V1.md`, the
+claim/evidence matrix in `CLAIM_EVIDENCE_MATRIX.md`, and ADR 0022. These artifacts narrow
+the paper to one question—recipient situated judgment becoming attributable producer role
+evidence that changes future responsibility—and define RARE only as a candidate mechanism.
+They explicitly retain raw acceptance, contextual trust/bandit, terminal-only, RLS,
+online SGD, periodic refit, and pooled selection as required comparisons. No empirical
+result, benchmark lock, real-time training claim, or A800 claim was added.
+
+The assistant also drafted `article/aamas2027/mainline_pre_results.tex` as a separate
+internal pre-results paper, leaving historical `main.tex` and `supplement.tex` untouched.
+The new draft compiled locally with the official AAMAS class to a three-page PDF with
+resolved citations and no overfull boxes. The compiler first failed in the standalone
+editor because the project-relative class file was not mounted; the same source then
+compiled successfully from its project directory. The document checker passed with
+`scientific_readiness=false`, as required by the open qualification and evidence gates.

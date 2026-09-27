@@ -24,3 +24,4 @@ User decision records and external-operation summaries.
 - [0019 — 判断与责任结果分开](0019-separate-judgment-from-responsibility-outcomes.md): 正常集成不当上游缺陷；判断、实际修改、原交付检查、最终质量及成本分别记录，旧repair映射不再默认作正确性标签。
 - [0020 — PIPE3 作为第二任务 root 的条件性主候选](0020-pipe3-primary-conditional-candidate.md): 父进程四格控制矩阵可分离 producer 质量、recipient 自有工作和 sink adoption；进入下一资格门，不等于 benchmark 冻结。
 - [0021 — 独立仓库与 OSS 边界](0021-dedicated-repository-and-oss-boundary.md): earning-roles 使用独立 GitLab 仓库和 `jingwu/earning-roles/` OSS 前缀；benchmark 资产与前缀保持不变。
+- [0022 — 论文主线、候选机制与证据门](0022-paper-mainline-method-and-evaluation-contract.md): 将论文收敛到 situated judgment→role evidence→future responsibility，RARE 仅作为待验证候选机制，明确强基线与证据门。

@@ -1,0 +1,244 @@
+% Internal pre-results manuscript.  This file is intentionally separate from
+% main.tex, which preserves the historical allocation/router draft.
+\documentclass[sigconf,anonymous]{aamas}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{url}
+\input{aamas_metadata}
+\acmSubmissionID{INTERNAL PRE-RESULTS -- NOT FOR SUBMISSION}
+
+\title[Learning Roles from Situated Peer Judgments]{Learning Roles from Situated Peer Judgments in Multi-Agent Collaboration}
+\author{Anonymous Authors}
+\affiliation{\institution{Internal research draft}}
+\email{omitted}
+\ccsdesc[500]{Computing methodologies~Multi-agent systems}
+\ccsdesc[300]{Computing methodologies~Cooperation and coordination}
+\keywords{multi-agent systems, role learning, peer judgment, online adaptation}
+
+\begin{abstract}
+Multi-agent systems often choose a collaborator using a static role, a global score,
+or a pooled controller. These choices ignore the agent that actually receives and
+uses a delivery. We study a narrower question: can a recipient's situated judgment of
+a concrete delivery become attributable evidence for the producer's future
+responsibilities? We specify a protocol that separates recipient opinion, recipient
+action, producer-contract quality, and final team outcome, and a candidate
+responsibility-aware role-evidence update that consumes only lawful delayed feedback.
+The evaluation is designed around genuine producer--recipient dependencies, selected-only
+feedback, task-root splits, and complete model, tool, communication, and rework cost.
+It compares the candidate with raw acceptance, contextual trust or bandit selection,
+terminal-only learning, and pooled control under matched information and budgets.
+This is an internal pre-results manuscript: current real API traces establish parts of
+the execution protocol and expose scorer and attribution failures, but do not establish
+role-learning efficacy, peer specialization, or real-time training gains.
+\end{abstract}
+
+\begin{document}
+\maketitle
+\noindent\textbf{Internal pre-results manuscript.} The scientific release gate is closed.
+All future result cells remain empty until an independently frozen experiment supplies
+the corresponding raw evidence.
+
+\section{Introduction}
+
+An agent can be useful in one collaboration and unsuitable for another. The reason is
+not only a latent capability: the recipient, dependency, artifact contract, and repair
+responsibility determine whether a delivery helps. Existing multi-agent systems commonly
+use fixed roles, a global reputation, or a central selector. Such mechanisms can rank
+agents, but they do not establish whether a particular recipient used a particular
+delivery, whether the delivery caused the later action, or whether a reported repair was
+actually the producer's responsibility.
+
+This paper asks one question: \emph{when can a real recipient's situated judgment become
+reliable evidence for a producer's future responsibility?} The question requires a
+complete causal chain:
+
+\begin{center}
+delivery $\rightarrow$ recipient judgment and use $\rightarrow$
+attributable role evidence $\rightarrow$ pre-execution assignment $\rightarrow$
+later quality and cost.
+\end{center}
+
+A label attached to a message, a final task score, or a change in a role posterior is not
+enough. A useful mechanism must preserve the recipient's local information while keeping
+the producer, recipient, and final evaluator accountable for different parts of the
+outcome. This concern is related to reputation and partner-selection work
+\cite{ren2026reputation,leung2025partner,russell2026partner}, but the central object here
+is the attributable delivery and the later responsibility opportunity.
+
+We contribute a protocol and a candidate update contract rather than an unsupported
+claim of a new optimizer. The protocol fixes selection before execution, selected-only
+delivery, delayed feedback, version binding, responsibility-aware labels, and complete
+cost accounting. The candidate update, called responsibility-aware role evidence (RARE),
+updates public evidence only when a recipient action can be attributed to the producer's
+delivery. Raw acceptance, contextual trust/bandit selection, terminal-only feedback, and
+a pooled controller provide strong alternative explanations. The paper's claim is
+conditional: RARE is useful only if it changes a later legal assignment and improves an
+unseen task stream beyond these matched alternatives.
+
+The current evidence is deliberately limited. Two complete real-API development chains
+show that selection, recipient judgment, source snapshots, consumer execution, and a later
+assignment can be logged together. The same traces show that a four-check consumer score
+missed producer priority defects, that normal recipient integration was mistaken for an
+upstream repair, and that the feedback left the selection probability unchanged. These
+observations determine the next experiment; they are not a positive method result.
+
+\section{Problem and Information Contract}
+
+At decision $t$, $x_t$ is the task context and $C_t$ is the legal set of candidate
+producers. The selector samples $a_t$ before any candidate executes:
+\begin{equation}
+ a_t \sim \pi(\cdot\mid x_t,C_t,S_t), \qquad a_t\in C_t,
+ \label{eq:select}
+\end{equation}
+where $S_t$ is the public role-evidence state available at that time. Only $a_t$ runs.
+The resulting delivery is $o_t$. The real owner or downstream recipient is $j_t$ and
+must differ from $a_t$ for a peer-judgment event. The recipient's observation arrives
+after a delay $d_t$ and is bound to the decision-time candidate version.
+
+The event record is intentionally small:
+\begin{equation}
+ e_t=(x_t,C_t,a_t,o_t,j_t,z_t,u_t,q_t,d_t,c_t),
+ \label{eq:event}
+\end{equation}
+where $z_t$ is the recipient judgment, $u_t$ is the recipient action, $q_t$ is an
+independent producer-contract or final-quality observation, and $c_t$ is the complete
+cost record. The judgment and action are distinct. We use the labels
+\texttt{accept}, \texttt{integrate}, \texttt{upstream\_fix}, \texttt{reject}, and
+\texttt{unknown}; an unknown responsibility is missing information, not a negative label.
+The record also stores the behavior probability $p_t=\pi(a_t\mid x_t,C_t,S_t)$,
+artifact digest, candidate version, feature-schema version, and feedback watermark.
+
+The online learner may read only events whose feedback has arrived. A hidden evaluator,
+future task score, or unexecuted candidate outcome cannot affect the current choice,
+retry, stopping rule, or update. Independent scores may be used after the stream for
+evaluation; they are not online labels unless the benchmark explicitly makes the check
+public and gives it to every condition.
+
+\section{Candidate Mechanism: RARE}
+
+The candidate mechanism maintains public evidence for producer $v$ in context $r$ as
+\begin{equation}
+ R(v,r)=(n(v,r),q(v,r),u(v,r)).
+ \label{eq:state}
+\end{equation}
+Here $n$ is the amount of eligible evidence, $q$ is recipient evidence that can be
+attributed to the producer delivery, and $u$ is evidence that is unresolved or rejected
+by an independent responsibility check. An event increments $q$ only when the recipient
+actually inspected the delivery, performed a traceable action because of it, and the
+action is outside the recipient's ordinary integration responsibility. Otherwise it
+increments $u$ or remains unknown. This rule prevents a consumer's own missing file or
+normal integration work from becoming a producer penalty.
+
+Given a cached representation $h(x,v,r)$, the candidate score is
+\begin{equation}
+ s(v\mid x,r)=w^\top h(x,v,r)+\beta
+ \frac{q(v,r)-u(v,r)}{n(v,r)+\alpha}.
+ \label{eq:score}
+\end{equation}
+The selector uses a predeclared exploration floor and records its propensity. When a
+feedback event arrives, only the matching producer, context, and version receive one
+increment. Delayed events are combined using event-level sufficient statistics; if they
+cannot be combined without order dependence, the implementation replays the sealed event
+window and records the replay watermark. The old-task holdout rejects a write whose
+predeclared risk budget is exceeded.
+
+RARE is a candidate mechanism, not evidence that this formula is optimal. In particular,
+the same event stream is given to a raw-acceptance rule and to a contextual trust or
+bandit baseline. If those baselines reproduce the future selections and utility, the
+paper will report that the responsibility-aware mechanism added no identifiable value.
+RLS, online logistic/SGD, and periodic refitting are training comparators; a small
+incremental state alone is not a novelty claim.
+
+\section{Benchmark and Evaluation Design}
+
+The working benchmark is a TeamBench-derived PeerRoleBench-TB candidate. Its qualification
+requires two structurally different task roots, an independently checked producer
+contract, a genuine recipient dependency, and a root-level development/confirmation split.
+The queue/priority DIST1 root is retained as a protocol diagnostic. The PIPE3 streaming
+root is the conditional second candidate because a parent process can separately check
+producer output, recipient transformation, and downstream adoption. The benchmark is not
+locked until its isolation and scorer qualification pass; renamed seeds are not independent
+task roots.
+
+The first comparison table is fixed before confirmation:
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{p{0.28\columnwidth}p{0.58\columnwidth}}
+\toprule
+Condition & Information and purpose\\
+\midrule
+Random/local uniform & Candidate set only; selection and exploration lower bound.\\
+No update & Initial prior and current task; tests whether learning is needed.\\
+Raw acceptance & Recipient accept/reject without responsibility separation.\\
+Contextual trust/bandit & Same context, judgment, propensity, and budget; strongest simple explanation.\\
+Terminal-only & Independent final outcome without situated recipient evidence.\\
+RARE & Responsibility-aware recipient evidence; candidate mechanism.\\
+Pooled controller & All permitted public history under the same total resource budget.\\
+\bottomrule
+\end{tabular}
+\caption{Predeclared comparison boundary. Extra close methods are added only when their
+implementation is faithful and their information and cost can be matched.}
+\label{tab:baselines}
+\end{table}
+
+We ask four research questions. RQ1 tests whether a recipient judgment predicts independent
+delivery and later-use outcomes beyond raw acceptance and terminal-only feedback. RQ2 tests
+whether public evidence changes a future assignment made before execution by a recipient
+that did not directly judge the candidate. RQ3 measures future prequential utility, full
+cost, update latency, state size, and old-task forgetting under selected-only delayed
+feedback. RQ4 tests responsibility ambiguity, recipient errors, version replacement, and
+task drift.
+
+The primary unit of uncertainty is an independently reset stream. Episodes within a stream
+are dependent and are not treated as independent samples. The confirmation manifest fixes
+task roots, seeds, prompts, models, candidate menus, exploration, token and call budgets,
+failure handling, scorer versions, and the minimum useful effect before any confirmation
+output is observed. All real calls, tool actions, retries, UNKNOWNs, and wall-clock costs
+are streamed to auditable JSONL.
+
+\section{Current Evidence and Limitations}
+
+The completed v3 development run contains two limited real chains and six complete API
+responses. Both recipients declared a repair, both changed only their own integration file,
+and the recorded assignment was consumed by the next choice. The update mapping used the
+same $0.5$ value as the prior, so the probability remained $[0.5,0.5]$ and the selected
+peer did not change. The consumer score passed four checks but a separate diagnostic found
+that both producer priority artifacts violated the public constructor or import contract.
+These are protocol and scorer findings, not a role-learning measurement. The peers also
+shared a fresh model and prompt with no persistent private experience, so their identity
+labels cannot support a claim of learned specialization.
+
+The consequence is a narrow current conclusion: the selected-only execution and audit
+plumbing is usable after responsibility and scorer repairs, while the mechanism's signal,
+peer differentiation, and efficacy remain unestablished. No A800 training run is justified
+until a qualified task root produces an identifiable signal and a matched baseline contract.
+
+\section{Discussion and Falsification}
+
+The paper will withdraw the role-formation claim if a future assignment never changes, if
+the assignment is made only by the directly judging owner, if a same-information trust or
+bandit explains all gains, or if gains disappear at matched total cost. It will report a
+protocol or negative result if recipient judgments are not independently informative. It
+will not reinterpret a posterior change, a higher role entropy, or an isolated terminal
+success as evidence of useful role formation.
+
+This boundary matters for related systems that learn reputations or partner choices
+\cite{ren2026reputation,leung2025partner,yang2025agentnet}. The proposed question is not
+that agents can judge one another. It is whether a legally attributable, recipient-anchored
+judgment changes a later responsibility opportunity and improves a full collaboration
+objective under the same information and budget.
+
+\section{Conclusion}
+
+The current manuscript is a pre-results contract for a single empirical question. It
+defines the observation boundary, a responsibility-aware candidate update, a benchmark
+qualification path, and the strong explanations that must be defeated. The existing real
+traces justify repairing measurement and identity state; they do not justify claiming a
+working online role learner. The next scientific step is therefore a qualified second task
+root and a small, frozen, matched comparison—not a larger model or an unbounded training
+run.
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{references}
+\end{document}
