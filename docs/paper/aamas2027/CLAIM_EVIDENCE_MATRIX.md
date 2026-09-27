@@ -15,6 +15,7 @@
 | scorer 异常不会伪造标签 | 中断、retry、timeout、permission、invalid response、coverage 缺失的预注册 disposition | 零 LLM boundary qualification 全部符合 UNKNOWN/INVALID 规则；独立 hidden scorer IPC 尚未接入 | “failure disposition is qualified as an engineering guard; no scorer/learning result” |
 | scorer truth 与 candidate 隔离 | private expected、公开请求 schema、独立 worker、candidate read denial、response digest | v2 scorer IPC preflight 通过；v1 digest 混淆失败已保留；仍是 fixture truth | “IPC boundary is qualified on a fixture; no real scorer or benchmark result” |
 | producer 交付质量可作为独立标签 | producer-owned artifact、独立 P1–P7 scorer、buggy/correct/near-miss controls、UNKNOWN mutation | seed-0 五格零 LLM 矩阵通过；尚未有 producer-score ledger event、第二 root 或 live runner | “operator scorer contract is a qualified diagnostic candidate; no role-learning label/result” |
+| producer score 可安全进入因果链 | delivery-bound digest、judgment 前 producer-score event、replay constructor、UNKNOWN gate | `ProducerScore` 与 replay 已通过 synthetic/old-ledger regression；尚未接 runner/controller | “producer-score event contract is implemented; no live role update” |
 | recipient outcome 不污染 producer attribution | immutable delivery digest、recipient-owned paths、独立 `Q_p`/`Q_r` | ADR0032 与 private worker 已分开；旧 parent scorer 与 independent consumer worker 的 4/4 vs 0.75 差异仍需扩大诊断 | “producer and recipient outcomes are measured separately in the contract” |
 | peer 具备可学习个体差异 | common init、合法个人经验、matched unseen tasks、identity-renaming control | 当前 peers exchangeable | “当前实验尚未建立该条件” |
 | 真实 API 链路可行 | raw SSE/API、完整 trace、失败与 UNKNOWN 记录 | v3 两条限定链通过 | 可写协议/传输可行性 |

@@ -3,8 +3,8 @@
 This module is a benchmark adapter contract, not a learner and not a result.
 It makes the causal order explicit:
 
-    delivery -> recipient judgment -> recipient action -> terminal outcome
-              -> later assignment
+    delivery -> producer score -> recipient judgment -> recipient action
+              -> terminal outcome -> role evidence -> later assignment
 
 The ledger deliberately keeps the recipient judgment separate from the
 terminal scorer.  A terminal result cannot be used to manufacture a judgment
@@ -120,6 +120,47 @@ class RecipientJudgment:
 
 
 @dataclass(frozen=True)
+class ProducerScore:
+    """Operator-side quality of the immutable producer delivery.
+
+    This is deliberately separate from ``TerminalOutcome``: the latter is
+    downstream recipient integration, while this event is bound only to the
+    producer-owned delivery digest.  An UNKNOWN scorer response is retained
+    for audit but cannot provide a label or a quality value.
+    """
+
+    producer_score_id: str
+    delivery_id: str
+    artifact_sha256: str
+    scorer_version: str
+    status: str
+    label: int | None = None
+    quality_score: float | None = None
+    score_payload_sha256: str | None = None
+    coverage_complete: bool = False
+
+    def __post_init__(self) -> None:
+        if not self.producer_score_id or not self.delivery_id or not self.scorer_version:
+            raise ValueError("producer score identifiers and scorer_version are required")
+        if self.status not in {"PASS", "FAIL", "UNKNOWN"}:
+            raise ValueError("producer score status must be PASS, FAIL, or UNKNOWN")
+        _artifact_hash(self.artifact_sha256)
+        if self.score_payload_sha256 is not None:
+            _artifact_hash(self.score_payload_sha256)
+        if self.status == "UNKNOWN":
+            if self.label is not None or self.quality_score is not None or self.coverage_complete:
+                raise ValueError("UNKNOWN producer score cannot carry a label or quality value")
+        else:
+            expected_label = 1 if self.status == "PASS" else 0
+            if self.label != expected_label or not self.coverage_complete:
+                raise ValueError("complete producer score has inconsistent label/coverage")
+            if self.quality_score is None or not 0.0 <= float(self.quality_score) <= 1.0:
+                raise ValueError("complete producer score requires quality_score in [0, 1]")
+            if self.score_payload_sha256 is None:
+                raise ValueError("complete producer score requires score payload digest")
+
+
+@dataclass(frozen=True)
 class ConsumerAction:
     action_id: str
     delivery_id: str
@@ -213,6 +254,7 @@ class PeerRoleLedger:
         self.events: list[dict[str, Any]] = []
         self.selections: dict[str, PeerSelection] = {}
         self.deliveries: dict[str, Delivery] = {}
+        self.producer_scores: dict[str, ProducerScore] = {}
         self.judgments: dict[str, RecipientJudgment] = {}
         self.actions: dict[str, ConsumerAction] = {}
         self.outcomes: dict[str, TerminalOutcome] = {}
@@ -295,6 +337,21 @@ class PeerRoleLedger:
             raise ValueError("judgment must precede consumer action")
         self.judgments[judgment.judgment_id] = judgment
         self._append("recipient_judgment", judgment.__dict__)
+
+    def record_producer_score(self, score: ProducerScore) -> None:
+        if score.producer_score_id in self.producer_scores:
+            raise ValueError("duplicate producer_score_id")
+        delivery = self.deliveries.get(score.delivery_id)
+        if delivery is None:
+            raise ValueError("producer score must reference a recorded delivery")
+        if score.artifact_sha256 != delivery.artifact_sha256:
+            raise ValueError("producer score must cite the delivered artifact digest")
+        if any(existing.delivery_id == score.delivery_id for existing in self.producer_scores.values()):
+            raise ValueError("one producer score is allowed per delivery")
+        if any(j.delivery_id == score.delivery_id for j in self.judgments.values()):
+            raise ValueError("producer score must precede recipient judgment")
+        self.producer_scores[score.producer_score_id] = score
+        self._append("producer_score", score.__dict__)
 
     def record_action(self, action: ConsumerAction) -> None:
         if action.action_id in self.actions:
@@ -388,6 +445,7 @@ class PeerRoleLedger:
             "event_count": len(self.events),
             "last_hash": self.events[-1]["record_hash"] if self.events else "GENESIS",
             "delivery_count": len(self.deliveries),
+            "producer_score_count": len(self.producer_scores),
             "judgment_count": len(self.judgments),
             "action_count": len(self.actions),
             "outcome_count": len(self.outcomes),

@@ -18,6 +18,7 @@ CHECK_IDS = ("P1_source_parse", "P2_capacity", "P3_ack_receipt",
              "P4_nack_recovery", "P5_priority_type_safety", "P6_priority_order",
              "P7_zero_loss")
 PRODUCER_FILES = ("mqueue/queue.py", "mqueue/priority.py")
+OPERATOR_SUPPORT_FILES = ("mqueue/__init__.py", "mqueue/config.py")
 
 
 def digest_files(files):
@@ -86,11 +87,14 @@ def run_producer_scorer(sources, interfaces, task_id, seed, evidence_dir, log):
     evidence_dir = Path(evidence_dir)
     evidence_dir.mkdir(parents=False, exist_ok=False)
     files = {path: sources[path] for path in PRODUCER_FILES if path in sources}
+    worker_sources = {path: sources[path] for path in (*PRODUCER_FILES, *OPERATOR_SUPPORT_FILES)
+                      if path in sources}
     expected_digest = digest_files(files) if set(files) == set(PRODUCER_FILES) else None
     config = {"scorer_version": SCORER_VERSION, "request_schema": REQUEST_SCHEMA,
               "response_schema": SCHEMA_VERSION, "worker": str(WORKER.relative_to(ROOT)),
               "worker_sha256": hashlib.sha256(WORKER.read_bytes()).hexdigest(),
               "task_id": task_id, "seed": seed, "producer_files": list(PRODUCER_FILES),
+              "worker_visible_files": sorted(worker_sources),
               "artifact_sha256": expected_digest, "queue_name": interfaces["queue"],
               "priority_name": interfaces["priority"],
               "candidate_received_hidden_assertions": False,
@@ -110,7 +114,7 @@ def run_producer_scorer(sources, interfaces, task_id, seed, evidence_dir, log):
     response = None
     transport = {"status": "not_started"}
     try:
-        with SandboxedWorker(sources, evidence_dir / "sandbox", log,
+        with SandboxedWorker(worker_sources, evidence_dir / "sandbox", log,
                              interfaces["queue"], interfaces["priority"], worker_path=WORKER) as worker:
             response = worker.request(request)
         transport = {"status": "complete"}

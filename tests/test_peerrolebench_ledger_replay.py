@@ -21,6 +21,7 @@ from peer_role_protocol_20260925 import (  # noqa: E402
     LaterAssignment,
     PeerRoleLedger,
     PeerSelection,
+    ProducerScore,
     RecipientJudgment,
     RoleEvidenceUpdate,
     TerminalOutcome,
@@ -76,6 +77,7 @@ def test_valid_complete_chain_replays_with_hash_and_lineage():
         "event_count": 15,
         "last_hash": result.snapshot["last_hash"],
         "delivery_count": 2,
+        "producer_score_count": 0,
         "judgment_count": 2,
         "action_count": 2,
         "outcome_count": 2,
@@ -173,3 +175,62 @@ def test_referential_links_cannot_be_rewritten_without_rejection(mutation):
     with pytest.raises(LedgerReplayError) as caught:
         replay_ledger_events(records)
     assert caught.value.code in {"protocol_violation", "out_of_order"}
+
+
+def test_producer_score_is_replayed_before_judgment_and_kept_separate():
+    ledger = PeerRoleLedger(require_selection=True, require_terminal_outcome=True)
+    ledger.record_selection(PeerSelection("s0", "task", 0, "selector", "producer",
+                                         ("peer-a", "peer-b"), "peer-a", 0.5))
+    ledger.record_task_start("task", 0)
+    ledger.record_delivery(Delivery("d0", "task", "peer-a", "recipient", DIGEST,
+                                   "produce-0", 0, "s0"))
+    ledger.record_producer_score(ProducerScore("ps0", "d0", DIGEST, "producer-v1",
+                                              "FAIL", 0, 3 / 7, OUT, True))
+    judgment = RecipientJudgment("j0", "d0", "recipient", "accept", DIGEST)
+    ledger.record_judgment(judgment)
+    action = ConsumerAction("a0", "d0", "recipient", True, DIGEST, OUT, action="use")
+    ledger.record_action(action)
+    ledger.record_outcome(TerminalOutcome("o0", "d0", True, "consumer-v1", 1.0, OUT))
+    ledger.record_evidence_update(RoleEvidenceUpdate("e0", "j0", "a0", "o0", "u1", 1.0))
+    result = replay_ledger_events(json.loads(json.dumps(ledger.events)))
+    assert result.status == "PASS"
+    assert result.snapshot["producer_score_count"] == 1
+
+
+def test_producer_score_after_judgment_is_rejected():
+    ledger = PeerRoleLedger(require_selection=True, require_terminal_outcome=True)
+    ledger.record_selection(PeerSelection("s0", "task", 0, "selector", "producer",
+                                         ("peer-a", "peer-b"), "peer-a", 0.5))
+    ledger.record_task_start("task", 0)
+    ledger.record_delivery(Delivery("d0", "task", "peer-a", "recipient", DIGEST,
+                                   "produce-0", 0, "s0"))
+    ledger.record_judgment(RecipientJudgment("j0", "d0", "recipient", "accept", DIGEST))
+    with pytest.raises(ValueError, match="precede recipient judgment"):
+        ledger.record_producer_score(ProducerScore("ps0", "d0", DIGEST, "producer-v1",
+                                                   "UNKNOWN"))
+
+
+@pytest.mark.parametrize("status,label,quality,coverage", [
+    ("PASS", 1, 1.0, True),
+    ("FAIL", 0, 0.5, True),
+    ("UNKNOWN", None, None, False),
+])
+def test_producer_score_status_contract(status, label, quality, coverage):
+    value = ProducerScore("ps", "d", DIGEST, "producer-v1", status, label, quality,
+                          OUT if status != "UNKNOWN" else None, coverage)
+    assert value.status == status
+    if status == "UNKNOWN":
+        with pytest.raises(ValueError):
+            ProducerScore("bad", "d", DIGEST, "producer-v1", "UNKNOWN", 0, None, None, False)
+
+
+def test_producer_score_digest_must_match_delivery():
+    ledger = PeerRoleLedger(require_selection=True, require_terminal_outcome=True)
+    ledger.record_selection(PeerSelection("s0", "task", 0, "selector", "producer",
+                                         ("peer-a", "peer-b"), "peer-a", 0.5))
+    ledger.record_task_start("task", 0)
+    ledger.record_delivery(Delivery("d0", "task", "peer-a", "recipient", DIGEST,
+                                   "produce-0", 0, "s0"))
+    with pytest.raises(ValueError, match="delivered artifact digest"):
+        ledger.record_producer_score(ProducerScore("ps0", "d0", OUT, "producer-v1",
+                                                   "UNKNOWN"))

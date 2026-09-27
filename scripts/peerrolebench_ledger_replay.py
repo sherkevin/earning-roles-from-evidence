@@ -32,6 +32,7 @@ from peer_role_protocol_20260925 import (  # type: ignore[import-not-found]
     LaterAssignment,
     PeerRoleLedger,
     PeerSelection,
+    ProducerScore,
     RecipientJudgment,
     RoleEvidenceUpdate,
     TerminalOutcome,
@@ -42,6 +43,7 @@ from peer_role_protocol_20260925 import (  # type: ignore[import-not-found]
 EVENT_CONSTRUCTORS = {
     "peer_selection": ("record_selection", PeerSelection, "selection_id"),
     "producer_delivery": ("record_delivery", Delivery, "delivery_id"),
+    "producer_score": ("record_producer_score", ProducerScore, "producer_score_id"),
     "recipient_judgment": ("record_judgment", RecipientJudgment, "judgment_id"),
     "consumer_action": ("record_action", ConsumerAction, "action_id"),
     "terminal_outcome": ("record_outcome", TerminalOutcome, "outcome_id"),
@@ -227,6 +229,9 @@ def replay_ledger_events(
                 if key in delivered_for_episode:
                     raise _record_error(index, "duplicate_delivery", f"task episode {key!r} has multiple deliveries")
                 delivered_for_episode.add(key)
+            elif event_type == "producer_score":
+                if value.delivery_id not in ledger.deliveries:
+                    raise _record_error(index, "out_of_order", "producer_score requires an earlier producer_delivery")
             try:
                 getattr(ledger, method)(value)
             except Exception as exc:

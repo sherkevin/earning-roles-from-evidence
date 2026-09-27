@@ -430,3 +430,12 @@ recipient source exposed a real discrepancy between the older parent behavior sc
 and the independent worker (`payload_and_ack` failure, `0.75`); historical outputs were not edited.
 This is an attribution and scorer-qualification result, not benchmark efficacy, role learning,
 real-time training, or an A800 result.
+
+### 2026-09-27 producer-score event and replay
+
+Added a separate `ProducerScore` protocol event bound to the immutable producer delivery digest.
+The event requires a complete PASS/FAIL label or records UNKNOWN without a label, must precede
+recipient judgment, and is validated by the outer ledger replay module. A saved N02 v3 ledger
+still replays as PASS with zero producer-score events; synthetic complete and mutation cases pass.
+The event is not connected to controller updates or a live runner, so no learning, benchmark,
+real-time training, or A800 claim is made.
