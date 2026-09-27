@@ -99,9 +99,11 @@ trust，论文不得宣称它发现了新的 role-learning 机制。RLS、online
 
 ## 4. 基准与任务资格
 
-主候选是 TeamBench-derived `PeerRoleBench-TB`。PIPE3 seed 0/1/2 的前置检查已经
-通过了 payload、责任路径、hidden score、事件账本和列举的隔离检查；这只是进入真实
-开发流的条件，不是最终 benchmark 冻结。科学资格仍需满足：
+主候选仍是 TeamBench-derived `PeerRoleBench-TB`，但 PIPE3 目前只有静态契约夹具、
+placeholder ledger fixture 和 listed-access canary 的通过记录。原始任务文本直接
+泄露三个 bug 及修复方向，因此不能作为 discovery 或 responsibility attribution 的
+科学任务。项目内的材料适配器已能生成中性 task text 和带 digest 的角色 payload，
+但真实 actor payload dispatch、hidden scorer/ledger 边界和科学资格仍未完成：
 
 * 至少两个结构不同的 task root；当前 PIPE3 是第二 root 的条件性主候选，DIST1
   只保留开发诊断；

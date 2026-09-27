@@ -26,3 +26,4 @@ User decision records and external-operation summaries.
 - [0021 — 独立仓库与 OSS 边界](0021-dedicated-repository-and-oss-boundary.md): earning-roles 使用独立 GitLab 仓库和 `jingwu/earning-roles/` OSS 前缀；benchmark 资产与前缀保持不变。
 - [0022 — 论文主线、候选机制与证据门](0022-paper-mainline-method-and-evaluation-contract.md): 将论文收敛到 situated judgment→role evidence→future responsibility，RARE 仅作为待验证候选机制，明确强基线与证据门。
 - [0023 — PIPE3 前置资格通过但不冻结 benchmark](0023-pipe3-preflight-qualification.md): seed 0/1/2 的任务契约、隐藏评分边界、写权限和账本顺序通过；真实执行、生产安全与最终 benchmark 资格仍开放。
+- [0024 — 收窄 PIPE3 前置检查结论](0024-narrow-pipe3-preflight-conclusion.md): 0023 被独立复核收窄为静态契约夹具和 listed canary；任务文本泄露答案，真实 payload/scorer/ledger 仍未验证。

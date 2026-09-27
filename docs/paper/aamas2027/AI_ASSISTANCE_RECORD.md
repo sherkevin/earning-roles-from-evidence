@@ -342,9 +342,24 @@ selection -> delivery -> judgment -> consumer-action -> independent-score -> rol
 ledger order. The existing listed-access isolation canary passed and its unsandboxed
 control, sandboxed checks, and limitations are retained in the run directory.
 
-The preflight result is `qualified_for_pipe3_preflight=true`, while
-`strict_N01_gate_passed=false`, `benchmark_qualified=false`, and
-`scientific_claim_allowed=false`. The assistant recorded the result in ADR 0023 and the
-N03 task ledger. This does not qualify a production sandbox, hidden scorer, independent
-task-root split, real responsibility signal, or peer-role method; it only permits preparing
-the next versioned real development card.
+The original v1 preflight result was recorded in ADR 0023 as
+`qualified_for_pipe3_preflight=true`, while `strict_N01_gate_passed=false`,
+`benchmark_qualified=false`, and `scientific_claim_allowed=false`. An independent review
+then found that the script had not dispatched actual actor payloads, replayed a real ledger,
+or proved hidden-score/operator-file isolation; it also found that the TeamBench PIPE3
+specification, brief, and generated source reveal Bug 1/2/3 and their fixes. ADR 0024
+supersedes the broad wording without modifying the frozen v1 run. The versioned v2 check
+therefore reports only `contract_fixture_preflight_passed=true`,
+`ledger_fixture_passed=true`, `listed_isolation_canary_passed=true`,
+`task_text_scientific_qualified=false`, and `real_agent_preflight_verified=false`.
+No discovery, responsibility attribution, benchmark qualification, real LLM flow, or A800
+claim is permitted until the task text, runtime payload/export adapter, hidden scorer/ledger
+boundary, and replay checks are repaired.
+
+To repair the specific task-text defect without changing the pinned TeamBench checkout,
+the assistant added a local PIPE3 material adapter and a zero-LLM preflight. It constructs
+neutral task instructions, removes explanatory comments/docstrings from public source,
+keeps the producer/recipient write boundary, records payload digests, and denies hidden
+paths/expected metadata. Seeds 0/1/2 passed the material preflight, but
+`runtime_dispatch_verified=false`; this is material-construction evidence only and does
+not authorize a real agent run or a scientific claim.

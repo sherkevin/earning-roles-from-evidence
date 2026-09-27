@@ -155,9 +155,13 @@ The working benchmark is a TeamBench-derived PeerRoleBench-TB candidate. Its qua
 requires two structurally different task roots, an independently checked producer
 contract, a genuine recipient dependency, and a root-level development/confirmation split.
 The queue/priority DIST1 root is retained as a protocol diagnostic. The PIPE3 streaming
-root is the conditional second candidate because a parent process can separately check
-producer output, recipient transformation, and downstream adoption. The benchmark is not
-locked until its isolation and scorer qualification pass; renamed seeds are not independent
+root remains a conditional second candidate because a parent process can separately check
+producer output, recipient transformation, and downstream adoption. The current PIPE3
+preflight is only a static contract/ledger fixture and listed-access canary; its task text
+also exposes the intended serialization bugs and therefore cannot support discovery or
+responsibility-attribution claims. A local adapter now constructs neutral task text and
+redacted public source payloads, but its runtime dispatch is unverified. The benchmark is not locked until task text, runtime
+payload/scorer isolation, and root-level split all qualify; renamed seeds are not independent
 task roots.
 
 The first comparison table is fixed before confirmation:

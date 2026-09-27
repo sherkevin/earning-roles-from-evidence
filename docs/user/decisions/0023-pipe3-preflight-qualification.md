@@ -1,7 +1,7 @@
 # 0023：PIPE3 通过前置契约与隔离检查，但不冻结 benchmark
 
 日期：2026-09-27。
-状态：Accepted for the next development gate; scientific qualification remains open.
+状态：Superseded by ADR 0024. The historical run is preserved; scientific qualification remains open.
 
 ## 背景
 

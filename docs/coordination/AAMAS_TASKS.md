@@ -1,6 +1,6 @@
 # AAMAS 2027 task ledger
 
-Updated: 2026-09-26 (persistent goal active; N02 attempted budget exhausted; N03 qualification work underway). Owner: scientist; one engineer owns execution. Authority: [REQUIREMENTS.md](../paper/aamas2027/REQUIREMENTS.md), version 1.5.8. This is the sole active AAMAS gap/status/execution ledger. Role TODOs are historical pointers. Bounded read-only critiques inform the current direction; they did not execute experiments.
+Updated: 2026-09-27 (persistent goal active; N02 attempted budget exhausted; PIPE3 preflight wording narrowed by ADR 0024). Owner: scientist; one engineer owns execution. Authority: [REQUIREMENTS.md](../paper/aamas2027/REQUIREMENTS.md), version 1.5.8. This is the sole active AAMAS gap/status/execution ledger. Role TODOs are historical pointers. Bounded read-only critiques inform the current direction; they did not execute experiments.
 
 ## Current checkpoint — 2026-09-26
 
@@ -15,11 +15,13 @@ persistent personal state. See the [N02 analysis](../research/n02_real_closed_lo
 No more N02 inference, no N03 sampling, and no new A800 job at this checkpoint.
 The static second-root scan and parent-side PIPE3 smoke now keep PIPE3 as the
 primary conditional candidate, MULTI3 as fallback, and CROSS5 as a Java-runtime
-fallback; DIST3/NEG3 are closed for this story. Next is one PIPE3 task-contract
-and isolation qualification, still without an LLM call. N03/N04 require
-qualified data and same-information strong baselines; backbone/update remain
-open. These are task prerequisites under the active goal, not an operational
-pause or a scientific result. The dated entries below preserve prior states.
+fallback; DIST3/NEG3 are closed for this story. The versioned PIPE3 check is now
+complete only as a static contract/ledger fixture plus listed canary; its task text
+leaks intended fixes, so real-agent qualification remains open. N03/N04 require
+non-oracular task text, runtime scorer/ledger isolation, qualified data and
+same-information strong baselines; backbone/update remain open. These are task
+prerequisites under the active goal, not an operational pause or a scientific result.
+The dated entries below preserve prior states.
 
 ## Paper mainline checkpoint — 2026-09-27
 
@@ -41,11 +43,12 @@ that RARE, PeerRoleBench-TB, real-time training and A800 performance are unestab
 This closes the writing/claim contract only; N01 qualification, N03 signal design and
 all scientific result gates remain open.
 
-The 2026-09-27 PIPE3 preflight has now passed for seeds 0/1/2: payload visibility,
-mutually exclusive producer/recipient writable paths, hidden score boundary, ordered
-event ledger, and listed isolation canaries. This is a prerequisite pass only. The
-production sandbox boundary, real hidden scorer, responsibility evidence, independent
-root split, and benchmark lock remain open; no LLM, GPU, or N03 efficacy sample started.
+The 2026-09-27 PIPE3 check is now deliberately narrowed by [ADR 0024](../user/decisions/0024-narrow-pipe3-preflight-conclusion.md):
+the versioned v2 run passes only a static contract fixture, a placeholder ledger fixture,
+and listed-access canaries. The task text exposes the three intended bug fixes, so
+`task_text_scientific_qualified=false`; real actor payload dispatch, hidden scorer/ledger
+isolation, responsibility evidence, independent root split, and benchmark lock remain
+open. No LLM, GPU, or N03 efficacy sample started.
 
 ## Active resumption — 2026-09-22
 
@@ -511,5 +514,6 @@ Update order: change requirements only with rationale; update this ledger's gap/
 - [done] N03-pre-d design — [前置设计](../research/n03_preflight_design_20260926.md)明确合法经历、见证通道、义务/指标对应、强基线与停止条件。设计文件已齐，不等于评分/状态实现、任务root和新实验卡合格；N03采样仍未开始。
 - [done] N03-next-a — 对 TeamBench 固定源码做候选 root 静态扫描：PIPE3 保留为主候选，MULTI3 为备选，CROSS5 受 Java consumer 评分缺口限制；DIST3/NEG3 关闭，INFRA2 只作 diagnostic-only。无 generator/candidate/grader/pytest/LLM/GPU 执行；见 [静态筛选报告](../research/n03_teambench_candidate_scan_20260926.md) 及 [结构化结果](../../experiments/logs/n03_teambench_candidate_scan_20260926/results.json)。
 - [done] N03-next-b — PIPE3 seed 0 父进程 contract/scorer smoke test 已完成。v1 暴露 `fromisoformat()` 掩盖 producer 格式缺陷；保留 v1 后，v2 按 spec 加入严格边界，四格矩阵成功分离 producer 质量、recipient 自有工作和 sink adoption。见 [v1/v2资格报告](../research/n03_pipe3_qualification_20260926.md)；无 LLM/pytest/native grader/GPU。
-- [done] N03-next-c — [PIPE3 前置资格](../research/n03_pipe3_task_qualification_20260927.md)完成：seed 0/1/2 的 actor/recipient payload 与互斥可写路径、hidden tests/score 边界、selection→delivery→judgment→action→score→update 账本顺序均通过；已有 isolation canary 接入并通过列举的访问/资源检查。严格 N01、生产级 sandbox、真实 scorer、独立 root split 和 benchmark freeze 仍开放；无 LLM/pytest/native grader/GPU。
+- [done] N03-next-c — [PIPE3 静态前置检查](../research/n03_pipe3_task_qualification_20260927.md)完成：v2 的 TeamBench pin、文件/写权限契约、placeholder ledger fixture 和 listed canary 通过；但任务文本泄露 Bug 1/2/3、Fix、Planner，真实 payload/scorer/ledger runtime 未验证。严格 N01、独立 root split 和 benchmark freeze 仍开放；无 LLM/pytest/native grader/GPU。
+- [done] N03-next-d — PIPE3 材料适配器已完成零 LLM preflight：中性 task text、去解释性源码注释/文档字符串、producer/recipient payload digest 和 hidden/expected deny-list 在 seed 0/1/2 通过；真实 dispatch、IPC 可见性与 scorer/ledger 隔离仍未验证。见 [适配器回执](../../experiments/logs/n03_pipe3_material_preflight_20260927/summary.json)。
 - [done] N03收口复审 — [独立JSON回执](../../experiments/logs/n03_ownership_contract_checks_20260926/independent_review.json)复算预算/用量并核对80项测试源码hash；两项建议已修正：同次调用的集成/返工子成本无法测时为null，fresh-call消费必须带入判断时同一经验快照。数学审查进一步限定同peer下次被选时点与同采样器条件。文档收口PASS不等于N03采样/训练准入。
