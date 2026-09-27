@@ -1,0 +1,93 @@
+{
+  "qualification_version": "dist1-producer-scorer-qualification-v2",
+  "passed": false,
+  "cases": [
+    {
+      "name": "original_buggy",
+      "expected_status": "FAIL",
+      "observed_status": "UNKNOWN",
+      "label": null,
+      "quality_score": null,
+      "response_digest": null,
+      "transport": {
+        "status": "error",
+        "error_type": "RuntimeError",
+        "message": "Worker exited before a complete response"
+      }
+    },
+    {
+      "name": "authored_correct",
+      "expected_status": "PASS",
+      "observed_status": "PASS",
+      "label": 1,
+      "quality_score": 1.0,
+      "response_digest": "bafd280f75570b038792cf88b40d970f072cf155e0225424acb355bd011eb68c",
+      "transport": {
+        "status": "complete"
+      }
+    },
+    {
+      "name": "near_priority_only",
+      "expected_status": "FAIL",
+      "observed_status": "FAIL",
+      "label": 0,
+      "quality_score": 0.5714285714285714,
+      "response_digest": "bdc3ec6cddff152364cf4a1570c304a4ec62a5152a3ea67548ff726f1b3872fa",
+      "transport": {
+        "status": "complete"
+      }
+    },
+    {
+      "name": "near_ack_only",
+      "expected_status": "FAIL",
+      "observed_status": "FAIL",
+      "label": 0,
+      "quality_score": 0.7142857142857143,
+      "response_digest": "af152f4373680af9a2f061afedf604c4d59c683543b90516ba3869fc037059e6",
+      "transport": {
+        "status": "complete"
+      }
+    },
+    {
+      "name": "malformed_source",
+      "expected_status": "UNKNOWN",
+      "observed_status": "UNKNOWN",
+      "label": null,
+      "quality_score": null,
+      "response_digest": "e6cac7656348a167af52464477bde76dd868aa5506b30d075b9d084ffecb4ac9",
+      "transport": {
+        "status": "complete"
+      }
+    }
+  ],
+  "mutations": [
+    {
+      "name": "worker_timeout",
+      "expected_status": "UNKNOWN",
+      "observed_status": "UNKNOWN"
+    },
+    {
+      "name": "artifact_mismatch",
+      "expected_status": "UNKNOWN",
+      "observed_status": "UNKNOWN"
+    },
+    {
+      "name": "coverage_incomplete",
+      "expected_status": "UNKNOWN",
+      "observed_status": "UNKNOWN"
+    },
+    {
+      "name": "unknown_check",
+      "expected_status": "UNKNOWN",
+      "observed_status": "UNKNOWN"
+    }
+  ],
+  "scorer_is_qualified": false,
+  "scientific_claim_allowed": false,
+  "remaining_gates": [
+    "near-miss coverage must be expanded across all producer checks and seeds",
+    "candidate/scorer isolation is non-adversarial Python instrumentation",
+    "producer score must be compared with situated judgment and strong baselines",
+    "second independent structural task root remains open"
+  ]
+}

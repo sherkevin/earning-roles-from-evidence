@@ -14,6 +14,7 @@ WORKER = ROOT / "scripts/peerrolebench_hidden_producer_scorer_worker.py"
 REQUEST_SCHEMA = "dist1-producer-score-request-v1"
 SCHEMA_VERSION = "dist1-producer-score-response-v1"
 SCORER_VERSION = "dist1-producer-objective-v1"
+RPC_SECONDS = 20
 CHECK_IDS = ("P1_source_parse", "P2_capacity", "P3_ack_receipt",
              "P4_nack_recovery", "P5_priority_type_safety", "P6_priority_order",
              "P7_zero_loss")
@@ -95,6 +96,7 @@ def run_producer_scorer(sources, interfaces, task_id, seed, evidence_dir, log):
               "worker_sha256": hashlib.sha256(WORKER.read_bytes()).hexdigest(),
               "task_id": task_id, "seed": seed, "producer_files": list(PRODUCER_FILES),
               "worker_visible_files": sorted(worker_sources),
+              "rpc_timeout_seconds": RPC_SECONDS,
               "artifact_sha256": expected_digest, "queue_name": interfaces["queue"],
               "priority_name": interfaces["priority"],
               "candidate_received_hidden_assertions": False,
@@ -115,7 +117,8 @@ def run_producer_scorer(sources, interfaces, task_id, seed, evidence_dir, log):
     transport = {"status": "not_started"}
     try:
         with SandboxedWorker(worker_sources, evidence_dir / "sandbox", log,
-                             interfaces["queue"], interfaces["priority"], worker_path=WORKER) as worker:
+                             interfaces["queue"], interfaces["priority"], worker_path=WORKER,
+                             rpc_seconds=RPC_SECONDS) as worker:
             response = worker.request(request)
         transport = {"status": "complete"}
     except TimeoutError as exc:

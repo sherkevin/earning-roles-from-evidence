@@ -45,7 +45,7 @@ class SandboxedWorker:
     """
 
     def __init__(self, sources, evidence_dir, log, queue_name="TaskQueue", consumer_name="TaskConsumer",
-                 *, worker_path=None, max_input_bytes=4096):
+                 *, worker_path=None, max_input_bytes=4096, rpc_seconds=None):
         if sys.platform != "darwin":
             raise RuntimeError("This qualified adapter currently supports macOS only")
         if not CLI.is_file() or not PYTHON.is_file():
@@ -57,6 +57,9 @@ class SandboxedWorker:
         if not isinstance(max_input_bytes, int) or max_input_bytes < 4096:
             raise ValueError("max_input_bytes must be an integer >= 4096")
         self.max_input_bytes = max_input_bytes
+        self.rpc_seconds = RPC_SECONDS if rpc_seconds is None else rpc_seconds
+        if not isinstance(self.rpc_seconds, (int, float)) or not 1 <= self.rpc_seconds <= SESSION_SECONDS:
+            raise ValueError("rpc_seconds must be between 1 and SESSION_SECONDS")
         self.evidence = Path(evidence_dir)
         self.evidence.mkdir(parents=True, exist_ok=False)
         self.temp = tempfile.TemporaryDirectory(prefix="peerrole-worker-")
@@ -108,7 +111,7 @@ class SandboxedWorker:
                     "runtime_lock_sha256": sha(RUNTIME / "package-lock.json"),
                     "worker_sha256": sha(worker), "limits_sha256": sha(launcher),
                     "sources": {name: hashlib.sha256(text.encode()).hexdigest() for name, text in sources.items()},
-                    "rpc_timeout_seconds": RPC_SECONDS, "session_timeout_seconds": SESSION_SECONDS,
+                    "rpc_timeout_seconds": self.rpc_seconds, "session_timeout_seconds": SESSION_SECONDS,
                     "max_input_bytes": self.max_input_bytes, "max_response_line_bytes": MAX_LINE_BYTES,
                     "max_total_output_bytes": MAX_OUTPUT_BYTES,
                     "rss_watchdog_bytes": RSS_LIMIT_BYTES, "rss_poll_seconds": 0.1,
@@ -152,7 +155,7 @@ class SandboxedWorker:
         data = (json.dumps(payload, separators=(",", ":")) + "\n").encode()
         if len(data) > self.max_input_bytes:
             raise ValueError(f"Public operation exceeds {self.max_input_bytes}-byte input cap")
-        deadline = min(time.monotonic() + RPC_SECONDS, self.started + SESSION_SECONDS)
+        deadline = min(time.monotonic() + self.rpc_seconds, self.started + SESSION_SECONDS)
         self.log("worker_request", payload)
         try:
             count = os.write(self.proc.stdin.fileno(), data)

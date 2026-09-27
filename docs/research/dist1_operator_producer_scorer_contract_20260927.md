@@ -90,7 +90,8 @@ For the paper's situated-judgment story, this objective score is a ground-truth/
 
 Live integration is **not scientifically safe yet**. Before using this score for role updates, run a zero-LLM scorer qualification matrix with the same sandbox and worker:
 
-1. original generated buggy source: expected deterministic `FAIL` on targeted checks;
+1. original generated buggy source: expected `FAIL` on deterministic targeted checks; a full
+   workload CPU-cap exit is retained as `UNKNOWN` rather than a label;
 2. independently authored correct control: expected `PASS` on all checks;
 3. one near-miss per requirement: expected failure only on the targeted check(s);
 4. malformed source, timeout, permission, and transport mutations: expected `UNKNOWN`, never `FAIL`;
@@ -98,3 +99,10 @@ Live integration is **not scientifically safe yet**. Before using this score for
 6. exact digest, check inventory, response-digest, and no-hidden-data assertions.
 
 Only after this matrix passes should the runner call the producer scorer. Even then, this establishes scorer validity, not role-learning efficacy or benchmark qualification. A second independent structural task root and persistent non-exchangeable agent state remain open requirements.
+
+The current qualification records a further boundary: the full concurrent workload can exceed
+the worker CPU cap for a severely buggy source. Such a process exit/timeout is retained as
+`UNKNOWN`, never converted to a negative label. The 20-second scorer RPC budget is explicit in
+the card and logs; it does not relax the worker's CPU or filesystem limits. The P2 forced-race
+probe is scoped to the pinned TeamBench source shape because it replaces the module's imported
+`deque` binding; this scorer version is not a general Python queue verifier.

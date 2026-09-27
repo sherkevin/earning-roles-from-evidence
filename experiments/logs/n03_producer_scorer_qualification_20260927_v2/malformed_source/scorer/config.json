@@ -1,0 +1,24 @@
+{
+  "scorer_version": "dist1-producer-objective-v1",
+  "request_schema": "dist1-producer-score-request-v1",
+  "response_schema": "dist1-producer-score-response-v1",
+  "worker": "scripts/peerrolebench_hidden_producer_scorer_worker.py",
+  "worker_sha256": "3ed49f730e423032a319e6f22b7c896ade6bea17306016fd2c91c925d51b52bf",
+  "task_id": "DIST1_queue_race",
+  "seed": 0,
+  "producer_files": [
+    "mqueue/queue.py",
+    "mqueue/priority.py"
+  ],
+  "worker_visible_files": [
+    "mqueue/__init__.py",
+    "mqueue/config.py",
+    "mqueue/priority.py",
+    "mqueue/queue.py"
+  ],
+  "artifact_sha256": "e0a7f3b2c7a6193ee06e285317f5cddc62a50ad89c7b4e4664ca567ad0c0a110",
+  "queue_name": "TaskQueue",
+  "priority_name": "PriorityTask",
+  "candidate_received_hidden_assertions": false,
+  "scientific_claim_allowed": false
+}

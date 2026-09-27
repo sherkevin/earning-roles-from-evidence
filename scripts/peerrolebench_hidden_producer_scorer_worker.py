@@ -169,19 +169,34 @@ class Scorer:
         return self.priority_type(**values)
 
     def check_p5(self):
-        a = self.priority_instance(1, {"a": 1}, sequence=0)
-        b = self.priority_instance(1, {"b": 2}, sequence=1)
-        try:
-            _ = a < b
-        except TypeError as exc:
-            raise ContractFailure("equal-priority payloads are not comparable") from exc
+        for first, second in (({"a": 1}, {"b": 2}), ([1, 2], [3, 4])):
+            a = self.priority_instance(1, first, sequence=0)
+            b = self.priority_instance(1, second, sequence=1)
+            try:
+                _ = a < b
+            except TypeError as exc:
+                raise ContractFailure("equal-priority payloads are not comparable") from exc
 
     def check_p6(self):
         values = [self.priority_instance(2, {"id": "late"}, sequence=1),
                   self.priority_instance(0, {"id": "early"}, sequence=0)]
-        ordered = sorted(values)
         names = [field.name for field in fields(self.priority_type)]
+        try:
+            ordered = sorted(values)
+        except TypeError as exc:
+            raise ContractFailure("priority ordering compares payload values") from exc
         assert getattr(ordered[0], names[0]) == 0
+        equal = [self.priority_instance(1, {"id": "late"}, sequence=1),
+                 self.priority_instance(1, {"id": "early"}, sequence=0)]
+        try:
+            equal_ordered = sorted(equal)
+        except TypeError as exc:
+            raise ContractFailure("equal-priority ordering is not deterministic") from exc
+        if "seq" in names or "counter" in names:
+            tie_value = getattr(equal_ordered[0], "seq", getattr(equal_ordered[0], "counter", None))
+            assert tie_value == 0
+        else:
+            assert getattr(equal_ordered[0], names[-1])["id"] == "late"
 
     def check_p7(self):
         self.fresh_queue_module()
@@ -189,6 +204,9 @@ class Scorer:
         queue = self.queue_type(capacity=total + 1)
         messages = list(range(total))
         errors = []
+        seen = []
+        seen_lock = threading.Lock()
+        producers_done = threading.Event()
 
         def put_range(start):
             try:
@@ -197,22 +215,43 @@ class Scorer:
             except Exception as exc:
                 errors.append(exc)
 
+        def consume():
+            idle = 0
+            while not producers_done.is_set() or (queue.size() if hasattr(queue, "size") else True):
+                try:
+                    value = queue.get()
+                except Exception as exc:
+                    errors.append(exc)
+                    return
+                if value is None:
+                    idle += 1
+                    if producers_done.is_set() and idle > 20:
+                        return
+                    continue
+                idle = 0
+                if isinstance(value, tuple):
+                    message, receipt = value
+                    if hasattr(queue, "ack"):
+                        queue.ack(receipt)
+                else:
+                    message = value
+                with seen_lock:
+                    seen.append(message)
+
         threads = [threading.Thread(target=put_range, args=(i * (total // 20),)) for i in range(20)]
+        consumers = [threading.Thread(target=consume) for _ in range(20)]
+        for thread in consumers:
+            thread.start()
         for thread in threads:
             thread.start()
         for thread in threads:
             thread.join(timeout=5)
-        assert not any(thread.is_alive() for thread in threads), "zero-loss producer harness timed out"
+        producers_done.set()
+        for thread in consumers:
+            thread.join(timeout=5)
+        assert not any(thread.is_alive() for thread in threads + consumers), "zero-loss harness timed out"
         assert not errors, "producer failed during zero-loss workload"
-        observed = []
-        for _ in messages:
-            value = queue.get()
-            if isinstance(value, tuple):
-                observed.append(value[0])
-                queue.ack(value[1])
-            else:
-                observed.append(value)
-        assert sorted(observed) == messages
+        assert sorted(seen) == messages
 
     def run(self):
         files = {name: (self.source / name).read_text()

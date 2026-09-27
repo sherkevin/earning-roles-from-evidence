@@ -35,3 +35,5 @@ Goal 修改。
   新增独立 producer-score protocol event、状态/digest 约束和 replay causal order；旧 N02 ledger 回归通过，真实 runner/controller 接入仍开放。
 - [2026-09-27 runner producer-score boundary](task_reports/20260927_runner_producer_score_boundary.md)：
   可选 scorer 已接到 delivery→judgment 边界并写入独立 ProducerScore；旧 N02 不重跑，controller/A800 仍未启动。
+- [2026-09-27 producer scorer mutation matrix](task_reports/20260927_producer_scorer_mutation_matrix.md)：
+  P5/P6/P7 扩展到 dict/list、tie-break、10k/20+20 并发和 response mutation；资源失败保留 UNKNOWN，benchmark/scorer qualification 仍未锁定。

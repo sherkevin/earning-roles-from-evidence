@@ -447,3 +447,13 @@ delivery is sealed and before recipient judgment, it sends only producer-owned s
 operator support to the private scorer, verifies the response, and appends a separate
 `ProducerScore` event. Historical N02 cards do not opt in; no new LLM call, controller update,
 benchmark result, real-time training result, or A800 job was produced in this step.
+
+### 2026-09-27 producer scorer mutation and resource matrix
+
+The producer-only scorer was extended with dict/list payload checks, equal-priority tie-breaks,
+and a 10,000-message workload with 20 producer and 20 consumer threads. A 20-second RPC budget
+was recorded explicitly; the worker CPU cap stayed unchanged. Response mutations for timeout,
+artifact mismatch, incomplete coverage and unknown checks all became `UNKNOWN`. Severe buggy
+sources sometimes hit the CPU cap or worker-exit boundary; those outcomes remain UNKNOWN rather
+than labels. This is still a TeamBench-shaped zero-LLM qualification diagnostic, not benchmark,
+role-learning, real-time-training, or A800 evidence.
