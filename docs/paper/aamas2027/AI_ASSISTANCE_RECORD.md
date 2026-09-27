@@ -580,3 +580,14 @@ JSONL qualification passed. This remains an offline implementation aid:
 producer/action attribution, real PIPE3 ledger/scorer integration, propensity
 and label-mapping choices, RLS/RARE integration, benchmark freeze, and A800
 evidence remain open.
+
+### 2026-09-28 baseline bridge audit
+
+The frozen N02 v3 ledger was checked for lossless mapping into the new policy
+contract. Its 15 records lack versioned candidate menus, context/base-score and
+model/schema snapshots, feedback arrival/delay/provenance, and predeclared
+judgment/terminal label mappings. The bridge therefore returns `NOT_MAPPABLE`
+and refuses policy updates instead of filling defaults. This preserves the old
+ledger as integration evidence and identifies the next PIPE3 requirement: a
+public sidecar bound to the append-only ledger by digest. No API or GPU run was
+started and no scientific claim was made.

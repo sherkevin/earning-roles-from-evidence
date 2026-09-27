@@ -77,3 +77,5 @@ Goal 修改。
   审计 manifest 中每个 baseline 的真实代码、信息边界和可复现实验入口；确认只有 RLS 与部分 synthetic controls 有实现，多个强 baseline/RARE 仍是 OPEN，未冻结 benchmark 或启动 API/A800。
 - [2026-09-28 baseline policy contract](task_reports/20260928_baseline_policy_contract.md)：
   四个实现条件接入统一 selected-only policy 合约，完成版本/频道/UNKNOWN/快照回归；仍是零 API 离线资格，真实 runner、RARE/RLS 和 baseline freeze 继续开放。
+- [2026-09-28 baseline bridge audit](task_reports/20260928_baseline_bridge_audit.md)：
+  对冻结 N02 ledger 做无默认值映射审计；15 条事件缺候选版本/上下文/模型 schema、反馈延迟/provenance 和 label mapping，返回 NOT_MAPPABLE，policy update 保持关闭。
