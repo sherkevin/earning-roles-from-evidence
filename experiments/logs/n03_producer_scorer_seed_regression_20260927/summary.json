@@ -1,0 +1,43 @@
+{
+  "qualification_version": "dist1-producer-scorer-seed-regression-v1",
+  "passed": true,
+  "results": [
+    {
+      "seed": 1,
+      "interfaces": {
+        "queue": "EventQueue",
+        "priority": "PriorityEvent"
+      },
+      "status": "FAIL",
+      "label": 0,
+      "quality_score": 0.2857142857142857,
+      "response_digest": "e72f9bf27800f84ff3f2d1eae7f35820343489a81b88604f4816cf0392eb1d71",
+      "transport": {
+        "status": "complete"
+      }
+    },
+    {
+      "seed": 2,
+      "interfaces": {
+        "queue": "JobQueue",
+        "priority": "PriorityJob"
+      },
+      "status": "UNKNOWN",
+      "label": null,
+      "quality_score": null,
+      "response_digest": null,
+      "transport": {
+        "status": "error",
+        "error_type": "RuntimeError",
+        "message": "Worker exited before a complete response"
+      }
+    }
+  ],
+  "scorer_is_qualified": false,
+  "scientific_claim_allowed": false,
+  "remaining_gates": [
+    "second structural root",
+    "matched baseline matrix",
+    "non-adversarial worker boundary limitation"
+  ]
+}

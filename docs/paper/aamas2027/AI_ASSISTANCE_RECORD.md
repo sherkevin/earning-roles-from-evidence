@@ -457,3 +457,10 @@ artifact mismatch, incomplete coverage and unknown checks all became `UNKNOWN`. 
 sources sometimes hit the CPU cap or worker-exit boundary; those outcomes remain UNKNOWN rather
 than labels. This is still a TeamBench-shaped zero-LLM qualification diagnostic, not benchmark,
 role-learning, real-time-training, or A800 evidence.
+
+### 2026-09-27 producer scorer seed regression
+
+The same scorer was run on DIST1 seeds 1 and 2 to verify generated class/module names were not
+hardcoded to seed 0. Seed 1 returned a complete FAIL; seed 2 hit the worker-exit/resource boundary
+and remained UNKNOWN. Injected timeout, permission, and malformed responses also remained UNKNOWN.
+No real API, GPU, benchmark, or role-update result was produced.
