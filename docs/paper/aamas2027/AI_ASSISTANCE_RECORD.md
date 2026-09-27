@@ -615,6 +615,15 @@ producer cases. This was a zero-API, zero-GPU engineering qualification;
 PIPE3 live integration, benchmark freeze, role efficacy, training and A800
 claims remain open.
 
+### 2026-09-28 PIPE3 policy-sidecar integration contract
+
+The assistant wrote the root-specific integration contract for selection,
+delivery, recipient judgment, terminal outcome, manifest sealing,
+replay-before-update, and atomic snapshot publication. It keeps producer
+correctness, recipient integration, adoption, and UNKNOWN outcomes separate and
+states the shared interface boundary with the tool-select project. This is a
+design artifact only; no API, Nebula, or GPU run was started.
+
 ### 2026-09-28 sidecar manifest attestation
 
 The assistant kept sidecar digests in a separate append-only manifest because

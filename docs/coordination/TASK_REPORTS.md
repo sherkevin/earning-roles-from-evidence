@@ -85,3 +85,5 @@ Goal 修改。
   在完整 strict ledger 之后验证 sidecar 一对一覆盖、固定反馈顺序、UNKNOWN no-update 与 selected producer/version lineage；5 格零 API qualification 通过，真实 runner 仍开放。
 - [2026-09-28 sidecar manifest attestation](task_reports/20260928_policy_sidecar_stream_replay.md)：
   以独立 append-only manifest 保存 sidecar digest，避免把未知字段塞入原生 protocol event；canonical replay qualification 记录 manifest root，真实 episode sealing 仍开放。
+- [2026-09-28 PIPE3 policy-sidecar integration contract](task_reports/20260928_pipe3_policy_sidecar_integration_contract.md)：
+  将 sidecar/manifest/replay 闸门映射到未来 root-specific runner 的 selection、delivery、judgment、terminal 与 snapshot seam；无 API/GPU，真实 runner 仍开放。
