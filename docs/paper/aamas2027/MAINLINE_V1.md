@@ -99,8 +99,9 @@ trust，论文不得宣称它发现了新的 role-learning 机制。RLS、online
 
 ## 4. 基准与任务资格
 
-主候选是 TeamBench-derived `PeerRoleBench-TB`。它只在以下资格门全部通过后才可
-冻结：
+主候选是 TeamBench-derived `PeerRoleBench-TB`。PIPE3 seed 0/1/2 的前置检查已经
+通过了 payload、责任路径、hidden score、事件账本和列举的隔离检查；这只是进入真实
+开发流的条件，不是最终 benchmark 冻结。科学资格仍需满足：
 
 * 至少两个结构不同的 task root；当前 PIPE3 是第二 root 的条件性主候选，DIST1
   只保留开发诊断；

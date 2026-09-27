@@ -41,6 +41,12 @@ that RARE, PeerRoleBench-TB, real-time training and A800 performance are unestab
 This closes the writing/claim contract only; N01 qualification, N03 signal design and
 all scientific result gates remain open.
 
+The 2026-09-27 PIPE3 preflight has now passed for seeds 0/1/2: payload visibility,
+mutually exclusive producer/recipient writable paths, hidden score boundary, ordered
+event ledger, and listed isolation canaries. This is a prerequisite pass only. The
+production sandbox boundary, real hidden scorer, responsibility evidence, independent
+root split, and benchmark lock remain open; no LLM, GPU, or N03 efficacy sample started.
+
 ## Active resumption — 2026-09-22
 
 The current user instruction supersedes the earlier operational pause; see [decision 0001](../user/decisions/0001-resume-real-api-iteration.md). Current work runs in the local `earning-roles` checkout using the named cc-switch provider. The older pause and publication receipts below are historical.
@@ -505,5 +511,5 @@ Update order: change requirements only with rationale; update this ledger's gap/
 - [done] N03-pre-d design — [前置设计](../research/n03_preflight_design_20260926.md)明确合法经历、见证通道、义务/指标对应、强基线与停止条件。设计文件已齐，不等于评分/状态实现、任务root和新实验卡合格；N03采样仍未开始。
 - [done] N03-next-a — 对 TeamBench 固定源码做候选 root 静态扫描：PIPE3 保留为主候选，MULTI3 为备选，CROSS5 受 Java consumer 评分缺口限制；DIST3/NEG3 关闭，INFRA2 只作 diagnostic-only。无 generator/candidate/grader/pytest/LLM/GPU 执行；见 [静态筛选报告](../research/n03_teambench_candidate_scan_20260926.md) 及 [结构化结果](../../experiments/logs/n03_teambench_candidate_scan_20260926/results.json)。
 - [done] N03-next-b — PIPE3 seed 0 父进程 contract/scorer smoke test 已完成。v1 暴露 `fromisoformat()` 掩盖 producer 格式缺陷；保留 v1 后，v2 按 spec 加入严格边界，四格矩阵成功分离 producer 质量、recipient 自有工作和 sink adoption。见 [v1/v2资格报告](../research/n03_pipe3_qualification_20260926.md)；无 LLM/pytest/native grader/GPU。
-- [open] N03-next-c — 固定 PIPE3 的 actor/recipient 可写路径、隐藏评分和事件账本，做一次无 LLM 的任务契约/隔离资格；若失败才转 MULTI3，不扩 N02，不创建 GPU 队列。
+- [done] N03-next-c — [PIPE3 前置资格](../research/n03_pipe3_task_qualification_20260927.md)完成：seed 0/1/2 的 actor/recipient payload 与互斥可写路径、hidden tests/score 边界、selection→delivery→judgment→action→score→update 账本顺序均通过；已有 isolation canary 接入并通过列举的访问/资源检查。严格 N01、生产级 sandbox、真实 scorer、独立 root split 和 benchmark freeze 仍开放；无 LLM/pytest/native grader/GPU。
 - [done] N03收口复审 — [独立JSON回执](../../experiments/logs/n03_ownership_contract_checks_20260926/independent_review.json)复算预算/用量并核对80项测试源码hash；两项建议已修正：同次调用的集成/返工子成本无法测时为null，fresh-call消费必须带入判断时同一经验快照。数学审查进一步限定同peer下次被选时点与同采样器条件。文档收口PASS不等于N03采样/训练准入。

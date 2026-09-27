@@ -329,3 +329,22 @@ resolved citations and no overfull boxes. The compiler first failed in the stand
 editor because the project-relative class file was not mounted; the same source then
 compiled successfully from its project directory. The document checker passed with
 `scientific_readiness=false`, as required by the open qualification and evidence gates.
+
+### 2026-09-27 PIPE3 preflight qualification
+
+Before any new model call, AI assistance implemented and ran
+`scripts/peerrolebench_pipe3_task_qualification.py`. The run generated PIPE3 seeds 0, 1,
+and 2 from the clean pinned TeamBench checkout and wrote its configuration before
+execution. It made zero LLM calls, zero GPU calls, did not invoke pytest or the native
+grader, and did not use the network. The parent verified mutually exclusive producer and
+recipient writable paths, hidden test/expected exclusion from both payloads, and the
+selection -> delivery -> judgment -> consumer-action -> independent-score -> role-update
+ledger order. The existing listed-access isolation canary passed and its unsandboxed
+control, sandboxed checks, and limitations are retained in the run directory.
+
+The preflight result is `qualified_for_pipe3_preflight=true`, while
+`strict_N01_gate_passed=false`, `benchmark_qualified=false`, and
+`scientific_claim_allowed=false`. The assistant recorded the result in ADR 0023 and the
+N03 task ledger. This does not qualify a production sandbox, hidden scorer, independent
+task-root split, real responsibility signal, or peer-role method; it only permits preparing
+the next versioned real development card.
