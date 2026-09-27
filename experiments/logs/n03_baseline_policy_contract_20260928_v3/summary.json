@@ -1,0 +1,304 @@
+{
+  "experiment_id": "n03_baseline_policy_contract_20260928",
+  "passed": true,
+  "scientific_claim_allowed": false,
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "summary": {
+    "uniform": {
+      "decision_count": 2,
+      "updates": 0,
+      "snapshot": {
+        "policy": "uniform",
+        "temperature": 1.0,
+        "updates": 0,
+        "decision_count": 2,
+        "seen_feedback": [
+          "j0",
+          "t0"
+        ],
+        "seen_source_channels": [],
+        "decisions": {
+          "e0": {
+            "context_key": "ctx-a",
+            "selector_id": "selector-1",
+            "candidate_keys": [
+              "peer-a@v1",
+              "peer-b@v1"
+            ],
+            "chosen_key": "peer-b@v1",
+            "base_scores": [
+              0.2,
+              0.8
+            ],
+            "probabilities": [
+              0.5,
+              0.5
+            ],
+            "propensity": 0.5,
+            "state_version": "initial",
+            "encoder_version": "unknown",
+            "feature_schema": "default",
+            "selected_at": 0.0,
+            "captured_features": {}
+          },
+          "e1": {
+            "context_key": "ctx-b",
+            "selector_id": "selector-1",
+            "candidate_keys": [
+              "peer-a@v1",
+              "peer-b@v1"
+            ],
+            "chosen_key": "peer-a@v1",
+            "base_scores": [
+              0.2,
+              0.8
+            ],
+            "probabilities": [
+              0.5,
+              0.5
+            ],
+            "propensity": 0.5,
+            "state_version": "initial",
+            "encoder_version": "unknown",
+            "feature_schema": "default",
+            "selected_at": 0.0,
+            "captured_features": {}
+          }
+        },
+        "state": {}
+      },
+      "exact_propensity": true,
+      "duplicate_feedback_id_deduplicated": true,
+      "unknown_pending_illegal_do_not_update": true
+    },
+    "no_update": {
+      "decision_count": 2,
+      "updates": 0,
+      "snapshot": {
+        "policy": "no_update",
+        "temperature": 1.0,
+        "updates": 0,
+        "decision_count": 2,
+        "seen_feedback": [
+          "j0",
+          "t0"
+        ],
+        "seen_source_channels": [],
+        "decisions": {
+          "e0": {
+            "context_key": "ctx-a",
+            "selector_id": "selector-1",
+            "candidate_keys": [
+              "peer-a@v1",
+              "peer-b@v1"
+            ],
+            "chosen_key": "peer-b@v1",
+            "base_scores": [
+              0.2,
+              0.8
+            ],
+            "probabilities": [
+              0.3543436937742045,
+              0.6456563062257954
+            ],
+            "propensity": 0.6456563062257954,
+            "state_version": "initial",
+            "encoder_version": "unknown",
+            "feature_schema": "default",
+            "selected_at": 0.0,
+            "captured_features": {}
+          },
+          "e1": {
+            "context_key": "ctx-b",
+            "selector_id": "selector-1",
+            "candidate_keys": [
+              "peer-a@v1",
+              "peer-b@v1"
+            ],
+            "chosen_key": "peer-a@v1",
+            "base_scores": [
+              0.2,
+              0.8
+            ],
+            "probabilities": [
+              0.3543436937742045,
+              0.6456563062257954
+            ],
+            "propensity": 0.3543436937742045,
+            "state_version": "initial",
+            "encoder_version": "unknown",
+            "feature_schema": "default",
+            "selected_at": 0.0,
+            "captured_features": {}
+          }
+        },
+        "state": {}
+      },
+      "exact_propensity": true,
+      "duplicate_feedback_id_deduplicated": true,
+      "unknown_pending_illegal_do_not_update": true
+    },
+    "terminal_only": {
+      "decision_count": 2,
+      "updates": 1,
+      "snapshot": {
+        "policy": "terminal_only",
+        "temperature": 1.0,
+        "updates": 1,
+        "decision_count": 2,
+        "seen_feedback": [
+          "j0",
+          "t0"
+        ],
+        "seen_source_channels": [
+          [
+            "e0",
+            "terminal_outcome"
+          ]
+        ],
+        "decisions": {
+          "e0": {
+            "context_key": "ctx-a",
+            "selector_id": "selector-1",
+            "candidate_keys": [
+              "peer-a@v1",
+              "peer-b@v1"
+            ],
+            "chosen_key": "peer-b@v1",
+            "base_scores": [
+              0.2,
+              0.8
+            ],
+            "probabilities": [
+              0.3543436937742045,
+              0.6456563062257954
+            ],
+            "propensity": 0.6456563062257954,
+            "state_version": "initial",
+            "encoder_version": "unknown",
+            "feature_schema": "default",
+            "selected_at": 0.0,
+            "captured_features": {}
+          },
+          "e1": {
+            "context_key": "ctx-b",
+            "selector_id": "selector-1",
+            "candidate_keys": [
+              "peer-a@v1",
+              "peer-b@v1"
+            ],
+            "chosen_key": "peer-a@v1",
+            "base_scores": [
+              0.2,
+              0.8
+            ],
+            "probabilities": [
+              0.4337256058045608,
+              0.5662743941954392
+            ],
+            "propensity": 0.4337256058045608,
+            "state_version": "initial",
+            "encoder_version": "unknown",
+            "feature_schema": "default",
+            "selected_at": 0.0,
+            "captured_features": {}
+          }
+        },
+        "state": {
+          "prior": 1.0,
+          "counts": {
+            "peer-b@v1": [
+              1.0,
+              2.0
+            ]
+          }
+        }
+      },
+      "exact_propensity": true,
+      "duplicate_feedback_id_deduplicated": true,
+      "unknown_pending_illegal_do_not_update": true
+    },
+    "contextual_trust": {
+      "decision_count": 2,
+      "updates": 1,
+      "snapshot": {
+        "policy": "contextual_trust",
+        "temperature": 1.0,
+        "updates": 1,
+        "decision_count": 2,
+        "seen_feedback": [
+          "j0",
+          "t0"
+        ],
+        "seen_source_channels": [
+          [
+            "e0",
+            "recipient_judgment"
+          ]
+        ],
+        "decisions": {
+          "e0": {
+            "context_key": "ctx-a",
+            "selector_id": "selector-1",
+            "candidate_keys": [
+              "peer-a@v1",
+              "peer-b@v1"
+            ],
+            "chosen_key": "peer-b@v1",
+            "base_scores": [
+              0.2,
+              0.8
+            ],
+            "probabilities": [
+              0.3543436937742045,
+              0.6456563062257954
+            ],
+            "propensity": 0.6456563062257954,
+            "state_version": "initial",
+            "encoder_version": "unknown",
+            "feature_schema": "default",
+            "selected_at": 0.0,
+            "captured_features": {}
+          },
+          "e1": {
+            "context_key": "ctx-b",
+            "selector_id": "selector-1",
+            "candidate_keys": [
+              "peer-a@v1",
+              "peer-b@v1"
+            ],
+            "chosen_key": "peer-a@v1",
+            "base_scores": [
+              0.2,
+              0.8
+            ],
+            "probabilities": [
+              0.3543436937742045,
+              0.6456563062257954
+            ],
+            "propensity": 0.3543436937742045,
+            "state_version": "initial",
+            "encoder_version": "unknown",
+            "feature_schema": "default",
+            "selected_at": 0.0,
+            "captured_features": {}
+          }
+        },
+        "state": {
+          "prior": 1.0,
+          "counts": {
+            "ctx-a\u001fpeer-b@v1": [
+              2.0,
+              1.0
+            ]
+          }
+        }
+      },
+      "exact_propensity": true,
+      "duplicate_feedback_id_deduplicated": true,
+      "unknown_pending_illegal_do_not_update": true
+    }
+  },
+  "ended_at_utc": "2026-09-27T16:13:47.871652+00:00"
+}

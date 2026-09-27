@@ -11,10 +11,10 @@
 ```text
 python3 -m pytest -q tests/test_peerrolebench_baseline_policies.py
 python3 scripts/peerrolebench_baseline_policy_qualification.py \
-  --out-dir experiments/logs/n03_baseline_policy_contract_20260928
+  --out-dir experiments/logs/n03_baseline_policy_contract_20260928_v3
 ```
 
-单测结果为 `8 passed`；qualification summary 为 `passed=true`、`real_api_calls=0`、`gpu_jobs=0`。原始配置、逐事件 JSONL 和 summary 在 `experiments/logs/n03_baseline_policy_contract_20260928/`。
+单测结果为 `8 passed`；qualification summary 为 `passed=true`、`real_api_calls=0`、`gpu_jobs=0`。提交 `86f923d` 后的精确代码版本、原始配置、逐事件 JSONL 和 summary 在 `experiments/logs/n03_baseline_policy_contract_20260928_v3/`；同任务较早的未带版本后缀运行记录保留但不替代 v3。
 
 ## 结果
 

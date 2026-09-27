@@ -52,10 +52,10 @@ python3 -m pytest -q tests/test_peerrolebench_baseline_policies.py
 
 ```text
 scripts/peerrolebench_baseline_policy_qualification.py \
-  --out-dir experiments/logs/n03_baseline_policy_contract_20260928
+  --out-dir experiments/logs/n03_baseline_policy_contract_20260928_v3
 ```
 
-它写入 config/raw/summary，结果为 `passed=true`、`real_api_calls=0`、`gpu_jobs=0`、`scientific_claim_allowed=false`。该结果只证明接口行为，不证明 baseline 在 PeerRoleBench 上公平或有效。
+它写入 config/raw/summary，结果为 `passed=true`、`real_api_calls=0`、`gpu_jobs=0`、`scientific_claim_allowed=false`；配置记录的代码 commit 为 `86f923d`。该结果只证明接口行为，不证明 baseline 在 PeerRoleBench 上公平或有效。更早的未带版本后缀目录保留为同一任务的初次运行记录。
 
 ## 尚未解决的科学门
 
