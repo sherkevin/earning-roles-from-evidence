@@ -73,3 +73,5 @@ Goal 修改。
   新增不执行候选代码的 root-specific material/action/scorer-view seam，14 项 PIPE3 单测通过；真实 runner 和 API 仍未启动。
 - [2026-09-27 decision 0037 mainline invariants](task_reports/20260927_decision_0037_mainline_invariants.md)：
   固化故事线、benchmark/baseline 证据要求与创新点不可静默降级规则；本任务不改变 Goal 标准。
+- [2026-09-27 baseline implementation audit](task_reports/20260927_baseline_implementation_audit.md)：
+  审计 manifest 中每个 baseline 的真实代码、信息边界和可复现实验入口；确认只有 RLS 与部分 synthetic controls 有实现，多个强 baseline/RARE 仍是 OPEN，未冻结 benchmark 或启动 API/A800。

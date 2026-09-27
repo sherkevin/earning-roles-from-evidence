@@ -556,3 +556,14 @@ keeps PIPE3 delivery attachment, action permissions and three scorer views expli
 calling an API or executing candidate code. Its tests pass on exact source ownership and
 read-only mutations. This is a contract seam only; the adapter is not yet connected to
 `call_api`, a live ledger episode, hidden scorer process separation, or an online update.
+
+### 2026-09-27 baseline implementation audit
+
+The candidate baseline manifest was audited against the actual reference runtime and the
+current root-specific runner seam. `OnlineRLSHead` and a few synthetic uniform/no-feedback
+controls are executable reference components; terminal feedback has a protocol adapter but
+not a fair peer-role policy. Raw acceptance, same-information contextual trust, pooled control,
+RARE, online logistic, and periodic refit do not yet have a common event-stream implementation.
+The audit therefore keeps the manifest and benchmark unfrozen, preserves historical synthetic
+logs as implementation evidence only, and does not start a new API or A800 run. The next task
+is a parity-checked `BaselinePolicy` interface before a new live chain.
