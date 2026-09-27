@@ -55,9 +55,11 @@ canary 也不等于 production sandbox，且没有解决候选与 native scorer 
 它不改写 TeamBench checkout，而是在本项目的边界内生成中性任务说明，移除公开源码
 中的解释性注释/文档字符串，保留可执行接口、producer/recipient 写权限和支持文件，
 并把 payload digest 写入 manifest。零 LLM 的三 seed preflight 记录在
-[`n03_pipe3_material_preflight_20260927`](../../experiments/logs/n03_pipe3_material_preflight_20260927/)。
+[`v1`](../../experiments/logs/n03_pipe3_material_preflight_20260927/) and the corrected
+[`v2`](../../experiments/logs/n03_pipe3_material_preflight_20260927_v2/) runs record this
+preflight.
 
-该适配器的 `material_preflight_passed=true` 只说明材料构造没有发现 oracle 文本、
-hidden path 或 expected 元数据泄露；`runtime_dispatch_verified=false` 仍然成立。
+该适配器 v2 的 `material_preflight_passed=true` 只说明材料构造没有发现 oracle 文本、
+hidden path 或 expected bug-id 元数据泄露；`runtime_dispatch_verified=false` 仍然成立。
 候选进程实际能看到什么、operator ledger 和 hidden scorer 是否在独立边界内，必须由
 下一版真实 runner 的 IPC/可见性 probe 证明。

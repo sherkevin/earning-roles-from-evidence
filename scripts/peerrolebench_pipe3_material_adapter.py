@@ -133,6 +133,8 @@ def build_materials(generated: Any) -> dict[str, Any]:
     payloads = {"producer": producer, "recipient": recipient}
     payload_blob = json.dumps(payloads, ensure_ascii=False, sort_keys=True)
     hidden_leaks = [path for path in HIDDEN_PATHS if path.lower() in payload_blob.lower()]
+    expected_bug_ids = [str(value) for value in expected.get("bugs_fixed", [])]
+    expected_metadata_in_payload = any(value in payload_blob for value in expected_bug_ids)
     return {
         "agent_payloads": payloads,
         "manifest": {
@@ -150,7 +152,8 @@ def build_materials(generated: Any) -> dict[str, Any]:
             "source_comment_oracle_patterns": source_leaks,
             "hidden_path_leaks": hidden_leaks,
             "scientific_task_text_qualified": not text_leaks and not source_leaks and not hidden_leaks,
-            "expected_metadata_in_payload": False,
+            "expected_bug_ids_not_in_payload": not expected_metadata_in_payload,
+            "expected_metadata_in_payload": expected_metadata_in_payload,
             "runtime_dispatch_verified": False,
         },
     }

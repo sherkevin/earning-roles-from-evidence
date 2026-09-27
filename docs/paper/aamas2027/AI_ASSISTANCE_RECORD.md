@@ -361,5 +361,6 @@ the assistant added a local PIPE3 material adapter and a zero-LLM preflight. It 
 neutral task instructions, removes explanatory comments/docstrings from public source,
 keeps the producer/recipient write boundary, records payload digests, and denies hidden
 paths/expected metadata. Seeds 0/1/2 passed the material preflight, but
-`runtime_dispatch_verified=false`; this is material-construction evidence only and does
+The corrected v2 preflight also checks that generated bug IDs are absent from payloads;
+`runtime_dispatch_verified=false` remains true. This is material-construction evidence only and does
 not authorize a real agent run or a scientific claim.

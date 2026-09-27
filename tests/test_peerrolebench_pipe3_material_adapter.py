@@ -27,6 +27,7 @@ def test_redacted_pipe3_material_is_parseable_and_non_oracular():
         assert manifest["task_text_oracle_patterns"] == []
         assert manifest["source_comment_oracle_patterns"] == []
         assert manifest["hidden_path_leaks"] == []
+        assert manifest["expected_bug_ids_not_in_payload"] is True
         assert manifest["expected_metadata_in_payload"] is False
         assert manifest["runtime_dispatch_verified"] is False
         assert set(materials["agent_payloads"]) == {"producer", "recipient"}
