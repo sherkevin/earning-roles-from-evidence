@@ -11,10 +11,10 @@
 ```text
 python3 -m pytest -q tests/test_peerrolebench_policy_sidecar.py
 python3 scripts/peerrolebench_policy_sidecar_qualification.py \
-  --out-dir experiments/logs/n03_policy_sidecar_qualification_20260928_v2
+  --out-dir experiments/logs/n03_policy_sidecar_qualification_20260928_v3
 ```
 
-测试通过；qualification `passed=true`，`sidecar_version=peerrole-policy-sidecar-v2`，eligible feedback 可转为 policy event，UNKNOWN feedback 不转，事件类型/ID 绑定检查通过，0 API、0 GPU。原始 JSONL 在 qualification 目录。
+测试通过；qualification `passed=true`，`sidecar_version=peerrole-policy-sidecar-v2`，eligible feedback 可转为 policy event，UNKNOWN feedback 不转，事件类型/ID 绑定检查通过，0 API、0 GPU。提交 `3b6644e` 的原始 JSONL 在 qualification 目录。
 
 ## Goal 对照
 

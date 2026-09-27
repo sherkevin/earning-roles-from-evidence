@@ -36,10 +36,10 @@ sidecar qualification：
 
 ```text
 python3 scripts/peerrolebench_policy_sidecar_qualification.py \
-  --out-dir experiments/logs/n03_policy_sidecar_qualification_20260928_v2
+  --out-dir experiments/logs/n03_policy_sidecar_qualification_20260928_v3
 ```
 
-结果为 `passed=true`、`sidecar_version=peerrole-policy-sidecar-v2`、eligible feedback 可转换、UNKNOWN feedback 不转换，且三类事件的 event type/id 绑定检查通过；`real_api_calls=0`、`gpu_jobs=0`、`scientific_claim_allowed=false`。原始 config/raw/summary 已记录。
+结果为 `passed=true`、`sidecar_version=peerrole-policy-sidecar-v2`、eligible feedback 可转换、UNKNOWN feedback 不转换，且三类事件的 event type/id 绑定检查通过；`real_api_calls=0`、`gpu_jobs=0`、`scientific_claim_allowed=false`。提交 `3b6644e` 的 config/raw/summary 已记录。
 
 ## 尚未通过的门
 
