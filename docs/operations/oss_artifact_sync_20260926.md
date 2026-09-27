@@ -8,6 +8,8 @@ This project can archive reproducibility artifacts in the following OSS region:
 - Region: `cn-zhangjiakou`
 - Archive bucket: `ai4sci-develop-storage`
 - Fast working bucket: `ai4sci-develop-fast`
+- Canonical project prefix: `jingwu/earning-roles/`
+- Historical prefix (migrated and removed): `earning-roles/`
 
 The AccessKey ID and AccessKey Secret were supplied out of band for this session. They are intentionally absent from this document, experiment logs, manifests, shell history, and Git. Upload commands receive them only through ephemeral process variables and are not retained after synchronization.
 
@@ -26,7 +28,7 @@ HTTPS_PROXY=http://127.0.0.1:18080 \
 HTTP_PROXY=http://127.0.0.1:18080 \
 ALL_PROXY=http://127.0.0.1:18080 \
 NO_PROXY= \
-ossutil cp <local-path> oss://ai4sci-develop-storage/earning-roles/aamas2027/<date>/ \
+ossutil cp <local-path> oss://ai4sci-develop-storage/jingwu/earning-roles/aamas2027/<date>/ \
   --endpoint oss-cn-zhangjiakou.aliyuncs.com \
   --region cn-zhangjiakou --proxy env \
   --access-key-id "$OSS_AK" --access-key-secret "$OSS_SK" \
@@ -37,7 +39,7 @@ ossutil cp <local-path> oss://ai4sci-develop-storage/earning-roles/aamas2027/<da
 
 Upload only compact, project-authored evidence needed for review or reproduction: configuration, raw/processed result files, hashes, reports, ADRs, and paper-source artifacts. Do not upload credentials, third-party source clones, nested benchmark workspaces, private keys, or unreviewed user data. Every upload must have a local manifest containing relative path, byte size, and SHA-256 before transfer; remote object listing is checked after transfer.
 
-The current synchronization uses a date-stamped immutable archive prefix and a separate small active prefix when needed. Existing historical objects are not overwritten by this workflow.
+The current synchronization uses a date-stamped immutable archive prefix and a separate small active prefix when needed. Existing historical objects are not overwritten by this workflow. The 2026-09-27 repository separation migrated the prior `earning-roles/` objects to `jingwu/earning-roles/`; the migration evidence is in `experiments/logs/oss_prefix_migration_20260927/`. Historical synchronization logs retain their original paths as evidence and are not rewritten.
 
 ## Security observation
 
