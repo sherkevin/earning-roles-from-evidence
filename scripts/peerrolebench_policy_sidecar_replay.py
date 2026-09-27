@@ -20,6 +20,7 @@ from peerrolebench_policy_sidecar import (
     PolicySidecarBridge,
     bind_to_ledger_record,
 )
+from peerrolebench_policy_sidecar_manifest import validate_manifest
 
 
 @dataclass(frozen=True)
@@ -53,6 +54,7 @@ def replay_policy_sidecars(
     ledger_events: Iterable[Mapping[str, Any]],
     sidecar_rows: Iterable[SidecarRow],
     policy_factory: Callable[[], BaselinePolicy],
+    manifest: Iterable[Mapping[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Replay a sidecar stream under a strict ledger and update gate.
 
@@ -140,13 +142,35 @@ def replay_policy_sidecars(
             "final_snapshot": None,
         }
 
+    manifest_root = None
+    if manifest is not None:
+        manifest_rows = [
+            {
+                "ledger_record_hash": row.sidecar.payload()["ledger_record_hash"],
+                "protocol_event_type": row.sidecar.protocol_event_type,
+                "protocol_event_id": row.sidecar.protocol_event_id,
+                "sidecar_digest": row.sidecar.sidecar_digest,
+            }
+            for row in rows
+        ]
+        try:
+            manifest_root = validate_manifest(manifest, manifest_rows)
+        except ValueError as exc:
+            return {
+                "status": "INVALID", "ledger_status": replay.status, "sidecar_status": "INVALID",
+                "update_allowed": False, "update_count": 0, "unknown_count": 0,
+                "duplicate_count": 0, "ignored_channel_count": 0, "pending_count": 0,
+                "error": str(exc), "final_snapshot": None,
+            }
+
     # An incomplete/UNKNOWN canonical ledger is never usable for policy state,
     # even if its sidecars happen to validate individually.
     if replay.status != "PASS":
         return {
             "status": "UNKNOWN", "ledger_status": replay.status, "sidecar_status": "PASS",
             "update_allowed": False, "update_count": 0, "unknown_count": 0,
-            "duplicate_count": 0, "ignored_channel_count": 0, "pending_count": 0, "final_snapshot": None,
+            "duplicate_count": 0, "ignored_channel_count": 0, "pending_count": 0,
+            "manifest_root": manifest_root, "final_snapshot": None,
         }
 
     decisions.sort(key=lambda item: item[0])
@@ -164,7 +188,7 @@ def replay_policy_sidecars(
                 "status": "INVALID", "ledger_status": replay.status, "sidecar_status": "INVALID",
                 "update_allowed": False, "update_count": 0, "unknown_count": 0,
                 "duplicate_count": 0, "ignored_channel_count": 0, "pending_count": 0,
-                "error": str(exc), "final_snapshot": None,
+                "error": str(exc), "manifest_root": manifest_root, "final_snapshot": None,
             }
         selection_by_protocol[selection.protocol_event_id] = selection
 
@@ -181,7 +205,8 @@ def replay_policy_sidecars(
                 "status": "INVALID", "ledger_status": replay.status, "sidecar_status": "INVALID",
                 "update_allowed": False, "update_count": 0, "unknown_count": unknown_count,
                 "duplicate_count": duplicate_count, "pending_count": pending_count,
-                "error": "feedback references unknown protocol selection", "final_snapshot": None,
+                "error": "feedback references unknown protocol selection", "manifest_root": manifest_root,
+                "final_snapshot": None,
             }
         expected_delay = float(event.arrived_at) - float(selection.selected_at)
         if event.arrived_at < selection.selected_at or abs(expected_delay - float(event.delay)) > 1e-9:
@@ -189,7 +214,8 @@ def replay_policy_sidecars(
                 "status": "INVALID", "ledger_status": replay.status, "sidecar_status": "INVALID",
                 "update_allowed": False, "update_count": 0, "unknown_count": unknown_count,
                 "duplicate_count": duplicate_count, "pending_count": pending_count,
-                "error": "feedback arrival/delay is inconsistent with selection time", "final_snapshot": None,
+                "error": "feedback arrival/delay is inconsistent with selection time",
+                "manifest_root": manifest_root, "final_snapshot": None,
             }
         if event.disposition != "eligible" or event.provenance != "public":
             unknown_count += 1
@@ -205,7 +231,8 @@ def replay_policy_sidecars(
                 "status": "INVALID", "ledger_status": replay.status, "sidecar_status": "INVALID",
                 "update_allowed": False, "update_count": 0, "unknown_count": unknown_count,
                 "duplicate_count": duplicate_count, "ignored_channel_count": ignored_channel_count,
-                "pending_count": pending_count, "error": str(exc), "final_snapshot": None,
+                "pending_count": pending_count, "error": str(exc), "manifest_root": manifest_root,
+                "final_snapshot": None,
             }
         if not changed and seen_channel:
             duplicate_count += 1
@@ -216,7 +243,7 @@ def replay_policy_sidecars(
         "update_allowed": True, "update_count": int(policy.updates),
         "unknown_count": unknown_count, "duplicate_count": duplicate_count,
         "ignored_channel_count": ignored_channel_count,
-        "pending_count": pending_count, "final_snapshot": snapshot,
+        "pending_count": pending_count, "manifest_root": manifest_root, "final_snapshot": snapshot,
     }
 
 

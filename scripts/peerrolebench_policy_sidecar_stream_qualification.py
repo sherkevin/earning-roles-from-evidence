@@ -21,6 +21,7 @@ from peer_role_protocol_20260925 import (  # noqa: E402
 )
 from peerrolebench_baseline_policies import CandidateRef, TerminalOnlyPolicy  # noqa: E402
 from peerrolebench_policy_sidecar import DecisionSidecar, FeedbackSidecar  # noqa: E402
+from peerrolebench_policy_sidecar_manifest import build_manifest  # noqa: E402
 from peerrolebench_policy_sidecar_replay import SidecarRow, replay_policy_sidecars  # noqa: E402
 
 
@@ -102,6 +103,18 @@ def sidecars(events: list[dict]) -> dict[str, SidecarRow]:
     }
 
 
+def manifest_for(rows: list[SidecarRow]) -> list[dict[str, str]]:
+    return build_manifest([
+        {
+            "ledger_record_hash": row.sidecar.payload()["ledger_record_hash"],
+            "protocol_event_type": row.sidecar.protocol_event_type,
+            "protocol_event_id": row.sidecar.protocol_event_id,
+            "sidecar_digest": row.sidecar.sidecar_digest,
+        }
+        for row in rows
+    ])
+
+
 def run(out_dir: Path) -> dict:
     out_dir.mkdir(parents=True, exist_ok=True)
     events = canonical_ledger()
@@ -130,33 +143,36 @@ def run(out_dir: Path) -> dict:
             handle.flush()
 
     cases: list[dict] = []
-    canonical = replay_policy_sidecars(
-        events, [rows["selection"], rows["judgment"], rows["outcome"]], TerminalOnlyPolicy,
-    )
+    canonical_rows = [rows["selection"], rows["judgment"], rows["outcome"]]
+    canonical_manifest = manifest_for(canonical_rows)
+    canonical = replay_policy_sidecars(events, canonical_rows, TerminalOnlyPolicy, canonical_manifest)
     cases.append({"case": "canonical", "result": canonical,
                   "expectation_met": canonical["status"] == "PASS" and canonical["update_count"] == 1
                   and canonical["unknown_count"] == 1})
     permuted = replay_policy_sidecars(
-        events, [rows["selection"], rows["outcome"], rows["judgment"]], TerminalOnlyPolicy,
+        events, [rows["selection"], rows["outcome"], rows["judgment"]], TerminalOnlyPolicy, canonical_manifest,
     )
     cases.append({"case": "feedback_permuted", "result": permuted,
                   "expectation_met": permuted["status"] == "PASS"
                   and permuted["final_snapshot"] == canonical["final_snapshot"]})
     duplicate = replay_policy_sidecars(
-        events, [rows["selection"], rows["judgment"], rows["outcome"], rows["outcome"]], TerminalOnlyPolicy,
+        events, [rows["selection"], rows["judgment"], rows["outcome"], rows["outcome"]],
+        TerminalOnlyPolicy, canonical_manifest,
     )
     cases.append({"case": "duplicate_sidecar", "result": duplicate,
                   "expectation_met": duplicate["status"] == "INVALID" and duplicate["update_count"] == 0})
     truncated = events[:next(i for i, row in enumerate(events) if row["event_type"] == "terminal_outcome")]
     truncated_rows = [rows["selection"], rows["judgment"]]
-    truncated_result = replay_policy_sidecars(truncated, truncated_rows, TerminalOnlyPolicy)
+    truncated_result = replay_policy_sidecars(truncated, truncated_rows, TerminalOnlyPolicy,
+                                              manifest_for(truncated_rows))
     cases.append({"case": "truncated_ledger_unknown", "result": truncated_result,
                   "expectation_met": truncated_result["status"] == "UNKNOWN"
                   and truncated_result["update_allowed"] is False and truncated_result["update_count"] == 0})
     wrong = replace(rows["outcome"].sidecar, producer_id="peer-c")
     wrong_row = SidecarRow(wrong, rows["outcome"].ledger_record, wrong.sidecar_digest)
+    wrong_manifest = manifest_for([rows["selection"], rows["judgment"], wrong_row])
     wrong_result = replay_policy_sidecars(
-        events, [rows["selection"], rows["judgment"], wrong_row], TerminalOnlyPolicy,
+        events, [rows["selection"], rows["judgment"], wrong_row], TerminalOnlyPolicy, wrong_manifest,
     )
     cases.append({"case": "wrong_producer", "result": wrong_result,
                   "expectation_met": wrong_result["status"] == "INVALID" and wrong_result["update_count"] == 0})
