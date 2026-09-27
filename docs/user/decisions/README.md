@@ -34,3 +34,4 @@ User decision records and external-operation summaries.
 - [0029 — runner replay before update](0029-runner-replay-before-update.md): 真实 runner 在 role update 与 episode summary 前调用 parent replay gate；中间态保持 UNKNOWN，非法链停止。
 - [0030 — unknown scorer boundary](0030-unknown-scorer-boundary.md): scorer 超时、权限、传输、非法 JSON 或覆盖不完整时只能是 UNKNOWN，不产生 label/evidence/update。
 - [0031 — independent scorer IPC preflight](0031-independent-scorer-ipc-preflight.md): scorer 的 private truth 留在独立 worker，candidate 只能拿公开请求；delivery、ledger 与 response digest 分开记录。
+- [0032 — producer score separate from recipient outcome](0032-producer-score-separate-from-recipient-outcome.md): producer delivery quality 与 recipient integration outcome 分开计量。

@@ -29,3 +29,5 @@ Goal 修改。
   用保存的真实 ledger 验证中断、retry 和 scorer 异常的 UNKNOWN/拒绝语义；hidden scorer IPC 仍开放。
 - [2026-09-27 scorer IPC preflight](task_reports/20260927_scorer_ipc_preflight.md)：
   记录 digest 混淆失败并修正；独立 private scorer 与 candidate read denial 通过，真实 runner 接入仍开放。
+- [2026-09-27 producer scorer contract qualification](task_reports/20260927_producer_scorer_contract_qualification.md)：
+  producer-only 五格零 LLM 矩阵区分 buggy/correct/near-miss，并发现独立 consumer scorer 与旧 parent scorer 的实际差异；producer event、live runner 和 benchmark 资格仍开放。

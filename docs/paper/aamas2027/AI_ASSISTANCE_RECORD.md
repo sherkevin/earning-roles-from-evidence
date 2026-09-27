@@ -418,3 +418,15 @@ failed because the implementation confused the ledger-file digest with the deliv
 digest; that failed attempt remains preserved. A versioned correction passed the boundary check.
 This qualifies only process separation and response accounting; real hidden tests, live runner
 integration, and scientific labels remain open.
+
+### 2026-09-27 producer-only scorer qualification
+
+A private operator worker was implemented for producer-owned `queue.py` and `priority.py` only;
+it does not import or score the recipient's `consumer.py`. A zero-LLM matrix with the preserved
+buggy source, an independently authored correct control, two targeted near-misses, and a malformed
+source produced the frozen `FAIL/PASS/FAIL/FAIL/UNKNOWN` dispositions. The run is stored under
+`experiments/logs/n03_producer_scorer_qualification_20260927/`. A separate replay of a preserved
+recipient source exposed a real discrepancy between the older parent behavior scorer (`4/4 PASS`)
+and the independent worker (`payload_and_ack` failure, `0.75`); historical outputs were not edited.
+This is an attribution and scorer-qualification result, not benchmark efficacy, role learning,
+real-time training, or an A800 result.

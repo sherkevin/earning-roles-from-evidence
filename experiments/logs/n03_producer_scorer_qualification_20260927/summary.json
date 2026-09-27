@@ -1,0 +1,69 @@
+{
+  "qualification_version": "dist1-producer-scorer-qualification-v1",
+  "passed": true,
+  "cases": [
+    {
+      "name": "original_buggy",
+      "expected_status": "FAIL",
+      "observed_status": "FAIL",
+      "label": 0,
+      "quality_score": 0.42857142857142855,
+      "response_digest": "f86367eb148e52b65cf7d271e30c2920927381bbcdf912831009904e1423c263",
+      "transport": {
+        "status": "complete"
+      }
+    },
+    {
+      "name": "authored_correct",
+      "expected_status": "PASS",
+      "observed_status": "PASS",
+      "label": 1,
+      "quality_score": 1.0,
+      "response_digest": "bafd280f75570b038792cf88b40d970f072cf155e0225424acb355bd011eb68c",
+      "transport": {
+        "status": "complete"
+      }
+    },
+    {
+      "name": "near_priority_only",
+      "expected_status": "FAIL",
+      "observed_status": "FAIL",
+      "label": 0,
+      "quality_score": 0.5714285714285714,
+      "response_digest": "bdc3ec6cddff152364cf4a1570c304a4ec62a5152a3ea67548ff726f1b3872fa",
+      "transport": {
+        "status": "complete"
+      }
+    },
+    {
+      "name": "near_ack_only",
+      "expected_status": "FAIL",
+      "observed_status": "FAIL",
+      "label": 0,
+      "quality_score": 0.8571428571428571,
+      "response_digest": "165c0f67575eb8d4f82837d5172cfd5e78d06d17635dc0dcff0ff79ce58b6c94",
+      "transport": {
+        "status": "complete"
+      }
+    },
+    {
+      "name": "malformed_source",
+      "expected_status": "UNKNOWN",
+      "observed_status": "UNKNOWN",
+      "label": null,
+      "quality_score": null,
+      "response_digest": "e6cac7656348a167af52464477bde76dd868aa5506b30d075b9d084ffecb4ac9",
+      "transport": {
+        "status": "complete"
+      }
+    }
+  ],
+  "scorer_is_qualified": false,
+  "scientific_claim_allowed": false,
+  "remaining_gates": [
+    "near-miss coverage must be expanded across all producer checks",
+    "transport/permission/timeout mutation responses must be UNKNOWN",
+    "producer-score causal event and runner integration are not implemented",
+    "second independent structural task root remains open"
+  ]
+}
