@@ -69,5 +69,7 @@ Goal 修改。
   PIPE3 root-specific producer scorer 首轮暴露 raw-Unicode 责任边界错误，修正为 JSON 语义保真后 seed 0/1 矩阵通过；recipient/adoption/runner 仍未资格化。
 - [2026-09-27 PIPE3 lineage preflight](task_reports/20260927_pipe3_lineage_preflight.md)：
   Qp/Qr/adoption 四格控制和 UNKNOWN no-update replay 在 seed 0/1 通过；正式 runner、过程隔离、第二 root 与 baseline 仍开放。
+- [2026-09-27 PIPE3 runner adapter boundary](task_reports/20260927_pipe3_runner_adapter_boundary.md)：
+  新增不执行候选代码的 root-specific material/action/scorer-view seam，14 项 PIPE3 单测通过；真实 runner 和 API 仍未启动。
 - [2026-09-27 decision 0037 mainline invariants](task_reports/20260927_decision_0037_mainline_invariants.md)：
   固化故事线、benchmark/baseline 证据要求与创新点不可静默降级规则；本任务不改变 Goal 标准。

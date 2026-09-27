@@ -547,3 +547,12 @@ uncertainty; the worker was corrected to keep candidate failures as determinate 
 measurement failures as UNKNOWN. This is zero-LLM engineering qualification only. PIPE3 is not
 yet a benchmark, the formal runner and scorer process separation are open, and no real API,
 online learning or A800 result is claimed.
+
+### 2026-09-27 PIPE3 root-specific runner adapter boundary
+
+The existing closed-loop runner was audited and found to hard-code DIST1 `mqueue` paths,
+interfaces and consumer actions. A separate `peerrolebench_pipe3_runner_adapter.py` now
+keeps PIPE3 delivery attachment, action permissions and three scorer views explicit without
+calling an API or executing candidate code. Its tests pass on exact source ownership and
+read-only mutations. This is a contract seam only; the adapter is not yet connected to
+`call_api`, a live ledger episode, hidden scorer process separation, or an online update.
