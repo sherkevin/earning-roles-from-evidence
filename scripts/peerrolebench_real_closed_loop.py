@@ -177,6 +177,14 @@ def load_runner_materials(card, seed):
     return export_task_materials(generated)
 
 
+def controller_update_is_allowed(card):
+    """Keep historical cards unchanged; let new diagnostic cards opt out."""
+    scorer = card.get("producer_scorer")
+    if isinstance(scorer, dict) and "controller_update_allowed" in scorer:
+        return bool(scorer["controller_update_allowed"])
+    return True
+
+
 def append_producer_score(out, ledger, delivery, result):
     """Append an operator scorer result without turning it into role evidence."""
     status = result.get("status")
@@ -493,14 +501,22 @@ def evaluate(out, index, reviewed_sha256, config, state):
     action = sealed["consumer_action"]
     value = card["update"]["action_values"][action]
     step = card["update"]["step_size"]
-    state["scores"][peer] = (1 - step) * prior + step * value
+    if controller_update_is_allowed(card):
+        state["scores"][peer] = (1 - step) * prior + step * value
+        log(out, "controller_update", {"peer": peer, "old": prior, "new": state["scores"][peer],
+                                        "target": "source-review action suitability, not objective correctness"})
+    else:
+        state["scores"][peer] = prior
+        log(out, "controller_update_skipped", {
+            "peer": peer, "old": prior, "new": prior,
+            "reason": "card disables updates until producer scorer qualification",
+            "target": "diagnostic chain only",
+        })
     shared = {"evidence_id": evidence.evidence_id, "judge_id": state["consumers"][index],
               "producer_id": peer, "task_family": card["task_id"], "instance_seed": card["task_seeds"][index],
               "decision": json.loads((directory / "judgment.json").read_text()), "action": action,
               "producer_objective_quality": "not measured", "final_quality_not_used_as_producer_correctness": True}
     state["shared_evidence"].append(shared)
-    log(out, "controller_update", {"peer": peer, "old": prior, "new": state["scores"][peer],
-                                   "target": "source-review action suitability, not objective correctness"})
     if index == 0:
         consumer = state["consumers"][1]
         menu = sorted(set(card["agents"]) - {consumer})

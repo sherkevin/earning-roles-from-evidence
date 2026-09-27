@@ -51,3 +51,5 @@ Goal 修改。
   DIST1/PIPE3 双 root payload、delivery digest、operator deny 和 lineage 通过 pinned sandbox；live runner/scorer 仍开放。
 - [2026-09-27 neutral producer scorer preflight](task_reports/20260927_neutral_producer_scorer_preflight.md)：
   中性 DIST1 producer payload 的独立 P1–P7 检查完整返回 FAIL；仅作 scorer/适配器诊断，controller update 关闭。
+- [2026-09-27 controller update gate](task_reports/20260927_controller_update_gate.md)：
+  新 diagnostic card 可显式禁止 legacy controller mutation，历史 card 行为保持兼容。

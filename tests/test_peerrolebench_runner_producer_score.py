@@ -12,6 +12,7 @@ from peerrolebench_ledger_replay import replay_ledger_events  # noqa: E402
 from peerrolebench_real_closed_loop import (  # noqa: E402
     append_event,
     append_producer_score,
+    controller_update_is_allowed,
     producer_interface_names,
     producer_scorer_sources,
 )
@@ -29,6 +30,16 @@ from peer_role_protocol_20260925 import (  # noqa: E402
 
 DIGEST = "a" * 64
 OUT = "b" * 64
+
+
+def test_diagnostic_card_disables_controller_update_without_changing_legacy_cards():
+    assert controller_update_is_allowed({}) is True
+    assert controller_update_is_allowed({"producer_scorer": {
+        "controller_update_allowed": False,
+    }}) is False
+    assert controller_update_is_allowed({"producer_scorer": {
+        "controller_update_allowed": True,
+    }}) is True
 
 
 def test_operator_source_names_are_derived_without_consumer_files():
