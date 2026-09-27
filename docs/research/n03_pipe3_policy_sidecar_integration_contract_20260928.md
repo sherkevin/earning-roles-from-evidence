@@ -67,7 +67,9 @@ contract。PIPE3 root-specific runner 应增加以下显式 seams：
 6. publish_snapshot(...)：原子保存 policy state、manifest root 和 episode watermark，供后续
    task 读取，避免 half-written update。
 
-每个 seam 都必须有 version/hash，且能在零 API fixture 中重放。不得先改 live runner 再用
+每个 seam 都必须有 version/hash，且能在零 API fixture 中重放。当前 seed-0 fixture 已经
+用 pinned PIPE3 material adapter 走通 producer delivery、recipient action、strict ledger、
+sidecar 和 manifest replay；这只证明接口连通，不是 scorer 或科学效果。不得先改 live runner 再用
 历史 N02 ledger 伪造这些字段。
 
 ## 4. 不同项目共享与不共享

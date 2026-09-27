@@ -624,6 +624,15 @@ correctness, recipient integration, adoption, and UNKNOWN outcomes separate and
 states the shared interface boundary with the tool-select project. This is a
 design artifact only; no API, Nebula, or GPU run was started.
 
+### 2026-09-28 PIPE3 policy-sidecar integration fixture
+
+The assistant ran a zero-LLM fixture over the pinned PIPE3 seed-0 material
+adapter. It generated the producer delivery and recipient action snapshots,
+sealed a strict ledger, attached versioned sidecars and a manifest, and passed
+the canonical replay gate. The run is an interface qualification only:
+producer/recipient execution, hidden scoring, benchmark efficacy, online
+training, and A800 evidence remain open.
+
 ### 2026-09-28 sidecar manifest attestation
 
 The assistant kept sidecar digests in a separate append-only manifest because

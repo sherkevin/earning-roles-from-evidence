@@ -87,3 +87,5 @@ Goal 修改。
   以独立 append-only manifest 保存 sidecar digest，避免把未知字段塞入原生 protocol event；canonical replay qualification 记录 manifest root，真实 episode sealing 仍开放。
 - [2026-09-28 PIPE3 policy-sidecar integration contract](task_reports/20260928_pipe3_policy_sidecar_integration_contract.md)：
   将 sidecar/manifest/replay 闸门映射到未来 root-specific runner 的 selection、delivery、judgment、terminal 与 snapshot seam；无 API/GPU，真实 runner 仍开放。
+- [2026-09-28 PIPE3 policy-sidecar integration fixture](task_reports/20260928_pipe3_policy_sidecar_fixture.md)：
+  用 pinned seed-0 material adapter 走通 source ownership→artifact→strict ledger→sidecar/manifest replay；只证明接口连通，scorer/LLM/benchmark 仍开放。
