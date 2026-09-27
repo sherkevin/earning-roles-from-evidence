@@ -22,7 +22,8 @@ TEAM_BENCH = ROOT / "references/benchmark_sources/TeamBench"
 sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(TEAM_BENCH))
 
-from peerrolebench_task_contract import export_task_materials, load_generated_task  # noqa: E402
+from peerrolebench_task_contract import load_generated_task  # noqa: E402
+from peerrolebench_dist1_material_adapter import build_materials as build_dist1_materials  # noqa: E402
 from peerrolebench_pipe3_material_adapter import build_materials  # noqa: E402
 
 
@@ -46,7 +47,7 @@ def digest_json(value: Any) -> str:
 def load_materials(task_id: str, seed: int) -> tuple[dict[str, Any], dict[str, str]]:
     if task_id == "DIST1_queue_race":
         generated = load_generated_task(task_id, seed)
-        materials = export_task_materials(generated)
+        materials = build_dist1_materials(generated)
     elif task_id == "PIPE3_stream_processing":
         from generators.gen_pipe3_stream_processing import Generator
         generated = Generator().generate(seed)

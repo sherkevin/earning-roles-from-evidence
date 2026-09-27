@@ -18,13 +18,15 @@
 七个 baseline、三个 update comparator、同信息约束以及 `scientific_claim_allowed=false`、
 `real_api_runs_allowed=false`、`gpu_jobs_allowed=false`。baseline 缺失或 split 漂移会被拒绝。
 
-静态 provenance 运行见
-[`n03_manifest_provenance_20260927`](../../experiments/logs/n03_manifest_provenance_20260927/)。
+静态 provenance 的原始运行见
+[`n03_manifest_provenance_20260927_v2`](../../experiments/logs/n03_manifest_provenance_20260927_v2/)。
 它发现 DIST1 的原始 generated spec 在 agent payload 中直接出现
-`tests/test_concurrent.py` 和 `tests/test_message_loss.py`，所以 DIST1 的
-`all_static_visibility_passed=false`；PIPE3 的 seed 0/1 中性材料通过这一项。这是实际的
-任务信息泄漏证据，不是 scorer 或模型失败。修复前不能把 DIST1 放入可学习的 development
-stream，也不能以两个 root 已通过来启动 API。
+`tests/test_concurrent.py` 和 `tests/test_message_loss.py`，这是实际的任务信息泄漏证据，
+不是 scorer 或模型失败。随后新增版本化 `dist1-neutral-v1` 材料适配器，保留行为契约、
+移除 bug 编号/Planner/隐藏测试名；其修复后的 provenance 见
+[`n03_manifest_provenance_20260927_v3`](../../experiments/logs/n03_manifest_provenance_20260927_v3/)，
+DIST1 与 PIPE3 的静态 visibility 均通过。v3 只关闭 task-text/material gate，不能推出
+runtime dispatch、scorer/ledger IPC 或 benchmark 资格已经通过。
 
 ## 结论与下一步
 
