@@ -398,3 +398,13 @@ reuse, while strict replay runs after role evidence and before controller update
 before episode summary. Gate PASS/INVALID context is streamed into the raw log. This is an
 integration safeguard only; no new LLM/API/GPU call, benchmark qualification, or learning
 result was claimed.
+
+### 2026-09-27 runner exception and scorer boundary qualification
+
+A zero-LLM qualification reused the preserved 15-event N02 v3 ledger. Prefixes ending after
+selection, delivery, or recipient judgment were classified as UNKNOWN with no learning update;
+a producer retry event was rejected as unsupported rather than treated as another sample. Scorer
+timeout, permission, transport error, invalid response shape, and incomplete coverage were all
+classified as UNKNOWN with update disabled. The run stored config/raw/summary under the versioned
+qualification directory and explicitly records that independent hidden-scorer IPC is still absent.
+No benchmark, efficacy, real-time training, or A800 claim was added.

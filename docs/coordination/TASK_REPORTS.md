@@ -25,3 +25,5 @@ Goal 修改。
   parent-side ledger 的 hash/因果回放和变异矩阵通过；仍是协议资格，不是 benchmark 或在线学习结果。
 - [2026-09-27 runner replay integration](task_reports/20260927_runner_replay_integration.md)：
   将 replay gate 接到真实 runner 的恢复、role update 和 episode summary 边界；未重跑历史实验。
+- [2026-09-27 runner boundary qualification](task_reports/20260927_runner_boundary_qualification.md)：
+  用保存的真实 ledger 验证中断、retry 和 scorer 异常的 UNKNOWN/拒绝语义；hidden scorer IPC 仍开放。

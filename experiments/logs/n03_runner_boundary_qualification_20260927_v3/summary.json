@@ -1,0 +1,159 @@
+{
+  "qualification_version": "runner-boundary-v1",
+  "complete_ledger_passed": true,
+  "exception_partials_are_unknown": true,
+  "retry_record_rejected": true,
+  "scorer_failures_are_unknown_and_no_update": true,
+  "independent_hidden_scorer_ipc": false,
+  "scientific_claim_allowed": false,
+  "llm_calls": 0,
+  "gpu_jobs": 0,
+  "boundary": "Failure/timeout semantics only; no hidden scorer or agent execution.",
+  "ledger_results": {
+    "complete": {
+      "status": "PASS",
+      "complete": true,
+      "missing": [],
+      "code": null
+    },
+    "exception_after_selection": {
+      "status": "UNKNOWN",
+      "complete": false,
+      "missing": [
+        {
+          "stage": "task_start",
+          "task_id": "DIST1_queue_race",
+          "task_index": 0
+        },
+        {
+          "stage": "producer_delivery",
+          "task_id": "DIST1_queue_race",
+          "task_index": 0
+        }
+      ],
+      "code": null
+    },
+    "exception_after_delivery": {
+      "status": "UNKNOWN",
+      "complete": false,
+      "missing": [
+        {
+          "stage": "recipient_judgment",
+          "delivery_id": "delivery-0"
+        },
+        {
+          "stage": "consumer_action",
+          "delivery_id": "delivery-0"
+        },
+        {
+          "stage": "terminal_outcome",
+          "delivery_id": "delivery-0"
+        },
+        {
+          "stage": "role_evidence_update",
+          "delivery_id": "delivery-0"
+        }
+      ],
+      "code": null
+    },
+    "exception_after_judgment": {
+      "status": "UNKNOWN",
+      "complete": false,
+      "missing": [
+        {
+          "stage": "consumer_action",
+          "delivery_id": "delivery-0"
+        },
+        {
+          "stage": "terminal_outcome",
+          "delivery_id": "delivery-0"
+        },
+        {
+          "stage": "role_evidence_update",
+          "delivery_id": "delivery-0"
+        }
+      ],
+      "code": null
+    },
+    "transport_retry_record": {
+      "status": "INVALID",
+      "complete": false,
+      "missing": [],
+      "code": "unsupported_retry"
+    }
+  },
+  "scorer_results": {
+    "pass": {
+      "scorer": {
+        "status": "PASS",
+        "label": 1,
+        "reason": null
+      },
+      "eligibility": {
+        "update_allowed": true,
+        "label": 1,
+        "reason": null
+      }
+    },
+    "timeout": {
+      "scorer": {
+        "status": "UNKNOWN",
+        "label": null,
+        "reason": "timeout"
+      },
+      "eligibility": {
+        "update_allowed": false,
+        "label": null,
+        "reason": "replay_or_scorer_not_qualified"
+      }
+    },
+    "permission": {
+      "scorer": {
+        "status": "UNKNOWN",
+        "label": null,
+        "reason": "permission_denied"
+      },
+      "eligibility": {
+        "update_allowed": false,
+        "label": null,
+        "reason": "replay_or_scorer_not_qualified"
+      }
+    },
+    "transport_error": {
+      "scorer": {
+        "status": "UNKNOWN",
+        "label": null,
+        "reason": "connection_reset"
+      },
+      "eligibility": {
+        "update_allowed": false,
+        "label": null,
+        "reason": "replay_or_scorer_not_qualified"
+      }
+    },
+    "invalid_json": {
+      "scorer": {
+        "status": "UNKNOWN",
+        "label": null,
+        "reason": "invalid_json_or_shape"
+      },
+      "eligibility": {
+        "update_allowed": false,
+        "label": null,
+        "reason": "replay_or_scorer_not_qualified"
+      }
+    },
+    "missing_coverage": {
+      "scorer": {
+        "status": "UNKNOWN",
+        "label": null,
+        "reason": "missing_or_incomplete_coverage"
+      },
+      "eligibility": {
+        "update_allowed": false,
+        "label": null,
+        "reason": "replay_or_scorer_not_qualified"
+      }
+    }
+  }
+}
