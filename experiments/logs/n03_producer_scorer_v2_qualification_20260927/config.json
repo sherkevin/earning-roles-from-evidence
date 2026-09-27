@@ -1,0 +1,66 @@
+{
+  "qualification_version": "dist1-producer-scorer-qualification-v3",
+  "scorer_version": "dist1-producer-objective-v2",
+  "response_schema": "dist1-producer-score-response-v2",
+  "task_id": "DIST1_queue_race",
+  "seed": 0,
+  "cases": [
+    {
+      "name": "authored_correct",
+      "expected_status": "PASS",
+      "repeat": 2,
+      "source_digests": {
+        "mqueue/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mqueue/config.py": "58ce9e58b963aec77f4727d15d6af5b8bcd4ac23cccf9ca30addea3afea1678a",
+        "mqueue/queue.py": "1df6ee617e554d2da4dc84c42c57ca0aabbec978984ef781c4b961f0646c99c4",
+        "mqueue/priority.py": "049b6d19d974d3d07baa6da68da2a954d0f09396143b2d2578d8ae98247e3705"
+      }
+    },
+    {
+      "name": "candidate_dataclass_import_failure",
+      "expected_status": "FAIL",
+      "repeat": 2,
+      "source_digests": {
+        "mqueue/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mqueue/config.py": "58ce9e58b963aec77f4727d15d6af5b8bcd4ac23cccf9ca30addea3afea1678a",
+        "mqueue/queue.py": "1df6ee617e554d2da4dc84c42c57ca0aabbec978984ef781c4b961f0646c99c4",
+        "mqueue/priority.py": "83020e63155a84f50ca320dc8a6657bbe5a92c48fb24f6defa772f5fa51f5671"
+      }
+    },
+    {
+      "name": "candidate_syntax_failure",
+      "expected_status": "FAIL",
+      "repeat": 1,
+      "source_digests": {
+        "mqueue/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mqueue/config.py": "58ce9e58b963aec77f4727d15d6af5b8bcd4ac23cccf9ca30addea3afea1678a",
+        "mqueue/queue.py": "645c89229a7f63be1e0197385341ca555f3772fb6ccfe0bb57893b70e1904fa8",
+        "mqueue/priority.py": "049b6d19d974d3d07baa6da68da2a954d0f09396143b2d2578d8ae98247e3705"
+      }
+    },
+    {
+      "name": "near_priority_contract_failure",
+      "expected_status": "FAIL",
+      "repeat": 1,
+      "source_digests": {
+        "mqueue/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mqueue/config.py": "58ce9e58b963aec77f4727d15d6af5b8bcd4ac23cccf9ca30addea3afea1678a",
+        "mqueue/queue.py": "1df6ee617e554d2da4dc84c42c57ca0aabbec978984ef781c4b961f0646c99c4",
+        "mqueue/priority.py": "d4cb35240e55eb698edf44eab23dd17fb830f8b7fb60c2399d3304bd5598d91d"
+      }
+    }
+  ],
+  "negative_controls": [
+    "trusted_driver_typeerror",
+    "worker_timeout",
+    "artifact_digest_mismatch",
+    "incomplete_response"
+  ],
+  "llm_calls": 0,
+  "gpu_jobs": 0,
+  "native_grader_invoked": false,
+  "candidate_received_hidden_assertions": false,
+  "scientific_claim_allowed": false,
+  "repeat_count_frozen_before_execution": true,
+  "scorer_scope": "DIST1 public producer contract; no benchmark/generalization claim"
+}

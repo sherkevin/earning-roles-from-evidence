@@ -1,0 +1,160 @@
+{
+  "qualification_version": "dist1-producer-scorer-qualification-v3",
+  "scorer_version": "dist1-producer-objective-v2",
+  "passed": true,
+  "cases": [
+    {
+      "name": "authored_correct",
+      "expected_status": "PASS",
+      "repeat": 2,
+      "stable": true,
+      "observations": [
+        {
+          "status": "PASS",
+          "label": 1,
+          "quality_score": 1.0,
+          "decision_complete": true,
+          "coverage_complete": true,
+          "failure_origin": null,
+          "failure_code": null,
+          "source_path": null,
+          "response_digest": "a758060f007623672c41b3628b3cae5294163475582e9767fb69ac6c898ad3b4",
+          "transport": {
+            "status": "complete"
+          }
+        },
+        {
+          "status": "PASS",
+          "label": 1,
+          "quality_score": 1.0,
+          "decision_complete": true,
+          "coverage_complete": true,
+          "failure_origin": null,
+          "failure_code": null,
+          "source_path": null,
+          "response_digest": "a758060f007623672c41b3628b3cae5294163475582e9767fb69ac6c898ad3b4",
+          "transport": {
+            "status": "complete"
+          }
+        }
+      ]
+    },
+    {
+      "name": "candidate_dataclass_import_failure",
+      "expected_status": "FAIL",
+      "repeat": 2,
+      "stable": true,
+      "observations": [
+        {
+          "status": "FAIL",
+          "label": 0,
+          "quality_score": 0.0,
+          "decision_complete": true,
+          "coverage_complete": false,
+          "failure_origin": "candidate",
+          "failure_code": "DATACLASS_FIELD_ORDER",
+          "source_path": "mqueue/priority.py",
+          "response_digest": "2190ae620dabc780bc819bc58ddb51e7dab5caf14c30e41b0de65033292784a1",
+          "transport": {
+            "status": "complete"
+          }
+        },
+        {
+          "status": "FAIL",
+          "label": 0,
+          "quality_score": 0.0,
+          "decision_complete": true,
+          "coverage_complete": false,
+          "failure_origin": "candidate",
+          "failure_code": "DATACLASS_FIELD_ORDER",
+          "source_path": "mqueue/priority.py",
+          "response_digest": "2190ae620dabc780bc819bc58ddb51e7dab5caf14c30e41b0de65033292784a1",
+          "transport": {
+            "status": "complete"
+          }
+        }
+      ]
+    },
+    {
+      "name": "candidate_syntax_failure",
+      "expected_status": "FAIL",
+      "repeat": 1,
+      "stable": true,
+      "observations": [
+        {
+          "status": "FAIL",
+          "label": 0,
+          "quality_score": 0.0,
+          "decision_complete": true,
+          "coverage_complete": false,
+          "failure_origin": "candidate",
+          "failure_code": "SYNTAX_ERROR_IN_DELIVERY",
+          "source_path": "mqueue/queue.py",
+          "response_digest": "cefd7c2a0b588949a8874551d0ffd2fb08b9b5e7db3d3a3be55e4a32bf070c6e",
+          "transport": {
+            "status": "complete"
+          }
+        }
+      ]
+    },
+    {
+      "name": "near_priority_contract_failure",
+      "expected_status": "FAIL",
+      "repeat": 1,
+      "stable": true,
+      "observations": [
+        {
+          "status": "FAIL",
+          "label": 0,
+          "quality_score": 0.7142857142857143,
+          "decision_complete": true,
+          "coverage_complete": true,
+          "failure_origin": null,
+          "failure_code": null,
+          "source_path": null,
+          "response_digest": "f2095346c8ded06b7bb7198d0646440852e655875cb200be70677cad1b5c06a8",
+          "transport": {
+            "status": "complete"
+          }
+        }
+      ]
+    }
+  ],
+  "negative_controls": [
+    {
+      "name": "trusted_driver_typeerror",
+      "expected_status": "UNKNOWN",
+      "observed_status": "UNKNOWN",
+      "label": null,
+      "reason": "scorer_worker_error"
+    },
+    {
+      "name": "worker_timeout",
+      "expected_status": "UNKNOWN",
+      "observed_status": "UNKNOWN",
+      "label": null,
+      "reason": "scorer_worker_error"
+    },
+    {
+      "name": "artifact_digest_mismatch",
+      "expected_status": "UNKNOWN",
+      "observed_status": "UNKNOWN",
+      "label": null,
+      "reason": "scorer_artifact_digest_mismatch"
+    },
+    {
+      "name": "incomplete_response",
+      "expected_status": "UNKNOWN",
+      "observed_status": "UNKNOWN",
+      "label": null,
+      "reason": "scorer_decision_incomplete"
+    }
+  ],
+  "scorer_is_qualified": false,
+  "scientific_claim_allowed": false,
+  "remaining_gates": [
+    "candidate/scorer isolation remains non-adversarial Python instrumentation",
+    "second independent structural task root remains open",
+    "same-information baselines and live responsibility evidence remain open"
+  ]
+}

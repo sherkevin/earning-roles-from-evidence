@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 import sys
+import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -16,6 +17,7 @@ from peerrolebench_real_closed_loop import (  # noqa: E402
     producer_interface_names,
     producer_score_gate,
     producer_scorer_sources,
+    run_versioned_producer_scorer,
 )
 from peerrolebench_task_contract import export_task_materials, load_generated_task  # noqa: E402
 from peer_role_protocol_20260925 import (  # noqa: E402
@@ -61,6 +63,23 @@ def test_complete_producer_score_allows_downstream_evaluation(tmp_path):
         "status": "FAIL", "label": 0, "coverage_complete": True,
     }))
     assert producer_score_gate({"producer_scorer": {"version": "v1"}}, episode) == (True, None)
+
+
+def test_candidate_hard_failure_decision_allows_recipient_evaluation(tmp_path):
+    episode = tmp_path / "episode_0"
+    episode.mkdir()
+    (episode / "producer_score.json").write_text(json.dumps({
+        "status": "FAIL", "label": 0, "quality_score": 0.0,
+        "decision_complete": True, "coverage_complete": False,
+        "failure_origin": "candidate", "failure_stage": "import",
+        "failure_code": "DATACLASS_FIELD_ORDER",
+    }))
+    assert producer_score_gate({"producer_scorer": {"version": "v2"}}, episode) == (True, None)
+
+
+def test_unknown_producer_scorer_version_does_not_silently_fallback():
+    with pytest.raises(ValueError, match="unsupported producer scorer version"):
+        run_versioned_producer_scorer({"version": "future"})
 
 
 def test_operator_source_names_are_derived_without_consumer_files():

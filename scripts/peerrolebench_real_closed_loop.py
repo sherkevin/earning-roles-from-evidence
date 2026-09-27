@@ -29,6 +29,7 @@ from aamas_real_probe import load_provider
 from peerrolebench_consumer_checks import CHECK_VERSION, run_checks
 from peerrolebench_ledger_replay import LedgerReplayError, replay_ledger_file
 from peerrolebench_producer_scorer import run_producer_scorer
+from peerrolebench_producer_scorer_v2 import run_producer_scorer as run_producer_scorer_v2
 from peerrolebench_sandbox import ROOT, SandboxedWorker
 from peerrolebench_dist1_material_adapter import build_materials as build_dist1_materials
 from peerrolebench_dist1_material_adapter_v2 import build_materials as build_dist1_materials_v2
@@ -206,12 +207,30 @@ def producer_score_gate(card, directory):
         score = json.loads(path.read_text())
     except (OSError, ValueError) as exc:
         return False, "producer_score_invalid_json:" + type(exc).__name__
+    complete_behavior = score.get("coverage_complete") is True
+    candidate_hard_decision = (
+        score.get("status") == "FAIL"
+        and score.get("decision_complete") is True
+        and score.get("coverage_complete") is False
+        and score.get("label") == 0
+        and score.get("failure_origin") == "candidate"
+    )
     complete = (score.get("status") in {"PASS", "FAIL"}
-                and score.get("coverage_complete") is True
+                and (complete_behavior or candidate_hard_decision)
                 and score.get("label") in {0, 1})
     if not complete:
         return False, "producer_score_incomplete_or_unknown"
     return True, None
+
+
+def run_versioned_producer_scorer(scorer_config, *args):
+    """Dispatch only explicitly versioned producer scorer implementations."""
+    version = scorer_config.get("version") if isinstance(scorer_config, dict) else None
+    if version == "dist1-producer-objective-v1":
+        return run_producer_scorer(*args)
+    if version == "dist1-producer-objective-v2":
+        return run_producer_scorer_v2(*args)
+    raise ValueError(f"unsupported producer scorer version: {version}")
 
 
 def append_producer_score(out, ledger, delivery, result):
@@ -227,6 +246,7 @@ def append_producer_score(out, ledger, delivery, result):
         delivery.artifact_sha256, result.get("scorer_version", "unknown"), status,
         result.get("label"), result.get("quality_score"), result.get("response_digest"),
         bool(result.get("coverage_complete")),
+        bool(result.get("decision_complete", result.get("coverage_complete"))),
     )
     append_event(out, ledger, "record_producer_score", score)
     return score
@@ -422,7 +442,8 @@ def generate(out, index, config, state):
     save(directory / "delivery.json", delivery_files)
     if card.get("producer_scorer"):
         producer_source = producer_scorer_sources(materials, delivery_files)
-        producer_result = run_producer_scorer(
+        producer_result = run_versioned_producer_scorer(
+            card["producer_scorer"],
             producer_source, producer_interface_names(producer_source, card),
             card["task_id"], card["task_seeds"][index], directory / "producer_scorer",
             lambda event_type, payload: log(out, event_type, payload),

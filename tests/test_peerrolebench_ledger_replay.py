@@ -185,7 +185,7 @@ def test_producer_score_is_replayed_before_judgment_and_kept_separate():
     ledger.record_delivery(Delivery("d0", "task", "peer-a", "recipient", DIGEST,
                                    "produce-0", 0, "s0"))
     ledger.record_producer_score(ProducerScore("ps0", "d0", DIGEST, "producer-v1",
-                                              "FAIL", 0, 3 / 7, OUT, True))
+                                              "FAIL", 0, 3 / 7, OUT, True, True))
     judgment = RecipientJudgment("j0", "d0", "recipient", "accept", DIGEST)
     ledger.record_judgment(judgment)
     action = ConsumerAction("a0", "d0", "recipient", True, DIGEST, OUT, action="use")
@@ -217,11 +217,23 @@ def test_producer_score_after_judgment_is_rejected():
 ])
 def test_producer_score_status_contract(status, label, quality, coverage):
     value = ProducerScore("ps", "d", DIGEST, "producer-v1", status, label, quality,
-                          OUT if status != "UNKNOWN" else None, coverage)
+                          OUT if status != "UNKNOWN" else None, coverage,
+                          status != "UNKNOWN")
     assert value.status == status
     if status == "UNKNOWN":
         with pytest.raises(ValueError):
             ProducerScore("bad", "d", DIGEST, "producer-v1", "UNKNOWN", 0, None, None, False)
+
+
+def test_legacy_v1_complete_score_replays_without_decision_field():
+    value = ProducerScore("legacy", "d", DIGEST, "producer-v1", "PASS", 1, 1.0, OUT, True)
+    assert value.coverage_complete is True and value.decision_complete is False
+
+
+def test_v2_candidate_hard_failure_can_be_recorded_without_behavior_coverage():
+    value = ProducerScore("hard-fail", "d", DIGEST, "dist1-producer-objective-v2",
+                          "FAIL", 0, 0.0, OUT, False, True)
+    assert value.decision_complete is True and value.coverage_complete is False
 
 
 def test_producer_score_digest_must_match_delivery():

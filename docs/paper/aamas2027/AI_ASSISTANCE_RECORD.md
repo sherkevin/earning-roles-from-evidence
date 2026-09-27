@@ -508,3 +508,16 @@ has no label. The runner now closes such an episode before evaluation, so no ter
 role evidence, assignment or controller update is appended. The raw episode remains under
 `experiments/logs/n03_peerrole_dev_neutral_v2_prepare_20260927/`; this is a real model/output
 diagnostic, not an efficacy result, and the route is closed without another request.
+
+### 2026-09-27 producer scorer v2 failure-disposition matrix
+
+Following the live diagnostic, a new versioned scorer and protocol field
+`decision_complete` were implemented. The zero-LLM matrix was frozen before execution and
+used fresh pinned workers: the authored-correct control repeated `PASS/1`, candidate-owned
+dataclass and syntax failures produced `FAIL/0` with `coverage_complete=false`, and a
+near-miss produced a complete `FAIL` score. Trusted-driver TypeError, timeout, artifact digest
+mutation and incomplete response controls all remained `UNKNOWN`. The raw JSONL and per-case
+responses are in `experiments/logs/n03_producer_scorer_v2_qualification_20260927/`.
+This is an engineering qualification only; scorer qualification, benchmark freeze, live
+responsibility evidence, controller update and GPU claims remain open. Historical v1/v2
+responses were not reclassified.

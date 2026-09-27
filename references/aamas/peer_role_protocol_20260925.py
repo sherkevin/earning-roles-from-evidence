@@ -138,6 +138,7 @@ class ProducerScore:
     quality_score: float | None = None
     score_payload_sha256: str | None = None
     coverage_complete: bool = False
+    decision_complete: bool = False
 
     def __post_init__(self) -> None:
         if not self.producer_score_id or not self.delivery_id or not self.scorer_version:
@@ -148,12 +149,21 @@ class ProducerScore:
         if self.score_payload_sha256 is not None:
             _artifact_hash(self.score_payload_sha256)
         if self.status == "UNKNOWN":
-            if self.label is not None or self.quality_score is not None or self.coverage_complete:
+            if (self.label is not None or self.quality_score is not None
+                    or self.coverage_complete or self.decision_complete):
                 raise ValueError("UNKNOWN producer score cannot carry a label or quality value")
         else:
             expected_label = 1 if self.status == "PASS" else 0
-            if self.label != expected_label or not self.coverage_complete:
-                raise ValueError("complete producer score has inconsistent label/coverage")
+            # v1 ledgers predate the separate hard-decision field.  Their
+            # complete PASS/FAIL records are safely reconstructible from
+            # coverage_complete; v2+ records must set the field explicitly.
+            legacy_complete = self.coverage_complete and self.scorer_version.endswith("-v1")
+            if self.label != expected_label or not (self.decision_complete or legacy_complete):
+                raise ValueError("complete producer score has inconsistent label/decision")
+            if self.status == "PASS" and not self.coverage_complete:
+                raise ValueError("PASS producer score requires complete behavior coverage")
+            if self.status == "FAIL" and not self.coverage_complete and self.quality_score != 0.0:
+                raise ValueError("partial FAIL producer score requires quality_score=0")
             if self.quality_score is None or not 0.0 <= float(self.quality_score) <= 1.0:
                 raise ValueError("complete producer score requires quality_score in [0, 1]")
             if self.score_payload_sha256 is None:

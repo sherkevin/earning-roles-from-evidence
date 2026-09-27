@@ -59,5 +59,9 @@ Goal 修改。
   修复并版本化公开队列接口，完成 adapter/provenance/runtime/scorer 的零调用检查；旧 v1 UNKNOWN 保留，v2 仍未冻结 benchmark 或产生科学结果。
 - [2026-09-27 neutral DIST1 v2 live episode](task_reports/20260927_neutral_v2_live_episode.md)：
   三次真实 API 请求完整返回；producer priority 生成触发 dataclass 导入错误，scorer coverage 不完整，按规则不产生 label/evidence/update，集成路线关闭。
+- [2026-09-27 producer failure label semantics](task_reports/20260927_producer_failure_label_semantics.md)：
+  独立审查定义 candidate-origin import failure、scorer/infrastructure UNKNOWN 与 `decision_complete`/`coverage_complete` 分离；历史日志不回写。
 - [2026-09-27 manifest v2 validator fix](task_reports/20260927_manifest_v2_validator_fix.md)：
   validator 接受候选 v1/v2 版本并拒绝未知版本；v2 机器校验回归通过，benchmark 仍未冻结。
+- [2026-09-27 producer scorer v2 failure matrix](task_reports/20260927_producer_scorer_v2_failure_matrix.md)：
+  以新 schema 区分可归因的候选导入/交付 `FAIL/0` 与 scorer/环境 `UNKNOWN`；离线控制矩阵通过，scorer 与 benchmark 资格仍开放。
