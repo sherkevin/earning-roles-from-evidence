@@ -7,9 +7,11 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from peerrolebench_baseline_policies import CandidateRef  # noqa: E402
+from peerrolebench_baseline_policies import TerminalOnlyPolicy  # noqa: E402
 from peerrolebench_policy_sidecar import (  # noqa: E402
     DecisionSidecar,
     FeedbackSidecar,
+    PolicySidecarBridge,
     bind_to_ledger_record,
 )
 
@@ -111,3 +113,53 @@ def test_sidecar_rejects_untrusted_probability_or_hidden_label():
             label_mapping_version="", mapping_digest="", responsibility_status="unknown",
             attribution_basis="", raw_value="success", label=0.0,
         )
+
+
+def _record(event_type, event_id):
+    field = {"peer_selection": "selection_id", "recipient_judgment": "judgment_id",
+             "terminal_outcome": "outcome_id"}[event_type]
+    return {
+        "event_type": event_type,
+        "payload": {field: event_id, "task_id": "task", "task_index": 0},
+        "record_hash": DIGEST,
+    }
+
+
+def _feedback(*, event_type, event_id, disposition, provenance, label=None, action="repair"):
+    return FeedbackSidecar(
+        ledger_record_hash=DIGEST, protocol_event_type=event_type, protocol_event_id=event_id,
+        feedback_id=f"feedback-{event_id}", source_event_id="e0", selection_event_id="s0",
+        delivery_id="d0", producer_id="peer-a", recipient_id="peer-b",
+        source=event_type, arrived_at=12.0, delay=2.0, action=action,
+        disposition=disposition, provenance=provenance,
+        label_mapping_version="judgment-v1" if disposition == "eligible" else "",
+        mapping_digest=DIGEST if disposition == "eligible" else "",
+        responsibility_status="attributed" if disposition == "eligible" else "unknown",
+        attribution_basis="contract-v1" if disposition == "eligible" else "",
+        raw_value="accept" if label is not None else None, label=label,
+    )
+
+
+def test_sidecar_bridge_replays_delayed_feedback_without_resampling_or_unknown_update():
+    bridge = PolicySidecarBridge(TerminalOnlyPolicy())
+    bridge.ingest_selection(decision(), _record("peer_selection", "s0"))
+    unknown = _feedback(event_type="recipient_judgment", event_id="j0",
+                       disposition="unknown", provenance="unknown")
+    assert bridge.ingest_feedback(unknown, _record("recipient_judgment", "j0")) is False
+    assert bridge.policy.updates == 0
+    terminal = _feedback(event_type="terminal_outcome", event_id="o0",
+                         disposition="eligible", provenance="public", label=1.0, action="use")
+    assert bridge.ingest_feedback(terminal, _record("terminal_outcome", "o0")) is True
+    assert bridge.policy.updates == 1
+    duplicate_channel = _feedback(event_type="terminal_outcome", event_id="o1",
+                                  disposition="eligible", provenance="public", label=0.0, action="use")
+    assert bridge.ingest_feedback(duplicate_channel, _record("terminal_outcome", "o1")) is False
+    assert bridge.policy.updates == 1
+
+
+def test_sidecar_bridge_rejects_feedback_before_selection():
+    bridge = PolicySidecarBridge(TerminalOnlyPolicy())
+    terminal = _feedback(event_type="terminal_outcome", event_id="o0",
+                         disposition="eligible", provenance="public", label=1.0, action="use")
+    with pytest.raises(ValueError, match="unknown protocol selection"):
+        bridge.ingest_feedback(terminal, _record("terminal_outcome", "o0"))

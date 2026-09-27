@@ -15,7 +15,7 @@ import json
 import math
 from typing import Any, Mapping, Sequence
 
-from peerrolebench_baseline_policies import CandidateRef, Feedback, Selection
+from peerrolebench_baseline_policies import BaselinePolicy, CandidateRef, Feedback, Selection
 
 
 SIDECAR_VERSION = "peerrole-policy-sidecar-v2"
@@ -293,4 +293,48 @@ def bind_to_ledger_record(
             raise ValueError(f"sidecar {field} does not match ledger record")
 
 
-__all__ = ["DecisionSidecar", "FeedbackSidecar", "SIDECAR_VERSION", "bind_to_ledger_record"]
+class PolicySidecarBridge:
+    """Consume validated sidecars without re-sampling or fabricating labels."""
+
+    def __init__(self, policy: BaselinePolicy) -> None:
+        self.policy = policy
+        self._selection_event_by_protocol_id: dict[str, str] = {}
+
+    def ingest_selection(
+        self,
+        sidecar: DecisionSidecar,
+        ledger_record: Mapping[str, Any],
+    ) -> Selection:
+        bind_to_ledger_record(sidecar.payload(), ledger_record,
+                              expected_event_type="peer_selection",
+                              expected_event_id=sidecar.protocol_event_id)
+        if sidecar.protocol_event_id in self._selection_event_by_protocol_id:
+            raise ValueError("duplicate sidecar selection protocol event")
+        selection = sidecar.to_selection()
+        self.policy.ingest_selection(selection)
+        self._selection_event_by_protocol_id[sidecar.protocol_event_id] = selection.event_id
+        return selection
+
+    def ingest_feedback(
+        self,
+        sidecar: FeedbackSidecar,
+        ledger_record: Mapping[str, Any],
+    ) -> bool:
+        bind_to_ledger_record(sidecar.payload(), ledger_record,
+                              expected_event_type=sidecar.protocol_event_type,
+                              expected_event_id=sidecar.protocol_event_id)
+        selection_event_id = self._selection_event_by_protocol_id.get(sidecar.selection_event_id)
+        if selection_event_id is None:
+            raise ValueError("feedback references an unknown protocol selection")
+        if sidecar.source_event_id != selection_event_id:
+            raise ValueError("feedback source event does not match protocol selection")
+        feedback = sidecar.to_feedback()
+        if feedback is None:
+            return False
+        return self.policy.observe_feedback(feedback)
+
+
+__all__ = [
+    "DecisionSidecar", "FeedbackSidecar", "PolicySidecarBridge", "SIDECAR_VERSION",
+    "bind_to_ledger_record",
+]

@@ -179,8 +179,43 @@ class BaselinePolicy(ABC):
             feature_schema=str(feature_schema), selected_at=float(selected_at),
             captured_features=tuple(sorted(captured.items())),
         )
-        self._decisions[selection.event_id] = selection
+        self.ingest_selection(selection)
         return selection
+
+    def ingest_selection(self, selection: Selection) -> None:
+        """Register an already sampled, versioned decision for replay.
+
+        Live policies normally call :meth:`choose`, which samples and stores a
+        decision atomically.  A sealed sidecar replay must instead consume the
+        exact probabilities and chosen index that were recorded by the live
+        runner; re-sampling would silently change the behaviour policy.  This
+        method therefore validates the snapshot and stores it without running
+        the scorer or RNG.
+        """
+        if not isinstance(selection, Selection):
+            raise TypeError("selection must be a Selection")
+        if not selection.event_id or not selection.context_key or not selection.selector_id:
+            raise ValueError("selection identifiers are required")
+        if selection.event_id in self._decisions:
+            raise ValueError(f"duplicate decision event_id={selection.event_id!r}")
+        refs, base = _validate_menu(selection.candidates, selection.base_scores)
+        if not (0 <= int(selection.chosen_index) < len(refs)):
+            raise ValueError("selection chosen index is outside the candidate menu")
+        probabilities = np.asarray(selection.probabilities, dtype=np.float64)
+        if probabilities.shape != (len(refs),) or not np.all(np.isfinite(probabilities)):
+            raise ValueError("selection probabilities must be finite and aligned")
+        if np.any(probabilities < 0.0) or not math.isclose(float(probabilities.sum()), 1.0, abs_tol=1e-9):
+            raise ValueError("selection probabilities must be non-negative and sum to one")
+        propensity = float(selection.propensity)
+        if not math.isfinite(propensity) or not 0.0 < propensity <= 1.0:
+            raise ValueError("selection propensity must be in (0,1]")
+        if not math.isclose(propensity, float(probabilities[selection.chosen_index]), abs_tol=1e-12):
+            raise ValueError("selection propensity must equal chosen probability")
+        if not all((selection.state_version, selection.encoder_version, selection.feature_schema)):
+            raise ValueError("selection state/model/schema versions are required")
+        if not math.isfinite(float(selection.selected_at)) or float(selection.selected_at) < 0.0:
+            raise ValueError("selection time must be non-negative and finite")
+        self._decisions[selection.event_id] = selection
 
     def observe_feedback(self, feedback: Feedback) -> bool:
         if feedback.feedback_id in self._seen_feedback:
