@@ -1,5 +1,8 @@
 # 论文主张—证据矩阵（2026-09-27）
 
+目标标准来自 [`docs/coordination/GOAL.md`](../../coordination/GOAL.md) v1.0；本矩阵只能
+报告证据状态，不能自动修改 Goal。
+
 | 论文主张 | 需要的证据 | 当前状态 | 允许的表述 |
 |---|---|---|---|
 | recipient 的判断是有信息的 | 独立 producer contract、实际 use/rework、最终质量，和 raw/terminal 对照 | 未完成；N02 暴露 scorer 漏洞 | “这是待检验的机制假设” |

@@ -1,6 +1,6 @@
 # AAMAS 2027 task ledger
 
-Updated: 2026-09-27 (persistent goal active; N02 attempted budget exhausted; PIPE3 preflight wording narrowed by ADR 0024). Owner: scientist; one engineer owns execution. Authority: [REQUIREMENTS.md](../paper/aamas2027/REQUIREMENTS.md), version 1.5.8. This is the sole active AAMAS gap/status/execution ledger. Role TODOs are historical pointers. Bounded read-only critiques inform the current direction; they did not execute experiments.
+Updated: 2026-09-27 (persistent goal active; N02 attempted budget exhausted; PIPE3 preflight wording narrowed by ADR 0024). The project-level goal authority is [GOAL v1.0](GOAL.md); task-by-task reconciliation is indexed in [TASK_REPORTS](TASK_REPORTS.md). Owner: scientist; one engineer owns execution. Authority: [REQUIREMENTS.md](../paper/aamas2027/REQUIREMENTS.md), version 1.5.8. This is the sole active AAMAS gap/status/execution ledger. Role TODOs are historical pointers. Bounded read-only critiques inform the current direction; they did not execute experiments.
 
 ## Current checkpoint — 2026-09-26
 
