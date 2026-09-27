@@ -60,6 +60,8 @@ canary 也不等于 production sandbox，且没有解决候选与 native scorer 
 preflight.
 
 该适配器 v2 的 `material_preflight_passed=true` 只说明材料构造没有发现 oracle 文本、
-hidden path 或 expected bug-id 元数据泄露；`runtime_dispatch_verified=false` 仍然成立。
-候选进程实际能看到什么、operator ledger 和 hidden scorer 是否在独立边界内，必须由
-下一版真实 runner 的 IPC/可见性 probe 证明。
+hidden path 或 expected bug-id 元数据泄露；它本身的 `runtime_dispatch_verified=false`
+仍然成立。随后对一个 seed-0 producer payload 做了独立的
+[`IPC runtime probe`](../../experiments/logs/n03_pipe3_payload_runtime_preflight_20260927/)。
+该 probe 观察到真实 RPC payload 并确认 operator-only ledger 读取被拒，但只覆盖一个
+producer payload，不等于 recipient、hidden scorer、真实账本回放或完整 runner 资格。

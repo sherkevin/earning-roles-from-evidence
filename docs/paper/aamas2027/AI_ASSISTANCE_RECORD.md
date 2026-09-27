@@ -360,7 +360,13 @@ To repair the specific task-text defect without changing the pinned TeamBench ch
 the assistant added a local PIPE3 material adapter and a zero-LLM preflight. It constructs
 neutral task instructions, removes explanatory comments/docstrings from public source,
 keeps the producer/recipient write boundary, records payload digests, and denies hidden
-paths/expected metadata. Seeds 0/1/2 passed the material preflight, but
-The corrected v2 preflight also checks that generated bug IDs are absent from payloads;
-`runtime_dispatch_verified=false` remains true. This is material-construction evidence only and does
-not authorize a real agent run or a scientific claim.
+paths/expected metadata. Seeds 0/1/2 passed the material preflight. The corrected v2
+preflight also checks that generated bug IDs are absent from payloads;
+`runtime_dispatch_verified=false` remains true. This is material-construction evidence only
+and does not authorize a real agent run or a scientific claim.
+
+A further zero-LLM runtime probe dispatched one seed-0 producer payload through the pinned
+sandbox stdin/RPC boundary. The worker parsed the actual serialized payload and an attempt
+to read an operator-only ledger file was denied. This is a single producer-boundary
+diagnostic; recipient dispatch, delivery attachment, hidden scorer isolation and real ledger
+replay remain unverified, so no scientific readiness or benchmark claim changed.

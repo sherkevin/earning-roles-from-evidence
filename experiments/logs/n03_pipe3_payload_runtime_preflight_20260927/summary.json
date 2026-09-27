@@ -1,0 +1,67 @@
+{
+  "config": {
+    "experiment_id": "n03_pipe3_payload_runtime_preflight_20260927",
+    "purpose": "N03 PIPE3 redacted payload dispatch and operator-file visibility probe",
+    "source_commit": "d185aef1916fd86a9ba554d581fd256319a973af",
+    "seed": 0,
+    "llm_calls": 0,
+    "gpu_jobs": 0,
+    "candidate_code_executed": false,
+    "native_grader_invoked": false,
+    "scientific_claim_allowed": false
+  },
+  "material_manifest": {
+    "schema_version": "peerrolebench-pipe3-materials-v1",
+    "task_id": "PIPE3_stream_processing",
+    "seed": 0,
+    "domain": "user_analytics",
+    "public_paths": [
+      "models.py",
+      "processor.py",
+      "producer.py",
+      "sink.py"
+    ],
+    "hidden_paths": [
+      "tests/__init__.py",
+      "tests/test_pipeline.py",
+      "tests/test_serialization.py"
+    ],
+    "producer_writable_paths": [
+      "producer.py"
+    ],
+    "recipient_writable_paths": [
+      "processor.py"
+    ],
+    "payload_sha256": "f4e8d6849c8e9b68473e1aac11a78c10764710945e8ef7b275decdad1dc080f1",
+    "task_text_oracle_patterns": [],
+    "source_comment_oracle_patterns": [],
+    "hidden_path_leaks": [],
+    "scientific_task_text_qualified": true,
+    "expected_bug_ids_not_in_payload": true,
+    "expected_metadata_in_payload": false,
+    "runtime_dispatch_verified": false
+  },
+  "observed": {
+    "ok": true,
+    "role": "producer",
+    "payload_source_names": [
+      "models.py",
+      "producer.py",
+      "sink.py"
+    ],
+    "payload_source_count": 3,
+    "source_root_exists": true,
+    "operator_read": {
+      "ok": false,
+      "error_type": "PermissionError"
+    }
+  },
+  "payload_dispatch_verified": true,
+  "runtime_dispatch_verified": true,
+  "scientific_claim_allowed": false,
+  "remaining_gates": [
+    "dispatch both producer and recipient payloads through the real runner",
+    "prove hidden scorer and operator ledger remain outside candidate-visible IPC",
+    "replay real selection/delivery/judgment/action/score lineage"
+  ]
+}
