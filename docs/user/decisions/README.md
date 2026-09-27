@@ -31,3 +31,4 @@ User decision records and external-operation summaries.
 - [0026 — Goal 标准不可因实验失败自动降级](0026-goal-change-control.md): Goal v1.0 是唯一目标标准；每个 task report 必须逐条对照，目标修改必须由用户明确同意并新建 ADR。
 - [0027 — recipient payload 与 selected delivery 的 IPC 探针通过](0027-recipient-delivery-ipc-probe.md): recipient payload、delivery digest/allowlist 和 operator-read denial 通过有界 sandbox RPC；真实 agent/scorer/ledger 仍未验证。
 - [0028 — parent-side ledger replay gate](0028-parent-side-ledger-replay-gate.md): 在训练/评分消费前验证 hash chain、因果顺序、唯一性和完整性；不完整链只能显式标为 UNKNOWN。
+- [0029 — runner replay before update](0029-runner-replay-before-update.md): 真实 runner 在 role update 与 episode summary 前调用 parent replay gate；中间态保持 UNKNOWN，非法链停止。

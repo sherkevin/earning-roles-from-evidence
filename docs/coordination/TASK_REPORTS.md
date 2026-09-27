@@ -23,3 +23,5 @@ Goal 修改。
   recipient payload、selected delivery 和有限 lineage hash-chain 的运行时边界检查；未请求 Goal 降级。
 - [2026-09-27 ledger replay gate](task_reports/20260927_ledger_replay_gate.md)：
   parent-side ledger 的 hash/因果回放和变异矩阵通过；仍是协议资格，不是 benchmark 或在线学习结果。
+- [2026-09-27 runner replay integration](task_reports/20260927_runner_replay_integration.md)：
+  将 replay gate 接到真实 runner 的恢复、role update 和 episode summary 边界；未重跑历史实验。

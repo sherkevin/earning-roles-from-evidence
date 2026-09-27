@@ -22,6 +22,7 @@ import traceback
 
 from aamas_real_probe import load_provider
 from peerrolebench_consumer_checks import CHECK_VERSION, run_checks
+from peerrolebench_ledger_replay import LedgerReplayError, replay_ledger_file
 from peerrolebench_sandbox import ROOT, SandboxedWorker
 from peerrolebench_task_contract import (TEAMBENCH, export_task_materials, load_generated_task,
     attach_selected_delivery, prepare_consumer_action, validate_consumer_result, _digest_files)
@@ -87,18 +88,42 @@ def validate_public_source(files, card):
 
 
 def load_ledger(out):
-    ledger = PeerRoleLedger(require_selection=True, require_terminal_outcome=True)
     path = out / "ledger.json"
-    if path.exists():
-        for event in json.loads(path.read_text()):
-            if event["event_type"] == "task_start":
-                ledger.record_task_start(**event["payload"])
-            else:
-                method, kind = EVENT_METHODS[event["event_type"]]
-                getattr(ledger, method)(kind(**event["payload"]))
-            if ledger.events[-1]["record_hash"] != event["record_hash"]:
-                raise RuntimeError("Ledger replay hash mismatch")
-    return ledger
+    if not path.exists():
+        return PeerRoleLedger(require_selection=True, require_terminal_outcome=True)
+    # The outer replay validator checks the serialized hash chain and all
+    # causal links before the runner uses any prior event.  Intermediate
+    # stages are expected during a live episode, so an incomplete chain is
+    # diagnostic UNKNOWN rather than a reason to treat the run as complete.
+    try:
+        result = replay_ledger_file(path, allow_incomplete=True)
+    except LedgerReplayError as exc:
+        raise RuntimeError(f"Ledger replay validation failed [{exc.code}]: {exc}") from exc
+    return result.ledger
+
+
+def replay_gate(out, *, context):
+    """Require a complete, independently replayable ledger at a learning gate.
+
+    The runner may read an incomplete ledger while resuming an in-flight
+    episode, but role updates and episode summaries must only consume a fully
+    linked selection-to-evidence chain.  Invalid ledgers are recorded before
+    propagating the error so the run remains auditable.
+    """
+    try:
+        result = replay_ledger_file(out / "ledger.json", allow_incomplete=False)
+    except LedgerReplayError as exc:
+        log(out, "ledger_replay_gate", {"status": "INVALID", "context": context,
+                                        "code": exc.code, "index": exc.index,
+                                        "error": str(exc)})
+        raise RuntimeError(f"Ledger replay gate failed [{exc.code}]: {exc}") from exc
+    payload = {"status": result.status, "complete": result.complete,
+               "event_count": result.event_count, "context": context,
+               "snapshot": result.snapshot}
+    log(out, "ledger_replay_gate", payload)
+    if result.status != "PASS" or not result.complete:
+        raise RuntimeError(f"Ledger replay gate did not pass: {payload}")
+    return result
 
 
 def append_event(out, ledger, method, event):
@@ -378,6 +403,10 @@ def evaluate(out, index, reviewed_sha256, config, state):
     evidence = RoleEvidenceUpdate(f"evidence-{index}", f"judgment-{index}", f"action-{index}",
                                   outcome.outcome_id, "integration-action-score-v1", time.time())
     append_event(out, ledger, "record_evidence_update", evidence)
+    # Do not update controller state from a ledger that has merely been
+    # appended successfully.  Independently replay the serialized chain first
+    # and require the complete delivery/judgment/action/outcome/evidence path.
+    replay_gate(out, context=f"before_role_update_episode_{index}")
     peer = state["selected"][index]
     prior = state["scores"][peer]
     action = sealed["consumer_action"]
@@ -406,6 +435,10 @@ def evaluate(out, index, reviewed_sha256, config, state):
             "selection_owner": "consumer controller", "chosen": chosen})
         append_event(out, ledger, "record_assignment", LaterAssignment("assignment-1", card["task_id"], 1,
             chosen, "producer", (evidence.evidence_id,), propensity))
+    # The assignment is part of the persisted episode summary for episode 0;
+    # replay once more after it is appended so a summary can never outlive a
+    # broken selection/evidence/assignment lineage.
+    replay_gate(out, context=f"before_episode_summary_{index}")
     state["statuses"][index] = "complete"
     save(out / "state.json", state)
     print(json.dumps({"index": index, "status": "complete", "consumer_behavior_score": score,

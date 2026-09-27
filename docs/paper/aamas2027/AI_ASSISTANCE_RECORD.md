@@ -389,3 +389,12 @@ unknown and retry event types, out-of-order delivery, and an interrupted chain; 
 matched their preregistered reject/UNKNOWN outcomes. Targeted tests reached 85 passing cases.
 This is a protocol and auditability result only: it does not establish hidden scorer isolation,
 benchmark qualification, role-learning efficacy, real-time training, or an A800 result.
+
+### 2026-09-27 runner replay integration
+
+The parent replay gate was wired into the real closed-loop runner without rerunning the
+historical N02 attempts. `load_ledger` now validates serialized state in diagnostic mode before
+reuse, while strict replay runs after role evidence and before controller update, then again
+before episode summary. Gate PASS/INVALID context is streamed into the raw log. This is an
+integration safeguard only; no new LLM/API/GPU call, benchmark qualification, or learning
+result was claimed.
