@@ -408,3 +408,13 @@ timeout, permission, transport error, invalid response shape, and incomplete cov
 classified as UNKNOWN with update disabled. The run stored config/raw/summary under the versioned
 qualification directory and explicitly records that independent hidden-scorer IPC is still absent.
 No benchmark, efficacy, real-time training, or A800 claim was added.
+
+### 2026-09-27 independent scorer IPC preflight
+
+A zero-LLM sandbox preflight introduced a private scorer worker holding a fixture expected digest
+and accepting only public artifact/context fields. A candidate-side probe could not read the
+scorer trusted worker path, and PASS/FAIL response digests were recorded. The first version
+failed because the implementation confused the ledger-file digest with the delivery-artifact
+digest; that failed attempt remains preserved. A versioned correction passed the boundary check.
+This qualifies only process separation and response accounting; real hidden tests, live runner
+integration, and scientific labels remain open.

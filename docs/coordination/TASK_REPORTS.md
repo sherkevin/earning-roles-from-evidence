@@ -27,3 +27,5 @@ Goal 修改。
   将 replay gate 接到真实 runner 的恢复、role update 和 episode summary 边界；未重跑历史实验。
 - [2026-09-27 runner boundary qualification](task_reports/20260927_runner_boundary_qualification.md)：
   用保存的真实 ledger 验证中断、retry 和 scorer 异常的 UNKNOWN/拒绝语义；hidden scorer IPC 仍开放。
+- [2026-09-27 scorer IPC preflight](task_reports/20260927_scorer_ipc_preflight.md)：
+  记录 digest 混淆失败并修正；独立 private scorer 与 candidate read denial 通过，真实 runner 接入仍开放。

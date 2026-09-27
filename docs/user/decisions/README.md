@@ -33,3 +33,4 @@ User decision records and external-operation summaries.
 - [0028 — parent-side ledger replay gate](0028-parent-side-ledger-replay-gate.md): 在训练/评分消费前验证 hash chain、因果顺序、唯一性和完整性；不完整链只能显式标为 UNKNOWN。
 - [0029 — runner replay before update](0029-runner-replay-before-update.md): 真实 runner 在 role update 与 episode summary 前调用 parent replay gate；中间态保持 UNKNOWN，非法链停止。
 - [0030 — unknown scorer boundary](0030-unknown-scorer-boundary.md): scorer 超时、权限、传输、非法 JSON 或覆盖不完整时只能是 UNKNOWN，不产生 label/evidence/update。
+- [0031 — independent scorer IPC preflight](0031-independent-scorer-ipc-preflight.md): scorer 的 private truth 留在独立 worker，candidate 只能拿公开请求；delivery、ledger 与 response digest 分开记录。

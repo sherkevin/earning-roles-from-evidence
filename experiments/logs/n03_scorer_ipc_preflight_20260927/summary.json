@@ -1,0 +1,63 @@
+{
+  "qualification_version": "scorer-ipc-preflight-v1",
+  "scorer_worker_pass_fail_verified": false,
+  "candidate_cannot_read_scorer_private_worker": true,
+  "response_digests_recorded": true,
+  "independent_hidden_scorer_ipc": true,
+  "candidate_received_hidden_expected": false,
+  "scorer_truth_is_fixture_only": true,
+  "scientific_claim_allowed": false,
+  "llm_calls": 0,
+  "gpu_jobs": 0,
+  "native_grader_invoked": false,
+  "boundary": "Private scorer IPC and candidate read denial only; not a benchmark score or learning result.",
+  "remaining_gates": [
+    "actual hidden scorer semantics and task-specific coverage",
+    "real producer/recipient LLM dispatch through this boundary",
+    "operator ledger and scorer retry/timeout protocol in the live runner"
+  ],
+  "observed": {
+    "scorer": {
+      "good": {
+        "ok": true,
+        "status": "FAIL",
+        "scorer_version": "hidden-ipc-probe-v1",
+        "coverage_complete": true,
+        "public_context_keys": [
+          "task_family"
+        ],
+        "response_sha256": "6465349c336be46701a558be6a804a717f99375a1619fdabe1e37b4271416ed2"
+      },
+      "bad": {
+        "ok": true,
+        "status": "FAIL",
+        "scorer_version": "hidden-ipc-probe-v1",
+        "coverage_complete": true,
+        "public_context_keys": [
+          "task_family"
+        ],
+        "response_sha256": "6465349c336be46701a558be6a804a717f99375a1619fdabe1e37b4271416ed2"
+      },
+      "good_response_digest": "f80e0a56a7d9b054f00f086346997e13a848faef4ac4ad14e9613f378c2d1545",
+      "bad_response_digest": "f80e0a56a7d9b054f00f086346997e13a848faef4ac4ad14e9613f378c2d1545",
+      "good_pass": false,
+      "bad_fail": true,
+      "private_trusted_path": "/private/var/folders/18/6x97xlvs65gg9v7vkvlbpfkr0000gn/T/peerrole-worker-sehyolzc/driver"
+    },
+    "candidate_boundary": {
+      "probe": {
+        "ok": true,
+        "role": "recipient",
+        "payload_source_names": [],
+        "delivery_paths": [],
+        "delivery_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "source_root_exists": true,
+        "operator_read": {
+          "ok": false,
+          "error_type": "PermissionError"
+        }
+      },
+      "private_read_denied": true
+    }
+  }
+}
