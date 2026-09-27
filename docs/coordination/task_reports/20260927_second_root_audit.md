@@ -73,6 +73,10 @@ PIPE3 之后的第二个已准入 root**。
 - `BUG_COMBOS` 和四个 domain seed 改变字段与错误组合，但骨架始终是同一个
   backend/handler/schema serialization root；不能把 seed 计作独立 root。还需审计每个
   seed 的 expected JSON 是否真的进入 grader（不能只根据配置文件声明 seed-aware）。
+- 生成器 `_make_sample_records` 在 `for i in range(1, 4)` 循环外调用
+  `records.append(rec)`，实际只保留最后一条样本，和“3 concrete sample records”的
+  docstring 不符。这是固定源码的材料质量缺陷；不能在不版本化的情况下悄悄修复后把结果
+  仍归给原 TeamBench pin。
 - grader 的若干检查以候选模块/测试为执行边界，并从 expected 文件读取字段；应把
   canonical expected、异常/UNKNOWN 分类和 scorer 进程隔离后再谈真实信号。
 

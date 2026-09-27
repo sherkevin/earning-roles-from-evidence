@@ -1,0 +1,70 @@
+{
+  "manifest_version": "peerrolebench-benchmark-baseline-candidate-v1",
+  "status": "CANDIDATE_NOT_FROZEN",
+  "source_commit": "d185aef1916fd86a9ba554d581fd256319a973af",
+  "roots": [
+    {
+      "root_id": "dist1_queue_delivery_v1",
+      "task_id": "DIST1_queue_race",
+      "structural_signature": "queue_delivery_consumer_v1",
+      "split": "development",
+      "seeds": [0],
+      "role_contract": {
+        "producer_owned": ["mqueue/queue.py", "mqueue/priority.py"],
+        "recipient_owned": ["mqueue/consumer.py"],
+        "operator_support": ["mqueue/__init__.py", "mqueue/config.py"]
+      },
+      "qualification": "OPEN_DIST1_INFORMATION_AND_SCORER_GATE"
+    },
+    {
+      "root_id": "pipe3_stream_delivery_v1",
+      "task_id": "PIPE3_stream_processing",
+      "structural_signature": "stream_producer_processor_sink_v1",
+      "split": "confirmation",
+      "seeds": [0, 1],
+      "role_contract": {
+        "producer_owned": ["producer.py"],
+        "recipient_owned": ["processor.py"],
+        "operator_support": ["models.py", "sink.py"]
+      },
+      "qualification": "CONDITIONAL_OPEN_PIPE3_GATE"
+    }
+  ],
+  "baselines": [
+    "uniform",
+    "no_update",
+    "raw_acceptance",
+    "terminal_only",
+    "contextual_trust",
+    "pooled_controller",
+    "RARE"
+  ],
+  "update_comparators": ["rls", "online_logistic", "periodic_refit"],
+  "shared_information_contract": {
+    "same_candidate_set": true,
+    "same_propensity_stream": true,
+    "same_model_and_request_budget": true,
+    "same_legal_history": true,
+    "same_delay_and_reordering": true,
+    "same_full_cost_accounting": true,
+    "private_scorer_visible_to_policy": false,
+    "future_outcome_visible_before_update": false
+  },
+  "primary_metrics": [
+    "situated_judgment_information_value",
+    "future_assignment_quality_and_full_cost",
+    "feedback_to_service_latency_p50_p95",
+    "old_holdout_peak_and_average_forgetting",
+    "unknown_rate_and_failure_disposition"
+  ],
+  "stop_rules": [
+    "task_oracle_or_visibility_leak",
+    "producer_recipient_attribution_failure",
+    "scorer_or_ledger_isolation_failure",
+    "incomplete_ledger_or_unknown_feedback",
+    "RARE_has_no_predeclared_increment_over_contextual_trust"
+  ],
+  "scientific_claim_allowed": false,
+  "gpu_jobs_allowed": false,
+  "real_api_runs_allowed": false
+}

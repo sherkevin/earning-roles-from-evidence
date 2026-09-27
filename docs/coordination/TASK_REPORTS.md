@@ -45,3 +45,5 @@ Goal 修改。
   PIPE3 保留为条件性主候选，MULTI3 为低优先级备选；两者都未冻结，强基线和真实 API 链不启动。
 - [2026-09-27 benchmark / baseline freeze gate](task_reports/20260927_benchmark_baseline_gate.md)：
   固定两个 root、同信息 baseline、manifest、主指标和停止规则；当前不冻结 benchmark、不启动新 API/A800。
+- [2026-09-27 candidate manifest validation](task_reports/20260927_manifest_validation.md)：
+  用机器校验候选 root/split/baseline/信息契约，保持 API/GPU gate 关闭；真实 root 资格仍开放。
