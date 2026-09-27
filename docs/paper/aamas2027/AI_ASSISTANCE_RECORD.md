@@ -496,3 +496,15 @@ UNKNOWN. These checks qualify an engineering boundary only; `benchmark_frozen`,
 episode is preserved and is not pooled with v2. The v2 prepare artifact is stored at
 `experiments/logs/n03_peerrole_dev_neutral_v2_prepare_20260927/`; no new real API request or GPU
 job has been started yet.
+
+### 2026-09-27 neutral DIST1 v2 live episode
+
+One bounded seed-0 episode made three real `内部` / `qwen3.8-max` requests (HTTP 200,
+`end_turn`, 4,621 input and 1,179 output tokens). The producer and recipient consumed the
+versioned queue contract; the recipient repaired only `consumer.py`. The producer's priority
+dataclass placed a default `_seq` before non-default `message`, so the producer scorer returned
+complete transport but incomplete coverage (`P1/P5/P6=UNKNOWN`, `P2/P3/P4/P7=PASS`). The result
+has no label. The runner now closes such an episode before evaluation, so no terminal outcome,
+role evidence, assignment or controller update is appended. The raw episode remains under
+`experiments/logs/n03_peerrole_dev_neutral_v2_prepare_20260927/`; this is a real model/output
+diagnostic, not an efficacy result, and the route is closed without another request.

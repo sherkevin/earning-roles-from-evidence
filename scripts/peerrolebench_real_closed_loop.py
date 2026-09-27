@@ -190,6 +190,30 @@ def controller_update_is_allowed(card):
     return True
 
 
+def producer_score_gate(card, directory):
+    """Require a complete producer scorer response before any role evidence.
+
+    A diagnostic scorer may still be recorded in ``generate``.  An absent,
+    incomplete, or UNKNOWN response must close the episode before consumer
+    outcome/evidence is appended, matching ADR 0030.
+    """
+    if not card.get("producer_scorer"):
+        return True, None
+    path = Path(directory) / "producer_score.json"
+    if not path.exists():
+        return False, "producer_score_missing"
+    try:
+        score = json.loads(path.read_text())
+    except (OSError, ValueError) as exc:
+        return False, "producer_score_invalid_json:" + type(exc).__name__
+    complete = (score.get("status") in {"PASS", "FAIL"}
+                and score.get("coverage_complete") is True
+                and score.get("label") in {0, 1})
+    if not complete:
+        return False, "producer_score_incomplete_or_unknown"
+    return True, None
+
+
 def append_producer_score(out, ledger, delivery, result):
     """Append an operator scorer result without turning it into role evidence."""
     status = result.get("status")
@@ -469,6 +493,15 @@ def evaluate(out, index, reviewed_sha256, config, state):
     if state["statuses"][index] != "awaiting_source_review":
         raise RuntimeError("Episode not awaiting review")
     directory = out / f"episode_{index}"
+    producer_ok, producer_reason = producer_score_gate(config["card"], directory)
+    if not producer_ok:
+        state["statuses"][index] = "UNKNOWN"
+        save(out / "state.json", state)
+        log(out, "stop", {"reason": producer_reason,
+                            "no_role_evidence_or_controller_update": True})
+        print(json.dumps({"index": index, "status": "UNKNOWN", "no_update": True,
+                          "reason": producer_reason}))
+        return
     sealed = json.loads((directory / "sealed_consumer.json").read_text())
     if reviewed_sha256 != sealed["output_source_sha256"] or _digest_files(sealed["source_files"]) != reviewed_sha256:
         raise RuntimeError("Reviewed source digest mismatch")

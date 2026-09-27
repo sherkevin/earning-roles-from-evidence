@@ -18,7 +18,7 @@
 | producer score 可安全进入因果链 | delivery-bound digest、judgment 前 producer-score event、replay constructor、UNKNOWN gate | `ProducerScore`、replay 与 runner 可选边界通过 112 项回归；尚未有真实 scorer episode 或 controller update | “producer-score event path is implemented; no live role update” |
 | recipient outcome 不污染 producer attribution | immutable delivery digest、recipient-owned paths、独立 `Q_p`/`Q_r` | ADR0033 更正了首次 consumer scorer 的 tuple/list 实现错误；producer/recipient schema 仍独立，但没有由该回放支持的评分盲点证据 | “producer and recipient outcomes are measured separately in the contract” |
 | peer 具备可学习个体差异 | common init、合法个人经验、matched unseen tasks、identity-renaming control | 当前 peers exchangeable | “当前实验尚未建立该条件” |
-| 真实 API 链路可行 | raw SSE/API、完整 trace、失败与 UNKNOWN 记录 | v3 两条限定链通过；neutral DIST1 v1 三次请求完成但 scorer/consumer coverage 因契约不一致为 UNKNOWN；neutral-v2 仅完成 prepare 与零调用资格，尚未发新请求 | 可写真实 API/传输和失败记录；不得写方法效果 |
+| 真实 API 链路可行 | raw SSE/API、完整 trace、失败与 UNKNOWN 记录 | v3 两条限定链通过；neutral DIST1 v1 三次请求因契约不一致为 UNKNOWN；neutral-v2 三次请求完整返回，但 producer priority 导致 scorer coverage UNKNOWN，未产生 outcome/update | 可写真实 API/传输和失败记录；不得写方法效果 |
 
 ## 结果表的空白规则
 

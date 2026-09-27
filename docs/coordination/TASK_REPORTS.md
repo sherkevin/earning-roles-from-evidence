@@ -57,3 +57,5 @@ Goal 修改。
   三次真实 API 请求完成，但任务公开接口与 hidden scorer 不一致，producer/consumer scorer 均 UNKNOWN；不产生学习证据。
 - [2026-09-27 DIST1 neutral-v2 contract qualification](task_reports/20260927_dist1_v2_contract_qualification.md)：
   修复并版本化公开队列接口，完成 adapter/provenance/runtime/scorer 的零调用检查；旧 v1 UNKNOWN 保留，v2 仍未冻结 benchmark 或产生科学结果。
+- [2026-09-27 neutral DIST1 v2 live episode](task_reports/20260927_neutral_v2_live_episode.md)：
+  三次真实 API 请求完整返回；producer priority 生成触发 dataclass 导入错误，scorer coverage 不完整，按规则不产生 label/evidence/update，集成路线关闭。

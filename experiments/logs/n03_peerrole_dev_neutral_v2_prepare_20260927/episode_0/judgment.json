@@ -1,0 +1,7 @@
+{
+  "decision": "accept_with_rework",
+  "confidence": 0.95,
+  "rationale": "The delivered consumer.py has a critical bug: run_once() calls self._queue.get() which returns (message, receipt) per the public interface contract, but then passes the entire tuple to self._handler(message) and appends the tuple to self._processed without ever calling self._queue.ack(receipt). This means in-flight messages are never acknowledged, causing the queue capacity to be permanently consumed and leading to QueueFull errors under concurrent load. Additionally, there is no error handling around the handler call, so if it fails the message is lost (never acked or nacked). The producer files (queue.py, priority.py) look correct and should be accepted unchanged.",
+  "repair_plan": "Rewrite consumer.py so that run_once() properly unpacks the (message, receipt) tuple from get(), calls the handler with just the message, tracks only the message in _processed, and calls ack(receipt) on success or nack(receipt) if the handler raises an exception. This ensures in-flight slots are released and messages are recovered on failure.",
+  "observed_artifact_sha256": "2324dc9b9af724943eaeef8863c04a31c1822326ffee6f962e9d55e12db26bd3"
+}

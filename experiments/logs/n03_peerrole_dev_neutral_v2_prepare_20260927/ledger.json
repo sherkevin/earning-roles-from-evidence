@@ -1,0 +1,89 @@
+[
+  {
+    "event_type": "peer_selection",
+    "payload": {
+      "selection_id": "selection-0",
+      "task_id": "DIST1_queue_race",
+      "task_index": 0,
+      "selector_id": "agent_A",
+      "role": "producer",
+      "candidate_ids": [
+        "agent_B",
+        "agent_C"
+      ],
+      "chosen_peer_id": "agent_B",
+      "propensity": 0.5
+    },
+    "previous_hash": "GENESIS",
+    "record_hash": "7fd029bf856a149313b288e1a0bc26e4f4ecf3113f00576ad01c8e554635a3c6"
+  },
+  {
+    "event_type": "task_start",
+    "payload": {
+      "task_id": "DIST1_queue_race",
+      "task_index": 0
+    },
+    "previous_hash": "7fd029bf856a149313b288e1a0bc26e4f4ecf3113f00576ad01c8e554635a3c6",
+    "record_hash": "5073e4c5ebdd185242cca1454e80029f7c15fe581ef8e81e911634957d708ca2"
+  },
+  {
+    "event_type": "producer_delivery",
+    "payload": {
+      "delivery_id": "delivery-0",
+      "task_id": "DIST1_queue_race",
+      "producer_id": "agent_B",
+      "recipient_id": "agent_A",
+      "artifact_sha256": "2324dc9b9af724943eaeef8863c04a31c1822326ffee6f962e9d55e12db26bd3",
+      "source_event_id": "producer-request-0",
+      "task_index": 0,
+      "selection_id": "selection-0"
+    },
+    "previous_hash": "5073e4c5ebdd185242cca1454e80029f7c15fe581ef8e81e911634957d708ca2",
+    "record_hash": "e24f79f06d2ecaa82f799027c8236104d7fc871fe4b946c067723f322d8f0c78"
+  },
+  {
+    "event_type": "producer_score",
+    "payload": {
+      "producer_score_id": "producer-score-delivery-0",
+      "delivery_id": "delivery-0",
+      "artifact_sha256": "2324dc9b9af724943eaeef8863c04a31c1822326ffee6f962e9d55e12db26bd3",
+      "scorer_version": "dist1-producer-objective-v1",
+      "status": "UNKNOWN",
+      "label": null,
+      "quality_score": null,
+      "score_payload_sha256": "c44ebbc16598c82b1b93647e508b537ebdac9ccb439b6ba46f34ca1dec0c5c07",
+      "coverage_complete": false
+    },
+    "previous_hash": "e24f79f06d2ecaa82f799027c8236104d7fc871fe4b946c067723f322d8f0c78",
+    "record_hash": "813b41c2966d6aa0147e955c146d251210727b95c7699ef4e1c1e64a5f702db9"
+  },
+  {
+    "event_type": "recipient_judgment",
+    "payload": {
+      "judgment_id": "judgment-0",
+      "delivery_id": "delivery-0",
+      "consumer_id": "agent_A",
+      "decision": "accept_with_rework",
+      "observed_artifact_sha256": "2324dc9b9af724943eaeef8863c04a31c1822326ffee6f962e9d55e12db26bd3",
+      "terminal_outcome_available": false,
+      "repair_note": "Rewrite consumer.py so that run_once() properly unpacks the (message, receipt) tuple from get(), calls the handler with just the message, tracks only the message in _processed, and calls ack(receipt) on success or nack(receipt) if the handler raises an exception. This ensures in-flight slots are released and messages are recovered on failure."
+    },
+    "previous_hash": "813b41c2966d6aa0147e955c146d251210727b95c7699ef4e1c1e64a5f702db9",
+    "record_hash": "4526ea1fc7da1aa950f3f4b2ae2b4d5409fed39f5c9ef592738cf7b838d00b7a"
+  },
+  {
+    "event_type": "consumer_action",
+    "payload": {
+      "action_id": "action-0",
+      "delivery_id": "delivery-0",
+      "consumer_id": "agent_A",
+      "used_artifact": true,
+      "input_artifact_sha256": "2324dc9b9af724943eaeef8863c04a31c1822326ffee6f962e9d55e12db26bd3",
+      "output_artifact_sha256": "2a8cde94fea5269df3f0efc8c15f3eb8376d2bb53ac047a4d974e8c3aec16053",
+      "repair_cost": 5.586229666000001,
+      "action": "repair"
+    },
+    "previous_hash": "4526ea1fc7da1aa950f3f4b2ae2b4d5409fed39f5c9ef592738cf7b838d00b7a",
+    "record_hash": "61a66be0bdfdadf71da216d98aa36690ade166e4c34206d38f5685ed666c8ccd"
+  }
+]

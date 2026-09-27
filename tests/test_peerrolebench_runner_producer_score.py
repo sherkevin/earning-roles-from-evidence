@@ -14,6 +14,7 @@ from peerrolebench_real_closed_loop import (  # noqa: E402
     append_producer_score,
     controller_update_is_allowed,
     producer_interface_names,
+    producer_score_gate,
     producer_scorer_sources,
 )
 from peerrolebench_task_contract import export_task_materials, load_generated_task  # noqa: E402
@@ -40,6 +41,26 @@ def test_diagnostic_card_disables_controller_update_without_changing_legacy_card
     assert controller_update_is_allowed({"producer_scorer": {
         "controller_update_allowed": True,
     }}) is True
+
+
+def test_incomplete_producer_score_blocks_role_evidence(tmp_path):
+    episode = tmp_path / "episode_0"
+    episode.mkdir()
+    (episode / "producer_score.json").write_text(json.dumps({
+        "status": "UNKNOWN", "label": None, "coverage_complete": False,
+    }))
+    ok, reason = producer_score_gate({"producer_scorer": {"version": "v1"}}, episode)
+    assert ok is False
+    assert reason == "producer_score_incomplete_or_unknown"
+
+
+def test_complete_producer_score_allows_downstream_evaluation(tmp_path):
+    episode = tmp_path / "episode_0"
+    episode.mkdir()
+    (episode / "producer_score.json").write_text(json.dumps({
+        "status": "FAIL", "label": 0, "coverage_complete": True,
+    }))
+    assert producer_score_gate({"producer_scorer": {"version": "v1"}}, episode) == (True, None)
 
 
 def test_operator_source_names_are_derived_without_consumer_files():
