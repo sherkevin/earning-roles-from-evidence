@@ -18,6 +18,12 @@ grader；没有运行生成器、pytest、LLM/API、Nebula 或 GPU，也没有�
 
 PIPE3 仍是当前最强的代码交付型候选，但**不能冻结为 benchmark**。
 
+静态依据是
+[`gen_pipe3_stream_processing.py`](../../../references/benchmark_sources/TeamBench/generators/gen_pipe3_stream_processing.py)、
+[`PIPE3 spec`](../../../references/benchmark_sources/TeamBench/tasks/PIPE3_stream_processing/spec.md)
+和
+[`PIPE3 grader`](../../../references/benchmark_sources/TeamBench/tasks/PIPE3_stream_processing/grade.sh)。
+
 - 结构链清楚：`producer.py` 生成 JSONL，`processor.py` 有自己的变换工作，`sink.py`
   读取 processor 输出；三个缺陷分属 producer（时间戳）和 processor（envelope、编码）。
   因而可以定义 producer contract、recipient-self score 和 sink adoption 三个不相同的量。
@@ -41,6 +47,12 @@ PIPE3 仍是当前最强的代码交付型候选，但**不能冻结为 benchmar
 
 MULTI3 有一个可利用的 backend→frontend 接口，但当前更适合作为备选，**不能直接作为
 PIPE3 之后的第二个已准入 root**。
+
+静态依据是
+[`gen_multi3_polyglot.py`](../../../references/benchmark_sources/TeamBench/generators/gen_multi3_polyglot.py)、
+[`MULTI3 spec`](../../../references/benchmark_sources/TeamBench/tasks/MULTI3_polyglot/spec.md)
+和
+[`MULTI3 grader`](../../../references/benchmark_sources/TeamBench/tasks/MULTI3_polyglot/grade.sh)。
 
 - `backend/processor.py` 的 serializer/batch 是明确上游交付；`frontend/handler.py` 的
   deserialize/process envelope 是明确下游工作。生成测试使用 hardcoded

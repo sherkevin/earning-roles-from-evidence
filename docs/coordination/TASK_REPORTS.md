@@ -43,3 +43,5 @@ Goal 修改。
   定位并修正 private consumer scorer 的 tuple/list 实现错误；旧错误日志保留，修正回放 PASS 1.0，撤回评分盲点结论。
 - [2026-09-27 second-root audit](task_reports/20260927_second_root_audit.md)：
   PIPE3 保留为条件性主候选，MULTI3 为低优先级备选；两者都未冻结，强基线和真实 API 链不启动。
+- [2026-09-27 benchmark / baseline freeze gate](task_reports/20260927_benchmark_baseline_gate.md)：
+  固定两个 root、同信息 baseline、manifest、主指标和停止规则；当前不冻结 benchmark、不启动新 API/A800。
