@@ -45,10 +45,10 @@ python3 scripts/peerrolebench_policy_sidecar_qualification.py \
 
 ```text
 python3 scripts/peerrolebench_policy_sidecar_stream_qualification.py \
-  --out-dir experiments/logs/n03_policy_sidecar_stream_qualification_20260928_v2
+  --out-dir experiments/logs/n03_policy_sidecar_stream_qualification_20260928_v4
 ```
 
-提交 `ac1f279` 后的 v2 日志覆盖 strict ledger replay、feedback permutation、duplicate sidecar、truncated ledger UNKNOWN 和 wrong selected producer/version 五个 case；规则是 selection 按 canonical ledger index 注册，feedback 按 `(arrived_at, protocol_event_id)` 重放。该运行仍是工程资格，不是 benchmark 效果。
+提交 `631f2b0` 后的 v4 日志覆盖 strict ledger replay、feedback permutation、duplicate sidecar、truncated ledger UNKNOWN 和 wrong selected producer/version 五个 case；规则是 selection 按 canonical ledger index 注册，feedback 按 `(arrived_at, protocol_event_id)` 重放，并验证独立 manifest root。该运行仍是工程资格，不是 benchmark 效果。
 
 ## 尚未通过的门
 

@@ -614,3 +614,12 @@ feedback permutation, duplicate sidecar, truncated UNKNOWN, and wrong
 producer cases. This was a zero-API, zero-GPU engineering qualification;
 PIPE3 live integration, benchmark freeze, role efficacy, training and A800
 claims remain open.
+
+### 2026-09-28 sidecar manifest attestation
+
+The assistant kept sidecar digests in a separate append-only manifest because
+the native peer-role protocol dataclasses reject unknown event fields. The
+manifest has its own SHA-256 chain and is checked one-to-one against ledger
+event identities and sidecar payload digests. The post-commit canonical replay
+qualification passed with five cases and recorded a manifest root; this remains
+an offline engineering gate and does not establish benchmark or model efficacy.

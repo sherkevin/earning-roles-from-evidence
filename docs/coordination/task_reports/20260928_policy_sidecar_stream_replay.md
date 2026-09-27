@@ -15,10 +15,10 @@
 
 ```text
 python3 scripts/peerrolebench_policy_sidecar_stream_qualification.py \
-  --out-dir experiments/logs/n03_policy_sidecar_stream_qualification_20260928_v2
+  --out-dir experiments/logs/n03_policy_sidecar_stream_qualification_20260928_v4
 ```
 
-提交 `1d93fc0` 的代码先执行 v1；提交 `ac1f279` 后的 v2 作为最终记录。完整 strict fixture 的 5 个 case 全部通过：canonical 更新 1 次；feedback permutation 与 canonical snapshot 相同；duplicate sidecar 为 INVALID 且 0 次更新；truncated canonical ledger 为 UNKNOWN 且关闭更新；wrong producer/version 为 INVALID 且 0 次更新。
+提交 `1d93fc0` 的代码先执行 v1；提交 `ac1f279` 后的 v2 未含 manifest，提交 `631f2b0` 后的 v4 作为最终记录。完整 strict fixture 的 5 个 case 全部通过：canonical 更新 1 次并产生 manifest root；feedback permutation 与 canonical snapshot/root 相同；duplicate sidecar 为 INVALID 且 0 次更新；truncated canonical ledger 为 UNKNOWN 且关闭更新；wrong producer/version 为 INVALID 且 0 次更新。
 
 该 qualification 使用内存中确定性 protocol fixture，`real_api_calls=0`、`gpu_jobs=0`、`scientific_claim_allowed=false`；它证明 replay gate 的工程边界，不证明 benchmark、role efficacy 或实时训练效果。
 
@@ -34,4 +34,4 @@ python3 scripts/peerrolebench_policy_sidecar_stream_qualification.py \
 
 ## 尚未解决
 
-真实 runner 仍要生成 sidecar manifest 并与 append-only ledger 做一对一 attestation；当前只验证 sidecar digest 与 record hash 的离线关系，尚未把 sidecar digest 写成 protocol event。PIPE3、第二 root、baseline freeze、真实 API 和 A800 仍未解锁。
+真实 runner 仍要生成 sidecar manifest root 并把 root 与 episode sealing 元数据一对一 attestation；当前没有把 sidecar digest 硬塞进 protocol event，而是保持独立 manifest。PIPE3、第二 root、baseline freeze、真实 API 和 A800 仍未解锁。
