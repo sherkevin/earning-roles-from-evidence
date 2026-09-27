@@ -377,3 +377,15 @@ operator-only ledger access, and the parent recorded a three-event selection/del
 recipient-dispatch hash-chain fixture. This remains a zero-LLM runtime diagnostic: it does
 not validate generated code, hidden scoring, retries, exceptions, out-of-order replay or
 the scientific benchmark.
+
+### 2026-09-27 parent-side ledger replay gate
+
+To close the remaining event-integrity gap before another real API run, AI assistance added
+`scripts/peerrolebench_ledger_replay.py`. It independently verifies serialized schema, hash
+chain, identifiers, causal order, cross-event references and completion of the path from
+selection through later assignment. A preserved 15-event N02 v3 ledger replayed successfully.
+The bounded zero-LLM mutation matrix records duplicate IDs, record/previous-hash tampering,
+unknown and retry event types, out-of-order delivery, and an interrupted chain; all cases
+matched their preregistered reject/UNKNOWN outcomes. Targeted tests reached 85 passing cases.
+This is a protocol and auditability result only: it does not establish hidden scorer isolation,
+benchmark qualification, role-learning efficacy, real-time training, or an A800 result.

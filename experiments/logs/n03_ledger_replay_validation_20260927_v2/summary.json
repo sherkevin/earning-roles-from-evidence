@@ -1,0 +1,114 @@
+{
+  "timestamp_utc": "2026-09-27T06:30:32.796293+00:00",
+  "config_sha256": "843a42873603870c43937ae988b2092c27faa4578b748976a4ed8cb8dfe76ba4",
+  "raw_sha256": "12b25974c7a5448aafab327cd2f5b41bd6a65078dfcfcbf99c7bca97298e8edd",
+  "case_count": 8,
+  "all_expectations_met": true,
+  "valid_real_ledger_passed": true,
+  "invalid_or_unknown_cases_rejected_or_marked": true,
+  "llm_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "boundary": "Protocol and replay qualification only; no generated agent output, scorer result, or learning update.",
+  "cases": [
+    {
+      "case": "valid_real_v3",
+      "input_event_count": 15,
+      "expected_unknown": false,
+      "status": "PASS",
+      "complete": true,
+      "missing": [],
+      "observed_code": null,
+      "expectation_met": true
+    },
+    {
+      "case": "duplicate_event",
+      "input_event_count": 16,
+      "expected_unknown": false,
+      "status": "INVALID",
+      "complete": false,
+      "missing": [],
+      "observed_code": "duplicate_event_id",
+      "error": "duplicate_event_id at event 3: producer_delivery 'delivery-0' appears twice",
+      "expectation_met": true
+    },
+    {
+      "case": "record_hash_tamper",
+      "input_event_count": 15,
+      "expected_unknown": false,
+      "status": "INVALID",
+      "complete": false,
+      "missing": [],
+      "observed_code": "record_hash_mismatch",
+      "error": "record_hash_mismatch at event 2: record_hash does not cover the serialized record",
+      "expectation_met": true
+    },
+    {
+      "case": "previous_hash_tamper",
+      "input_event_count": 15,
+      "expected_unknown": false,
+      "status": "INVALID",
+      "complete": false,
+      "missing": [],
+      "observed_code": "hash_chain_break",
+      "error": "hash_chain_break at event 2: previous_hash does not match the preceding record",
+      "expectation_met": true
+    },
+    {
+      "case": "unknown_event",
+      "input_event_count": 15,
+      "expected_unknown": false,
+      "status": "INVALID",
+      "complete": false,
+      "missing": [],
+      "observed_code": "unknown_event_type",
+      "error": "unknown_event_type at event 2: event type 'mystery_event' is not part of the append-only protocol",
+      "expectation_met": true
+    },
+    {
+      "case": "retry_event",
+      "input_event_count": 15,
+      "expected_unknown": false,
+      "status": "INVALID",
+      "complete": false,
+      "missing": [],
+      "observed_code": "unsupported_retry",
+      "error": "unsupported_retry at event 2: event type 'producer_retry' is not part of the append-only protocol",
+      "expectation_met": true
+    },
+    {
+      "case": "out_of_order",
+      "input_event_count": 15,
+      "expected_unknown": false,
+      "status": "INVALID",
+      "complete": false,
+      "missing": [],
+      "observed_code": "out_of_order",
+      "error": "out_of_order at event 1: producer_delivery requires an earlier task_start",
+      "expectation_met": true
+    },
+    {
+      "case": "interrupted_after_judgment",
+      "input_event_count": 4,
+      "expected_unknown": true,
+      "status": "UNKNOWN",
+      "complete": false,
+      "missing": [
+        {
+          "stage": "consumer_action",
+          "delivery_id": "delivery-0"
+        },
+        {
+          "stage": "terminal_outcome",
+          "delivery_id": "delivery-0"
+        },
+        {
+          "stage": "role_evidence_update",
+          "delivery_id": "delivery-0"
+        }
+      ],
+      "observed_code": null,
+      "expectation_met": true
+    }
+  ]
+}

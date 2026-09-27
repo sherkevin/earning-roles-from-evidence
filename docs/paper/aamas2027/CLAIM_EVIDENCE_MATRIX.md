@@ -11,6 +11,7 @@
 | RARE 实时更新 | 每条反馈 update p50/p95、乱序语义、版本绑定和服务延迟 | 未开始 | 只能写设计约束 |
 | RARE 少遗忘 | old holdout、漂移后恢复、峰值/平均遗忘 | 未开始 | 不得写保留能力 |
 | PeerRoleBench-TB 是 benchmark | 两个以上结构 root、真实 payload/scorer/ledger 隔离、评分和任务划分资格通过 | PIPE3 v2 只有静态契约夹具、placeholder ledger fixture 和 listed canary；任务文本泄露 Bug 1/2/3；真实 scorer/root split 仍未完成 | “TeamBench-derived candidate with a static preflight fixture; not yet a scientific benchmark” |
+| ledger 能安全进入学习更新 | parent-side hash/replay、唯一性、因果顺序、完整性、异常与 UNKNOWN 语义 | N02 v3 真实 15 事件 ledger 回放通过；8 个变异案例按预期拒绝/UNKNOWN；真实 runner 的 scorer/operator IPC 和 retry 语义仍未完成 | “protocol replay gate is qualified on a preserved trace; no learning efficacy claim” |
 | peer 具备可学习个体差异 | common init、合法个人经验、matched unseen tasks、identity-renaming control | 当前 peers exchangeable | “当前实验尚未建立该条件” |
 | 真实 API 链路可行 | raw SSE/API、完整 trace、失败与 UNKNOWN 记录 | v3 两条限定链通过 | 可写协议/传输可行性 |
 

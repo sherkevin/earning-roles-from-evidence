@@ -21,3 +21,5 @@ Goal 修改。
   当前故事、方法、benchmark、实验和论文状态的第一份逐项对照；未请求 Goal 降级。
 - [2026-09-27 recipient runtime probe](task_reports/20260927_recipient_runtime_probe.md)：
   recipient payload、selected delivery 和有限 lineage hash-chain 的运行时边界检查；未请求 Goal 降级。
+- [2026-09-27 ledger replay gate](task_reports/20260927_ledger_replay_gate.md)：
+  parent-side ledger 的 hash/因果回放和变异矩阵通过；仍是协议资格，不是 benchmark 或在线学习结果。
