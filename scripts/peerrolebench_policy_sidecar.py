@@ -170,6 +170,7 @@ class FeedbackSidecar:
     selection_event_id: str
     delivery_id: str
     producer_id: str
+    producer_version: str
     recipient_id: str
     source: str
     arrived_at: float
@@ -191,7 +192,8 @@ class FeedbackSidecar:
             raise ValueError("feedback sidecar must reference judgment or terminal outcome")
         if not self.protocol_event_id or not self.feedback_id or not self.source_event_id:
             raise ValueError("feedback identifiers are required")
-        if not self.selection_event_id or not self.delivery_id or not self.producer_id or not self.recipient_id:
+        if (not self.selection_event_id or not self.delivery_id or not self.producer_id
+                or not self.producer_version or not self.recipient_id):
             raise ValueError("feedback lineage identifiers are required")
         if self.sidecar_version != SIDECAR_VERSION:
             raise ValueError("unsupported sidecar version")
@@ -228,7 +230,8 @@ class FeedbackSidecar:
             "protocol_event_type": self.protocol_event_type, "protocol_event_id": self.protocol_event_id,
             "feedback_id": self.feedback_id, "source_event_id": self.source_event_id,
             "selection_event_id": self.selection_event_id, "delivery_id": self.delivery_id,
-            "producer_id": self.producer_id, "recipient_id": self.recipient_id,
+            "producer_id": self.producer_id, "producer_version": self.producer_version,
+            "recipient_id": self.recipient_id,
             "source": self.source, "arrived_at": self.arrived_at, "delay": self.delay,
             "action": self.action, "disposition": self.disposition,
             "provenance": self.provenance, "label_mapping_version": self.label_mapping_version,
@@ -328,6 +331,9 @@ class PolicySidecarBridge:
             raise ValueError("feedback references an unknown protocol selection")
         if sidecar.source_event_id != selection_event_id:
             raise ValueError("feedback source event does not match protocol selection")
+        chosen = self.policy._decisions[selection_event_id].chosen
+        if (sidecar.producer_id, sidecar.producer_version) != (chosen.candidate_id, chosen.candidate_version):
+            raise ValueError("feedback producer does not match selected candidate")
         feedback = sidecar.to_feedback()
         if feedback is None:
             return False

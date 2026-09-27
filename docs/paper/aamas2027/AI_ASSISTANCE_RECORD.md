@@ -603,3 +603,14 @@ UNKNOWN or non-public feedback cannot carry a label or update state. Offline
 tests and a zero-API qualification passed. The sidecar is not yet in the PIPE3
 runner, so benchmark freeze, role efficacy, training and A800 claims remain
 open.
+
+### 2026-09-28 canonical sidecar stream replay
+
+The assistant added a canonical ledger replay gate for the public sidecars. It
+requires one-to-one event coverage, non-empty sidecar digests, fixed selection
+and feedback replay order, arrival/delay consistency, and selected
+producer/version lineage. A complete strict protocol fixture passed canonical,
+feedback permutation, duplicate sidecar, truncated UNKNOWN, and wrong
+producer cases. This was a zero-API, zero-GPU engineering qualification;
+PIPE3 live integration, benchmark freeze, role efficacy, training and A800
+claims remain open.

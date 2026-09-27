@@ -55,7 +55,7 @@ def feedback(*, event_type: str, event_id: str, disposition: str, provenance: st
     return FeedbackSidecar(
         ledger_record_hash=DIGEST, protocol_event_type=event_type, protocol_event_id=event_id,
         feedback_id=f"feedback-{event_id}", source_event_id="e0", selection_event_id="s0",
-        delivery_id="d0", producer_id="peer-a", recipient_id="peer-b", source=event_type,
+        delivery_id="d0", producer_id="peer-b", producer_version="v1", recipient_id="peer-a", source=event_type,
         arrived_at=3.0 if event_type == "recipient_judgment" else 4.0,
         delay=2.0 if event_type == "recipient_judgment" else 3.0,
         action=action, disposition=disposition, provenance=provenance,

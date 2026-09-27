@@ -68,7 +68,7 @@ def test_feedback_sidecar_requires_mapping_for_public_label_and_hides_unknown():
     feedback = FeedbackSidecar(
         ledger_record_hash=DIGEST, protocol_event_type="recipient_judgment", protocol_event_id="j0",
         feedback_id="f0", source_event_id="e0", selection_event_id="s0", delivery_id="d0",
-        producer_id="peer-a", recipient_id="peer-b",
+        producer_id="peer-b", producer_version="v1", recipient_id="peer-a",
         source="recipient_judgment", arrived_at=12.0, delay=2.0,
         action="repair", disposition="eligible", provenance="public",
         label_mapping_version="judgment-v1", mapping_digest=DIGEST,
@@ -79,7 +79,7 @@ def test_feedback_sidecar_requires_mapping_for_public_label_and_hides_unknown():
     unknown = FeedbackSidecar(
         ledger_record_hash=DIGEST, protocol_event_type="terminal_outcome", protocol_event_id="o0",
         feedback_id="f1", source_event_id="e0", selection_event_id="s0", delivery_id="d0",
-        producer_id="peer-a", recipient_id="peer-b",
+        producer_id="peer-b", producer_version="v1", recipient_id="peer-a",
         source="terminal_outcome", arrived_at=13.0, delay=3.0,
         action="redo", disposition="unknown", provenance="unknown",
         label_mapping_version="", mapping_digest="", responsibility_status="unknown",
@@ -90,7 +90,7 @@ def test_feedback_sidecar_requires_mapping_for_public_label_and_hides_unknown():
         FeedbackSidecar(
             ledger_record_hash=DIGEST, protocol_event_type="recipient_judgment", protocol_event_id="j2",
             feedback_id="f2", source_event_id="e0", selection_event_id="s0", delivery_id="d0",
-            producer_id="peer-a", recipient_id="peer-b",
+            producer_id="peer-b", producer_version="v1", recipient_id="peer-a",
             source="recipient_judgment", arrived_at=12.0, delay=2.0,
             action="accept", disposition="eligible", provenance="public",
             label_mapping_version="", mapping_digest="", responsibility_status="attributed",
@@ -107,7 +107,7 @@ def test_sidecar_rejects_untrusted_probability_or_hidden_label():
         FeedbackSidecar(
             ledger_record_hash=DIGEST, protocol_event_type="terminal_outcome", protocol_event_id="o3",
             feedback_id="f3", source_event_id="e0", selection_event_id="s0", delivery_id="d0",
-            producer_id="peer-a", recipient_id="peer-b",
+            producer_id="peer-b", producer_version="v1", recipient_id="peer-a",
             source="terminal_outcome", arrived_at=13.0, delay=3.0,
             action="use", disposition="unknown", provenance="unknown",
             label_mapping_version="", mapping_digest="", responsibility_status="unknown",
@@ -129,7 +129,7 @@ def _feedback(*, event_type, event_id, disposition, provenance, label=None, acti
     return FeedbackSidecar(
         ledger_record_hash=DIGEST, protocol_event_type=event_type, protocol_event_id=event_id,
         feedback_id=f"feedback-{event_id}", source_event_id="e0", selection_event_id="s0",
-        delivery_id="d0", producer_id="peer-a", recipient_id="peer-b",
+        delivery_id="d0", producer_id="b", producer_version="v1", recipient_id="peer-a",
         source=event_type, arrived_at=12.0, delay=2.0, action=action,
         disposition=disposition, provenance=provenance,
         label_mapping_version="judgment-v1" if disposition == "eligible" else "",
@@ -163,3 +163,14 @@ def test_sidecar_bridge_rejects_feedback_before_selection():
                          disposition="eligible", provenance="public", label=1.0, action="use")
     with pytest.raises(ValueError, match="unknown protocol selection"):
         bridge.ingest_feedback(terminal, _record("terminal_outcome", "o0"))
+
+
+def test_sidecar_bridge_rejects_feedback_from_unselected_producer():
+    bridge = PolicySidecarBridge(TerminalOnlyPolicy())
+    bridge.ingest_selection(decision(), _record("peer_selection", "s0"))
+    wrong = _feedback(event_type="terminal_outcome", event_id="o9", disposition="eligible",
+                      provenance="public", label=1.0, action="use")
+    wrong = FeedbackSidecar(**{**wrong.__dict__, "producer_id": "peer-a"})
+    with pytest.raises(ValueError, match="producer"):
+        bridge.ingest_feedback(wrong, _record("terminal_outcome", "o9"))
+    assert bridge.policy.updates == 0

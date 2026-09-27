@@ -42,7 +42,7 @@ def run(out_dir: Path) -> dict:
     feedback = FeedbackSidecar(
         ledger_record_hash=DIGEST, protocol_event_type="recipient_judgment", protocol_event_id="j0",
         feedback_id="f0", source_event_id="e0", selection_event_id="s0",
-        delivery_id="d0", producer_id="peer-a", recipient_id="peer-b",
+        delivery_id="d0", producer_id="peer-b", producer_version="v1", recipient_id="peer-a",
         source="recipient_judgment", arrived_at=3.0, delay=2.0, action="repair",
         disposition="eligible", provenance="public", label_mapping_version="judgment-v1",
         mapping_digest=DIGEST, responsibility_status="attributed", attribution_basis="producer-contract-v1",
@@ -51,7 +51,7 @@ def run(out_dir: Path) -> dict:
     unknown = FeedbackSidecar(
         ledger_record_hash=DIGEST, protocol_event_type="terminal_outcome", protocol_event_id="o0",
         feedback_id="f1", source_event_id="e0", selection_event_id="s0", delivery_id="d0",
-        producer_id="peer-a", recipient_id="peer-b",
+        producer_id="peer-b", producer_version="v1", recipient_id="peer-a",
         source="terminal_outcome", arrived_at=4.0, delay=3.0, action="redo",
         disposition="unknown", provenance="unknown", label_mapping_version="", mapping_digest="",
         responsibility_status="unknown", attribution_basis="", raw_value=None, label=None,

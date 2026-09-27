@@ -81,3 +81,5 @@ Goal 修改。
   对冻结 N02 ledger 做无默认值映射审计；15 条事件缺候选版本/上下文/模型 schema、反馈延迟/provenance 和 label mapping，返回 NOT_MAPPABLE，policy update 保持关闭。
 - [2026-09-28 public policy sidecar schema](task_reports/20260928_policy_sidecar_schema.md)：
   增加版本化 Decision/Feedback sidecar 与 ledger record-hash 绑定；离线资格通过，eligible/UNKNOWN 反馈边界明确，尚未接 PIPE3 runner。
+- [2026-09-28 canonical policy sidecar stream replay](task_reports/20260928_policy_sidecar_stream_replay.md)：
+  在完整 strict ledger 之后验证 sidecar 一对一覆盖、固定反馈顺序、UNKNOWN no-update 与 selected producer/version lineage；5 格零 API qualification 通过，真实 runner 仍开放。
