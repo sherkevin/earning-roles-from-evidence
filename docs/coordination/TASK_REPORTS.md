@@ -75,3 +75,5 @@ Goal 修改。
   固化故事线、benchmark/baseline 证据要求与创新点不可静默降级规则；本任务不改变 Goal 标准。
 - [2026-09-27 baseline implementation audit](task_reports/20260927_baseline_implementation_audit.md)：
   审计 manifest 中每个 baseline 的真实代码、信息边界和可复现实验入口；确认只有 RLS 与部分 synthetic controls 有实现，多个强 baseline/RARE 仍是 OPEN，未冻结 benchmark 或启动 API/A800。
+- [2026-09-28 baseline policy contract](task_reports/20260928_baseline_policy_contract.md)：
+  四个实现条件接入统一 selected-only policy 合约，完成版本/频道/UNKNOWN/快照回归；仍是零 API 离线资格，真实 runner、RARE/RLS 和 baseline freeze 继续开放。

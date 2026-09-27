@@ -567,3 +567,16 @@ RARE, online logistic, and periodic refit do not yet have a common event-stream 
 The audit therefore keeps the manifest and benchmark unfrozen, preserves historical synthetic
 logs as implementation evidence only, and does not start a new API or A800 run. The next task
 is a parity-checked `BaselinePolicy` interface before a new live chain.
+
+### 2026-09-28 baseline policy contract qualification
+
+The first implementation-only `BaselinePolicy` contract now runs uniform,
+no-update, terminal-only, and same-information contextual-trust controls on a
+shared selected-only interface. Decision snapshots retain selector, candidate
+version, state/model/schema versions, timing, and optional captured features;
+feedback references the sealed source decision and carries channel, action,
+delay, disposition, and provenance. Eight focused tests and a zero-API raw
+JSONL qualification passed. This remains an offline implementation aid:
+producer/action attribution, real PIPE3 ledger/scorer integration, propensity
+and label-mapping choices, RLS/RARE integration, benchmark freeze, and A800
+evidence remain open.
