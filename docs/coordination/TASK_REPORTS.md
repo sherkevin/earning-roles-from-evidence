@@ -33,6 +33,8 @@ Goal 修改。
 
 - [done] 2026-09-28 PIPE3 responsibility audit：对冻结 v3 episode 运行 operator-side 归因审计；producer-owned path 未变更而 recipient-owned `processor.py` 被修复，输出 `PENDING_ATTRIBUTION`，阻止 producer policy update，见 [task report](task_reports/20260928_pipe3_responsibility_audit.md)。
 
+- [done] 2026-09-28 PIPE3 responsibility-aware label qualification：同一真实 material root 上的五类 ownership sidecar gate 通过；只有 producer defect eligible，mixed edit 为 UNKNOWN，其余不更新 producer，见 [task report](task_reports/20260928_pipe3_responsibility_label_qualification.md)。
+
 - [done] 2026-09-28 验收标准 v1.1 升级：将官方要求、项目化识别门和高质量论文目标分层，补充 estimand、统计、closest baseline、污染审计、clean replay 与 Proceedings/Findings 双档；未改变 Goal，见 [task report](task_reports/20260928_evaluation_standard_v11.md)。
 
 - [done] 2026-09-28 三份验收文档来源审计：核对 AAMAS 官方要求和定向获奖论文样本，明确官方底线、项目操作化与未完成系统综述的边界，见 [task report](task_reports/20260928_acceptance_criteria_provenance.md)。
