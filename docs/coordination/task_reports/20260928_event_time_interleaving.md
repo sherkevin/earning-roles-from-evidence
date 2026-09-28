@@ -24,13 +24,15 @@ decision schedule。`ContextualTrustPolicy` 是会读取 situated evidence 的�
 当作任务质量，也不锁定 active method。
 
 配置在运行前写入
-`experiments/logs/n03_event_time_interleaving_20260928_v1/config.json`；运行期间的
-结构化结果在 `raw.jsonl`，汇总在 `summary.json`。源码哈希、Python 版本、git commit、
-seed、decision/arrival indices 均在 config 中保存。
+`experiments/logs/n03_event_time_interleaving_20260928_v1/config.json`；加入 append-only
+manifest sealing 后，以新源码重跑的 v2 证据保存在
+`experiments/logs/n03_event_time_interleaving_20260928_v2/`。每个目录都有结构化
+`raw.jsonl` 和 `summary.json`；源码哈希、Python 版本、git commit、seed、
+decision/arrival indices 均在 config 中保存。
 
 ## 结果
 
-`summary.json` 状态为 `QUALIFIED_OFFLINE`，9 个时序/绑定检查全部通过：
+v2 `summary.json` 状态为 `QUALIFIED_OFFLINE`，10 个时序/绑定检查全部通过：
 
 1. 早到 feedback 在 decision 1 前被消费，并产生一次 state update；
 2. 晚到 feedback 在 decision 1 不可见，在 decision 2 才被消费；
@@ -39,6 +41,8 @@ seed、decision/arrival indices 均在 config 中保存。
 5. 早、晚到只把同一影响向后平移一个 decision；
 6. 每个 decision 都有独立 consumption attestation，更新前后 state digest 改变；
 7. comparator 看到与条件组相同的公开 evidence offer。
+8. offer operator binding 和 consumption attestation 被同一条 append-only manifest
+   hash-chain 覆盖，manifest root 可复算。
 
 ## 代表性轨迹
 
@@ -53,11 +57,13 @@ late:  d0=(0.5,0.5), d1=(0.5,0.5),   d2=(0.41743,0.58257)
 
 ## 对 Goal 的逐项判断
 
-- **满足（工程子门）**：pre-decision offer、read watermark、state digest 和
-  consumption attestation 现在有一个可执行的非 LLM 时序资格层。
-- **部分满足**：F 因素的最小行为语义得到验证；仍没有 canonical offer manifest
-  与 PIPE3 真实 runner 的 event-time sealing，也没有 producer responsibility scorer
-  和后续 assignment 的真实 lineage 接入。
+- **满足（工程子门）**：pre-decision offer、read watermark、state digest、
+  consumption attestation 以及离线 append-only manifest sealing 现在有一个可执行
+  的非 LLM 时序资格层。
+- **部分满足**：F 因素的最小行为语义和 manifest 形状得到验证；当前 offer
+  `offer_record_hash` 仍是 adapter 提供的绑定值，尚未由 PIPE3 canonical protocol
+  event 生成，仍没有真实 runner 的 event-time sealing、producer responsibility
+  scorer 和后续 assignment 的真实 lineage 接入。
 - **未开始**：真实 benchmark episode、LLM API、A800、强 same-information
   baseline、完整 `2^4` scientific cells、统计功效和 unseen-root 评估。
 
@@ -68,4 +74,3 @@ late:  d0=(0.5,0.5), d1=(0.5,0.5),   d2=(0.41743,0.58257)
 `DecisionConsumptionAttestation` 接到 PIPE3 runner 的真实 append-only manifest，
 并让同一份 offer 同时进入 proposed policy 与强 baseline；在该 runner 通过
 乱序、延迟、UNKNOWN 和恢复测试前，不启动真实 API 或 A800 factorial。
-

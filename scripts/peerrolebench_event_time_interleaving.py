@@ -40,6 +40,10 @@ from peerrolebench_baseline_policies import (  # noqa: E402
     NoUpdatePolicy,
 )
 from peerrolebench_policy_sidecar import DecisionSidecar  # noqa: E402
+from peerrolebench_policy_sidecar_manifest import (  # noqa: E402
+    build_manifest,
+    validate_manifest,
+)
 
 
 def _digest(payload: Mapping[str, Any]) -> str:
@@ -68,11 +72,13 @@ class InterleavingRun:
     policy: str
     arrival_index: int
     traces: tuple[DecisionTrace, ...]
+    manifest_root: str
 
     def jsonable(self) -> dict[str, Any]:
         return {
             "policy": self.policy,
             "arrival_index": self.arrival_index,
+            "manifest_root": self.manifest_root,
             "traces": [asdict(trace) for trace in self.traces],
         }
 
@@ -169,6 +175,7 @@ def run_interleaving(*, policy_name: str, arrival_index: int, seed: int = 41) ->
     rows_by_arrival: dict[int, list[dict[str, Any]]] = {}
     offered: set[str] = set()
     traces: list[DecisionTrace] = []
+    manifest_rows: list[dict[str, str]] = []
     pending_row: dict[str, Any] | None = None
 
     for ordinal, decision_index in enumerate((0, 2, 4)):
@@ -223,6 +230,20 @@ def run_interleaving(*, policy_name: str, arrival_index: int, seed: int = 41) ->
         verified_consumed = verify_consumption_attestation(attestation, offer, sidecar)
         if verified_consumed != consumed:
             raise AssertionError("event-time consumption attestation did not verify")
+        manifest_rows.extend([
+            {
+                "ledger_record_hash": offer.offer_record_hash,
+                "protocol_event_type": "assignment_evidence_offer",
+                "protocol_event_id": offer.offer_id,
+                "sidecar_digest": _digest(offer.operator_binding_payload()),
+            },
+            {
+                "ledger_record_hash": sidecar.ledger_record_hash,
+                "protocol_event_type": "decision_consumption_attestation",
+                "protocol_event_id": sidecar.protocol_event_id,
+                "sidecar_digest": attestation.attestation_digest,
+            },
+        ])
         trace = DecisionTrace(
             policy=policy_name,
             decision_index=decision_index,
@@ -243,7 +264,10 @@ def run_interleaving(*, policy_name: str, arrival_index: int, seed: int = 41) ->
             pending_row = _feedback_row(selected_key=selection.chosen.key, arrival_index=arrival_index)
             rows_by_arrival.setdefault(arrival_index, []).append(pending_row)
 
-    return InterleavingRun(policy=policy_name, arrival_index=arrival_index, traces=tuple(traces))
+    manifest = build_manifest(manifest_rows)
+    manifest_root = validate_manifest(manifest, manifest_rows)
+    return InterleavingRun(policy=policy_name, arrival_index=arrival_index,
+                           traces=tuple(traces), manifest_root=manifest_root)
 
 
 def qualify_event_time_interleaving() -> dict[str, Any]:
@@ -265,6 +289,9 @@ def qualify_event_time_interleaving() -> dict[str, Any]:
         "latency_only_shifts_effect": e2.probabilities == l2.probabilities,
         "attestations_are_distinct_per_decision": len({trace.attestation_digest for trace in early.traces}) == 3,
         "state_digest_changes_after_update": e0.state_digest != e1.state_digest,
+        "append_only_manifest_seals_offer_and_consumption": (
+            early.manifest_root != "GENESIS" and late.manifest_root != "GENESIS"
+        ),
     }
     if not all(checks.values()):
         failed = [name for name, passed in checks.items() if not passed]

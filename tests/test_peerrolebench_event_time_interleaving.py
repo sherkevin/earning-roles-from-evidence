@@ -37,3 +37,4 @@ def test_attestations_are_unique_and_state_is_versioned():
     early = run_interleaving(policy_name="contextual_trust", arrival_index=1)
     assert len({trace.attestation_digest for trace in early.traces}) == 3
     assert early.traces[0].state_digest != early.traces[1].state_digest
+    assert early.manifest_root != "GENESIS"

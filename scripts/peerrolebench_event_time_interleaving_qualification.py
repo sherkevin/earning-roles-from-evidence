@@ -23,9 +23,8 @@ def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def run(out_dir: Path) -> dict:
+def run(out_dir: Path, *, experiment_id: str = "n03_event_time_interleaving_20260928_v1") -> dict:
     out_dir.mkdir(parents=True, exist_ok=True)
-    experiment_id = "n03_event_time_interleaving_20260928_v1"
     config = {
         "experiment_id": experiment_id,
         "kind": "zero_call_event_time_interleaving_qualification",
@@ -82,8 +81,9 @@ def run(out_dir: Path) -> dict:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--out-dir", type=Path, required=True)
+    parser.add_argument("--experiment-id", default="n03_event_time_interleaving_20260928_v1")
     args = parser.parse_args()
-    result = run(args.out_dir)
+    result = run(args.out_dir, experiment_id=args.experiment_id)
     print(json.dumps({"status": result["status"], "passed": result["passed"],
                       "scientific_claim_allowed": False}, indent=2))
     return 0 if result["passed"] else 1
