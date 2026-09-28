@@ -1,6 +1,6 @@
 # 2026-09-28 PIPE3 selection runner boundary
 
-- 状态：`PARTIAL`
+- 状态：`DONE`（selection boundary 工程子门；完整 runner 仍未完成）
 - 对应 Goal：ER-G1、ER-G2、ER-G4
 - `goal_change_requested=false`
 - 真实 LLM API：0；GPU：0；scientific cell：0
@@ -25,14 +25,20 @@ selection boundary 变成可复用代码：
 ## 验证
 
 `tests/test_peerrolebench_pipe3_runner_v1.py` 与 registry/schedule/manifest/event-time
-定向集合共 `19 passed`。覆盖真实 native record hash 绑定、两次 decision 的 selected
-feedback 更新、未选 candidate 拒绝和双 manifest root。尚需运行提交后固定源码 hash 的
-structured qualification log。
+定向集合共 `19 passed`。提交后的 structured qualification
+`experiments/logs/n03_pipe3_runner_boundary_qualification_20260928_v4/` 也通过：
+
+- `git_commit=aad3cc2c919a178c0744692594c22889f8fcbec6`，runner 与依赖源码 hash 已写入
+  config；
+- valid case 两次 native selection、两条 native sidecar row、四条 auxiliary row，
+  policy 在第二个 decision 前更新一次；
+- native manifest root 和 auxiliary manifest root 均可复算；
+- 未选 candidate mutation 被拒绝，policy updates 保持 0，第二次 native selection
+  没有被写入。
 
 ## 边界
 
 这仍然不是完整 PIPE3 runner：没有 actor LLM、producer/recipient/adoption scorer、
 judgment/action/outcome/evidence 阶段，也没有证明隔离进程内的 policy-read。不会把这条
-零调用 boundary 写成 benchmark 或学习效果。下一步在提交后重跑 qualification，随后补
-全链 UNKNOWN/fault-injection 和 responsibility v3 feedback gate，再决定是否可开一条真实
-API 小链。
+零调用 boundary 写成 benchmark 或学习效果。下一步补全链 UNKNOWN/fault-injection 和
+responsibility v3 feedback gate，再决定是否可开一条真实 API 小链。

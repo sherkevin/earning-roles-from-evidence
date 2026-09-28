@@ -1,0 +1,45 @@
+{
+  "experiment_id": "n03_pipe3_runner_boundary_qualification_20260928_v4",
+  "qualification_version": "pipe3-runner-boundary-v1",
+  "runtime": {
+    "started_at_utc": "2026-09-28T13:40:38.997892+00:00",
+    "python": "3.9.6",
+    "git_commit": "aad3cc2c919a178c0744692594c22889f8fcbec6",
+    "source_sha256": {
+      "scripts/peerrolebench_pipe3_runner_v1.py": "3a1397b11123616ec7bdf182cdb0513adafbc0e592b22af45d13152d2dab11b0",
+      "scripts/peerrolebench_candidate_registry.py": "1baf9e653cd78779f4fdc27901599faf9792a9c676ed126b2acb4dfc76a98307",
+      "scripts/peerrolebench_event_time_schedule.py": "cb055946f727751868aad484d23d5046775323288ba8b400f5920c47fd50a8d0",
+      "scripts/peerrolebench_assignment_manifest.py": "52607dc86998c800eaff402dfb6e07ea92e76b6e681b35626026959010338e7e",
+      "scripts/peerrolebench_assignment_attestation.py": "f366d6fb50dde2fac4946c3283d063ace52101cf1d350f2ac1a26aac7712f6b8",
+      "scripts/peerrolebench_policy_sidecar_manifest.py": "bc6d6dfd86e81583326a0433c26219aa81c4f2e5091cd1aad432f90506117350",
+      "scripts/peerrolebench_baseline_policies.py": "64e34140abafbf7784d36265126ba9283fdf7dac4c5882b1471334cd9f2a2b4f"
+    }
+  },
+  "candidate_registry": "inline-three-candidate-contract-fixture",
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "status": "QUALIFIED_OFFLINE",
+  "passed": true,
+  "valid": {
+    "status": "PASS",
+    "policy_updates": 1,
+    "ledger_event_count": 2,
+    "native_manifest_rows": 2,
+    "auxiliary_manifest_rows": 4,
+    "native_manifest_root": "40cd17438f3eba3779a5653d2641011bc2b711231bb0a96fcaaa6e2e7b6b29d3",
+    "auxiliary_manifest_root": "34bb97aa18919914fe834331950a81b5eddb83e6f87834b344f0e162209f4910",
+    "selection_ids": [
+      "selection-0",
+      "selection-1"
+    ]
+  },
+  "mutation": {
+    "status": "EXPECTED_REJECTION",
+    "error": "evidence row is not bound to the selected candidate",
+    "policy_updates": 0,
+    "native_selection_count": 1
+  },
+  "ended_at_utc": "2026-09-28T13:40:39.028329+00:00",
+  "interpretation": "canonical PIPE3 selection/attestation boundary only; no API, scorer, benchmark, or learning claim"
+}
