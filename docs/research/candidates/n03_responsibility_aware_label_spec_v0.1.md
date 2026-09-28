@@ -25,6 +25,13 @@ producer role evidence。recipient 自己的 integration、sink adoption 或无�
 
 自由文本 rationale 只能作为审计材料，不能单独生成标签。
 
+当前 `PeerRoleLedger` 的严格 replay 把 `role_evidence_update` 当作每个 delivery 的必备
+事件，但这个事件目前没有 `eligible` 字段。实现时不能把 `PENDING_ATTRIBUTION` 伪装成
+producer evidence：应先保留独立 `attribution_review` sidecar，再由 policy adapter 只消费
+`ELIGIBLE` 记录；若严格 replay 仍要求 evidence，则 episode 应返回“terminal complete,
+learning update pending”，而不是伪造一个可供 later assignment 使用的 evidence。这个
+协议分离是下一步 runner 版本化改造的前置问题。
+
 ## 资格函数
 
 令 `C_P = changed_paths ∩ P`、`C_R = changed_paths ∩ R`。producer feedback 的
