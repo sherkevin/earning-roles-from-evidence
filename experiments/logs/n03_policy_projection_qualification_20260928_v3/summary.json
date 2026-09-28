@@ -1,0 +1,84 @@
+{
+  "experiment_id": "n03_policy_projection_qualification_20260928_v3",
+  "status": "QUALIFIED_OFFLINE",
+  "passed": true,
+  "cases": [
+    {
+      "case": "eligible_minimal",
+      "passed": true,
+      "public_keys": [
+        "action",
+        "arrived_at",
+        "candidate_key",
+        "delay",
+        "disposition",
+        "evidence_version",
+        "feedback_id",
+        "label",
+        "provenance",
+        "source",
+        "source_event_id",
+        "source_index",
+        "weight"
+      ],
+      "private_keys_absent": true
+    },
+    {
+      "case": "ineligible_unknown",
+      "passed": true,
+      "disposition": "unknown",
+      "public_payload": {
+        "feedback_id": "f0",
+        "source_event_id": "e0",
+        "source": "recipient_judgment",
+        "candidate_key": "peer-b@v1",
+        "evidence_version": "evidence-v1",
+        "source_index": 5,
+        "arrived_at": 12.0,
+        "delay": 2.0,
+        "action": "repair",
+        "disposition": "unknown",
+        "provenance": "unknown"
+      }
+    },
+    {
+      "case": "delivery_mismatch",
+      "passed": true,
+      "error": "gate and sidecar delivery mismatch"
+    },
+    {
+      "case": "producer_mismatch",
+      "passed": true,
+      "error": "gate and sidecar producer mismatch"
+    },
+    {
+      "case": "producer_version_mismatch",
+      "passed": true,
+      "error": "gate and sidecar producer mismatch"
+    },
+    {
+      "case": "mapping_mismatch",
+      "passed": true,
+      "error": "gate and sidecar label mapping mismatch"
+    },
+    {
+      "case": "private_label",
+      "passed": true,
+      "error": "ineligible gate cannot carry policy label"
+    },
+    {
+      "case": "missing_eligible_label",
+      "passed": true,
+      "error": "eligible gate requires label in [0,1]"
+    },
+    {
+      "case": "non_finite_time",
+      "passed": true,
+      "error": "arrived_at must be finite"
+    }
+  ],
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "ended_at_utc": "2026-09-28T11:00:28.332333+00:00"
+}

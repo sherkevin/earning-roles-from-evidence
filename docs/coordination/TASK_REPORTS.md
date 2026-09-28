@@ -110,3 +110,5 @@ Goal 修改。
   修复 active storyline v1.1 与评价对象仍指向 v1.0 的治理错位；v1.3 评价当前主线，v1.2 保留为历史版本，未放宽 Goal。
 - [2026-09-28 故事线与方法论严格复评](task_reports/20260928_story_method_acceptance_reaudit.md)：
   将合同覆盖度与科学证据准备度分开评分；故事线和 active method 均仍未过硬门，候选 updater 只完成零调用不变量，未改变 Goal 或停止条件。
+- [2026-09-28 typed policy projection seam](task_reports/20260928_policy_projection_seam.md)：
+  将 operator/scorer 私有归因信息与 policy 最小反馈对象分离；经复审补齐 UNKNOWN/label/跨事件/selected-only 闸门，最终源码上的 18 格零调用 mutation qualification v6 通过，保留 v1--v5 失败日志；未产生 scorer、runner 或科学效果证据。

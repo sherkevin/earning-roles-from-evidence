@@ -1,0 +1,18 @@
+{"case": "eligible_minimal", "passed": true, "private_keys_absent": true, "public_keys": ["action", "arrived_at", "candidate_key", "delay", "disposition", "evidence_version", "feedback_id", "label", "provenance", "source", "source_event_id", "source_index"]}
+{"case": "ineligible_unknown", "disposition": "unknown", "passed": true}
+{"case": "non_public_promotion", "error": "eligible gate cannot promote non-public sidecar", "passed": true}
+{"case": "delivery_mismatch", "error": "gate and sidecar delivery mismatch", "passed": true}
+{"case": "producer_mismatch", "error": "gate and sidecar producer mismatch", "passed": true}
+{"case": "producer_version_mismatch", "error": "gate and sidecar producer mismatch", "passed": true}
+{"case": "mapping_mismatch", "error": "gate and sidecar label mapping mismatch", "passed": true}
+{"case": "label_mismatch", "error": "gate and sidecar label mismatch", "passed": true}
+{"case": "cross_event_identity:protocol_event_type", "error": "sidecar source and protocol event mismatch", "passed": true}
+{"case": "cross_event_identity:protocol_event_id", "error": "gate and sidecar digest mismatch", "passed": true}
+{"case": "cross_event_identity:source_event_id", "error": "gate and sidecar digest mismatch", "passed": true}
+{"case": "cross_event_identity:recipient_id", "error": "gate and sidecar digest mismatch", "passed": true}
+{"case": "cross_event_identity:ledger_record_hash", "error": "gate and sidecar ledger mismatch", "passed": true}
+{"case": "cross_event_identity:selection_event_id", "error": "gate and sidecar digest mismatch", "passed": true}
+{"case": "unchosen_candidate", "error": "feedback producer was not the selected candidate", "passed": true}
+{"case": "private_label", "error": "ineligible gate cannot carry policy label", "passed": true}
+{"case": "missing_eligible_label", "error": "eligible gate requires label in [0,1]", "passed": true}
+{"case": "non_finite_time", "error": "arrived_at must be finite", "passed": true}

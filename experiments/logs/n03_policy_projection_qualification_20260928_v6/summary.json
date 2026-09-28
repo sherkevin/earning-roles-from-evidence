@@ -1,0 +1,116 @@
+{
+  "experiment_id": "n03_policy_projection_qualification_20260928_v6",
+  "status": "QUALIFIED_OFFLINE",
+  "passed": true,
+  "case_count": 18,
+  "cases": [
+    {
+      "case": "eligible_minimal",
+      "passed": true,
+      "public_keys": [
+        "action",
+        "arrived_at",
+        "candidate_key",
+        "delay",
+        "disposition",
+        "evidence_version",
+        "feedback_id",
+        "label",
+        "provenance",
+        "source",
+        "source_event_id",
+        "source_index"
+      ],
+      "private_keys_absent": true
+    },
+    {
+      "case": "ineligible_unknown",
+      "passed": true,
+      "disposition": "unknown"
+    },
+    {
+      "case": "non_public_promotion",
+      "passed": true,
+      "error": "eligible gate cannot promote non-public sidecar"
+    },
+    {
+      "case": "delivery_mismatch",
+      "passed": true,
+      "error": "gate and sidecar delivery mismatch"
+    },
+    {
+      "case": "producer_mismatch",
+      "passed": true,
+      "error": "gate and sidecar producer mismatch"
+    },
+    {
+      "case": "producer_version_mismatch",
+      "passed": true,
+      "error": "gate and sidecar producer mismatch"
+    },
+    {
+      "case": "mapping_mismatch",
+      "passed": true,
+      "error": "gate and sidecar label mapping mismatch"
+    },
+    {
+      "case": "label_mismatch",
+      "passed": true,
+      "error": "gate and sidecar label mismatch"
+    },
+    {
+      "case": "cross_event_identity:protocol_event_type",
+      "passed": true,
+      "error": "sidecar source and protocol event mismatch"
+    },
+    {
+      "case": "cross_event_identity:protocol_event_id",
+      "passed": true,
+      "error": "gate and sidecar digest mismatch"
+    },
+    {
+      "case": "cross_event_identity:source_event_id",
+      "passed": true,
+      "error": "gate and sidecar digest mismatch"
+    },
+    {
+      "case": "cross_event_identity:recipient_id",
+      "passed": true,
+      "error": "gate and sidecar digest mismatch"
+    },
+    {
+      "case": "cross_event_identity:ledger_record_hash",
+      "passed": true,
+      "error": "gate and sidecar ledger mismatch"
+    },
+    {
+      "case": "cross_event_identity:selection_event_id",
+      "passed": true,
+      "error": "gate and sidecar digest mismatch"
+    },
+    {
+      "case": "unchosen_candidate",
+      "passed": true,
+      "error": "feedback producer was not the selected candidate"
+    },
+    {
+      "case": "private_label",
+      "passed": true,
+      "error": "ineligible gate cannot carry policy label"
+    },
+    {
+      "case": "missing_eligible_label",
+      "passed": true,
+      "error": "eligible gate requires label in [0,1]"
+    },
+    {
+      "case": "non_finite_time",
+      "passed": true,
+      "error": "arrived_at must be finite"
+    }
+  ],
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "ended_at_utc": "2026-09-28T11:12:23.755617+00:00"
+}

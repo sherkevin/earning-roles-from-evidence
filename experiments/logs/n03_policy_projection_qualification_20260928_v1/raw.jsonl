@@ -1,0 +1,8 @@
+{"case": "eligible_minimal", "passed": true, "private_keys_absent": true, "public_keys": ["action", "arrived_at", "candidate_key", "delay", "disposition", "evidence_version", "feedback_id", "label", "provenance", "source", "source_event_id", "source_index", "weight"]}
+{"case": "ineligible_unknown", "disposition": "unknown", "passed": true, "public_payload": {"action": "repair", "arrived_at": 12.0, "candidate_key": "peer-b@v1", "delay": 2.0, "disposition": "unknown", "evidence_version": "evidence-v1", "feedback_id": "f0", "provenance": "unknown", "source": "recipient_judgment", "source_event_id": "e0", "source_index": 5}}
+{"case": "delivery_mismatch", "error": "gate and sidecar delivery mismatch", "passed": true}
+{"case": "producer_mismatch", "error": "gate and sidecar producer mismatch", "passed": true}
+{"case": "producer_version_mismatch", "error": "gate and sidecar producer mismatch", "passed": true}
+{"case": "private_label", "error": "ineligible gate cannot carry policy label", "passed": true}
+{"case": "missing_eligible_label", "error": "eligible gate requires label in [0,1]", "passed": true}
+{"case": "non_finite_time", "error": "arrived_at must be finite", "passed": true}
