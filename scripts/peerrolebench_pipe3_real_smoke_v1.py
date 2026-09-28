@@ -29,7 +29,8 @@ from peer_role_protocol_20260925 import (  # noqa: E402
 )
 from peerrolebench_ledger_replay import replay_ledger_events  # noqa: E402
 from peerrolebench_pipe3_material_adapter import build_materials, digest_files  # noqa: E402
-from peerrolebench_pipe3_producer_scorer import run_producer_scorer  # noqa: E402
+from peerrolebench_pipe3_producer_scorer import run_producer_scorer as run_producer_scorer_v1  # noqa: E402
+from peerrolebench_pipe3_producer_scorer_v2 import run_producer_scorer as run_producer_scorer_v2  # noqa: E402
 from peerrolebench_pipe3_producer_scorer_qualification import interfaces  # noqa: E402
 from peerrolebench_pipe3_recipient_scorer import run_scorer  # noqa: E402
 from peerrolebench_pipe3_runner_adapter import (  # noqa: E402
@@ -60,6 +61,17 @@ def append_event(ledger: PeerRoleLedger, event: object) -> dict:
             getattr(ledger, method)(event)
             return ledger.events[-1]
     raise TypeError(type(event).__name__)
+
+
+def run_qp(card: dict, sources: dict, info: dict, task_id: str, seed: int, evidence_dir: Path, log):
+    version = card.get("producer_scorer", {}).get("version")
+    if version == "pipe3-producer-objective-v1":
+        scorer = run_producer_scorer_v1
+    elif version == "pipe3-producer-objective-v2":
+        scorer = run_producer_scorer_v2
+    else:
+        raise ValueError(f"unsupported producer scorer version: {version}")
+    return scorer(sources, info, task_id, seed, evidence_dir, log)
 
 
 def run(out_dir: Path, card_path: Path) -> dict:
@@ -134,9 +146,9 @@ def run(out_dir: Path, card_path: Path) -> dict:
         save(episode / "delivery.json", delivery_files)
 
         qp_dir = episode / "producer_scorer"
-        qp = run_producer_scorer({"producer.py": delivery_files["producer.py"],
-                                  "models.py": materials["agent_payloads"]["producer"]["source_files"]["models.py"]},
-                                 info, card["task_id"], int(card["task_seed"]), qp_dir, log)
+        qp = run_qp(card, {"producer.py": delivery_files["producer.py"],
+                           "models.py": materials["agent_payloads"]["producer"]["source_files"]["models.py"]},
+                    info, card["task_id"], int(card["task_seed"]), qp_dir, log)
         save(episode / "producer_score.json", qp)
         qp_event = ProducerScore("producer-score-0", delivery.delivery_id, artifact_digest,
                                  qp.get("scorer_version", "unknown"), qp.get("status", "UNKNOWN"),
