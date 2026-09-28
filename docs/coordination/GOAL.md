@@ -2,6 +2,8 @@
 
 日期：2026-09-27。状态：ACTIVE。Goal 变更授权：`false`。
 
+> **文档治理入口（2026-09-28）**：Goal 是不可静默降级的目标章程；故事线、方法论、benchmark+baseline 以及三份评价标准的唯一生效版本登记在 [`docs/research/canonical/README.md`](../research/canonical/README.md)。Goal 的硬标准不因重组而改变，active 文档不得把候选结果写成已完成。
+
 这份文档定义项目要做成什么样。实验失败、数据不准、接口超时、成本过高或当前
 方法效果不显著，都只能产生 task report 和修复任务，不能自动降低这里的标准。
 只有用户明确同意修改/降级，并用新的 ADR 记录旧目标、新目标、证据、理由和后果，
