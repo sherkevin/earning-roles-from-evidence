@@ -1,0 +1,108 @@
+{
+  "transport": {
+    "status": "complete"
+  },
+  "request": {
+    "op": "score_producer",
+    "schema_version": "pipe3-producer-score-request-v2",
+    "task_id": "PIPE3_stream_processing",
+    "seed": 1,
+    "artifact_sha256": "1c007f7207b5db1958db30a8698b33376180237f1730f6145372f6114a34181e",
+    "scorer_version": "pipe3-producer-objective-v2",
+    "event_class": "SensorReading",
+    "timestamp_field": "measured_at",
+    "id_field": "reading_id"
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "schema_version": "pipe3-producer-score-response-v2",
+      "scorer_version": "pipe3-producer-objective-v2",
+      "task_id": "PIPE3_stream_processing",
+      "seed": 1,
+      "artifact_sha256": "1c007f7207b5db1958db30a8698b33376180237f1730f6145372f6114a34181e",
+      "status": "FAIL",
+      "label": 0,
+      "quality_score": 0.0,
+      "decision_complete": true,
+      "coverage_complete": false,
+      "checks": [
+        {
+          "id": "P1_import",
+          "status": "FAIL",
+          "failure_origin": "candidate",
+          "failure_stage": "import",
+          "failure_code": "SYNTAX_ERROR_IN_DELIVERY",
+          "exception_class": "SyntaxError",
+          "source_path": "producer.py",
+          "reason": "invalid syntax (producer.py, line 1)"
+        },
+        {
+          "id": "P2_iso_serialization",
+          "status": "UNKNOWN",
+          "reason": "blocked_by_import_gate"
+        },
+        {
+          "id": "P3_batch_output",
+          "status": "UNKNOWN",
+          "reason": "blocked_by_import_gate"
+        }
+      ],
+      "failed_check_ids": [
+        "P1_import"
+      ],
+      "observed_check_count": 3,
+      "required_check_ids": [
+        "P1_import",
+        "P2_iso_serialization",
+        "P3_batch_output"
+      ],
+      "failure_origin": "candidate",
+      "failure_stage": "import",
+      "failure_code": "SYNTAX_ERROR_IN_DELIVERY",
+      "exception_class": "SyntaxError",
+      "source_path": "producer.py",
+      "reason": "invalid syntax (producer.py, line 1)"
+    }
+  },
+  "response_digest": "c4615803472fe1785101888b0ebbc1ef963294a0310de10d772bafe31d91c166",
+  "result": {
+    "status": "FAIL",
+    "label": 0,
+    "quality_score": 0.0,
+    "scorer_version": "pipe3-producer-objective-v2",
+    "decision_complete": true,
+    "coverage_complete": false,
+    "checks": [
+      {
+        "id": "P1_import",
+        "status": "FAIL",
+        "failure_origin": "candidate",
+        "failure_stage": "import",
+        "failure_code": "SYNTAX_ERROR_IN_DELIVERY",
+        "exception_class": "SyntaxError",
+        "source_path": "producer.py",
+        "reason": "invalid syntax (producer.py, line 1)"
+      },
+      {
+        "id": "P2_iso_serialization",
+        "status": "UNKNOWN",
+        "reason": "blocked_by_import_gate"
+      },
+      {
+        "id": "P3_batch_output",
+        "status": "UNKNOWN",
+        "reason": "blocked_by_import_gate"
+      }
+    ],
+    "failed_check_ids": [
+      "P1_import"
+    ],
+    "failure_origin": "candidate",
+    "failure_stage": "import",
+    "failure_code": "SYNTAX_ERROR_IN_DELIVERY",
+    "exception_class": "SyntaxError",
+    "source_path": "producer.py"
+  },
+  "candidate_received_hidden_assertions": false
+}

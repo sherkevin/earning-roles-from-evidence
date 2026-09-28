@@ -1,0 +1,64 @@
+{
+  "transport": {
+    "status": "complete"
+  },
+  "request": {
+    "op": "score_recipient",
+    "schema_version": "pipe3-recipient-score-request-v1",
+    "task_id": "PIPE3_stream_processing",
+    "seed": 0,
+    "artifact_sha256": "a1dd160898b361e6bfc74ba5713438f4bedeb45f579a41af7817b3559dfd923a",
+    "scorer_version": "pipe3-recipient-objective-v1",
+    "mode": "adoption",
+    "event_class": "UserEvent",
+    "timestamp_field": "timestamp",
+    "id_field": "event_id"
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "schema_version": "pipe3-recipient-score-response-v1",
+      "scorer_version": "pipe3-recipient-objective-v1",
+      "task_id": "PIPE3_stream_processing",
+      "seed": 0,
+      "mode": "adoption",
+      "artifact_sha256": "a1dd160898b361e6bfc74ba5713438f4bedeb45f579a41af7817b3559dfd923a",
+      "status": "UNKNOWN",
+      "label": null,
+      "quality_score": null,
+      "decision_complete": false,
+      "coverage_complete": false,
+      "checks": [
+        {
+          "id": "A1_producer_boundary",
+          "status": "UNKNOWN",
+          "reason": "ValueError('Invalid action: probe')"
+        },
+        {
+          "id": "A2_sink_adoption",
+          "status": "FAIL"
+        }
+      ],
+      "failed_check_ids": [
+        "A2_sink_adoption"
+      ],
+      "observed_check_count": 2,
+      "required_check_ids": [
+        "A1_producer_boundary",
+        "A2_sink_adoption"
+      ]
+    }
+  },
+  "response_digest": "9c728834da4f7d832f92bfa6e99930e511597f64b58f8072a60f61c7436f368b",
+  "result": {
+    "status": "UNKNOWN",
+    "label": null,
+    "quality_score": null,
+    "scorer_version": "pipe3-recipient-objective-v1",
+    "mode": null,
+    "decision_complete": false,
+    "coverage_complete": false,
+    "reason": "scorer_coverage_or_decision_incomplete"
+  },
+  "candidate_received_hidden_assertions": false
+}

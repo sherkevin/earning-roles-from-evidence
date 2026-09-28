@@ -23,6 +23,14 @@ Goal 修改。
 
 - [done] 2026-09-28 PIPE3 actor/scorer dispatch boundary qualification：真实 sandbox RPC 下 producer/recipient payload、selected delivery、operator denial、Qp/Qr/adoption view 和写权限 mutation 通过；真实 LLM runner 与科学效果仍开放，见 [task report](task_reports/20260928_pipe3_dispatch_boundary_qualification.md)。
 
+- [unknown] 2026-09-28 PIPE3 real smoke v1：1 次真实 `内部/qwen3.8-max` 请求成功并保存 raw SSE，但 Qp v1 用非法 `action=probe` 造成 coverage UNKNOWN；按卡片停止，无 judgment/action/update，见 [task report](task_reports/20260928_pipe3_real_smoke_v1.md)。
+
+- [done] 2026-09-28 PIPE3 producer scorer v2 qualification：修复 v1 测试事件使用非法 `probe` action 的契约缺陷；seed 0/1 的 authored-correct、original-delivery、syntax-failure 与四类 UNKNOWN mutation 零调用矩阵通过。`scorer_is_qualified=false`，recipient/adoption/runner、独立 root 与 benchmark 仍开放，见 [task report](task_reports/20260928_pipe3_producer_scorer_v2_qualification.md)。
+
+- [done] 2026-09-28 PIPE3 recipient/adoption scorer v2 qualification：修复 adoption fixture 使用非法 `probe` action 的契约缺陷；首次 qualification 的输出目录错误保留，后续 seed 0/1 v2 recipient/adoption 确定性 coverage/decision 矩阵通过。`scorer_is_qualified=false`，责任归因与科学 gate 仍开放，见 [task report](task_reports/20260928_pipe3_recipient_scorer_v2_qualification.md)。
+
+- [done] 2026-09-28 PIPE3 real smoke v3：三个版本化 scorer 均完成 qualification 后，真实 `内部/qwen3.8-max` 完成一个八事件 episode，Qp/Qr/adoption 均 PASS、ledger replay PASS；3 次 API、0 GPU、0 policy update。producer 已通过而 judgment/consumer 修改 recipient-owned processor，责任归因风险仍在，见 [task report](task_reports/20260928_pipe3_real_smoke_v3.md)。
+
 - [done] 2026-09-28 验收标准 v1.1 升级：将官方要求、项目化识别门和高质量论文目标分层，补充 estimand、统计、closest baseline、污染审计、clean replay 与 Proceedings/Findings 双档；未改变 Goal，见 [task report](task_reports/20260928_evaluation_standard_v11.md)。
 
 - [done] 2026-09-28 三份验收文档来源审计：核对 AAMAS 官方要求和定向获奖论文样本，明确官方底线、项目操作化与未完成系统综述的边界，见 [task report](task_reports/20260928_acceptance_criteria_provenance.md)。

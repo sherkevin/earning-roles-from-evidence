@@ -1,0 +1,113 @@
+{
+  "experiment_id": "n03_pipe3_real_smoke_20260928_v3",
+  "card_path": "configs/aamas2027/n03_pipe3_real_smoke_v3.json",
+  "card_sha256": "f57d0f61ec6c17bdb1629e76b6b8604b670cf123ff419e0db2be50733cb5d268",
+  "task_id": "PIPE3_stream_processing",
+  "task_seed": 0,
+  "teambench_expected_pin": "d185aef1916fd86a9ba554d581fd256319a973af",
+  "teambench_actual_pin": "d185aef1916fd86a9ba554d581fd256319a973af",
+  "teambench_clean": true,
+  "earning_roles_git_commit": "5dc57a6bc59f4dfa04281bd0684e5a6e3cde9655",
+  "runtime": {
+    "started_at_utc": "2026-09-28T14:58:53.184576+00:00",
+    "python": "3.9.6",
+    "platform": "macOS-26.3.2-arm64-arm-64bit"
+  },
+  "provider": "内部",
+  "model": "qwen3.8-max",
+  "request_budget": 3,
+  "maximum_episode_attempts": 1,
+  "real_api_calls": 3,
+  "gpu_jobs": 0,
+  "role_policy_update": false,
+  "scientific_claim_allowed": false,
+  "status": "COMPLETE",
+  "reason": null,
+  "producer_score": {
+    "status": "PASS",
+    "label": 1,
+    "quality_score": 1.0,
+    "scorer_version": "pipe3-producer-objective-v2",
+    "decision_complete": true,
+    "coverage_complete": true,
+    "checks": [
+      {
+        "id": "P1_import",
+        "status": "PASS"
+      },
+      {
+        "id": "P2_iso_serialization",
+        "status": "PASS"
+      },
+      {
+        "id": "P3_batch_output",
+        "status": "PASS"
+      }
+    ],
+    "failed_check_ids": [],
+    "response_digest": "5d1062fb0302f3c04a7500091d6e8e51897d6953fdb49fd1fcd3b1a99964dc86",
+    "transport": {
+      "status": "complete"
+    },
+    "artifact_sha256": "085399c3991323c47e901c51135b4b6761a035df0e88f8b1620e45b11247162b"
+  },
+  "recipient_score": {
+    "status": "PASS",
+    "label": 1,
+    "quality_score": 1.0,
+    "scorer_version": "pipe3-recipient-objective-v2",
+    "mode": "recipient",
+    "decision_complete": true,
+    "coverage_complete": true,
+    "checks": [
+      {
+        "id": "R1_process",
+        "status": "PASS",
+        "reason": ""
+      },
+      {
+        "id": "R2_shape",
+        "status": "PASS"
+      },
+      {
+        "id": "R3_utf8_semantics",
+        "status": "PASS"
+      }
+    ],
+    "failed_check_ids": [],
+    "response_digest": "be69c76f6d4abaf11351058bb225247889ee77069dc75d9696998b9f9b573620",
+    "transport": {
+      "status": "complete"
+    },
+    "artifact_sha256": "4c43f79c95e650d5cf945d14b39e062202ae5f59e9094d9c0d5202952257cd0a"
+  },
+  "adoption_score": {
+    "status": "PASS",
+    "label": 1,
+    "quality_score": 1.0,
+    "scorer_version": "pipe3-recipient-objective-v2",
+    "mode": "adoption",
+    "decision_complete": true,
+    "coverage_complete": true,
+    "checks": [
+      {
+        "id": "A1_producer_boundary",
+        "status": "PASS"
+      },
+      {
+        "id": "A2_sink_adoption",
+        "status": "PASS"
+      }
+    ],
+    "failed_check_ids": [],
+    "response_digest": "332bfc95d99492aa88ff80f5f0e6cbd349deef1acd35a4756e566912e09e6560",
+    "transport": {
+      "status": "complete"
+    },
+    "artifact_sha256": "a1dd160898b361e6bfc74ba5713438f4bedeb45f579a41af7817b3559dfd923a"
+  },
+  "ledger_status": "PASS",
+  "ledger_event_count": 8,
+  "consumer_action": "repair",
+  "ended_at_utc": "2026-09-28T14:59:20.035709+00:00"
+}

@@ -1,0 +1,77 @@
+{
+  "transport": {
+    "status": "complete"
+  },
+  "request": {
+    "op": "score_producer",
+    "schema_version": "pipe3-producer-score-request-v2",
+    "task_id": "PIPE3_stream_processing",
+    "seed": 1,
+    "artifact_sha256": "2bad0c0fa181dcefe2b1948faa0e5f03683eb72161d867aff0d2726dd3ad55f0",
+    "scorer_version": "pipe3-producer-objective-v2",
+    "event_class": "SensorReading",
+    "timestamp_field": "measured_at",
+    "id_field": "reading_id"
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "schema_version": "pipe3-producer-score-response-v2",
+      "scorer_version": "pipe3-producer-objective-v2",
+      "task_id": "PIPE3_stream_processing",
+      "seed": 1,
+      "artifact_sha256": "2bad0c0fa181dcefe2b1948faa0e5f03683eb72161d867aff0d2726dd3ad55f0",
+      "status": "PASS",
+      "label": 1,
+      "quality_score": 1.0,
+      "decision_complete": true,
+      "coverage_complete": true,
+      "checks": [
+        {
+          "id": "P1_import",
+          "status": "PASS"
+        },
+        {
+          "id": "P2_iso_serialization",
+          "status": "PASS"
+        },
+        {
+          "id": "P3_batch_output",
+          "status": "PASS"
+        }
+      ],
+      "failed_check_ids": [],
+      "observed_check_count": 3,
+      "required_check_ids": [
+        "P1_import",
+        "P2_iso_serialization",
+        "P3_batch_output"
+      ]
+    }
+  },
+  "response_digest": "e78331d47ae04b148b15ded43728476647d4a036a85818c82ff157c40dddc0dc",
+  "result": {
+    "status": "PASS",
+    "label": 1,
+    "quality_score": 1.0,
+    "scorer_version": "pipe3-producer-objective-v2",
+    "decision_complete": true,
+    "coverage_complete": true,
+    "checks": [
+      {
+        "id": "P1_import",
+        "status": "PASS"
+      },
+      {
+        "id": "P2_iso_serialization",
+        "status": "PASS"
+      },
+      {
+        "id": "P3_batch_output",
+        "status": "PASS"
+      }
+    ],
+    "failed_check_ids": []
+  },
+  "candidate_received_hidden_assertions": false
+}

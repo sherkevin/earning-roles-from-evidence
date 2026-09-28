@@ -1,0 +1,71 @@
+{
+  "transport": {
+    "status": "complete"
+  },
+  "request": {
+    "op": "score_recipient",
+    "schema_version": "pipe3-recipient-score-request-v2",
+    "task_id": "PIPE3_stream_processing",
+    "seed": 0,
+    "artifact_sha256": "a1dd160898b361e6bfc74ba5713438f4bedeb45f579a41af7817b3559dfd923a",
+    "scorer_version": "pipe3-recipient-objective-v2",
+    "mode": "adoption",
+    "event_class": "UserEvent",
+    "timestamp_field": "timestamp",
+    "id_field": "event_id"
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "schema_version": "pipe3-recipient-score-response-v2",
+      "scorer_version": "pipe3-recipient-objective-v2",
+      "task_id": "PIPE3_stream_processing",
+      "seed": 0,
+      "mode": "adoption",
+      "artifact_sha256": "a1dd160898b361e6bfc74ba5713438f4bedeb45f579a41af7817b3559dfd923a",
+      "status": "PASS",
+      "label": 1,
+      "quality_score": 1.0,
+      "decision_complete": true,
+      "coverage_complete": true,
+      "checks": [
+        {
+          "id": "A1_producer_boundary",
+          "status": "PASS"
+        },
+        {
+          "id": "A2_sink_adoption",
+          "status": "PASS"
+        }
+      ],
+      "failed_check_ids": [],
+      "observed_check_count": 2,
+      "required_check_ids": [
+        "A1_producer_boundary",
+        "A2_sink_adoption"
+      ]
+    }
+  },
+  "response_digest": "332bfc95d99492aa88ff80f5f0e6cbd349deef1acd35a4756e566912e09e6560",
+  "result": {
+    "status": "PASS",
+    "label": 1,
+    "quality_score": 1.0,
+    "scorer_version": "pipe3-recipient-objective-v2",
+    "mode": "adoption",
+    "decision_complete": true,
+    "coverage_complete": true,
+    "checks": [
+      {
+        "id": "A1_producer_boundary",
+        "status": "PASS"
+      },
+      {
+        "id": "A2_sink_adoption",
+        "status": "PASS"
+      }
+    ],
+    "failed_check_ids": []
+  },
+  "candidate_received_hidden_assertions": false
+}
