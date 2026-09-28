@@ -17,6 +17,8 @@ Goal 修改。
 
 ## Reports
 
+- [done] 2026-09-28 验收标准 v1.1 升级：将官方要求、项目化识别门和高质量论文目标分层，补充 estimand、统计、closest baseline、污染审计、clean replay 与 Proceedings/Findings 双档；未改变 Goal，见 [task report](task_reports/20260928_evaluation_standard_v11.md)。
+
 - [done] 2026-09-28 三份验收文档来源审计：核对 AAMAS 官方要求和定向获奖论文样本，明确官方底线、项目操作化与未完成系统综述的边界，见 [task report](task_reports/20260928_acceptance_criteria_provenance.md)。
 
 - [done] 2026-09-28 研究文档重组与唯一 active 版本登记：建立六类唯一生效文档、版本登记、历史归档和职责边界；未改变 Goal、benchmark freeze 或科学结论，见 [task report](task_reports/20260928_research_document_reorganization.md)。

@@ -1,6 +1,7 @@
 # Benchmark 与 baseline 评价标准 v1.0
 
-- **状态**：`ACTIVE`
+- **状态**：`SUPERSEDED`
+- **替代版本**：v1.1（2026-09-28）
 - **评价对象**：[`benchmark_baseline_v1.0_20260928.md`](../../benchmark-baseline/benchmark_baseline_v1.0_20260928.md)
 - **用途**：判断实验是否真正能回答故事和方法问题。
 

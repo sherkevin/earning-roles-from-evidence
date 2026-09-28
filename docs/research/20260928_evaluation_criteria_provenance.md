@@ -2,7 +2,7 @@
 
 日期：2026-09-28
 状态：`PROVENANCE_REPORT`，不是第四份 active 评价标准。
-对应 active 文档：[canonical/README.md](canonical/README.md)
+对应 active 文档：[canonical/README.md](canonical/README.md)。本报告支持 v1.1 评价标准的升级说明。
 
 ## 结论先行
 
