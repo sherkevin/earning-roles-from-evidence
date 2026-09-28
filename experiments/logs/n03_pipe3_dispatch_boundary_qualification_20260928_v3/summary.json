@@ -1,0 +1,58 @@
+{
+  "experiment_id": "n03_pipe3_dispatch_boundary_qualification_20260928_v1",
+  "kind": "zero_api_zero_gpu_actor_scorer_view_and_sandbox_boundary",
+  "task_id": "PIPE3_stream_processing",
+  "seed": 0,
+  "worker": "scripts/peerrolebench_pipe3_payload_probe_worker.py",
+  "worker_sha256": "31ff0a18cc64406daebd34a7a2348aad59c947bff483d5b9fc4da3343049e368",
+  "runtime": {
+    "started_at_utc": "2026-09-28T14:36:56.304751+00:00",
+    "python": "3.9.6",
+    "git_commit": "85e53bb8cb769f605c04a605602a3bee7670f60f"
+  },
+  "llm_calls": 0,
+  "gpu_jobs": 0,
+  "candidate_code_executed": false,
+  "native_grader_invoked": false,
+  "scientific_claim_allowed": false,
+  "checks": {
+    "producer_dispatch": true,
+    "recipient_dispatch": true,
+    "scorer_views": true,
+    "wrong_delivery_rejected": true,
+    "read_only_action_rejected": true
+  },
+  "passed": true,
+  "payload_digests": {
+    "producer": "6c1c78901dd7f4a0525e85502216679512573c7797f86f94f6ba2ee1fd8f1b59",
+    "recipient": "f071d6fda21e64ffd6868166eee479646e5f4ff1ed8829a4ca4d49108f762349",
+    "action": "dd7000909a94f12f9c798f80665bb254d9ca165c2a1270520bdce368178d91e8"
+  },
+  "scorer_views": {
+    "producer": [
+      "models.py",
+      "producer.py"
+    ],
+    "recipient": [
+      "models.py",
+      "processor.py"
+    ],
+    "adoption": [
+      "models.py",
+      "processor.py",
+      "producer.py",
+      "sink.py"
+    ]
+  },
+  "negative_cases": {
+    "wrong_delivery": {
+      "status": "REJECTED",
+      "error": "PIPE3 delivery must contain exactly producer.py"
+    },
+    "read_only_action": {
+      "status": "REJECTED",
+      "error": "PIPE3 action changed a read-only source"
+    }
+  },
+  "ended_at_utc": "2026-09-28T14:36:57.072055+00:00"
+}

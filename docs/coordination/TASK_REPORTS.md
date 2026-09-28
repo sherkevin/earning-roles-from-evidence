@@ -21,6 +21,8 @@ Goal 修改。
 
 - [done] 2026-09-28 PIPE3 full responsibility-chain qualification：17 个事件的两 episode 零调用链、v3 lineage sidecar、native/auxiliary manifest、arrival schedule 和 UNKNOWN/fault rejection 通过；真实 runner、benchmark 与科学效果仍开放，见 [task report](task_reports/20260928_pipe3_full_chain_qualification.md)。
 
+- [done] 2026-09-28 PIPE3 actor/scorer dispatch boundary qualification：真实 sandbox RPC 下 producer/recipient payload、selected delivery、operator denial、Qp/Qr/adoption view 和写权限 mutation 通过；真实 LLM runner 与科学效果仍开放，见 [task report](task_reports/20260928_pipe3_dispatch_boundary_qualification.md)。
+
 - [done] 2026-09-28 验收标准 v1.1 升级：将官方要求、项目化识别门和高质量论文目标分层，补充 estimand、统计、closest baseline、污染审计、clean replay 与 Proceedings/Findings 双档；未改变 Goal，见 [task report](task_reports/20260928_evaluation_standard_v11.md)。
 
 - [done] 2026-09-28 三份验收文档来源审计：核对 AAMAS 官方要求和定向获奖论文样本，明确官方底线、项目操作化与未完成系统综述的边界，见 [task report](task_reports/20260928_acceptance_criteria_provenance.md)。
