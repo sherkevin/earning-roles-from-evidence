@@ -102,3 +102,9 @@ Goal 修改。
   用 pinned seed-0 material adapter 走通 source ownership→artifact→strict ledger→sidecar/manifest replay；只证明接口连通，scorer/LLM/benchmark 仍开放。
 - [2026-09-28 J/A/U/F factorial mapping qualification](task_reports/20260928_factorial_mapping_qualification.md)：
   两个完整 PIPE3 episode 的零调用 hash-chain replay 通过；账本能表达四因素，但当前 policy sidecar 只支持不含 A/F 的四个 cell，producer attribution 与 future-assignment consumption 仍需接入。
+- [2026-09-28 factorial 设计审计与口径修正](task_reports/20260928_factorial_design_correction.md)：
+  独立复审发现“账本记录”不能代替“policy 使用并影响下一次 decision”；将 J/A/U/F 改为正交 projection/state-transition 因素，修正为 0/16 scientific cells ready，并保留旧日志。
+- [2026-09-28 候选在线更新方法：有界窗口与稳定锚点](task_reports/20260928_method_candidate_bounded_anchor.md)：
+  为 active method 的实时更新合同补充 typed event、O(d) 增量、窗口内 correction、稳定锚点和容量上界；仍是 candidate，未通过不变量、closest baseline 或真实流验证。
+- [2026-09-28 故事线评价标准 v1.3 对齐](task_reports/20260928_storyline_eval_v13_alignment.md)：
+  修复 active storyline v1.1 与评价对象仍指向 v1.0 的治理错位；v1.3 评价当前主线，v1.2 保留为历史版本，未放宽 Goal。

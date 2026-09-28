@@ -14,13 +14,13 @@ from peerrolebench_factorial_mapping_qualification import (  # noqa: E402
 
 def test_two_episode_ledger_replays_and_consumes_future_assignment():
     result = inspect_mapping(build_two_episode_ledger())
-    assert result["status"] == "QUALIFIED_OFFLINE"
+    assert result["status"] == "SCHEMA_CAPABILITY_ONLY"
     assert result["ledger_replay_status"] == "PASS"
-    assert result["module_mapping"]["F"]["assignment_consumed_by_ledger"] is True
+    assert result["module_mapping"]["F"]["assignment_matches_selection"] is True
 
 
 def test_policy_sidecar_gap_is_explicit_instead_of_silently_supported():
     result = inspect_mapping(build_two_episode_ledger())
-    assert result["supported_policy_cells"] == ["0000", "0010", "1000", "1010"]
+    assert result["supported_policy_cells"] == []
     assert len(result["unsupported_policy_cells"]) == 12
     assert all(not cell["scientific_cell_ready"] for cell in result["cells"])

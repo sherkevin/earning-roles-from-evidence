@@ -40,3 +40,7 @@
 4. 重新检查同信息 baseline、独立 root 和完整成本，再决定是否启动下一条真实 API 链。
 
 本报告没有申请修改任何 Goal 标准。
+
+## 后续审计修正
+
+独立复审发现本报告把 sidecar 的字段存在误称为可运行 policy cell，并把 assignment 与下一 selection 的字段一致误称为 policy 消费 evidence。该历史报告和 v1/v2 日志保留不改写；当前口径以 [factorial 设计审计与口径修正](20260928_factorial_design_correction.md) 和 v3 capability-audit 日志为准。当前 scientific cell 为 0/16。

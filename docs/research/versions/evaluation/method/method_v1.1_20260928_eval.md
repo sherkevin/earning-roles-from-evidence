@@ -62,7 +62,7 @@
 
 `Findings-ready` 可以是一个可复现、范围有限的在线机制或强负结果；`Proceedings-ready` 还必须有完整机制闭环、独立 confirmation、closest-method 对照、负迁移/遗忘分析和负结果解释。两档都要求 clean-environment replay 能重建主表；没有 replay 只能是 exploratory。
 
-## E. 反驳与停止
+## I. 反驳与停止
 
 以下任一情况时，方法主张不通过：
 

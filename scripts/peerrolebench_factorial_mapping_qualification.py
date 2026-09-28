@@ -1,10 +1,12 @@
-"""Qualify the J/A/U/F factor seams without an API or a GPU run.
+"""Audit the J/A/U/F factor seams without an API or a GPU run.
 
 This is a schema/causal-order check, not a benchmark.  It deliberately builds
 two complete protocol episodes so that a role-evidence update from episode 0
 can be consumed by a later assignment before episode 1 starts.  The report
-then distinguishes what the append-only ledger can express from what the
-current policy sidecar/replay can actually prove the policy consumed.
+then distinguishes protocol capability from what the current policy
+sidecar/replay can actually prove the policy consumed.  A PASS here means the
+audit detected the expected seams and gaps; it is not a qualified scientific
+factorial cell.
 """
 
 from __future__ import annotations
@@ -116,36 +118,55 @@ def inspect_mapping(ledger: PeerRoleLedger) -> dict[str, Any]:
     protocol = {
         "J": {
             "name": "situated judgment and actual use",
-            "expressible": all((ledger.judgments, ledger.actions)),
+            "protocol_expressible": all((ledger.judgments, ledger.actions)),
             "evidence": "recipient_judgment -> consumer_action with recipient/artifact binding",
         },
         "A": {
             "name": "responsibility attribution and UNKNOWN gate",
-            "expressible": bool(ledger.producer_scores) and replay.status == "PASS",
+            "protocol_expressible": bool(ledger.producer_scores) and replay.status == "PASS",
             "evidence": "producer_score is a distinct event; strict replay preserves delivery lineage",
         },
         "U": {
             "name": "delayed online update",
-            "expressible": True,
-            "evidence": "the policy sidecar schema carries arrived_at/delay and replay orders feedback by arrival",
+            "protocol_expressible": True,
+            "evidence": "arrival metadata exists, but version replacement, correction, watermark interleaving and bounded latency are not qualified",
         },
         "F": {
             "name": "future assignment consumption",
-            "expressible": bool(ledger.assignments),
-            "evidence": "later_assignment cites evidence and is consumed by the next selection",
+            "protocol_expressible": bool(ledger.assignments),
+            "evidence": "later_assignment cites evidence and agrees with the next selection; policy consumption is not attested",
         },
     }
 
-    protocol["F"]["assignment_consumed_by_ledger"] = (
+    protocol["F"]["assignment_matches_selection"] = (
         assignment.agent_id == next_selection.chosen_peer_id
         and assignment.decision_propensity == next_selection.propensity
     )
-    sidecar_supported = {
-        "J": True,  # raw judgment/action fields exist in FeedbackSidecar.
-        "A": False,  # ProducerScore and attribution gate are outside sidecar coverage.
-        "U": True,  # delay/order and policy update hooks exist.
-        "F": False,  # assignment/evidence consumption is absent from sidecar/replay.
+    policy_projection = {
+        "J": {
+            "projection_seam": True,
+            "eligible_fixture_signal": False,
+            "event_time_interleaving": False,
+        },
+        "A": {
+            "projection_seam": False,
+            "producer_score_sidecar": False,
+            "unknown_gate_mutation": False,
+        },
+        "U": {
+            "projection_seam": True,
+            "full_update_operator": False,
+            "correction_and_version_semantics": False,
+        },
+        "F": {
+            "projection_seam": False,
+            "assignment_consumption_attestation": False,
+            "evidence_mutation_guard": False,
+        },
     }
+    sidecar_supported = {key: value["projection_seam"] and all(
+        flag is True for name, flag in value.items() if name.endswith("_seam")
+    ) for key, value in policy_projection.items()}
     cells = []
     for bits in itertools.product((0, 1), repeat=4):
         enabled = dict(zip(("J", "A", "U", "F"), bits))
@@ -153,28 +174,29 @@ def inspect_mapping(ledger: PeerRoleLedger) -> dict[str, Any]:
             "condition_id": "".join(str(enabled[key]) for key in ("J", "A", "U", "F")),
             "enabled": enabled,
             "ledger_protocol_available": all(
-                not enabled[key] or protocol[key]["expressible"] for key in enabled
+                not enabled[key] or protocol[key]["protocol_expressible"] for key in enabled
             ),
-            "policy_sidecar_seam_available": all(
+            "policy_projection_available": all(
                 not enabled[key] or sidecar_supported[key] for key in enabled
             ),
             "scientific_cell_ready": False,
         })
 
     return {
-        "status": "QUALIFIED_OFFLINE",
+        "status": "SCHEMA_CAPABILITY_ONLY",
         "ledger_replay_status": replay.status,
         "ledger_snapshot": replay.snapshot,
         "module_mapping": protocol,
+        "policy_projection": policy_projection,
         "policy_sidecar_support": sidecar_supported,
-        "supported_policy_cells": [cell["condition_id"] for cell in cells if cell["policy_sidecar_seam_available"]],
-        "unsupported_policy_cells": [cell["condition_id"] for cell in cells if not cell["policy_sidecar_seam_available"]],
+        "supported_policy_cells": [cell["condition_id"] for cell in cells if cell["policy_projection_available"] and cell["scientific_cell_ready"]],
+        "unsupported_policy_cells": [cell["condition_id"] for cell in cells if not cell["policy_projection_available"]],
         "cells": cells,
         "scientific_claim_allowed": False,
         "reason": (
-            "The ledger can express all four protocol stages, but the current "
-            "policy sidecar/replay cannot attest producer-score attribution or "
-            "policy consumption of later assignments."
+            "The ledger can express protocol stages, but the current policy "
+            "projection cannot prove producer attribution or future-assignment "
+            "consumption; arrival metadata alone is not a qualified online update operator."
         ),
     }
 
@@ -184,7 +206,7 @@ def run(out_dir: Path) -> dict[str, Any]:
     started = datetime.now(timezone.utc).isoformat()
     config = {
         "experiment_id": "n03_factorial_mapping_qualification_20260928",
-        "kind": "zero_llm_j_a_u_f_schema_and_causal_order_qualification",
+        "kind": "zero_llm_j_a_u_f_schema_capability_audit_not_scientific_factorial",
         "runtime": {
             "started_at_utc": started,
             "python": platform.python_version(),
@@ -208,7 +230,7 @@ def run(out_dir: Path) -> dict[str, Any]:
     (out_dir / "raw.jsonl").write_text(json.dumps(raw, ensure_ascii=False) + "\n", encoding="utf-8")
     summary = {
         "experiment_id": config["experiment_id"],
-        "passed": result["status"] == "QUALIFIED_OFFLINE" and result["ledger_replay_status"] == "PASS",
+        "passed": result["status"] == "SCHEMA_CAPABILITY_ONLY" and result["ledger_replay_status"] == "PASS",
         "status": result["status"],
         "module_mapping": result["module_mapping"],
         "supported_policy_cells": result["supported_policy_cells"],

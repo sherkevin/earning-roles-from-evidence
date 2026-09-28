@@ -1,11 +1,15 @@
-# 故事线与论文写作评价标准 v1.2
+# 故事线与论文写作评价标准 v1.3
 
-- **状态**：`SUPERSEDED by storyline_v1.3_20260928_eval.md`
+- **状态**：`ACTIVE`
 - **类别**：evaluation/storyline
-- **评价对象**：[`storyline_v1.0_20260928.md`](../../storyline/storyline_v1.0_20260928.md)
+- **评价对象**：[`storyline_v1.1_20260928.md`](../../storyline/storyline_v1.1_20260928.md)
 - **生效日期**：2026-09-28
-- **前一版本**：`storyline_v1.1_20260928_eval.md`
+- **前一版本**：`storyline_v1.2_20260928_eval.md`
 - **用途**：投稿前的严格故事线、创新和论文叙事预检；不是 AAMAS 官方评分表，也不保证录用。
+
+## v1.1 对象修正
+
+本版本评价当前生效的 storyline v1.1。v1.1 将 situated judgment、责任过滤、延迟更新和 future assignment 作为一个有机闭环叙述；本评价仍要求用 matched composition、正交因素消融、全因子主效应/交互和跨 root 证据检验该叙述，不能把更完整的公开包装当作实验证据。
 
 ## 使用原则
 
