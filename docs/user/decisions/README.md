@@ -1,6 +1,8 @@
-# docs/user/decisions
+# 决议文件夹
 
-User decision records and external-operation summaries.
+存放位置：`docs/user/decisions/`。一份决议对应一个文件，索引保留全部历史编号。
+
+当前管理规则与研究质量标准见 [ADR 0038](0038-decision-record-governance-and-research-invariants.md)。新增或实质修改正式决议须经用户与助手双方明确确认；未确认建议、实验结果和任务进展分别保存在研究文档或任务报告中。
 
 - [0001 — Resume bounded real-data / real-API iteration](0001-resume-real-api-iteration.md): explicit user authorization supersedes the previous pause.
 
@@ -39,4 +41,5 @@ User decision records and external-operation summaries.
 - [0034 — benchmark/baseline freeze gate](0034-benchmark-baseline-freeze-gate.md): 在两个合格 root、同信息 baseline、manifest 和停止规则通过前，不冻结 benchmark、不启动新 API/A800。
 - [0035 — candidate-origin failure labels](0035-candidate-origin-failure-label.md): 将可归因的候选导入/交付失败标为 `FAIL/0`，与 scorer/环境不可观测的 `UNKNOWN` 分离；历史结果不回写。
 - [0036 — PIPE3 producer/processor boundary](0036-pipe3-producer-processor-boundary.md): producer 只负责语义 JSON 交付与严格时间戳；processor 的 envelope/编码属于独立 recipient/adoption 目标。
-- [0037 — 论文主线、证据选择与创新点的不可降级约束](0037-research-quality-and-mainline-invariants.md): 故事线、benchmark/baseline 和创新点须经证据与双重确认后才能修改，实验失败不能自动降级目标。
+- [0037 — 论文主线、证据选择与创新点的不可降级约束](0037-research-quality-and-mainline-invariants.md): 历史版本，已由 0038 替代。
+- [0038 — 决议文件治理与研究主线硬约束](0038-decision-record-governance-and-research-invariants.md): 统一规定决议归档、双重确认、故事线、benchmark/baseline 和创新点的不可静默降级标准。

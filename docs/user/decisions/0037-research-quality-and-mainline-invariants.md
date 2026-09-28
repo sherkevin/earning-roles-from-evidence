@@ -1,7 +1,7 @@
 # ADR 0037 — 论文主线、证据选择与创新点的不可降级约束
 
 日期：2026-09-27
-状态：Accepted
+状态：Superseded by 0038
 范围：earning-roles 的故事线、方法论、benchmark/baseline 与创新点；后续实验和论文写作均适用
 
 ## Context
