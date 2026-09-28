@@ -43,6 +43,8 @@ Goal 修改。
 
 - [done] 2026-09-29 PIPE3 real smoke v6：delivery-aware envelope 通过后，真实 chain 完成 Qp/Qr/adoption PASS 与 terminal outcome；structured judgment 判定 recipient-owned `processor.py`，责任 gate 输出 `COMPLETE_PENDING_ATTRIBUTION`，不写 producer evidence/update，见 [task report](task_reports/20260929_pipe3_real_smoke_v6.md)。
 
+- [done] 2026-09-29 PIPE3 pending-attribution replay audit：v6 七事件 ledger 的唯一缺失是有意等待的 role evidence，无 hash/顺序/协议错误；确认需要拆分 attribution review 与 eligible evidence，见 [task report](task_reports/20260929_pipe3_pending_replay_audit.md)。
+
 - [done] 2026-09-28 验收标准 v1.1 升级：将官方要求、项目化识别门和高质量论文目标分层，补充 estimand、统计、closest baseline、污染审计、clean replay 与 Proceedings/Findings 双档；未改变 Goal，见 [task report](task_reports/20260928_evaluation_standard_v11.md)。
 
 - [done] 2026-09-28 三份验收文档来源审计：核对 AAMAS 官方要求和定向获奖论文样本，明确官方底线、项目操作化与未完成系统综述的边界，见 [task report](task_reports/20260928_acceptance_criteria_provenance.md)。
