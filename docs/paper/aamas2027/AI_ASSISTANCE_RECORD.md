@@ -641,3 +641,14 @@ manifest has its own SHA-256 chain and is checked one-to-one against ledger
 event identities and sidecar payload digests. The post-commit canonical replay
 qualification passed with five cases and recorded a manifest root; this remains
 an offline engineering gate and does not establish benchmark or model efficacy.
+
+### 2026-09-28 second-root independent re-audit
+
+An independent read-only audit compared PIPE3 and MULTI3 as candidate second roots. Direct
+composition of MULTI3's generated backend output into its frontend failed for seeds 0/1/2,
+while the native tests used preconstructed canonical inputs; MULTI3 therefore cannot be used
+as adoption evidence. PIPE3 remains only a conditional candidate for the next zero-API runner
+qualification. The audit also found that the current public sidecar does not yet bind
+delivery/recipient/action identities and artifact digests to canonical ledger events. This
+adds a lineage gate; it does not freeze a benchmark, establish an algorithm result, or permit
+an API/GPU run.

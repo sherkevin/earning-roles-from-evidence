@@ -1,6 +1,6 @@
 # AAMAS 2027 task ledger
 
-Updated: 2026-09-27 (persistent goal active; N02 attempted budget exhausted; PIPE3 preflight wording narrowed by ADR 0024). The project-level goal authority is [GOAL v1.0](GOAL.md); task-by-task reconciliation is indexed in [TASK_REPORTS](TASK_REPORTS.md). Owner: scientist; one engineer owns execution. Authority: [REQUIREMENTS.md](../paper/aamas2027/REQUIREMENTS.md), version 1.5.8. This is the sole active AAMAS gap/status/execution ledger. Role TODOs are historical pointers. Bounded read-only critiques inform the current direction; they did not execute experiments.
+Updated: 2026-09-28 (persistent goal active; N02 attempted budget exhausted; PIPE3 preflight wording narrowed by ADR 0024). The project-level goal authority is [GOAL v1.0](GOAL.md); task-by-task reconciliation is indexed in [TASK_REPORTS](TASK_REPORTS.md). Owner: scientist; one engineer owns execution. Authority: [REQUIREMENTS.md](../paper/aamas2027/REQUIREMENTS.md), version 1.5.8. This is the sole active AAMAS gap/status/execution ledger. Role TODOs are historical pointers. Bounded read-only critiques inform the current direction; they did not execute experiments.
 
 ## Current checkpoint — 2026-09-26
 
@@ -549,5 +549,6 @@ Update order: change requirements only with rationale; update this ledger's gap/
 - [done] N03-next-r4.13 — sidecar manifest attestation 纳入 canonical replay；独立 manifest hash-chain 与 `(event_type,event_id,record_hash,sidecar_digest)` 一对一校验通过，避免污染原生 protocol event schema。真实 runner sealing 仍开放。
 - [done] N03-next-r4.14 — [PIPE3 sidecar integration contract](task_reports/20260928_pipe3_policy_sidecar_integration_contract.md)明确 selection/delivery/judgment/terminal/replay/snapshot seams、责任与 UNKNOWN 闸门以及 peer/tool 共享边界；零 API/GPU 设计，真实 runner 未接入。
 - [done] N03-next-r4.15 — [PIPE3 sidecar fixture](task_reports/20260928_pipe3_policy_sidecar_fixture.md)用 pinned seed-0 material adapter 生成真实 source ownership、artifact digest、strict ledger、sidecar 和 manifest replay；接口 qualification 通过，真实 scorer/LLM runner 仍未启动。
-- [open] N03-next-r — [第二 root 审查](task_reports/20260927_second_root_audit.md)确认 PIPE3 仍是条件性主候选、MULTI3 为低优先级备选；补齐实际 source/material/scorer/ledger hash 与权限后，才冻结第二 root、strong same-information baseline 和一条新的真实 API 小链。UNKNOWN scorer 只作诊断，不能更新 controller。
+- [done] N03-next-r4.16 — [第二 root 复审](task_reports/20260928_second_root_reaudit.md)以零 API 直接组合审计确认 PIPE3 可进入下一道 root-specific runner qualification；MULTI3 的 native tests 不消费 backend artifact，暂不能作为 confirmation root。复审还发现 sidecar 尚未把 delivery/action/recipient 与 canonical lineage 完整绑定；该缺口列为下一道 gate。benchmark、baseline、真实 API 和 A800 均保持未冻结/未启动。
+- [open] N03-next-r — 完成 PIPE3 runner 生成的 delivery/action/judgment/terminal sidecar 与完整 lineage 绑定，验证独立 candidate/private scorer/operator ledger 隔离、乱序/延迟/UNKNOWN 回放和同信息 baseline 后，才冻结第二 root、strong same-information baseline 和一条新的真实 API 小链。UNKNOWN scorer 只作诊断，不能更新 controller。
 - [done] N03收口复审 — [独立JSON回执](../../experiments/logs/n03_ownership_contract_checks_20260926/independent_review.json)复算预算/用量并核对80项测试源码hash；两项建议已修正：同次调用的集成/返工子成本无法测时为null，fresh-call消费必须带入判断时同一经验快照。数学审查进一步限定同peer下次被选时点与同采样器条件。文档收口PASS不等于N03采样/训练准入。

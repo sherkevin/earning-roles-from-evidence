@@ -18,6 +18,7 @@ Goal 修改。
 ## Reports
 
 - [2026-09-28 决议文件治理与研究标准归档](task_reports/20260928_decision_0038_governance.md)：记录双重确认及研究质量硬标准，0038 替代重叠的 0037；未改变 Goal，未新增科学效果证据。
+- [2026-09-28 second-root re-audit](task_reports/20260928_second_root_reaudit.md)：零 API 直接组合复核保留 PIPE3 为条件性主候选，拒绝把 MULTI3 原生 canonical-input 测试当作 adoption 证据，并新增完整 responsibility-lineage runner gate；未冻结 benchmark 或启动 API/A800。
 - [2026-09-27 Goal reconciliation](task_reports/20260927_goal_reconciliation.md)：
   当前故事、方法、benchmark、实验和论文状态的第一份逐项对照；未请求 Goal 降级。
 - [2026-09-27 recipient runtime probe](task_reports/20260927_recipient_runtime_probe.md)：
