@@ -50,7 +50,8 @@ canonical ledger replay
   -> policy update
 
 replay_policy_sidecars 已经实现前四项中的 ledger/sidecar/manifest 部分以及反馈排序、
-UNKNOWN no-update 和 lineage 检查。真正 runner 还必须把 sidecar 和 manifest 在每个 episode
+UNKNOWN no-update；传入 `require_responsibility_lineage=true` 时还执行 v3 的 delivery/action/
+artifact 逐跳 lineage 检查。真正 runner 还必须把 sidecar 和 manifest 在每个 episode
 结束时封存，再把同一 snapshot 交给所有 baseline；不能让某一 baseline 看到 private scorer
 或另一个 baseline 尚未收到的 future outcome。
 

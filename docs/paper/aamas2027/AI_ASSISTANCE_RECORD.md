@@ -652,3 +652,15 @@ qualification. The audit also found that the current public sidecar does not yet
 delivery/recipient/action identities and artifact digests to canonical ledger events. This
 adds a lineage gate; it does not freeze a benchmark, establish an algorithm result, or permit
 an API/GPU run.
+
+### 2026-09-28 responsibility lineage qualification
+
+The sidecar replay path was extended with an opt-in v3 responsibility-lineage gate. It checks
+delivery record hash, selected producer/version, recipient, artifact digest, canonical
+judgment/action/outcome links, and action record hash before allowing a policy update. The
+first two zero-API runs were preserved: one exposed an incomplete event index, and the next
+exposed a fixture that labeled a terminal action as `use` while the canonical recipient action
+was `repair`. After correcting the fixture, the committed v4 matrix passed its canonical case
+and rejected wrong delivery, artifact, action, and producer links. This is still offline
+engineering qualification; the PIPE3 live runner, benchmark freeze, online efficacy, and A800
+evidence remain open.

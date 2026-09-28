@@ -1,0 +1,51 @@
+{
+  "experiment_id": "n03_responsibility_lineage_qualification_20260928",
+  "passed": false,
+  "case_count": 5,
+  "cases": [
+    {
+      "case": "canonical",
+      "status": "INVALID",
+      "update_count": 0,
+      "expected_status": "PASS",
+      "expectation_met": false,
+      "error": "feedback action does not match canonical consumer action"
+    },
+    {
+      "case": "wrong_delivery",
+      "status": "INVALID",
+      "update_count": 0,
+      "expected_status": "INVALID",
+      "expectation_met": true,
+      "error": "feedback references an unknown delivery"
+    },
+    {
+      "case": "wrong_artifact",
+      "status": "INVALID",
+      "update_count": 0,
+      "expected_status": "INVALID",
+      "expectation_met": true,
+      "error": "feedback artifact digest does not match delivery"
+    },
+    {
+      "case": "wrong_action",
+      "status": "PASS",
+      "update_count": 1,
+      "expected_status": "INVALID",
+      "expectation_met": false,
+      "error": null
+    },
+    {
+      "case": "wrong_producer",
+      "status": "INVALID",
+      "update_count": 0,
+      "expected_status": "INVALID",
+      "expectation_met": true,
+      "error": "feedback producer does not match selected delivery"
+    }
+  ],
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "ended_at_utc": "2026-09-28T01:27:06.792549+00:00"
+}

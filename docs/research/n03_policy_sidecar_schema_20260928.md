@@ -20,7 +20,17 @@
 
 ## Feedback sidecar
 
-`FeedbackSidecar` 绑定反馈 ledger `record_hash`，保存 `feedback_id`、`source_event_id`、`selection_event_id`、`producer_id`/`producer_version`、`source`、`arrived_at`、`delay`、`action`、`disposition`、`provenance` 和 `label_mapping_version`。只有 `disposition=eligible` 且 `provenance=public` 时才允许携带 label，并能转换为 BaselinePolicy 的 `Feedback`；UNKNOWN/pending/rejected 或非公开反馈只能保留审计记录，转换结果为 `None`。
+`FeedbackSidecar` 绑定反馈 ledger `record_hash`，保存 `feedback_id`、`source_event_id`、`selection_event_id`、`producer_id`/`producer_version`、`recipient_id`、`delivery_id`、`source`、`arrived_at`、`delay`、`action`、`disposition`、`provenance` 和 `label_mapping_version`。只有 `disposition=eligible` 且 `provenance=public` 时才允许携带 label，并能转换为 BaselinePolicy 的 `Feedback`；UNKNOWN/pending/rejected 或非公开反馈只能保留审计记录，转换结果为 `None`。
+
+### v3 responsibility lineage
+
+v2 只能证明反馈 sidecar 指向某个合法事件，不能证明它指向 canonical delivery、真实
+artifact 和 recipient action。v3 增加 `artifact_sha256`、`delivery_record_hash`、
+`action_id` 和 `action_record_hash`；当 replay 以
+`require_responsibility_lineage=true` 运行时，逐跳检查
+selection→delivery→judgment/action/outcome：producer/version、recipient、artifact digest、
+action 和对应 record hash 必须与 strict ledger 一致。v2 继续支持历史离线回放，但不能
+通过这道 live runner 闸门。
 
 这使 hidden scorer 与 policy 分离：scorer/责任审查先在 runner 外部完成公开边界判定，policy 只接收已声明的 public sidecar。缺失 label mapping、隐藏 label、错误 record hash 或不支持的 action/source 会直接失败。
 
@@ -50,8 +60,25 @@ python3 scripts/peerrolebench_policy_sidecar_stream_qualification.py \
 
 提交 `631f2b0` 后的 v4 日志覆盖 strict ledger replay、feedback permutation、duplicate sidecar、truncated ledger UNKNOWN 和 wrong selected producer/version 五个 case；规则是 selection 按 canonical ledger index 注册，feedback 按 `(arrived_at, protocol_event_id)` 重放，并验证独立 manifest root。该运行仍是工程资格，不是 benchmark 效果。
 
+严格责任 lineage qualification：
+
+```text
+python3 scripts/peerrolebench_responsibility_lineage_qualification.py \
+  --out-dir experiments/logs/n03_responsibility_lineage_qualification_20260928_v4
+```
+
+提交 `f857aec` 后的 v4 日志包含 canonical、wrong delivery、wrong artifact、wrong action
+和 wrong producer 五个 case；canonical 产生 1 次 eligible update，四种跨链篡改均为
+`INVALID` 且 0 update。v1/v2 失败日志保留：第一次暴露 ledger record index 缺少
+`producer_delivery`，第二次暴露旧 fixture 把 terminal action 错写成 `use` 而 canonical
+recipient 实际执行 `repair`。v4 仍是零 API/零 GPU 工程资格，不是 benchmark 或学习效果。
+
 ## 尚未通过的门
 
-sidecar 目前已能在离线 canonical replay 中接入 BaselinePolicy，但尚未接入 PIPE3 live runner，也没有从真实候选输出生成字段。当前绑定检查覆盖同一 record hash、event type、event id、sidecar digest、时间一致性和 selected producer/version；runner 仍需证明 sidecar manifest 与 append-only ledger 的 attestation、真实延迟/乱序可重放、producer/action/artifact 责任一致、UNKNOWN 禁止 update，以及所有 baseline 共享同一公开信息和成本预算。
+sidecar 目前已能在离线 canonical replay 中接入 BaselinePolicy；v3 strict lineage gate 也
+已通过零 API 篡改矩阵，但尚未接入 PIPE3 live runner，也没有从真实候选输出生成字段。runner
+仍需证明 sidecar manifest 与 append-only ledger 的 attestation、真实延迟/乱序可重放、
+producer/action/artifact 责任一致、UNKNOWN 禁止 update，以及所有 baseline 共享同一公开信息
+和成本预算。
 
 因此 benchmark、baseline freeze、RARE/RLS 接入、backbone/training 选择和 A800 仍保持开放，`goal_change_requested=false`。
