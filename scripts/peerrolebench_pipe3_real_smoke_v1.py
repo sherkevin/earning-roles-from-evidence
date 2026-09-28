@@ -31,9 +31,11 @@ from peerrolebench_ledger_replay import replay_ledger_events  # noqa: E402
 from peerrolebench_pipe3_material_adapter import build_materials, digest_files  # noqa: E402
 from peerrolebench_pipe3_producer_scorer import run_producer_scorer as run_producer_scorer_v1  # noqa: E402
 from peerrolebench_pipe3_producer_scorer_v2 import run_producer_scorer as run_producer_scorer_v2  # noqa: E402
+from peerrolebench_pipe3_judgment_contract import validate_structured_judgment  # noqa: E402
 from peerrolebench_pipe3_producer_scorer_qualification import interfaces  # noqa: E402
 from peerrolebench_pipe3_recipient_scorer import run_scorer as run_recipient_scorer_v1  # noqa: E402
 from peerrolebench_pipe3_recipient_scorer_v2 import run_scorer as run_recipient_scorer_v2  # noqa: E402
+from peerrolebench_pipe3_responsibility_label import producer_feedback_eligibility  # noqa: E402
 from peerrolebench_pipe3_runner_adapter import (  # noqa: E402
     attach_pipe3_delivery, prepare_pipe3_action, validate_pipe3_action_result,
 )
@@ -116,6 +118,7 @@ def run(out_dir: Path, card_path: Path) -> dict:
         "provider": card["provider"], "model": card["model"],
         "request_budget": card["maximum_task_requests"], "maximum_episode_attempts": card["maximum_episode_attempts"],
         "real_api_calls": 0, "gpu_jobs": 0, "role_policy_update": False,
+        "responsibility_gate": card.get("responsibility_gate", {"required": False}),
         "scientific_claim_allowed": False,
     }
     # This file is written before the first API request.
@@ -174,14 +177,31 @@ def run(out_dir: Path, card_path: Path) -> dict:
             save(out_dir / "ledger.json", ledger.events)
             return {**config, **result, "ended_at_utc": datetime.now(timezone.utc).isoformat()}
 
+        if card.get("responsibility_gate", {}).get("required"):
+            judgment_schema = ("{\"decision\":\"accept|accept_with_rework|reject_redo\","
+                               "\"confidence\":0.0,\"rationale\":\"...\","
+                               "\"repair_plan\":\"...\",\"observed_artifact_sha256\":\"...\","
+                               "\"target_role\":\"producer|recipient|sink|mixed|unknown\","
+                               "\"target_paths\":[\"processor.py\"],"
+                               "\"defect_type\":\"producer_contract|recipient_integration|sink_adoption|mixed|unknown\","
+                               "\"evidence_refs\":[\"artifact_digest\",\"Qp\"]}")
+            judgment_instruction = ("Also identify the implicated ownership boundary and use only "
+                                    "paths in the public material. ")
+        else:
+            judgment_schema = ("{\"decision\":\"...\",\"confidence\":0.0,\"rationale\":\"...\","
+                               "\"repair_plan\":\"...\",\"observed_artifact_sha256\":\"...\"}")
+            judgment_instruction = ""
         judgment_prompt = common + (
             "You are the recipient. Review the delivered producer.py and decide accept, "
-            "accept_with_rework, or reject_redo before executing anything. Return "
-            "{\"decision\":\"...\",\"confidence\":0.0,\"rationale\":\"...\","
-            "\"repair_plan\":\"...\",\"observed_artifact_sha256\":\"...\"}. "
-            "The producer artifact is:\n" + json.dumps(recipient_payload, ensure_ascii=False))
+            "accept_with_rework, or reject_redo before executing anything. " + judgment_instruction
+            + "Return " + judgment_schema + ". The producer artifact is:\n"
+            + json.dumps(recipient_payload, ensure_ascii=False))
         judged, judgment_meta = legacy_api.call_api(out_dir, episode, "judgment", judgment_prompt, card)
         config["real_api_calls"] += 1
+        if card.get("responsibility_gate", {}).get("required"):
+            public_paths = sorted(set(materials["agent_payloads"]["producer"]["source_files"])
+                                  | set(materials["agent_payloads"]["recipient"]["source_files"]))
+            judged = validate_structured_judgment(judged, artifact_digest, public_paths)
         save(episode / "judgment.json", judged)
         decision = judged.get("decision")
         if decision not in {"accept", "accept_with_rework", "reject_redo"} or judged.get("observed_artifact_sha256") != artifact_digest:
@@ -225,16 +245,35 @@ def run(out_dir: Path, card_path: Path) -> dict:
         outcome = TerminalOutcome("outcome-0", delivery.delivery_id, success, "pipe3-adoption-v1",
                                   float(adoption.get("quality_score", 0.0)), sha_bytes(json.dumps(adoption, sort_keys=True).encode()))
         append_event(ledger, outcome)
-        evidence = RoleEvidenceUpdate("evidence-0", judgment.judgment_id, consumer_action.action_id,
-                                      outcome.outcome_id, "pipe3-real-smoke-v1", 1.0)
-        append_event(ledger, evidence)
-        replay = replay_ledger_events(ledger.events)
-        if replay.status != "PASS":
-            raise RuntimeError(f"strict ledger replay failed: {replay.status}")
-        result = {"status": "COMPLETE", "reason": None, "producer_score": qp,
+        if card.get("responsibility_gate", {}).get("required"):
+            attribution = producer_feedback_eligibility(
+                materials, qp, judged, validated, adoption, later_use=None)
+            save(episode / "responsibility_audit.json", attribution)
+            if attribution["producer_feedback_eligible"]:
+                evidence = RoleEvidenceUpdate("evidence-0", judgment.judgment_id,
+                                              consumer_action.action_id, outcome.outcome_id,
+                                              "pipe3-real-smoke-v2", 1.0)
+                append_event(ledger, evidence)
+                replay = replay_ledger_events(ledger.events)
+                final_status = "COMPLETE_ELIGIBLE"
+            else:
+                replay = replay_ledger_events(ledger.events, allow_incomplete=True)
+                final_status = "COMPLETE_PENDING_ATTRIBUTION"
+        else:
+            evidence = RoleEvidenceUpdate("evidence-0", judgment.judgment_id, consumer_action.action_id,
+                                          outcome.outcome_id, "pipe3-real-smoke-v1", 1.0)
+            append_event(ledger, evidence)
+            replay = replay_ledger_events(ledger.events)
+            if replay.status != "PASS":
+                raise RuntimeError(f"strict ledger replay failed: {replay.status}")
+            final_status = "COMPLETE"
+        result = {"status": final_status, "reason": None, "producer_score": qp,
                   "recipient_score": qr, "adoption_score": adoption,
                   "ledger_status": replay.status, "ledger_event_count": len(ledger.events),
-                  "consumer_action": action, "real_api_calls": config["real_api_calls"]}
+                  "consumer_action": action, "real_api_calls": config["real_api_calls"],
+                  "role_policy_update": final_status == "COMPLETE_ELIGIBLE"}
+        if card.get("responsibility_gate", {}).get("required"):
+            result["responsibility_status"] = attribution["producer_feedback_status"]
         save(out_dir / "ledger.json", ledger.events)
         return {**config, **result, "ended_at_utc": datetime.now(timezone.utc).isoformat()}
     except Exception as exc:
