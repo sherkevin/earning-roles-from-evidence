@@ -222,7 +222,7 @@ def run(out_dir: Path, card_path: Path) -> dict:
         consumed, consumer_meta = legacy_api.call_api(out_dir, episode, "consumer", action_prompt, card)
         config["real_api_calls"] += 1
         save(episode / "consumer_parsed.json", consumed)
-        required_consumer_paths = sorted(materials["agent_payloads"]["recipient"]["source_files"])
+        required_consumer_paths = sorted(action_payload["source_files"])
         final_sources = extract_consumer_sources(consumed, required_consumer_paths)
         validated = validate_pipe3_action_result(action_payload, final_sources)
         save(episode / "action.json", validated)
