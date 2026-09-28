@@ -122,3 +122,5 @@ Goal 修改。
   新增 versioned 全局 `arrival_index` schedule validator，拒绝重复时间、重复 protocol identity、缺失反馈和未知事件类型；candidate registry、schedule、manifest、event-time 定向集合共 16 项通过。它只关闭确定性时间轴工程子门，尚未接入真实 policy loop 或 scientific cell。
 - [done] 2026-09-28 PIPE3 real runner contract (task_reports/20260928_pipe3_runner_contract.md)：
   固化真实 runner 的 pre-call freeze、native/auxiliary 双链、responsibility v3 时机、global arrival 顺序、UNKNOWN no-update 和双回放准入规则；没有调用 API/GPU，也没有冻结最终 updater。下一步实现 versioned runner boundary。
+- [partial] 2026-09-28 PIPE3 selection runner boundary (task_reports/20260928_pipe3_runner_boundary.md)：
+  新增 versioned selection boundary，真实绑定 native selection record hash、candidate registry、consumption attestation 和 native/auxiliary 双 manifest；19 项定向测试通过。仍缺 actor/scorer/action/outcome、完整 fault-injection 和真实 API。

@@ -92,6 +92,8 @@ summary.json
 ## 5. 实验准入
 
 在 runner boundary 通过乱序、延迟、重复、缺失、UNKNOWN、恢复和 same-information
-baseline parity 测试前，不提交真实 factorial API 或 A800 job。通过后首先只跑一条新的
-真实 PIPE3 小链，确认 actor payload、Qp/Qr/adoption、judgment lineage 和 raw usage 均
-可审计，再决定是否进入完整 benchmark matrix。
+baseline parity 测试前，不提交真实 factorial API 或 A800 job。selection boundary 已
+依照契约落成 versioned `scripts/peerrolebench_pipe3_runner_v1.py`；它仍只覆盖
+offer 到 selection/attestation，尚未实现 actor/scorer/action/outcome。通过完整 boundary
+后首先只跑一条新的真实 PIPE3 小链，确认 actor payload、Qp/Qr/adoption、judgment
+lineage 和 raw usage 均可审计，再决定是否进入完整 benchmark matrix。
