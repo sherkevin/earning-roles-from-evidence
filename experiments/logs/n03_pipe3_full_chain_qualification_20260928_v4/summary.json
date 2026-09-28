@@ -1,0 +1,99 @@
+{
+  "experiment_id": "n03_pipe3_full_chain_qualification_20260928",
+  "qualification_version": "pipe3-full-chain-v1",
+  "kind": "zero_api_zero_gpu_protocol_and_lineage_gate",
+  "protocol_order": [
+    "peer_selection",
+    "task_start",
+    "producer_delivery",
+    "producer_score",
+    "recipient_judgment",
+    "consumer_action",
+    "terminal_outcome",
+    "role_evidence_update",
+    "later_assignment",
+    "peer_selection"
+  ],
+  "policy": "terminal_only",
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "runtime": {
+    "started_at_utc": "2026-09-28T14:16:38.966037+00:00",
+    "python": "3.9.6",
+    "git_commit": "83adbdbd215a4e29200be884df8c9ffdeb85c6c1"
+  },
+  "fault_cases": [
+    "unknown_scorer_no_update",
+    "wrong_lineage",
+    "late_offer",
+    "missing_schedule"
+  ],
+  "passed": true,
+  "case_count": 5,
+  "cases": [
+    {
+      "case": "canonical",
+      "status": "PASS",
+      "ledger_status": "PASS",
+      "update_count": 2,
+      "native_manifest_root": "6f8e76f7d6ffb3b74b69f59db548f68af257770ba3b6aa41398cfa7026f046eb",
+      "aux_manifest_root": "6aabe4a556f6d97930fa8c07f68e01606026395184b71ca394aaea9458f8851d",
+      "schedule_digest": "17a33e00a187053c9eb6b88394c5db1597d1bb7168141995b9238b468146a681",
+      "ledger_event_count": 17,
+      "expectation_met": true
+    },
+    {
+      "case": "unknown_scorer_no_update",
+      "status": "UNKNOWN",
+      "complete": false,
+      "missing": [
+        {
+          "stage": "recipient_judgment",
+          "delivery_id": "delivery-unknown"
+        },
+        {
+          "stage": "consumer_action",
+          "delivery_id": "delivery-unknown"
+        },
+        {
+          "stage": "terminal_outcome",
+          "delivery_id": "delivery-unknown"
+        },
+        {
+          "stage": "role_evidence_update",
+          "delivery_id": "delivery-unknown"
+        }
+      ],
+      "update_allowed": false,
+      "policy_updates": 0,
+      "event_count": 4,
+      "expectation_met": true
+    },
+    {
+      "case": "wrong_lineage",
+      "status": "INVALID",
+      "update_count": 0,
+      "error": "feedback producer does not match selected delivery",
+      "expectation_met": true
+    },
+    {
+      "case": "late_offer",
+      "status": "INVALID",
+      "error": "public evidence row timing/index must be non-negative",
+      "expectation_met": true
+    },
+    {
+      "case": "missing_schedule",
+      "status": "INVALID",
+      "error": "arrival schedule does not cover the expected feedback set",
+      "expectation_met": true
+    }
+  ],
+  "native_manifest_root": "09222df987c2176db662c028e3c2059e99911b878c552da4e626edd5d196e91b",
+  "auxiliary_manifest_root": "6aabe4a556f6d97930fa8c07f68e01606026395184b71ca394aaea9458f8851d",
+  "ledger_status": "PASS",
+  "ledger_event_count": 17,
+  "schedule_digest": "17a33e00a187053c9eb6b88394c5db1597d1bb7168141995b9238b468146a681",
+  "ended_at_utc": "2026-09-28T14:16:38.971331+00:00"
+}
