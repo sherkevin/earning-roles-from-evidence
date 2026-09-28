@@ -61,4 +61,4 @@ RLS、online logistic/SGD、periodic refit 和候选增量 updater 是训练更�
 
 ## 7. 对照标准
 
-本文件按 [`benchmark_baseline_v1.0_20260928_eval.md`](../evaluation/benchmark-baseline/benchmark_baseline_v1.0_20260928_eval.md) 审查。故事与创新见 [`storyline_v1.0_20260928.md`](../storyline/storyline_v1.0_20260928.md)，方法合同见 [`method_v1.0_20260928.md`](../method/method_v1.0_20260928.md)。
+本文件按 [`benchmark_baseline_v1.0_20260928_eval.md`](../evaluation/benchmark-baseline/benchmark_baseline_v1.0_20260928_eval.md) 审查。故事与创新见 [`storyline_v1.1_20260928.md`](../storyline/storyline_v1.1_20260928.md)，方法合同见 [`method_v1.0_20260928.md`](../method/method_v1.0_20260928.md)。
