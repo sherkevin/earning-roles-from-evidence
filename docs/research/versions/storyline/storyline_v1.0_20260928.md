@@ -54,4 +54,4 @@
 
 ## 7. 对照标准
 
-审查本文件使用 [`storyline_v1.0_20260928_eval.md`](../evaluation/storyline/storyline_v1.0_20260928_eval.md)。方法细节只见 [`method_v1.0_20260928.md`](../method/method_v1.0_20260928.md)，实验对象只见 [`benchmark_baseline_v1.0_20260928.md`](../benchmark-baseline/benchmark_baseline_v1.0_20260928.md)。
+审查本文件使用 [`storyline_v1.2_20260928_eval.md`](../evaluation/storyline/storyline_v1.2_20260928_eval.md)。方法细节只见 [`method_v1.0_20260928.md`](../method/method_v1.0_20260928.md)，实验对象只见 [`benchmark_baseline_v1.0_20260928.md`](../benchmark-baseline/benchmark_baseline_v1.0_20260928.md)。
