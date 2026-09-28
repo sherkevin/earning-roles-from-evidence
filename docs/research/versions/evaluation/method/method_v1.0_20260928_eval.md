@@ -20,3 +20,7 @@
 ## 交付门
 
 在真实 API 前先通过零调用 schema/replay 矩阵；在 A800 前必须有真实信号和明确瓶颈。没有实时性、时效性、稳定性三组独立证据，不得写“实时训练已实现”。
+
+## 来源层级
+
+官方底线来自 AAMAS 2027 Call/Findings/Submission Instructions 对 soundness、reproducibility、evidence 和 claims justification 的要求；事件幂等、UNKNOWN、实时性、遗忘和 `Laya/AnyJev/RLS` novelty boundary 是本项目的工程与科学操作化，不是官方固定清单。来源审计见 [`docs/research/20260928_evaluation_criteria_provenance.md`](../../../20260928_evaluation_criteria_provenance.md)。

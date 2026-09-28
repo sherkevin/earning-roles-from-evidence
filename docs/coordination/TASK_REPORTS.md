@@ -17,6 +17,8 @@ Goal 修改。
 
 ## Reports
 
+- [done] 2026-09-28 三份验收文档来源审计：核对 AAMAS 官方要求和定向获奖论文样本，明确官方底线、项目操作化与未完成系统综述的边界，见 [task report](task_reports/20260928_acceptance_criteria_provenance.md)。
+
 - [done] 2026-09-28 研究文档重组与唯一 active 版本登记：建立六类唯一生效文档、版本登记、历史归档和职责边界；未改变 Goal、benchmark freeze 或科学结论，见 [task report](task_reports/20260928_research_document_reorganization.md)。
 
 - [2026-09-28 决议文件治理与研究标准归档](task_reports/20260928_decision_0038_governance.md)：记录双重确认及研究质量硬标准，0038 替代重叠的 0037；未改变 Goal，未新增科学效果证据。

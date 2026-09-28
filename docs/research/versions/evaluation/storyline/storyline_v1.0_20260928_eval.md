@@ -20,3 +20,7 @@
 ## 通过证据
 
 至少需要两个结构 root 的独立 stream、可审计责任链、第三方/非直接评价 owner 的未来选择、同信息强 baseline 和完整质量—成本结果。只有协议/fixture 通过时，评价结论必须写成工程资格，不得写成科学效果。
+
+## 来源层级
+
+官方底线来自 AAMAS 2027 Call 的 originality/significance/clarity/relevance；真实依赖、责任归属、第三方 owner 和 future assignment 是本项目为识别主张而做的操作化，不是 AAMAS 官方逐字要求。来源审计见 [`docs/research/20260928_evaluation_criteria_provenance.md`](../../../20260928_evaluation_criteria_provenance.md)。

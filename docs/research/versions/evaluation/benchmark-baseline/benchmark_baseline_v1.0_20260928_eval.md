@@ -23,3 +23,7 @@
 ## 停止规则
 
 任何 root qualification、scorer/ledger replay 或同信息 baseline 失败，停止该 root 的真实链并保留日志。RARE 未超过 contextual trust 或成本—质量目标不成立时，停止扩展模型/A800，报告未支持的机制。
+
+## 来源层级
+
+官方底线来自 AAMAS 2027 Call/Findings 对 relevance、validation、evidence 和 state-of-the-art comparison 的要求；两个 root、责任分离、同信息 baseline、完整成本和 UNKNOWN 分母是本项目的识别设计，不是 AAMAS 官方指定的 benchmark 清单。来源审计见 [`docs/research/20260928_evaluation_criteria_provenance.md`](../../../20260928_evaluation_criteria_provenance.md)。
