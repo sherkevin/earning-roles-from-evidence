@@ -1,0 +1,66 @@
+{
+  "experiment_id": "n03_assignment_attestation_qualification_20260928_v2",
+  "status": "QUALIFIED_OFFLINE",
+  "passed": true,
+  "case_count": 11,
+  "cases": [
+    {
+      "case": "consumed_before_selection",
+      "passed": true,
+      "public_digest": "f3e4e2673d5d6c982ca4b994205151638b5fad9cdd0148dc242ae5699f277d9e",
+      "decision_state_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    {
+      "case": "f0_invariance",
+      "passed": true
+    },
+    {
+      "case": "f1_public_sensitivity",
+      "passed": true
+    },
+    {
+      "case": "empty_cold_start_offer",
+      "passed": true
+    },
+    {
+      "case": "private_row",
+      "passed": true,
+      "error": "public evidence row contains private or unknown fields"
+    },
+    {
+      "case": "future_offer",
+      "passed": true,
+      "error": "offer is unavailable at read cut"
+    },
+    {
+      "case": "menu_mismatch",
+      "passed": true,
+      "error": "offer candidate menu does not match decision"
+    },
+    {
+      "case": "context_mismatch",
+      "passed": true,
+      "error": "offer context does not match decision"
+    },
+    {
+      "case": "missing_state_digest",
+      "passed": true,
+      "error": "decision must carry policy state digest for attestation"
+    },
+    {
+      "case": "decision_mismatch",
+      "passed": true,
+      "error": "attestation decision mismatch"
+    },
+    {
+      "case": "late_feedback_unknown",
+      "passed": true,
+      "error": "offer is unavailable at read cut"
+    }
+  ],
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "interpretation": "schema_and_behavioral_sensitivity_only",
+  "ended_at_utc": "2026-09-28T11:30:59.833424+00:00"
+}

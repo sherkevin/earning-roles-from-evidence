@@ -112,3 +112,5 @@ Goal 修改。
   将合同覆盖度与科学证据准备度分开评分；故事线和 active method 均仍未过硬门，候选 updater 只完成零调用不变量，未改变 Goal 或停止条件。
 - [2026-09-28 typed policy projection seam](task_reports/20260928_policy_projection_seam.md)：
   将 operator/scorer 私有归因信息与 policy 最小反馈对象分离；经复审补齐 UNKNOWN/label/跨事件/selected-only 闸门，最终源码上的 18 格零调用 mutation qualification v6 通过，保留 v1--v5 失败日志；未产生 scorer、runner 或科学效果证据。
+- [2026-09-28 pre-decision evidence offer and consumption attestation](task_reports/20260928_assignment_evidence_attestation.md)：
+  用不含 chosen agent/propensity 的 pre-decision offer 替代 LaterAssignment 作为 F 输入；双 watermark、公开字段约束、F0/F1 toy sensitivity 和 12 格零调用资格 v5 通过，F scientific cell 仍为 0。

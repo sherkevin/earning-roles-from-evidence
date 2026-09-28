@@ -82,6 +82,7 @@ class DecisionSidecar:
     selected_at: float
     captured_features: tuple[tuple[str, tuple[float, ...]], ...] = ()
     sidecar_version: str = SIDECAR_VERSION
+    state_digest: str | None = None
 
     def __post_init__(self) -> None:
         _require_digest(self.ledger_record_hash, "ledger_record_hash")
@@ -95,6 +96,8 @@ class DecisionSidecar:
             raise ValueError("event, selector and context identifiers are required")
         if self.sidecar_version not in SUPPORTED_SIDECAR_VERSIONS:
             raise ValueError("unsupported sidecar version")
+        if self.state_digest is not None:
+            _require_digest(self.state_digest, "state_digest")
         if not self.candidates or len(self.candidates) != len(self.base_scores):
             raise ValueError("candidates and base_scores must be aligned")
         if len({candidate.key for candidate in self.candidates}) != len(self.candidates):
@@ -148,6 +151,7 @@ class DecisionSidecar:
             "base_scores": list(self.base_scores), "chosen_index": self.chosen_index,
             "probabilities": list(self.probabilities), "propensity": self.propensity,
             "state_version": self.state_version, "encoder_version": self.encoder_version,
+            **({"state_digest": self.state_digest} if self.state_digest is not None else {}),
             "feature_schema": self.feature_schema, "policy_name": self.policy_name,
             "policy_version": self.policy_version, "base_score_version": self.base_score_version,
             "rng_algorithm": self.rng_algorithm, "rng_draw": self.rng_draw,

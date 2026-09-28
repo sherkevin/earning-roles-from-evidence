@@ -21,7 +21,12 @@ immutable episode stream；只改变 policy 看到的投影或 state transition�
 - **J**：是否把封存的 recipient judgment/action 投影给 policy。J=0 仍执行并记录 recipient action，但 policy 只能看到预注册的 raw/terminal channel；J=1 才读取 situated channel。
 - **A**：是否启用责任/归因闸门。A=0 使用预注册的 raw eligibility；A=1 只接受 producer contract、recipient action 和 `UNKNOWN` 规则共同通过的事件。
 - **U**：是否启用 versioned、幂等、按 arrival/watermark 处理的在线更新算子。U=0 冻结 policy state；U=1 只改变状态转移，不改变 feedback 输入或 assignment 规则。
-- **F**：是否在执行开始前读取封存的 evidence/state 形成 assignment。F=0 忽略 evidence；F=1 读取经过 hash/版本绑定的 evidence。两者必须共享 candidate menu、propensity 和 exploration。
+- **F**：是否在执行开始前读取不含 chosen agent/propensity 的 `AssignmentEvidenceOffer`
+  （task/index/role、candidate menu、公开 evidence、arrival watermark）形成 selection。
+  F=0 不把 bundle 传给 policy；F=1 读取经过版本/digest 绑定的 bundle。policy 随后才
+  产生 chosen peer、propensity 和 exploration draw；LaterAssignment 只记录 selection
+  之后的 lineage/adoption，不再作为 F 的输入。两者必须共享 candidate menu、RNG、预算
+  和 exploration。
 
 raw acceptance、terminal-only、contextual trust/bandit 和 matched composition 是独立的 baseline arms，不混入二值 factorial 因素。只有这一定义下，`do(J,A,U,F)` 才有可解释的 2⁴ 条件。
 
@@ -102,4 +107,4 @@ raw acceptance、terminal-only、contextual trust/bandit 另列为 baseline，�
 
 两段完整 PIPE3 协议 episode 的 hash-chain replay 已通过，说明账本可以记录 J/A/U/F 所需的协议事件；但 assignment 与下一 selection 的 agent/propensity 相同，不能证明 policy 实际读取了 evidence。原始事件和运行配置见 [factorial mapping qualification](../coordination/task_reports/20260928_factorial_mapping_qualification.md)。
 
-这还不是 factorial 实验。当前没有任何 scientific cell ready：A 缺 producer-score/attribution projection，U 缺 version/correction/watermark interleaving qualification，F 缺 assignment/evidence consumption attestation；现有 replay 也不能证明更新影响了后续 decision。下一道 gate 是先做四个正交 projection/state-transition seam 的零调用 mutation qualification，再冻结真实 factorial card。完成前不启动真实 factorial API 或 A800。
+这还不是 factorial 实验。当前没有任何 scientific cell ready：A 缺 producer-score/attribution projection，U 缺 version/correction/watermark interleaving qualification，F 的 pre-decision offer/consumption attestation 尚未接入真实 runner；现有 replay 也不能证明更新影响了后续 decision。下一道 gate 是先做四个正交 projection/state-transition seam 的零调用 mutation qualification，再冻结真实 factorial card。完成前不启动真实 factorial API 或 A800。
