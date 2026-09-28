@@ -93,7 +93,10 @@ summary.json
 
 在 runner boundary 通过乱序、延迟、重复、缺失、UNKNOWN、恢复和 same-information
 baseline parity 测试前，不提交真实 factorial API 或 A800 job。selection boundary 已
-依照契约落成 versioned `scripts/peerrolebench_pipe3_runner_v1.py`；它仍只覆盖
-offer 到 selection/attestation，尚未实现 actor/scorer/action/outcome。通过完整 boundary
-后首先只跑一条新的真实 PIPE3 小链，确认 actor payload、Qp/Qr/adoption、judgment
-lineage 和 raw usage 均可审计，再决定是否进入完整 benchmark matrix。
+依照契约落成 versioned `scripts/peerrolebench_pipe3_runner_v1.py`；随后零调用的
+full-chain qualification 已通过两个 episode，覆盖 strict ledger、v3 responsibility
+sidecar、native/auxiliary manifest、arrival schedule 和 UNKNOWN/fault rejection（见
+`task_reports/20260928_pipe3_full_chain_qualification.md`）。这仍未实现 actor/scorer/
+action 的真实进程隔离，也未证明 evidence 对 assignment 的因果影响。下一步只能先接入
+一条新的真实 PIPE3 小链，确认 actor payload、Qp/Qr/adoption、judgment lineage 和 raw
+usage 均可审计，再决定是否进入完整 benchmark matrix。
