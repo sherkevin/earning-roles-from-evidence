@@ -32,7 +32,8 @@ from peerrolebench_pipe3_material_adapter import build_materials, digest_files  
 from peerrolebench_pipe3_producer_scorer import run_producer_scorer as run_producer_scorer_v1  # noqa: E402
 from peerrolebench_pipe3_producer_scorer_v2 import run_producer_scorer as run_producer_scorer_v2  # noqa: E402
 from peerrolebench_pipe3_producer_scorer_qualification import interfaces  # noqa: E402
-from peerrolebench_pipe3_recipient_scorer import run_scorer  # noqa: E402
+from peerrolebench_pipe3_recipient_scorer import run_scorer as run_recipient_scorer_v1  # noqa: E402
+from peerrolebench_pipe3_recipient_scorer_v2 import run_scorer as run_recipient_scorer_v2  # noqa: E402
 from peerrolebench_pipe3_runner_adapter import (  # noqa: E402
     attach_pipe3_delivery, prepare_pipe3_action, validate_pipe3_action_result,
 )
@@ -72,6 +73,19 @@ def run_qp(card: dict, sources: dict, info: dict, task_id: str, seed: int, evide
     else:
         raise ValueError(f"unsupported producer scorer version: {version}")
     return scorer(sources, info, task_id, seed, evidence_dir, log)
+
+
+def run_qr(card: dict, sources: dict, info: dict, mode: str, task_id: str, seed: int,
+           evidence_dir: Path, log):
+    version = (card.get("recipient_scorer", {}).get("version")
+               if mode == "recipient" else card.get("adoption_scorer", {}).get("version"))
+    if version == "pipe3-recipient-objective-v1":
+        scorer = run_recipient_scorer_v1
+    elif version == "pipe3-recipient-objective-v2":
+        scorer = run_recipient_scorer_v2
+    else:
+        raise ValueError(f"unsupported {mode} scorer version: {version}")
+    return scorer(sources, info, mode, task_id, seed, evidence_dir, log)
 
 
 def run(out_dir: Path, card_path: Path) -> dict:
@@ -196,8 +210,10 @@ def run(out_dir: Path, card_path: Path) -> dict:
                                          action)
         append_event(ledger, consumer_action)
 
-        qr = run_scorer(final_sources, info, "recipient", card["task_id"], int(card["task_seed"]), episode / "recipient_scorer", log)
-        adoption = run_scorer(final_sources, info, "adoption", card["task_id"], int(card["task_seed"]), episode / "adoption_scorer", log)
+        qr = run_qr(card, final_sources, info, "recipient", card["task_id"], int(card["task_seed"]),
+                    episode / "recipient_scorer", log)
+        adoption = run_qr(card, final_sources, info, "adoption", card["task_id"], int(card["task_seed"]),
+                          episode / "adoption_scorer", log)
         save(episode / "recipient_score.json", qr)
         save(episode / "adoption_score.json", adoption)
         if qr.get("status") == "UNKNOWN" or adoption.get("status") == "UNKNOWN" or not qr.get("coverage_complete") or not adoption.get("coverage_complete"):
