@@ -1,11 +1,11 @@
-# 故事线评价标准 v1.1
+# 故事线与论文写作评价标准 v1.2
 
-- **状态**：SUPERSEDED by storyline_v1.2_20260928_eval.md
+- **状态**：`ACTIVE`
 - **类别**：evaluation/storyline
 - **评价对象**：[`storyline_v1.0_20260928.md`](../../storyline/storyline_v1.0_20260928.md)
 - **生效日期**：2026-09-28
-- **前一版本**：`storyline_v1.0_20260928_eval.md`
-- **用途**：投稿前的严格故事线预检，不是 AAMAS 官方评分表，也不保证录用。
+- **前一版本**：`storyline_v1.1_20260928_eval.md`
+- **用途**：投稿前的严格故事线、创新和论文叙事预检；不是 AAMAS 官方评分表，也不保证录用。
 
 ## 使用原则
 
@@ -87,10 +87,83 @@
 
 核心定义、主要推导、主实验设置和主结果必须在正文；不能把审稿人必须依赖的核心证据藏进 supplementary。supplement 只能扩展复现细节、附加分析或证明，不能修补正文缺失。
 
-## H. 一票否决
+## H. 论文行文的行为逻辑
+
+这一节不是要求所有论文使用固定段数，而是要求每一段在同一条论证链上承担可识别的动作。它来自 AAMAS 论文结构审查（docs/research/20260928_aamas_paper_structure_audit.md）中对四篇正式 proceedings 全文的交叉阅读；样本规律、官方要求和本项目 hard gate 必须在审查记录中分开。
+
+### H.1 全文主链
+
+全文必须能压缩成：
+
+协作现象/后果 → 现有方法的一个具体限制 → 最小反例与可证伪问题 → 唯一机制 → 形式化对象和信息边界 → 与机制对应的实验预测 → 结果、替代解释和适用边界
+
+删掉任一箭头后，不能仍然声称同一贡献。章节不能各自讲一个故事；每节结尾应回答“这一步为下一步提供了什么必要输入”。
+
+### H.2 标题、摘要和引言
+
+- **标题**只包含问题对象、核心机制和必要范围；不能把运行时、backbone 或实现名冒充科学贡献。
+- **摘要**按五句组织：问题/后果；现有方法的 sharp 限制；核心机制；最重要的可核验结果；范围和代价。结果尚未确认时写研究问题和证据计划，不能写成已完成效果。
+- **Introduction**通常按以下功能顺序推进，每个功能可以是一段或多段，但不能把多个中心问题并列：
+  1. 说明 multi-agent 协作现象为什么重要；
+  2. 给出一个具体、可复现的失败；
+  3. 对最近邻方法按“它们看到了什么、什么时候更新、如何归因”说明限制；
+  4. 提出一个单一 sharp gap 和最小反例；
+  5. 用一句话给出机制，并解释它为什么直接解除该限制；
+  6. 给出与机制一一对应的理论/实验问题和证据层级；
+  7. 列出可审计贡献，每项都能定位到后文的定义、算法、定理或结果；
+  8. 最后给章节路线图（若篇幅允许）。
+- 引言末尾必须说明不解决什么，避免把角色学习、信誉传播、workflow 搜索和训练框架写成四个独立主张。
+
+### H.3 Related Work、问题定义和方法
+
+- Related Work 按失败维度或假设分组，而不是逐篇复述；每组结尾必须明确本文解除的限制。
+- 问题定义只引入后文实际使用的原始概念；每个新符号必须有输入来源、权限/可见性和一个具体实例。
+- 方法章节按“对象 → 信息边界 → 更新/决策规则 → 实现约束 → 可检验预测”展开。公式后必须给自然语言实例；伪代码、状态转移、版本和迟到反馈语义不能留给读者猜测。
+- 每个方法子节只引入一个必要机制。普通 backbone、RLS/SGD/refit、缓存、prompt 和适配器必须标为实现基础或 baseline，不能通过堆模块制造创新。
+- 理论或复杂度结果必须回答一个实验会用到的问题；不能添加与中心机制无关的装饰性推导。
+
+### H.4 实验、结果和讨论
+
+- 实验开头先冻结任务根、可见信息、baseline、指标、停止规则和成本；随后按 H1 → H2 → H3 顺序回答信息价值、闭环 utility、实时代价。
+- 每个结果段使用同一模板：观察（数值、区间、分母、失败/UNKNOWN）→ 解释（为什么支持或不支持机制）→ 替代解释/边界（控制、责任归因、漂移、选择偏差）→ 下一步。
+- 图表在正文中必须先被提出问题，再给读者观察路径，最后说明它改变了哪个判断。不能让 caption 独自承担结论。
+- 讨论不得把“可运行”“协议通过”“单一 root 成功”升级成闭环效果；若结果不支持 H2/H3，应收窄 claim 并保留负结果。
+- 结论重新回答中心问题，报告机制、代价、失败和可外推范围；未来工作不能用来填补当前论文已经声称的证据缺口。
+
+### H.5 段落和句子风格硬门
+
+每个正文段落必须只有一个主要论证动作，并能标注为 claim / context / evidence / interpretation / bridge 之一或一个明确组合。建议使用：
+
+Topic claim → 必要背景或证据 → 与本文机制的关系 → 解释/限制 → 下一段桥接
+
+硬性检查：
+
+- 段首句告诉读者本段要证明或解释什么；
+- 同一段不同时定义新对象、报告结果和宣称泛化；
+- 首次出现的术语、符号和缩写在本段或前段给出语义；
+- 句子中的因果词（导致、因此、证明、形成）必须有对应设计或统计证据；
+- 不使用“显著”“高效”“实时”“涌现”“通用”等无指标形容词；
+- 每个表/图都在正文中被引用、解释和限定；
+- 贡献列表与正文、代码、配置、原始日志和统计输出逐项可追溯；
+- 不用相关性、单个案例或作者自评替代责任归因和 future assignment 证据。
+
+### H.6 与本项目故事线的段落映射
+
+| 论文位置 | 必须回答的问题 | 我们的证据 |
+|---|---|---|
+| Introduction 的 failure 段 | 为什么 raw acceptance/terminal reward 无法学习角色 | 最小反例、producer/recipient 分离 |
+| Introduction 的 gap 段 | 最近邻缺少哪一个可识别的时序/归因关系 | novelty table、同信息替代解释 |
+| Method 开头 | situated judgment 如何变成 role evidence | 事件、ID/hash、可见性和更新算子 |
+| Method 后半 | evidence 如何在执行前影响 future assignment | assignment freeze、第三方 owner、propensity |
+| Experiment H1 | judgment 是否包含增量信息 | 独立 contract/later-use 结果 |
+| Experiment H2 | assignment 是否真正改变未见任务 utility | independent live histories、质量/完整成本/返工 |
+| Experiment H3 | 实时更新是否可用且不遗忘 | delay/backlog/state/forgetting/drift |
+| Discussion | 哪些失败仍会误导角色学习 | responsibility、scorer coverage、UNKNOWN、负迁移 |
+
+## I. 一票否决
 
 预设专家身份；脚本指定角色后声称涌现；没有真实 recipient action；没有 future assignment；同一 owner 直接评价后继续选择却声称公共角色形成；把 consumer 自身错误记作 producer 失败；把 UNKNOWN 当负例；只报一次成功；结果看完后改主指标、split 或 claim；近邻方法可以解释收益而论文不承认；论文范围超出实验范围。
 
-## 来源边界
+## J. 来源边界
 
-官方要求与本项目化标准的来源见 [`docs/research/20260928_evaluation_criteria_provenance.md`](../../../20260928_evaluation_criteria_provenance.md)。AAMAS 官方要求支持 originality/significance/soundness/reproducibility/clarity/relevance；责任链、P0 门、novelty table 和 claim 分级是本项目的严格操作化，不是官方逐字规则。
+官方要求、样本来源与本项目化标准见 [`docs/research/20260928_evaluation_criteria_provenance.md`](../../../20260928_evaluation_criteria_provenance.md)。AAMAS 官方要求支持 originality/significance/soundness/reproducibility/clarity/relevance；责任链、P0 门、novelty table 和 claim 分级是本项目的严格操作化，不是官方逐字规则。

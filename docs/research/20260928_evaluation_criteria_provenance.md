@@ -56,3 +56,14 @@
 不能说：AAMAS 官方要求必须通过 P0-1 到 P0-6；我们已经统计证明了所有优秀 AAMAS 论文都遵循这些规则；或者三份文档已经验证了我们的 benchmark/method。
 
 下一步若要把“历届优秀论文规律”提高到更强证据，需要预先定义论文样本、按贡献类型编码问题—方法—证据—局限，再由独立复核者复核编码。那会是一个新的 literature audit，不应偷偷改写当前 active 评价标准。
+
+## 新增的正文结构审查
+
+本轮进一步读取了四篇正式 proceedings 全文，并将正文结构与段落功能记录在 [AAMAS 论文结构与段落行为审查](20260928_aamas_paper_structure_audit.md)：
+
+- AAMAS 2025 Soft Condorcet Optimization：方法、定理、在线更新和多层实证如何由同一评价缺口串联；
+- AAMAS 2026 Defection at First Sight：如何把 partner-selection 的信息限制写成 sharp gap；
+- AAMAS 2026 Reputation as a Solution to Cooperation Collapse：系统机制、场景递进和 ablation 如何对应；
+- AAMAS 2026 Best Paper Developing Guidelines for Human–LLM Agent Teams：指南型贡献如何由多 stakeholder、时序框架和专家验证组成。
+
+这次审查得到的是“现实问题 → 默认设定失效 → 锐利切口 → 唯一机制 → 可验证贡献 → 对应证据 → 边界”的样本规律，以及“是否有效 → 为什么有效 → 何时失效 → 代价是什么”的实验叙事顺序。它们被写入 storyline evaluation v1.2，但仍标记为论文样本归纳和项目推断，不是 AAMAS 官方保证，也不是固定段数模板。
