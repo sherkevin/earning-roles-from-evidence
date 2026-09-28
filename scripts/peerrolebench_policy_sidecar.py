@@ -19,6 +19,8 @@ from peerrolebench_baseline_policies import BaselinePolicy, CandidateRef, Feedba
 
 
 SIDECAR_VERSION = "peerrole-policy-sidecar-v2"
+LINEAGE_SIDECAR_VERSION = "peerrole-policy-sidecar-v3"
+SUPPORTED_SIDECAR_VERSIONS = frozenset({SIDECAR_VERSION, LINEAGE_SIDECAR_VERSION})
 HASH_LENGTH = 64
 SOURCES = frozenset({"recipient_judgment", "terminal_outcome"})
 DISPOSITIONS = frozenset({"eligible", "pending", "unknown", "rejected"})
@@ -91,7 +93,7 @@ class DecisionSidecar:
             raise ValueError("task_index must be non-negative")
         if not self.event_id or not self.selector_id or not self.context_key:
             raise ValueError("event, selector and context identifiers are required")
-        if self.sidecar_version != SIDECAR_VERSION:
+        if self.sidecar_version not in SUPPORTED_SIDECAR_VERSIONS:
             raise ValueError("unsupported sidecar version")
         if not self.candidates or len(self.candidates) != len(self.base_scores):
             raise ValueError("candidates and base_scores must be aligned")
@@ -182,6 +184,10 @@ class FeedbackSidecar:
     mapping_digest: str
     responsibility_status: str
     attribution_basis: str
+    artifact_sha256: str | None = None
+    delivery_record_hash: str | None = None
+    action_id: str | None = None
+    action_record_hash: str | None = None
     raw_value: Any | None = None
     label: float | None = None
     sidecar_version: str = SIDECAR_VERSION
@@ -195,7 +201,7 @@ class FeedbackSidecar:
         if (not self.selection_event_id or not self.delivery_id or not self.producer_id
                 or not self.producer_version or not self.recipient_id):
             raise ValueError("feedback lineage identifiers are required")
-        if self.sidecar_version != SIDECAR_VERSION:
+        if self.sidecar_version not in SUPPORTED_SIDECAR_VERSIONS:
             raise ValueError("unsupported sidecar version")
         if self.source not in SOURCES or self.action not in ACTIONS:
             raise ValueError("unsupported feedback source/action")
@@ -203,6 +209,19 @@ class FeedbackSidecar:
             raise ValueError("unsupported feedback disposition/provenance")
         if _finite(self.arrived_at, "arrived_at") < 0 or _finite(self.delay, "delay") < 0:
             raise ValueError("feedback time values must be non-negative")
+        if self.artifact_sha256 is not None:
+            _require_digest(self.artifact_sha256, "artifact_sha256")
+        if self.delivery_record_hash is not None:
+            _require_digest(self.delivery_record_hash, "delivery_record_hash")
+        if (self.action_id is None) != (self.action_record_hash is None):
+            raise ValueError("action_id and action_record_hash must be supplied together")
+        if self.action_record_hash is not None:
+            _require_digest(self.action_record_hash, "action_record_hash")
+        if self.sidecar_version == LINEAGE_SIDECAR_VERSION:
+            if self.artifact_sha256 is None or self.delivery_record_hash is None:
+                raise ValueError("lineage sidecar requires artifact and delivery record binding")
+            if self.protocol_event_type == "terminal_outcome" and self.action_id is None:
+                raise ValueError("lineage terminal outcome requires action record binding")
         if self.disposition == "eligible" and self.provenance == "public":
             if not self.label_mapping_version or not self.mapping_digest:
                 raise ValueError("eligible public feedback requires label mapping version and digest")
@@ -232,6 +251,10 @@ class FeedbackSidecar:
             "selection_event_id": self.selection_event_id, "delivery_id": self.delivery_id,
             "producer_id": self.producer_id, "producer_version": self.producer_version,
             "recipient_id": self.recipient_id,
+            **({"artifact_sha256": self.artifact_sha256} if self.artifact_sha256 is not None else {}),
+            **({"delivery_record_hash": self.delivery_record_hash} if self.delivery_record_hash is not None else {}),
+            **({"action_id": self.action_id} if self.action_id is not None else {}),
+            **({"action_record_hash": self.action_record_hash} if self.action_record_hash is not None else {}),
             "source": self.source, "arrived_at": self.arrived_at, "delay": self.delay,
             "action": self.action, "disposition": self.disposition,
             "provenance": self.provenance, "label_mapping_version": self.label_mapping_version,
@@ -342,5 +365,5 @@ class PolicySidecarBridge:
 
 __all__ = [
     "DecisionSidecar", "FeedbackSidecar", "PolicySidecarBridge", "SIDECAR_VERSION",
-    "bind_to_ledger_record",
+    "LINEAGE_SIDECAR_VERSION", "SUPPORTED_SIDECAR_VERSIONS", "bind_to_ledger_record",
 ]

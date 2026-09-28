@@ -17,6 +17,7 @@ from peerrolebench_baseline_policies import BaselinePolicy
 from peerrolebench_policy_sidecar import (
     DecisionSidecar,
     FeedbackSidecar,
+    LINEAGE_SIDECAR_VERSION,
     PolicySidecarBridge,
     bind_to_ledger_record,
 )
@@ -50,11 +51,89 @@ def _protocol_key(record: Mapping[str, Any]) -> tuple[str, str] | None:
     return str(event_type), str(payload[field])
 
 
+def _event_record_index(ledger: Any) -> dict[tuple[str, str], Mapping[str, Any]]:
+    index: dict[tuple[str, str], Mapping[str, Any]] = {}
+    for record in ledger.events:
+        event_type = record.get("event_type")
+        payload = record.get("payload")
+        id_field = {
+            "peer_selection": "selection_id", "producer_delivery": "delivery_id",
+            "consumer_action": "action_id", "recipient_judgment": "judgment_id",
+            "terminal_outcome": "outcome_id", "role_evidence_update": "evidence_id",
+            "later_assignment": "assignment_id",
+        }.get(event_type)
+        if id_field is not None and isinstance(payload, Mapping) and id_field in payload:
+            index[(str(event_type), str(payload[id_field]))] = record
+    return index
+
+
+def _validate_responsibility_lineage(
+    sidecar: FeedbackSidecar,
+    selection: DecisionSidecar,
+    ledger: Any,
+    record_index: Mapping[tuple[str, str], Mapping[str, Any]],
+) -> None:
+    """Validate each feedback hop against the replayed canonical ledger.
+
+    v2 sidecars remain valid for historical/offline replay.  The live runner
+    must opt into this stricter v3 gate so a valid event hash cannot hide a
+    mismatched delivery, recipient, artifact, or consumer action.
+    """
+    if sidecar.sidecar_version != LINEAGE_SIDECAR_VERSION:
+        raise ValueError("responsibility lineage requires sidecar v3")
+    delivery = ledger.deliveries.get(sidecar.delivery_id)
+    if delivery is None:
+        raise ValueError("feedback references an unknown delivery")
+    delivery_record = record_index.get(("producer_delivery", sidecar.delivery_id))
+    if delivery_record is None or sidecar.delivery_record_hash != delivery_record.get("record_hash"):
+        raise ValueError("feedback delivery record binding does not match canonical ledger")
+    if delivery.selection_id != selection.protocol_event_id:
+        raise ValueError("delivery selection lineage does not match feedback selection")
+    if (delivery.task_id, delivery.task_index) != (selection.task_id, selection.task_index):
+        raise ValueError("delivery task lineage does not match selection")
+    chosen = selection.candidates[selection.chosen_index]
+    if (delivery.producer_id, sidecar.producer_id, sidecar.producer_version) != (
+        chosen.candidate_id, chosen.candidate_id, chosen.candidate_version
+    ):
+        raise ValueError("feedback producer does not match selected delivery")
+    if delivery.recipient_id != sidecar.recipient_id:
+        raise ValueError("feedback recipient does not match delivery")
+    if sidecar.artifact_sha256 != delivery.artifact_sha256:
+        raise ValueError("feedback artifact digest does not match delivery")
+
+    action = next((value for value in ledger.actions.values()
+                   if value.delivery_id == sidecar.delivery_id), None)
+    if action is None:
+        raise ValueError("feedback delivery has no canonical consumer action")
+    action_record = record_index.get(("consumer_action", action.action_id))
+    if sidecar.action != action.action:
+        raise ValueError("feedback action does not match canonical consumer action")
+    if sidecar.action_id is not None:
+        if sidecar.action_id != action.action_id:
+            raise ValueError("feedback action id does not match canonical consumer action")
+        if action_record is None or sidecar.action_record_hash != action_record.get("record_hash"):
+            raise ValueError("feedback action record binding does not match canonical ledger")
+
+    if sidecar.protocol_event_type == "recipient_judgment":
+        judgment = ledger.judgments.get(sidecar.protocol_event_id)
+        if judgment is None or judgment.delivery_id != sidecar.delivery_id:
+            raise ValueError("feedback judgment does not match delivery")
+        if judgment.consumer_id != sidecar.recipient_id:
+            raise ValueError("feedback judgment recipient does not match delivery")
+        if judgment.observed_artifact_sha256 != delivery.artifact_sha256:
+            raise ValueError("canonical judgment artifact does not match delivery")
+    else:
+        outcome = ledger.outcomes.get(sidecar.protocol_event_id)
+        if outcome is None or outcome.delivery_id != sidecar.delivery_id:
+            raise ValueError("feedback outcome does not match delivery")
+
+
 def replay_policy_sidecars(
     ledger_events: Iterable[Mapping[str, Any]],
     sidecar_rows: Iterable[SidecarRow],
     policy_factory: Callable[[], BaselinePolicy],
     manifest: Iterable[Mapping[str, Any]] | None = None,
+    require_responsibility_lineage: bool = False,
 ) -> dict[str, Any]:
     """Replay a sidecar stream under a strict ledger and update gate.
 
@@ -177,6 +256,7 @@ def replay_policy_sidecars(
     feedback.sort(key=lambda item: (float(item[1].sidecar.arrived_at), item[1].sidecar.protocol_event_id))
     policy = policy_factory()
     bridge = PolicySidecarBridge(policy)
+    record_index = _event_record_index(replay.ledger)
     selection_by_protocol: dict[str, DecisionSidecar] = {}
     for _, row in decisions:
         selection = row.sidecar
@@ -191,6 +271,23 @@ def replay_policy_sidecars(
                 "error": str(exc), "manifest_root": manifest_root, "final_snapshot": None,
             }
         selection_by_protocol[selection.protocol_event_id] = selection
+
+    if require_responsibility_lineage:
+        try:
+            for _, row in feedback:
+                event = row.sidecar
+                assert isinstance(event, FeedbackSidecar)
+                selection = selection_by_protocol.get(event.selection_event_id)
+                if selection is None:
+                    raise ValueError("feedback references unknown protocol selection")
+                _validate_responsibility_lineage(event, selection, replay.ledger, record_index)
+        except ValueError as exc:
+            return {
+                "status": "INVALID", "ledger_status": replay.status, "sidecar_status": "INVALID",
+                "update_allowed": False, "update_count": 0, "unknown_count": 0,
+                "duplicate_count": 0, "ignored_channel_count": 0, "pending_count": 0,
+                "error": str(exc), "manifest_root": manifest_root, "final_snapshot": None,
+            }
 
     unknown_count = 0
     duplicate_count = 0
