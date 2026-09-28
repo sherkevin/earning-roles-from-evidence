@@ -108,3 +108,5 @@ Goal 修改。
   为 active method 的实时更新合同补充 typed event、O(d) 增量、窗口内 correction、稳定锚点和容量上界；仍是 candidate，未通过不变量、closest baseline 或真实流验证。
 - [2026-09-28 故事线评价标准 v1.3 对齐](task_reports/20260928_storyline_eval_v13_alignment.md)：
   修复 active storyline v1.1 与评价对象仍指向 v1.0 的治理错位；v1.3 评价当前主线，v1.2 保留为历史版本，未放宽 Goal。
+- [2026-09-28 故事线与方法论严格复评](task_reports/20260928_story_method_acceptance_reaudit.md)：
+  将合同覆盖度与科学证据准备度分开评分；故事线和 active method 均仍未过硬门，候选 updater 只完成零调用不变量，未改变 Goal 或停止条件。
