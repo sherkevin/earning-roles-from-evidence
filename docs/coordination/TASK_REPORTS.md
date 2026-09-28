@@ -100,3 +100,5 @@ Goal 修改。
   将 sidecar/manifest/replay 闸门映射到未来 root-specific runner 的 selection、delivery、judgment、terminal 与 snapshot seam；无 API/GPU，真实 runner 仍开放。
 - [2026-09-28 PIPE3 policy-sidecar integration fixture](task_reports/20260928_pipe3_policy_sidecar_fixture.md)：
   用 pinned seed-0 material adapter 走通 source ownership→artifact→strict ledger→sidecar/manifest replay；只证明接口连通，scorer/LLM/benchmark 仍开放。
+- [2026-09-28 J/A/U/F factorial mapping qualification](task_reports/20260928_factorial_mapping_qualification.md)：
+  两个完整 PIPE3 episode 的零调用 hash-chain replay 通过；账本能表达四因素，但当前 policy sidecar 只支持不含 A/F 的四个 cell，producer attribution 与 future-assignment consumption 仍需接入。

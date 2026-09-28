@@ -94,3 +94,9 @@ situated judgment → attributable evidence → future assignment → unseen uti
 - 若责任归因失败：停止闭环实验，不把 consumer 错误标给 producer。
 
 这套设计的目标是让“有机整体”成为可量化、可反驳的研究命题，而不是一句包装性描述。
+
+## 零调用资格结果（2026-09-28）
+
+两段完整 PIPE3 协议 episode 的 hash-chain replay 已通过：账本能够表达 J、A、U、F 四个因素，且 episode 1 的选择确实消费了 episode 0 的 evidence-backed assignment。原始事件和运行配置见 [factorial mapping qualification](../coordination/task_reports/20260928_factorial_mapping_qualification.md)。
+
+这还不是 factorial 实验。当前 policy-visible sidecar 只覆盖 selection、recipient judgment 和 terminal outcome，因此只有不启用 A/F 的四个 cell 可以进入现有 policy replay；producer score/attribution 与 assignment/evidence consumption 仍在 scorer 或 ledger 外部。下一道 gate 是把这两个 seam 接入 sidecar、manifest 和 snapshot，并为 UNKNOWN、乱序、重复和错误 evidence 做零调用 mutation qualification。完成前不启动真实 factorial API 或 A800。
