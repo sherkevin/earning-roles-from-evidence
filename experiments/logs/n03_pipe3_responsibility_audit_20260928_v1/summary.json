@@ -1,0 +1,45 @@
+{
+  "audit_version": "pipe3-responsibility-audit-v1",
+  "created_at_utc": "2026-09-28T15:23:12.074707+00:00",
+  "run_dir": "/Users/jingwu/work/earning-roles/experiments/logs/n03_pipe3_real_smoke_20260928_v3",
+  "producer_score": {
+    "status": "PASS",
+    "label": 1,
+    "quality_score": 1.0,
+    "coverage_complete": true,
+    "decision_complete": true,
+    "scorer_version": "pipe3-producer-objective-v2"
+  },
+  "adoption_score": {
+    "status": "PASS",
+    "label": 1,
+    "quality_score": 1.0,
+    "coverage_complete": true,
+    "decision_complete": true,
+    "scorer_version": "pipe3-recipient-objective-v2"
+  },
+  "judgment": {
+    "decision": "accept_with_rework",
+    "observed_artifact_sha256": "085399c3991323c47e901c51135b4b6761a035df0e88f8b1620e45b11247162b",
+    "repair_plan": "In processor.py: change the output file encoding from 'latin-1' to 'utf-8' in process_events, and remove the envelope wrapper so that the processed event dict is written directly as JSON lines instead of nesting it under a 'data' key."
+  },
+  "change_classification": {
+    "measurement_version": "ownership-change-classification-v1",
+    "declared_action": "repair",
+    "producer_owned_paths_changed": [],
+    "consumer_owned_paths_changed": [
+      "processor.py"
+    ],
+    "observed_upstream_revision": false,
+    "observed_consumer_integration": true,
+    "declared_repair_without_upstream_change": true,
+    "producer_defect_proven": false,
+    "producer_correctness_measured": false,
+    "marginal_repair_cost_identified": false
+  },
+  "producer_feedback_eligible": false,
+  "producer_feedback_status": "PENDING_ATTRIBUTION",
+  "reason": "recipient-owned-only integration repair cannot label the producer",
+  "policy_update_allowed": false,
+  "scientific_claim_allowed": false
+}
