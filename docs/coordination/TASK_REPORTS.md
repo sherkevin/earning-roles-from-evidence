@@ -116,3 +116,5 @@ Goal 修改。
   用不含 chosen agent/propensity 的 pre-decision offer 替代 LaterAssignment 作为 F 输入；双 watermark、公开字段约束、F0/F1 toy sensitivity 和 12 格零调用资格 v5 通过，F scientific cell 仍为 0。
 - [done] 2026-09-28 event-time interleaving qualification (task_reports/20260928_event_time_interleaving.md)：
   固定候选菜单、seed、证据和 decision cut，验证早到 feedback 只影响后续 decision、晚到 feedback 不回写已执行 decision；以同一 policy 的 F0/F1、未选 candidate mutation 防护和前置哈希篡改测试收紧证据链；用独立 auxiliary manifest hash-chain 封存 offer/consumption，v5 的 12 格零调用时序资格通过，v1--v4 历史日志保留。仍无 PIPE3 真实 runner、LLM/GPU 或 scientific cell，toy orchestrator 也不能证明隔离进程内的 policy-read trace。
+- [done] 2026-09-28 PIPE3 candidate registry boundary (task_reports/20260928_candidate_registry_boundary.md)：
+  新增不可变 `candidate_id@candidate_version` registry、源/model config digest、canonical registry digest 及 native ID 到 sidecar `CandidateRef` 的严格映射；13 项定向测试通过。它是身份工程子门，不是能力或 scientific cell 证据；完整 registry card、global arrival schedule、PIPE3 真实 runner 和双 manifest replay 仍开放。
