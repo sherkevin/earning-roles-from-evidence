@@ -53,15 +53,29 @@ def run(out_dir: Path, *, experiment_id: str = "n03_event_time_interleaving_2026
         result = {"status": "FAILED_OFFLINE", "checks": {}, "runs": {}}
         status = "FAILED_OFFLINE"
         error = {"type": type(exc).__name__, "message": str(exc)}
-    raw = {
+    raw_lines = []
+    for run_name, run in sorted(result.get("runs", {}).items()):
+        for ordinal, trace in enumerate(run.get("traces", [])):
+            raw_lines.append({
+                "event_type": "decision_trace",
+                "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+                "experiment_id": experiment_id,
+                "run": run_name,
+                "ordinal": ordinal,
+                "payload": trace,
+            })
+    raw_lines.append({
         "event_type": "qualification_result",
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
         "experiment_id": experiment_id,
         "status": status,
-        "result": result,
+        "checks": result.get("checks", {}),
         "error": error,
-    }
-    (out_dir / "raw.jsonl").write_text(json.dumps(raw, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
+    })
+    (out_dir / "raw.jsonl").write_text(
+        "".join(json.dumps(line, ensure_ascii=False, sort_keys=True) + "\n" for line in raw_lines),
+        encoding="utf-8",
+    )
     summary = {
         "experiment_id": experiment_id,
         "status": status,

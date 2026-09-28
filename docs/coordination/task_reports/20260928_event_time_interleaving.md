@@ -26,8 +26,11 @@ decision schedule。`ContextualTrustPolicy` 是会读取 situated evidence 的�
 配置在运行前写入
 `experiments/logs/n03_event_time_interleaving_20260928_v1/config.json`；加入 append-only
 manifest sealing 后，以新源码重跑的 v2 证据保存在
-`experiments/logs/n03_event_time_interleaving_20260928_v2/`。每个目录都有结构化
-`raw.jsonl` 和 `summary.json`；源码哈希、Python 版本、git commit、seed、
+`experiments/logs/n03_event_time_interleaving_20260928_v2/`。随后仅改进原始事件粒度
+并以相同条件重跑 v3，证据在
+`experiments/logs/n03_event_time_interleaving_20260928_v3/`；v3 的 `raw.jsonl` 按
+每个 run/decision 单独记录 9 条 trace，再记录 qualification summary。每个目录都有
+结构化 `raw.jsonl` 和 `summary.json`；源码哈希、Python 版本、git commit、seed、
 decision/arrival indices 均在 config 中保存。
 
 ## 结果
