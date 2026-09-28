@@ -114,3 +114,5 @@ Goal 修改。
   将 operator/scorer 私有归因信息与 policy 最小反馈对象分离；经复审补齐 UNKNOWN/label/跨事件/selected-only 闸门，最终源码上的 18 格零调用 mutation qualification v6 通过，保留 v1--v5 失败日志；未产生 scorer、runner 或科学效果证据。
 - [2026-09-28 pre-decision evidence offer and consumption attestation](task_reports/20260928_assignment_evidence_attestation.md)：
   用不含 chosen agent/propensity 的 pre-decision offer 替代 LaterAssignment 作为 F 输入；双 watermark、公开字段约束、F0/F1 toy sensitivity 和 12 格零调用资格 v5 通过，F scientific cell 仍为 0。
+- [done] 2026-09-28 event-time interleaving qualification (task_reports/20260928_event_time_interleaving.md)：
+  固定候选菜单、seed、证据和 decision cut，验证早到 feedback 只影响后续 decision、晚到 feedback 不回写已执行 decision；9 格零调用时序资格通过。仍无真实 runner、LLM/GPU 或 scientific cell。
