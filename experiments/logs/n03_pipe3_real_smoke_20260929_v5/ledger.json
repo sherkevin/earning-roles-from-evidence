@@ -1,0 +1,75 @@
+[
+  {
+    "event_type": "peer_selection",
+    "payload": {
+      "selection_id": "selection-0",
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 0,
+      "selector_id": "peer-a",
+      "role": "producer",
+      "candidate_ids": [
+        "peer-b",
+        "peer-c"
+      ],
+      "chosen_peer_id": "peer-b",
+      "propensity": 0.5
+    },
+    "previous_hash": "GENESIS",
+    "record_hash": "24cf31e02d982cc5b4e4f4be62d2c705baded6046b2d366a939b99e645e03921"
+  },
+  {
+    "event_type": "task_start",
+    "payload": {
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 0
+    },
+    "previous_hash": "24cf31e02d982cc5b4e4f4be62d2c705baded6046b2d366a939b99e645e03921",
+    "record_hash": "f7278086b17836ca3253b78b9211464049be746a4ff07e91c96dc9a3cbf65ada"
+  },
+  {
+    "event_type": "producer_delivery",
+    "payload": {
+      "delivery_id": "delivery-0",
+      "task_id": "PIPE3_stream_processing",
+      "producer_id": "peer-b",
+      "recipient_id": "peer-a",
+      "artifact_sha256": "085399c3991323c47e901c51135b4b6761a035df0e88f8b1620e45b11247162b",
+      "source_event_id": "producer-request-0",
+      "task_index": 0,
+      "selection_id": "selection-0"
+    },
+    "previous_hash": "f7278086b17836ca3253b78b9211464049be746a4ff07e91c96dc9a3cbf65ada",
+    "record_hash": "d26f25bfc1bfaf8045e76103167cf7d81c745fcffb47ce3393db96db3a883766"
+  },
+  {
+    "event_type": "producer_score",
+    "payload": {
+      "producer_score_id": "producer-score-0",
+      "delivery_id": "delivery-0",
+      "artifact_sha256": "085399c3991323c47e901c51135b4b6761a035df0e88f8b1620e45b11247162b",
+      "scorer_version": "pipe3-producer-objective-v2",
+      "status": "PASS",
+      "label": 1,
+      "quality_score": 1.0,
+      "score_payload_sha256": "5d1062fb0302f3c04a7500091d6e8e51897d6953fdb49fd1fcd3b1a99964dc86",
+      "coverage_complete": true,
+      "decision_complete": true
+    },
+    "previous_hash": "d26f25bfc1bfaf8045e76103167cf7d81c745fcffb47ce3393db96db3a883766",
+    "record_hash": "ae2c8e3deab46ceb0aac3ff680000a8ed1a143f7bfe8d85b1d07254040d7d7d8"
+  },
+  {
+    "event_type": "recipient_judgment",
+    "payload": {
+      "judgment_id": "judgment-0",
+      "delivery_id": "delivery-0",
+      "consumer_id": "peer-a",
+      "decision": "accept_with_rework",
+      "observed_artifact_sha256": "085399c3991323c47e901c51135b4b6761a035df0e88f8b1620e45b11247162b",
+      "terminal_outcome_available": false,
+      "repair_note": "In processor.py: change the output file encoding from 'latin-1' to 'utf-8' in process_events(). Remove the envelope wrapping so that the processed dict is written directly as JSON lines, matching what sink.py expects to read."
+    },
+    "previous_hash": "ae2c8e3deab46ceb0aac3ff680000a8ed1a143f7bfe8d85b1d07254040d7d7d8",
+    "record_hash": "0f40f9511f7ff35407d241b6a2a9090dfdd2587ffbb762c26a473ffffed5a87b"
+  }
+]

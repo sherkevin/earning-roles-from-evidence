@@ -1,0 +1,118 @@
+{
+  "experiment_id": "n03_pipe3_real_smoke_20260929_v6",
+  "card_path": "configs/aamas2027/n03_pipe3_real_smoke_v6.json",
+  "card_sha256": "89d1ffc921cc2aa42dbd3fd720daf8ef983c96bbe8a3af9182923aac856dd353",
+  "task_id": "PIPE3_stream_processing",
+  "task_seed": 0,
+  "teambench_expected_pin": "d185aef1916fd86a9ba554d581fd256319a973af",
+  "teambench_actual_pin": "d185aef1916fd86a9ba554d581fd256319a973af",
+  "teambench_clean": true,
+  "earning_roles_git_commit": "72fec231fac3df0edcbdaf0829fd5c72bc178ae7",
+  "runtime": {
+    "started_at_utc": "2026-09-28T16:07:08.557147+00:00",
+    "python": "3.9.6",
+    "platform": "macOS-26.3.2-arm64-arm-64bit"
+  },
+  "provider": "内部",
+  "model": "qwen3.8-max",
+  "request_budget": 3,
+  "maximum_episode_attempts": 1,
+  "real_api_calls": 3,
+  "gpu_jobs": 0,
+  "role_policy_update": false,
+  "responsibility_gate": {
+    "version": "pipe3-responsibility-label-v1",
+    "required": true
+  },
+  "scientific_claim_allowed": false,
+  "status": "COMPLETE_PENDING_ATTRIBUTION",
+  "reason": null,
+  "producer_score": {
+    "status": "PASS",
+    "label": 1,
+    "quality_score": 1.0,
+    "scorer_version": "pipe3-producer-objective-v2",
+    "decision_complete": true,
+    "coverage_complete": true,
+    "checks": [
+      {
+        "id": "P1_import",
+        "status": "PASS"
+      },
+      {
+        "id": "P2_iso_serialization",
+        "status": "PASS"
+      },
+      {
+        "id": "P3_batch_output",
+        "status": "PASS"
+      }
+    ],
+    "failed_check_ids": [],
+    "response_digest": "b0ff2f93ada3a46c3eee8aa771be08ac766053af066ab8c387d4936c1366c7bd",
+    "transport": {
+      "status": "complete"
+    },
+    "artifact_sha256": "73921e936376281e447b72b860220a88120c6a05ba3ca2bd02e5c58485abc298"
+  },
+  "recipient_score": {
+    "status": "PASS",
+    "label": 1,
+    "quality_score": 1.0,
+    "scorer_version": "pipe3-recipient-objective-v2",
+    "mode": "recipient",
+    "decision_complete": true,
+    "coverage_complete": true,
+    "checks": [
+      {
+        "id": "R1_process",
+        "status": "PASS",
+        "reason": ""
+      },
+      {
+        "id": "R2_shape",
+        "status": "PASS"
+      },
+      {
+        "id": "R3_utf8_semantics",
+        "status": "PASS"
+      }
+    ],
+    "failed_check_ids": [],
+    "response_digest": "be69c76f6d4abaf11351058bb225247889ee77069dc75d9696998b9f9b573620",
+    "transport": {
+      "status": "complete"
+    },
+    "artifact_sha256": "4c43f79c95e650d5cf945d14b39e062202ae5f59e9094d9c0d5202952257cd0a"
+  },
+  "adoption_score": {
+    "status": "PASS",
+    "label": 1,
+    "quality_score": 1.0,
+    "scorer_version": "pipe3-recipient-objective-v2",
+    "mode": "adoption",
+    "decision_complete": true,
+    "coverage_complete": true,
+    "checks": [
+      {
+        "id": "A1_producer_boundary",
+        "status": "PASS"
+      },
+      {
+        "id": "A2_sink_adoption",
+        "status": "PASS"
+      }
+    ],
+    "failed_check_ids": [],
+    "response_digest": "41500860105cf16291d622f30c2ddcf7bbde8d9a31cece1e5e0409d0f9670cb6",
+    "transport": {
+      "status": "complete"
+    },
+    "artifact_sha256": "3f23ef9038cd6b33ccd856024a28b82e053a8c10944fa9a615abfd6e83b3c4c4"
+  },
+  "ledger_status": "UNKNOWN",
+  "ledger_event_count": 7,
+  "consumer_action": "repair",
+  "responsibility_status": "PENDING_ATTRIBUTION",
+  "ended_at_utc": "2026-09-28T16:07:38.128798+00:00"
+}

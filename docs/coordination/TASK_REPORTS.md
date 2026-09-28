@@ -35,6 +35,14 @@ Goal 修改。
 
 - [done] 2026-09-28 PIPE3 responsibility-aware label qualification：同一真实 material root 上的五类 ownership sidecar gate 通过；只有 producer defect eligible，mixed edit 为 UNKNOWN，其余不更新 producer，见 [task report](task_reports/20260928_pipe3_responsibility_label_qualification.md)。
 
+- [done] 2026-09-29 PIPE3 consumer response contract qualification：五格严格 envelope parser 通过；bare dict、extra metadata、missing path、non-text source 均 UNKNOWN，见 [task report](task_reports/20260929_pipe3_consumer_response_qualification.md)。
+
+- [unknown] 2026-09-28 PIPE3 real smoke v4：structured responsibility judgment 成功且明确归因为 recipient-owned `processor.py`，但 consumer response 没有 `source_files` envelope，runner 严格 UNKNOWN 停止；3 次真实 API、无 action/outcome/update，见 [task report](task_reports/20260928_pipe3_real_smoke_v4.md)。
+
+- [unknown] 2026-09-29 PIPE3 real smoke v5：模型已返回严格 `source_files` envelope，但 runner 使用 recipient 初始路径集合而非 selected delivery contract，合法四文件快照被拒；3 次真实 API、无 update，见 [task report](task_reports/20260929_pipe3_real_smoke_v5.md)。
+
+- [done] 2026-09-29 PIPE3 real smoke v6：delivery-aware envelope 通过后，真实 chain 完成 Qp/Qr/adoption PASS 与 terminal outcome；structured judgment 判定 recipient-owned `processor.py`，责任 gate 输出 `COMPLETE_PENDING_ATTRIBUTION`，不写 producer evidence/update，见 [task report](task_reports/20260929_pipe3_real_smoke_v6.md)。
+
 - [done] 2026-09-28 验收标准 v1.1 升级：将官方要求、项目化识别门和高质量论文目标分层，补充 estimand、统计、closest baseline、污染审计、clean replay 与 Proceedings/Findings 双档；未改变 Goal，见 [task report](task_reports/20260928_evaluation_standard_v11.md)。
 
 - [done] 2026-09-28 三份验收文档来源审计：核对 AAMAS 官方要求和定向获奖论文样本，明确官方底线、项目操作化与未完成系统综述的边界，见 [task report](task_reports/20260928_acceptance_criteria_provenance.md)。

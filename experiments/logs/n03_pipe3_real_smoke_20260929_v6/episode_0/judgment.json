@@ -1,0 +1,17 @@
+{
+  "decision": "accept_with_rework",
+  "confidence": 0.95,
+  "target_role": "recipient",
+  "target_paths": [
+    "processor.py"
+  ],
+  "defect_type": "recipient_integration",
+  "evidence_refs": [
+    "artifact_digest",
+    "sink.py load_processed_events expects top-level event_id and timestamp",
+    "processor.py writes latin-1 and wraps in data envelope"
+  ],
+  "observed_artifact_sha256": "73921e936376281e447b72b860220a88120c6a05ba3ca2bd02e5c58485abc298",
+  "repair_plan": "In processor.py: (1) Change open(output_path, 'w', encoding='latin-1') to open(output_path, 'w', encoding='utf-8') in process_events. (2) Remove the envelope wrapper so that fout.write(json.dumps(processed, ensure_ascii=False) + '\\n') is used instead of wrapping in {'data': processed}. This ensures sink.py can access event_id, timestamp, action, and user_name at the top level. Preserve all public function names and signatures.",
+  "rationale": "I am the recipient and own processor.py. The delivered producer.py is read-only context and looks correct. However, my processor.py has two integration defects: (1) process_events writes output with encoding='latin-1', but sink.py reads with encoding='utf-8' and the spec requires handling non-ASCII sample values—this will corrupt or crash on non-ASCII data. (2) transform_event wraps the processed dict in an envelope {'data': processed}, but sink.py's load_processed_events expects top-level keys like 'event_id' and 'timestamp' directly on each parsed JSON object, causing KeyError at runtime."
+}

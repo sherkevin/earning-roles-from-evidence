@@ -1,0 +1,16 @@
+{
+  "decision": "accept_with_rework",
+  "confidence": 0.95,
+  "target_role": "recipient",
+  "target_paths": [
+    "processor.py"
+  ],
+  "defect_type": "recipient_integration",
+  "evidence_refs": [
+    "artifact_digest",
+    "Qp"
+  ],
+  "observed_artifact_sha256": "085399c3991323c47e901c51135b4b6761a035df0e88f8b1620e45b11247162b",
+  "repair_plan": "In processor.py: change the output file encoding from 'latin-1' to 'utf-8' in process_events(). Remove the envelope wrapping so that the processed dict is written directly as JSON lines, matching what sink.py expects to read.",
+  "rationale": "The producer.py is correct and conforms to the spec. However, processor.py (my owned file) has two integration defects: 1) It writes output with encoding='latin-1' but sink.py reads with encoding='utf-8', which will corrupt non-ASCII characters. 2) It wraps processed events in an envelope {'data': processed}, but sink.py expects top-level keys like 'event_id', 'timestamp', 'action', and 'user_name'. The current processor output will cause KeyError in the sink."
+}

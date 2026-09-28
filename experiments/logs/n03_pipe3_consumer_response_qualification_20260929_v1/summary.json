@@ -1,0 +1,52 @@
+{
+  "qualification_version": "pipe3-consumer-response-qualification-v1",
+  "schema_version": "pipe3-consumer-response-v1",
+  "required_paths": [
+    "processor.py",
+    "models.py",
+    "sink.py",
+    "producer.py"
+  ],
+  "llm_calls": 0,
+  "gpu_jobs": 0,
+  "native_grader_invoked": false,
+  "scientific_claim_allowed": false,
+  "passed": true,
+  "results": [
+    {
+      "case": "valid_envelope",
+      "status": "PASS",
+      "path_count": 4,
+      "expected": "PASS"
+    },
+    {
+      "case": "bare_file_dict",
+      "status": "UNKNOWN",
+      "error": "consumer response must contain only source_files",
+      "expected": "UNKNOWN"
+    },
+    {
+      "case": "extra_metadata",
+      "status": "UNKNOWN",
+      "error": "consumer response must contain only source_files",
+      "expected": "UNKNOWN"
+    },
+    {
+      "case": "missing_path",
+      "status": "UNKNOWN",
+      "error": "consumer source_files must match the contracted public paths",
+      "expected": "UNKNOWN"
+    },
+    {
+      "case": "non_text_source",
+      "status": "UNKNOWN",
+      "error": "consumer source_files values must be text",
+      "expected": "UNKNOWN"
+    }
+  ],
+  "consumer_contract_qualified": false,
+  "created_at_utc": "2026-09-28T16:00:55.137919+00:00",
+  "remaining_gates": [
+    "run a new real card after versioning the runner envelope parser"
+  ]
+}

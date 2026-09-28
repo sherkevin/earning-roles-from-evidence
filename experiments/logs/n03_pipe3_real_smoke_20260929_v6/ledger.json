@@ -1,0 +1,103 @@
+[
+  {
+    "event_type": "peer_selection",
+    "payload": {
+      "selection_id": "selection-0",
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 0,
+      "selector_id": "peer-a",
+      "role": "producer",
+      "candidate_ids": [
+        "peer-b",
+        "peer-c"
+      ],
+      "chosen_peer_id": "peer-b",
+      "propensity": 0.5
+    },
+    "previous_hash": "GENESIS",
+    "record_hash": "24cf31e02d982cc5b4e4f4be62d2c705baded6046b2d366a939b99e645e03921"
+  },
+  {
+    "event_type": "task_start",
+    "payload": {
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 0
+    },
+    "previous_hash": "24cf31e02d982cc5b4e4f4be62d2c705baded6046b2d366a939b99e645e03921",
+    "record_hash": "f7278086b17836ca3253b78b9211464049be746a4ff07e91c96dc9a3cbf65ada"
+  },
+  {
+    "event_type": "producer_delivery",
+    "payload": {
+      "delivery_id": "delivery-0",
+      "task_id": "PIPE3_stream_processing",
+      "producer_id": "peer-b",
+      "recipient_id": "peer-a",
+      "artifact_sha256": "73921e936376281e447b72b860220a88120c6a05ba3ca2bd02e5c58485abc298",
+      "source_event_id": "producer-request-0",
+      "task_index": 0,
+      "selection_id": "selection-0"
+    },
+    "previous_hash": "f7278086b17836ca3253b78b9211464049be746a4ff07e91c96dc9a3cbf65ada",
+    "record_hash": "3c4fcc61466f0e8c230bf02c7c832148955ba3e5d23c13bb5413c2a745c486b1"
+  },
+  {
+    "event_type": "producer_score",
+    "payload": {
+      "producer_score_id": "producer-score-0",
+      "delivery_id": "delivery-0",
+      "artifact_sha256": "73921e936376281e447b72b860220a88120c6a05ba3ca2bd02e5c58485abc298",
+      "scorer_version": "pipe3-producer-objective-v2",
+      "status": "PASS",
+      "label": 1,
+      "quality_score": 1.0,
+      "score_payload_sha256": "b0ff2f93ada3a46c3eee8aa771be08ac766053af066ab8c387d4936c1366c7bd",
+      "coverage_complete": true,
+      "decision_complete": true
+    },
+    "previous_hash": "3c4fcc61466f0e8c230bf02c7c832148955ba3e5d23c13bb5413c2a745c486b1",
+    "record_hash": "baa87b57025c7242cf8d45f7b89f6e8253717f1b070a639d977de02562b6d32a"
+  },
+  {
+    "event_type": "recipient_judgment",
+    "payload": {
+      "judgment_id": "judgment-0",
+      "delivery_id": "delivery-0",
+      "consumer_id": "peer-a",
+      "decision": "accept_with_rework",
+      "observed_artifact_sha256": "73921e936376281e447b72b860220a88120c6a05ba3ca2bd02e5c58485abc298",
+      "terminal_outcome_available": false,
+      "repair_note": "In processor.py: (1) Change open(output_path, 'w', encoding='latin-1') to open(output_path, 'w', encoding='utf-8') in process_events. (2) Remove the envelope wrapper so that fout.write(json.dumps(processed, ensure_ascii=False) + '\\n') is used instead of wrapping in {'data': processed}. This ensures sink.py can access event_id, timestamp, action, and user_name at the top level. Preserve all public function names and signatures."
+    },
+    "previous_hash": "baa87b57025c7242cf8d45f7b89f6e8253717f1b070a639d977de02562b6d32a",
+    "record_hash": "f1cc030c254863e16e9cce91893173357024e663cba5e4c5a0359e3d72261644"
+  },
+  {
+    "event_type": "consumer_action",
+    "payload": {
+      "action_id": "action-0",
+      "delivery_id": "delivery-0",
+      "consumer_id": "peer-a",
+      "used_artifact": true,
+      "input_artifact_sha256": "73921e936376281e447b72b860220a88120c6a05ba3ca2bd02e5c58485abc298",
+      "output_artifact_sha256": "8b3b49dafadccdeb569f640973a11cd8ba15cd2d1fc52a7d743f4d68c1584d7c",
+      "repair_cost": 15.522477417,
+      "action": "repair"
+    },
+    "previous_hash": "f1cc030c254863e16e9cce91893173357024e663cba5e4c5a0359e3d72261644",
+    "record_hash": "35e4f6732dc1a1935e2fb935197ea41b1242ced0f3a641806a8df7968cb18814"
+  },
+  {
+    "event_type": "terminal_outcome",
+    "payload": {
+      "outcome_id": "outcome-0",
+      "delivery_id": "delivery-0",
+      "success": true,
+      "scorer_version": "pipe3-adoption-v1",
+      "partial_score": 1.0,
+      "score_payload_sha256": "5f77e80bc969049f0c2cde5f8159ba8de53f245ad2e722b281231ba0ca11014a"
+    },
+    "previous_hash": "35e4f6732dc1a1935e2fb935197ea41b1242ced0f3a641806a8df7968cb18814",
+    "record_hash": "06d4aa7d47b16965effc98f472f0f4cd80fb1b1befff80d039aaec209dd6c381"
+  }
+]
