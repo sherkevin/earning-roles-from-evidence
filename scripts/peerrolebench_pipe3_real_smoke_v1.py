@@ -32,6 +32,7 @@ from peerrolebench_pipe3_material_adapter import build_materials, digest_files  
 from peerrolebench_pipe3_producer_scorer import run_producer_scorer as run_producer_scorer_v1  # noqa: E402
 from peerrolebench_pipe3_producer_scorer_v2 import run_producer_scorer as run_producer_scorer_v2  # noqa: E402
 from peerrolebench_pipe3_judgment_contract import validate_structured_judgment  # noqa: E402
+from peerrolebench_pipe3_consumer_response_contract import extract_consumer_sources  # noqa: E402
 from peerrolebench_pipe3_producer_scorer_qualification import interfaces  # noqa: E402
 from peerrolebench_pipe3_recipient_scorer import run_scorer as run_recipient_scorer_v1  # noqa: E402
 from peerrolebench_pipe3_recipient_scorer_v2 import run_scorer as run_recipient_scorer_v2  # noqa: E402
@@ -213,15 +214,16 @@ def run(out_dir: Path, card_path: Path) -> dict:
         action_payload = prepare_pipe3_action(materials, delivery_files, action)
         action_prompt = common + (
             "You are the same recipient carrying out the sealed decision. Return the complete current "
-            "public source_files snapshot. Change only paths in writable_paths; preserve all other files. "
+            "public source_files snapshot wrapped exactly as {\"source_files\":{\"processor.py\":\"...\","
+            "\"models.py\":\"...\",\"sink.py\":\"...\",\"producer.py\":\"...\"}}; do not return "
+            "a bare file dictionary or any extra top-level field. Change only paths in writable_paths; preserve all other files. "
             "A consumer action must leave processor.py present. Sealed decision:\n" + json.dumps(judged, ensure_ascii=False)
             + "\nAction payload:\n" + json.dumps(action_payload, ensure_ascii=False))
         consumed, consumer_meta = legacy_api.call_api(out_dir, episode, "consumer", action_prompt, card)
         config["real_api_calls"] += 1
         save(episode / "consumer_parsed.json", consumed)
-        final_sources = consumed.get("source_files")
-        if not isinstance(final_sources, dict):
-            raise ValueError("consumer response missing source_files")
+        required_consumer_paths = sorted(materials["agent_payloads"]["recipient"]["source_files"])
+        final_sources = extract_consumer_sources(consumed, required_consumer_paths)
         validated = validate_pipe3_action_result(action_payload, final_sources)
         save(episode / "action.json", validated)
         consumer_action = ConsumerAction("action-0", delivery.delivery_id, "peer-a", action in {"use", "repair"},
