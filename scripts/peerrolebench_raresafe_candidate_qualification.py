@@ -82,6 +82,28 @@ def run(out_dir: Path) -> dict:
         "final_snapshot": snapshot,
         "scientific_claim_allowed": False,
     }
+    # Event-time interleaving: only feedback sealed before the next decision
+    # may affect that decision's probabilities.  A late event is queued and
+    # cannot mutate the already captured probability vector.
+    candidates = ((1.0, 0.0, 0.0, 0.0), (0.0, 1.0, 0.0, 0.0))
+    empty = RareAnchorState(dimension=4, window_size=2)
+    p_without_feedback = empty.probabilities(candidates)
+    early = RareAnchorState(dimension=4, window_size=2)
+    early.ingest(_event("before-decision", 0, 1.0, features=candidates[0]))
+    p_early = early.probabilities(candidates)
+    late = RareAnchorState(dimension=4, window_size=2)
+    p_late_captured = late.probabilities(candidates)
+    late_disposition = late.ingest(_event("after-decision", 0, 1.0, features=candidates[0]))
+    event_time = {
+        "without_feedback": p_without_feedback,
+        "early_feedback": p_early,
+        "late_captured": p_late_captured,
+        "late_after_state": late.probabilities(candidates),
+        "late_disposition": late_disposition,
+        "early_changes_next_decision": p_early != p_without_feedback,
+        "late_does_not_rewrite_captured_decision": p_late_captured == p_without_feedback,
+    }
+    results["event_time_interleaving"] = event_time
     (out_dir / "raw.jsonl").write_text(json.dumps({"event_type": "candidate_invariant_trace", "payload": results}) + "\n")
     passed = (
         [item["disposition"] for item in outcomes]
@@ -91,6 +113,8 @@ def run(out_dir: Path) -> dict:
         and outcomes[2]["digest_changed"] is False
         and outcomes[5]["digest_changed"] is False
         and restore_equal and norm_bound
+        and event_time["early_changes_next_decision"]
+        and event_time["late_does_not_rewrite_captured_decision"]
     )
     summary = {
         "experiment_id": config["experiment_id"], "passed": passed,

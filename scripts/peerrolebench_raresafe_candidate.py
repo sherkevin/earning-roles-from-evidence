@@ -69,6 +69,7 @@ class RareAnchorState:
         self.updates = 0
         self.unknowns = 0
         self.duplicates = 0
+        self._refresh()
 
     def _check(self, event: RoleFeedback) -> None:
         if not event.key:
@@ -217,6 +218,29 @@ class RareAnchorState:
         payload.pop("correction_queue", None)
         encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
         return hashlib.sha256(encoded).hexdigest()
+
+    def probabilities(
+        self,
+        candidates: Sequence[Sequence[float]],
+        *,
+        temperature: float = 1.0,
+        exploration: float = 0.10,
+    ) -> tuple[float, ...]:
+        """Return the deterministic policy probabilities for a sealed snapshot."""
+        if not candidates or temperature <= 0 or not 0.0 <= exploration < 1.0:
+            raise ValueError("candidate list, temperature and exploration are invalid")
+        logits = []
+        for features in candidates:
+            if len(features) != self.dimension:
+                raise ValueError("candidate feature dimension mismatch")
+            value = sum(float(x) * float(w) for x, w in zip(features, self.theta))
+            logits.append(_sigmoid(value) / float(temperature))
+        maximum = max(logits)
+        weights = [math.exp(value - maximum) for value in logits]
+        total = sum(weights)
+        base = [value / total for value in weights]
+        uniform = 1.0 / len(base)
+        return tuple((1.0 - exploration) * value + exploration * uniform for value in base)
 
 
 __all__ = ["RareAnchorState", "RoleFeedback"]

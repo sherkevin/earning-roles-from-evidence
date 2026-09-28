@@ -32,7 +32,7 @@
 
 ## 零调用 reference qualification
 
-已新增 [reference state](../../scripts/peerrolebench_raresafe_candidate.py) 和 [qualification runner](../../scripts/peerrolebench_raresafe_candidate_qualification.py)。它用 `d=4` 的小 fixture 检查：正常更新、duplicate、UNKNOWN no-op、窗口内 correction、超 watermark 事件进入 queue、anchor 半径约束和 snapshot/restore。首轮 digest 把 audit counter 与 policy state 混在一起而失败，原始失败日志保留；修正 semantic digest 后 v2 通过，见 [summary.json](../../../experiments/logs/n03_raresafe_candidate_invariants_20260928_v2/summary.json)。13 项相关单测通过。
+已新增 [reference state](../../scripts/peerrolebench_raresafe_candidate.py) 和 [qualification runner](../../scripts/peerrolebench_raresafe_candidate_qualification.py)。它用 `d=4` 的小 fixture 检查：正常更新、duplicate、UNKNOWN no-op、窗口内 correction、超 watermark 事件进入 queue、anchor 半径约束、snapshot/restore，以及 event-time interleaving（早到反馈改变下一 decision，已封存 decision 不被迟到反馈改写）。首轮 digest 把 audit counter 与 policy state 混在一起而失败，后续 event-time 初始化也单独失败，原始日志均保留；修正 semantic digest 和初始化后 v4 通过，见 [summary.json](../../../experiments/logs/n03_raresafe_candidate_invariants_20260928_v4/summary.json)。14 项相关单测通过。
 
 这只证明候选状态的离线不变量，不证明选择质量、真实实时性、遗忘或创新性；`d=4` 也不是最终实验维度。
 

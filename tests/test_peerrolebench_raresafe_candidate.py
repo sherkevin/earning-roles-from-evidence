@@ -43,3 +43,16 @@ def test_snapshot_restore_is_exact_and_anchor_radius_is_bounded():
     assert restored.digest() == state.digest()
     delta = sum((state.theta[i] - state.anchor[i]) ** 2 for i in range(4)) ** 0.5
     assert delta <= 0.25 + 1e-9
+
+
+def test_event_time_interleaving_only_early_feedback_changes_next_choice():
+    candidates = ((1.0, 0.0, 0.0, 0.0), (0.0, 1.0, 0.0, 0.0))
+    empty = RareAnchorState(dimension=4)
+    baseline = empty.probabilities(candidates)
+    early = RareAnchorState(dimension=4)
+    early.ingest(event("early", 0, 1.0))
+    assert early.probabilities(candidates) != baseline
+    late = RareAnchorState(dimension=4)
+    captured = late.probabilities(candidates)
+    late.ingest(event("late", 0, 1.0))
+    assert captured == baseline
