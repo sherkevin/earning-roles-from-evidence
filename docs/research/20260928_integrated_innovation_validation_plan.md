@@ -108,8 +108,8 @@ raw acceptance、terminal-only、contextual trust/bandit 另列为 baseline，�
 两段完整 PIPE3 协议 episode 的 hash-chain replay 已通过，说明账本可以记录 J/A/U/F 所需的协议事件；但 assignment 与下一 selection 的 agent/propensity 相同，不能证明 policy 实际读取了 evidence。原始事件和运行配置见 [factorial mapping qualification](../coordination/task_reports/20260928_factorial_mapping_qualification.md)。
 
 这还不是 factorial 实验。当前没有任何 scientific cell ready：A 仍缺接入真实
-producer-score/attribution projection；U/F 已有零调用 projection 与 event-time
-qualification，但尚未接入 PIPE3 的 canonical offer manifest、真实 runner 和强
+producer-score/attribution projection；U/F 已有零调用 projection 与 v5 event-time
+qualification（native/auxiliary manifest 分离），但尚未接入 PIPE3 的真实 runner 和强
 same-information baseline。下一道 gate 是完成真实 runner 的 event-time sealing、
 责任 scorer/lineage 和 baseline parity，再冻结真实 factorial card。完成前不启动
 真实 factorial API 或 A800。

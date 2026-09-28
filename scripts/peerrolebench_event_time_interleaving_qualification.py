@@ -35,6 +35,9 @@ def run(out_dir: Path, *, experiment_id: str = "n03_event_time_interleaving_2026
             "source_sha256": {
                 "runner": _sha256(ROOT / "scripts/peerrolebench_event_time_interleaving.py"),
                 "qualification": _sha256(Path(__file__)),
+                "assignment_manifest": _sha256(ROOT / "scripts/peerrolebench_assignment_manifest.py"),
+                "assignment_attestation": _sha256(ROOT / "scripts/peerrolebench_assignment_attestation.py"),
+                "baseline_policy": _sha256(ROOT / "scripts/peerrolebench_baseline_policies.py"),
             },
         },
         "schedule": {"decision_indices": [0, 2, 4], "arrival_conditions": [1, 3], "seed": 41},
@@ -55,6 +58,15 @@ def run(out_dir: Path, *, experiment_id: str = "n03_event_time_interleaving_2026
         error = {"type": type(exc).__name__, "message": str(exc)}
     raw_lines = []
     for run_name, run in sorted(result.get("runs", {}).items()):
+        for ordinal, record in enumerate(run.get("manifest_records", [])):
+            raw_lines.append({
+                "event_type": "aux_manifest_record",
+                "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+                "experiment_id": experiment_id,
+                "run": run_name,
+                "ordinal": ordinal,
+                "payload": record,
+            })
         for ordinal, trace in enumerate(run.get("traces", [])):
             raw_lines.append({
                 "event_type": "decision_trace",

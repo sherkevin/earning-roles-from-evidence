@@ -55,6 +55,9 @@ attestation 的 digest/read trace 是 non-adversarial runner 的审计声明，�
 进程下的密码学行为证明；offer_record_hash 也还需要独立 assignment-offer manifest 或
 版本化 protocol event 做 canonical ledger binding。当前没有真实 runner 在每个 decision
 cut 前调用 policy，也没有 feedback/selection 的 event-time interleaved replay，因此 F
-scientific cell 仍为 0。下一步是实现同一 `PublicEvidenceOffer` 输入下的真实 policy 与
-强 baseline 的交错执行：每次 decision 前 flush `arrival_index <= read_cut`，记录 state
-digest/attestation，再产生 selection；迟到 feedback 只能影响尚未执行的后续 decision。
+scientific cell 仍为 0。后续零调用 event-time qualification 已将 offer/consumption
+写入独立 auxiliary manifest；native sidecar manifest 保持三类 native event 的
+exact-coverage，不能混入这两类 auxiliary event。下一步是实现同一
+`PublicEvidenceOffer` 输入下的真实 policy 与强 baseline 的交错执行：每次 decision 前
+flush `arrival_index <= read_cut`，记录 state digest/attestation，再产生 selection；
+迟到 feedback 只能影响尚未执行的后续 decision。

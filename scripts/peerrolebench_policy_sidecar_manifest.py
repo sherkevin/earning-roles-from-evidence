@@ -15,14 +15,7 @@ from typing import Any, Iterable, Mapping
 
 GENESIS = "GENESIS"
 HASH_LENGTH = 64
-# Assignment offers and consumption attestations live beside native protocol
-# events.  They use the same append-only chain so a runner can seal the
-# pre-decision input and the decision read trace without changing the native
-# ledger dataclasses.  Existing three-event manifests remain valid.
-EVENT_TYPES = frozenset({
-    "peer_selection", "recipient_judgment", "terminal_outcome",
-    "assignment_evidence_offer", "decision_consumption_attestation",
-})
+EVENT_TYPES = frozenset({"peer_selection", "recipient_judgment", "terminal_outcome"})
 
 
 def _hash(payload: Mapping[str, Any]) -> str:

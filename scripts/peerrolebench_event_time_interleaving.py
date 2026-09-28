@@ -40,7 +40,7 @@ from peerrolebench_baseline_policies import (  # noqa: E402
     NoUpdatePolicy,
 )
 from peerrolebench_policy_sidecar import DecisionSidecar  # noqa: E402
-from peerrolebench_policy_sidecar_manifest import (  # noqa: E402
+from peerrolebench_assignment_manifest import (  # noqa: E402
     build_manifest,
     validate_manifest,
 )
@@ -62,6 +62,7 @@ class DecisionTrace:
     consumed: bool
     feedback_updates: int
     state_digest: str
+    policy_input_digest: str
     probabilities: tuple[float, ...]
     chosen_key: str
     attestation_digest: str
@@ -71,14 +72,18 @@ class DecisionTrace:
 class InterleavingRun:
     policy: str
     arrival_index: int
+    consume_evidence: bool
     traces: tuple[DecisionTrace, ...]
     manifest_root: str
+    manifest_records: tuple[dict[str, Any], ...]
 
     def jsonable(self) -> dict[str, Any]:
         return {
             "policy": self.policy,
             "arrival_index": self.arrival_index,
+            "consume_evidence": self.consume_evidence,
             "manifest_root": self.manifest_root,
+            "manifest_records": list(self.manifest_records),
             "traces": [asdict(trace) for trace in self.traces],
         }
 
@@ -164,11 +169,15 @@ def _decision_sidecar(policy: Any, selection: Any, *, decision_index: int, state
     )
 
 
-def run_interleaving(*, policy_name: str, arrival_index: int, seed: int = 41) -> InterleavingRun:
+def run_interleaving(*, policy_name: str, arrival_index: int, seed: int = 41,
+                     consume_evidence: bool | None = None,
+                     mutate_candidate_key: str | None = None) -> InterleavingRun:
     """Run three decisions under one feedback-arrival condition."""
 
     if arrival_index not in {1, 3}:
         raise ValueError("qualification schedule supports arrival_index 1 (early) or 3 (late)")
+    if consume_evidence is None:
+        consume_evidence = policy_name == "contextual_trust"
     policy = ContextualTrustPolicy(temperature=1.0) if policy_name == "contextual_trust" else NoUpdatePolicy(temperature=1.0)
     rng = np.random.default_rng(seed)
     candidates = (CandidateRef("agent-a", "v1"), CandidateRef("agent-b", "v1"))
@@ -177,6 +186,7 @@ def run_interleaving(*, policy_name: str, arrival_index: int, seed: int = 41) ->
     traces: list[DecisionTrace] = []
     manifest_rows: list[dict[str, str]] = []
     pending_row: dict[str, Any] | None = None
+    selections: dict[str, Any] = {}
 
     for ordinal, decision_index in enumerate((0, 2, 4)):
         event_id = f"selection-{ordinal}"
@@ -191,10 +201,13 @@ def run_interleaving(*, policy_name: str, arrival_index: int, seed: int = 41) ->
 
         # The policy has a chance to consume the exact same public offer as the
         # comparator.  NoUpdate sees the bundle but intentionally declines it.
-        consumed = policy_name == "contextual_trust" and bool(rows)
+        consumed = bool(consume_evidence and rows)
         updates_before = policy.updates
         if consumed:
             for row in rows:
+                source_selection = selections.get(str(row["source_event_id"]))
+                if source_selection is None or row["candidate_key"] != source_selection.chosen.key:
+                    raise ValueError("evidence row is not bound to the selected candidate")
                 feedback = Feedback(
                     feedback_id=str(row["feedback_id"]), source_event_id=str(row["source_event_id"]),
                     source=str(row["source"]), label=float(row["label"]),
@@ -223,6 +236,7 @@ def run_interleaving(*, policy_name: str, arrival_index: int, seed: int = 41) ->
             feature_schema="toy-feature-v1",
             selected_at=float(decision_index),
         )
+        selections[event_id] = selection
         sidecar = _decision_sidecar(policy, selection, decision_index=decision_index, state_digest=state_digest)
         attestation = build_consumption_attestation(
             offer, sidecar, consumed=consumed, read_cut=decision_index, decision_index=decision_index
@@ -232,16 +246,20 @@ def run_interleaving(*, policy_name: str, arrival_index: int, seed: int = 41) ->
             raise AssertionError("event-time consumption attestation did not verify")
         manifest_rows.extend([
             {
-                "ledger_record_hash": offer.offer_record_hash,
-                "protocol_event_type": "assignment_evidence_offer",
-                "protocol_event_id": offer.offer_id,
-                "sidecar_digest": _digest(offer.operator_binding_payload()),
+                "record_hash": offer.offer_record_hash,
+                "event_type": "assignment_evidence_offer",
+                "event_id": offer.offer_id,
+                "offer_id": offer.offer_id,
+                "decision_event_id": "",
+                "attestation_digest": _digest(offer.operator_binding_payload()),
             },
             {
-                "ledger_record_hash": sidecar.ledger_record_hash,
-                "protocol_event_type": "decision_consumption_attestation",
-                "protocol_event_id": sidecar.protocol_event_id,
-                "sidecar_digest": attestation.attestation_digest,
+                "record_hash": sidecar.ledger_record_hash,
+                "event_type": "decision_consumption_attestation",
+                "event_id": sidecar.protocol_event_id,
+                "offer_id": offer.offer_id,
+                "decision_event_id": sidecar.protocol_event_id,
+                "attestation_digest": attestation.attestation_digest,
             },
         ])
         trace = DecisionTrace(
@@ -254,6 +272,7 @@ def run_interleaving(*, policy_name: str, arrival_index: int, seed: int = 41) ->
             consumed=consumed,
             feedback_updates=policy.updates - updates_before,
             state_digest=state_digest,
+            policy_input_digest=attestation.policy_input_digest,
             probabilities=selection.probabilities,
             chosen_key=selection.chosen.key,
             attestation_digest=attestation.attestation_digest,
@@ -262,12 +281,15 @@ def run_interleaving(*, policy_name: str, arrival_index: int, seed: int = 41) ->
 
         if ordinal == 0:
             pending_row = _feedback_row(selected_key=selection.chosen.key, arrival_index=arrival_index)
+            if mutate_candidate_key is not None:
+                pending_row["candidate_key"] = mutate_candidate_key
             rows_by_arrival.setdefault(arrival_index, []).append(pending_row)
 
     manifest = build_manifest(manifest_rows)
     manifest_root = validate_manifest(manifest, manifest_rows)
     return InterleavingRun(policy=policy_name, arrival_index=arrival_index,
-                           traces=tuple(traces), manifest_root=manifest_root)
+                           consume_evidence=bool(consume_evidence), traces=tuple(traces),
+                           manifest_root=manifest_root, manifest_records=tuple(manifest))
 
 
 def qualify_event_time_interleaving() -> dict[str, Any]:
@@ -275,10 +297,12 @@ def qualify_event_time_interleaving() -> dict[str, Any]:
 
     early = run_interleaving(policy_name="contextual_trust", arrival_index=1)
     late = run_interleaving(policy_name="contextual_trust", arrival_index=3)
+    contextual_f0 = run_interleaving(policy_name="contextual_trust", arrival_index=1, consume_evidence=False)
     frozen = run_interleaving(policy_name="no_update", arrival_index=1)
     e0, e1, e2 = early.traces
     l0, l1, l2 = late.traces
     f0, f1, f2 = frozen.traces
+    c0, c1, c2 = contextual_f0.traces
     checks = {
         "same_seed_initial_decision": e0.chosen_key == l0.chosen_key == f0.chosen_key,
         "early_feedback_consumed_before_next_decision": e1.consumed and e1.feedback_updates == 1,
@@ -292,6 +316,12 @@ def qualify_event_time_interleaving() -> dict[str, Any]:
         "append_only_manifest_seals_offer_and_consumption": (
             early.manifest_root != "GENESIS" and late.manifest_root != "GENESIS"
         ),
+        "same_policy_f0_f1_isolated": (
+            e1.policy_input_digest != c1.policy_input_digest
+            and e1.probabilities != c1.probabilities
+            and c1.probabilities == f1.probabilities
+        ),
+        "manifest_previous_hash_mutation_rejected": _manifest_mutation_rejected(early),
     }
     if not all(checks.values()):
         failed = [name for name, passed in checks.items() if not passed]
@@ -300,9 +330,27 @@ def qualify_event_time_interleaving() -> dict[str, Any]:
         "status": "QUALIFIED_OFFLINE",
         "scientific_claim_allowed": False,
         "checks": checks,
-        "runs": {"early": early.jsonable(), "late": late.jsonable(), "no_update": frozen.jsonable()},
+        "runs": {
+            "early": early.jsonable(),
+            "late": late.jsonable(),
+            "contextual_f0": contextual_f0.jsonable(),
+            "no_update": frozen.jsonable(),
+        },
         "interpretation": "A public label can affect only future decisions after its arrival; this does not establish benchmark efficacy or role learning.",
     }
+
+
+def _manifest_mutation_rejected(run: InterleavingRun) -> bool:
+    mutated = [dict(record) for record in run.manifest_records]
+    if len(mutated) < 2:
+        return False
+    mutated[1]["previous_hash"] = "f" * 64
+    rows = [dict(record) for record in run.manifest_records]
+    try:
+        validate_manifest(mutated, rows)
+    except ValueError:
+        return True
+    return False
 
 
 __all__ = ["DecisionTrace", "InterleavingRun", "qualify_event_time_interleaving", "run_interleaving"]

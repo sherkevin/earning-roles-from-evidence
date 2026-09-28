@@ -38,3 +38,16 @@ def test_attestations_are_unique_and_state_is_versioned():
     assert len({trace.attestation_digest for trace in early.traces}) == 3
     assert early.traces[0].state_digest != early.traces[1].state_digest
     assert early.manifest_root != "GENESIS"
+
+
+def test_same_policy_f0_and_f1_are_separate_conditions():
+    result = qualify_event_time_interleaving()
+    assert result["checks"]["same_policy_f0_f1_isolated"] is True
+    assert result["checks"]["manifest_previous_hash_mutation_rejected"] is True
+
+
+def test_unselected_candidate_evidence_is_rejected_before_update():
+    import pytest
+    with pytest.raises(ValueError, match="selected candidate"):
+        run_interleaving(policy_name="contextual_trust", arrival_index=1,
+                         mutate_candidate_key="agent-a@v1")
