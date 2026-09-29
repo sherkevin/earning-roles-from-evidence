@@ -86,4 +86,4 @@ snapshot()/restore() -> versioned state
 
 ## 8. 对照标准
 
-方法审查使用 [`method_v1.0_20260928_eval.md`](../evaluation/method/method_v1.0_20260928_eval.md)。故事边界见 [`storyline_v1.1_20260928.md`](../storyline/storyline_v1.1_20260928.md)，可执行实验卡见 [`benchmark_baseline_v1.0_20260928.md`](../benchmark-baseline/benchmark_baseline_v1.0_20260928.md)。
+方法审查使用 [`method_v1.1_20260928_eval.md`](../evaluation/method/method_v1.1_20260928_eval.md)。故事边界见 [`storyline_v1.1_20260928.md`](../storyline/storyline_v1.1_20260928.md)，可执行实验卡见 [`benchmark_baseline_v1.1_20260930.md`](../benchmark-baseline/benchmark_baseline_v1.1_20260930.md)。

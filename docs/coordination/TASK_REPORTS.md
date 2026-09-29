@@ -154,4 +154,6 @@ Goal 修改。
 - [done] 2026-09-28 PIPE3 real runner contract (task_reports/20260928_pipe3_runner_contract.md)：
   固化真实 runner 的 pre-call freeze、native/auxiliary 双链、responsibility v3 时机、global arrival 顺序、UNKNOWN no-update 和双回放准入规则；没有调用 API/GPU，也没有冻结最终 updater。下一步实现 versioned runner boundary。
 - [done] 2026-09-28 PIPE3 selection runner boundary (task_reports/20260928_pipe3_runner_boundary.md)：
-  新增 versioned selection boundary，真实绑定 native selection record hash、candidate registry、consumption attestation 和 native/auxiliary 双 manifest；19 项定向测试和提交后 v4 structured qualification 通过。仍缺 actor/scorer/action/outcome、完整 fault-injection、responsibility v3 feedback 和真实 API。
+ 新增 versioned selection boundary，真实绑定 native selection record hash、candidate registry、consumption attestation 和 native/auxiliary 双 manifest；19 项定向测试和提交后 v4 structured qualification 通过。仍缺 actor/scorer/action/outcome、完整 fault-injection、responsibility v3 feedback 和真实 API。
+- [done] 2026-09-30 benchmark 轨道确认与 active 计划升级 (task_reports/20260930_benchmark_track_confirmation.md)：
+  用户确认 ArtifactRole 为论文主轨、PeerSelect 为机制副轨；新增 ADR 0042，active benchmark 计划升级为 v1.1，两个轨道不合并评分，正式 API/A800 仍受资格门约束。

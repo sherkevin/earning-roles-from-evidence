@@ -1,8 +1,8 @@
 # Benchmark 轨道选择候选决议 v0.1
 
-- **状态**：`CANDIDATE_NOT_ACTIVE`
+- **状态**：`CANDIDATE_CONFIRMED_RELATION_NOT_ACTIVE`
 - **日期**：2026-09-29
-- **不改变**：active benchmark 计划、Goal、故事线和方法论
+- **不改变**：Goal、故事线和方法论；active benchmark 计划已由 v1.1 登记轨道关系，具体 benchmark/root/baseline 仍未冻结
 - **用途**：在用户确认前，把 PeerSelect/IPD 与 ArtifactRole/TeamBench 的关系写清楚，避免继续用两个不同问题争论“主 benchmark”。
 
 ## 1. 从 Goal 反推 primary claim
@@ -44,7 +44,7 @@
 
 ## 3. 候选结构（推荐但未激活）
 
-推荐把 **Track B 作为论文 primary benchmark/claim track**，把 **Track A 作为前置机制 qualification 与 secondary benchmark**：
+已确认把 **Track B 作为论文 primary benchmark/claim track**，把 **Track A 作为前置机制 qualification 与 secondary benchmark**：
 
 ```text
 Track A：先证明 selector/update 在干净局部图和 selected-only 信号下可识别
@@ -69,4 +69,4 @@ Track B：再证明 situated judgment → attributable evidence → later assign
 2. 为 Track A 和 Track B 各自固定 authority/root/污染/clean replay scorecard，不把 graph-ipd 或 TeamBench-derived wrapper 自动称为公认 benchmark；
 3. 为每轨道分别生成完整 cell manifest 和 baseline parity 表，再决定是否执行新的真实 API 流。
 
-在用户确认前，本文件不替代 `docs/research/versions/benchmark-baseline/benchmark_baseline_v1.0_20260928.md`，也不计入 scientific readiness。
+本文件不替代 `docs/research/versions/benchmark-baseline/benchmark_baseline_v1.1_20260930.md`，也不计入 scientific readiness。

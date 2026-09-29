@@ -2,7 +2,7 @@
 
 - **状态**：`ACTIVE`
 - **类别**：evaluation/benchmark-baseline
-- **评价对象**：[`benchmark_baseline_v1.0_20260928.md`](../../benchmark-baseline/benchmark_baseline_v1.0_20260928.md)
+- **评价对象**：[`benchmark_baseline_v1.1_20260930.md`](../../benchmark-baseline/benchmark_baseline_v1.1_20260930.md)
 - **生效日期**：2026-09-29
 - **前一版本**：`benchmark_baseline_v1.1_20260928_eval.md`
 - **用途**：在任何新 API、GPU 或正式论文结果前，审查 benchmark/baseline 是否真的能够识别主张、公平比较并解释结果。它是严格门槛，不是录用承诺。
