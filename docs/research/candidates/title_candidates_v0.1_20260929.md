@@ -1,9 +1,10 @@
 # 论文标题候选 v0.1
 
-- **状态**：`CANDIDATE_NOT_ACTIVE`
+- **状态**：`SELECTED_WORKING_TITLE`
 - **日期**：2026-09-29
 - **当前工作标题**：`Learning Roles from Situated Peer Judgments in Multi-Agent Collaboration`
 - **用途**：在不改故事线和 Goal 的前提下，寻找能表达动态、自进化和跨任务适用性的正式标题。
+- **作者确认**：2026-09-29 选择首选标题，已同步当前 pre-results/proposal 稿件；历史 `main.tex` 保持不变。
 
 ## 1. 标题必须传达的四个信息
 

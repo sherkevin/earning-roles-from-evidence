@@ -20,6 +20,7 @@ Goal 修改。
 - [done] 2026-09-29 Benchmark、baseline 与实验结果验收审计：新增 active 评价标准 v1.2，补齐 benchmark 选型评分卡、primary/secondary track、baseline parity、完整 cell manifest、数值精度门和结果 truth table；当前科学 benchmark/baseline 仍未通过，未启动新 API/GPU，见 [task report](task_reports/20260929_benchmark_baseline_acceptance_audit.md)。
 - [partial] 2026-09-29 Benchmark 轨道选择审计：从 Goal 的因果链区分 PeerSelect/IPD 机制轨道与 ArtifactRole/PeerRoleBench-TB 核心任务轨道，形成未激活候选方案；等待 primary/secondary 确认，未启动新 API/GPU，见 [task report](task_reports/20260929_benchmark_track_decision_audit.md)。
 - [partial] 2026-09-29 论文标题候选：围绕动态、自进化、situated judgment 和跨领域适用性形成三档标题候选；未覆盖正式论文源文件，等待作者选择，见 [task report](task_reports/20260929_title_candidates.md)。
+- [done] 2026-09-29 标题确认与 LaTeX 同步：用户确认 `Earning Roles: Self-Evolving Responsibility from Situated Peer Judgments`；已同步 proposal/pre-results 源码，保留历史稿并完成 PDF 构建验证，见 [task report](task_reports/20260929_title_confirmation.md)。
 
 - [done] 2026-09-28 故事线与论文写作评价标准 v1.2：基于四篇 AAMAS 正文补充全文主链、章节顺序、段落职责、结果解释和本项目段落映射；未改变 Goal，见 [task report](task_reports/20260928_storyline_writing_logic_v12.md)。
 

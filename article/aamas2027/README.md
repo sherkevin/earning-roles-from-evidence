@@ -1,6 +1,9 @@
 # AAMAS 2027 internal revision
 
-## 当前题目摘要草稿（2026-09-27）
+## 当前题目摘要草稿（2026-09-29）
+
+当前确认的工作标题为：**Earning Roles: Self-Evolving Responsibility from Situated Peer Judgments**。
+它是对外的定位标题；“self-evolving”描述待验证的动态角色形成目标，不能替代实时更新、稳定性或角色学习效果证据。
 
 [research_proposal.tex](research_proposal.tex) 是围绕当前主线新写的英文题目与摘要，
 使用现有官方 AAMAS 2027 类文件。它明确标记 `INTERNAL PRE-RESULTS PROPOSAL`，

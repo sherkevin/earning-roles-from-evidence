@@ -45,3 +45,4 @@
 - [0038 — 决议文件治理与研究主线硬约束](0038-decision-record-governance-and-research-invariants.md): 统一规定决议归档、双重确认、故事线、benchmark/baseline 和创新点的不可静默降级标准。
 - [0039 — 研究主文档与决议文件的职责边界](0039-canonical-research-documents-and-decision-boundary.md): 六类研究文档各自只保留一个 active 版本；决议只记录小的已对齐选择，不复制研究主文档。
 - [0040 — 组合机制的对外创新定位与内部验证](0040-integrated-mechanism-public-positioning.md)：正文呈现有机整体机制，内部用匹配组合、消融和交互效应验证其是否产生新系统性质。
+- [0041 — 选择 Earning Roles 工作标题](0041-select-earning-roles-title.md)：确认当前 pre-results/proposal 使用 `Earning Roles: Self-Evolving Responsibility from Situated Peer Judgments`，不改变 Goal 或科学证据边界。
