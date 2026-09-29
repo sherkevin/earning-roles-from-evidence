@@ -47,10 +47,11 @@ The policy state is `(θ_ref,A,b,W,H)`:
 
 - `θ_ref∈R^64`: protected public anchor, initialized to zero;
 - `A,b∈R^64`: diagonal fast sufficient statistics;
-- `W`: at most `B=256` eligible `(key,φ,g,y)` events;
+- `W`: at most `B=256` eligible `(key,φ,w,y)` events;
 - `H`: at most `K=128` immutable old-root holdout rows `(φ,y)`.
 
-For feature `φ_i` and eligible weight `w_e` (with `w_e=1` after the gate),
+For feature `φ_i` and an immutable visible weight `w_e∈[0,1]` (default `1`
+after the gate; `w_e=0` is recorded as an explicit zero-weight observation),
 
 $$
 A_i=\lambda+\sum_{e\in W}w_e\phi_{e,i}^2,\qquad
