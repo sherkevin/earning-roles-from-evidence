@@ -157,3 +157,5 @@ Goal 修改。
  新增 versioned selection boundary，真实绑定 native selection record hash、candidate registry、consumption attestation 和 native/auxiliary 双 manifest；19 项定向测试和提交后 v4 structured qualification 通过。仍缺 actor/scorer/action/outcome、完整 fault-injection、responsibility v3 feedback 和真实 API。
 - [done] 2026-09-30 benchmark 轨道确认与 active 计划升级 (task_reports/20260930_benchmark_track_confirmation.md)：
   用户确认 ArtifactRole 为论文主轨、PeerSelect 为机制副轨；新增 ADR 0042，active benchmark 计划升级为 v1.1，两个轨道不合并评分，正式 API/A800 仍受资格门约束。
+- [done] 2026-09-30 RARE selection adapter qualification (task_reports/20260930_rare_policy_adapter.md)：
+  候选 RARE 接入统一 selected-only policy 与 PIPE3 selection seam，补齐固定特征、encoder、UNKNOWN、correction lineage 和 event-time sidecar；v2 零调用资格与 77 项定向测试通过。只关闭接口工程子门，方法、benchmark 和科学效果仍未冻结。

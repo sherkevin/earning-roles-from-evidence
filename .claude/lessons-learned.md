@@ -162,3 +162,15 @@
 - **根因:** 验证命令未把 bytecode cache 定位到项目可写目录。
 - **避免:** 在受限环境中使用项目/临时目录的 `PYTHONPYCACHEPREFIX`，并保留原始权限错误；不能把环境写权限失败当作源码失败。
 - **Evidence:** 本轮终端回执；修正后 `PYTHONPYCACHEPREFIX=/tmp/earning_roles_pycache python3 -m py_compile ...` 通过。
+
+### 0026-shared-policy-seams-must-preserve-event-time | 2026-09-30 | earning-roles
+- **现象:** RARE 能在直接 policy 流中使用 arrival_index，但 sidecar bridge 最初丢弃该字段，replay 又按 arrived_at 排序，导致同一延迟流无法复现 watermark/correction 语义。
+- **根因:** 把审计墙钟时间当成在线事件顺序，且把候选 updater 的元数据要求留在下游实现，没有让共享 sidecar/runner 合同承载它。
+- **避免:** 在接口层显式版本化 event-time sidecar，要求 v4 的 arrival_index、correction lineage 和 frozen expected schedule；历史版本只能走兼容回放，不能与新流混用。
+- **Evidence:** `docs/coordination/task_reports/20260930_rare_policy_adapter.md`；`experiments/logs/n03_rare_policy_adapter_20260930_v3/`。
+
+### 0027-updater-validation-must-be-atomic-and-restorable | 2026-09-30 | earning-roles
+- **现象:** malformed RARE feedback 在 updater 校验前就被记为 seen，修复元数据后重放会被错误当作 duplicate；sidecar bridge 的 correction lineage 也无法从 policy snapshot 恢复。
+- **根因:** replay bookkeeping 与 concrete updater commit 没有事务边界，bridge 自己维护了一份没有 snapshot 合同的平行历史。
+- **避免:** 只有 updater 接受事件后才提交 seen/lineage；correction lineage 以 policy snapshot 为准，bridge 不复制一份不可恢复的状态；对跨 selection/channel 的 supersedes 做硬拒绝。
+- **Evidence:** `scripts/peerrolebench_baseline_policies.py`、`scripts/peerrolebench_policy_sidecar.py` 及 78 项定向回归。

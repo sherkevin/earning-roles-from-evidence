@@ -27,13 +27,14 @@ PRIVATE_KEYS = frozenset({
 PUBLIC_KEYS = frozenset({
     "feedback_id", "source_event_id", "source", "candidate_key", "evidence_version",
     "source_index", "arrival_index", "arrived_at", "delay", "action", "disposition", "provenance", "label",
+    "supersedes",
 })
 REQUIRED_ROW_KEYS = frozenset({
     "feedback_id", "source_event_id", "source", "candidate_key", "evidence_version",
     "source_index", "arrival_index", "arrived_at", "delay", "action", "disposition", "provenance",
 })
 ROW_SOURCES = frozenset({"recipient_judgment", "terminal_outcome"})
-ROW_DISPOSITIONS = frozenset({"eligible", "pending", "unknown", "rejected"})
+ROW_DISPOSITIONS = frozenset({"eligible", "pending", "unknown", "rejected", "ineligible"})
 ROW_PROVENANCE = frozenset({"public", "unknown"})
 
 
@@ -126,6 +127,11 @@ class AssignmentEvidenceOffer:
                 raise ValueError("non-public evidence row cannot carry label")
             if not row.get("feedback_id") or row.get("feedback_id") in seen_feedback_ids:
                 raise ValueError("public evidence feedback ids must be present and unique")
+            if "supersedes" in keys and (
+                not isinstance(row["supersedes"], str) or not row["supersedes"]
+                or row["supersedes"] == row["feedback_id"]
+            ):
+                raise ValueError("supersedes must name a different feedback id")
             # Values are intentionally JSON primitives: this makes the bundle
             # digest independent of mutable nested objects.
             try:
@@ -137,7 +143,7 @@ class AssignmentEvidenceOffer:
             if any(isinstance(value, float) and not math.isfinite(value) for value in row.values()):
                 raise ValueError("public evidence row numeric values must be finite")
             seen_feedback_ids.add(row["feedback_id"])
-            if row["source_event_id"] in seen_source_event_ids:
+            if row["source_event_id"] in seen_source_event_ids and "supersedes" not in keys:
                 raise ValueError("public evidence source event ids must be unique")
             seen_source_event_ids.add(row["source_event_id"])
             if row["arrival_index"] in seen_arrival_indices:

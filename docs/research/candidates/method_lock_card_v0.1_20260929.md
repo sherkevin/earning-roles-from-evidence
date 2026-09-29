@@ -102,3 +102,10 @@ The candidate is killed if the contextual trust control reproduces the complete 
 ## 7. Required qualification before active promotion
 
 Zero-call tests must cover: eligible producer defect; recipient-only edit; sink-only failure; mixed edit; no attribution; duplicate; late correction; out-of-window correction; version replacement; snapshot/restore; identity permutation; evidence-consumption mutation; and bounded queue/tombstone state. Only after these pass may a development root be used. No API/GPU result is attached to this card.
+
+The selection adapter qualification is now a separate implementation sub-gate:
+`docs/coordination/task_reports/20260930_rare_policy_adapter.md`. It verifies
+fixed candidate features, the sealed `hash64-v1` encoder, UNKNOWN no-update,
+same-lineage correction, event-time sidecar fields and PIPE3 manifest wiring.
+It does not satisfy the complete list above, closest-method parity, benchmark
+freeze, or active-method promotion.

@@ -67,7 +67,7 @@ def make_offer(
     """
 
     rows = sorted((dict(row) for row in public_rows), key=lambda row: (int(row["arrival_index"]), str(row["feedback_id"])))
-    evidence_ids = sorted(str(row["source_event_id"]) for row in rows)
+    evidence_ids = sorted({str(row["source_event_id"]) for row in rows})
     payload = {
         "offer_id": offer_id,
         "task_id": task_id,
@@ -127,10 +127,13 @@ class Pipe3SelectionBoundary:
                 raise ValueError("evidence row is not bound to the selected candidate")
             feedback = Feedback(
                 feedback_id=str(row["feedback_id"]), source_event_id=str(row["source_event_id"]),
-                source=str(row["source"]), label=float(row["label"]),
+                source=str(row["source"]),
+                label=None if row.get("label") is None else float(row["label"]),
                 arrived_at=float(row["arrived_at"]), delay=float(row["delay"]),
                 action=str(row["action"]), disposition=str(row["disposition"]),
                 provenance=str(row["provenance"]),
+                arrival_index=None if row.get("arrival_index") is None else int(row["arrival_index"]),
+                supersedes=None if row.get("supersedes") is None else str(row["supersedes"]),
             )
             updates += int(self.policy.observe_feedback(feedback))
         return updates
@@ -155,6 +158,7 @@ class Pipe3SelectionBoundary:
         read_cut: int,
         decision_index: int,
         consume_evidence: bool,
+        captured_features: Mapping[str, Sequence[float]] | None = None,
     ) -> SelectionSeal:
         """Apply visible feedback, choose a peer, and seal both manifest links."""
 
@@ -183,6 +187,7 @@ class Pipe3SelectionBoundary:
             encoder_version=encoder_version,
             feature_schema=feature_schema,
             selected_at=selected_at,
+            captured_features=captured_features,
         )
         self.selections[policy_selection.event_id] = policy_selection
         native_selection = PeerSelection(

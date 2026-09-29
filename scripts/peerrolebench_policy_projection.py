@@ -138,6 +138,8 @@ class RawAcceptanceSidecar:
     source_index: int
     arrived_at: float
     delay: float
+    arrival_index: int | None = None
+    supersedes: str | None = None
 
     def __post_init__(self) -> None:
         if self.protocol_event_type != "recipient_judgment":
@@ -164,6 +166,10 @@ class RawAcceptanceSidecar:
             raise ValueError("raw acceptance only accepts accept or reject")
         if self.source_index < 0:
             raise ValueError("source_index must be non-negative")
+        if self.arrival_index is not None and (type(self.arrival_index) is not int or self.arrival_index < 0):
+            raise ValueError("arrival_index must be a non-negative integer")
+        if self.supersedes is not None and (not self.supersedes or self.supersedes == self.feedback_id):
+            raise ValueError("supersedes must name a different feedback id")
         for name, value in (("arrived_at", self.arrived_at), ("delay", self.delay)):
             if not math.isfinite(float(value)) or float(value) < 0.0:
                 raise ValueError(f"{name} must be non-negative and finite")
@@ -187,6 +193,8 @@ class RawAcceptanceSidecar:
             "source_index": self.source_index,
             "arrived_at": self.arrived_at,
             "delay": self.delay,
+            **({"arrival_index": self.arrival_index} if self.arrival_index is not None else {}),
+            **({"supersedes": self.supersedes} if self.supersedes is not None else {}),
         }
 
     @property
@@ -210,6 +218,8 @@ class PolicyFeedbackProjection:
     disposition: str
     provenance: str
     label: float | None
+    arrival_index: int | None = None
+    supersedes: str | None = None
 
     def __post_init__(self) -> None:
         if not self.feedback_id or not self.source_event_id or not self.candidate_key:
@@ -218,6 +228,10 @@ class PolicyFeedbackProjection:
             raise ValueError("unsupported policy feedback source")
         if self.source_index < 0 or self.arrived_at < 0 or self.delay < 0:
             raise ValueError("feedback timing must be non-negative")
+        if self.arrival_index is not None and (type(self.arrival_index) is not int or self.arrival_index < 0):
+            raise ValueError("arrival_index must be a non-negative integer")
+        if self.supersedes is not None and (not self.supersedes or self.supersedes == self.feedback_id):
+            raise ValueError("supersedes must name a different feedback id")
         if self.disposition not in {"eligible", "unknown"} or self.provenance not in {"public", "unknown"}:
             raise ValueError("unsupported policy feedback disposition")
         if self.disposition == "eligible":
@@ -244,6 +258,8 @@ class PolicyFeedbackProjection:
             action=self.action,
             disposition=self.disposition,
             provenance=self.provenance,
+            arrival_index=self.arrival_index,
+            supersedes=self.supersedes,
         )
 
     def public_payload(self) -> dict[str, Any]:
@@ -259,6 +275,8 @@ class PolicyFeedbackProjection:
             "action": self.action,
             "disposition": self.disposition,
             "provenance": self.provenance,
+            **({"arrival_index": self.arrival_index} if self.arrival_index is not None else {}),
+            **({"supersedes": self.supersedes} if self.supersedes is not None else {}),
             **({"label": self.label} if self.label is not None else {}),
         }
 
@@ -309,7 +327,8 @@ def project_feedback(
             evidence_version=gate.evidence_version, source_index=gate.source_index,
             arrived_at=float(sidecar.arrived_at), delay=float(sidecar.delay),
             action=sidecar.action, disposition="eligible", provenance="public",
-            label=float(gate.label),
+            label=float(gate.label), arrival_index=sidecar.arrival_index,
+            supersedes=sidecar.supersedes,
         )
     return PolicyFeedbackProjection(
         feedback_id=sidecar.feedback_id, source_event_id=sidecar.source_event_id,
@@ -368,6 +387,8 @@ def project_raw_acceptance(
         disposition="eligible",
         provenance="public",
         label=label,
+        arrival_index=sidecar.arrival_index,
+        supersedes=sidecar.supersedes,
     )
 
 

@@ -16,6 +16,7 @@ from peerrolebench_ledger_replay import LedgerReplayError, replay_ledger_events
 from peerrolebench_baseline_policies import BaselinePolicy
 from peerrolebench_policy_sidecar import (
     DecisionSidecar,
+    EVENT_TIME_SIDECAR_VERSION,
     FeedbackSidecar,
     LINEAGE_SIDECAR_VERSION,
     PolicySidecarBridge,
@@ -80,8 +81,8 @@ def _validate_responsibility_lineage(
     must opt into this stricter v3 gate so a valid event hash cannot hide a
     mismatched delivery, recipient, artifact, or consumer action.
     """
-    if sidecar.sidecar_version != LINEAGE_SIDECAR_VERSION:
-        raise ValueError("responsibility lineage requires sidecar v3")
+    if sidecar.sidecar_version not in {LINEAGE_SIDECAR_VERSION, EVENT_TIME_SIDECAR_VERSION}:
+        raise ValueError("responsibility lineage requires sidecar v3 or event-time v4")
     delivery = ledger.deliveries.get(sidecar.delivery_id)
     if delivery is None:
         raise ValueError("feedback references an unknown delivery")
@@ -135,13 +136,15 @@ def replay_policy_sidecars(
     policy_factory: Callable[[], BaselinePolicy],
     manifest: Iterable[Mapping[str, Any]] | None = None,
     require_responsibility_lineage: bool = False,
+    expected_arrival_indices: Mapping[str, int] | None = None,
 ) -> dict[str, Any]:
     """Replay a sidecar stream under a strict ledger and update gate.
 
     Feedback input order is deliberately ignored after validation: the replay
-    order is `(arrived_at, protocol_event_id)`, while selections are always
-    registered in canonical ledger order.  This makes delayed feedback
-    deterministic without pretending that online policy updates commute.
+    order for v4 is the unique global arrival_index. Historical v2/v3 streams
+    keep their wall-clock order; mixed clocks are rejected. Selections are
+    registered in canonical ledger order. This is final-state replay, not
+    validation of intervening online decision states.
     """
 
     ledger = list(ledger_events)
@@ -254,7 +257,43 @@ def replay_policy_sidecars(
         }
 
     decisions.sort(key=lambda item: item[0])
-    feedback.sort(key=lambda item: (float(item[1].sidecar.arrived_at), item[1].sidecar.protocol_event_id))
+    indices = [getattr(item[1].sidecar, "arrival_index", None) for item in feedback]
+    if any(index is not None for index in indices):
+        if any(index is None for index in indices) or len(set(indices)) != len(indices):
+            return {
+                "status": "INVALID", "ledger_status": replay.status, "sidecar_status": "INVALID",
+                "update_allowed": False, "update_count": 0, "unknown_count": 0,
+                "duplicate_count": 0, "ignored_channel_count": 0, "pending_count": 0,
+                "final_snapshot": None,
+                "error": "event-time replay requires unique arrival indices on every feedback row",
+            }
+        if expected_arrival_indices is None:
+            return {
+                "status": "INVALID", "ledger_status": replay.status, "sidecar_status": "INVALID",
+                "update_allowed": False, "update_count": 0, "unknown_count": 0,
+                "duplicate_count": 0, "ignored_channel_count": 0, "pending_count": 0,
+                "final_snapshot": None,
+                "error": "event-time replay requires a frozen expected arrival schedule",
+            }
+        expected = {str(key): int(value) for key, value in expected_arrival_indices.items()}
+        observed = {
+            str(item[1].sidecar.feedback_id): int(item[1].sidecar.arrival_index)
+            for item in feedback
+        }
+        if observed != expected:
+            return {
+                "status": "INVALID", "ledger_status": replay.status, "sidecar_status": "INVALID",
+                "update_allowed": False, "update_count": 0, "unknown_count": 0,
+                "duplicate_count": 0, "ignored_channel_count": 0, "pending_count": 0,
+                "final_snapshot": None,
+                "error": "feedback arrival indices do not match the frozen expected schedule",
+            }
+        feedback.sort(key=lambda item: item[1].sidecar.arrival_index)
+    else:
+        # Historical v2/v3 sidecars predate the frozen event-time field.  Keep
+        # their replay behavior for archival checks, while v4 explicitly
+        # rejects missing arrival_index in FeedbackSidecar.__post_init__.
+        feedback.sort(key=lambda item: (float(item[1].sidecar.arrived_at), item[1].sidecar.protocol_event_id))
     policy = policy_factory()
     bridge = PolicySidecarBridge(policy)
     record_index = _event_record_index(replay.ledger)

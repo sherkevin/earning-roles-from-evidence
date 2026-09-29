@@ -116,6 +116,25 @@ def test_operator_ledger_hash_does_not_change_public_bundle_digest():
     assert offer(offer_record_hash="d" * 64).bundle_digest == offer().bundle_digest
 
 
+def test_offer_can_carry_a_late_correction_without_collapsing_source_lineage():
+    first = offer().public_rows[0]
+    correction = {
+        **first,
+        "feedback_id": "f0-correction",
+        "arrival_index": 3,
+        "arrived_at": 5.0,
+        "delay": 2.0,
+        "label": 0.0,
+        "supersedes": "f0",
+    }
+    ev = offer(
+        available_index=3,
+        public_rows=(first, correction),
+    )
+    assert ev.evidence_ids == ("e0",)
+    assert ev.payload()["public_rows"][1]["supersedes"] == "f0"
+
+
 @pytest.mark.parametrize("bad_row", [
     {"raw_value": "secret"}, {"unknown": "field"},
 ])

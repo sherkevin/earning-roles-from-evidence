@@ -6,13 +6,14 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from peerrolebench_baseline_policies import CandidateRef  # noqa: E402
+from peerrolebench_baseline_policies import CandidateRef, RarePolicy  # noqa: E402
 from peerrolebench_baseline_policies import TerminalOnlyPolicy  # noqa: E402
 from peerrolebench_policy_sidecar import (  # noqa: E402
     DecisionSidecar,
     FeedbackSidecar,
     PolicySidecarBridge,
     bind_to_ledger_record,
+    EVENT_TIME_SIDECAR_VERSION,
 )
 
 
@@ -174,3 +175,46 @@ def test_sidecar_bridge_rejects_feedback_from_unselected_producer():
     with pytest.raises(ValueError, match="producer"):
         bridge.ingest_feedback(wrong, _record("terminal_outcome", "o9"))
     assert bridge.policy.updates == 0
+
+
+def test_event_time_sidecar_drives_rare_update_and_binds_correction_lineage():
+    rare_decision = DecisionSidecar(
+        ledger_record_hash=DIGEST, protocol_event_type="peer_selection", protocol_event_id="s0",
+        task_id="task", task_index=0, role="producer", event_id="e0", selector_id="s0", context_key="ctx",
+        candidates=(CandidateRef("a", "v1"), CandidateRef("b", "v1")),
+        base_scores=(0.2, 0.8), chosen_index=1, probabilities=(0.3, 0.7), propensity=0.7,
+        state_version="state-0", encoder_version="hash64-v1", feature_schema="phi-2",
+        policy_name="RARE", policy_version="v1", base_score_version="base-v1",
+        rng_algorithm="numpy-pcg64", rng_draw=1, selected_at=10.0,
+        captured_features=(("a@v1", (1.0, 0.0)), ("b@v1", (0.0, 1.0))),
+    )
+
+    def feedback(*, event_id, feedback_id, record_hash, label, arrival_index, supersedes=None):
+        return FeedbackSidecar(
+            ledger_record_hash=record_hash, protocol_event_type="recipient_judgment", protocol_event_id=event_id,
+            feedback_id=feedback_id, source_event_id="e0", selection_event_id="s0", delivery_id="d0",
+            producer_id="b", producer_version="v1", recipient_id="peer-a",
+            source="recipient_judgment", arrived_at=10.0 + arrival_index,
+            delay=float(arrival_index), action="accept" if label else "reject",
+            disposition="eligible", provenance="public", label_mapping_version="judgment-v1",
+            mapping_digest=DIGEST, responsibility_status="attributed", attribution_basis="contract-v1",
+            artifact_sha256="e" * 64, delivery_record_hash="d" * 64,
+            action_id="action-0", action_record_hash="c" * 64,
+            label=label, arrival_index=arrival_index, supersedes=supersedes,
+            sidecar_version=EVENT_TIME_SIDECAR_VERSION,
+        )
+
+    bridge = PolicySidecarBridge(RarePolicy(dimension=2))
+    bridge.ingest_selection(rare_decision, _record("peer_selection", "s0"))
+    first = feedback(event_id="j0", feedback_id="f0", record_hash="b" * 64, label=1.0, arrival_index=1)
+    assert bridge.ingest_feedback(first, {
+        "event_type": "recipient_judgment", "payload": {"judgment_id": "j0"},
+        "record_hash": "b" * 64,
+    }) is True
+    correction = feedback(event_id="j1", feedback_id="f1", record_hash="c" * 64, label=0.0,
+                          arrival_index=3, supersedes="f0")
+    assert bridge.ingest_feedback(correction, {
+        "event_type": "recipient_judgment", "payload": {"judgment_id": "j1"},
+        "record_hash": "c" * 64,
+    }) is True
+    assert bridge.policy.state.superseded == {"f0"}

@@ -20,10 +20,11 @@ from peerrolebench_baseline_policies import BaselinePolicy, CandidateRef, Feedba
 
 SIDECAR_VERSION = "peerrole-policy-sidecar-v2"
 LINEAGE_SIDECAR_VERSION = "peerrole-policy-sidecar-v3"
-SUPPORTED_SIDECAR_VERSIONS = frozenset({SIDECAR_VERSION, LINEAGE_SIDECAR_VERSION})
+EVENT_TIME_SIDECAR_VERSION = "peerrole-policy-sidecar-v4"
+SUPPORTED_SIDECAR_VERSIONS = frozenset({SIDECAR_VERSION, LINEAGE_SIDECAR_VERSION, EVENT_TIME_SIDECAR_VERSION})
 HASH_LENGTH = 64
 SOURCES = frozenset({"recipient_judgment", "terminal_outcome"})
-DISPOSITIONS = frozenset({"eligible", "pending", "unknown", "rejected"})
+DISPOSITIONS = frozenset({"eligible", "pending", "unknown", "rejected", "ineligible"})
 PROVENANCE = frozenset({"public", "unknown"})
 ACTIONS = frozenset({"none", "accept", "rework", "reject", "use", "repair", "redo"})
 
@@ -194,6 +195,8 @@ class FeedbackSidecar:
     action_record_hash: str | None = None
     raw_value: Any | None = None
     label: float | None = None
+    arrival_index: int | None = None
+    supersedes: str | None = None
     sidecar_version: str = SIDECAR_VERSION
 
     def __post_init__(self) -> None:
@@ -213,15 +216,25 @@ class FeedbackSidecar:
             raise ValueError("unsupported feedback disposition/provenance")
         if _finite(self.arrived_at, "arrived_at") < 0 or _finite(self.delay, "delay") < 0:
             raise ValueError("feedback time values must be non-negative")
+        if self.sidecar_version == EVENT_TIME_SIDECAR_VERSION:
+            if type(self.arrival_index) is not int or self.arrival_index < 0:
+                raise ValueError("event-time sidecar requires non-negative integer arrival_index")
+        elif self.arrival_index is not None or self.supersedes is not None:
+            raise ValueError("event-time metadata requires sidecar v4")
+        if self.supersedes is not None and (not isinstance(self.supersedes, str)
+                                          or not self.supersedes or self.supersedes == self.feedback_id):
+            raise ValueError("supersedes must be a non-empty feedback id")
         if self.artifact_sha256 is not None:
             _require_digest(self.artifact_sha256, "artifact_sha256")
         if self.delivery_record_hash is not None:
             _require_digest(self.delivery_record_hash, "delivery_record_hash")
         if (self.action_id is None) != (self.action_record_hash is None):
             raise ValueError("action_id and action_record_hash must be supplied together")
+        if self.sidecar_version == EVENT_TIME_SIDECAR_VERSION and self.action_id is None:
+            raise ValueError("event-time sidecar requires action record binding")
         if self.action_record_hash is not None:
             _require_digest(self.action_record_hash, "action_record_hash")
-        if self.sidecar_version == LINEAGE_SIDECAR_VERSION:
+        if self.sidecar_version in {LINEAGE_SIDECAR_VERSION, EVENT_TIME_SIDECAR_VERSION}:
             if self.artifact_sha256 is None or self.delivery_record_hash is None:
                 raise ValueError("lineage sidecar requires artifact and delivery record binding")
             if self.protocol_event_type == "terminal_outcome" and self.action_id is None:
@@ -244,7 +257,8 @@ class FeedbackSidecar:
             feedback_id=self.feedback_id, source_event_id=self.source_event_id,
             source=self.source, label=float(self.label), arrived_at=self.arrived_at,
             delay=self.delay, action=self.action, disposition=self.disposition,
-            provenance=self.provenance,
+            provenance=self.provenance, arrival_index=self.arrival_index,
+            supersedes=self.supersedes,
         )
 
     def payload(self) -> dict[str, Any]:
@@ -266,6 +280,8 @@ class FeedbackSidecar:
             "attribution_basis": self.attribution_basis,
             **({"raw_value": self.raw_value} if self.raw_value is not None else {}),
             **({"label": self.label} if self.label is not None else {}),
+            **({"arrival_index": int(self.arrival_index)} if self.arrival_index is not None else {}),
+            **({"supersedes": self.supersedes} if self.supersedes is not None else {}),
         }
 
     @property
@@ -364,10 +380,18 @@ class PolicySidecarBridge:
         feedback = sidecar.to_feedback()
         if feedback is None:
             return False
-        return self.policy.observe_feedback(feedback)
+        if feedback.supersedes is not None:
+            previous_lineage = self.policy._feedback_lineage_by_id.get(feedback.supersedes)
+            if previous_lineage is None:
+                raise ValueError("feedback correction supersedes an unknown feedback id")
+            if previous_lineage != (feedback.source_event_id, feedback.source):
+                raise ValueError("feedback correction crosses source-event or channel lineage")
+        changed = self.policy.observe_feedback(feedback)
+        return changed
 
 
 __all__ = [
     "DecisionSidecar", "FeedbackSidecar", "PolicySidecarBridge", "SIDECAR_VERSION",
-    "LINEAGE_SIDECAR_VERSION", "SUPPORTED_SIDECAR_VERSIONS", "bind_to_ledger_record",
+    "LINEAGE_SIDECAR_VERSION", "EVENT_TIME_SIDECAR_VERSION",
+    "SUPPORTED_SIDECAR_VERSIONS", "bind_to_ledger_record",
 ]
