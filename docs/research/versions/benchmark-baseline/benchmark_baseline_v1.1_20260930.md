@@ -46,8 +46,21 @@
 PeerSelect 副轨另保留 graph-ipd reference selector、random/local-uniform、no-history
 selector 和 history-only selector；这些只回答局部选择与在线更新问题。ArtifactRole
 主轨必须包含上表的 raw/terminal/contextual/RARE 责任对照和 closest published
-adapter。任何 arm 都必须共享公开 ownership、候选菜单、propensity、arrival schedule、
-成本口径和 UNKNOWN no-update 规则。
+adapter。当前唯一进入候选审查的 closest semantic adapter 是
+**Meta-Team L2-style downstream reflection/profile**（论文 `arXiv:2605.29790v1`，
+代码锚点 `36dc85d9dc2219d292fa180f347479738a84acb2`）。它没有被当作可直接复现的
+drop-in：本地源码未发现明确 LICENSE/COPYING，只能按论文语义独立重实现。严格标准下，
+若不新增责任协议，ArtifactRole 的 published closest 为 `NO-GO`；允许 adapter 时，
+状态为 `NOT_IMPLEMENTED / QUALIFICATION_REQUIRED`。DecisionBench 只作 selector/delegation
+control，CooperBench 只作 collaboration substrate，graph-ipd/PeerSelect 只作机制副轨。
+
+Meta-Team 候选必须拆为三个报告 cell：`L2-original-info`（保留原生终局/轨迹信息的
+宽信息上限诊断，不进入主同信息比较）、`L2-public`（只读 ArtifactRole 公开
+delivery→recipient judgment/use/repair→arrival/correction 事件，profile schema、摘要
+规则与调用上限预注册）以及 `L2-ablation`（profile-only/no-L3）。任何 arm 都必须共享
+公开 ownership、候选菜单、propensity、arrival schedule、成本口径和 UNKNOWN no-update
+规则。若 profile parser、摘要预算、later assignment、独立 history 或完整成本不能冻结，
+该 adapter 保持 `NO-GO`，不能用手写 trust score 冒充。
 
 RLS、online logistic/SGD、periodic refit 和候选增量 updater 是训练更新比较，不能被重复计入选择 policy，也不能称成 RARE 创新。所有选择 policy 的反馈输入合同必须在实验卡中逐项写明：`raw_acceptance` 只能读合法 recipient accept/reject；`terminal_only` 只能读独立 final outcome；`contextual_trust` 与 RARE 读取相同的 eligible/UNKNOWN、selected-only、propensity、arrival order 和延迟字段，但使用自己的更新规则。任何 policy 都不能把 UNKNOWN 当负例或读取另一个 policy 的 state。
 
@@ -73,7 +86,7 @@ RLS、online logistic/SGD、periodic refit 和候选增量 updater 是训练更�
 
 ## 6. 当前证据与开放项
 
-已有工程资产包括 task contract、sandbox、lineage/replay、部分 policy sidecar qualification、graph-ipd CPU smoke 和 RARE candidate diagnostics；RARE 的统一 selected-only 选择适配器与 event-time/correction seam 已通过零调用资格。七个 arm 现在也有一个七 case 的离线 root-level parity runner，能统一检查候选菜单、seed、registry、protocol/source lineage、预注册 schedule digest、event-time、selected-only、UNKNOWN reason、raw acceptance 正向更新、决策序列、observe-before-choose 和 snapshot replay；其 v1--v8 失败/修复与 v9 通过回执均保留。这个 runner 仍是 hand-authored protocol qualification，只校验实际提供的 feedback 与预注册 schedule 的绑定，不能证明隔离进程中的 policy-read trace 或后续 offer 的完整累计信息集；它不能替代每个 arm 的独立 live history，也没有完成责任边界 runner、完整成本、later assignment 或 closest published adapter。N02 两条有限真实链没有产生概率变化。两个轨道的 benchmark 都尚未冻结，强 baseline parity、独立 confirmation stream 和 A800 训练结果均未完成。
+已有工程资产包括 task contract、sandbox、lineage/replay、部分 policy sidecar qualification、graph-ipd CPU smoke 和 RARE candidate diagnostics；RARE 的统一 selected-only 选择适配器与 event-time/correction seam 已通过零调用资格。七个 arm 现在也有一个七 case 的离线 root-level parity runner，能统一检查候选菜单、seed、registry、protocol/source lineage、预注册 schedule digest、event-time、selected-only、UNKNOWN reason、raw acceptance 正向更新、决策序列、observe-before-choose 和 snapshot replay；其 v1--v8 失败/修复与 v9 通过回执均保留。这个 runner 仍是 hand-authored protocol qualification，只校验实际提供的 feedback 与预注册 schedule 的绑定，不能证明隔离进程中的 policy-read trace 或后续 offer 的完整累计信息集；它不能替代每个 arm 的独立 live history，也没有完成责任边界 runner、完整成本、later assignment 或 Meta-Team-style closest adapter。N02 两条有限真实链没有产生概率变化。两个轨道的 benchmark 都尚未冻结，强 baseline parity、独立 confirmation stream 和 A800 训练结果均未完成。
 
 ## 7. 对照标准
 

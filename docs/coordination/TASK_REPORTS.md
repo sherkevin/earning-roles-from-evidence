@@ -163,3 +163,5 @@ Goal 修改。
   七个 arm 可构造但尚未形成公平 benchmark；统一 root runner、全局 event-time、UNKNOWN 分母、完整成本、later assignment 和 closest published adapter 仍开放，RARE/contextual 不能暂称同信息强基线。
 - [done] 2026-09-30 policy matrix runner qualification (task_reports/20260930_policy_matrix_runner.md)：
   七个 arm 在同一离线 runner 的七个 hand-authored feedback case 上通过菜单/seed/registry/protocol lineage/event-time/observe-before-choose/selected-only/UNKNOWN/raw acceptance/snapshot 及语义 contract；v1--v8 失败/修复保留，v9 仅为 parity 子门，不是 benchmark、方法效果或科学结果。
+- [done] 2026-09-30 closest published adapter audit (task_reports/20260930_closest_adapter_audit.md)：
+  严格 ArtifactRole causal unit 没有可直接复现的 published drop-in；Meta-Team L2-style profile 是唯一进入候选的语义近邻，但只能独立重实现并拆为 original-info/public/ablation，当前 `NOT_IMPLEMENTED / QUALIFICATION_REQUIRED`。DecisionBench 只作 selector/delegation control，CooperBench 只作 collaboration substrate，graph-ipd 只作机制副轨；baseline 仍未冻结。

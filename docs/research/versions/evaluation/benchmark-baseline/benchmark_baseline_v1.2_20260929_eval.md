@@ -71,7 +71,7 @@ RLS、online logistic/SGD、periodic refit 和其他 updater 是训练更新 com
 
 ### B3. Baseline 冻结判定
 
-在 `raw_acceptance`、strong same-information contextual trust、closest published adapter、RARE 和统一 runner 全部通过 executable qualification 前，baseline 状态为 `NOT_FROZEN`，不得启动正式效果流或 A800。2026-09-29 的离线 adapter qualification 已使 `raw_acceptance` 与 `pooled_controller` 可由统一 factory 构造；随后独立 `RawAcceptanceSidecar` projection seam（6-case/29-test）和 canonical replay seam（4-case/30-test）通过零调用 qualification，但真实 PIPE3 versioned runner、RARE selection adapter、closest published adapter 和 root runner parity 仍未完成；此项仍不通过。见 [`20260929_baseline_policy_adapter_contract.md`](../../../../coordination/task_reports/20260929_baseline_policy_adapter_contract.md)、[`20260929_raw_acceptance_projection_contract.md`](../../../../coordination/task_reports/20260929_raw_acceptance_projection_contract.md) 与 [`20260929_raw_acceptance_replay_contract.md`](../../../../coordination/task_reports/20260929_raw_acceptance_replay_contract.md)。
+在 `raw_acceptance`、strong same-information contextual trust、closest published adapter、RARE 和统一 live runner 全部通过 executable qualification 前，baseline 状态为 `NOT_FROZEN`，不得启动正式效果流或 A800。到 2026-09-30，统一 factory、RawAcceptanceSidecar projection/replay、RARE selection adapter 以及七 arm 的 v9 离线 matrix runner 已通过零调用子门；v9 还覆盖 observe-before-choose、raw acceptance 正向更新、UNKNOWN、unselected、protocol/source lineage 和早/迟反馈。它们仍是协议与实现资格，不能替代真实 PIPE3 versioned runner、完整成本/later assignment、closest published adapter、独立 live histories 或 same-information scientific comparison；此项仍不通过。closest published 审计还确认：严格 ArtifactRole causal unit 没有可直接复现的 drop-in；Meta-Team L2-style 只能作为待实现的 original-info/public/ablation 语义候选，不能把 selector/delegation 控制冒充 closest。见 [`20260930_policy_matrix_runner.md`](../../../../coordination/task_reports/20260930_policy_matrix_runner.md)、[`20260930_closest_adapter_audit.md`](../../../../coordination/task_reports/20260930_closest_adapter_audit.md)、[`20260930_rare_policy_adapter.md`](../../../../coordination/task_reports/20260930_rare_policy_adapter.md)、[`20260929_raw_acceptance_projection_contract.md`](../../../../coordination/task_reports/20260929_raw_acceptance_projection_contract.md) 与 [`20260929_raw_acceptance_replay_contract.md`](../../../../coordination/task_reports/20260929_raw_acceptance_replay_contract.md)。
 
 ## C. 实验矩阵硬门：从名单变成可执行设计
 
@@ -125,7 +125,7 @@ RLS、online logistic/SGD、periodic refit 和其他 updater 是训练更新 com
 - 任务泄漏、root 非独立、隔离失败、baseline 不公平、UNKNOWN 被当负例、没有独立 confirmation、没有失败分母、没有完整成本或结果看后改变标准时，不得写主结果。
 - `RARE` 未超过 strong contextual trust，或未达到质量—成本/实时性/稳定性门槛时，停止 A800 和更大规模 API，保留失败证据。
 
-**本次审计结论（2026-09-29）**：benchmark 选型、baseline root-runner parity、实验 cell freeze、closest published adapter、数值精度门和科学结果均为 `NOT_READY`/`OPEN`。六个 comparator 已通过零调用接口 qualification，但 RARE 仍缺 selection adapter，raw channel 仍缺独立 projection，且没有 PIPE3 统一 runner、later assignment、独立 root/stream 或 policy effect。已有的 v6 PIPE3 真实链只证明责任 gate 能阻止不合格更新。Goal 不降级，下一步先完成唯一 primary track、benchmark authority/root 选择评分卡、raw/RARE runner parity 和完整 cell manifest，再决定是否进入新的真实实验。
+**本次审计结论（2026-09-30）**：benchmark 选型、baseline root-runner parity、实验 cell freeze、closest published adapter、数值精度门和科学结果仍为 `NOT_READY`/`OPEN`。七个 arm 已通过 v9 零调用 matrix qualification，RARE 与 raw channel 的离线 adapter 也已接入；这只关闭了统一信息/时序/反馈接口的子门，尚没有 PIPE3 统一 live runner、later assignment、可公平执行的 closest adapter、独立 root/stream、完整成本或 policy effect。已有的真实链只证明责任 gate 能阻止不合格更新。Goal 不降级，下一步先完成唯一 primary track、benchmark authority/root 选择评分卡、Meta-Team-L2-public 的零调用边界资格和完整 cell manifest，再决定是否进入新的真实实验。
 
 ## 来源边界
 

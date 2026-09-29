@@ -7,6 +7,7 @@
 |---|---|---|---|---|---|
 | REM-style role coordination | interaction outcomes and role observations | role taxonomy shared for partner choice | interaction-driven role update | future partner choice | recipient-owned integration must not become producer evidence; delayed contradictory evidence must be reversible |
 | task delegation with third-party impressions | task/context competence, impressions, dependency outcomes | third-party impressions can propagate | delayed/bandit-like competence update | delegate next task | typed producer/recipient/sink ownership plus independent later-use target under same budget |
+| Meta-Team L2-style downstream reflection/profile | interaction traces and post-task result; teammate profiles | qualitative profile can affect later recruitment/team structure | post-task L2 profile update; L3 scaffold update | later recruitment/structure | closest semantic candidate, but original terminal/trajectory information is wider; requires an independently implemented public-information adapter and fixed profile schema |
 | reputation / pooled controller | public or pooled history | broad public reputation | aggregate update | menu or pool selection | local graph, different future owner, public evidence digest and no private memory leakage |
 | delayed contextual trust/bandit | context, selected feedback, propensity, arrival delay | usually peer-level trust | delayed contextual update | pre-execution choice | same-information adapter must be unable to reproduce responsibility-safe correction, or novelty fails |
 | raw acceptance / terminal-only | recipient accept or terminal result | no explicit ownership | direct label or terminal label | selection | situated judgment must add independent out-of-sample information beyond these signals |
@@ -18,4 +19,6 @@ For every row, record source, exact information fields, hidden fields, public/pr
 
 ## Current result
 
-The table identifies a plausible narrowing but does not establish novelty. The four-event stream in `round1_devils_challenge.md` is the minimum adapter test. If an existing row can implement the same state and assignment under the same information and budget, the claim must be reported as a measurement/protocol contribution or redesigned with user confirmation; it cannot be silently presented as a new algorithm.
+严格标准下，ArtifactRole 没有可直接复现的 published drop-in closest baseline：现有工作没有同时覆盖 artifact handoff、recipient use/judgment、producer attribution、selected-only、arrival/correction 和 later assignment。允许独立按论文语义重实现时，Meta-Team L2 是唯一进入候选的近邻，状态为 `NOT_IMPLEMENTED / QUALIFICATION_REQUIRED`；它不能被写成 upstream reproduction。DecisionBench 只作 selector/delegation control，CooperBench 只作 collaboration substrate，graph-ipd/PeerSelect 只作机制副轨。
+
+Meta-Team 候选必须拆成 `L2-original-info`（宽信息上限诊断）、`L2-public`（主同信息比较）和 `L2-ablation`（profile-only/no-L3）。在固定 profile schema、摘要预算、公开事件边界、selected-only、event-time/correction、later assignment、成本和独立 history 前，baseline 仍是 `NOT_FROZEN`。四事件 stream 仍只是最小 adapter test，不能替代这些 qualification。

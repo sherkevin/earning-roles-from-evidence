@@ -39,3 +39,5 @@
 
 - [done] 2026-09-30 matrix 时序与 channel qualification：v9 将反馈消费移到 choose 前，新增 raw acceptance、UNKNOWN、unselected、early/late、自反馈和 protocol/source lineage 断言；9 项定向、265 项 PeerRoleBench 回归通过。产出：[task report](docs/coordination/task_reports/20260930_policy_matrix_runner.md)、[v9 logs](experiments/logs/n03_policy_matrix_runner_20260930_v9/)。
 - [open] 2026-09-30 下一门：把这部分离线 contract 接入 root-specific live runner，验证完整累计 information set、隔离进程 policy-read trace、独立 live history、完整成本与 later assignment；在此之前不把 v9 写成公平 baseline 或科学效果。
+- [done] 2026-09-30 closest published adapter audit：严格 ArtifactRole causal unit 没有可直接复现的 published drop-in；Meta-Team L2-style profile 是唯一可审查的语义近邻，已拆为 original-info/public/ablation 候选层，当前 `NOT_IMPLEMENTED / QUALIFICATION_REQUIRED`。DecisionBench 归为 selector/delegation control，CooperBench 归为 collaboration substrate，graph-ipd 归为机制副轨。见 [task report](docs/coordination/task_reports/20260930_closest_adapter_audit.md)。
+- [open] 2026-09-30 Meta-Team-L2-public 零调用 qualification：冻结 profile schema/parser、公开事件边界、摘要预算、source lineage、watermark/later-assignment 和成本字段；任一字段不能与主轨同信息合同对齐则保持 `NO-GO`，不启动正式 API/A800。

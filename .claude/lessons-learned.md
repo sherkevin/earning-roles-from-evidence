@@ -180,3 +180,10 @@
 - **根因:** runner 把“反馈已写入状态”和“反馈对哪个 decision 可见”当成同一件事，偏离了 PIPE3 的 consume-before-choose 顺序；同时 matrix 没有 raw acceptance 正向 fixture，无法资格化该 baseline。
 - **避免:** 在每次 choose 前只消费 arrival_index 不晚于 read_cut、且已绑定历史 source selection 的事件；为每个 feedback channel 写正向、UNKNOWN、unselected、late 和 self-reference mutation case，并把预期语义纳入通过条件。
 - **Evidence:** `docs/coordination/task_reports/20260930_policy_matrix_runner.md`；`experiments/logs/n03_policy_matrix_runner_20260930_v9/`。
+
+### 0029-closest-method-must-share-the-causal-unit-and-information-cut | 2026-09-30 | earning-roles
+
+- **现象:** selector/delegation 论文很容易被写成 ArtifactRole 的 closest baseline，但它们没有 recipient adoption、producer attribution、selected-only 分母或 later assignment；Meta-Team 原生还读取终局与完整轨迹。
+- **根因:** 只按“都能选择/反思/更新 profile”命名近邻，没有先固定 causal unit、公开信息 cut、成本和 assignment 时序。
+- **避免:** 严格 drop-in 缺失时明确 `NO-GO`；若独立实现语义 adapter，分成 original-info 上限、public 同信息主比较和 profile-only 消融，并预注册 schema/parser、预算、watermark、correction/replay、later assignment 和完整成本。不能用手写 trust score 冒充已发表方法。
+- **Evidence:** [closest adapter audit](../docs/coordination/task_reports/20260930_closest_adapter_audit.md)；[candidate closest-method table](../docs/research/candidates/closest_method_table_v0.1_20260929.md)。

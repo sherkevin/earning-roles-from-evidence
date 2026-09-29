@@ -87,3 +87,7 @@ label、完整 producer/recipient/judge/scorer/repair/replay cost ledger、later
 消费、closest published adapter、同信息 contextual-vs-RARE parity，以及独立
 confirmation root。科学 readiness 继续为 `false`，下一步仍不能直接启动效果 API 或
 A800。
+
+随后按这份回执同步了 active benchmark/baseline 评价标准 v1.2：它现在反映 raw/RARE
+离线子门和 v9 matrix 已通过，同时继续把 live runner、closest published adapter、
+independent streams、完整成本和 scientific effect 保持为未通过项。
