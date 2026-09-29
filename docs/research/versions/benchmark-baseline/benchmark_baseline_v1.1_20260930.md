@@ -73,7 +73,7 @@ RLS、online logistic/SGD、periodic refit 和候选增量 updater 是训练更�
 
 ## 6. 当前证据与开放项
 
-已有工程资产包括 task contract、sandbox、lineage/replay、部分 policy sidecar qualification、graph-ipd CPU smoke 和 RARE candidate diagnostics；RARE 的统一 selected-only 选择适配器与 event-time/correction seam 已通过零调用资格，但完整责任边界 runner 和 live sidecar stream 仍未通过。N02 两条有限真实链没有产生概率变化。两个轨道的 benchmark 都尚未冻结，强 baseline parity、closest published adapter、独立 confirmation stream 和 A800 训练结果均未完成。
+已有工程资产包括 task contract、sandbox、lineage/replay、部分 policy sidecar qualification、graph-ipd CPU smoke 和 RARE candidate diagnostics；RARE 的统一 selected-only 选择适配器与 event-time/correction seam 已通过零调用资格。七个 arm 现在也有一个六 case 的离线 root-level parity runner，能统一检查候选菜单、seed、registry、protocol/source lineage、预注册 schedule digest、event-time、selected-only、UNKNOWN reason、决策序列和 snapshot replay；其 v1--v7 失败/修复与 v8 通过回执均保留。这个 runner 仍是 hand-authored protocol qualification，只校验实际提供的 feedback 与预注册 schedule 的绑定，不能证明隔离进程中的 policy-read trace 或后续 offer 的完整累计信息集；它不能替代每个 arm 的独立 live history，也没有完成责任边界 runner、完整成本、later assignment 或 closest published adapter。N02 两条有限真实链没有产生概率变化。两个轨道的 benchmark 都尚未冻结，强 baseline parity、独立 confirmation stream 和 A800 训练结果均未完成。
 
 ## 7. 对照标准
 

@@ -1,0 +1,125 @@
+from dataclasses import replace
+from pathlib import Path
+import sys
+
+import pytest
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
+
+from peerrolebench_policy_matrix_runner_v1 import (  # noqa: E402
+    ARM_NAMES,
+    PolicyMatrixRunner,
+    fixture_case,
+    _registry,
+    run_fixture_suite,
+)
+from peerrolebench_event_time_schedule import schedule_digest  # noqa: E402
+
+
+def test_all_arms_pass_six_offline_contract_cases(tmp_path):
+    result = run_fixture_suite(tmp_path / "matrix")
+    assert result["status"] == "QUALIFIED_OFFLINE"
+    assert result["passed"] is True
+    assert result["real_api_calls"] == 0
+    assert result["gpu_jobs"] == 0
+    assert result["scientific_claim_allowed"] is False
+    assert set(result["results"]) == {
+        "recipient_only", "producer_defect", "terminal", "unknown_late_correction", "unknown", "unselected",
+    }
+    for case_result in result["results"].values():
+        assert set(case_result["metrics"]) == set(ARM_NAMES)
+        assert all(item["snapshot_equal"] for item in case_result["replay"].values())
+
+
+def test_runner_rejects_future_read_cut_and_schedule_digest():
+    offers, schedule, digest = fixture_case("recipient_only")
+    runner = PolicyMatrixRunner(registry=_registry())
+    with pytest.raises(ValueError, match="read_cut is after decision_index"):
+        runner.run([replace(offers[0], read_cut=1), offers[1]], schedule, expected_schedule_digest=digest)
+    with pytest.raises(ValueError, match="digest mismatch"):
+        runner.run(offers, schedule, expected_schedule_digest="0" * 64)
+
+
+def test_runner_binds_protocol_event_identity_and_decision_order():
+    offers, schedule, digest = fixture_case("recipient_only")
+    runner = PolicyMatrixRunner(registry=_registry())
+    altered_schedule = [replace(schedule[0], protocol_event_id="different-event")]
+    altered_digest = schedule_digest(altered_schedule)
+    with pytest.raises(ValueError, match="protocol event disagrees"):
+        runner.run(offers, altered_schedule, expected_schedule_digest=altered_digest)
+    altered_source = [replace(schedule[0], source_event_id="different-source")]
+    altered_source_digest = schedule_digest(altered_source)
+    with pytest.raises(ValueError, match="source event disagrees"):
+        runner.run(offers, altered_source, expected_schedule_digest=altered_source_digest)
+    with pytest.raises(ValueError, match="duplicate decision index"):
+        runner.run(
+            [replace(offers[0], decision_index=1), replace(offers[1], decision_index=1)],
+            schedule, expected_schedule_digest=digest,
+        )
+
+
+def test_runner_rejects_offer_available_after_read_cut():
+    offers, schedule, digest = fixture_case("recipient_only")
+    runner = PolicyMatrixRunner(registry=_registry())
+    late = replace(offers[1], read_cut=0)
+    with pytest.raises(ValueError, match="unavailable at read_cut"):
+        runner.run([offers[0], late], schedule, expected_schedule_digest=digest)
+
+
+def test_runner_rejects_candidate_outside_frozen_registry():
+    offers, schedule, digest = fixture_case("recipient_only")
+    runner = PolicyMatrixRunner(registry=_registry()[:2])
+    with pytest.raises(ValueError, match="unregistered candidate keys"):
+        runner.run(offers, schedule, expected_schedule_digest=digest)
+
+
+def test_unselected_shared_fixture_is_skipped_without_update():
+    offers, schedule, digest = fixture_case("recipient_only")
+    # Point the public judgment at the candidate that was not selected by the
+    # source event.  It must be skipped, never relabeled as a negative sample.
+    from peerrolebench_policy_matrix_runner_v1 import _offer, _row
+
+    row = _row(
+        feedback_id="f0", source_event_id="policy-selection-0", protocol_event_id="j0",
+        source="recipient_judgment", candidate_key="agent-c@v1", arrival_index=1,
+        label=1.0,
+    )
+    changed = _offer(
+        offer_id="recipient_only-unselected", task_index=1,
+        candidate_keys=("agent-b@v1", "agent-c@v1"), public_rows=(row,),
+        available_index=1, native_selection_id="selection-1", read_cut=1,
+        decision_index=1, selected_at=1.0, rng_seed=12,
+    )
+    result = PolicyMatrixRunner(registry=_registry()).run(
+        [offers[0], changed], schedule, expected_schedule_digest=digest,
+    )
+    assert all(result["metrics"][name]["n_unselected"] == 1 for name in ARM_NAMES)
+    for name in ARM_NAMES:
+        if result["metrics"][name]["n_unselected"]:
+            assert result["metrics"][name]["n_eligible"] == 0
+            assert result["metrics"][name]["updates"] == 0
+
+
+def test_unknown_rows_require_an_explicit_reason():
+    offers, schedule, digest = fixture_case("recipient_only")
+    row = dict(offers[1].offer.public_rows[0])
+    row["disposition"] = "unknown"
+    row["provenance"] = "unknown"
+    row.pop("label", None)
+    # Rebuild the offer through the public constructor by using the helper's
+    # canonical maker; the runner, rather than the constructor, owns the
+    # explicit UNKNOWN reason policy.
+    from peerrolebench_policy_matrix_runner_v1 import _offer, _registry
+
+    unknown_offer = _offer(
+        offer_id="unknown-offer", task_index=1,
+        candidate_keys=("agent-b@v1", "agent-c@v1"), public_rows=(row,),
+        available_index=1, native_selection_id="selection-1", read_cut=1,
+        decision_index=1, selected_at=1.0, rng_seed=12,
+        protocol_event_ids={"f0": "j0"},
+    )
+    with pytest.raises(ValueError, match="UNKNOWN evidence"):
+        PolicyMatrixRunner(registry=_registry()).run(
+            [offers[0], unknown_offer], schedule, expected_schedule_digest=digest,
+        )

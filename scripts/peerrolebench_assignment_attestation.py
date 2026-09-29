@@ -27,7 +27,7 @@ PRIVATE_KEYS = frozenset({
 PUBLIC_KEYS = frozenset({
     "feedback_id", "source_event_id", "source", "candidate_key", "evidence_version",
     "source_index", "arrival_index", "arrived_at", "delay", "action", "disposition", "provenance", "label",
-    "supersedes",
+    "supersedes", "unknown_reason",
 })
 REQUIRED_ROW_KEYS = frozenset({
     "feedback_id", "source_event_id", "source", "candidate_key", "evidence_version",
