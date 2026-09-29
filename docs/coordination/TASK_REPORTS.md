@@ -17,6 +17,8 @@ Goal 修改。
 
 ## Reports
 
+- [done] 2026-09-29 Benchmark、baseline 与实验结果验收审计：新增 active 评价标准 v1.2，补齐 benchmark 选型评分卡、primary/secondary track、baseline parity、完整 cell manifest、数值精度门和结果 truth table；当前科学 benchmark/baseline 仍未通过，未启动新 API/GPU，见 [task report](task_reports/20260929_benchmark_baseline_acceptance_audit.md)。
+
 - [done] 2026-09-28 故事线与论文写作评价标准 v1.2：基于四篇 AAMAS 正文补充全文主链、章节顺序、段落职责、结果解释和本项目段落映射；未改变 Goal，见 [task report](task_reports/20260928_storyline_writing_logic_v12.md)。
 
 - [done] 2026-09-28 PIPE3 full responsibility-chain qualification：17 个事件的两 episode 零调用链、v3 lineage sidecar、native/auxiliary manifest、arrival schedule 和 UNKNOWN/fault rejection 通过；真实 runner、benchmark 与科学效果仍开放，见 [task report](task_reports/20260928_pipe3_full_chain_qualification.md)。

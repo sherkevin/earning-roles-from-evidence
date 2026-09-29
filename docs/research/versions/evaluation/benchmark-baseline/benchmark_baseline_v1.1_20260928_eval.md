@@ -1,10 +1,11 @@
 # Benchmark 与 baseline 评价标准 v1.1
 
-- **状态**：`ACTIVE`
+- **状态**：`SUPERSEDED`
 - **类别**：evaluation/benchmark-baseline
 - **评价对象**：[`benchmark_baseline_v1.0_20260928.md`](../../benchmark-baseline/benchmark_baseline_v1.0_20260928.md)
 - **生效日期**：2026-09-28
 - **前一版本**：`benchmark_baseline_v1.0_20260928_eval.md`
+- **替代版本**：`benchmark_baseline_v1.2_20260929_eval.md`
 - **用途**：审查实验是否真的能识别故事和方法主张；不保证录用。
 
 ## A. Benchmark 有效性硬门
