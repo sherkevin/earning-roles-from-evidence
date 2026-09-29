@@ -21,8 +21,9 @@ no agent turn start was observed. A requested Claude dispatch was rejected as
 
 The Orca dispatches have no usable worker conclusions. Two local read-only reports are stored in
 `round0_devils_advocate.md` and `round0_methods_auditor.md`; they are independent reports, not a
-synthesis. The feasibility role remains pending, and its absence must not be interpreted as
-agreement.
+synthesis. Their partial convergence matrix is stored in `round0_partial_matrix.md`. The
+literature/authority, feasibility/cost, and theory–experiment roles remain pending, and their
+absence must not be interpreted as agreement.
 
 Each role must work from the charter without seeing another role's answer. The coordinator must
 store the raw report, verify its source/paths, and then open Round 1 challenges. Until that happens,
