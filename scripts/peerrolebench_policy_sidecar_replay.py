@@ -21,12 +21,13 @@ from peerrolebench_policy_sidecar import (
     PolicySidecarBridge,
     bind_to_ledger_record,
 )
+from peerrolebench_policy_projection import RawAcceptanceSidecar, project_raw_acceptance
 from peerrolebench_policy_sidecar_manifest import validate_manifest
 
 
 @dataclass(frozen=True)
 class SidecarRow:
-    sidecar: DecisionSidecar | FeedbackSidecar
+    sidecar: DecisionSidecar | FeedbackSidecar | RawAcceptanceSidecar
     ledger_record: Mapping[str, Any]
     sidecar_digest: str | None = None
 
@@ -199,7 +200,7 @@ def replay_policy_sidecars(
             supplied_keys[protocol_key] = str(record_hash)
             if isinstance(sidecar, DecisionSidecar):
                 decisions.append((expected_position, row))
-            elif isinstance(sidecar, FeedbackSidecar):
+            elif isinstance(sidecar, (FeedbackSidecar, RawAcceptanceSidecar)):
                 if sidecar.feedback_id in seen_feedback_ids:
                     raise ValueError("duplicate sidecar feedback id")
                 seen_feedback_ids.add(sidecar.feedback_id)
@@ -276,6 +277,9 @@ def replay_policy_sidecars(
         try:
             for _, row in feedback:
                 event = row.sidecar
+                if isinstance(event, RawAcceptanceSidecar):
+                    # Raw acceptance intentionally has no responsibility gate.
+                    continue
                 assert isinstance(event, FeedbackSidecar)
                 selection = selection_by_protocol.get(event.selection_event_id)
                 if selection is None:
@@ -295,7 +299,6 @@ def replay_policy_sidecars(
     pending_count = 0
     for _, row in feedback:
         event = row.sidecar
-        assert isinstance(event, FeedbackSidecar)
         selection = selection_by_protocol.get(event.selection_event_id)
         if selection is None:
             return {
@@ -314,23 +317,46 @@ def replay_policy_sidecars(
                 "error": "feedback arrival/delay is inconsistent with selection time",
                 "manifest_root": manifest_root, "final_snapshot": None,
             }
-        if event.disposition != "eligible" or event.provenance != "public":
-            unknown_count += 1
-            continue
-        if event.source not in policy.accepted_sources:
-            ignored_channel_count += 1
-            continue
-        seen_channel = (event.source_event_id, event.source) in policy._seen_source_channels
-        try:
-            changed = bridge.ingest_feedback(event, row.ledger_record)
-        except ValueError as exc:
-            return {
-                "status": "INVALID", "ledger_status": replay.status, "sidecar_status": "INVALID",
-                "update_allowed": False, "update_count": 0, "unknown_count": unknown_count,
-                "duplicate_count": duplicate_count, "ignored_channel_count": ignored_channel_count,
-                "pending_count": pending_count, "error": str(exc), "manifest_root": manifest_root,
-                "final_snapshot": None,
-            }
+        if isinstance(event, RawAcceptanceSidecar):
+            source = "raw_acceptance"
+            if source not in policy.accepted_sources:
+                ignored_channel_count += 1
+                continue
+            try:
+                projection = project_raw_acceptance(
+                    event, selection=selection, ledger_record=row.ledger_record,
+                )
+                feedback_value = projection.to_feedback()
+                assert feedback_value is not None
+                seen_channel = (feedback_value.source_event_id, feedback_value.source) in policy._seen_source_channels
+                changed = policy.observe_feedback(feedback_value)
+            except ValueError as exc:
+                return {
+                    "status": "INVALID", "ledger_status": replay.status, "sidecar_status": "INVALID",
+                    "update_allowed": False, "update_count": 0, "unknown_count": unknown_count,
+                    "duplicate_count": duplicate_count, "ignored_channel_count": ignored_channel_count,
+                    "pending_count": pending_count, "error": str(exc), "manifest_root": manifest_root,
+                    "final_snapshot": None,
+                }
+        else:
+            assert isinstance(event, FeedbackSidecar)
+            if event.disposition != "eligible" or event.provenance != "public":
+                unknown_count += 1
+                continue
+            if event.source not in policy.accepted_sources:
+                ignored_channel_count += 1
+                continue
+            seen_channel = (event.source_event_id, event.source) in policy._seen_source_channels
+            try:
+                changed = bridge.ingest_feedback(event, row.ledger_record)
+            except ValueError as exc:
+                return {
+                    "status": "INVALID", "ledger_status": replay.status, "sidecar_status": "INVALID",
+                    "update_allowed": False, "update_count": 0, "unknown_count": unknown_count,
+                    "duplicate_count": duplicate_count, "ignored_channel_count": ignored_channel_count,
+                    "pending_count": pending_count, "error": str(exc), "manifest_root": manifest_root,
+                    "final_snapshot": None,
+                }
         if not changed and seen_channel:
             duplicate_count += 1
 

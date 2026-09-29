@@ -71,7 +71,7 @@ RLS、online logistic/SGD、periodic refit 和其他 updater 是训练更新 com
 
 ### B3. Baseline 冻结判定
 
-在 `raw_acceptance`、strong same-information contextual trust、closest published adapter、RARE 和统一 runner 全部通过 executable qualification 前，baseline 状态为 `NOT_FROZEN`，不得启动正式效果流或 A800。2026-09-29 的离线 adapter qualification 已使 `raw_acceptance` 与 `pooled_controller` 可由统一 factory 构造；随后独立 `RawAcceptanceSidecar` projection seam 通过 6-case/29-test 零调用 qualification，但 PIPE3 versioned runner、RARE selection adapter、closest published adapter 和 root runner parity 仍未完成；此项仍不通过。见 [`20260929_baseline_policy_adapter_contract.md`](../../../../coordination/task_reports/20260929_baseline_policy_adapter_contract.md) 与 [`20260929_raw_acceptance_projection_contract.md`](../../../../coordination/task_reports/20260929_raw_acceptance_projection_contract.md)。
+在 `raw_acceptance`、strong same-information contextual trust、closest published adapter、RARE 和统一 runner 全部通过 executable qualification 前，baseline 状态为 `NOT_FROZEN`，不得启动正式效果流或 A800。2026-09-29 的离线 adapter qualification 已使 `raw_acceptance` 与 `pooled_controller` 可由统一 factory 构造；随后独立 `RawAcceptanceSidecar` projection seam（6-case/29-test）和 canonical replay seam（4-case/30-test）通过零调用 qualification，但真实 PIPE3 versioned runner、RARE selection adapter、closest published adapter 和 root runner parity 仍未完成；此项仍不通过。见 [`20260929_baseline_policy_adapter_contract.md`](../../../../coordination/task_reports/20260929_baseline_policy_adapter_contract.md)、[`20260929_raw_acceptance_projection_contract.md`](../../../../coordination/task_reports/20260929_raw_acceptance_projection_contract.md) 与 [`20260929_raw_acceptance_replay_contract.md`](../../../../coordination/task_reports/20260929_raw_acceptance_replay_contract.md)。
 
 ## C. 实验矩阵硬门：从名单变成可执行设计
 
