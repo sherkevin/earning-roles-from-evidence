@@ -1,0 +1,72 @@
+{
+  "experiment_id": "n03_raw_acceptance_projection_20260929_v1",
+  "status": "QUALIFIED_OFFLINE",
+  "passed": true,
+  "case_count": 6,
+  "cases": [
+    {
+      "case": "accept",
+      "passed": true,
+      "label": 1.0,
+      "policy_updates": 1,
+      "public_keys": [
+        "action",
+        "arrived_at",
+        "candidate_key",
+        "delay",
+        "disposition",
+        "evidence_version",
+        "feedback_id",
+        "label",
+        "provenance",
+        "source",
+        "source_event_id",
+        "source_index"
+      ]
+    },
+    {
+      "case": "reject",
+      "passed": true,
+      "label": 0.0,
+      "policy_updates": 1,
+      "public_keys": [
+        "action",
+        "arrived_at",
+        "candidate_key",
+        "delay",
+        "disposition",
+        "evidence_version",
+        "feedback_id",
+        "label",
+        "provenance",
+        "source",
+        "source_event_id",
+        "source_index"
+      ]
+    },
+    {
+      "case": "canonical_label_mutation",
+      "passed": true,
+      "error": "raw acceptance does not match canonical judgment"
+    },
+    {
+      "case": "rework_rejected",
+      "passed": true,
+      "error": "raw acceptance only accepts accept or reject"
+    },
+    {
+      "case": "unchosen_candidate",
+      "passed": true,
+      "error": "raw acceptance producer was not the selected candidate"
+    },
+    {
+      "case": "selection_binding",
+      "passed": true,
+      "error": "raw acceptance selection does not match selection sidecar"
+    }
+  ],
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "ended_at_utc": "2026-09-29T07:42:11.898387+00:00"
+}

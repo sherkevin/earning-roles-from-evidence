@@ -8,8 +8,11 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from peerrolebench_policy_projection import (  # noqa: E402
     AttributionGate,
+    RAW_ACCEPTANCE_MAPPING_VERSION,
+    RawAcceptanceSidecar,
     _digest,
     project_feedback,
+    project_raw_acceptance,
 )
 from peerrolebench_policy_sidecar import DecisionSidecar, FeedbackSidecar  # noqa: E402
 from peerrolebench_baseline_policies import CandidateRef  # noqa: E402
@@ -93,6 +96,42 @@ def selection():
     )
 
 
+def raw_sidecar(**overrides):
+    values = {
+        "ledger_record_hash": DIGEST,
+        "protocol_event_type": "recipient_judgment",
+        "protocol_event_id": "j0",
+        "feedback_id": "raw-f0",
+        "source_event_id": "e0",
+        "selection_event_id": "s0",
+        "delivery_id": "d0",
+        "producer_id": "peer-b",
+        "producer_version": "v1",
+        "recipient_id": "peer-a",
+        "decision": "accept",
+        "label_mapping_version": RAW_ACCEPTANCE_MAPPING_VERSION,
+        "mapping_digest": DIGEST,
+        "source_index": 5,
+        "arrived_at": 12.0,
+        "delay": 2.0,
+    }
+    values.update(overrides)
+    return RawAcceptanceSidecar(**values)
+
+
+def raw_judgment_record(decision="accept"):
+    return {
+        "record_hash": DIGEST,
+        "event_type": "recipient_judgment",
+        "payload": {
+            "judgment_id": "j0",
+            "delivery_id": "d0",
+            "consumer_id": "peer-a",
+            "decision": decision,
+        },
+    }
+
+
 def test_projection_exposes_only_typed_minimal_feedback():
     projection = project_feedback(sidecar(), gate(), selection=selection())
     feedback = projection.to_feedback()
@@ -107,6 +146,41 @@ def test_projection_exposes_only_typed_minimal_feedback():
         "mapping_digest", "gate_digest", "producer_score_status",
     }:
         assert private_name not in payload
+
+
+def test_raw_acceptance_projection_is_public_but_not_attributed():
+    projection = project_raw_acceptance(
+        raw_sidecar(), selection=selection(), ledger_record=raw_judgment_record(),
+    )
+    feedback = projection.to_feedback()
+    assert feedback is not None
+    assert feedback.source == "raw_acceptance"
+    assert feedback.label == 1.0
+    assert projection.public_payload()["action"] == "accept"
+    assert all(name not in projection.public_payload() for name in (
+        "responsibility_status", "attribution_basis", "gate_digest", "weight",
+    ))
+
+    rejected = project_raw_acceptance(
+        raw_sidecar(decision="reject"), selection=selection(),
+        ledger_record=raw_judgment_record(decision="reject"),
+    )
+    assert rejected.to_feedback().label == 0.0
+
+
+def test_raw_acceptance_projection_rejects_rework_and_canonical_mutation():
+    with pytest.raises(ValueError, match="accept or reject"):
+        raw_sidecar(decision="rework")
+    with pytest.raises(ValueError, match="canonical judgment"):
+        project_raw_acceptance(
+            raw_sidecar(), selection=selection(),
+            ledger_record=raw_judgment_record(decision="reject"),
+        )
+    with pytest.raises(ValueError, match="selected candidate"):
+        project_raw_acceptance(
+            raw_sidecar(producer_id="peer-a"), selection=selection(),
+            ledger_record=raw_judgment_record(),
+        )
 
 
 def test_ineligible_gate_projects_unknown_and_cannot_update_policy():
