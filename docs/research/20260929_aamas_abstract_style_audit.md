@@ -133,7 +133,7 @@ These results establish [严格范围内的系统性质], rather than [未测量
 
 ## 7. 官方摘要版修订（2026-09-29）
 
-根据作者对内部过程语句的纠正，当前两个 LaTeX 源的摘要已统一为可直接提交的 180 词研究摘要。摘要中删除了 `internal`、`pre-results`、`current traces`、`no efficacy` 等过程性表述，保留以下可证实的研究设计陈述：
+根据作者对内部过程语句和方法章节式语气的进一步纠正，当前两个 LaTeX 源的摘要已统一为可直接提交的 184 词研究摘要。摘要中删除了 `internal`、`pre-results`、`current traces`、`no efficacy` 以及“在约束下形式化”式过程表述，改为直接突出机制相对于 global reputation/terminal-only selector 的信息保留、责任归因和后续修正优势。保留以下可证实的研究设计陈述：
 
 ```text
 问题：具体交付是否真正帮助了使用它的 recipient；

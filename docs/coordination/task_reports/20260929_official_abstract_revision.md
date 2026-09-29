@@ -7,7 +7,7 @@
 
 ## 采取的动作
 
-将 `article/aamas2027/research_proposal.tex` 与 `article/aamas2027/mainline_pre_results.tex` 的摘要统一为 180 词、7 句的正式研究摘要。摘要现在只保留：
+将 `article/aamas2027/research_proposal.tex` 与 `article/aamas2027/mainline_pre_results.tex` 的摘要进一步统一为 184 词、8 句的正式研究摘要。除了删除内部过程语句，还把“在若干约束下形式化”改写为直接的贡献句：Earning Roles 保留 recipient 的局部证据，将其归因给 producer，并允许后续独立结果修正，再影响下一次 assignment。摘要现在只保留：
 
 - 具体问题：recipient 是否真正从某份 delivery 中受益；
 - 核心机制：责任检查后的 situated judgment 形成 producer-attributable role evidence；
@@ -20,7 +20,7 @@
 
 ## 验证
 
-- 摘要字数：180 词，处于 AAMAS 公开要求的短摘要范围内。
+- 摘要字数：184 词，处于 AAMAS 公开要求的短摘要范围内。
 - 语句结构：具体 failure → sharp attribution gap → mechanism → evaluation/baselines → online measures。
 - LaTeX 将在本次修改后重新编译；文档门禁仍应保持 `scientific_readiness=false`，因为摘要修订不等于科学结果完成。
 

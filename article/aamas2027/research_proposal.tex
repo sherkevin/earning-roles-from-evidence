@@ -8,24 +8,23 @@
 \keywords{Multiagent coordination, self-evolving roles, peer judgment, online adaptation}
 
 \begin{abstract}
-Multi-agent teams must assign responsibility before a dependent task is executed,
-yet static roles, aggregate reputation, and terminal rewards do not record whether
-a particular delivery helped the agent that used it. We introduce Earning Roles, a
-framework in which a recipient's situated judgment---grounded in its use,
-modification, rejection, or responsibility-checked repair of a versioned
-delivery---becomes attributable evidence for the producer's future
-responsibilities. Evidence arrives after execution and may be revised by later
-independent outcomes; a subsequent owner can therefore use the evolving role state
-before choosing a peer. We formalize this process under selected-only feedback,
-delayed updates, local candidate sets, and explicit producer, recipient, and
-downstream responsibility boundaries. We evaluate whether the resulting assignments
-improve unseen-task quality and complete collaboration cost, using genuine
-producer--recipient dependencies, held-out task roots, independent checks, and
-matched model, information, exploration, and communication budgets. Comparisons
-with raw acceptance, contextual trust and bandit selection, terminal-only feedback,
-and pooled-history control isolate the value of attributable situated judgment. The
-framework is designed to support online updates while measuring adaptation to drift,
-update latency, and retention of prior competence.
+Multi-agent systems often assign work using fixed roles, global reputation, or
+terminal rewards. These signals can rank agents, but they cannot answer a sharper
+question: did this particular delivery help the particular agent that depended on
+it, and should that evidence change who receives the next task? We introduce
+Earning Roles, a self-evolving responsibility mechanism that turns a recipient's
+use, revision, or rejection of a versioned delivery into evidence tied to the
+producer and task context. A responsibility check separates producer quality from
+recipient integration and downstream outcomes; later independent outcomes can
+revise the evidence before it informs another assignment. This gives each
+collaboration a local, attributable learning signal while allowing useful
+experience to transfer across recipients and tasks. We evaluate the mechanism on
+multi-agent tasks with genuine dependencies and delayed feedback, comparing it
+with static assignment, raw acceptance, contextual trust or bandit selection,
+terminal-only learning, and pooled history under matched information and cost. We
+measure whether it improves held-out task quality and total collaboration cost,
+while retaining prior competence under drift. These tests distinguish role
+learning from merely selecting a globally strong agent.
 \end{abstract}
 
 \begin{document}
