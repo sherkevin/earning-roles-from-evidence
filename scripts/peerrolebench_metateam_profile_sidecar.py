@@ -313,3 +313,84 @@ def reject_private_public_input(payload: Mapping[str, Any]) -> None:
         raise ValueError(f"public Meta-Team adapter input contains unknown fields: {sorted(unknown)}")
     if "raw_trace" in payload or "trajectory" in payload:
         raise ValueError("full trajectory is not part of the public adapter input")
+
+
+def build_public_profile_fixture(
+    *,
+    selection: Any,
+    feedback_sidecar: Any,
+    public_projection: Any,
+    profile_id: str,
+    profile_revision: int,
+    profile: Mapping[str, Any],
+    parser_version: str,
+    model_config_digest: str,
+    available_index: int | None = None,
+    supersedes_profile_id: str | None = None,
+) -> MetaTeamProfile:
+    """Build a deterministic public profile record from typed sidecars.
+
+    This is a *fixture builder*, not the Meta-Team reflection model.  The
+    caller supplies the already-produced qualitative profile so this function
+    can qualify source binding and replay without making an LLM call.  A live
+    adapter must replace that input with a separately metered summarizer and
+    keep the same public payload and digest contract.
+    """
+    if getattr(public_projection, "source", None) != "recipient_judgment":
+        raise ValueError("Meta-Team-L2-public profile requires recipient judgment")
+    if getattr(public_projection, "disposition", None) != "eligible" or getattr(public_projection, "provenance", None) != "public":
+        raise ValueError("Meta-Team-L2-public profile requires eligible public projection")
+    chosen = selection.candidates[selection.chosen_index]
+    candidate_key = chosen.key
+    if getattr(public_projection, "candidate_key", None) != candidate_key:
+        raise ValueError("profile source is not the selected candidate")
+    for name in ("selection_event_id", "source_event_id", "delivery_id", "producer_id", "producer_version", "recipient_id"):
+        if getattr(feedback_sidecar, name, None) is None:
+            raise ValueError(f"feedback sidecar is missing {name}")
+    if feedback_sidecar.selection_event_id != selection.protocol_event_id:
+        raise ValueError("feedback and selection protocol events do not match")
+    if feedback_sidecar.source_event_id != public_projection.source_event_id:
+        raise ValueError("projection and feedback source events do not match")
+    arrival_index = getattr(public_projection, "arrival_index", None)
+    if type(arrival_index) is not int or arrival_index < 0:
+        raise ValueError("public projection requires arrival_index")
+    if available_index is None:
+        available_index = arrival_index
+    _nonnegative_int(available_index, "available_index")
+    if available_index < arrival_index:
+        raise ValueError("profile availability cannot precede public feedback arrival")
+    public_input = {
+        "selection_event_id": selection.protocol_event_id,
+        "selection_event": selection.event_id,
+        "candidate_key": candidate_key,
+        "feedback": public_projection.public_payload(),
+        "producer_id": feedback_sidecar.producer_id,
+        "producer_version": feedback_sidecar.producer_version,
+        "recipient_id": feedback_sidecar.recipient_id,
+        "delivery_id": feedback_sidecar.delivery_id,
+    }
+    source_input_digest = _digest(public_input)
+    return MetaTeamProfile(
+        profile_id=profile_id,
+        profile_revision=profile_revision,
+        adapter_variant="public",
+        candidate_key=candidate_key,
+        producer_id=feedback_sidecar.producer_id,
+        producer_version=feedback_sidecar.producer_version,
+        recipient_id=feedback_sidecar.recipient_id,
+        selected_candidate_key=candidate_key,
+        selection_event_id=selection.protocol_event_id,
+        source_event_id=public_projection.source_event_id,
+        delivery_id=feedback_sidecar.delivery_id,
+        source_decision_index=selection.task_index,
+        source_arrival_index=arrival_index,
+        available_index=available_index,
+        source_disposition=public_projection.disposition,
+        source_provenance=public_projection.provenance,
+        source_input_digest=source_input_digest,
+        profile_schema=PROFILE_SCHEMA,
+        parser_version=parser_version,
+        model_config_digest=model_config_digest,
+        profile=profile,
+        supersedes_profile_id=supersedes_profile_id,
+    )

@@ -166,4 +166,4 @@ Goal 修改。
 - [done] 2026-09-30 closest published adapter audit (task_reports/20260930_closest_adapter_audit.md)：
   严格 ArtifactRole causal unit 没有可直接复现的 published drop-in；Meta-Team L2-style profile 是唯一进入候选的语义近邻，但只能独立重实现并拆为 original-info/public/ablation，当前 `NOT_IMPLEMENTED / QUALIFICATION_REQUIRED`。DecisionBench 只作 selector/delegation control，CooperBench 只作 collaboration substrate，graph-ipd 只作机制副轨；baseline 仍未冻结。
 - [done] 2026-09-30 Meta-Team-L2-public profile boundary qualification (task_reports/20260930_metateam_public_profile_qualification.md)：
-  以一手 L2 profile 字段建立零调用 schema contract，验证 selected-only、public eligible、watermark/later assignment、correction/digest 和 hidden-info 拒绝；最终定向 8 项、完整 PeerRoleBench 273 项通过。它不是 Meta-Team 效果或已实现 baseline，真实 profile generator、PIPE3 builder/replay、成本和独立 history 仍开放。
+  以一手 L2 profile 字段建立零调用 schema/builder contract，验证 selected-only、public eligible、watermark/later assignment、correction/digest、hidden-info 拒绝和 typed-sidecar source-input digest；最终 qualification 10 格、定向 11 项、完整 PeerRoleBench 276 项通过。它不是 Meta-Team 效果或已实现 baseline，真实 profile generator、PIPE3 replay、成本和独立 history 仍开放。

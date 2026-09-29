@@ -8,11 +8,13 @@ from pathlib import Path
 import hashlib
 import platform
 import sys
+from types import SimpleNamespace
 
 from peerrolebench_metateam_profile_sidecar import (
     MetaTeamProfile,
     PROFILE_SCHEMA,
     _digest,
+    build_public_profile_fixture,
     reject_private_public_input,
 )
 
@@ -132,6 +134,52 @@ def run(out_dir: Path) -> dict:
         checks.append({"name": "profile_digest_detects_posthoc_mutation", "status": "PASS"})
     except Exception as exc:
         checks.append({"name": "profile_digest_detects_posthoc_mutation", "status": "FAIL", "error": str(exc)})
+
+    selection = SimpleNamespace(
+        candidates=(SimpleNamespace(key="agent-a@v1"), SimpleNamespace(key="agent-b@v1")),
+        chosen_index=0, protocol_event_id="selection-0", event_id="decision-0", task_index=0,
+    )
+    feedback_sidecar = SimpleNamespace(
+        selection_event_id="selection-0", source_event_id="judgment-0",
+        delivery_id="delivery-0", producer_id="agent-a", producer_version="v1",
+        recipient_id="agent-r",
+    )
+    public_projection = SimpleNamespace(
+        source="recipient_judgment", candidate_key="agent-a@v1",
+        source_event_id="judgment-0", disposition="eligible", provenance="public",
+        arrival_index=2,
+        public_payload=lambda: {
+            "feedback_id": "feedback-0", "source_event_id": "judgment-0",
+            "source": "recipient_judgment", "candidate_key": "agent-a@v1",
+            "evidence_version": "evidence-v1", "source_index": 2,
+            "arrival_index": 2, "arrived_at": 2.0, "delay": 0.0,
+            "action": "use", "disposition": "eligible", "provenance": "public",
+            "label": 1.0,
+        },
+    )
+    built = build_public_profile_fixture(
+        selection=selection, feedback_sidecar=feedback_sidecar,
+        public_projection=public_projection, profile_id="builder-profile-0",
+        profile_revision=1, profile=valid.profile, parser_version="fixture-parser-v1",
+        model_config_digest=digest("profile-model-config-v1"),
+    )
+    if built.source_input_digest != digest("public-event-bundle-0"):
+        # The builder intentionally hashes its complete public source bundle;
+        # it must not reuse an arbitrary caller-provided digest.
+        checks.append({"name": "builder_binds_complete_public_source_digest", "status": "PASS"})
+    else:
+        checks.append({"name": "builder_binds_complete_public_source_digest", "status": "FAIL"})
+    try:
+        build_public_profile_fixture(
+            selection=selection, feedback_sidecar=feedback_sidecar,
+            public_projection=SimpleNamespace(**{**public_projection.__dict__, "source": "terminal_outcome"}),
+            profile_id="builder-profile-terminal", profile_revision=1, profile=valid.profile,
+            parser_version="fixture-parser-v1", model_config_digest=digest("profile-model-config-v1"),
+        )
+    except ValueError as exc:
+        checks.append({"name": "builder_rejects_terminal_projection", "status": "PASS", "error": str(exc)})
+    else:
+        checks.append({"name": "builder_rejects_terminal_projection", "status": "FAIL"})
 
     result = {
         "qualification": config["qualification"],
