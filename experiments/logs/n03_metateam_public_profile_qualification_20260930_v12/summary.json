@@ -1,0 +1,84 @@
+{
+  "qualification": "metateam-l2-public-profile-boundary-v1",
+  "status": "QUALIFIED_OFFLINE",
+  "checks": [
+    {
+      "name": "valid_public_profile_and_later_consumption",
+      "status": "PASS"
+    },
+    {
+      "name": "reject_profile_before_arrival",
+      "status": "PASS",
+      "error": "profile cannot be available before its source arrival"
+    },
+    {
+      "name": "unknown_does_not_create_profile",
+      "status": "PASS",
+      "error": "profile may only be built from eligible public feedback"
+    },
+    {
+      "name": "reject_same_decision_assignment",
+      "status": "PASS",
+      "error": "profile consumption must target a later decision"
+    },
+    {
+      "name": "reject_pre_watermark_consumption",
+      "status": "PASS",
+      "error": "profile is not visible at this read cut"
+    },
+    {
+      "name": "late_correction_preserves_lineage",
+      "status": "PASS"
+    },
+    {
+      "name": "reject_hidden_trajectory_input",
+      "status": "PASS",
+      "error": "public Meta-Team adapter input contains forbidden fields: ['trajectory']"
+    },
+    {
+      "name": "profile_digest_detects_posthoc_mutation",
+      "status": "PASS"
+    },
+    {
+      "name": "builder_binds_complete_public_source_digest",
+      "status": "PASS"
+    },
+    {
+      "name": "builder_replay_preserves_profile_digest",
+      "status": "PASS"
+    },
+    {
+      "name": "assignment_offer_consumption_digest",
+      "status": "PASS"
+    },
+    {
+      "name": "assignment_attestation_binds_later_selection",
+      "status": "PASS"
+    },
+    {
+      "name": "assignment_offer_rejects_pre_watermark_profile",
+      "status": "PASS",
+      "error": "assignment offer contains a profile after its read cut"
+    },
+    {
+      "name": "builder_rejects_terminal_projection",
+      "status": "PASS",
+      "error": "Meta-Team-L2-public profile requires recipient judgment"
+    }
+  ],
+  "script": "/Users/jingwu/work/earning-roles/scripts/peerrolebench_metateam_profile_qualification.py",
+  "script_sha256": "8c80eccccc1416443c49d1636d0735764137a5214b79aeb2561e456401c3d02f",
+  "schema_script_sha256": "a01f32e0078ebcb286aca8046209a5cd31789d0fc63808f15add871bc6970a36",
+  "python": "3.9.6",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "argv": [
+    "scripts/peerrolebench_metateam_profile_qualification.py",
+    "--out-dir",
+    "experiments/logs/n03_metateam_public_profile_qualification_20260930_v12"
+  ],
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "profile_schema": "metateam-profile-v1",
+  "adapter_status": "NOT_IMPLEMENTED / QUALIFICATION_REQUIRED"
+}

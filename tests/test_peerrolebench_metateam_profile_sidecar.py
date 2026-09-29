@@ -12,6 +12,7 @@ from scripts.peerrolebench_metateam_profile_sidecar import (
     _digest,
     build_public_profile_fixture,
     replay_public_profile_fixture,
+    bind_assignment_to_selection,
     reject_private_public_input,
 )
 from scripts.peerrolebench_baseline_policies import CandidateRef
@@ -260,3 +261,21 @@ def test_assignment_attestation_rejects_mutated_offer_or_read_cut():
             read_cut=1, policy_input_digest=attestation.policy_input_digest,
             attestation_digest=attestation.attestation_digest,
         )
+
+
+def test_assignment_attestation_binds_to_later_selection_menu_and_index():
+    profile = make_profile()
+    offer = MetaTeamAssignmentOffer.build(
+        offer_id="offer-3", task_id="task", decision_index=3, read_cut=2,
+        candidate_keys=("agent-a@v1", "agent-b@v1"), profiles=(profile,),
+    )
+    attestation = offer.attest_consumption((profile.profile_id,))
+    later = decision_sidecar()
+    later = type(later)(
+        **{**later.__dict__, "task_index": 3, "selected_at": 3.0,
+           "candidates": (CandidateRef("agent-a", "v1"), CandidateRef("agent-b", "v1"))},
+    )
+    bind_assignment_to_selection(offer, attestation, later)
+    wrong_index = type(later)(**{**later.__dict__, "task_index": 2})
+    with pytest.raises(ValueError, match="later assignment"):
+        bind_assignment_to_selection(offer, attestation, wrong_index)

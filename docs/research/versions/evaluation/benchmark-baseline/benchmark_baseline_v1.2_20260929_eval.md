@@ -125,7 +125,7 @@ RLS、online logistic/SGD、periodic refit 和其他 updater 是训练更新 com
 - 任务泄漏、root 非独立、隔离失败、baseline 不公平、UNKNOWN 被当负例、没有独立 confirmation、没有失败分母、没有完整成本或结果看后改变标准时，不得写主结果。
 - `RARE` 未超过 strong contextual trust，或未达到质量—成本/实时性/稳定性门槛时，停止 A800 和更大规模 API，保留失败证据。
 
-**本次审计结论（2026-09-30）**：benchmark 选型、baseline root-runner parity、实验 cell freeze、closest published adapter、数值精度门和科学结果仍为 `NOT_READY`/`OPEN`。七个 arm 已通过 v9 零调用 matrix qualification，RARE、raw channel 和 Meta-Team-L2-public profile schema/fixture-builder/source-replay boundary 也已通过零调用子门；这只关闭了统一信息/时序/反馈接口的部分合同，尚没有 PIPE3 统一 live runner、真实 profile generator、assignment offer/next-episode consumption、隔离 policy-read trace、可公平执行的 closest adapter、独立 root/stream、完整成本或 policy effect；offer/attestation 的零调用 contract 不能替代这些门。已有的真实链只证明责任 gate 能阻止不合格更新。Goal 不降级，下一步先完成 Meta-Team-L2-public 的真实 profile generator/runner seam 和完整 cell manifest，再决定是否进入新的真实实验。
+**本次审计结论（2026-09-30）**：benchmark 选型、baseline root-runner parity、实验 cell freeze、closest published adapter、数值精度门和科学结果仍为 `NOT_READY`/`OPEN`。七个 arm 已通过 v9 零调用 matrix qualification，RARE、raw channel 和 Meta-Team-L2-public profile schema/fixture-builder/source-replay boundary 也已通过零调用子门；这只关闭了统一信息/时序/反馈接口的部分合同，尚没有 PIPE3 统一 live runner、真实 profile generator、assignment offer/next-episode consumption 的隔离执行、隔离 policy-read trace、可公平执行的 closest adapter、独立 root/stream、完整成本或 policy effect；offer/attestation 及 next-selection binding 的零调用 contract 不能替代这些门。已有的真实链只证明责任 gate 能阻止不合格更新。Goal 不降级，下一步先完成 Meta-Team-L2-public 的真实 profile generator/runner seam 和完整 cell manifest，再决定是否进入新的真实实验。
 
 ## 来源边界
 

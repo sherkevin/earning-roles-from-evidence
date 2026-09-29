@@ -13,6 +13,7 @@ from types import SimpleNamespace
 from peerrolebench_metateam_profile_sidecar import (
     MetaTeamProfile,
     MetaTeamAssignmentOffer,
+    bind_assignment_to_selection,
     PROFILE_SCHEMA,
     _digest,
     build_public_profile_fixture,
@@ -190,6 +191,12 @@ def run(out_dir: Path) -> dict:
         checks.append({"name": "assignment_offer_consumption_digest", "status": "PASS"})
     else:
         checks.append({"name": "assignment_offer_consumption_digest", "status": "FAIL"})
+    later_selection = SimpleNamespace(
+        candidates=(SimpleNamespace(key="agent-a@v1"), SimpleNamespace(key="agent-b@v1")),
+        task_index=3, selected_at=3.0,
+    )
+    bind_assignment_to_selection(offer, attestation, later_selection)
+    checks.append({"name": "assignment_attestation_binds_later_selection", "status": "PASS"})
     try:
         MetaTeamAssignmentOffer.build(
             offer_id="offer-too-early", task_id="PIPE3_stream_processing", decision_index=3,

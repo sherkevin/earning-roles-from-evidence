@@ -573,3 +573,22 @@ class MetaTeamAssignmentAttestation:
             "profile_ids": list(self.profile_ids), "decision_index": self.decision_index,
             "read_cut": self.read_cut, "policy_input_digest": self.policy_input_digest,
         }
+
+
+def bind_assignment_to_selection(
+    offer: MetaTeamAssignmentOffer,
+    attestation: MetaTeamAssignmentAttestation,
+    selection: Any,
+) -> None:
+    """Bind a profile offer/attestation to the next pre-execution selection."""
+    if attestation.offer_id != offer.offer_id or attestation.offer_digest != offer.offer_digest:
+        raise ValueError("assignment attestation is bound to a different offer")
+    if attestation.decision_index != offer.decision_index:
+        raise ValueError("assignment attestation decision index does not match offer")
+    if getattr(selection, "task_index", None) != offer.decision_index:
+        raise ValueError("selection is not the later assignment decision")
+    selected_menu = tuple(candidate.key for candidate in selection.candidates)
+    if selected_menu != offer.candidate_keys:
+        raise ValueError("selection candidate menu does not match assignment offer")
+    if getattr(selection, "selected_at", 0.0) < offer.read_cut:
+        raise ValueError("selection starts before the offer read cut")
