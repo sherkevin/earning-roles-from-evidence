@@ -1,0 +1,21 @@
+{
+  "experiment_id": "n03_policy_sidecar_stream_qualification_20260928",
+  "kind": "engineering_canonical_replay_qualification_not_scientific_benchmark",
+  "runtime": {
+    "started_at_utc": "2026-09-29T18:16:11.967133+00:00",
+    "python": "3.9.6",
+    "git_commit": "efbdaf4e06ee932bb4ea9f61e4b9ddb5f775d11e"
+  },
+  "protocol_fixture": "in_memory_complete_peer_role_ledger_v1",
+  "replay_order": "selections=canonical ledger index; feedback=(arrived_at, protocol_event_id)",
+  "cases": [
+    "canonical",
+    "feedback_permuted",
+    "duplicate_sidecar",
+    "truncated_ledger_unknown",
+    "wrong_producer"
+  ],
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false
+}

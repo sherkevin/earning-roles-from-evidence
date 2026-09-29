@@ -1,0 +1,206 @@
+{
+  "experiment_id": "n03_policy_sidecar_stream_qualification_20260928",
+  "passed": true,
+  "case_count": 5,
+  "cases": [
+    {
+      "case": "canonical",
+      "result": {
+        "status": "PASS",
+        "ledger_status": "PASS",
+        "sidecar_status": "PASS",
+        "update_allowed": true,
+        "update_count": 1,
+        "unknown_count": 1,
+        "duplicate_count": 0,
+        "ignored_channel_count": 0,
+        "pending_count": 0,
+        "manifest_root": "e69197dfc16044fedb6b32f382f2d7de69152d2b1a0fe1f9fc22eb6194f334e1",
+        "final_snapshot": {
+          "policy": "terminal_only",
+          "temperature": 1.0,
+          "exploration": 0.0,
+          "updates": 1,
+          "decision_count": 1,
+          "seen_feedback": [
+            "feedback-outcome-0"
+          ],
+          "seen_source_channels": [
+            [
+              "policy-selection-0",
+              "terminal_outcome"
+            ]
+          ],
+          "feedback_lineage": {
+            "feedback-outcome-0": [
+              "policy-selection-0",
+              "terminal_outcome"
+            ]
+          },
+          "decisions": {
+            "policy-selection-0": {
+              "context_key": "ctx",
+              "selector_id": "peer-a",
+              "candidate_keys": [
+                "peer-b@v1",
+                "peer-c@v1"
+              ],
+              "chosen_key": "peer-b@v1",
+              "base_scores": [
+                0.5,
+                0.5
+              ],
+              "probabilities": [
+                0.5,
+                0.5
+              ],
+              "propensity": 0.5,
+              "state_version": "state-0",
+              "encoder_version": "enc-0",
+              "feature_schema": "phi-0",
+              "selected_at": 10.0,
+              "captured_features": {}
+            }
+          },
+          "state": {
+            "prior": 1.0,
+            "counts": {
+              "peer-b@v1": [
+                2.0,
+                1.0
+              ]
+            }
+          }
+        }
+      },
+      "expectation_met": true
+    },
+    {
+      "case": "feedback_permuted",
+      "result": {
+        "status": "PASS",
+        "ledger_status": "PASS",
+        "sidecar_status": "PASS",
+        "update_allowed": true,
+        "update_count": 1,
+        "unknown_count": 1,
+        "duplicate_count": 0,
+        "ignored_channel_count": 0,
+        "pending_count": 0,
+        "manifest_root": "e69197dfc16044fedb6b32f382f2d7de69152d2b1a0fe1f9fc22eb6194f334e1",
+        "final_snapshot": {
+          "policy": "terminal_only",
+          "temperature": 1.0,
+          "exploration": 0.0,
+          "updates": 1,
+          "decision_count": 1,
+          "seen_feedback": [
+            "feedback-outcome-0"
+          ],
+          "seen_source_channels": [
+            [
+              "policy-selection-0",
+              "terminal_outcome"
+            ]
+          ],
+          "feedback_lineage": {
+            "feedback-outcome-0": [
+              "policy-selection-0",
+              "terminal_outcome"
+            ]
+          },
+          "decisions": {
+            "policy-selection-0": {
+              "context_key": "ctx",
+              "selector_id": "peer-a",
+              "candidate_keys": [
+                "peer-b@v1",
+                "peer-c@v1"
+              ],
+              "chosen_key": "peer-b@v1",
+              "base_scores": [
+                0.5,
+                0.5
+              ],
+              "probabilities": [
+                0.5,
+                0.5
+              ],
+              "propensity": 0.5,
+              "state_version": "state-0",
+              "encoder_version": "enc-0",
+              "feature_schema": "phi-0",
+              "selected_at": 10.0,
+              "captured_features": {}
+            }
+          },
+          "state": {
+            "prior": 1.0,
+            "counts": {
+              "peer-b@v1": [
+                2.0,
+                1.0
+              ]
+            }
+          }
+        }
+      },
+      "expectation_met": true
+    },
+    {
+      "case": "duplicate_sidecar",
+      "result": {
+        "status": "INVALID",
+        "ledger_status": "PASS",
+        "sidecar_status": "INVALID",
+        "update_allowed": false,
+        "update_count": 0,
+        "unknown_count": 0,
+        "duplicate_count": 0,
+        "pending_count": 0,
+        "error": "duplicate sidecar protocol event",
+        "final_snapshot": null
+      },
+      "expectation_met": true
+    },
+    {
+      "case": "truncated_ledger_unknown",
+      "result": {
+        "status": "UNKNOWN",
+        "ledger_status": "UNKNOWN",
+        "sidecar_status": "PASS",
+        "update_allowed": false,
+        "update_count": 0,
+        "unknown_count": 0,
+        "duplicate_count": 0,
+        "ignored_channel_count": 0,
+        "pending_count": 0,
+        "manifest_root": "70a2ea536de43823bd1da8578eaac02ca4cac1601af28173e09217a715234524",
+        "final_snapshot": null
+      },
+      "expectation_met": true
+    },
+    {
+      "case": "wrong_producer",
+      "result": {
+        "status": "INVALID",
+        "ledger_status": "PASS",
+        "sidecar_status": "INVALID",
+        "update_allowed": false,
+        "update_count": 0,
+        "unknown_count": 1,
+        "duplicate_count": 0,
+        "ignored_channel_count": 0,
+        "pending_count": 0,
+        "error": "feedback producer does not match selected candidate",
+        "manifest_root": "04cc524be56d606cd290f8e259ae5943e590bc095f8d2d3140402383be689584",
+        "final_snapshot": null
+      },
+      "expectation_met": true
+    }
+  ],
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "ended_at_utc": "2026-09-29T18:16:11.969706+00:00"
+}

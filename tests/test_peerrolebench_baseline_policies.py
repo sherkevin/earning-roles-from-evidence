@@ -171,3 +171,13 @@ def test_same_source_channel_is_not_counted_twice_but_judgment_and_terminal_are_
     assert policy.observe_feedback(Feedback("j1", "e0", "recipient_judgment", 0.0, 2.0)) is False
     assert policy.observe_feedback(Feedback("t0", "e0", "terminal_outcome", 0.0, 3.0)) is False
     assert policy.updates == 1
+
+
+def test_non_rare_comparators_treat_corrections_as_unknown_no_update():
+    policy = ContextualTrustPolicy()
+    choose(policy)
+    assert policy.observe_feedback(Feedback("f0", "e0", "recipient_judgment", 1.0, 1.0)) is True
+    assert policy.observe_feedback(Feedback(
+        "f0-correction", "e0", "recipient_judgment", 0.0, 2.0, supersedes="f0",
+    )) is False
+    assert policy.updates == 1

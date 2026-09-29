@@ -250,7 +250,12 @@ class BaselinePolicy(ABC):
         if feedback.disposition != "eligible" or feedback.provenance != "public":
             return False
         if feedback.supersedes is not None and not self._accepts_corrections:
-            raise ValueError("policy does not support feedback corrections")
+            # Comparator policies that do not model replacement semantics treat
+            # the correction as an observed but unusable event.  It must not
+            # invalidate the whole stream or become a second positive/negative
+            # label; RARE is the only current policy that applies it.
+            self._seen_feedback.add(feedback.feedback_id)
+            return False
         source_channel = (feedback.source_event_id, feedback.source)
         if source_channel in self._seen_source_channels and not (
             feedback.supersedes is not None and self._accepts_corrections

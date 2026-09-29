@@ -38,7 +38,7 @@ for fields that the upstream benchmark never measured.
 |---|---|---|---|
 | `uniform`, `no_update`, `terminal_only`, `contextual_trust` | lower bound, static prior, terminal signal, strongest same-info control | common policy factory and zero-call tests | versioned runner and root parity |
 | `raw_acceptance`, `pooled_controller` | raw-signal and shared-history controls | projection/replay seams and zero-call tests | real runner, public ownership parity, cost accounting |
-| `RARE` | responsibility-gated candidate | repaired CPU state and gate-identification diagnostics | selection adapter, independent producer label, closest parity |
+| `RARE` | responsibility-gated candidate | repaired CPU state, gate-identification diagnostics, and v5 shared selection/event-time adapter qualification | independent producer label, closest parity, complete live runner |
 | closest published adapter | external novelty control | candidate table only | faithful adapter, fixed version, information/cost map |
 
 No row is baseline-frozen until its runner, information, cost, state and

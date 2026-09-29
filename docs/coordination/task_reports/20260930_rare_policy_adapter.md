@@ -7,7 +7,7 @@ policy boundary and to the PIPE3 selection seam. It is an implementation gate,
 not a benchmark result, an efficacy result, or a method promotion.
 
 The qualification is versioned as
-`n03_rare_policy_adapter_20260930_v5`. The v1–v4 logs are preserved; v5
+`n03_rare_policy_adapter_20260930_v6`. The v1–v5 logs are preserved; v6
 records the final sidecar/projection source hashes after frozen-schedule replay
 and strict correction-lineage checks were tightened.
 
@@ -41,7 +41,7 @@ and strict correction-lineage checks were tightened.
 
 The zero-call qualification wrote:
 
-`experiments/logs/n03_rare_policy_adapter_20260930_v5/`
+`experiments/logs/n03_rare_policy_adapter_20260930_v6/`
 
 It records the configuration and source hashes before execution, direct RARE
 update/correction/restore traces, and a PIPE3 native/auxiliary manifest trace.
@@ -55,7 +55,7 @@ gate because historical fixture trees and optional external dependencies fail
 during collection; that limitation is not hidden by this task.
 
 The historical v2/v3 sidecar compatibility path was also re-run as
-`experiments/logs/n03_policy_sidecar_stream_qualification_20260930_v5/`; its
+`experiments/logs/n03_policy_sidecar_stream_qualification_20260930_v6/`; its
 five replay/mutation cases passed with zero API calls and zero GPU jobs.
 
 ## Interpretation and remaining gates

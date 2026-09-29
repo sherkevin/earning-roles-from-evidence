@@ -158,4 +158,6 @@ Goal 修改。
 - [done] 2026-09-30 benchmark 轨道确认与 active 计划升级 (task_reports/20260930_benchmark_track_confirmation.md)：
   用户确认 ArtifactRole 为论文主轨、PeerSelect 为机制副轨；新增 ADR 0042，active benchmark 计划升级为 v1.1，两个轨道不合并评分，正式 API/A800 仍受资格门约束。
 - [done] 2026-09-30 RARE selection adapter qualification (task_reports/20260930_rare_policy_adapter.md)：
-  候选 RARE 接入统一 selected-only policy 与 PIPE3 selection seam，补齐固定特征、encoder、UNKNOWN、correction lineage 和 event-time sidecar；v2 零调用资格与 77 项定向测试通过。只关闭接口工程子门，方法、benchmark 和科学效果仍未冻结。
+  候选 RARE 接入统一 selected-only policy 与 PIPE3 selection seam，补齐固定特征、encoder、UNKNOWN、correction lineage 和 event-time sidecar；v6 零调用资格与 79 项定向测试通过。只关闭接口工程子门，方法、benchmark 和科学效果仍未冻结。
+- [done] 2026-09-30 baseline parity audit (task_reports/20260930_baseline_parity_audit.md)：
+  七个 arm 可构造但尚未形成公平 benchmark；统一 root runner、全局 event-time、UNKNOWN 分母、完整成本、later assignment 和 closest published adapter 仍开放，RARE/contextual 不能暂称同信息强基线。
