@@ -27,7 +27,7 @@ from typing import Any, Mapping, Sequence
 import numpy as np
 
 
-FEEDBACK_SOURCES = frozenset({"recipient_judgment", "terminal_outcome"})
+FEEDBACK_SOURCES = frozenset({"raw_acceptance", "recipient_judgment", "terminal_outcome"})
 FEEDBACK_ACTIONS = frozenset({"none", "accept", "rework", "reject", "use", "repair", "redo"})
 
 
@@ -407,6 +407,40 @@ class TerminalOnlyPolicy(_BetaTrustPolicy):
         return self._update_key(selection.chosen.key, feedback.label)
 
 
+class RawAcceptancePolicy(_BetaTrustPolicy):
+    """Contextual trust on raw recipient accept/reject labels.
+
+    This is intentionally separate from :class:`ContextualTrustPolicy`.  The
+    context and candidate key are held constant so the comparison can isolate
+    the responsibility-aware projection: raw acceptance may be public even
+    when producer attribution is not eligible.  The runner must create the
+    ``raw_acceptance`` source only from selected-only recipient accept/reject
+    actions; this policy never reads private scorer fields.
+    """
+
+    name = "raw_acceptance"
+    accepted_sources = frozenset({"raw_acceptance"})
+
+    @staticmethod
+    def _key(selection: Selection, candidate: CandidateRef) -> str:
+        return f"{selection.context_key}\x1f{candidate.key}"
+
+    def _scores(self, selection: Selection, base_scores: np.ndarray) -> np.ndarray:
+        return base_scores + self.trust_scale * np.asarray(
+            [self._posterior_mean(self._key(selection, candidate)) - 0.5
+             for candidate in selection.candidates],
+            dtype=np.float64,
+        )
+
+    def _apply_feedback(self, selection: Selection, feedback: Feedback) -> bool:
+        # A raw acceptance channel is narrower than a general recipient
+        # judgment.  Malformed actions are ignored rather than converted into
+        # a negative label; the runner should classify them as UNKNOWN.
+        if feedback.action not in {"accept", "reject"}:
+            return False
+        return self._update_key(self._key(selection, selection.chosen), feedback.label)
+
+
 class ContextualTrustPolicy(_BetaTrustPolicy):
     """Same-information trust control keyed by candidate and public context."""
 
@@ -427,14 +461,41 @@ class ContextualTrustPolicy(_BetaTrustPolicy):
         return self._update_key(self._key(selection, selection.chosen), feedback.label)
 
 
+class PooledControllerPolicy(_BetaTrustPolicy):
+    """Shared candidate history without context or selector partitioning."""
+
+    name = "pooled_controller"
+    accepted_sources = frozenset({"recipient_judgment"})
+
+    @staticmethod
+    def _key(selection: Selection, candidate: CandidateRef) -> str:
+        return candidate.key
+
+    def _scores(self, selection: Selection, base_scores: np.ndarray) -> np.ndarray:
+        return base_scores + self.trust_scale * np.asarray(
+            [self._posterior_mean(self._key(selection, candidate)) - 0.5
+             for candidate in selection.candidates],
+            dtype=np.float64,
+        )
+
+    def _apply_feedback(self, selection: Selection, feedback: Feedback) -> bool:
+        return self._update_key(self._key(selection, selection.chosen), feedback.label)
+
+
 def policy_from_name(name: str, *, temperature: float = 1.0) -> BaselinePolicy:
-    """Construct one of the four implementation-only baseline policies."""
+    """Construct one of the six currently implemented policy comparators.
+
+    RARE is intentionally absent: its candidate updater still lacks the
+    selection-boundary adapter required by the shared runner.
+    """
 
     policies = {
         "uniform": UniformPolicy,
         "no_update": NoUpdatePolicy,
+        "raw_acceptance": RawAcceptancePolicy,
         "terminal_only": TerminalOnlyPolicy,
         "contextual_trust": ContextualTrustPolicy,
+        "pooled_controller": PooledControllerPolicy,
     }
     try:
         return policies[name](temperature=temperature)
@@ -448,6 +509,8 @@ __all__ = [
     "ContextualTrustPolicy",
     "Feedback",
     "NoUpdatePolicy",
+    "PooledControllerPolicy",
+    "RawAcceptancePolicy",
     "Selection",
     "TerminalOnlyPolicy",
     "UniformPolicy",

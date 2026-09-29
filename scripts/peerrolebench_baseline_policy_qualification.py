@@ -1,4 +1,4 @@
-"""Zero-LLM contract qualification for the first four baseline policies.
+"""Zero-LLM contract qualification for the executable baseline comparators.
 
 The run is an engineering matrix, not a benchmark sample.  It executes the
 same decision/feedback schedule for each policy and writes config, raw JSONL,
@@ -20,7 +20,10 @@ import numpy as np
 from peerrolebench_baseline_policies import CandidateRef, Feedback, policy_from_name
 
 
-POLICIES = ("uniform", "no_update", "terminal_only", "contextual_trust")
+POLICIES = (
+    "uniform", "no_update", "raw_acceptance", "terminal_only",
+    "contextual_trust", "pooled_controller",
+)
 
 
 def _git_commit() -> str:
@@ -34,7 +37,7 @@ def run(out_dir: Path, seed: int = 20260928) -> dict:
     out_dir.mkdir(parents=True, exist_ok=True)
     started = datetime.now(timezone.utc).isoformat()
     config = {
-        "experiment_id": "n03_baseline_policy_contract_20260928",
+        "experiment_id": "n03_baseline_policy_contract_20260929_v4",
         "kind": "engineering_qualification_not_scientific_benchmark",
         "policies": list(POLICIES),
         "seed": seed,
@@ -42,11 +45,12 @@ def run(out_dir: Path, seed: int = 20260928) -> dict:
         "candidate_versions": ["v1", "v1"],
         "base_scores": [0.2, 0.8],
         "feedback_schedule": [
-            {"id": "j0", "source": "recipient_judgment", "label": 1.0, "disposition": "eligible", "provenance": "public"},
-            {"id": "t0", "source": "terminal_outcome", "label": 0.0, "disposition": "eligible", "provenance": "public"},
-            {"id": "pending", "source": "recipient_judgment", "label": 1.0, "disposition": "pending", "provenance": "public"},
-            {"id": "illegal", "source": "recipient_judgment", "label": 1.0, "disposition": "eligible", "provenance": "unknown"},
-            {"id": "j0", "source": "recipient_judgment", "label": 1.0, "disposition": "eligible", "provenance": "public"},
+            {"id": "j0", "source": "recipient_judgment", "label": 1.0, "action": "accept", "disposition": "eligible", "provenance": "public"},
+            {"id": "raw0", "source": "raw_acceptance", "label": 1.0, "action": "accept", "disposition": "eligible", "provenance": "public"},
+            {"id": "t0", "source": "terminal_outcome", "label": 0.0, "action": "use", "disposition": "eligible", "provenance": "public"},
+            {"id": "pending", "source": "recipient_judgment", "label": 1.0, "action": "accept", "disposition": "pending", "provenance": "public"},
+            {"id": "illegal", "source": "recipient_judgment", "label": 1.0, "action": "accept", "disposition": "eligible", "provenance": "unknown"},
+            {"id": "j0", "source": "recipient_judgment", "label": 1.0, "action": "accept", "disposition": "eligible", "provenance": "public"},
         ],
         "runtime": {
             "started_at_utc": started,
@@ -80,7 +84,8 @@ def run(out_dir: Path, seed: int = 20260928) -> dict:
             for item in config["feedback_schedule"]:
                 feedback = Feedback(
                     item["id"], "e0", item["source"], item["label"],
-                    float(len(rows) + 1), disposition=item["disposition"], provenance=item["provenance"],
+                    float(len(rows) + 1), action=item.get("action", "none"),
+                    disposition=item["disposition"], provenance=item["provenance"],
                 )
                 changed = policy.observe_feedback(feedback)
                 row = {"event_type": "feedback", "policy": policy_name,
@@ -111,10 +116,26 @@ def run(out_dir: Path, seed: int = 20260928) -> dict:
                 ),
                 "duplicate_feedback_id_deduplicated": True,
                 "unknown_pending_illegal_do_not_update": True,
+                "expected_updates": {
+                    "uniform": 0,
+                    "no_update": 0,
+                    "raw_acceptance": 1,
+                    "terminal_only": 1,
+                    "contextual_trust": 1,
+                    "pooled_controller": 1,
+                }[policy_name],
+                "update_count_matches_contract": policy.updates == {
+                    "uniform": 0,
+                    "no_update": 0,
+                    "raw_acceptance": 1,
+                    "terminal_only": 1,
+                    "contextual_trust": 1,
+                    "pooled_controller": 1,
+                }[policy_name],
             }
     result = {
         "experiment_id": config["experiment_id"],
-        "passed": True,
+        "passed": all(item["update_count_matches_contract"] for item in summary.values()),
         "scientific_claim_allowed": False,
         "real_api_calls": 0,
         "gpu_jobs": 0,

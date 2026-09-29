@@ -12,6 +12,8 @@ from peerrolebench_baseline_policies import (  # noqa: E402
     ContextualTrustPolicy,
     Feedback,
     NoUpdatePolicy,
+    PooledControllerPolicy,
+    RawAcceptancePolicy,
     TerminalOnlyPolicy,
     UniformPolicy,
     policy_from_name,
@@ -84,6 +86,36 @@ def test_terminal_only_ignores_judgment_and_contextual_trust_ignores_terminal():
     # Evidence from ctx-a does not alter the posterior for the same candidate in ctx-b.
     ctx_b = choose(contextual, event_id="e1", context_key="ctx-b", seed=9)
     assert ctx_b.probabilities[1] < 0.95
+
+
+def test_raw_acceptance_uses_separate_public_channel_and_accept_reject_actions():
+    raw = RawAcceptancePolicy()
+    choose(raw)
+    choose(raw, event_id="e1")
+    assert raw.observe_feedback(
+        Feedback("judgment", "e0", "recipient_judgment", 1.0, 1.0, action="accept")
+    ) is False
+    assert raw.observe_feedback(
+        Feedback("wrong-action", "e1", "raw_acceptance", 1.0, 2.0, action="use")
+    ) is False
+    assert raw.observe_feedback(
+        Feedback("accept", "e0", "raw_acceptance", 1.0, 3.0, action="accept")
+    ) is True
+    assert raw.updates == 1
+
+
+def test_pooled_controller_transfers_public_judgment_across_contexts():
+    pooled = PooledControllerPolicy()
+    first = choose(pooled, context_key="ctx-a", seed=3, base=(0.5, 0.5))
+    assert pooled.observe_feedback(
+        Feedback("j0", first.event_id, "recipient_judgment", 1.0, 1.0, action="accept")
+    ) is True
+    second = choose(pooled, event_id="e1", context_key="ctx-b", seed=9, base=(0.5, 0.5))
+    chosen_index = next(index for index, candidate in enumerate(second.candidates)
+                        if candidate.key == first.chosen.key)
+    assert second.probabilities[chosen_index] > 0.5
+    restored = PooledControllerPolicy.restore(pooled.snapshot())
+    assert restored.snapshot()["state"] == pooled.snapshot()["state"]
 
 
 def test_unknown_or_illegal_feedback_cannot_update_and_duplicate_is_idempotent():

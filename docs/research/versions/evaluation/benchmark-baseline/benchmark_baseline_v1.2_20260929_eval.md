@@ -71,7 +71,7 @@ RLS、online logistic/SGD、periodic refit 和其他 updater 是训练更新 com
 
 ### B3. Baseline 冻结判定
 
-在 `raw_acceptance`、strong same-information contextual trust、closest published adapter、RARE 和统一 runner 全部通过 executable qualification 前，baseline 状态为 `NOT_FROZEN`，不得启动正式效果流或 A800。当前实现审计显示 raw/pooled/RARE/logistic/refit 尚未形成统一可运行比较；此项当前不通过。
+在 `raw_acceptance`、strong same-information contextual trust、closest published adapter、RARE 和统一 runner 全部通过 executable qualification 前，baseline 状态为 `NOT_FROZEN`，不得启动正式效果流或 A800。2026-09-29 的离线 adapter qualification 已使 `raw_acceptance` 与 `pooled_controller` 可由统一 factory 构造，但 raw public projection、RARE selection adapter、closest published adapter 和 root runner parity 仍未完成；此项仍不通过。见 [`20260929_baseline_policy_adapter_contract.md`](../../../../coordination/task_reports/20260929_baseline_policy_adapter_contract.md)。
 
 ## C. 实验矩阵硬门：从名单变成可执行设计
 
@@ -125,7 +125,7 @@ RLS、online logistic/SGD、periodic refit 和其他 updater 是训练更新 com
 - 任务泄漏、root 非独立、隔离失败、baseline 不公平、UNKNOWN 被当负例、没有独立 confirmation、没有失败分母、没有完整成本或结果看后改变标准时，不得写主结果。
 - `RARE` 未超过 strong contextual trust，或未达到质量—成本/实时性/稳定性门槛时，停止 A800 和更大规模 API，保留失败证据。
 
-**本次审计结论（2026-09-29）**：benchmark 选型、baseline 实现与 parity、实验 cell freeze、closest published adapter、数值精度门和科学结果均为 `NOT_READY`/`OPEN`。已有的 v6 PIPE3 真实链只证明责任 gate 能阻止不合格更新；它没有 later assignment、独立 root/stream、baseline 比较或 policy effect。Goal 不降级，下一步先完成唯一 primary track、benchmark authority/root 选择评分卡、baseline executable/parity 和完整 cell manifest，再决定是否进入新的真实实验。
+**本次审计结论（2026-09-29）**：benchmark 选型、baseline root-runner parity、实验 cell freeze、closest published adapter、数值精度门和科学结果均为 `NOT_READY`/`OPEN`。六个 comparator 已通过零调用接口 qualification，但 RARE 仍缺 selection adapter，raw channel 仍缺独立 projection，且没有 PIPE3 统一 runner、later assignment、独立 root/stream 或 policy effect。已有的 v6 PIPE3 真实链只证明责任 gate 能阻止不合格更新。Goal 不降级，下一步先完成唯一 primary track、benchmark authority/root 选择评分卡、raw/RARE runner parity 和完整 cell manifest，再决定是否进入新的真实实验。
 
 ## 来源边界
 
