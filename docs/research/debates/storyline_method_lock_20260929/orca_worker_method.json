@@ -1,0 +1,75 @@
+{
+  "id": "c693b1fb-2dde-445e-af90-ed54659a7d57",
+  "ok": true,
+  "result": {
+    "runId": "run_dc94677d093d",
+    "taskId": "task_b43416fd0b78",
+    "dispatchId": "ctx_53d16f97208a",
+    "state": "failed",
+    "stage": "agent_readiness",
+    "failedStage": "agent_readiness",
+    "lastError": "timeout",
+    "setup": {
+      "requested": "not_applicable",
+      "effective": "not_applicable",
+      "source": "existing_worktree",
+      "hookFound": false,
+      "startupPolicy": "start-immediately",
+      "state": "not_applicable"
+    },
+    "launch": {
+      "requested": {
+        "agent": "zcode",
+        "model": null,
+        "effort": null
+      },
+      "effective": {
+        "agent": "zcode",
+        "model": null,
+        "effort": null
+      }
+    },
+    "mode": {
+      "mode": "terminal",
+      "preferred": "terminal",
+      "reason": "user_default",
+      "detail": "Started a terminal agent worker, the default for new agent tabs in your settings."
+    },
+    "effects": [
+      {
+        "kind": "worktree",
+        "action": "reused",
+        "id": "05889551-a26f-40d7-ab3c-f621de85bd33::/Users/jingwu/work/earning-roles"
+      },
+      {
+        "kind": "setup",
+        "action": "not_applicable",
+        "state": "not_applicable"
+      },
+      {
+        "kind": "terminal",
+        "role": "agent",
+        "action": "created",
+        "id": "term_5d4ea226-b85f-4480-beb3-9bc7d57e297c",
+        "surface": "visible"
+      }
+    ],
+    "residualResources": [
+      {
+        "kind": "terminal",
+        "role": "agent",
+        "action": "created",
+        "id": "term_5d4ea226-b85f-4480-beb3-9bc7d57e297c",
+        "surface": "visible"
+      }
+    ],
+    "recovery": "This start created a terminal that never ran the Task. Close it with: orca orchestration worker-release --dispatch ctx_53d16f97208a",
+    "mutation": {
+      "requestId": "ed183030-2890-4277-8490-4b7a917f2281",
+      "replayed": false
+    }
+  },
+  "_meta": {
+    "runtimeId": "729b1788-f3e5-47b1-81ad-e2d560001afa"
+  }
+}
