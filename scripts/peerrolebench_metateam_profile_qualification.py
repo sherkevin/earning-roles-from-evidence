@@ -15,6 +15,7 @@ from peerrolebench_metateam_profile_sidecar import (
     PROFILE_SCHEMA,
     _digest,
     build_public_profile_fixture,
+    replay_public_profile_fixture,
     reject_private_public_input,
 )
 
@@ -169,6 +170,14 @@ def run(out_dir: Path) -> dict:
         checks.append({"name": "builder_binds_complete_public_source_digest", "status": "PASS"})
     else:
         checks.append({"name": "builder_binds_complete_public_source_digest", "status": "FAIL"})
+    replayed = replay_public_profile_fixture(
+        built, selection=selection, feedback_sidecar=feedback_sidecar,
+        public_projection=public_projection,
+    )
+    if replayed.profile_digest == built.profile_digest:
+        checks.append({"name": "builder_replay_preserves_profile_digest", "status": "PASS"})
+    else:
+        checks.append({"name": "builder_replay_preserves_profile_digest", "status": "FAIL"})
     try:
         build_public_profile_fixture(
             selection=selection, feedback_sidecar=feedback_sidecar,

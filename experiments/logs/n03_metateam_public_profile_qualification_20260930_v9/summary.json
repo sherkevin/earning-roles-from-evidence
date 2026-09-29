@@ -1,0 +1,71 @@
+{
+  "qualification": "metateam-l2-public-profile-boundary-v1",
+  "status": "QUALIFIED_OFFLINE",
+  "checks": [
+    {
+      "name": "valid_public_profile_and_later_consumption",
+      "status": "PASS"
+    },
+    {
+      "name": "reject_profile_before_arrival",
+      "status": "PASS",
+      "error": "profile cannot be available before its source arrival"
+    },
+    {
+      "name": "unknown_does_not_create_profile",
+      "status": "PASS",
+      "error": "profile may only be built from eligible public feedback"
+    },
+    {
+      "name": "reject_same_decision_assignment",
+      "status": "PASS",
+      "error": "profile consumption must target a later decision"
+    },
+    {
+      "name": "reject_pre_watermark_consumption",
+      "status": "PASS",
+      "error": "profile is not visible at this read cut"
+    },
+    {
+      "name": "late_correction_preserves_lineage",
+      "status": "PASS"
+    },
+    {
+      "name": "reject_hidden_trajectory_input",
+      "status": "PASS",
+      "error": "public Meta-Team adapter input contains forbidden fields: ['trajectory']"
+    },
+    {
+      "name": "profile_digest_detects_posthoc_mutation",
+      "status": "PASS"
+    },
+    {
+      "name": "builder_binds_complete_public_source_digest",
+      "status": "PASS"
+    },
+    {
+      "name": "builder_replay_preserves_profile_digest",
+      "status": "PASS"
+    },
+    {
+      "name": "builder_rejects_terminal_projection",
+      "status": "PASS",
+      "error": "Meta-Team-L2-public profile requires recipient judgment"
+    }
+  ],
+  "script": "/Users/jingwu/work/earning-roles/scripts/peerrolebench_metateam_profile_qualification.py",
+  "script_sha256": "1bf748ea1e32e657df50ec7fdbb342951d8f74743aee56818ec4389ae318ec9c",
+  "schema_script_sha256": "4674b92d6df0d1f286a02c5aab70024740c43dae408b37646d13a0bb79f59fec",
+  "python": "3.9.6",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "argv": [
+    "scripts/peerrolebench_metateam_profile_qualification.py",
+    "--out-dir",
+    "experiments/logs/n03_metateam_public_profile_qualification_20260930_v9"
+  ],
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "profile_schema": "metateam-profile-v1",
+  "adapter_status": "NOT_IMPLEMENTED / QUALIFICATION_REQUIRED"
+}

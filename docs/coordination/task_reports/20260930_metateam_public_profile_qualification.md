@@ -2,7 +2,7 @@
 
 ## 结论
 
-完成了 `MetaTeam-L2-public` 的零调用 schema/信息边界和 fixture-builder qualification，状态为
+完成了 `MetaTeam-L2-public` 的零调用 schema/信息边界、fixture-builder 和 source replay qualification，状态为
 `QUALIFIED_OFFLINE`；这只证明一个可审计的 adapter 输入/输出合同，**不等于 Meta-Team
 已实现、没有调用 LLM、没有 benchmark effect，也没有 baseline freeze**。
 
@@ -22,6 +22,8 @@ event、source arrival index、profile availability watermark、parser/model con
 - `build_public_profile_fixture(...)` 已将 typed selection、recipient-judgment public
   projection、selected candidate 和完整 source-input digest 接在同一边界上；它只接收调用者
   提供的定性 profile，不运行摘要模型，因此仍不是 live builder。
+- `replay_public_profile_fixture(...)` 会从同一组 typed sidecars 重建 profile，并拒绝 selected
+  candidate 或公开 payload 改变；这仍是 source-binding replay，不是隔离进程的 policy-read trace。
 - 三层设计仍保留：`original_info` 只做宽信息诊断，`public` 才可能进入同信息主比较，
   `ablation_profile_only` 用于去掉 L3/team-structure 影响；本次只验证三层共用的 profile
   record 合同，没有执行任何一层的生成模型。
@@ -61,6 +63,9 @@ event、source arrival index、profile availability watermark、parser/model con
 - v8 修正回执脚本后，最终 10 格 qualification、定向 **11 passed**、完整 47 个测试文件共
   **276 passed**；回执在
   [`experiments/logs/n03_metateam_public_profile_qualification_20260930_v8/`](../../../experiments/logs/n03_metateam_public_profile_qualification_20260930_v8/)。
+- v9 加入 source-binding replay 正向检查后，最终 **11 格 qualification**、定向 **12 passed**、
+  完整 47 个测试文件共 **277 passed**；回执在
+  [`experiments/logs/n03_metateam_public_profile_qualification_20260930_v9/`](../../../experiments/logs/n03_metateam_public_profile_qualification_20260930_v9/)。
 
 ## 仍未关闭的科学闸门
 
@@ -70,7 +75,7 @@ producer/recipient/judge/scorer/repair/replay cost 或 Meta-Team 原论文结果
 在本任务只作为公共输入绑定占位，尚未由真实 runner 生成并 replay；因此不能把这次 fixture
 qualification 写成“Meta-Team baseline 已实现”。
 
-下一小任务是把该 builder 接到 PIPE3 public sidecar 的零调用 replay seam，先验证真实
+下一小任务是把该 replay 接到 PIPE3 public sidecar 的零调用 runner seam，先验证真实
 `source_input_digest`、selected-only lineage 和 assignment offer 的同一 record hash；若无法
 在不读取 hidden terminal/trajectory 的情况下生成 profile，`MetaTeam-L2-public` 保持 `NO-GO`，
 不启动正式 API 或 A800。

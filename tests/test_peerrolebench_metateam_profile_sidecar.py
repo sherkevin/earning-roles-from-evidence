@@ -10,6 +10,7 @@ from scripts.peerrolebench_metateam_profile_sidecar import (
     PROFILE_SCHEMA,
     _digest,
     build_public_profile_fixture,
+    replay_public_profile_fixture,
     reject_private_public_input,
 )
 from scripts.peerrolebench_baseline_policies import CandidateRef
@@ -202,4 +203,24 @@ def test_fixture_builder_rejects_availability_before_arrival():
             public_projection=projection(), profile_id="p", profile_revision=1,
             profile=make_profile().profile, parser_version="p",
             model_config_digest=h("model-config"), available_index=4,
+        )
+
+
+def test_fixture_profile_replay_binds_source_and_digest():
+    selection = decision_sidecar()
+    feedback = feedback_sidecar()
+    source = projection()
+    profile = build_public_profile_fixture(
+        selection=selection, feedback_sidecar=feedback, public_projection=source,
+        profile_id="p-replay", profile_revision=1, profile=make_profile().profile,
+        parser_version="fixture-parser-v1", model_config_digest=h("model-config"),
+    )
+    replayed = replay_public_profile_fixture(
+        profile, selection=selection, feedback_sidecar=feedback, public_projection=source,
+    )
+    assert replayed.profile_digest == profile.profile_digest
+    with pytest.raises(ValueError, match="selected candidate"):
+        replay_public_profile_fixture(
+            profile, selection=selection, feedback_sidecar=feedback,
+            public_projection=projection(candidate_key="peer-a@v1"),
         )

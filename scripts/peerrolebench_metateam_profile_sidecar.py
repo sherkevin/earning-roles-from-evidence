@@ -394,3 +394,30 @@ def build_public_profile_fixture(
         profile=profile,
         supersedes_profile_id=supersedes_profile_id,
     )
+
+
+def replay_public_profile_fixture(
+    profile: MetaTeamProfile,
+    *,
+    selection: Any,
+    feedback_sidecar: Any,
+    public_projection: Any,
+) -> MetaTeamProfile:
+    """Reconstruct and verify a public profile from its source sidecars.
+
+    The replay deliberately reuses the recorded profile payload and versioned
+    parser/model digests.  It does not call a summarizer.  A future live
+    runner must run this check after replacing the fixture profile with a
+    metered public-only generator.
+    """
+    replayed = build_public_profile_fixture(
+        selection=selection, feedback_sidecar=feedback_sidecar,
+        public_projection=public_projection, profile_id=profile.profile_id,
+        profile_revision=profile.profile_revision, profile=profile.profile,
+        parser_version=profile.parser_version, model_config_digest=profile.model_config_digest,
+        available_index=profile.available_index,
+        supersedes_profile_id=profile.supersedes_profile_id,
+    )
+    if replayed.profile_digest != profile.profile_digest:
+        raise ValueError("profile replay digest does not match sealed profile")
+    return replayed
