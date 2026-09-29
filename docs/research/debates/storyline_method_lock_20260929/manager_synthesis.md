@@ -67,6 +67,8 @@ Freeze one candidate instance with:
 
 RARE, RLS, online SGD and periodic refit remain candidates/comparators until this card is reviewed. The historical RARE-Anchor algebra concern is candidate-only and must first receive a zero-call unit test.
 
+That zero-call audit has now been run: consolidation can erase the just-learned preference (`θ: 0.5 → 0.0` in the one-dimensional case), and 300 late corrections create a queue of length 300 despite the declared bounded-state form. The candidate is blocked pending design repair; this does not change active method v1.0 or the Goal.
+
 ### Gate C — causal measurement card
 
 Publish a field-arrival table and independent denominators for `gate-only`, `judgment-only`, `gate+judgment`, `contract-only`, recipient integration and later outcome. Add judge reliability/shared-model sensitivity and selected-only propensity handling. No gate may read the target it is later used to predict without an independent holdout target.
