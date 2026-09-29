@@ -1,7 +1,7 @@
 # AAMAS 高水平摘要风格审查与当前摘要修订依据
 
 - 日期：2026-09-29
-- 状态：`SUPPORTING_AUDIT`
+- 状态：`SUPPORTING_AUDIT_UPDATED_OFFICIAL_ABSTRACT`
 - 用途：为当前 proposal/pre-results 摘要提供证据化的结构、语气和 claim 边界；不改变 Goal、故事线、方法或 benchmark 选择。
 - 研究对象：当前生效的 `article/aamas2027/research_proposal.tex` 与 `article/aamas2027/mainline_pre_results.tex`。
 
@@ -129,4 +129,18 @@ These results establish [严格范围内的系统性质], rather than [未测量
 
 ## 6. 结论与后续动作
 
-当前摘要的下一步不是继续增加术语，而是使用上述结构重写两个内部摘要，并在编译后检查标题、摘要、正文的 claim 一致性。提交版摘要暂不冻结；它必须等待 benchmark、baseline 和 H1/H2/H3 结果门通过。
+摘要层面的下一步不是继续增加术语，而是保持中心机制和证据边界一致。提交版摘要可以先使用研究设计层面的陈述；最终完整论文若获得结果，必须用主指标、区间和成本结果替换设计性句子，不能补写未经实验支持的效果。
+
+## 7. 官方摘要版修订（2026-09-29）
+
+根据作者对内部过程语句的纠正，当前两个 LaTeX 源的摘要已统一为可直接提交的 180 词研究摘要。摘要中删除了 `internal`、`pre-results`、`current traces`、`no efficacy` 等过程性表述，保留以下可证实的研究设计陈述：
+
+```text
+问题：具体交付是否真正帮助了使用它的 recipient；
+机制：recipient 的 situated judgment 经责任检查后成为 producer 的 role evidence；
+闭环：延迟证据在下一次执行前影响 future assignment，并可被后续独立结果修正；
+验证：held-out task roots、独立检查、selected-only feedback 和 matched cost/baselines；
+在线性质：测量 drift adaptation、update latency 与旧能力 retention。
+```
+
+这版摘要没有虚构 headline result，也没有把未完成的实验写成正面效果；它直接描述待提交论文的研究对象、方法和验证设计。正式结果提交时，只需将评价设计句替换为与冻结实验矩阵逐字对应的 effect size、uncertainty 和成本结果。

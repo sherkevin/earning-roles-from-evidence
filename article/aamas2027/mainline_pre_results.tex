@@ -17,21 +17,23 @@
 
 \begin{abstract}
 Multi-agent teams must assign responsibility before a dependent task is executed,
-yet global scores and terminal rewards cannot tell whether a particular delivery
-helped the agent that used it. We ask whether a recipient's situated judgment of
-a concrete delivery can become attributable evidence for the producer's future
-responsibilities. We specify a protocol that binds each judgment to a versioned
-artifact, recipient action, producer contract, and delayed independent outcome,
-and updates evidence only when producer responsibility is identifiable. We test
-whether this evidence transfers to a later assignment made before execution,
-including by a collaborator who did not issue the original judgment. The
-evaluation uses genuine producer--recipient dependencies, selected-only
-feedback, held-out task roots, independent checks, and matched information and
-full cost against raw acceptance, contextual trust or bandit selection,
-terminal-only feedback, and pooled-history control. This internal pre-results manuscript
-reports protocol qualification and scorer/attribution failures from real API
-traces; it does not claim role-learning efficacy, specialization, or
-real-time-training gains.
+yet static roles, aggregate reputation, and terminal rewards do not record whether
+a particular delivery helped the agent that used it. We introduce Earning Roles, a
+framework in which a recipient's situated judgment---grounded in its use,
+modification, rejection, or responsibility-checked repair of a versioned
+delivery---becomes attributable evidence for the producer's future
+responsibilities. Evidence arrives after execution and may be revised by later
+independent outcomes; a subsequent owner can therefore use the evolving role state
+before choosing a peer. We formalize this process under selected-only feedback,
+delayed updates, local candidate sets, and explicit producer, recipient, and
+downstream responsibility boundaries. We evaluate whether the resulting assignments
+improve unseen-task quality and complete collaboration cost, using genuine
+producer--recipient dependencies, held-out task roots, independent checks, and
+matched model, information, exploration, and communication budgets. Comparisons
+with raw acceptance, contextual trust and bandit selection, terminal-only feedback,
+and pooled-history control isolate the value of attributable situated judgment. The
+framework is designed to support online updates while measuring adaptation to drift,
+update latency, and retention of prior competence.
 \end{abstract}
 
 \begin{document}
