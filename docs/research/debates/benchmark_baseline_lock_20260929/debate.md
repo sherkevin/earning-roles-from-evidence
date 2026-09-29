@@ -1,8 +1,8 @@
-# Debate ledger — pending Round 0
+# Debate ledger — Round 0 in progress
 
 ## Status
 
-`OPEN — no scientific decision yet`
+`OPEN — two independent reports received; no scientific decision yet`
 
 This ledger is intentionally not a consensus report. The first Orca run was created as
 `run_e313af962946`. Two read-only Codex dispatches were accepted by the terminal but remained
@@ -18,6 +18,11 @@ no agent turn start was observed. A requested Claude dispatch was rejected as
 - feasibility and runner/cost contract;
 - devil's advocate;
 - theory–experiment prediction audit.
+
+The Orca dispatches have no usable worker conclusions. Two local read-only reports are stored in
+`round0_devils_advocate.md` and `round0_methods_auditor.md`; they are independent reports, not a
+synthesis. The feasibility role remains pending, and its absence must not be interpreted as
+agreement.
 
 Each role must work from the charter without seeing another role's answer. The coordinator must
 store the raw report, verify its source/paths, and then open Round 1 challenges. Until that happens,
