@@ -12,6 +12,7 @@ from types import SimpleNamespace
 
 from peerrolebench_metateam_profile_sidecar import (
     MetaTeamProfile,
+    MetaTeamAssignmentOffer,
     PROFILE_SCHEMA,
     _digest,
     build_public_profile_fixture,
@@ -178,6 +179,26 @@ def run(out_dir: Path) -> dict:
         checks.append({"name": "builder_replay_preserves_profile_digest", "status": "PASS"})
     else:
         checks.append({"name": "builder_replay_preserves_profile_digest", "status": "FAIL"})
+    offer = MetaTeamAssignmentOffer.build(
+        offer_id="offer-0", task_id="PIPE3_stream_processing", decision_index=3,
+        read_cut=2, candidate_keys=("agent-a@v1", "agent-b@v1"), profiles=(built,),
+    )
+    attestation = offer.attest_consumption((built.profile_id,))
+    if attestation.policy_input_digest == attestation.expected_input_digest(
+        offer.offer_digest, (built.profile_id,), 2
+    ):
+        checks.append({"name": "assignment_offer_consumption_digest", "status": "PASS"})
+    else:
+        checks.append({"name": "assignment_offer_consumption_digest", "status": "FAIL"})
+    try:
+        MetaTeamAssignmentOffer.build(
+            offer_id="offer-too-early", task_id="PIPE3_stream_processing", decision_index=3,
+            read_cut=1, candidate_keys=("agent-a@v1", "agent-b@v1"), profiles=(built,),
+        )
+    except ValueError as exc:
+        checks.append({"name": "assignment_offer_rejects_pre_watermark_profile", "status": "PASS", "error": str(exc)})
+    else:
+        checks.append({"name": "assignment_offer_rejects_pre_watermark_profile", "status": "FAIL"})
     try:
         build_public_profile_fixture(
             selection=selection, feedback_sidecar=feedback_sidecar,

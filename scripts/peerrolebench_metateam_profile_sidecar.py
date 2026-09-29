@@ -421,3 +421,155 @@ def replay_public_profile_fixture(
     if replayed.profile_digest != profile.profile_digest:
         raise ValueError("profile replay digest does not match sealed profile")
     return replayed
+
+
+@dataclass(frozen=True)
+class MetaTeamAssignmentOffer:
+    """Public candidate/profile bundle available before a later assignment."""
+
+    offer_id: str
+    task_id: str
+    decision_index: int
+    read_cut: int
+    candidate_keys: tuple[str, ...]
+    profiles: tuple[MetaTeamProfile, ...]
+    offer_digest: str
+    watermark_schema: str = "global-event-index-v1"
+
+    def __post_init__(self) -> None:
+        if not self.offer_id or not self.task_id:
+            raise ValueError("assignment offer identity is required")
+        _nonnegative_int(self.decision_index, "decision_index")
+        _nonnegative_int(self.read_cut, "read_cut")
+        if self.read_cut > self.decision_index:
+            raise ValueError("assignment offer read cut is after the decision")
+        if not self.candidate_keys or len(set(self.candidate_keys)) != len(self.candidate_keys):
+            raise ValueError("candidate keys must be non-empty and unique")
+        if self.watermark_schema != "global-event-index-v1":
+            raise ValueError("unsupported watermark schema")
+        profile_ids = set()
+        profile_candidates = set()
+        for profile in self.profiles:
+            if not isinstance(profile, MetaTeamProfile):
+                raise ValueError("assignment profiles must be MetaTeamProfile records")
+            if profile.profile_id in profile_ids or profile.candidate_key in profile_candidates:
+                raise ValueError("assignment profiles must be unique")
+            if profile.candidate_key not in self.candidate_keys:
+                raise ValueError("assignment profile candidate is outside the menu")
+            if profile.available_index > self.read_cut:
+                raise ValueError("assignment offer contains a profile after its read cut")
+            if profile.source_decision_index >= self.decision_index:
+                raise ValueError("assignment profile is not from an earlier decision")
+            profile_ids.add(profile.profile_id)
+            profile_candidates.add(profile.candidate_key)
+        _sha(self.offer_digest, "offer_digest")
+        if self.offer_digest != _digest(self.payload()):
+            raise ValueError("offer_digest does not match canonical payload")
+
+    def payload(self) -> dict[str, Any]:
+        return {
+            "offer_id": self.offer_id,
+            "task_id": self.task_id,
+            "decision_index": self.decision_index,
+            "read_cut": self.read_cut,
+            "candidate_keys": list(self.candidate_keys),
+            "profiles": [profile.payload() for profile in self.profiles],
+            "watermark_schema": self.watermark_schema,
+        }
+
+    @classmethod
+    def build(
+        cls, *, offer_id: str, task_id: str, decision_index: int, read_cut: int,
+        candidate_keys: tuple[str, ...], profiles: tuple[MetaTeamProfile, ...],
+    ) -> "MetaTeamAssignmentOffer":
+        provisional = {
+            "offer_id": offer_id, "task_id": task_id,
+            "decision_index": decision_index, "read_cut": read_cut,
+            "candidate_keys": list(candidate_keys),
+            "profiles": [profile.payload() for profile in profiles],
+            "watermark_schema": "global-event-index-v1",
+        }
+        return cls(
+            offer_id=offer_id, task_id=task_id, decision_index=decision_index,
+            read_cut=read_cut, candidate_keys=candidate_keys, profiles=profiles,
+            offer_digest=_digest(provisional),
+        )
+
+    def attest_consumption(self, profile_ids: tuple[str, ...]) -> "MetaTeamAssignmentAttestation":
+        selected = tuple(profile_ids)
+        known = {profile.profile_id: profile for profile in self.profiles}
+        if tuple(sorted(set(selected))) != selected:
+            raise ValueError("consumed profile ids must be sorted and unique")
+        if any(profile_id not in known for profile_id in selected):
+            raise ValueError("consumed profile is not in the assignment offer")
+        for profile_id in selected:
+            if known[profile_id].available_index > self.read_cut:
+                raise ValueError("consumed profile is after the read cut")
+        return MetaTeamAssignmentAttestation.build(
+            offer_id=self.offer_id, offer_digest=self.offer_digest,
+            profile_ids=selected, decision_index=self.decision_index,
+            read_cut=self.read_cut,
+        )
+
+
+@dataclass(frozen=True)
+class MetaTeamAssignmentAttestation:
+    """Digest-bound proof of profile inputs available to one later assignment."""
+
+    offer_id: str
+    offer_digest: str
+    profile_ids: tuple[str, ...]
+    decision_index: int
+    read_cut: int
+    policy_input_digest: str
+    attestation_digest: str
+
+    def __post_init__(self) -> None:
+        if not self.offer_id:
+            raise ValueError("assignment attestation offer_id is required")
+        _sha(self.offer_digest, "offer_digest")
+        if tuple(sorted(set(self.profile_ids))) != self.profile_ids:
+            raise ValueError("attestation profile ids must be sorted and unique")
+        _nonnegative_int(self.decision_index, "decision_index")
+        _nonnegative_int(self.read_cut, "read_cut")
+        if self.read_cut > self.decision_index:
+            raise ValueError("attestation read cut is after the decision")
+        _sha(self.policy_input_digest, "policy_input_digest")
+        _sha(self.attestation_digest, "attestation_digest")
+        if self.policy_input_digest != self.expected_input_digest(
+            self.offer_digest, self.profile_ids, self.read_cut
+        ):
+            raise ValueError("policy_input_digest does not match consumed profiles")
+        if self.attestation_digest != _digest(self.payload()):
+            raise ValueError("attestation_digest does not match canonical payload")
+
+    @staticmethod
+    def expected_input_digest(offer_digest: str, profile_ids: tuple[str, ...], read_cut: int) -> str:
+        return _digest({"offer_digest": offer_digest, "profile_ids": list(profile_ids), "read_cut": read_cut})
+
+    @classmethod
+    def build(
+        cls, *, offer_id: str, offer_digest: str, profile_ids: tuple[str, ...],
+        decision_index: int, read_cut: int,
+    ) -> "MetaTeamAssignmentAttestation":
+        policy_input_digest = cls.expected_input_digest(offer_digest, profile_ids, read_cut)
+        provisional = {
+            "attestation_version": "metateam-assignment-consumption-v1",
+            "offer_id": offer_id, "offer_digest": offer_digest,
+            "profile_ids": list(profile_ids), "decision_index": decision_index,
+            "read_cut": read_cut, "policy_input_digest": policy_input_digest,
+        }
+        return cls(
+            offer_id=offer_id, offer_digest=offer_digest, profile_ids=profile_ids,
+            decision_index=decision_index, read_cut=read_cut,
+            policy_input_digest=policy_input_digest,
+            attestation_digest=_digest(provisional),
+        )
+
+    def payload(self) -> dict[str, Any]:
+        return {
+            "attestation_version": "metateam-assignment-consumption-v1",
+            "offer_id": self.offer_id, "offer_digest": self.offer_digest,
+            "profile_ids": list(self.profile_ids), "decision_index": self.decision_index,
+            "read_cut": self.read_cut, "policy_input_digest": self.policy_input_digest,
+        }

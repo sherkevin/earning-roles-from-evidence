@@ -169,3 +169,5 @@ Goal 修改。
   以一手 L2 profile 字段建立零调用 schema/builder/replay contract，验证 selected-only、public eligible、watermark/later assignment、correction/digest、hidden-info 拒绝、typed-sidecar source-input digest 和 source replay；最终 qualification 11 格、定向 12 项、完整 PeerRoleBench 277 项通过。它不是 Meta-Team 效果或已实现 baseline，真实 profile generator、PIPE3 runner、成本和独立 history 仍开放。
 - [done] 2026-09-30 Meta-Team-L2-public × PIPE3 source replay qualification (task_reports/20260930_metateam_pipe3_replay_qualification.md)：
   使用真实 PIPE3 seed-0 material、ledger record hash、typed sidecar 和 recipient judgment projection 完成 profile/source digest replay；wrong candidate 与 public payload mutation 拒绝，v1 event-type 失败保留。仍是零调用工程子门，fixture profile 不是摘要模型或科学 baseline，assignment offer/next-episode runner、成本和独立 history 仍开放。
+- [done] 2026-09-30 Meta-Team profile assignment offer/consumption qualification (task_reports/20260930_metateam_assignment_offer_qualification.md)：
+  profile-specific offer/attestation 绑定候选菜单、watermark、later decision、profile IDs 和 policy input digest；13 格语义检查、定向 14 项、完整 PeerRoleBench 279 项通过。仍不是隔离 policy-read trace、真实 selector/next episode 或 profile effect，runner、成本和独立 history 仍开放。

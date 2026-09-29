@@ -7,6 +7,7 @@ import pytest
 
 from scripts.peerrolebench_metateam_profile_sidecar import (
     MetaTeamProfile,
+    MetaTeamAssignmentOffer,
     PROFILE_SCHEMA,
     _digest,
     build_public_profile_fixture,
@@ -223,4 +224,39 @@ def test_fixture_profile_replay_binds_source_and_digest():
         replay_public_profile_fixture(
             profile, selection=selection, feedback_sidecar=feedback,
             public_projection=projection(candidate_key="peer-a@v1"),
+        )
+
+
+def test_assignment_offer_consumption_binds_watermark_and_input_digest():
+    profile = make_profile()
+    offer = MetaTeamAssignmentOffer.build(
+        offer_id="offer-1", task_id="PIPE3_stream_processing", decision_index=3,
+        read_cut=2, candidate_keys=("agent-a@v1", "agent-b@v1"), profiles=(profile,),
+    )
+    attestation = offer.attest_consumption((profile.profile_id,))
+    assert attestation.policy_input_digest == attestation.expected_input_digest(
+        offer.offer_digest, (profile.profile_id,), 2
+    )
+    assert attestation.attestation_digest == _digest(attestation.payload())
+    with pytest.raises(ValueError, match="after its read cut"):
+        late = make_profile(profile_id="p-late", source_arrival_index=4, available_index=4)
+        MetaTeamAssignmentOffer.build(
+            offer_id="offer-late", task_id="task", decision_index=3, read_cut=2,
+            candidate_keys=("agent-a@v1", "agent-b@v1"), profiles=(late,),
+        )
+
+
+def test_assignment_attestation_rejects_mutated_offer_or_read_cut():
+    profile = make_profile()
+    offer = MetaTeamAssignmentOffer.build(
+        offer_id="offer-2", task_id="task", decision_index=3, read_cut=2,
+        candidate_keys=("agent-a@v1",), profiles=(profile,),
+    )
+    attestation = offer.attest_consumption((profile.profile_id,))
+    with pytest.raises(ValueError, match="policy_input_digest"):
+        type(attestation)(
+            offer_id=attestation.offer_id, offer_digest=attestation.offer_digest,
+            profile_ids=attestation.profile_ids, decision_index=attestation.decision_index,
+            read_cut=1, policy_input_digest=attestation.policy_input_digest,
+            attestation_digest=attestation.attestation_digest,
         )
