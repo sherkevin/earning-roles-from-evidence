@@ -16,20 +16,22 @@
 \keywords{multi-agent systems, self-evolving roles, peer judgment, online adaptation}
 
 \begin{abstract}
-Multi-agent systems often choose a collaborator using a static role, a global score,
-or a pooled controller. These choices ignore the agent that actually receives and
-uses a delivery. We study a narrower question: can a recipient's situated judgment of
-a concrete delivery become attributable evidence for the producer's future
-responsibilities? We specify a protocol that separates recipient opinion, recipient
-action, producer-contract quality, and final team outcome, and a candidate
-responsibility-aware role-evidence update that consumes only lawful delayed feedback.
-The evaluation is designed around genuine producer--recipient dependencies, selected-only
-feedback, task-root splits, and complete model, tool, communication, and rework cost.
-It compares the candidate with raw acceptance, contextual trust or bandit selection,
-terminal-only learning, and pooled control under matched information and budgets.
-This is an internal pre-results manuscript: current real API traces establish parts of
-the execution protocol and expose scorer and attribution failures, but do not establish
-role-learning efficacy, peer specialization, or real-time training gains.
+Multi-agent teams must assign responsibility before a dependent task is executed,
+yet global scores and terminal rewards cannot tell whether a particular delivery
+helped the agent that used it. We ask whether a recipient's situated judgment of
+a concrete delivery can become attributable evidence for the producer's future
+responsibilities. We specify a protocol that binds each judgment to a versioned
+artifact, recipient action, producer contract, and delayed independent outcome,
+and updates evidence only when producer responsibility is identifiable. We test
+whether this evidence transfers to a later assignment made before execution,
+including by a collaborator who did not issue the original judgment. The
+evaluation uses genuine producer--recipient dependencies, selected-only
+feedback, held-out task roots, independent checks, and matched information and
+full cost against raw acceptance, contextual trust or bandit selection,
+terminal-only feedback, and pooled-history control. This internal pre-results manuscript
+reports protocol qualification and scorer/attribution failures from real API
+traces; it does not claim role-learning efficacy, specialization, or
+real-time-training gains.
 \end{abstract}
 
 \begin{document}

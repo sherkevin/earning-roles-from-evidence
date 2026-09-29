@@ -8,27 +8,21 @@
 \keywords{Multiagent coordination, self-evolving roles, peer judgment, online adaptation}
 
 \begin{abstract}
-Multi-agent collaboration requires decisions about who should do what, yet a
-team's final outcome does not identify which contributions helped the agents
-that depended on them. We study whether judgments made by actual consumers of
-delivered work can support role formation across tasks among agents without
-assigned expert roles. We define a role as a context-dependent pattern of
-responsibilities supported by an agent's collaboration history. The proposed
-approach links consumer acceptance, actual use, and repair effort to the
-producing agent, with later attributable outcomes correcting mistaken
-judgments. Subsequent collaborators would use this evidence before assigning
-new work, including collaborators who did not directly evaluate the producer.
-This makes transfer across collaborators part of the hypothesis. A small
-decision model updated from delayed feedback on selected peers is a candidate
-implementation; its backbone and update rule remain to be determined. The
-planned evaluation uses tasks with genuine dependencies, independent outcome
-checks, and matched observation and computation budgets. Comparisons with
-contextual trust, bandit selection, and peer-profile adaptation would test
-whether situated judgments improve future team quality and total cost.
-Removing judgments, shuffling their attribution, and withholding their transfer
-would test the proposed mechanism. The central question is when collaboration
-history supports useful divisions of responsibility beyond a private preference
-for the best peer.
+Multi-agent collaboration repeatedly assigns responsibility without knowing which
+peers are useful for a particular dependency. We ask whether the agent that
+consumes a delivery can provide attributable, delayed evidence that changes
+another agent's next assignment. We model a role as a context-dependent
+responsibility pattern, not a fixed expert label. Our protocol binds recipient
+judgment and action to a versioned artifact, separates normal integration from
+producer defects, and lets later independent outcomes correct unresolved
+judgments. The evaluation uses genuine producer--recipient dependencies,
+selected-only feedback, held-out task roots, independent checks, and matched
+observation, model, communication, and rework costs. It compares
+responsibility-aware role evidence with raw acceptance, contextual trust or
+bandit selection, terminal-only feedback, and pooled-history controls, and tests transfer to
+collaborators who did not issue the original judgment. This proposal reports no
+efficacy result; it establishes an auditable test of whether situated
+collaboration history improves future assignment quality and full cost.
 \end{abstract}
 
 \begin{document}
