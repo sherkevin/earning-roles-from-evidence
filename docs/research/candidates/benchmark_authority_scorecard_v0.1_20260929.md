@@ -41,7 +41,7 @@ for fields that the upstream benchmark never measured.
 | `uniform`, `no_update`, `terminal_only`, `contextual_trust` | lower bound, static prior, terminal signal, strongest same-info control | common policy factory and zero-call tests | versioned runner and root parity |
 | `raw_acceptance`, `pooled_controller` | raw-signal and shared-history controls | projection/replay seams and zero-call tests | real runner, public ownership parity, cost accounting |
 | `RARE` | responsibility-gated candidate | repaired CPU state, gate-identification diagnostics, and v5 shared selection/event-time adapter qualification | independent producer label, closest parity, complete live runner |
-| Meta-Team-L2-public / original-info / ablation | external semantic control and information upper bound | published semantics audited; no executable adapter yet | faithful public adapter, fixed profile schema/parser, information/cost map |
+| Meta-Team-L2-public / original-info / ablation | external semantic control and information upper bound | public profile schema boundary passed zero-call; no executable generator/adapter yet | source-input binding, faithful public builder/replay, fixed parser/summary budget, information/cost map |
 
 No row is baseline-frozen until its runner, information, cost, state and
 selected-only/UNKNOWN semantics are executable on the same root and schedule.

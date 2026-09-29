@@ -187,3 +187,10 @@
 - **根因:** 只按“都能选择/反思/更新 profile”命名近邻，没有先固定 causal unit、公开信息 cut、成本和 assignment 时序。
 - **避免:** 严格 drop-in 缺失时明确 `NO-GO`；若独立实现语义 adapter，分成 original-info 上限、public 同信息主比较和 profile-only 消融，并预注册 schema/parser、预算、watermark、correction/replay、later assignment 和完整成本。不能用手写 trust score 冒充已发表方法。
 - **Evidence:** [closest adapter audit](../docs/coordination/task_reports/20260930_closest_adapter_audit.md)；[candidate closest-method table](../docs/research/candidates/closest_method_table_v0.1_20260929.md)。
+
+### 0030-qualifying-a-profile-schema-is-not-qualifying-the-profile-generator | 2026-09-30 | earning-roles
+
+- **现象:** Meta-Team 风格的定性 profile 字段和 watermark/纠错合同可以在零调用 fixture 中通过，但这并不说明摘要模型看到了正确的信息、profile 能预测 later-use，或 baseline 已实现。
+- **根因:** 把 schema/lineage 的可构造性与 profile 生成质量、调用成本和真实 assignment 消费混为一层资格。
+- **避免:** 把资格分成 schema boundary、真实 public builder/replay、LLM profile quality、独立 live history 和 later-use effect；任何层失败都保留证据并停止向下一层推断。真实 adapter 必须绑定 source_input_digest，禁止 trajectory/terminal/private scorer 泄漏。
+- **Evidence:** [Meta-Team-L2-public qualification](../docs/coordination/task_reports/20260930_metateam_public_profile_qualification.md)；[v6 logs](../experiments/logs/n03_metateam_public_profile_qualification_20260930_v6/)。

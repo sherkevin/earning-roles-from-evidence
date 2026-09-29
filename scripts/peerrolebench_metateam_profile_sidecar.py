@@ -1,0 +1,315 @@
+"""Information-boundary contract for a Meta-Team-style public profile adapter.
+
+This module does not implement Meta-Team's reflection model and makes no
+quality claim.  It only validates the smallest public profile record that a
+future ``MetaTeam-L2-public`` adapter may emit.  The record is derived from a
+selected ArtifactRole interaction and can be consumed only after its public
+arrival watermark.  Terminal scores, raw trajectories, hidden scorer fields,
+and other policy state are intentionally absent.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+import hashlib
+import json
+import math
+from types import MappingProxyType
+from typing import Any, Mapping
+
+PROFILE_SCHEMA = "metateam-profile-v1"
+PROFILE_ADAPTER_VERSION = "metateam-l2-public-sidecar-v1"
+ATTESTATION_VERSION = "metateam-profile-consumption-v1"
+PROFILE_VARIANTS = frozenset({"public", "original_info", "ablation_profile_only"})
+RELIABILITY = frozenset({"high", "medium", "low", "unknown"})
+PROFILE_FIELDS = frozenset({
+    "reliability", "strengths", "weaknesses", "communication_style", "notes",
+})
+PUBLIC_INPUT_FIELDS = frozenset({
+    "feedback_id", "source_event_id", "source", "candidate_key", "evidence_version",
+    "source_index", "arrival_index", "arrived_at", "delay", "action", "disposition",
+    "provenance", "label", "supersedes", "unknown_reason",
+})
+FORBIDDEN_PUBLIC_FIELDS = frozenset({
+    "terminal_score", "final_outcome", "hidden_score", "hidden_label",
+    "raw_trace", "trajectory", "operator_ledger", "private_scorer",
+    "policy_state", "other_policy_state", "future_result",
+})
+
+
+def _digest(payload: Mapping[str, Any]) -> str:
+    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def _sha(value: str, name: str) -> str:
+    if not isinstance(value, str) or len(value) != 64 or value != value.lower():
+        raise ValueError(f"{name} must be a SHA-256 digest")
+    try:
+        int(value, 16)
+    except ValueError as exc:
+        raise ValueError(f"{name} must be a SHA-256 digest") from exc
+    return value
+
+
+def _text(value: Any, name: str, *, max_chars: int) -> str:
+    if not isinstance(value, str) or not value.strip() or len(value) > max_chars:
+        raise ValueError(f"{name} must be non-empty text of at most {max_chars} characters")
+    return value
+
+
+def _tuple_text(value: Any, name: str, *, max_items: int, max_chars: int) -> tuple[str, ...]:
+    if not isinstance(value, (list, tuple)) or len(value) > max_items:
+        raise ValueError(f"{name} must have at most {max_items} items")
+    result = tuple(_text(item, f"{name} item", max_chars=max_chars) for item in value)
+    if len(set(result)) != len(result):
+        raise ValueError(f"{name} must not contain duplicates")
+    return result
+
+
+def _nonnegative_int(value: Any, name: str) -> int:
+    if type(value) is not int or value < 0:
+        raise ValueError(f"{name} must be a non-negative integer")
+    return value
+
+
+def _attestation_payload(
+    *, profile_id: str, profile_digest: str, candidate_key: str,
+    source_decision_index: int, available_index: int,
+    decision_index: int, read_cut: int, consumed: bool,
+) -> dict[str, Any]:
+    return {
+        "attestation_version": ATTESTATION_VERSION,
+        "profile_id": profile_id,
+        "profile_digest": profile_digest,
+        "candidate_key": candidate_key,
+        "source_decision_index": source_decision_index,
+        "available_index": available_index,
+        "decision_index": decision_index,
+        "read_cut": read_cut,
+        "consumed": consumed,
+    }
+
+
+@dataclass(frozen=True)
+class MetaTeamProfile:
+    """A bounded qualitative profile visible to a future selector.
+
+    ``profile`` follows the qualitative fields in the inspected Meta-Team L2
+    protocol.  The source is represented by a digest of the public event
+    bundle, rather than by hidden trajectory text or a terminal grader result.
+    """
+
+    profile_id: str
+    profile_revision: int
+    adapter_variant: str
+    candidate_key: str
+    producer_id: str
+    producer_version: str
+    recipient_id: str
+    selected_candidate_key: str
+    selection_event_id: str
+    source_event_id: str
+    delivery_id: str
+    source_decision_index: int
+    source_arrival_index: int
+    available_index: int
+    source_disposition: str
+    source_provenance: str
+    source_input_digest: str
+    profile_schema: str
+    parser_version: str
+    model_config_digest: str
+    profile: Mapping[str, Any]
+    supersedes_profile_id: str | None = None
+    sidecar_version: str = PROFILE_ADAPTER_VERSION
+
+    def __post_init__(self) -> None:
+        required = (
+            self.profile_id, self.candidate_key, self.producer_id, self.producer_version,
+            self.recipient_id, self.selected_candidate_key, self.selection_event_id,
+            self.source_event_id, self.delivery_id,
+            self.profile_schema, self.parser_version,
+        )
+        if not all(isinstance(value, str) and value for value in required):
+            raise ValueError("profile identity and schema fields are required")
+        if self.sidecar_version != PROFILE_ADAPTER_VERSION:
+            raise ValueError("unsupported Meta-Team profile sidecar version")
+        if self.adapter_variant not in PROFILE_VARIANTS:
+            raise ValueError("unsupported Meta-Team profile adapter variant")
+        _nonnegative_int(self.profile_revision, "profile_revision")
+        if self.profile_revision == 0:
+            raise ValueError("profile_revision starts at one")
+        if self.profile_revision == 1 and self.supersedes_profile_id is not None:
+            raise ValueError("first profile revision cannot supersede another profile")
+        if self.profile_revision > 1 and self.supersedes_profile_id is None:
+            raise ValueError("later profile revisions require supersedes_profile_id")
+        if self.selected_candidate_key != self.candidate_key:
+            raise ValueError("profile must bind to the selected candidate")
+        if self.profile_schema != PROFILE_SCHEMA:
+            raise ValueError("unsupported profile schema")
+        _nonnegative_int(self.source_decision_index, "source_decision_index")
+        _nonnegative_int(self.source_arrival_index, "source_arrival_index")
+        _nonnegative_int(self.available_index, "available_index")
+        if self.source_arrival_index > self.available_index:
+            raise ValueError("profile cannot be available before its source arrival")
+        if self.source_disposition != "eligible" or self.source_provenance != "public":
+            raise ValueError("profile may only be built from eligible public feedback")
+        _sha(self.source_input_digest, "source_input_digest")
+        _sha(self.model_config_digest, "model_config_digest")
+        if self.supersedes_profile_id is not None:
+            if not self.supersedes_profile_id or self.supersedes_profile_id == self.profile_id:
+                raise ValueError("supersedes_profile_id must name a different profile")
+        if not isinstance(self.profile, Mapping):
+            raise ValueError("profile must be a mapping")
+        keys = set(self.profile)
+        if keys != PROFILE_FIELDS:
+            raise ValueError("profile keys must exactly match the fixed Meta-Team schema")
+        reliability = self.profile["reliability"]
+        if reliability not in RELIABILITY:
+            raise ValueError("profile reliability is outside the fixed enum")
+        _tuple_text(self.profile["strengths"], "strengths", max_items=5, max_chars=240)
+        _tuple_text(self.profile["weaknesses"], "weaknesses", max_items=5, max_chars=240)
+        _text(self.profile["communication_style"], "communication_style", max_chars=400)
+        _tuple_text(self.profile["notes"], "notes", max_items=3, max_chars=240)
+        # Refuse accidental embedding of hidden or post-hoc objects in a
+        # qualitative field.  Actual semantic validation remains a later gate.
+        for value in self.profile.values():
+            if isinstance(value, Mapping) or isinstance(value, set):
+                raise ValueError("profile values must be bounded scalar/list fields")
+        object.__setattr__(self, "profile", MappingProxyType({
+            "reliability": reliability,
+            "strengths": tuple(self.profile["strengths"]),
+            "weaknesses": tuple(self.profile["weaknesses"]),
+            "communication_style": self.profile["communication_style"],
+            "notes": tuple(self.profile["notes"]),
+        }))
+
+    def payload(self) -> dict[str, Any]:
+        return {
+            "sidecar_version": self.sidecar_version,
+            "profile_id": self.profile_id,
+            "profile_revision": self.profile_revision,
+            "adapter_variant": self.adapter_variant,
+            "candidate_key": self.candidate_key,
+            "producer_id": self.producer_id,
+            "producer_version": self.producer_version,
+            "recipient_id": self.recipient_id,
+            "selected_candidate_key": self.selected_candidate_key,
+            "selection_event_id": self.selection_event_id,
+            "source_event_id": self.source_event_id,
+            "delivery_id": self.delivery_id,
+            "source_decision_index": self.source_decision_index,
+            "source_arrival_index": self.source_arrival_index,
+            "available_index": self.available_index,
+            "source_disposition": self.source_disposition,
+            "source_provenance": self.source_provenance,
+            "source_input_digest": self.source_input_digest,
+            "profile_schema": self.profile_schema,
+            "parser_version": self.parser_version,
+            "model_config_digest": self.model_config_digest,
+            "profile": {
+                "reliability": self.profile["reliability"],
+                "strengths": list(self.profile["strengths"]),
+                "weaknesses": list(self.profile["weaknesses"]),
+                "communication_style": self.profile["communication_style"],
+                "notes": list(self.profile["notes"]),
+            },
+            **({"supersedes_profile_id": self.supersedes_profile_id}
+               if self.supersedes_profile_id is not None else {}),
+        }
+
+    @property
+    def profile_digest(self) -> str:
+        return _digest(self.payload())
+
+    def consume_before(self, *, decision_index: int, read_cut: int) -> "ProfileConsumptionAttestation":
+        payload = _attestation_payload(
+            profile_id=self.profile_id, profile_digest=self.profile_digest,
+            candidate_key=self.candidate_key, source_decision_index=self.source_decision_index,
+            available_index=self.available_index, decision_index=decision_index,
+            read_cut=read_cut, consumed=True,
+        )
+        return ProfileConsumptionAttestation(
+            profile_id=self.profile_id,
+            profile_digest=self.profile_digest,
+            candidate_key=self.candidate_key,
+            source_decision_index=self.source_decision_index,
+            available_index=self.available_index,
+            decision_index=decision_index,
+            read_cut=read_cut,
+            consumed=True,
+            attestation_digest=_digest(payload),
+        )
+
+
+@dataclass(frozen=True)
+class ProfileConsumptionAttestation:
+    """Evidence that a later assignment could see only an arrived profile."""
+
+    profile_id: str
+    profile_digest: str
+    candidate_key: str
+    source_decision_index: int
+    available_index: int
+    decision_index: int
+    read_cut: int
+    consumed: bool
+    attestation_digest: str
+
+    def __post_init__(self) -> None:
+        if not self.profile_id or not self.candidate_key:
+            raise ValueError("profile_id and candidate_key are required")
+        _sha(self.profile_digest, "profile_digest")
+        for name, value in (
+            ("source_decision_index", self.source_decision_index),
+            ("available_index", self.available_index),
+            ("decision_index", self.decision_index),
+            ("read_cut", self.read_cut),
+        ):
+            _nonnegative_int(value, name)
+        if self.consumed:
+            if self.decision_index <= self.source_decision_index:
+                raise ValueError("profile consumption must target a later decision")
+            if self.read_cut < self.available_index:
+                raise ValueError("profile is not visible at this read cut")
+            if self.read_cut > self.decision_index:
+                raise ValueError("profile read cut is after the decision")
+        _sha(self.attestation_digest, "attestation_digest")
+        if self.attestation_digest != _digest(self.payload()):
+            raise ValueError("attestation_digest does not match canonical payload")
+
+    def payload(self) -> dict[str, Any]:
+        return _attestation_payload(
+            profile_id=self.profile_id, profile_digest=self.profile_digest,
+            candidate_key=self.candidate_key, source_decision_index=self.source_decision_index,
+            available_index=self.available_index, decision_index=self.decision_index,
+            read_cut=self.read_cut, consumed=self.consumed,
+        )
+
+    def with_digest(self) -> "ProfileConsumptionAttestation":
+        payload = self.payload()
+        return ProfileConsumptionAttestation(
+            profile_id=self.profile_id,
+            profile_digest=self.profile_digest,
+            candidate_key=self.candidate_key,
+            source_decision_index=self.source_decision_index,
+            available_index=self.available_index,
+            decision_index=self.decision_index,
+            read_cut=self.read_cut,
+            consumed=self.consumed,
+            attestation_digest=_digest(payload),
+        )
+
+
+def reject_private_public_input(payload: Mapping[str, Any]) -> None:
+    """Reject a would-be public adapter input containing hidden/post-hoc keys."""
+    keys = set(payload)
+    forbidden = keys & FORBIDDEN_PUBLIC_FIELDS
+    if forbidden:
+        raise ValueError(f"public Meta-Team adapter input contains forbidden fields: {sorted(forbidden)}")
+    unknown = keys - PUBLIC_INPUT_FIELDS
+    if unknown:
+        raise ValueError(f"public Meta-Team adapter input contains unknown fields: {sorted(unknown)}")
+    if "raw_trace" in payload or "trajectory" in payload:
+        raise ValueError("full trajectory is not part of the public adapter input")

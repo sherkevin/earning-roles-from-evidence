@@ -1,0 +1,48 @@
+{
+  "qualification": "metateam-l2-public-profile-boundary-v1",
+  "status": "QUALIFIED_OFFLINE",
+  "checks": [
+    {
+      "name": "valid_public_profile_and_later_consumption",
+      "status": "PASS"
+    },
+    {
+      "name": "reject_profile_before_arrival",
+      "status": "PASS",
+      "error": "profile cannot be available before its source arrival"
+    },
+    {
+      "name": "unknown_does_not_create_profile",
+      "status": "PASS",
+      "error": "profile may only be built from eligible public feedback"
+    },
+    {
+      "name": "reject_same_decision_assignment",
+      "status": "PASS",
+      "error": "profile consumption must target a later decision"
+    },
+    {
+      "name": "reject_pre_watermark_consumption",
+      "status": "PASS",
+      "error": "profile is not visible at this read cut"
+    },
+    {
+      "name": "late_correction_preserves_lineage",
+      "status": "PASS"
+    },
+    {
+      "name": "reject_hidden_trajectory_input",
+      "status": "PASS",
+      "error": "public Meta-Team adapter input contains forbidden fields: ['trajectory']"
+    },
+    {
+      "name": "profile_digest_detects_posthoc_mutation",
+      "status": "PASS"
+    }
+  ],
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "profile_schema": "metateam-profile-v1",
+  "adapter_status": "NOT_IMPLEMENTED / QUALIFICATION_REQUIRED"
+}
