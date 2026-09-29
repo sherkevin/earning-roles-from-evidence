@@ -43,6 +43,8 @@ that RARE, PeerRoleBench-TB, real-time training and A800 performance are unestab
 This closes the writing/claim contract only; N01 qualification, N03 signal design and
 all scientific result gates remain open.
 
+- [partial] 2026-09-29 title framing: the current literal title remains historical working text; candidate titles now add dynamic/self-evolving role formation and broader applicability without changing the scientific claim. The recommended candidate is `Earning Roles: Self-Evolving Responsibility from Situated Peer Judgments`; no paper source was overwritten before author selection. See [title candidates](../research/candidates/title_candidates_v0.1_20260929.md) and [task report](task_reports/20260929_title_candidates.md).
+
 The 2026-09-27 PIPE3 check is now deliberately narrowed by [ADR 0024](../user/decisions/0024-narrow-pipe3-preflight-conclusion.md):
 the versioned v2 run passes only a static contract fixture, a placeholder ledger fixture,
 and listed-access canaries. The task text exposes the three intended bug fixes, so
