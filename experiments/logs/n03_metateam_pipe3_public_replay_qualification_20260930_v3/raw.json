@@ -1,0 +1,126 @@
+{
+  "selection": {
+    "sidecar_version": "peerrole-policy-sidecar-v2",
+    "ledger_record_hash": "24cf31e02d982cc5b4e4f4be62d2c705baded6046b2d366a939b99e645e03921",
+    "protocol_event_type": "peer_selection",
+    "protocol_event_id": "selection-0",
+    "task_id": "PIPE3_stream_processing",
+    "task_index": 0,
+    "role": "producer",
+    "event_id": "policy-selection-0",
+    "selector_id": "peer-a",
+    "context_key": "PIPE3:0",
+    "candidates": [
+      {
+        "candidate_id": "peer-b",
+        "candidate_version": "fixture-v1"
+      },
+      {
+        "candidate_id": "peer-c",
+        "candidate_version": "fixture-v1"
+      }
+    ],
+    "base_scores": [
+      0.5,
+      0.5
+    ],
+    "chosen_index": 0,
+    "probabilities": [
+      0.5,
+      0.5
+    ],
+    "propensity": 0.5,
+    "state_version": "fixture-state-0",
+    "encoder_version": "fixture-encoder-0",
+    "feature_schema": "fixture-phi-0",
+    "policy_name": "metateam_l2_public_fixture",
+    "policy_version": "v1",
+    "base_score_version": "fixture-base-v1",
+    "rng_algorithm": "fixture-rng",
+    "rng_draw": 0,
+    "selected_at": 10.0,
+    "captured_features": {}
+  },
+  "judgment": {
+    "sidecar_version": "peerrole-policy-sidecar-v4",
+    "ledger_record_hash": "cf132b09fd237df992b42445cd24cb9969544a925372777e7217293715425128",
+    "protocol_event_type": "recipient_judgment",
+    "protocol_event_id": "judgment-0",
+    "feedback_id": "feedback-judgment-0",
+    "source_event_id": "policy-selection-0",
+    "selection_event_id": "selection-0",
+    "delivery_id": "delivery-0",
+    "producer_id": "peer-b",
+    "producer_version": "fixture-v1",
+    "recipient_id": "peer-a",
+    "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+    "delivery_record_hash": "b46c37ebc0134129a0ec2748545c06b5c2a82f385e4a7d4ddf4f354033f96621",
+    "action_id": "action-0",
+    "action_record_hash": "b1e616deedda93488475b0a6329b5504c9703d4eebd76cb22dc536de1bca0808",
+    "source": "recipient_judgment",
+    "arrived_at": 12.0,
+    "delay": 2.0,
+    "action": "use",
+    "disposition": "eligible",
+    "provenance": "public",
+    "label_mapping_version": "judgment-v1",
+    "mapping_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "responsibility_status": "attributed",
+    "attribution_basis": "fixture-judgment-v1",
+    "raw_value": "accept",
+    "label": 1.0,
+    "arrival_index": 12
+  },
+  "projection": {
+    "feedback_id": "feedback-judgment-0",
+    "source_event_id": "policy-selection-0",
+    "source": "recipient_judgment",
+    "candidate_key": "peer-b@fixture-v1",
+    "evidence_version": "pipe3-evidence-v1",
+    "source_index": 5,
+    "arrived_at": 12.0,
+    "delay": 2.0,
+    "action": "use",
+    "disposition": "eligible",
+    "provenance": "public",
+    "arrival_index": 12,
+    "label": 1.0
+  },
+  "profile": {
+    "sidecar_version": "metateam-l2-public-sidecar-v1",
+    "profile_id": "pipe3-profile-0",
+    "profile_revision": 1,
+    "adapter_variant": "public",
+    "candidate_key": "peer-b@fixture-v1",
+    "producer_id": "peer-b",
+    "producer_version": "fixture-v1",
+    "recipient_id": "peer-a",
+    "selected_candidate_key": "peer-b@fixture-v1",
+    "selection_event_id": "selection-0",
+    "source_event_id": "policy-selection-0",
+    "delivery_id": "delivery-0",
+    "source_decision_index": 0,
+    "source_arrival_index": 12,
+    "available_index": 12,
+    "source_disposition": "eligible",
+    "source_provenance": "public",
+    "source_input_digest": "426fb9f3f20f1da8c9ee60c43bb0f3b1e338de15b35c8f92c3219012464f6566",
+    "profile_schema": "metateam-profile-v1",
+    "parser_version": "fixture-parser-v1",
+    "model_config_digest": "415efedbf888e7c42b397e810e259ea1da67db45e5838d1bc0b709521ea0b976",
+    "profile": {
+      "reliability": "medium",
+      "strengths": [
+        "queue integration"
+      ],
+      "weaknesses": [
+        "priority ordering"
+      ],
+      "communication_style": "concise",
+      "notes": [
+        "public recipient judgment only"
+      ]
+    }
+  },
+  "replayed_profile_digest": "64c41db7e5bb07a7f006053c24254c22b46d7ea6f6cfbbf485c702b0cb2d9144"
+}
