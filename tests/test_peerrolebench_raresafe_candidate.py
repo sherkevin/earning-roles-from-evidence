@@ -2,6 +2,7 @@
 
 from pathlib import Path
 import sys
+import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -56,3 +57,27 @@ def test_event_time_interleaving_only_early_feedback_changes_next_choice():
     captured = late.probabilities(candidates)
     late.ingest(event("late", 0, 1.0))
     assert captured == baseline
+
+
+def test_consolidation_preserves_anchor_policy_when_fast_window_is_cleared():
+    state = RareAnchorState(dimension=1, radius=2.0)
+    assert state.ingest(RoleFeedback("e", 0, (1.0,), 1.0, 1.0)) == "UPDATE"
+    before = list(state.theta)
+    assert before == [0.5]
+    assert state.consolidate_if_safe([((1.0,), 1.0)]) is True
+    assert state.theta == before
+    assert state.anchor == before
+
+
+def test_late_correction_queue_and_tombstones_are_bounded():
+    state = RareAnchorState(dimension=1, pending_size=3)
+    assert state.ingest(RoleFeedback("fresh", 10, (1.0,), 1.0, 1.0)) == "UPDATE"
+    for index in range(10):
+        assert state.ingest(RoleFeedback(f"late-{index}", 0, (1.0,), 1.0, 1.0)) == "QUEUED_CORRECTION"
+    assert len(state.correction_queue) == 3
+    assert state.pending_overflow == 7
+
+
+def test_candidate_fixes_ridge_lambda():
+    with pytest.raises(ValueError, match="lam=1"):
+        RareAnchorState(dimension=1, lam=0.5)

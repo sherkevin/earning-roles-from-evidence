@@ -1,0 +1,367 @@
+..........                                                               [100%]
+10 passed in 0.03s
+{
+  "api_calls": 0,
+  "cases": {
+    "raw_missing_orthogonal": {
+      "choice_separation": false,
+      "events": [
+        {
+          "feature": [
+            1.0,
+            0.0
+          ],
+          "key": "recipient",
+          "producer_label": null,
+          "producer_status": "ineligible",
+          "raw_label": null,
+          "source_index": 1,
+          "supersedes": null
+        },
+        {
+          "feature": [
+            0.0,
+            1.0
+          ],
+          "key": "producer",
+          "producer_label": 0.0,
+          "producer_status": "eligible",
+          "raw_label": 0.0,
+          "source_index": 2,
+          "supersedes": null
+        },
+        {
+          "feature": [
+            0.0,
+            1.0
+          ],
+          "key": "producer-correction",
+          "producer_label": 1.0,
+          "producer_status": "eligible",
+          "raw_label": 1.0,
+          "source_index": 3,
+          "supersedes": "producer"
+        }
+      ],
+      "gated": {
+        "chosen": "B",
+        "digest": "a483ded68693c8e0143afda47b3551ac187b4a8dc23b75a36519cc2659b98e31",
+        "probabilities": [
+          0.47248103208412756,
+          0.5275189679158725
+        ],
+        "theta": [
+          0.0,
+          0.5
+        ]
+      },
+      "probability_separation": false,
+      "trace": [
+        {
+          "event": "recipient",
+          "gated_digest": "1a1d48b9a85d4a921108a4b8fbdd25019a62efbbca4369b8fee432ca9e046d80",
+          "gated_status": "UNKNOWN",
+          "ungated_digest": "1a1d48b9a85d4a921108a4b8fbdd25019a62efbbca4369b8fee432ca9e046d80",
+          "ungated_status": "UNKNOWN"
+        },
+        {
+          "event": "producer",
+          "gated_digest": "cefb8a15b6f01f294ea5020e653e2ddb08a05b6dacc5ae7d42f0cc1fb0d214ad",
+          "gated_status": "UPDATE",
+          "ungated_digest": "cefb8a15b6f01f294ea5020e653e2ddb08a05b6dacc5ae7d42f0cc1fb0d214ad",
+          "ungated_status": "UPDATE"
+        },
+        {
+          "event": "producer-correction",
+          "gated_digest": "a483ded68693c8e0143afda47b3551ac187b4a8dc23b75a36519cc2659b98e31",
+          "gated_status": "UPDATE",
+          "ungated_digest": "a483ded68693c8e0143afda47b3551ac187b4a8dc23b75a36519cc2659b98e31",
+          "ungated_status": "UPDATE"
+        }
+      ],
+      "ungated_raw": {
+        "chosen": "B",
+        "digest": "a483ded68693c8e0143afda47b3551ac187b4a8dc23b75a36519cc2659b98e31",
+        "probabilities": [
+          0.47248103208412756,
+          0.5275189679158725
+        ],
+        "theta": [
+          0.0,
+          0.5
+        ]
+      }
+    },
+    "raw_positive_nonorthogonal": {
+      "choice_separation": false,
+      "events": [
+        {
+          "feature": [
+            0.7071067811865476,
+            0.7071067811865476
+          ],
+          "key": "recipient",
+          "producer_label": null,
+          "producer_status": "ineligible",
+          "raw_label": 1.0,
+          "source_index": 1,
+          "supersedes": null
+        },
+        {
+          "feature": [
+            0.0,
+            1.0
+          ],
+          "key": "producer",
+          "producer_label": 0.0,
+          "producer_status": "eligible",
+          "raw_label": 0.0,
+          "source_index": 2,
+          "supersedes": null
+        },
+        {
+          "feature": [
+            0.0,
+            1.0
+          ],
+          "key": "producer-correction",
+          "producer_label": 1.0,
+          "producer_status": "eligible",
+          "raw_label": 1.0,
+          "source_index": 3,
+          "supersedes": "producer"
+        }
+      ],
+      "gated": {
+        "chosen": "B",
+        "digest": "a483ded68693c8e0143afda47b3551ac187b4a8dc23b75a36519cc2659b98e31",
+        "probabilities": [
+          0.47248103208412756,
+          0.5275189679158725
+        ],
+        "theta": [
+          0.0,
+          0.5
+        ]
+      },
+      "probability_separation": true,
+      "trace": [
+        {
+          "event": "recipient",
+          "gated_digest": "1a1d48b9a85d4a921108a4b8fbdd25019a62efbbca4369b8fee432ca9e046d80",
+          "gated_status": "UNKNOWN",
+          "ungated_digest": "cd1331110e2fa46cdea6807a85ecfad540aadae8ce70ee6bebe38eb91d659a63",
+          "ungated_status": "UPDATE"
+        },
+        {
+          "event": "producer",
+          "gated_digest": "cefb8a15b6f01f294ea5020e653e2ddb08a05b6dacc5ae7d42f0cc1fb0d214ad",
+          "gated_status": "UPDATE",
+          "ungated_digest": "d27665698fba11173ab0e9fd9bb297fd75f592f6df7e1dbd295504a99903b988",
+          "ungated_status": "UPDATE"
+        },
+        {
+          "event": "producer-correction",
+          "gated_digest": "a483ded68693c8e0143afda47b3551ac187b4a8dc23b75a36519cc2659b98e31",
+          "gated_status": "UPDATE",
+          "ungated_digest": "952373b3fddd947d3a3671c01ea454175264c545c0db3d10ae1948b5464e7291",
+          "ungated_status": "UPDATE"
+        }
+      ],
+      "ungated_raw": {
+        "chosen": "B",
+        "digest": "952373b3fddd947d3a3671c01ea454175264c545c0db3d10ae1948b5464e7291",
+        "probabilities": [
+          0.48905439465752076,
+          0.5109456053424793
+        ],
+        "theta": [
+          0.47140452079103173,
+          0.682842712474619
+        ]
+      }
+    },
+    "raw_positive_orthogonal": {
+      "choice_separation": true,
+      "events": [
+        {
+          "feature": [
+            1.0,
+            0.0
+          ],
+          "key": "recipient",
+          "producer_label": null,
+          "producer_status": "ineligible",
+          "raw_label": 1.0,
+          "source_index": 1,
+          "supersedes": null
+        },
+        {
+          "feature": [
+            0.0,
+            1.0
+          ],
+          "key": "producer",
+          "producer_label": 0.0,
+          "producer_status": "eligible",
+          "raw_label": 0.0,
+          "source_index": 2,
+          "supersedes": null
+        },
+        {
+          "feature": [
+            0.0,
+            1.0
+          ],
+          "key": "producer-correction",
+          "producer_label": 1.0,
+          "producer_status": "eligible",
+          "raw_label": 1.0,
+          "source_index": 3,
+          "supersedes": "producer"
+        }
+      ],
+      "gated": {
+        "chosen": "B",
+        "digest": "a483ded68693c8e0143afda47b3551ac187b4a8dc23b75a36519cc2659b98e31",
+        "probabilities": [
+          0.47248103208412756,
+          0.5275189679158725
+        ],
+        "theta": [
+          0.0,
+          0.5
+        ]
+      },
+      "probability_separation": true,
+      "trace": [
+        {
+          "event": "recipient",
+          "gated_digest": "1a1d48b9a85d4a921108a4b8fbdd25019a62efbbca4369b8fee432ca9e046d80",
+          "gated_status": "UNKNOWN",
+          "ungated_digest": "72bfdc1ae04b323910aef9045f03733526a872e5461e24836821b2928b798367",
+          "ungated_status": "UPDATE"
+        },
+        {
+          "event": "producer",
+          "gated_digest": "cefb8a15b6f01f294ea5020e653e2ddb08a05b6dacc5ae7d42f0cc1fb0d214ad",
+          "gated_status": "UPDATE",
+          "ungated_digest": "f595c7868e17cef7f8f3b473d046b95e47bafd77d01b6e2b86fb70c916ccf515",
+          "ungated_status": "UPDATE"
+        },
+        {
+          "event": "producer-correction",
+          "gated_digest": "a483ded68693c8e0143afda47b3551ac187b4a8dc23b75a36519cc2659b98e31",
+          "gated_status": "UPDATE",
+          "ungated_digest": "224fa55eda5f7a78975e17268de263348fe50b988cbba36afb1d73d51180a9e9",
+          "ungated_status": "UPDATE"
+        }
+      ],
+      "ungated_raw": {
+        "chosen": "A",
+        "digest": "224fa55eda5f7a78975e17268de263348fe50b988cbba36afb1d73d51180a9e9",
+        "probabilities": [
+          0.5,
+          0.5
+        ],
+        "theta": [
+          0.5,
+          0.5
+        ]
+      }
+    },
+    "raw_zero_orthogonal": {
+      "choice_separation": false,
+      "events": [
+        {
+          "feature": [
+            1.0,
+            0.0
+          ],
+          "key": "recipient",
+          "producer_label": null,
+          "producer_status": "ineligible",
+          "raw_label": 0.0,
+          "source_index": 1,
+          "supersedes": null
+        },
+        {
+          "feature": [
+            0.0,
+            1.0
+          ],
+          "key": "producer",
+          "producer_label": 0.0,
+          "producer_status": "eligible",
+          "raw_label": 0.0,
+          "source_index": 2,
+          "supersedes": null
+        },
+        {
+          "feature": [
+            0.0,
+            1.0
+          ],
+          "key": "producer-correction",
+          "producer_label": 1.0,
+          "producer_status": "eligible",
+          "raw_label": 1.0,
+          "source_index": 3,
+          "supersedes": "producer"
+        }
+      ],
+      "gated": {
+        "chosen": "B",
+        "digest": "a483ded68693c8e0143afda47b3551ac187b4a8dc23b75a36519cc2659b98e31",
+        "probabilities": [
+          0.47248103208412756,
+          0.5275189679158725
+        ],
+        "theta": [
+          0.0,
+          0.5
+        ]
+      },
+      "probability_separation": false,
+      "trace": [
+        {
+          "event": "recipient",
+          "gated_digest": "1a1d48b9a85d4a921108a4b8fbdd25019a62efbbca4369b8fee432ca9e046d80",
+          "gated_status": "UNKNOWN",
+          "ungated_digest": "063141529374e8af0afb0fded6877ed5c02f092f5ddbd2e9260ae979ee18f53f",
+          "ungated_status": "UPDATE"
+        },
+        {
+          "event": "producer",
+          "gated_digest": "cefb8a15b6f01f294ea5020e653e2ddb08a05b6dacc5ae7d42f0cc1fb0d214ad",
+          "gated_status": "UPDATE",
+          "ungated_digest": "b8b6e3172201d3516a07a637b896f932f6cb021200ba5491c68fd84d6af82f9f",
+          "ungated_status": "UPDATE"
+        },
+        {
+          "event": "producer-correction",
+          "gated_digest": "a483ded68693c8e0143afda47b3551ac187b4a8dc23b75a36519cc2659b98e31",
+          "gated_status": "UPDATE",
+          "ungated_digest": "dfc41df4dad56bc43a9bd72841efc21273f4f4b9b91b8c2f59bb8e32f6df4d83",
+          "ungated_status": "UPDATE"
+        }
+      ],
+      "ungated_raw": {
+        "chosen": "B",
+        "digest": "dfc41df4dad56bc43a9bd72841efc21273f4f4b9b91b8c2f59bb8e32f6df4d83",
+        "probabilities": [
+          0.47248103208412756,
+          0.5275189679158725
+        ],
+        "theta": [
+          0.0,
+          0.5
+        ]
+      }
+    }
+  },
+  "gpu": 0,
+  "interpretation": "A visible positive raw acceptance signal creates a gate-vs-ungated separation, whereas raw zero or missing signals do not. This qualifies an identifiable gate-ablation condition only; it is not evidence of efficacy or novelty.",
+  "probe": "gate_identification_matrix_v1",
+  "scientific_claim_allowed": false
+}

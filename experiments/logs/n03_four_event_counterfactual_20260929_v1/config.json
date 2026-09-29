@@ -1,0 +1,17 @@
+{
+  "experiment": "n03_four_event_counterfactual_20260929_v1",
+  "purpose": "zero-call deterministic negative qualification of exact same-updater control",
+  "script": "scripts/peerrolebench_four_event_counterfactual.py",
+  "test": "tests/test_peerrolebench_four_event_counterfactual.py",
+  "command": "PYTHONPATH=scripts python3 -m pytest -q tests/test_peerrolebench_raresafe_candidate.py tests/test_peerrolebench_four_event_counterfactual.py; PYTHONPATH=scripts python3 scripts/peerrolebench_four_event_counterfactual.py",
+  "git_commit": "70a19c1bb4bb9e7a2d004716a88b6197a81085b9",
+  "python": "python3",
+  "api_calls": 0,
+  "gpu": 0,
+  "scientific_claim_allowed": false,
+  "created_at_utc": "2026-09-29T12:50:53.812714+00:00",
+  "control": "UngatedSameInfo shares features, update rule, correction semantics, and capacities; only responsibility status differs.",
+  "stop_rule": "No API/GPU submission; use result only to decide whether minimal counterfactual identifies mechanism.",
+  "script_sha256": "7d38756a8475b4eca5d878f06c2f5f9ad284315b186e171f22a69e719747a3d7",
+  "probe_source_version": "v1 exact same-updater negative qualification"
+}

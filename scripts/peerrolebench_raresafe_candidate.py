@@ -44,17 +44,21 @@ class RareAnchorState:
         dimension: int,
         window_size: int = 256,
         reservoir_size: int = 128,
+        pending_size: int = 128,
         lam: float = 1.0,
         radius: float = 2.0,
         encoder_version: str = "hash64-v1",
     ) -> None:
-        if dimension <= 0 or window_size <= 0 or reservoir_size <= 0:
+        if dimension <= 0 or window_size <= 0 or reservoir_size <= 0 or pending_size <= 0:
             raise ValueError("dimension and capacities must be positive")
         if not math.isfinite(lam) or lam <= 0 or not math.isfinite(radius) or radius <= 0:
             raise ValueError("lam and radius must be positive and finite")
+        if abs(float(lam) - 1.0) > 1e-12:
+            raise ValueError("the candidate updater fixes lam=1")
         self.dimension = int(dimension)
         self.window_size = int(window_size)
         self.reservoir_size = int(reservoir_size)
+        self.pending_size = int(pending_size)
         self.lam = float(lam)
         self.radius = float(radius)
         self.encoder_version = str(encoder_version)
@@ -64,7 +68,9 @@ class RareAnchorState:
         self.window: dict[str, RoleFeedback] = {}
         self.order: list[str] = []
         self.superseded: set[str] = set()
+        self._superseded_order: list[str] = []
         self.correction_queue: list[str] = []
+        self.pending_overflow = 0
         self.watermark = -1
         self.updates = 0
         self.unknowns = 0
@@ -100,6 +106,12 @@ class RareAnchorState:
         return [self.b[i] / (self.lam + max(0.0, self.a[i])) for i in range(self.dimension)]
 
     def _refresh(self) -> None:
+        # An empty fast window means that the protected anchor is the current
+        # policy.  Recomputing against an all-zero raw state would otherwise
+        # erase the anchor immediately after consolidation.
+        if not self.window:
+            self.theta = list(self.anchor)
+            return
         raw = self._theta_raw()
         delta = [raw[i] - self.anchor[i] for i in range(self.dimension)]
         norm = math.sqrt(sum(value * value for value in delta))
@@ -118,15 +130,17 @@ class RareAnchorState:
         if event.supersedes is not None:
             old = self.window.get(event.supersedes)
             if old is None:
-                self.correction_queue.append(event.key)
+                self._queue_correction(event.key)
                 self.unknowns += 1
                 return "QUEUED_CORRECTION"
             self._add_contribution(old, -1.0)
             del self.window[event.supersedes]
             self.order.remove(event.supersedes)
             self.superseded.add(event.supersedes)
+            self._superseded_order.append(event.supersedes)
+            self._trim_pending()
         elif event.source_index < self.watermark:
-            self.correction_queue.append(event.key)
+            self._queue_correction(event.key)
             self.unknowns += 1
             return "QUEUED_CORRECTION"
 
@@ -141,6 +155,19 @@ class RareAnchorState:
         self.updates += 1
         self._refresh()
         return "UPDATE"
+
+    def _queue_correction(self, key: str) -> None:
+        self.correction_queue.append(str(key))
+        self._trim_pending()
+
+    def _trim_pending(self) -> None:
+        while len(self.correction_queue) > self.pending_size:
+            self.correction_queue.pop(0)
+            self.pending_overflow += 1
+        while len(self._superseded_order) > self.pending_size:
+            expired = self._superseded_order.pop(0)
+            self.superseded.discard(expired)
+            self.pending_overflow += 1
 
     def consolidate_if_safe(self, reservoir: Iterable[tuple[tuple[float, ...], float]], epsilon: float = 0.05) -> bool:
         """Move fast state to the anchor only when old loss does not worsen."""
@@ -166,6 +193,7 @@ class RareAnchorState:
             "dimension": self.dimension,
             "window_size": self.window_size,
             "reservoir_size": self.reservoir_size,
+            "pending_size": self.pending_size,
             "lam": self.lam,
             "radius": self.radius,
             "encoder_version": self.encoder_version,
@@ -176,7 +204,9 @@ class RareAnchorState:
             "window": {key: asdict(value) for key, value in self.window.items()},
             "order": list(self.order),
             "superseded": sorted(self.superseded),
+            "superseded_order": list(self._superseded_order),
             "correction_queue": list(self.correction_queue),
+            "pending_overflow": self.pending_overflow,
             "watermark": self.watermark,
             "updates": self.updates,
             "unknowns": self.unknowns,
@@ -187,7 +217,8 @@ class RareAnchorState:
     def restore(cls, payload: Mapping[str, Any]) -> "RareAnchorState":
         state = cls(
             dimension=int(payload["dimension"]), window_size=int(payload["window_size"]),
-            reservoir_size=int(payload["reservoir_size"]), lam=float(payload["lam"]),
+            reservoir_size=int(payload["reservoir_size"]), pending_size=int(payload.get("pending_size", 128)),
+            lam=float(payload["lam"]),
             radius=float(payload["radius"]), encoder_version=str(payload["encoder_version"]),
         )
         state.anchor = [float(x) for x in payload["anchor"]]
@@ -198,7 +229,10 @@ class RareAnchorState:
         }
         state.order = [str(key) for key in payload["order"]]
         state.superseded = {str(key) for key in payload["superseded"]}
+        state._superseded_order = [str(key) for key in payload.get("superseded_order", payload["superseded"])]
         state.correction_queue = [str(key) for key in payload["correction_queue"]]
+        state.pending_overflow = int(payload.get("pending_overflow", 0))
+        state._trim_pending()
         state.watermark = int(payload["watermark"])
         state.updates = int(payload["updates"])
         state.unknowns = int(payload["unknowns"])

@@ -35,7 +35,7 @@ g(e)=1 iff Q and Y are complete,
        producer-owned defect or independent later-use evidence is present.
 ```
 
-`y(e)` is then produced by the fixed label mapping from the independent target `Y/Q`; `J` is an input signal but is not allowed to inspect hidden `Y`. The four analysis arms are fixed before any result: `gate-only`, `judgment-only`, `gate+judgment`, and `contract-only`, all evaluated on the same independent later-use target.
+`y(e)` is then produced by the fixed label mapping from the independent target `Y/Q`; `J` is an input signal but is not allowed to inspect hidden `Y`. A visible recipient acceptance/rejection signal is stored separately: when `g(e)=0`, it is not a producer label. The RARE arm records `status=ineligible` and `label=None`; missing, malformed or permission-failed signals use `status=unknown` and are skipped. An ungated raw-label arm may consume the visible signal only as a pre-registered gate ablation. The four analysis arms are fixed before any result: `gate-only`, `judgment-only`, `gate+judgment`, and `contract-only`, all evaluated on the same independent later-use target.
 
 **Case**: if `A.changed_paths=["processor.py"]` and `processor.py∈R` while `Q=PASS`, then `g=0`, `y=UNKNOWN`; the recipient's repair remains an observed outcome and cannot punish `peer-b`.
 
@@ -50,15 +50,16 @@ The policy state is `(θ_ref,A,b,W,H)`:
 - `W`: at most `B=256` eligible `(key,φ,g,y)` events;
 - `H`: at most `K=128` immutable old-root holdout rows `(φ,y)`.
 
-For feature `φ_i` and eligible weight `g`,
+For feature `φ_i` and eligible weight `w_e` (with `w_e=1` after the gate),
 
 $$
-A_i=1+\sum_{e\in W}g_e\phi_{e,i}^2,\qquad
-b_i=\sum_{e\in W}g_e y_e\phi_{e,i},\qquad
-\theta_{raw,i}=b_i/A_i.
+A_i=\lambda+\sum_{e\in W}w_e\phi_{e,i}^2,\qquad
+b_i=\sum_{e\in W}w_e y_e\phi_{e,i},\qquad
+\theta_{raw,i}=b_i/A_i,\quad \lambda=1.
 $$
 
-The output is the bounded anchor projection
+When `W` is empty, the protected anchor is exposed directly. Otherwise the
+output is the bounded anchor projection
 
 $$
 \theta=\theta_{ref}+\operatorname{Proj}_{\|z\|_2\le 2}(\theta_{raw}-\theta_{ref}).
@@ -86,10 +87,10 @@ Feedback arrivals use `k`, not episode order. For an eligible event:
 1. verify lineage, ownership, version and independent target;
 2. if `key` is duplicate, no-op;
 3. if a correction supersedes an event in `W`, subtract the old contribution and add the new one;
-4. if the correction is outside `W`, append a bounded `UNKNOWN` queue entry and do not silently rewrite the current state;
+4. if the correction is outside `W`, append a bounded `UNKNOWN` queue entry and do not silently rewrite the current state; `K_pending=128` bounds both pending correction keys and superseded tombstones;
 5. insert into `W`, evict the oldest row when `|W|>B`, update `A,b`, and record the new state digest.
 
-Every event is processed once. Snapshot/restore must produce the same digest and next choice. Selection is `O(|C|d)`, eligible update/correction is `O(d)`, and state is bounded by `O(d(B+K))` **only if** the correction queue and superseded tombstones are also capacity-limited; that capacity is an open parameter to freeze before promotion.
+Every event is processed once. Snapshot/restore must produce the same digest and next choice. Selection is `O(|C|d)`, eligible update/correction is `O(d)`, and state is bounded by `O(d(B+K)) + O(K_pending)` with `B=256`, `K=128` and `K_pending=128`.
 
 ## 6. Same-information baseline and kill condition
 

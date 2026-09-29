@@ -144,3 +144,21 @@
 - **根因:** 将账本的persistent ID误等同于执行者具有persistent experience；接线试验若直接扩样会学习随机调用噪声。
 - **避免:** 先定义相同起点、合法个人经验如何进入后续工作，与别人对peer的评价分开；所有对照固定同一记忆规则，不预设专长制造效果。即使有记忆也仍须验证可预测差异。
 - **Evidence:** N02 v3源码/producer请求及独立审查；本轮没有角色形成证据。
+
+### 0023-negative-label-fixtures-can-hide-gate-information | 2026-09-29 | earning-roles
+- **现象:** 三事件反事实中责任门与去门控更新器产生完全相同的选择，起初容易被误读为责任门没有价值。
+- **根因:** recipient-owned 行使用 `raw=0` 且与 producer 候选特征正交；对角更新只改变分母，不产生方向性系数。
+- **避免:** 机制资格测试必须覆盖 raw 正值、零值、缺失值和非正交特征；先检查手算可识别性，再解释负结果。缺失信号保持 `UNKNOWN`，不能编码为 0。
+- **Evidence:** `experiments/logs/n03_four_event_counterfactual_20260929_v1/` 与 `experiments/logs/n03_gate_identification_matrix_20260929_v1/`。
+
+### 0024-candidate-formula-and-code-must-share-piecewise-contract | 2026-09-29 | earning-roles
+- **现象:** 候选卡的 ridge 常数、空窗口 anchor 投影和 pending 容量与 reference implementation 的实际语义不完全一致。
+- **根因:** 先写连续公式，后补状态边界；空集合和延迟队列没有作为同一数学合同的分支与容量写出。
+- **避免:** 每个公式都写空集/边界 case、参数冻结值和可运行实例；同步检查实现的 `lambda`、empty-window、queue/tombstone 与 snapshot/restore。
+- **Evidence:** `docs/research/candidates/method_lock_card_v0.1_20260929.md` 与候选静态审计/修复日志。
+
+### 0025-python-bytecode-cache-can-fail-outside-project-write-root | 2026-09-29 | earning-roles
+- **现象:** `py_compile` 首次尝试因系统 Python 将 `.pyc` 写入受限用户缓存目录而失败，源码本身没有语法错误。
+- **根因:** 验证命令未把 bytecode cache 定位到项目可写目录。
+- **避免:** 在受限环境中使用项目/临时目录的 `PYTHONPYCACHEPREFIX`，并保留原始权限错误；不能把环境写权限失败当作源码失败。
+- **Evidence:** 本轮终端回执；修正后 `PYTHONPYCACHEPREFIX=/tmp/earning_roles_pycache python3 -m py_compile ...` 通过。

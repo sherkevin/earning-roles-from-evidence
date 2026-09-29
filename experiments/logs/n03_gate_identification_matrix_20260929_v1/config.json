@@ -1,0 +1,14 @@
+{
+  "experiment": "n03_gate_identification_matrix_20260929_v1",
+  "purpose": "zero-call diagnostic matrix for responsibility-gate identifiability",
+  "script": "scripts/peerrolebench_gate_identification_matrix.py",
+  "tests": "tests/test_peerrolebench_gate_identification_matrix.py",
+  "git_commit": "70a19c1bb4bb9e7a2d004716a88b6197a81085b9",
+  "script_sha256": "8f96d9b97fe7ba82ef9cc98fa85772fdc73e1361ffdbf01d04b178e4b9488db5",
+  "command": "python3 -m pytest -q tests/test_peerrolebench_raresafe_candidate.py tests/test_peerrolebench_four_event_counterfactual.py tests/test_peerrolebench_gate_identification_matrix.py; PYTHONPATH=scripts python3 scripts/peerrolebench_gate_identification_matrix.py",
+  "api_calls": 0,
+  "gpu": 0,
+  "scientific_claim_allowed": false,
+  "control": "Ungated raw-label ablation shares updater, features, capacities, correction and selection but consumes the visible raw acceptance signal despite ineligible attribution; missing raw signal is skipped by both arms.",
+  "created_at_utc": "2026-09-29T15:00:29.428593+00:00"
+}

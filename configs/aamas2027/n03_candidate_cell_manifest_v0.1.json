@@ -1,0 +1,67 @@
+{
+  "manifest_version": "peerrolebench-cell-candidate-v0.1",
+  "status": "CANDIDATE_NOT_FROZEN",
+  "authority_scorecard": "docs/research/candidates/benchmark_authority_scorecard_v0.1_20260929.md",
+  "track_decision": "docs/research/candidates/benchmark_track_decision_v0.1_20260929.md",
+  "primary_track": null,
+  "secondary_track": null,
+  "user_confirmation_required_before_activation": true,
+  "api_runs_allowed": false,
+  "gpu_runs_allowed": false,
+  "shared_contract": {
+    "candidate_menu": "same per matched cell",
+    "rng_and_propensity": "same per matched cell",
+    "arrival_schedule": "same event-time schedule per matched cell",
+    "public_ownership": "visible to every arm",
+    "private_scorer_and_future_outcome": "hidden until eligible arrival",
+    "unknown": "no update; preserve reason and denominator",
+    "cost": ["producer", "recipient", "judgment", "scorer", "retry", "communication", "repair", "replay"]
+  },
+  "cells": [
+    {
+      "cell_id": "PS-dev-mechanism-locality",
+      "track": "PeerSelect",
+      "source": "graph-ipd@00ef417f60053569175b2b50d0f0e25ff8eb7007",
+      "split": "development",
+      "root": "ring,line,erdos_renyi,watts_strogatz,barabasi_albert",
+      "policies": ["uniform", "no_update", "contextual_trust", "RARE", "graph_ipd_reference"],
+      "factors": ["local_neighbors", "selected_only", "early_late_arrival", "drift"],
+      "primary_endpoint": ["selected_payoff", "regret", "recovery_time", "update_latency_p95"],
+      "independent_unit": "persistent graph stream",
+      "status": "DESIGN_ONLY"
+    },
+    {
+      "cell_id": "AR-dev-information-value",
+      "track": "ArtifactRole",
+      "source": "TeamBench@d185aef1916fd86a9ba554d581fd256319a973af",
+      "split": "development",
+      "root": "DIST1_queue_race",
+      "policies": ["raw_acceptance", "terminal_only", "contextual_trust", "RARE"],
+      "factors": ["producer_defect", "recipient_only", "sink_only", "mixed_unknown"],
+      "primary_endpoint": ["out_of_sample_producer_contract_brier", "unknown_rate", "attribution_precision"],
+      "independent_unit": "root-level live history",
+      "status": "BLOCKED_ROOT_QUALIFICATION"
+    },
+    {
+      "cell_id": "AR-confirmation-closed-loop",
+      "track": "ArtifactRole",
+      "source": "TeamBench@d185aef1916fd86a9ba554d581fd256319a973af",
+      "split": "confirmation",
+      "root": "PIPE3_stream_processing",
+      "policies": ["uniform", "no_update", "raw_acceptance", "terminal_only", "contextual_trust", "closest_published", "RARE"],
+      "factors": ["unseen_owner", "pre_execution_assignment", "early_late_arrival", "version_replacement", "drift"],
+      "primary_endpoint": ["assignment_change_before_execution", "unseen_quality", "repair_cost", "complete_cost"],
+      "independent_unit": "root-level live history",
+      "status": "BLOCKED_RUNNER_AND_LATER_ASSIGNMENT"
+    }
+  ],
+  "stop_rules": [
+    "task_oracle_or_visibility_leak",
+    "non_independent_root_or_stream",
+    "producer_recipient_attribution_failure",
+    "unknown_treated_as_negative",
+    "baseline_information_or_cost_mismatch",
+    "missing_pre_execution_assignment",
+    "incomplete_cost_or_failure_denominator"
+  ]
+}
