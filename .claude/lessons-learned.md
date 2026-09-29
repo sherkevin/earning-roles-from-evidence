@@ -174,3 +174,9 @@
 - **根因:** replay bookkeeping 与 concrete updater commit 没有事务边界，bridge 自己维护了一份没有 snapshot 合同的平行历史。
 - **避免:** 只有 updater 接受事件后才提交 seen/lineage；correction lineage 以 policy snapshot 为准，bridge 不复制一份不可恢复的状态；对跨 selection/channel 的 supersedes 做硬拒绝。
 - **Evidence:** `scripts/peerrolebench_baseline_policies.py`、`scripts/peerrolebench_policy_sidecar.py` 及 78 项定向回归。
+
+### 0028-feedback-must-be-consumed-before-the-next-selection | 2026-09-30 | earning-roles
+- **现象:** 离线 policy matrix 先封存当前选择再消费同一 offer 的 feedback；日志看似记录了更新，但早到 judgment 没有参与本次 read-cut 后的选择。
+- **根因:** runner 把“反馈已写入状态”和“反馈对哪个 decision 可见”当成同一件事，偏离了 PIPE3 的 consume-before-choose 顺序；同时 matrix 没有 raw acceptance 正向 fixture，无法资格化该 baseline。
+- **避免:** 在每次 choose 前只消费 arrival_index 不晚于 read_cut、且已绑定历史 source selection 的事件；为每个 feedback channel 写正向、UNKNOWN、unselected、late 和 self-reference mutation case，并把预期语义纳入通过条件。
+- **Evidence:** `docs/coordination/task_reports/20260930_policy_matrix_runner.md`；`experiments/logs/n03_policy_matrix_runner_20260930_v9/`。

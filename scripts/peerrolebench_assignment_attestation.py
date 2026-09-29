@@ -33,7 +33,7 @@ REQUIRED_ROW_KEYS = frozenset({
     "feedback_id", "source_event_id", "source", "candidate_key", "evidence_version",
     "source_index", "arrival_index", "arrived_at", "delay", "action", "disposition", "provenance",
 })
-ROW_SOURCES = frozenset({"recipient_judgment", "terminal_outcome"})
+ROW_SOURCES = frozenset({"raw_acceptance", "recipient_judgment", "terminal_outcome"})
 ROW_DISPOSITIONS = frozenset({"eligible", "pending", "unknown", "rejected", "ineligible"})
 ROW_PROVENANCE = frozenset({"public", "unknown"})
 

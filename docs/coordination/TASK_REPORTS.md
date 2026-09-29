@@ -162,4 +162,4 @@ Goal 修改。
 - [done] 2026-09-30 baseline parity audit (task_reports/20260930_baseline_parity_audit.md)：
   七个 arm 可构造但尚未形成公平 benchmark；统一 root runner、全局 event-time、UNKNOWN 分母、完整成本、later assignment 和 closest published adapter 仍开放，RARE/contextual 不能暂称同信息强基线。
 - [done] 2026-09-30 policy matrix runner qualification (task_reports/20260930_policy_matrix_runner.md)：
-  七个 arm 在同一离线 runner 的六个 hand-authored feedback case 上通过菜单/seed/registry/protocol lineage/event-time/selected-only/UNKNOWN/snapshot 及语义 contract；v1--v7 失败/修复保留，v8 仅为 parity 子门，不是 benchmark、方法效果或科学结果。
+  七个 arm 在同一离线 runner 的七个 hand-authored feedback case 上通过菜单/seed/registry/protocol lineage/event-time/observe-before-choose/selected-only/UNKNOWN/raw acceptance/snapshot 及语义 contract；v1--v8 失败/修复保留，v9 仅为 parity 子门，不是 benchmark、方法效果或科学结果。

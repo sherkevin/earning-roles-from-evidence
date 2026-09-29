@@ -32,3 +32,10 @@
 - [open] 2026-09-26 下一小任务：只做 PIPE3 任务契约/隔离资格（无 LLM、无 GPU）；失败才转 MULTI3。
 - [done] 2026-09-26 独立收口审查PASS，两项成本/经验连续性澄清已落实；无新API/GPU。80项工程测试、冻结结果hash、链接和文档一致性检查通过，科学要求仍pending。GitHub普通HTTPS Git连接超时，API确认远程仍为原HEAD；尝试经认证Git Data API发布同一有界checkpoint，不force覆盖远程。
 - [done] 2026-09-26 检查点`ffe81bc59226fa9fe45e3dbc9f77a977d318ecb8`已发布至远程`codex/aamas-real-validation-20260922`并回读一致；使用Git Data API的非force快进，tree/commit与本地完全一致。见[发布回执](artifacts/analysis/aamas2027/checkpoint_20260926/receipt.json)。第三方克隆和4538个嵌套历史fixture文件保留本地，完整索引随检查点；持久目标active，下一步仍为N03任务/状态资格。
+# 2026-09-30 · matrix 决策时序纠正
+
+- [doing] 修正 matrix 先 choose 后 observe 的一轮滞后；重用既有 PIPE3 先反馈后选择的合同，加入同 context 的 early/late 概率断言、self-feedback 拒绝及 raw acceptance 正向覆盖。旧 v8 保留，不能代表此合同通过。
+- [open] 对照 active benchmark 验收标准记录本次对 ER-G3/G4 的推进与剩余缺口；closest published adapter、同信息 contextual/RARE、独立 live histories 仍是主线待解决项，不以 fixture 通过代替。
+
+- [done] 2026-09-30 matrix 时序与 channel qualification：v9 将反馈消费移到 choose 前，新增 raw acceptance、UNKNOWN、unselected、early/late、自反馈和 protocol/source lineage 断言；9 项定向、265 项 PeerRoleBench 回归通过。产出：[task report](docs/coordination/task_reports/20260930_policy_matrix_runner.md)、[v9 logs](experiments/logs/n03_policy_matrix_runner_20260930_v9/)。
+- [open] 2026-09-30 下一门：把这部分离线 contract 接入 root-specific live runner，验证完整累计 information set、隔离进程 policy-read trace、独立 live history、完整成本与 later assignment；在此之前不把 v9 写成公平 baseline 或科学效果。

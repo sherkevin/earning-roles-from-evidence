@@ -125,6 +125,7 @@ def _offer(
     native_selection_id: str, read_cut: int, decision_index: int,
     selected_at: float, rng_seed: int,
     protocol_event_ids: Mapping[str, str] | None = None,
+    context_key: str | None = None,
 ) -> MatrixOffer:
     raw_rows = [dict(row) for row in public_rows]
     derived_event_ids = {
@@ -138,7 +139,7 @@ def _offer(
         event_ids_input = derived_event_ids
     offer = make_offer(
         offer_id=offer_id, task_id="PIPE3_stream_processing", task_index=task_index,
-        role="producer", context_key=f"PIPE3:{task_index}",
+        role="producer", context_key=context_key or f"PIPE3:{task_index}",
         candidate_keys=candidate_keys, public_rows=raw_rows,
         evidence_version="matrix-evidence-v1", available_index=available_index,
     )
@@ -180,7 +181,11 @@ class PolicyMatrixRunner:
                 raise ValueError(f"offer arrival index disagrees with schedule: {feedback_id}")
             if offer.protocol_event_ids.get(feedback_id) != assignment.protocol_event_id:
                 raise ValueError(f"offer protocol event disagrees with schedule: {feedback_id}")
-            if str(row["source"]) != assignment.protocol_event_type:
+            source_matches_protocol = (
+                str(row["source"]) == assignment.protocol_event_type
+                or (str(row["source"]) == "raw_acceptance" and assignment.protocol_event_type == "recipient_judgment")
+            )
+            if not source_matches_protocol:
                 raise ValueError(f"offer protocol event type disagrees with schedule: {feedback_id}")
             if str(row["source_event_id"]) != assignment.source_event_id:
                 raise ValueError(f"offer source event disagrees with schedule: {feedback_id}")
@@ -256,6 +261,52 @@ class PolicyMatrixRunner:
             for name, policy in policies.items():
                 before_seen = set(policy._seen_feedback)
                 before_updates = policy.updates
+                feedback_trace = []
+                for row in item.offer.public_rows:
+                    feedback_id = str(row["feedback_id"])
+                    source_selection = policy._decisions.get(str(row["source_event_id"]))
+                    if source_selection is None:
+                        raise ValueError("feedback references an unknown source selection")
+                    if row["candidate_key"] != source_selection.chosen.key:
+                        metrics[name]["n_unselected"] += 1
+                        feedback_trace.append({
+                            "feedback_id": feedback_id, "disposition": "unselected",
+                            "selected_key": source_selection.chosen.key,
+                        })
+                        continue
+                    if feedback_id in before_seen:
+                        metrics[name]["n_duplicate"] += 1
+                        feedback_trace.append({"feedback_id": feedback_id, "disposition": "duplicate"})
+                        continue
+                    if row["disposition"] != "eligible" or row["provenance"] != "public":
+                        metrics[name]["n_unknown"] += 1
+                        reason = str(row.get("unknown_reason", "unspecified"))
+                        reasons = metrics[name]["unknown_reasons"]
+                        reasons[reason] = int(reasons.get(reason, 0)) + 1
+                        feedback_trace.append({"feedback_id": feedback_id, "disposition": "unknown", "reason": reason})
+                        continue
+                    source = str(row["source"])
+                    if source not in policy.accepted_sources:
+                        metrics[name]["n_ignored"] += 1
+                        feedback_trace.append({"feedback_id": feedback_id, "disposition": "ignored", "source": source})
+                        continue
+                    supersedes = row.get("supersedes")
+                    if supersedes is not None and name != "RARE":
+                        metrics[name]["n_unsupported_correction"] += 1
+                    feedback = Feedback(
+                        feedback_id=feedback_id, source_event_id=str(row["source_event_id"]),
+                        source=source, label=float(row["label"]), arrived_at=float(row["arrived_at"]),
+                        delay=float(row["delay"]), action=str(row["action"]),
+                        disposition="eligible", provenance="public",
+                        arrival_index=int(row["arrival_index"]),
+                        supersedes=None if supersedes is None else str(supersedes),
+                    )
+                    changed = policy.observe_feedback(feedback)
+                    metrics[name]["n_eligible"] += 1
+                    feedback_trace.append({
+                        "feedback_id": feedback_id, "disposition": "eligible",
+                        "changed": bool(changed), "source": source,
+                    })
                 selection = policy.choose(
                     event_id=f"policy-{item.native_selection_id}",
                     context_key=item.offer.context_key, selector_id=item.selector_id,
@@ -276,53 +327,8 @@ class PolicyMatrixRunner:
                     "chosen_key": selection.chosen.key,
                     "probabilities": list(selection.probabilities),
                     "propensity": selection.propensity,
-                    "feedback": [],
+                    "feedback": feedback_trace,
                 }
-                for row in item.offer.public_rows:
-                    feedback_id = str(row["feedback_id"])
-                    source_selection = policy._decisions.get(str(row["source_event_id"]))
-                    if source_selection is None:
-                        raise ValueError("feedback references an unknown source selection")
-                    if row["candidate_key"] != source_selection.chosen.key:
-                        metrics[name]["n_unselected"] += 1
-                        trace["feedback"].append({
-                            "feedback_id": feedback_id, "disposition": "unselected",
-                            "selected_key": source_selection.chosen.key,
-                        })
-                        continue
-                    if feedback_id in before_seen:
-                        metrics[name]["n_duplicate"] += 1
-                        trace["feedback"].append({"feedback_id": feedback_id, "disposition": "duplicate"})
-                        continue
-                    if row["disposition"] != "eligible" or row["provenance"] != "public":
-                        metrics[name]["n_unknown"] += 1
-                        reason = str(row.get("unknown_reason", "unspecified"))
-                        reasons = metrics[name]["unknown_reasons"]
-                        reasons[reason] = int(reasons.get(reason, 0)) + 1
-                        trace["feedback"].append({"feedback_id": feedback_id, "disposition": "unknown", "reason": reason})
-                        continue
-                    source = str(row["source"])
-                    if source not in policy.accepted_sources:
-                        metrics[name]["n_ignored"] += 1
-                        trace["feedback"].append({"feedback_id": feedback_id, "disposition": "ignored", "source": source})
-                        continue
-                    supersedes = row.get("supersedes")
-                    if supersedes is not None and name != "RARE":
-                        metrics[name]["n_unsupported_correction"] += 1
-                    feedback = Feedback(
-                        feedback_id=feedback_id, source_event_id=str(row["source_event_id"]),
-                        source=source, label=float(row["label"]), arrived_at=float(row["arrived_at"]),
-                        delay=float(row["delay"]), action=str(row["action"]),
-                        disposition="eligible", provenance="public",
-                        arrival_index=int(row["arrival_index"]),
-                        supersedes=None if supersedes is None else str(supersedes),
-                    )
-                    changed = policy.observe_feedback(feedback)
-                    metrics[name]["n_eligible"] += 1
-                    trace["feedback"].append({
-                        "feedback_id": feedback_id, "disposition": "eligible",
-                        "changed": bool(changed), "source": source,
-                    })
                 metrics[name]["updates"] += policy.updates - before_updates
                 traces[name].append(trace)
         replay = {}
@@ -361,6 +367,10 @@ def fixture_case(case: str) -> tuple[list[MatrixOffer], tuple[ArrivalAssignment,
         rows = [_row(feedback_id="f0", source_event_id="policy-selection-0", protocol_event_id="o0",
                      source="terminal_outcome", candidate_key=chosen, arrival_index=1, label=1.0,
                      action="use")]
+    elif case == "raw_acceptance":
+        rows = [_row(feedback_id="f0", source_event_id="policy-selection-0", protocol_event_id="j0",
+                     source="raw_acceptance", candidate_key=chosen, arrival_index=1, label=1.0,
+                     action="accept")]
     elif case == "unknown_late_correction":
         rows = [
             _row(feedback_id="f0", source_event_id="policy-selection-0", protocol_event_id="j0",
@@ -397,7 +407,8 @@ def fixture_case(case: str) -> tuple[list[MatrixOffer], tuple[ArrivalAssignment,
         ))
     schedule_rows = tuple(
         ArrivalAssignment(
-            feedback_id=str(row["feedback_id"]), protocol_event_type=str(row["source"]),
+            feedback_id=str(row["feedback_id"]),
+            protocol_event_type=("recipient_judgment" if row["source"] == "raw_acceptance" else str(row["source"])),
             protocol_event_id=str(row["_protocol_event_id"]), source_event_id=str(row["source_event_id"]),
             arrival_index=int(row["arrival_index"]),
         ) for row in rows
@@ -419,6 +430,12 @@ def _semantic_pass(case: str, result: Mapping[str, Any]) -> bool:
             metrics["terminal_only"]["n_eligible"] == 1
             and metrics["terminal_only"]["updates"] == 1
             and all(metrics[name]["n_ignored"] == 1 for name in ("uniform", "no_update", "raw_acceptance", "contextual_trust", "pooled_controller", "RARE"))
+        )
+    if case == "raw_acceptance":
+        return (
+            metrics["raw_acceptance"]["n_eligible"] == 1
+            and metrics["raw_acceptance"]["updates"] == 1
+            and all(metrics[name]["n_ignored"] == 1 for name in ("uniform", "no_update", "terminal_only", "contextual_trust", "pooled_controller", "RARE"))
         )
     if case == "unknown_late_correction":
         return (
@@ -444,7 +461,7 @@ def _semantic_pass(case: str, result: Mapping[str, Any]) -> bool:
 
 def run_fixture_suite(out_dir: Path) -> dict[str, Any]:
     out_dir.mkdir(parents=True, exist_ok=False)
-    case_names = ["recipient_only", "producer_defect", "terminal", "unknown_late_correction", "unknown", "unselected"]
+    case_names = ["recipient_only", "producer_defect", "terminal", "raw_acceptance", "unknown_late_correction", "unknown", "unselected"]
     fixture_specs = {case: fixture_case(case) for case in case_names}
     config = {
         "experiment_id": out_dir.name,
