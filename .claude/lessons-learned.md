@@ -261,6 +261,12 @@
 - **避免:** 在 mutation 前检查角色、菜单、重复 task/selection、版本、时间、水位、可用性和 selected-only feedback 绑定；随后以对象级快照保护仍可能在采样后抛出的错误，并恢复 policy、ledger、selection cache 及双 manifest。
 - **Evidence:** [PIPE3 preflight-before-mutation qualification](../docs/coordination/task_reports/20260930_pipe3_preflight_mutation_qualification.md)；`experiments/logs/n03_pipe3_preflight_mutation_qualification_20260930/`。
 
+### 0042-diagnostic-eligibility-is-not-update-permission | 2026-09-30 | earning-roles
+- **现象:** versioned source-bound composition 的 v2 将 responsibility gate 的 `ELIGIBLE` 直接当成 policy update 许可，虽然同一 gate 明确返回 `policy_update_allowed=false`。
+- **根因:** “这条证据归因上可解释”与“当前训练控制器允许消费标签”是两个不同的合同，脚本把它们压成了一个布尔值。
+- **避免:** public offer 只依据 `policy_update_allowed` 产生 eligible label；gate 关闭时保留 UNKNOWN reason 并断言 policy 不更新。v2 原始日志保留，v3 作为接受版本。
+- **Evidence:** [versioned source-bound composition](../docs/coordination/task_reports/20260930_pipe3_versioned_source_bound_composition.md)；`experiments/logs/n03_pipe3_versioned_source_bound_composition_qualification_20260930_v1/`、`v2/`、`v3/`。
+
 ### 0041-selection-boundaries-must-preflight-before-mutation | 2026-09-30 | earning-roles
 - **现象:** `choose_and_seal` 原先先写 auxiliary offer、消费反馈和 policy decision，之后才构造 consumption attestation；read-cut 越界、offer 尚不可用、角色/menu 不匹配或后续 policy/ledger 异常可能留下部分状态。
 - **根因:** 输入时序约束和对象构造校验分散在 attestation、policy、native ledger 三层，入口没有在第一次写入前统一检查，也没有失败回滚。
