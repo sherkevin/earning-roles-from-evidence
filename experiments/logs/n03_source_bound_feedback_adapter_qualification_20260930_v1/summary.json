@@ -1,0 +1,48 @@
+{
+  "qualification": "source-bound-pipe3-feedback-adapter-v1",
+  "script": "/Users/jingwu/work/earning-roles/scripts/peerrolebench_source_bound_feedback_adapter_qualification.py",
+  "script_sha256": "9189d76dc3e4d3a702705d7208560f3331579cadbb9bd9364d86861aa571e698",
+  "adapter_sha256": "c8d92824b9b182db1aad06557a2653ac572be5435dc877152a9f61240da84524",
+  "fixture_mode": "canonical-ledger-v4-sidecar-frozen-schedule",
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "python": "3.9.6",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "started_at_utc": "2026-09-30T04:04:19.787262+00:00",
+  "git_commit": "1f962ec233f03b9b362b1818d235c678f22a4157",
+  "status": "QUALIFIED_OFFLINE",
+  "checks": [
+    {
+      "name": "canonical_v4_sidecar_to_offer",
+      "status": "PASS",
+      "offer_id": "offer-0",
+      "candidate_keys": [
+        "peer-b@v1",
+        "peer-c@v1"
+      ],
+      "schedule_digest": "a98be1fb4d6e8bc01d8ff7af7ad64984ca5a93b3cfa0d5dea1e422aaa03c3923"
+    },
+    {
+      "name": "reject_schedule_protocol_mutation",
+      "status": "PASS",
+      "error": "sidecar does not match the frozen arrival schedule"
+    },
+    {
+      "name": "reject_sidecar_record_hash_mutation",
+      "status": "PASS",
+      "error": "sidecar is bound to a different ledger record"
+    },
+    {
+      "name": "reject_non_v4_online_sidecar",
+      "status": "PASS",
+      "error": "source-bound online offer requires event-time sidecar v4"
+    },
+    {
+      "name": "reject_schedule_index_mutation",
+      "status": "PASS",
+      "error": "sidecar does not match the frozen arrival schedule"
+    }
+  ],
+  "ended_at_utc": "2026-09-30T04:04:19.813636+00:00"
+}

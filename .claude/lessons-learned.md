@@ -206,3 +206,9 @@
 - **根因:** eligible 与 ineligible 分支分别构造 projection 时，没有把事件时间与修订元数据视为 policy-visible 的审计字段；误把“没有 label”当成“没有事件元数据”。
 - **避免:** UNKNOWN 仍必须保留 event-time 和修订引用，但不能携带 label 或 gate/raw 私有原因；offer adapter 对旧 wall-clock-only projection 直接拒绝，并要求公开、固定的 unknown reason。
 - **Evidence:** [public feedback-row adapter qualification](../docs/coordination/task_reports/20260930_public_feedback_row_adapter_qualification.md)；`experiments/logs/n03_public_feedback_rows_qualification_20260930_v1/`。
+
+### 0033-source-bound-offers-must-validate-before-serialization | 2026-09-30 | earning-roles
+- **现象:** typed projection 可以正确生成 public row，但 `make_offer` 本身不验证 projection 是否来自 canonical ledger、完整责任链或冻结 arrival schedule；直接调用会把结构正确误当成来源正确。
+- **根因:** sidecar binding、lineage validation、schedule validation 和 public serialization 分散在不同模块，缺少一个强制顺序的入口。
+- **避免:** 先绑定 selection/feedback 到 canonical records，再要求 v4 与责任链、schedule 一一对应，最后才调用 projection→row→offer；raw acceptance 另走 comparator 通道，UNKNOWN 不更新。
+- **Evidence:** [source-bound adapter qualification](../docs/coordination/task_reports/20260930_source_bound_feedback_adapter_qualification.md)；`experiments/logs/n03_source_bound_feedback_adapter_qualification_20260930_v1/`。
