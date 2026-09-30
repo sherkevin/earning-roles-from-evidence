@@ -1,9 +1,9 @@
 """Offline isolated PIPE3 live-trace qualification.
 
 This is a deliberately small composition check.  It reuses the pinned PIPE3
-CPU scorers and action validator, then sends only a public profile through the
-existing separate-process policy reader before the source-bound selection on
-the same canonical boundary.  The responsibility gate is intentionally
+CPU scorers and action validator, then sends the exact source-bound public
+feedback offer through a separate-process policy reader before the source-bound
+selection on the same canonical boundary.  The responsibility gate is intentionally
 closed in this qualification, so the public feedback is UNKNOWN and no
 policy update may occur.  It makes no API or GPU call and is not a benchmark
 result.
@@ -21,7 +21,6 @@ import platform
 import subprocess
 import sys
 import time
-from types import SimpleNamespace
 from typing import Any, Mapping
 
 import numpy as np
@@ -39,8 +38,6 @@ from peer_role_protocol_20260925 import (  # noqa: E402
 )
 from peerrolebench_baseline_policies import ContextualTrustPolicy  # noqa: E402
 from peerrolebench_event_time_schedule import ArrivalAssignment  # noqa: E402
-from peerrolebench_metateam_profile_qualification import profile  # noqa: E402
-from peerrolebench_metateam_profile_sidecar import MetaTeamAssignmentOffer  # noqa: E402
 from peerrolebench_pipe3_material_adapter import build_materials, digest_files  # noqa: E402
 from peerrolebench_pipe3_profile_episode_qualification import (  # noqa: E402
     _log,
@@ -63,7 +60,7 @@ from peerrolebench_pipe3_task_qualification import load_pipe3  # noqa: E402
 from peerrolebench_pipe3_full_chain_qualification import registry  # noqa: E402
 from peerrolebench_policy_projection import AttributionGate, _digest  # noqa: E402
 from peerrolebench_policy_sidecar import FeedbackSidecar  # noqa: E402
-from peerrolebench_isolated_policy_read import read_profiles_isolated  # noqa: E402
+from peerrolebench_isolated_policy_read import read_source_offer_isolated  # noqa: E402
 from peerrolebench_source_bound_feedback_adapter import build_source_bound_offer  # noqa: E402
 
 
@@ -75,7 +72,7 @@ PUBLIC_EVENT_KEYS = {
     "action": {"consumer_action", "changed_paths", "input_source_sha256", "output_source_sha256", "public_writable_paths"},
     "scorer_after": {"scorer", "status", "label", "quality_score", "artifact_sha256", "decision_complete", "coverage_complete"},
     "outcome": {"status", "quality_score", "coverage_complete", "decision_complete", "artifact_sha256"},
-    "policy_read": {"offer_id", "offer_digest", "profile_ids", "read_cut", "policy_input_digest", "public_profiles_digest", "worker_sha256"},
+    "policy_read": {"offer_id", "offer_record_hash", "bundle_digest", "candidate_keys", "read_cut", "policy_input_digest", "public_rows_digest", "worker_sha256"},
 }
 
 
@@ -139,7 +136,7 @@ def run(out_dir: Path, *, seed: int = 0) -> dict[str, Any]:
         "real_api_calls": 0,
         "gpu_jobs": 0,
         "scientific_claim_allowed": False,
-        "fixture_mode": "pinned-pipe3-cpu-scorer-action-isolated-public-profile-read",
+        "fixture_mode": "pinned-pipe3-cpu-scorer-action-isolated-source-offer-read",
         "python": platform.python_version(),
         "platform": platform.platform(),
         "source_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
@@ -278,34 +275,19 @@ def run(out_dir: Path, *, seed: int = 0) -> dict[str, Any]:
         context_key="PIPE3:1", target_task_index=1, previous_aux_hash=auxiliary_manifest_root(boundary.auxiliary_manifest_rows),
     )
 
-    # Exercise the existing isolated assignment runner with a public profile.
-    # It is a read-only profile fixture here: no hidden scorer output or source
-    # text crosses the process boundary.
-    assignment_offer = MetaTeamAssignmentOffer.build(
-        offer_id="isolated-live-assignment-offer", task_id=TASK_ID, decision_index=1, read_cut=1,
-        candidate_keys=("peer-b@v1", "peer-c@v1"),
-        profiles=(profile(
-            profile_id="isolated-live-profile-r1", candidate_key="peer-b@v1", producer_id="peer-b",
-            selected_candidate_key="peer-b@v1", source_decision_index=0,
-            source_arrival_index=1, available_index=1,
-        ),),
+    # The isolated worker receives the exact source-bound public offer.  It
+    # does not receive the ledger, sidecar, gate, scorer output, or source text.
+    read = read_source_offer_isolated(
+        source_offer, read_cut=1, previous_aux_hash=source_offer.previous_aux_hash,
     )
-    from peerrolebench_pipe3_assignment_runner import Pipe3AssignmentRunner  # noqa: E402
-    isolated_runner = Pipe3AssignmentRunner(assignment_offer)
-    isolated_runner.emit_offer()
-    read_attestation = isolated_runner.consume_profiles(("isolated-live-profile-r1",), isolated_policy_read=True)
-    isolated_runner.seal_selection(
-        SimpleNamespace(candidates=(SimpleNamespace(key="peer-b@v1"), SimpleNamespace(key="peer-c@v1")), task_index=1, selected_at=1.0),
-        read_attestation,
-    )
-    read = read_profiles_isolated(assignment_offer, ("isolated-live-profile-r1",), read_cut=1)
     _append_trace(trace, "policy_read", {
-        "offer_id": assignment_offer.offer_id,
-        "offer_digest": assignment_offer.offer_digest,
-        "profile_ids": list(read.profile_ids),
+        "offer_id": read.offer_id,
+        "offer_record_hash": read.offer_record_hash,
+        "bundle_digest": read.bundle_digest,
+        "candidate_keys": list(read.candidate_keys),
         "read_cut": read.read_cut,
         "policy_input_digest": read.policy_input_digest,
-        "public_profiles_digest": read.public_profiles_digest,
+        "public_rows_digest": read.public_rows_digest,
         "worker_sha256": read.worker_sha256,
     })
 
@@ -319,7 +301,7 @@ def run(out_dir: Path, *, seed: int = 0) -> dict[str, Any]:
     checks = {
         "ordered_actor_scorer_action_outcome_policy_read": [e["event"] for e in trace] == ["actor_output", "scorer_before", "action", "scorer_after", "outcome", "policy_read"],
         "public_payload_only": all(set(e["payload"]) == PUBLIC_EVENT_KEYS[e["event"]] for e in trace),
-        "isolated_policy_read": bool(read_attestation and isolated_runner.isolated_policy_trace),
+        "isolated_policy_read": read.isolated,
         "source_bound_selection_after_read": seal1.native_selection.task_index == 1 and trace[-1]["event"] == "policy_read",
         "responsibility_gate_closed": not policy_update_allowed,
         "unknown_no_update": sidecar.label is None and boundary.policy.updates == 0,
@@ -330,7 +312,12 @@ def run(out_dir: Path, *, seed: int = 0) -> dict[str, Any]:
         "status": "QUALIFIED_OFFLINE" if all(checks.values()) else "FAILED_OFFLINE",
         "passed": all(checks.values()),
         "trace": trace,
-        "isolated_runner_trace": isolated_runner.trace,
+        "isolated_offer_read": {
+            "offer_id": read.offer_id, "offer_record_hash": read.offer_record_hash,
+            "bundle_digest": read.bundle_digest, "candidate_keys": list(read.candidate_keys),
+            "read_cut": read.read_cut, "public_rows_digest": read.public_rows_digest,
+            "policy_input_digest": read.policy_input_digest,
+        },
         "checks": checks,
         "policy_update_allowed": policy_update_allowed,
         "policy_updates": boundary.policy.updates,

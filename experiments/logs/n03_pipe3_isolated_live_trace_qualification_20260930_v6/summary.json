@@ -1,0 +1,165 @@
+{
+  "qualification": "pipe3-isolated-live-trace-v1",
+  "task_id": "PIPE3_stream_processing",
+  "seed": 0,
+  "case": "recipient_owned_gate_closed",
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "fixture_mode": "pinned-pipe3-cpu-scorer-action-isolated-source-offer-read",
+  "python": "3.9.6",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "source_commit": "cd5bc38af48416b7468002274d62f2df12d17c7d",
+  "started_at_utc": "2026-09-30T09:03:26.279566+00:00",
+  "status": "QUALIFIED_OFFLINE",
+  "passed": true,
+  "trace": [
+    {
+      "seq": 0,
+      "event": "actor_output",
+      "payload": {
+        "actor_role": "producer",
+        "artifact_sha256": "e5084ee161666739bf1ea54353ea225ec590c51b79d74130071aa97c85469a30",
+        "public_paths": [
+          "producer.py"
+        ]
+      }
+    },
+    {
+      "seq": 1,
+      "event": "scorer_before",
+      "payload": {
+        "scorer": "pipe3-producer-recipient-adoption-v2",
+        "status": "PASS",
+        "label": 1,
+        "quality_score": 1.0,
+        "artifact_sha256": "e5084ee161666739bf1ea54353ea225ec590c51b79d74130071aa97c85469a30",
+        "decision_complete": true,
+        "coverage_complete": true
+      }
+    },
+    {
+      "seq": 2,
+      "event": "action",
+      "payload": {
+        "consumer_action": "repair",
+        "changed_paths": [],
+        "input_source_sha256": "4d949e54cf2cce4927230a4c0ee5c41025f0d27cb8fc3eeb7993c7c465fe1569",
+        "output_source_sha256": "4d949e54cf2cce4927230a4c0ee5c41025f0d27cb8fc3eeb7993c7c465fe1569",
+        "public_writable_paths": [
+          "processor.py",
+          "producer.py"
+        ]
+      }
+    },
+    {
+      "seq": 3,
+      "event": "scorer_after",
+      "payload": {
+        "scorer": "pipe3-recipient-adoption-v2",
+        "status": "PASS",
+        "label": 1,
+        "quality_score": 1.0,
+        "artifact_sha256": "e5084ee161666739bf1ea54353ea225ec590c51b79d74130071aa97c85469a30",
+        "decision_complete": true,
+        "coverage_complete": true
+      }
+    },
+    {
+      "seq": 4,
+      "event": "outcome",
+      "payload": {
+        "status": "PASS",
+        "quality_score": 1.0,
+        "coverage_complete": true,
+        "decision_complete": true,
+        "artifact_sha256": "e5084ee161666739bf1ea54353ea225ec590c51b79d74130071aa97c85469a30"
+      }
+    },
+    {
+      "seq": 5,
+      "event": "policy_read",
+      "payload": {
+        "offer_id": "isolated-live-source-offer",
+        "offer_record_hash": "0994e4b9718d7a9c81495548c93a11faf2f559e2c4321ec0d9f2a4ad26e3fbdd",
+        "bundle_digest": "7a1b253c647d10c3e4733be19ac1955eba97e803af5f713ab197f8b6522ddc2c",
+        "candidate_keys": [
+          "peer-b@v1",
+          "peer-c@v1"
+        ],
+        "read_cut": 1,
+        "policy_input_digest": "23012ffcbb51c3c87ff504e25c1bdb70ad51b6e9a2110f74725dd66678217c8b",
+        "public_rows_digest": "4ddcdce36f7d1113c05b0315f49078a811256fe0c8b57c94af0d51cad5d00227",
+        "worker_sha256": "571a21d6bf6f4299a76ae1a29337f1331c9d09044bb863ef5b35abe712e39f2b"
+      }
+    }
+  ],
+  "isolated_offer_read": {
+    "offer_id": "isolated-live-source-offer",
+    "offer_record_hash": "0994e4b9718d7a9c81495548c93a11faf2f559e2c4321ec0d9f2a4ad26e3fbdd",
+    "bundle_digest": "7a1b253c647d10c3e4733be19ac1955eba97e803af5f713ab197f8b6522ddc2c",
+    "candidate_keys": [
+      "peer-b@v1",
+      "peer-c@v1"
+    ],
+    "read_cut": 1,
+    "public_rows_digest": "4ddcdce36f7d1113c05b0315f49078a811256fe0c8b57c94af0d51cad5d00227",
+    "policy_input_digest": "23012ffcbb51c3c87ff504e25c1bdb70ad51b6e9a2110f74725dd66678217c8b"
+  },
+  "checks": {
+    "ordered_actor_scorer_action_outcome_policy_read": true,
+    "public_payload_only": true,
+    "isolated_policy_read": true,
+    "source_bound_selection_after_read": true,
+    "responsibility_gate_closed": true,
+    "unknown_no_update": true,
+    "manifests_validate": true
+  },
+  "policy_update_allowed": false,
+  "policy_updates": 0,
+  "source_offer": {
+    "offer_id": "isolated-live-source-offer",
+    "task_id": "PIPE3_stream_processing",
+    "task_index": 1,
+    "role": "producer",
+    "context_key": "PIPE3:1",
+    "candidate_keys": [
+      "peer-b@v1",
+      "peer-c@v1"
+    ],
+    "evidence_ids": [
+      "policy-isolated-live-selection-0"
+    ],
+    "evidence_version": "pipe3-cpu-v1",
+    "public_rows": [
+      {
+        "feedback_id": "isolated-live-feedback",
+        "source_event_id": "policy-isolated-live-selection-0",
+        "source": "recipient_judgment",
+        "candidate_key": "peer-b@v1",
+        "evidence_version": "pipe3-cpu-v1",
+        "source_index": 0,
+        "arrived_at": 1.0,
+        "delay": 1.0,
+        "action": "repair",
+        "disposition": "unknown",
+        "provenance": "unknown",
+        "arrival_index": 1,
+        "unknown_reason": "recipient-owned-or-unattributed"
+      }
+    ],
+    "available_index": 1,
+    "watermark_schema": "global-event-index-v1"
+  },
+  "selection_id_after_policy_read": "isolated-live-selection-1",
+  "ledger_event_count": 8,
+  "elapsed_cpu_seconds": 0.183005917,
+  "ended_at_utc": "2026-09-30T09:03:26.352311+00:00",
+  "interpretation": "offline composition qualification only; no live API/GPU or efficacy claim",
+  "remaining_gates": [
+    "real actor/scorer IPC runner",
+    "independent histories",
+    "same-information baseline parity",
+    "later-use outcome"
+  ]
+}

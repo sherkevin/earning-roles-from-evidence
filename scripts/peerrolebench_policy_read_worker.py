@@ -17,6 +17,16 @@ from typing import Any, Mapping
 
 
 SCHEMA = "peerrole-public-profile-read-v1"
+SOURCE_OFFER_SCHEMA = "peerrole-source-bound-public-read-v1"
+SOURCE_OFFER_KEYS = frozenset({
+    "offer_id", "task_id", "task_index", "role", "context_key", "candidate_keys",
+    "evidence_ids", "evidence_version", "public_rows", "available_index", "watermark_schema",
+})
+SOURCE_ROW_KEYS = frozenset({
+    "feedback_id", "source_event_id", "source", "candidate_key", "evidence_version",
+    "source_index", "arrival_index", "arrived_at", "delay", "action", "disposition",
+    "provenance", "label", "supersedes", "unknown_reason",
+})
 
 
 def digest(value: Mapping[str, Any]) -> str:
@@ -59,10 +69,66 @@ def read(request: Mapping[str, Any]) -> dict[str, Any]:
     }
 
 
+def read_source_offer(request: Mapping[str, Any]) -> dict[str, Any]:
+    """Read one source-bound public bundle without importing private state."""
+    if request.get("schema_version") != SOURCE_OFFER_SCHEMA:
+        raise ValueError("unsupported source-offer read schema")
+    offer = request.get("offer")
+    if not isinstance(offer, dict) or set(offer) != SOURCE_OFFER_KEYS:
+        raise ValueError("source offer must contain exactly the public offer fields")
+    if offer.get("watermark_schema") != "global-event-index-v1":
+        raise ValueError("unsupported source-offer watermark schema")
+    candidate_keys = offer.get("candidate_keys")
+    if (not isinstance(candidate_keys, list) or candidate_keys != sorted(set(candidate_keys))
+            or not all(isinstance(value, str) and value for value in candidate_keys)):
+        raise ValueError("source-offer candidate menu must be sorted unique strings")
+    rows = offer.get("public_rows")
+    if not isinstance(rows, list):
+        raise ValueError("source-offer public_rows must be a list")
+    seen_feedback = set()
+    for row in rows:
+        if not isinstance(row, dict) or not set(row) <= SOURCE_ROW_KEYS:
+            raise ValueError("source-offer row contains private or unknown fields")
+        if not {"feedback_id", "source_event_id", "candidate_key", "arrival_index"} <= set(row):
+            raise ValueError("source-offer row is missing public identity fields")
+        if row["candidate_key"] not in candidate_keys:
+            raise ValueError("source-offer row references an unknown candidate")
+        if not row["feedback_id"] or row["feedback_id"] in seen_feedback:
+            raise ValueError("source-offer feedback ids must be unique")
+        seen_feedback.add(row["feedback_id"])
+    for name in ("offer_record_hash", "bundle_digest", "policy_input_digest"):
+        value = request.get(name)
+        if not isinstance(value, str) or len(value) != 64:
+            raise ValueError(f"{name} must be a SHA-256 digest")
+    if request["bundle_digest"] != digest(offer):
+        raise ValueError("source-offer bundle digest does not match payload")
+    read_cut = request.get("read_cut")
+    if type(read_cut) is not int or read_cut < int(offer["available_index"]):
+        raise ValueError("read_cut is before source-offer availability")
+    expected_policy_input = digest({
+        "bundle_digest": request["bundle_digest"],
+        "candidate_keys": candidate_keys,
+        "read_cut": read_cut,
+    })
+    if request["policy_input_digest"] != expected_policy_input:
+        raise ValueError("source-offer policy input digest does not match payload")
+    return {
+        "status": "PASS", "schema_version": SOURCE_OFFER_SCHEMA,
+        "offer_id": offer["offer_id"], "offer_record_hash": request["offer_record_hash"],
+        "bundle_digest": request["bundle_digest"], "candidate_keys": candidate_keys,
+        "task_id": offer["task_id"], "task_index": offer["task_index"],
+        "role": offer["role"], "context_key": offer["context_key"],
+        "evidence_ids": offer["evidence_ids"], "evidence_version": offer["evidence_version"],
+        "available_index": offer["available_index"], "watermark_schema": offer["watermark_schema"],
+        "read_cut": read_cut, "policy_input_digest": request["policy_input_digest"],
+        "public_rows_digest": digest({"public_rows": rows}),
+    }
+
+
 def main() -> int:
     try:
         request = json.load(sys.stdin)
-        response = read(request)
+        response = read_source_offer(request) if request.get("schema_version") == SOURCE_OFFER_SCHEMA else read(request)
         sys.stdout.write(json.dumps(response, sort_keys=True) + "\n")
         return 0
     except Exception as exc:
