@@ -1,0 +1,54 @@
+{
+  "runner_version": "pipe3-live-runner-v2-qualification",
+  "task_id": "PIPE3_stream_processing",
+  "seed": 0,
+  "controls": [
+    "producer_owned",
+    "recipient_owned"
+  ],
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "root": "PIPE3_stream_processing",
+  "independent_output_dirs": [
+    "/Users/jingwu/work/earning-roles/experiments/logs/n03_pipe3_live_runner_v2_qualification_20260930_v1/producer_owned",
+    "/Users/jingwu/work/earning-roles/experiments/logs/n03_pipe3_live_runner_v2_qualification_20260930_v1/recipient_owned"
+  ],
+  "started_at_utc": "2026-09-30T09:20:27.953386+00:00",
+  "status": "FAILED_OFFLINE",
+  "passed": false,
+  "cases": [
+    {
+      "runner_version": "pipe3-live-runner-v2-qualification",
+      "control": "producer_owned",
+      "status": "FAILED_OFFLINE",
+      "passed": false,
+      "real_api_calls": 0,
+      "gpu_jobs": 0,
+      "scientific_claim_allowed": false,
+      "error_type": "ValueError",
+      "error": "duplicate assignment manifest event",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/jingwu/work/earning-roles/scripts/peerrolebench_pipe3_live_runner_v2_qualification.py\", line 407, in run\n    results.append(_run_control(control, out=control_dir, seed=seed, stream_id=f\"{control}-stream-{seed}\"))\n  File \"/Users/jingwu/work/earning-roles/scripts/peerrolebench_pipe3_live_runner_v2_qualification.py\", line 372, in _run_control\n    native_root, auxiliary_root = boundary.validate_selection_manifests()\n  File \"/Users/jingwu/work/earning-roles/scripts/peerrolebench_pipe3_runner_v1.py\", line 390, in validate_selection_manifests\n    auxiliary = build_aux_manifest(self.auxiliary_manifest_rows)\n  File \"/Users/jingwu/work/earning-roles/scripts/peerrolebench_assignment_manifest.py\", line 75, in build_manifest\n    raise ValueError(\"duplicate assignment manifest event\")\nValueError: duplicate assignment manifest event\n",
+      "failure_preserved": true,
+      "ended_at_utc": "2026-09-30T09:20:28.074845+00:00"
+    },
+    {
+      "runner_version": "pipe3-live-runner-v2-qualification",
+      "control": "recipient_owned",
+      "status": "FAILED_OFFLINE",
+      "passed": false,
+      "real_api_calls": 0,
+      "gpu_jobs": 0,
+      "scientific_claim_allowed": false,
+      "error_type": "ValueError",
+      "error": "duplicate assignment manifest event",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/jingwu/work/earning-roles/scripts/peerrolebench_pipe3_live_runner_v2_qualification.py\", line 407, in run\n    results.append(_run_control(control, out=control_dir, seed=seed, stream_id=f\"{control}-stream-{seed}\"))\n  File \"/Users/jingwu/work/earning-roles/scripts/peerrolebench_pipe3_live_runner_v2_qualification.py\", line 372, in _run_control\n    native_root, auxiliary_root = boundary.validate_selection_manifests()\n  File \"/Users/jingwu/work/earning-roles/scripts/peerrolebench_pipe3_runner_v1.py\", line 390, in validate_selection_manifests\n    auxiliary = build_aux_manifest(self.auxiliary_manifest_rows)\n  File \"/Users/jingwu/work/earning-roles/scripts/peerrolebench_assignment_manifest.py\", line 75, in build_manifest\n    raise ValueError(\"duplicate assignment manifest event\")\nValueError: duplicate assignment manifest event\n",
+      "failure_preserved": true,
+      "ended_at_utc": "2026-09-30T09:20:28.148906+00:00"
+    }
+  ],
+  "failure_count": 2,
+  "later_use_effect_status": "OPEN_NO_UPDATE",
+  "ended_at_utc": "2026-09-30T09:20:28.149270+00:00",
+  "interpretation": "zero-call promotion qualification; no baseline or efficacy claim"
+}

@@ -1,0 +1,334 @@
+{
+  "runner_version": "pipe3-live-runner-v2-qualification",
+  "task_id": "PIPE3_stream_processing",
+  "control": "producer_owned",
+  "stream_id": "producer_owned-stream-0",
+  "seed": 0,
+  "rng_namespace": "pipe3-live-runner-v2-qualification:producer_owned-stream-0",
+  "root": "PIPE3_stream_processing",
+  "split": "qualification_only",
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "policy_update_allowed": false,
+  "policy_name": "contextual_trust",
+  "baseline_parity_status": "NOT_RUN",
+  "independent_live_history_status": "qualification_only",
+  "material_adapter": "pipe3-neutral-v1",
+  "source_commit": "02a303ce1ec27c24b15fafb47cc7ca923bd6778f",
+  "status": "BLOCKED_BY_RESPONSIBILITY_GATE",
+  "passed": false,
+  "trace": [
+    {
+      "seq": 0,
+      "control": "producer_owned",
+      "stream_id": "producer_owned-stream-0",
+      "event": "actor_output",
+      "payload": {
+        "task_index": 0,
+        "actor_role": "producer",
+        "selected_peer": "peer-b",
+        "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+        "public_paths": [
+          "producer.py"
+        ]
+      },
+      "cost": {
+        "api_calls": 0,
+        "gpu_jobs": 0,
+        "tokens": 0,
+        "wall_seconds": 1e-06,
+        "scorer_calls": 0,
+        "retry_count": 0,
+        "communication_records": 0,
+        "repair_count": 0,
+        "replay_events": 0
+      },
+      "unknown_reason": null,
+      "timestamp_utc": "2026-09-30T09:25:18.901824+00:00"
+    },
+    {
+      "seq": 1,
+      "control": "producer_owned",
+      "stream_id": "producer_owned-stream-0",
+      "event": "scorer_before",
+      "payload": {
+        "task_index": 0,
+        "producer": {
+          "scorer": "pipe3-producer-objective-v2",
+          "status": "FAIL",
+          "label": 0,
+          "quality_score": 0.6666666666666666,
+          "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+          "decision_complete": true,
+          "coverage_complete": true
+        },
+        "recipient": {
+          "scorer": "pipe3-recipient-objective-v2",
+          "status": "PASS",
+          "label": 1,
+          "quality_score": 1.0,
+          "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+          "decision_complete": true,
+          "coverage_complete": true
+        },
+        "adoption": {
+          "scorer": "pipe3-recipient-objective-v2",
+          "status": "FAIL",
+          "label": 0,
+          "quality_score": 0.5,
+          "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+          "decision_complete": true,
+          "coverage_complete": true
+        }
+      },
+      "cost": {
+        "api_calls": 0,
+        "gpu_jobs": 0,
+        "tokens": 0,
+        "wall_seconds": 0.011586,
+        "scorer_calls": 3,
+        "retry_count": 0,
+        "communication_records": 0,
+        "repair_count": 0,
+        "replay_events": 0
+      },
+      "unknown_reason": null,
+      "timestamp_utc": "2026-09-30T09:25:18.913550+00:00"
+    },
+    {
+      "seq": 2,
+      "control": "producer_owned",
+      "stream_id": "producer_owned-stream-0",
+      "event": "action",
+      "payload": {
+        "task_index": 0,
+        "consumer_action": "repair",
+        "changed_paths": [
+          "producer.py"
+        ],
+        "input_source_sha256": "819118801d4ccfab2801b36032d4f0808bdf938eedf9ee532d8ea798fd7ffa29",
+        "output_source_sha256": "4d949e54cf2cce4927230a4c0ee5c41025f0d27cb8fc3eeb7993c7c465fe1569"
+      },
+      "cost": {
+        "api_calls": 0,
+        "gpu_jobs": 0,
+        "tokens": 0,
+        "wall_seconds": 0.000746,
+        "scorer_calls": 0,
+        "retry_count": 0,
+        "communication_records": 0,
+        "repair_count": 1,
+        "replay_events": 0
+      },
+      "unknown_reason": null,
+      "timestamp_utc": "2026-09-30T09:25:18.914456+00:00"
+    },
+    {
+      "seq": 3,
+      "control": "producer_owned",
+      "stream_id": "producer_owned-stream-0",
+      "event": "outcome",
+      "payload": {
+        "task_index": 0,
+        "status": "PASS",
+        "quality_score": 1.0,
+        "coverage_complete": true,
+        "decision_complete": true,
+        "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2"
+      },
+      "cost": {
+        "api_calls": 0,
+        "gpu_jobs": 0,
+        "tokens": 0,
+        "wall_seconds": 0.010468,
+        "scorer_calls": 3,
+        "retry_count": 0,
+        "communication_records": 0,
+        "repair_count": 0,
+        "replay_events": 0
+      },
+      "unknown_reason": null,
+      "timestamp_utc": "2026-09-30T09:25:18.925030+00:00"
+    },
+    {
+      "seq": 4,
+      "control": "producer_owned",
+      "stream_id": "producer_owned-stream-0",
+      "event": "source_offer",
+      "payload": {
+        "source_task_index": 0,
+        "target_task_index": 1,
+        "offer_id": "producer_owned-offer-0",
+        "offer_record_hash": "f366602325d6067de1bbb8fc5abe3b1006d073c510e5f754d0ce00559bcaf5d2",
+        "bundle_digest": "31c405cdfd1f4e9d24aae4a09606845f430cca34a9abaecf884d37b6ccf55978",
+        "available_index": 1,
+        "candidate_keys": [
+          "peer-b@v1",
+          "peer-c@v1"
+        ],
+        "schedule_digest": "2b3a8d7134218b36ede5beb15f475e640253f977c3650f8b80d91e81c53e90e0"
+      },
+      "cost": {
+        "api_calls": 0,
+        "gpu_jobs": 0,
+        "tokens": 0,
+        "wall_seconds": 0.0,
+        "scorer_calls": 0,
+        "retry_count": 0,
+        "communication_records": 0,
+        "repair_count": 0,
+        "replay_events": 0
+      },
+      "unknown_reason": "policy-update-gate-closed",
+      "timestamp_utc": "2026-09-30T09:25:18.925330+00:00"
+    },
+    {
+      "seq": 5,
+      "control": "producer_owned",
+      "stream_id": "producer_owned-stream-0",
+      "event": "policy_read",
+      "payload": {
+        "task_index": 1,
+        "offer_id": "producer_owned-offer-0",
+        "offer_record_hash": "f366602325d6067de1bbb8fc5abe3b1006d073c510e5f754d0ce00559bcaf5d2",
+        "bundle_digest": "31c405cdfd1f4e9d24aae4a09606845f430cca34a9abaecf884d37b6ccf55978",
+        "candidate_keys": [
+          "peer-b@v1",
+          "peer-c@v1"
+        ],
+        "read_cut": 1,
+        "policy_input_digest": "f5d4e962b6ecad11f8ae8f79af1a1dfbe54ed28976dcc63af71fa968e0d95482",
+        "public_rows_digest": "53469b8c681d14fd54744663932ec6cecf32392d3ad45ab2dab2c430706f299f",
+        "worker_sha256": "878c70fee8a1fae1b5d9992b856a7396aa7a395f4c9f9bea4bb41e93b6803e18"
+      },
+      "cost": {
+        "api_calls": 0,
+        "gpu_jobs": 0,
+        "tokens": 0,
+        "wall_seconds": 0.049231,
+        "scorer_calls": 0,
+        "retry_count": 0,
+        "communication_records": 0,
+        "repair_count": 0,
+        "replay_events": 0
+      },
+      "unknown_reason": "policy-update-gate-closed",
+      "timestamp_utc": "2026-09-30T09:25:18.974643+00:00"
+    },
+    {
+      "seq": 6,
+      "control": "producer_owned",
+      "stream_id": "producer_owned-stream-0",
+      "event": "next_selection",
+      "payload": {
+        "task_index": 1,
+        "selection_id": "producer_owned-selection-1",
+        "chosen_peer_id": "peer-b",
+        "candidate_ids": [
+          "peer-b",
+          "peer-c"
+        ],
+        "propensity": 0.5,
+        "offer_id": "producer_owned-offer-0",
+        "read_cut": 1
+      },
+      "cost": {
+        "api_calls": 0,
+        "gpu_jobs": 0,
+        "tokens": 0,
+        "wall_seconds": 0.0,
+        "scorer_calls": 0,
+        "retry_count": 0,
+        "communication_records": 0,
+        "repair_count": 0,
+        "replay_events": 0
+      },
+      "unknown_reason": "policy-update-gate-closed",
+      "timestamp_utc": "2026-09-30T09:25:18.975563+00:00"
+    },
+    {
+      "seq": 7,
+      "control": "producer_owned",
+      "stream_id": "producer_owned-stream-0",
+      "event": "promotion_blocked",
+      "payload": {
+        "task_id": "PIPE3_stream_processing",
+        "source_task_index": 0,
+        "target_task_index": 1,
+        "selection_id": "producer_owned-selection-1",
+        "offer_id": "producer_owned-offer-0",
+        "reason": "policy_update_gate_closed_no_legal_role_evidence_for_later_assignment"
+      },
+      "cost": {
+        "api_calls": 0,
+        "gpu_jobs": 0,
+        "tokens": 0,
+        "wall_seconds": 0.0,
+        "scorer_calls": 0,
+        "retry_count": 0,
+        "communication_records": 0,
+        "repair_count": 0,
+        "replay_events": 0
+      },
+      "unknown_reason": "policy_update_gate_closed_no_legal_role_evidence_for_later_assignment",
+      "timestamp_utc": "2026-09-30T09:25:18.975636+00:00"
+    }
+  ],
+  "ledger_event_count": 8,
+  "native_manifest_root": "df1599e725de298d18aaea50f2c2da4b3b9eaacaf814512a668db1fdfc2cf921",
+  "auxiliary_manifest_root": "294549f67d6831117b22224f5a881004676a5e3e06fa1c4551adbedbf6a65baf",
+  "policy_updates": 0,
+  "unknown_denominator": {
+    "feedback_rows": 1,
+    "eligible_rows": 0,
+    "unknown_rows": 1
+  },
+  "diagnostic_eligibility": {
+    "gate_version": "pipe3-responsibility-label-v1",
+    "producer_owned_paths_changed": [
+      "producer.py"
+    ],
+    "recipient_owned_paths_changed": [],
+    "q_complete": true,
+    "outcome_complete": true,
+    "judgment_target_role": "producer",
+    "artifact_binding_present": true,
+    "later_use_valid": false,
+    "producer_feedback_status": "ELIGIBLE",
+    "producer_feedback_eligible": true,
+    "reason": "complete Qp/Y with producer-owned change or valid later-use evidence",
+    "policy_update_allowed": false,
+    "scientific_claim_allowed": false
+  },
+  "later_use_effect_status": "BLOCKED_BY_RESPONSIBILITY_GATE",
+  "blocked_reason": "policy_update_gate_closed_no_legal_role_evidence_for_later_assignment",
+  "next_task_started": false,
+  "next_outcome_recorded": false,
+  "schedule_digest": "2b3a8d7134218b36ede5beb15f475e640253f977c3650f8b80d91e81c53e90e0",
+  "replay": {
+    "status": "UNKNOWN",
+    "complete": false,
+    "snapshot": {
+      "event_count": 8,
+      "last_hash": "cfb6a5f686912597a659ecbde4f6641ea306ffc842e6a30b82a420b139858ef5",
+      "delivery_count": 1,
+      "producer_score_count": 1,
+      "judgment_count": 1,
+      "action_count": 1,
+      "outcome_count": 1,
+      "evidence_count": 0,
+      "assignment_count": 0
+    }
+  },
+  "cost_totals": {
+    "api_calls": 0,
+    "gpu_jobs": 0,
+    "tokens": 0,
+    "event_count": 8,
+    "unknown_rows": 1
+  },
+  "elapsed_cpu_seconds": 0.11613020799999998,
+  "ended_at_utc": "2026-09-30T09:25:18.976221+00:00",
+  "interpretation": "promotion diagnostic stopped before later assignment; no legal role evidence exists while policy update is closed"
+}

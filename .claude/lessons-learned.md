@@ -279,6 +279,12 @@
 - **避免:** 子进程只接收 canonical `AssignmentEvidenceOffer.payload()`；父进程核对 `offer_record_hash`、`bundle_digest`、候选版本、task/role/context、read cut 和 policy/public digests 后才允许后续 selection。
 - **Evidence:** [source-bound offer isolated-read binding](../docs/coordination/task_reports/20260930_source_offer_isolated_binding.md)；`experiments/logs/n03_pipe3_isolated_live_trace_qualification_20260930_v5/`（失败）与 `..._v9/`（clean commit 通过）。
 
+### 0045-responsibility-gate-cannot-require-its-own-later-use-proof | 2026-09-30 | earning-roles
+- **现象:** versioned live-runner 能完成 source offer、isolated read 和 next selection，但不能合法记录 `LaterAssignment`：当前 public row 是 UNKNOWN，`LaterAssignment` 又要求非空 role-evidence IDs。
+- **根因:** `producer_feedback_eligibility` 以 `later_use_valid` 作为 producer evidence 的必要条件，同时 `policy_update_allowed` 固定为 false；later use 因此既是资格前提又是需要资格才能观测的后果。
+- **避免:** 保留 `ELIGIBLE` 与 `policy_update_allowed` 的分离，不把诊断状态写成训练标签；先在方法合同中定义可审计的两阶段 evidence/update 语义，再允许真实 runner 进入 next task。
+- **Evidence:** [versioned live-runner promotion gate](../docs/coordination/task_reports/20260930_pipe3_live_runner_promotion_gate.md)；`experiments/logs/n03_pipe3_live_runner_v2_qualification_20260930_v1/`（重复 offer 失败）与 `..._v3/`（责任门阻塞）。
+
 ### 0041-selection-boundaries-must-preflight-before-mutation | 2026-09-30 | earning-roles
 - **现象:** `choose_and_seal` 原先先写 auxiliary offer、消费反馈和 policy decision，之后才构造 consumption attestation；read-cut 越界、offer 尚不可用、角色/menu 不匹配或后续 policy/ledger 异常可能留下部分状态。
 - **根因:** 输入时序约束和对象构造校验分散在 attestation、policy、native ledger 三层，入口没有在第一次写入前统一检查，也没有失败回滚。

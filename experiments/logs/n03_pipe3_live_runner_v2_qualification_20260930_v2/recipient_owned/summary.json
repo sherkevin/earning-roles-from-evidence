@@ -1,0 +1,330 @@
+{
+  "runner_version": "pipe3-live-runner-v2-qualification",
+  "task_id": "PIPE3_stream_processing",
+  "control": "recipient_owned",
+  "stream_id": "recipient_owned-stream-0",
+  "seed": 0,
+  "rng_namespace": "pipe3-live-runner-v2-qualification:recipient_owned-stream-0",
+  "root": "PIPE3_stream_processing",
+  "split": "qualification_only",
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "policy_update_allowed": false,
+  "policy_name": "contextual_trust",
+  "material_adapter": "pipe3-neutral-v1",
+  "source_commit": "02a303ce1ec27c24b15fafb47cc7ca923bd6778f",
+  "status": "BLOCKED_BY_RESPONSIBILITY_GATE",
+  "passed": false,
+  "trace": [
+    {
+      "seq": 0,
+      "control": "recipient_owned",
+      "stream_id": "recipient_owned-stream-0",
+      "event": "actor_output",
+      "payload": {
+        "task_index": 0,
+        "actor_role": "producer",
+        "selected_peer": "peer-b",
+        "artifact_sha256": "e5084ee161666739bf1ea54353ea225ec590c51b79d74130071aa97c85469a30",
+        "public_paths": [
+          "producer.py"
+        ]
+      },
+      "cost": {
+        "api_calls": 0,
+        "gpu_jobs": 0,
+        "tokens": 0,
+        "wall_seconds": 1e-06,
+        "scorer_calls": 0,
+        "retry_count": 0,
+        "communication_records": 0,
+        "repair_count": 0,
+        "replay_events": 0
+      },
+      "unknown_reason": null,
+      "timestamp_utc": "2026-09-30T09:22:08.450365+00:00"
+    },
+    {
+      "seq": 1,
+      "control": "recipient_owned",
+      "stream_id": "recipient_owned-stream-0",
+      "event": "scorer_before",
+      "payload": {
+        "task_index": 0,
+        "producer": {
+          "scorer": "pipe3-producer-objective-v2",
+          "status": "PASS",
+          "label": 1,
+          "quality_score": 1.0,
+          "artifact_sha256": "e5084ee161666739bf1ea54353ea225ec590c51b79d74130071aa97c85469a30",
+          "decision_complete": true,
+          "coverage_complete": true
+        },
+        "recipient": {
+          "scorer": "pipe3-recipient-objective-v2",
+          "status": "FAIL",
+          "label": 0,
+          "quality_score": 0.0,
+          "artifact_sha256": "e5084ee161666739bf1ea54353ea225ec590c51b79d74130071aa97c85469a30",
+          "decision_complete": true,
+          "coverage_complete": true
+        },
+        "adoption": {
+          "scorer": "pipe3-recipient-objective-v2",
+          "status": "FAIL",
+          "label": 0,
+          "quality_score": 0.5,
+          "artifact_sha256": "e5084ee161666739bf1ea54353ea225ec590c51b79d74130071aa97c85469a30",
+          "decision_complete": true,
+          "coverage_complete": true
+        }
+      },
+      "cost": {
+        "api_calls": 0,
+        "gpu_jobs": 0,
+        "tokens": 0,
+        "wall_seconds": 0.011716,
+        "scorer_calls": 3,
+        "retry_count": 0,
+        "communication_records": 0,
+        "repair_count": 0,
+        "replay_events": 0
+      },
+      "unknown_reason": null,
+      "timestamp_utc": "2026-09-30T09:22:08.462193+00:00"
+    },
+    {
+      "seq": 2,
+      "control": "recipient_owned",
+      "stream_id": "recipient_owned-stream-0",
+      "event": "action",
+      "payload": {
+        "task_index": 0,
+        "consumer_action": "repair",
+        "changed_paths": [
+          "processor.py"
+        ],
+        "input_source_sha256": "0146ad5a64365d12d8f684623128e8f4048d33b940155147b7dbdaee747f92b7",
+        "output_source_sha256": "4d949e54cf2cce4927230a4c0ee5c41025f0d27cb8fc3eeb7993c7c465fe1569"
+      },
+      "cost": {
+        "api_calls": 0,
+        "gpu_jobs": 0,
+        "tokens": 0,
+        "wall_seconds": 0.000829,
+        "scorer_calls": 0,
+        "retry_count": 0,
+        "communication_records": 0,
+        "repair_count": 1,
+        "replay_events": 0
+      },
+      "unknown_reason": null,
+      "timestamp_utc": "2026-09-30T09:22:08.463176+00:00"
+    },
+    {
+      "seq": 3,
+      "control": "recipient_owned",
+      "stream_id": "recipient_owned-stream-0",
+      "event": "outcome",
+      "payload": {
+        "task_index": 0,
+        "status": "PASS",
+        "quality_score": 1.0,
+        "coverage_complete": true,
+        "decision_complete": true,
+        "artifact_sha256": "e5084ee161666739bf1ea54353ea225ec590c51b79d74130071aa97c85469a30"
+      },
+      "cost": {
+        "api_calls": 0,
+        "gpu_jobs": 0,
+        "tokens": 0,
+        "wall_seconds": 0.010713,
+        "scorer_calls": 3,
+        "retry_count": 0,
+        "communication_records": 0,
+        "repair_count": 0,
+        "replay_events": 0
+      },
+      "unknown_reason": null,
+      "timestamp_utc": "2026-09-30T09:22:08.473987+00:00"
+    },
+    {
+      "seq": 4,
+      "control": "recipient_owned",
+      "stream_id": "recipient_owned-stream-0",
+      "event": "source_offer",
+      "payload": {
+        "task_index": 0,
+        "offer_id": "recipient_owned-offer-0",
+        "offer_record_hash": "7595ac7a4dc622b28d072b05f770986b3a923e80db531b6beab360f12a92dd49",
+        "bundle_digest": "f18bbb481cbaf03be95e8063276403f022c4b6f3e08e45171a2aa8046467ba06",
+        "available_index": 1,
+        "candidate_keys": [
+          "peer-b@v1",
+          "peer-c@v1"
+        ],
+        "schedule_digest": "c90010e1caba4046c8df1948ee48650647feab57ca8cef87260d644029a44a55"
+      },
+      "cost": {
+        "api_calls": 0,
+        "gpu_jobs": 0,
+        "tokens": 0,
+        "wall_seconds": 0.0,
+        "scorer_calls": 0,
+        "retry_count": 0,
+        "communication_records": 0,
+        "repair_count": 0,
+        "replay_events": 0
+      },
+      "unknown_reason": "policy-update-gate-closed",
+      "timestamp_utc": "2026-09-30T09:22:08.474270+00:00"
+    },
+    {
+      "seq": 5,
+      "control": "recipient_owned",
+      "stream_id": "recipient_owned-stream-0",
+      "event": "policy_read",
+      "payload": {
+        "task_index": 1,
+        "offer_id": "recipient_owned-offer-0",
+        "offer_record_hash": "7595ac7a4dc622b28d072b05f770986b3a923e80db531b6beab360f12a92dd49",
+        "bundle_digest": "f18bbb481cbaf03be95e8063276403f022c4b6f3e08e45171a2aa8046467ba06",
+        "candidate_keys": [
+          "peer-b@v1",
+          "peer-c@v1"
+        ],
+        "read_cut": 1,
+        "policy_input_digest": "ccd3210a0fe24386edc80a3fecc82757dc5a8f1022e716b2cf2648a706713171",
+        "public_rows_digest": "3e777d0c5a0cee3325114a8d53f29fd592b493e5fb81072b297e271b4fca1d4a",
+        "worker_sha256": "878c70fee8a1fae1b5d9992b856a7396aa7a395f4c9f9bea4bb41e93b6803e18"
+      },
+      "cost": {
+        "api_calls": 0,
+        "gpu_jobs": 0,
+        "tokens": 0,
+        "wall_seconds": 0.028672,
+        "scorer_calls": 0,
+        "retry_count": 0,
+        "communication_records": 0,
+        "repair_count": 0,
+        "replay_events": 0
+      },
+      "unknown_reason": "policy-update-gate-closed",
+      "timestamp_utc": "2026-09-30T09:22:08.503037+00:00"
+    },
+    {
+      "seq": 6,
+      "control": "recipient_owned",
+      "stream_id": "recipient_owned-stream-0",
+      "event": "next_selection",
+      "payload": {
+        "task_index": 1,
+        "selection_id": "recipient_owned-selection-1",
+        "chosen_peer_id": "peer-c",
+        "candidate_ids": [
+          "peer-b",
+          "peer-c"
+        ],
+        "propensity": 0.5,
+        "offer_id": "recipient_owned-offer-0",
+        "read_cut": 1
+      },
+      "cost": {
+        "api_calls": 0,
+        "gpu_jobs": 0,
+        "tokens": 0,
+        "wall_seconds": 0.0,
+        "scorer_calls": 0,
+        "retry_count": 0,
+        "communication_records": 0,
+        "repair_count": 0,
+        "replay_events": 0
+      },
+      "unknown_reason": "policy-update-gate-closed",
+      "timestamp_utc": "2026-09-30T09:22:08.503851+00:00"
+    },
+    {
+      "seq": 7,
+      "control": "recipient_owned",
+      "stream_id": "recipient_owned-stream-0",
+      "event": "promotion_blocked",
+      "payload": {
+        "task_id": "PIPE3_stream_processing",
+        "source_task_index": 0,
+        "target_task_index": 1,
+        "selection_id": "recipient_owned-selection-1",
+        "offer_id": "recipient_owned-offer-0",
+        "reason": "policy_update_gate_closed_no_legal_role_evidence_for_later_assignment"
+      },
+      "cost": {
+        "api_calls": 0,
+        "gpu_jobs": 0,
+        "tokens": 0,
+        "wall_seconds": 0.0,
+        "scorer_calls": 0,
+        "retry_count": 0,
+        "communication_records": 0,
+        "repair_count": 0,
+        "replay_events": 0
+      },
+      "unknown_reason": "policy_update_gate_closed_no_legal_role_evidence_for_later_assignment",
+      "timestamp_utc": "2026-09-30T09:22:08.503953+00:00"
+    }
+  ],
+  "ledger_event_count": 8,
+  "native_manifest_root": "b7abd571c05666e75f30c6557d8ed60ee51d531562d7cea99fe1f292d695bfc3",
+  "auxiliary_manifest_root": "ac14d7342acd974dd03d8ab938a34c345ae71ae9c204afe1d66a8de83be1673f",
+  "policy_updates": 0,
+  "unknown_denominator": {
+    "feedback_rows": 1,
+    "eligible_rows": 0,
+    "unknown_rows": 1
+  },
+  "diagnostic_eligibility": {
+    "gate_version": "pipe3-responsibility-label-v1",
+    "producer_owned_paths_changed": [],
+    "recipient_owned_paths_changed": [
+      "processor.py"
+    ],
+    "q_complete": true,
+    "outcome_complete": true,
+    "judgment_target_role": "recipient",
+    "artifact_binding_present": true,
+    "later_use_valid": false,
+    "producer_feedback_status": "PENDING_ATTRIBUTION",
+    "producer_feedback_eligible": false,
+    "reason": "recipient-owned integration change cannot label producer",
+    "policy_update_allowed": false,
+    "scientific_claim_allowed": false
+  },
+  "later_use_effect_status": "BLOCKED_BY_RESPONSIBILITY_GATE",
+  "blocked_reason": "policy_update_gate_closed_no_legal_role_evidence_for_later_assignment",
+  "next_task_started": false,
+  "next_outcome_recorded": false,
+  "replay": {
+    "status": "UNKNOWN",
+    "complete": false,
+    "snapshot": {
+      "event_count": 8,
+      "last_hash": "30a328a6b4808bf55a41d2d8ea53a4609213f71b67f85de53da63463f0610944",
+      "delivery_count": 1,
+      "producer_score_count": 1,
+      "judgment_count": 1,
+      "action_count": 1,
+      "outcome_count": 1,
+      "evidence_count": 0,
+      "assignment_count": 0
+    }
+  },
+  "cost_totals": {
+    "api_calls": 0,
+    "gpu_jobs": 0,
+    "tokens": 0,
+    "event_count": 8,
+    "unknown_rows": 1
+  },
+  "elapsed_cpu_seconds": 0.07063554200000005,
+  "ended_at_utc": "2026-09-30T09:22:08.504556+00:00",
+  "interpretation": "promotion diagnostic stopped before later assignment; no legal role evidence exists while policy update is closed"
+}
