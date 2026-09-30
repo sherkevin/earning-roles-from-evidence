@@ -194,3 +194,9 @@
 - **根因:** 把 schema/lineage 的可构造性与 profile 生成质量、调用成本和真实 assignment 消费混为一层资格。
 - **避免:** 把资格分成 schema boundary、真实 public builder/replay、LLM profile quality、独立 live history 和 later-use effect；任何层失败都保留证据并停止向下一层推断。真实 adapter 必须绑定 source_input_digest，禁止 trajectory/terminal/private scorer 泄漏。
 - **Evidence:** [Meta-Team-L2-public qualification](../docs/coordination/task_reports/20260930_metateam_public_profile_qualification.md)；[v6 logs](../experiments/logs/n03_metateam_public_profile_qualification_20260930_v6/)。
+
+### 0031-selection-identity-must-not-be-inferred | 2026-09-30 | earning-roles
+- **现象:** 原生 `PeerSelection` 只保存 bare candidate ID，而 profile sidecar 使用 `candidate_id@candidate_version`；它也不携带 versioned candidate view 或 `selected_at`。直接把两者当成同一对象会掩盖版本漂移、菜单重排和时间水位线错误。
+- **根因:** ledger identity、policy candidate key 和 assignment read-cut 被不同模块分别表示，却没有显式的 canonical view。
+- **避免:** 通过严格 registry adapter 显式映射版本，保留菜单顺序、chosen index、task index、选择时间和 selector；未知版本、菜单变更、错误选择和非单调时间一律拒绝，绑定前不从 bare ID 猜版本。
+- **Evidence:** [selection view qualification](../docs/coordination/task_reports/20260930_selection_view_adapter_qualification.md)；`experiments/logs/n03_selection_view_adapter_qualification_20260930_v1/`。

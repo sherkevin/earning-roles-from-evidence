@@ -1,0 +1,63 @@
+{
+  "qualification": "versioned-native-selection-view-v1",
+  "script": "/Users/jingwu/work/earning-roles/scripts/peerrolebench_selection_view_adapter_qualification.py",
+  "script_sha256": "18c7e3d34b62106de01c0e285ae95e9f8f0ed2e805135baf9c9317daaec0e709",
+  "adapter_sha256": "193363f91920b760c5f356b9da4b8d6268b16ee3ec502344d80e58ddd87f25d4",
+  "fixture_mode": "hand-authored-registry-and-native-selection",
+  "source": "offline identity fixture; no PIPE3 execution",
+  "python": "3.9.6",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "status": "QUALIFIED_OFFLINE",
+  "checks": [
+    {
+      "name": "native_to_versioned_view_preserves_order",
+      "status": "PASS",
+      "candidate_keys": [
+        "agent-a@v1",
+        "agent-b@v2"
+      ]
+    },
+    {
+      "name": "versioned_view_validates_exact_registry_keys",
+      "status": "PASS",
+      "chosen_key": "agent-b@v2"
+    },
+    {
+      "name": "view_binds_to_later_assignment",
+      "status": "PASS"
+    },
+    {
+      "name": "reject_unknown_version",
+      "status": "PASS",
+      "error": "candidate key is not registered at the requested version: agent-b@v1"
+    },
+    {
+      "name": "reject_wrong_choice",
+      "status": "PASS",
+      "error": "chosen candidate is outside the versioned candidate menu"
+    },
+    {
+      "name": "reject_negative_time",
+      "status": "PASS",
+      "error": "selection view selected_at must be non-negative"
+    },
+    {
+      "name": "reject_menu_reordering_at_assignment",
+      "status": "PASS",
+      "error": "selection candidate menu does not match assignment offer"
+    },
+    {
+      "name": "reject_native_menu_registry_mismatch",
+      "status": "PASS",
+      "error": "candidate registry IDs do not match the pre-registered menu"
+    }
+  ],
+  "candidate_keys": [
+    "agent-a@v1",
+    "agent-b@v2"
+  ],
+  "chosen_key": "agent-b@v2"
+}
