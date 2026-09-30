@@ -19,7 +19,7 @@ read trace.
 ## Qualification
 
 The accepted run is
-`experiments/logs/n03_pipe3_isolated_live_trace_qualification_20260930_v8/`.
+`experiments/logs/n03_pipe3_isolated_live_trace_qualification_20260930_v9/`.
 It reuses the pinned PIPE3 CPU scorer/action/outcome path and the canonical
 source-bound boundary. The trace order remains
 `actor_output → scorer_before → action → scorer_after → outcome → policy_read`,
@@ -34,11 +34,12 @@ so the public row is UNKNOWN and `policy.updates=0`.
 Attempt v5 is retained as a failed receipt: the trace reached the scorer and
 fallback records but crashed while serializing stale `task_id`/`task_index`
 fields that were not part of the new read trace. V8 reran the corrected path
-after adding child-side digest checks; the failure is not overwritten.
+after adding child-side digest checks; V9 reran the same code from clean commit
+`3f50ccc6c8009cdb8ef1ee254e1dafc00cff42b9`. The failure is not overwritten.
 
 The run is `QUALIFIED_OFFLINE`, with 0 external API calls, 0 GPU jobs, and
 `scientific_claim_allowed=false`. The full PeerRoleBench suite passed 315/315;
-the earlier v2/v3/v4/v5/v6/v7 traces remain immutable for audit.
+the earlier v2/v3/v4/v5/v6/v7/v8 traces remain immutable for audit.
 
 ## Boundary
 
