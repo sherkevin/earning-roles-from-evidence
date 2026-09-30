@@ -22,12 +22,18 @@ objects and re-raises the original error.
 
 ## Evidence
 
-The targeted runner and source-bound boundary tests pass (`8 passed`), and the
-full PeerRoleBench regression passes (`309 passed`).  The structured receipt is
-`experiments/logs/n03_pipe3_preflight_mutation_qualification_20260930/`.
-It covers read-cut-after-decision, unavailable offer, unknown candidate, and a
-post-preflight RNG failure; every failure leaves policy, ledger, selection
-cache, and both manifest chains unchanged.  The success path remains covered.
+The initial v1 receipt covers the runner and source-bound boundary tests
+(`8 passed`) and the full regression (`309 passed`). The current v2 receipt
+adds common RNG-state restoration after a post-sampling failure: its targeted
+tests pass (`9 passed`) and the full PeerRoleBench regression passes (`310
+passed`). The current structured receipt is
+`experiments/logs/n03_pipe3_preflight_mutation_qualification_20260930_v2/`;
+the v1 receipt remains immutable. The cases cover read-cut-after-decision,
+unavailable offer, unknown candidate, a post-preflight RNG failure, and a
+post-sampling attestation failure. Every failure leaves policy, ledger,
+selection cache, both manifest chains, and (where the RNG exposes
+`bit_generator.state` or `getstate`/`setstate`) the RNG state unchanged. The
+success path remains covered.
 
 ## Boundary
 

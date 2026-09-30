@@ -306,7 +306,12 @@ class Pipe3SelectionBoundary:
             self.selections.update(selections_state)
             self.native_manifest_rows[:] = native_rows_state
             self.auxiliary_manifest_rows[:] = auxiliary_rows_state
-            _restore_rng_state(rng, rng_state)
+            try:
+                _restore_rng_state(rng, rng_state)
+            except Exception:
+                # Preserve the original selection failure.  RNGs with a
+                # broken setter are outside the deterministic retry guarantee.
+                pass
             raise
 
     def _preflight_selection(
