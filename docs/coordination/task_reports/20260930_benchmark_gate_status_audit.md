@@ -14,6 +14,12 @@ qualification receipts under `experiments/logs/n03_*` and
 contracts. They are not independent live streams, benchmark results, or
 evidence that RARE improves quality.
 
+The command `scripts/peerrolebench_validate_manifest.py` returning
+`valid: true` has the same limited meaning: it validates the candidate
+manifest's schema, root/signature uniqueness, baseline names and information
+flags. It does not certify root independence, executable live baseline parity,
+profile quality, later-use effect, statistical precision, or benchmark freeze.
+
 ## Gate table
 
 | Gate | State | What is established | What is still required |
@@ -53,4 +59,3 @@ is methodological and evidential rather than an infrastructure failure:
 1. protocol seams are increasingly qualified;
 2. scientific comparison is still not executable under parity;
 3. no efficacy, role-formation, real-time-training, or A800 claim is made.
-
