@@ -183,3 +183,5 @@ Goal 修改。
   将 `PolicyFeedbackProjection` 严格序列化为 `AssignmentEvidenceOffer` 的 public rows，要求 event-time、candidate version、UNKNOWN reason 和 correction lineage；7 格离线资格、24 项定向测试、完整 PeerRoleBench 290 项通过，0 API/0 GPU。同步修复 UNKNOWN projection 丢失 `arrival_index`/`supersedes`；canonical ledger/schedule binding、真实 runner、profile generator 和科学证据仍开放。
 - [done] 2026-09-30 source-bound PIPE3 feedback adapter qualification (task_reports/20260930_source_bound_feedback_adapter_qualification.md)：
   将 canonical ledger binding、v4 responsibility lineage、frozen arrival schedule、typed projection 与 public offer sealing 接成强制顺序；5 格离线资格、5 项定向测试、完整 PeerRoleBench 295 项通过，0 API/0 GPU。仍未执行真实 source/scorer/action/outcome/profile generator 或 isolated policy-read，不能解冻 benchmark/baseline。
+- [done] 2026-09-30 frozen real v6 source-bound replay (task_reports/20260930_v6_source_bound_replay_qualification.md)：
+  对历史真实 PIPE3 v6 ledger/artifact lineage 做零调用 canonical replay，recipient-owned repair 保持 `UNKNOWN` 和公开原因，未生成 producer label；1 项定向测试、完整 PeerRoleBench 296 项通过，0 API/0 GPU。仍不是新 live episode、online-learning result 或 benchmark evidence。

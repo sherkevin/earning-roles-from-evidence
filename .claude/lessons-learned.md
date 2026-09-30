@@ -212,3 +212,9 @@
 - **根因:** sidecar binding、lineage validation、schedule validation 和 public serialization 分散在不同模块，缺少一个强制顺序的入口。
 - **避免:** 先绑定 selection/feedback 到 canonical records，再要求 v4 与责任链、schedule 一一对应，最后才调用 projection→row→offer；raw acceptance 另走 comparator 通道，UNKNOWN 不更新。
 - **Evidence:** [source-bound adapter qualification](../docs/coordination/task_reports/20260930_source_bound_feedback_adapter_qualification.md)；`experiments/logs/n03_source_bound_feedback_adapter_qualification_20260930_v1/`。
+
+### 0034-real-ledger-replay-must-preserve-pending-attribution | 2026-09-30 | earning-roles
+- **现象:** 冻结的真实 v6 episode 有完整 Qp/Qr/adoption 和 recipient-owned repair，但没有 producer-eligible evidence；如果直接把 terminal success 当 label，会把责任错误传给 producer。
+- **根因:** 终局成功、消费者修复和 producer responsibility 是不同因果量，历史 ledger 以 UNKNOWN 表达等待归因。
+- **避免:** 对真实历史 ledger 先做 canonical replay，再经 v4 lineage/schedule adapter；pending attribution 只生成带公开原因的 UNKNOWN row，不能写 label 或 policy update，也不能回写历史结果。
+- **Evidence:** [frozen v6 source-bound replay](../docs/coordination/task_reports/20260930_v6_source_bound_replay_qualification.md)；`experiments/logs/n03_v6_source_bound_replay_qualification_20260930_v1/`。
