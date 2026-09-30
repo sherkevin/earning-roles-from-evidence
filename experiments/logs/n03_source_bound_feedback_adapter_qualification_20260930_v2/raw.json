@@ -1,0 +1,108 @@
+{
+  "selection": {
+    "sidecar_version": "peerrole-policy-sidecar-v2",
+    "ledger_record_hash": "24cf31e02d982cc5b4e4f4be62d2c705baded6046b2d366a939b99e645e03921",
+    "protocol_event_type": "peer_selection",
+    "protocol_event_id": "selection-0",
+    "task_id": "PIPE3_stream_processing",
+    "task_index": 0,
+    "role": "producer",
+    "event_id": "policy-selection-0",
+    "selector_id": "peer-a",
+    "context_key": "PIPE3:0",
+    "candidates": [
+      {
+        "candidate_id": "peer-b",
+        "candidate_version": "v1"
+      },
+      {
+        "candidate_id": "peer-c",
+        "candidate_version": "v1"
+      }
+    ],
+    "base_scores": [
+      0.5,
+      0.5
+    ],
+    "chosen_index": 0,
+    "probabilities": [
+      0.5,
+      0.5
+    ],
+    "propensity": 0.5,
+    "state_version": "state-0",
+    "encoder_version": "enc-0",
+    "feature_schema": "pipe3",
+    "policy_name": "fixture",
+    "policy_version": "v1",
+    "base_score_version": "base-v1",
+    "rng_algorithm": "fixture-rng",
+    "rng_draw": 0,
+    "selected_at": 0.0,
+    "captured_features": {}
+  },
+  "feedback": {
+    "sidecar_version": "peerrole-policy-sidecar-v4",
+    "ledger_record_hash": "79a09fd407c4247bc96852b2055b2b0c9d26a01e412beca930888ef73ad53099",
+    "protocol_event_type": "recipient_judgment",
+    "protocol_event_id": "judgment-0",
+    "feedback_id": "feedback-0",
+    "source_event_id": "policy-selection-0",
+    "selection_event_id": "selection-0",
+    "delivery_id": "delivery-0",
+    "producer_id": "peer-b",
+    "producer_version": "v1",
+    "recipient_id": "peer-a",
+    "artifact_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "delivery_record_hash": "b24bbc5e3fcab134cbbfb930b728cd60474322d20c295b242caa78b76b0ffc83",
+    "action_id": "action-0",
+    "action_record_hash": "8bebcc9b93e0a08709f9787a670cf6aa6af7e7bd1c58922ed0c045b4f7596e61",
+    "source": "recipient_judgment",
+    "arrived_at": 1.0,
+    "delay": 1.0,
+    "action": "use",
+    "disposition": "eligible",
+    "provenance": "public",
+    "label_mapping_version": "fixture-label-v1",
+    "mapping_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "responsibility_status": "attributed",
+    "attribution_basis": "fixture-v1",
+    "raw_value": "accept",
+    "label": 1.0,
+    "arrival_index": 0
+  },
+  "offer": {
+    "offer_id": "offer-0",
+    "task_id": "PIPE3_stream_processing",
+    "task_index": 1,
+    "role": "producer",
+    "context_key": "PIPE3:1",
+    "candidate_keys": [
+      "peer-b@v1",
+      "peer-c@v1"
+    ],
+    "evidence_ids": [
+      "policy-selection-0"
+    ],
+    "evidence_version": "fixture-evidence-v1",
+    "public_rows": [
+      {
+        "feedback_id": "feedback-0",
+        "source_event_id": "policy-selection-0",
+        "source": "recipient_judgment",
+        "candidate_key": "peer-b@v1",
+        "evidence_version": "fixture-evidence-v1",
+        "source_index": 0,
+        "arrived_at": 1.0,
+        "delay": 1.0,
+        "action": "use",
+        "disposition": "eligible",
+        "provenance": "public",
+        "arrival_index": 0,
+        "label": 1.0
+      }
+    ],
+    "available_index": 0,
+    "watermark_schema": "global-event-index-v1"
+  }
+}

@@ -87,7 +87,7 @@ def fixture() -> tuple[PeerRoleLedger, DecisionSidecar, dict, FeedbackSidecar, d
 def run(out_dir: Path) -> dict:
     out_dir.mkdir(parents=True, exist_ok=True)
     config = {
-        "qualification": "source-bound-pipe3-feedback-adapter-v1",
+        "qualification": "source-bound-pipe3-feedback-adapter-v2",
         "script": str(Path(__file__).resolve()),
         "script_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "adapter_sha256": hashlib.sha256((ROOT / "scripts/peerrolebench_source_bound_feedback_adapter.py").read_bytes()).hexdigest(),
@@ -103,6 +103,7 @@ def run(out_dir: Path) -> dict:
         selection=selection, selection_record=selection_record,
         feedback_inputs=((sidecar, judgment_record, gate, None),), ledger=ledger,
         arrival_schedule=schedule, offer_id="offer-0", context_key="PIPE3:1",
+        target_task_index=1,
     )
     checks = [{
         "name": "canonical_v4_sidecar_to_offer", "status": "PASS",

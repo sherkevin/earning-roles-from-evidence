@@ -1,0 +1,68 @@
+{
+  "experiment_id": "n03_pipe3_source_bound_boundary_qualification_20260930",
+  "qualification": "pipe3-source-bound-boundary-v1",
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "python": "3.9.6",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "git_commit": "ee6b1562e683a2b96d3dcb020588c70c0424c76c",
+  "source_sha256": {
+    "scripts/peerrolebench_pipe3_runner_v1.py": "94065a77dfee26346a6c5aac08d3e4ea7a7aecab06de7fb62c79652576efa4e3",
+    "scripts/peerrolebench_source_bound_feedback_adapter.py": "39b24c4e14b28f70f51cdcf6dbfc8ac8e7585ff6f7cabd3b9d60a9180b22b30f",
+    "scripts/peerrolebench_pipe3_full_chain_qualification.py": "aa4028773354c04736832be321364456f91474694e9beff48ef002d204bcf32a"
+  },
+  "status": "QUALIFIED_OFFLINE",
+  "checks": {
+    "same_boundary_ledger": true,
+    "future_task_index": true,
+    "source_feedback_consumed": true,
+    "auxiliary_chain_continues": true,
+    "native_manifest_valid": true,
+    "auxiliary_manifest_valid": true,
+    "source_offer_sidecar_v4": true
+  },
+  "source_offer": {
+    "offer_id": "offer-1",
+    "task_id": "PIPE3_stream_processing",
+    "task_index": 1,
+    "role": "producer",
+    "context_key": "PIPE3:1",
+    "candidate_keys": [
+      "peer-b@v1",
+      "peer-c@v1"
+    ],
+    "evidence_ids": [
+      "policy-selection-0"
+    ],
+    "evidence_version": "pipe3-source-bound-v1",
+    "public_rows": [
+      {
+        "feedback_id": "feedback-source-bound",
+        "source_event_id": "policy-selection-0",
+        "source": "recipient_judgment",
+        "candidate_key": "peer-b@v1",
+        "evidence_version": "pipe3-source-bound-v1",
+        "source_index": 0,
+        "arrived_at": 5.0,
+        "delay": 5.0,
+        "action": "repair",
+        "disposition": "eligible",
+        "provenance": "public",
+        "arrival_index": 1,
+        "label": 1.0
+      }
+    ],
+    "available_index": 1,
+    "watermark_schema": "global-event-index-v1"
+  },
+  "selection0": "selection-0",
+  "selection1": "selection-1",
+  "policy_updates": 1,
+  "native_manifest_root": "3d1eec961b6c0b86ac91c3d096598e193fcae0f840453ec7a82c1b0f4b6b85d5",
+  "auxiliary_manifest_root": "25bed4743f04bfd0c1ca5f38493cd685e592c019ddf50c0a3e067a1791689e84",
+  "ledger_event_count": 9,
+  "auxiliary_manifest_rows": 4,
+  "ended_at_utc": "2026-09-30T08:08:45.516391+00:00",
+  "interpretation": "same-boundary source-bound offer to future selection only; no scorer/API/GPU/effect claim"
+}

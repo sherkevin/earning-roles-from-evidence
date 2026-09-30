@@ -1,0 +1,45 @@
+{
+  "checks": {
+    "same_boundary_ledger": false,
+    "future_task_index": true,
+    "source_feedback_consumed": true,
+    "auxiliary_chain_continues": true,
+    "native_manifest_valid": true,
+    "auxiliary_manifest_valid": true,
+    "source_offer_sidecar_v4": true
+  },
+  "offer": {
+    "offer_id": "offer-1",
+    "task_id": "PIPE3_stream_processing",
+    "task_index": 1,
+    "role": "producer",
+    "context_key": "PIPE3:1",
+    "candidate_keys": [
+      "peer-b@v1",
+      "peer-c@v1"
+    ],
+    "evidence_ids": [
+      "policy-selection-0"
+    ],
+    "evidence_version": "pipe3-source-bound-v1",
+    "public_rows": [
+      {
+        "feedback_id": "feedback-source-bound",
+        "source_event_id": "policy-selection-0",
+        "source": "recipient_judgment",
+        "candidate_key": "peer-b@v1",
+        "evidence_version": "pipe3-source-bound-v1",
+        "source_index": 0,
+        "arrived_at": 5.0,
+        "delay": 5.0,
+        "action": "repair",
+        "disposition": "eligible",
+        "provenance": "public",
+        "arrival_index": 1,
+        "label": 1.0
+      }
+    ],
+    "available_index": 1,
+    "watermark_schema": "global-event-index-v1"
+  }
+}

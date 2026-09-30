@@ -25,6 +25,17 @@ def test_source_bound_adapter_seals_canonical_offer():
     assert result.projection_digests == (sidecar.sidecar_digest,)
 
 
+def test_source_bound_adapter_requires_explicit_future_target_index():
+    ledger, selection, selection_record, sidecar, judgment_record, gate, schedule = fixture()
+    with pytest.raises(ValueError, match="target task index"):
+        build_source_bound_offer(
+            selection=selection, selection_record=selection_record,
+            feedback_inputs=((sidecar, judgment_record, gate, None),), ledger=ledger,
+            arrival_schedule=schedule, offer_id="offer-same-task", context_key="PIPE3:0",
+            target_task_index=0,
+        )
+
+
 @pytest.mark.parametrize("mutated_schedule", [
     (ArrivalAssignment("feedback-0", "terminal_outcome", "judgment-0", "policy-selection-0", 0),),
     (ArrivalAssignment("feedback-0", "recipient_judgment", "judgment-0", "policy-selection-0", 1),),

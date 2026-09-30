@@ -248,5 +248,20 @@ class Pipe3SelectionBoundary:
         auxiliary_root = validate_aux_manifest(auxiliary, self.auxiliary_manifest_rows)
         return native_root, auxiliary_root
 
+    def choose_and_seal_source_bound(self, *, source_offer: Any, **kwargs: Any) -> SelectionSeal:
+        """Consume a source-bound offer only on the continuing auxiliary chain.
+
+        The source-bound adapter records the previous auxiliary root when it
+        seals the public offer.  Checking that root here prevents a later
+        selection from silently starting a fresh manifest chain.
+        """
+        expected = auxiliary_manifest_root(self.auxiliary_manifest_rows)
+        if getattr(source_offer, "previous_aux_hash", None) != expected:
+            raise ValueError("source-bound offer previous auxiliary hash does not match runner state")
+        offer = getattr(source_offer, "offer", None)
+        if offer is None:
+            raise TypeError("source_offer must expose an AssignmentEvidenceOffer")
+        return self.choose_and_seal(offer=offer, **kwargs)
+
 
 __all__ = ["Pipe3SelectionBoundary", "RUNNER_VERSION", "SelectionSeal", "auxiliary_manifest_root", "make_offer"]

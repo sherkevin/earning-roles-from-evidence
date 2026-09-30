@@ -1,0 +1,134 @@
+[
+  {
+    "event_type": "peer_selection",
+    "payload": {
+      "selection_id": "selection-0",
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 0,
+      "selector_id": "peer-a",
+      "role": "producer",
+      "candidate_ids": [
+        "peer-b",
+        "peer-c"
+      ],
+      "chosen_peer_id": "peer-b",
+      "propensity": 1.0
+    },
+    "previous_hash": "GENESIS",
+    "record_hash": "24de72f326affc29cc9b6aef6c039949428bdd7a1f160d3f6252250f8ed3f00a"
+  },
+  {
+    "event_type": "task_start",
+    "payload": {
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 0
+    },
+    "previous_hash": "24de72f326affc29cc9b6aef6c039949428bdd7a1f160d3f6252250f8ed3f00a",
+    "record_hash": "89f110dbb82d68773a31e2545cf856a562bf0fd33163e5e14dab5fdfdfec3afb"
+  },
+  {
+    "event_type": "producer_delivery",
+    "payload": {
+      "delivery_id": "delivery-source-bound",
+      "task_id": "PIPE3_stream_processing",
+      "producer_id": "peer-b",
+      "recipient_id": "peer-a",
+      "artifact_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "source_event_id": "produce-source-bound",
+      "task_index": 0,
+      "selection_id": "selection-0"
+    },
+    "previous_hash": "89f110dbb82d68773a31e2545cf856a562bf0fd33163e5e14dab5fdfdfec3afb",
+    "record_hash": "01e4f2fb0df1184455463136692cc1beaa63fddc799b3dbce2355900664fc40f"
+  },
+  {
+    "event_type": "producer_score",
+    "payload": {
+      "producer_score_id": "producer-score-source-bound",
+      "delivery_id": "delivery-source-bound",
+      "artifact_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "scorer_version": "pipe3-producer-objective-v2",
+      "status": "PASS",
+      "label": 1,
+      "quality_score": 1.0,
+      "score_payload_sha256": "0d42cb96c149b696cf89391b9e2184db0fb90c641247af12ca2dc084c1dd06a3",
+      "coverage_complete": true,
+      "decision_complete": true
+    },
+    "previous_hash": "01e4f2fb0df1184455463136692cc1beaa63fddc799b3dbce2355900664fc40f",
+    "record_hash": "a5dd0881001467843cf32134fc8a5c4c8494bc0644fb7696663a84de78318993"
+  },
+  {
+    "event_type": "recipient_judgment",
+    "payload": {
+      "judgment_id": "judgment-source-bound",
+      "delivery_id": "delivery-source-bound",
+      "consumer_id": "peer-a",
+      "decision": "accept_with_rework",
+      "observed_artifact_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "terminal_outcome_available": false,
+      "repair_note": ""
+    },
+    "previous_hash": "a5dd0881001467843cf32134fc8a5c4c8494bc0644fb7696663a84de78318993",
+    "record_hash": "8f3d237657b1f6ca67fe17176bd78fb7bc7551219c71b682f27a06d806442a6e"
+  },
+  {
+    "event_type": "consumer_action",
+    "payload": {
+      "action_id": "action-source-bound",
+      "delivery_id": "delivery-source-bound",
+      "consumer_id": "peer-a",
+      "used_artifact": true,
+      "input_artifact_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "output_artifact_sha256": null,
+      "repair_cost": 1.0,
+      "action": "repair"
+    },
+    "previous_hash": "8f3d237657b1f6ca67fe17176bd78fb7bc7551219c71b682f27a06d806442a6e",
+    "record_hash": "b16ac3e2e063eba6bafc91b67a473d9d79d5d2be1efafdbaaea3ab163992988d"
+  },
+  {
+    "event_type": "terminal_outcome",
+    "payload": {
+      "outcome_id": "outcome-source-bound",
+      "delivery_id": "delivery-source-bound",
+      "success": true,
+      "scorer_version": "pipe3-terminal-v2",
+      "partial_score": 1.0,
+      "score_payload_sha256": "faa220bdb4131f18910a5e4eecec0865e7e0bf2a420653b2676c3266fb2f0e00"
+    },
+    "previous_hash": "b16ac3e2e063eba6bafc91b67a473d9d79d5d2be1efafdbaaea3ab163992988d",
+    "record_hash": "8ea7f58207d0d713550056c2bcbeebef1e2aa67e4f1a3fc7dd8c0f17bfafd0e9"
+  },
+  {
+    "event_type": "role_evidence_update",
+    "payload": {
+      "evidence_id": "evidence-source-bound",
+      "judgment_id": "judgment-source-bound",
+      "action_id": "action-source-bound",
+      "outcome_id": "outcome-source-bound",
+      "update_version": "pipe3-lineage-v3",
+      "arrived_at": 3.0
+    },
+    "previous_hash": "8ea7f58207d0d713550056c2bcbeebef1e2aa67e4f1a3fc7dd8c0f17bfafd0e9",
+    "record_hash": "9ac82e5b53b5acb3d4627bf4059de1b2075ea79fa63a616ccd1d1bf7800800d9"
+  },
+  {
+    "event_type": "peer_selection",
+    "payload": {
+      "selection_id": "selection-1",
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 1,
+      "selector_id": "peer-a",
+      "role": "producer",
+      "candidate_ids": [
+        "peer-b",
+        "peer-c"
+      ],
+      "chosen_peer_id": "peer-c",
+      "propensity": 0.5
+    },
+    "previous_hash": "9ac82e5b53b5acb3d4627bf4059de1b2075ea79fa63a616ccd1d1bf7800800d9",
+    "record_hash": "e9715971ae85d4d3dc934f668357eb5a87e30b7e202990ffe9bfc9f39432e03b"
+  }
+]

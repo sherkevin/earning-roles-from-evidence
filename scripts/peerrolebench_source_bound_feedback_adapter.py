@@ -28,6 +28,7 @@ class SourceBoundOffer:
     offer: AssignmentEvidenceOffer
     schedule_digest: str
     projection_digests: tuple[str, ...]
+    previous_aux_hash: str = "GENESIS"
 
 
 def _record_for(
@@ -50,6 +51,7 @@ def build_source_bound_offer(
     arrival_schedule: Iterable[ArrivalAssignment | Mapping[str, Any]],
     offer_id: str,
     context_key: str,
+    target_task_index: int | None = None,
     previous_aux_hash: str = "GENESIS",
 ) -> SourceBoundOffer:
     """Validate canonical lineage and seal an assignment evidence offer.
@@ -66,6 +68,9 @@ def build_source_bound_offer(
     if not feedback_inputs:
         raise ValueError("source-bound offer requires at least one feedback sidecar")
     record_index = _event_record_index(ledger)
+    canonical_selection_record = _record_for(record_index, "peer_selection", selection.protocol_event_id)
+    if canonical_selection_record != selection_record:
+        raise ValueError("selection record is not the canonical record in the supplied ledger")
     sidecars = tuple(item[0] for item in feedback_inputs)
     schedule = validate_schedule(
         arrival_schedule,
@@ -77,6 +82,9 @@ def build_source_bound_offer(
     for sidecar, ledger_record, gate, unknown_reason in feedback_inputs:
         if sidecar.sidecar_version != "peerrole-policy-sidecar-v4":
             raise ValueError("source-bound online offer requires event-time sidecar v4")
+        canonical_feedback_record = _record_for(record_index, sidecar.protocol_event_type, sidecar.protocol_event_id)
+        if canonical_feedback_record != ledger_record:
+            raise ValueError("feedback record is not the canonical record in the supplied ledger")
         bind_to_ledger_record(
             sidecar.payload(), ledger_record,
             expected_event_type=sidecar.protocol_event_type,
@@ -100,8 +108,12 @@ def build_source_bound_offer(
         raise ValueError("source-bound offer cannot mix evidence versions")
 
     candidate_keys = tuple(candidate.key for candidate in selection.candidates)
+    if target_task_index is None:
+        target_task_index = int(selection.task_index)
+    elif int(target_task_index) <= int(selection.task_index):
+        raise ValueError("explicit target task index must follow the source selection")
     offer = make_offer(
-        offer_id=offer_id, task_id=selection.task_id, task_index=selection.task_index,
+        offer_id=offer_id, task_id=selection.task_id, task_index=int(target_task_index),
         role=selection.role, context_key=context_key, candidate_keys=candidate_keys,
         public_rows=tuple(projection_to_public_row(projection, unknown_reason=reason)
                            for projection, reason in projections),
@@ -113,6 +125,7 @@ def build_source_bound_offer(
         offer=offer,
         schedule_digest=schedule_digest(schedule),
         projection_digests=tuple(sidecar.sidecar_digest for sidecar in sidecars),
+        previous_aux_hash=previous_aux_hash,
     )
 
 

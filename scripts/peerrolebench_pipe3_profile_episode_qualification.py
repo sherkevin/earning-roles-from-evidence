@@ -273,6 +273,7 @@ def _episode(case: str, *, materials: dict[str, Any], final_sources: Mapping[str
         selection=selection, selection_record=records["peer_selection"],
         feedback_inputs=((sidecar, records["recipient_judgment"], gate, None if eligible else "recipient-owned-or-unattributed"),),
         ledger=ledger, arrival_schedule=schedule, offer_id=f"offer-{case}", context_key="PIPE3:1",
+        target_task_index=1,
     )
     profile = None
     assignment_trace = None

@@ -242,3 +242,15 @@
 - **根因:** worker 使用短模块名导入，fallback 复用了同一 Python 进程，却没有隔离模块缓存和临时 source path。
 - **避免:** 每次 fallback 前清除四个短模块名并插入当前临时 source 根目录，完成后移除 path 和模块；在 JSONL 中保留 transport failure 与 fallback worker，不把 fallback 当生产 sandbox。
 - **Evidence:** [PIPE3 profile episode composition](../docs/coordination/task_reports/20260930_pipe3_profile_episode_composition.md)；`experiments/logs/n03_pipe3_profile_episode_qualification_20260930_v1/events.jsonl`。
+
+### 0039-source-bound-next-selection-must-continue-the-canonical-boundary | 2026-09-30 | earning-roles
+- **现象:** 第一版 source-bound selection wrapper 能读到公开反馈，但新建了自己的 ledger/auxiliary chain；同时把来源 task index 误当成目标 task index，且 offer mutation 测试在构造器摘要校验处提前失败。
+- **根因:** 为了复用接口又复制了 selection boundary，缺少 canonical ledger/manifest continuation；目标任务索引没有成为 source-bound adapter 的显式输入；dataclass 是不可变摘要对象，直接 `replace` 会留下旧 digest。
+- **避免:** 复用同一 `Pipe3SelectionBoundary` 完成 task 0→task 1；source-bound offer 显式携带并校验 `target_task_index` 与 previous auxiliary root；篡改测试必须通过 `make_offer` 重新计算 digest 后再进入 runner。
+- **Evidence:** [source-bound boundary qualification](../docs/coordination/task_reports/20260930_pipe3_source_bound_boundary_qualification.md); 保留失败日志 `experiments/logs/n03_source_bound_selection_qualification_20260930_v1/`、`v2/`。
+
+### 0040-source-bound-records-must-belong-to-the-supplied-ledger | 2026-09-30 | earning-roles
+- **现象:** sidecar 的 hash 绑定本身通过时，来自另一份 ledger 的 selection/feedback record 仍可能被传入 adapter。
+- **根因:** adapter 只验证调用者提供的 record 与 sidecar hash 一致，没有把它与传入 ledger 的 canonical `(event_type,event_id)` record 做 membership 比较。
+- **避免:** 在 source-bound offer sealing 前，从 supplied ledger 的 event index 取 canonical selection 与 feedback records，并要求它们与参数逐字一致；随后才做 lineage、schedule 和公开投影。
+- **Evidence:** [source-bound boundary qualification](../docs/coordination/task_reports/20260930_pipe3_source_bound_boundary_qualification.md)。

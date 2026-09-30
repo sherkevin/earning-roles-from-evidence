@@ -1,0 +1,64 @@
+{
+  "source_offer": {
+    "offer_id": "offer-source-bound",
+    "task_id": "PIPE3_stream_processing",
+    "task_index": 1,
+    "role": "producer",
+    "context_key": "PIPE3:1",
+    "candidate_keys": [
+      "peer-b@v1",
+      "peer-c@v1"
+    ],
+    "evidence_ids": [
+      "policy-selection-0"
+    ],
+    "evidence_version": "fixture-evidence-v1",
+    "public_rows": [
+      {
+        "feedback_id": "feedback-0",
+        "source_event_id": "policy-selection-0",
+        "source": "recipient_judgment",
+        "candidate_key": "peer-b@v1",
+        "evidence_version": "fixture-evidence-v1",
+        "source_index": 0,
+        "arrived_at": 1.0,
+        "delay": 1.0,
+        "action": "use",
+        "disposition": "eligible",
+        "provenance": "public",
+        "arrival_index": 0,
+        "label": 1.0
+      }
+    ],
+    "available_index": 0,
+    "watermark_schema": "global-event-index-v1"
+  },
+  "checks": [
+    {
+      "status": "PASS",
+      "imported_event_id": "policy-selection-0",
+      "source_offer_id": "offer-source-bound",
+      "policy_updates": 1,
+      "consumed": true,
+      "native_selection_id": "selection-1",
+      "native_manifest_root": "433589131d744c2fba60ee62de09fdd4c7c06fa8d9659054f7ef034e93575cbd",
+      "auxiliary_manifest_root": "421eaf279b5a00da2ea07f593cb97f8e69ec7535666986a21724e0bf95aa8c4a"
+    },
+    {
+      "name": "reject_non_future_target_task",
+      "status": "PASS",
+      "error": "explicit target task index must follow the source selection"
+    },
+    {
+      "name": "reject_candidate_mutation",
+      "status": "PASS",
+      "error": "evidence row is not bound to the selected candidate"
+    },
+    {
+      "name": "unknown_no_update",
+      "status": "PASS",
+      "updates": 0,
+      "consumed": true
+    }
+  ]
+}
