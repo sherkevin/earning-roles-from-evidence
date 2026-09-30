@@ -230,3 +230,15 @@
 - **根因:** 之前三个 boundary qualification 是分开的，缺少一个组合 trace 检查 worker digest、selection seal 和 native task-start 的同一 decision index。
 - **避免:** 在同一 runner 中按固定顺序执行并记录四阶段 trace，要求 attestation digest 与 worker digest相同，native task_start 的 task index 等于 offer decision index。
 - **Evidence:** [isolated assignment/task-start qualification](../docs/coordination/task_reports/20260930_isolated_assignment_task_start_qualification.md)；`experiments/logs/n03_isolated_assignment_runner_qualification_20260930_v1/`。
+
+### 0037-generator-seam-must-separate-fixture-from-quality | 2026-09-30 | earning-roles
+- **现象:** 新增 profile generator 测试时把请求类型名写成了不存在的别名，且很容易把 deterministic profile fixture 误写成真实摘要模型结果。
+- **根因:** 接口命名和“资格边界/科学效果”两层语义没有在第一版中同时锁定。
+- **避免:** 让唯一的 `PublicProfileGenerationRequest`/`GeneratedPublicProfile` 类型贯穿调用；receipt 强制记录零调用、成本和 `scientific_claim_allowed=false`，任务报告明确 fixture 不能支持 profile quality 或 efficacy claim。
+- **Evidence:** [profile generator seam qualification](../docs/coordination/task_reports/20260930_profile_generator_seam_qualification.md)；`experiments/logs/n03_profile_generator_seam_qualification_20260930_v1/`。
+
+### 0038-direct-scorer-fallback-must-clear-import-cache | 2026-09-30 | earning-roles
+- **现象:** macOS nested scorer transport 失败后，直接调用同一 worker 的 CPU fallback 会把前一个临时 workspace 的 `models/producer/processor/sink` 模块留在 `sys.modules`，导致后续 case 得到错误的 adoption 结果。
+- **根因:** worker 使用短模块名导入，fallback 复用了同一 Python 进程，却没有隔离模块缓存和临时 source path。
+- **避免:** 每次 fallback 前清除四个短模块名并插入当前临时 source 根目录，完成后移除 path 和模块；在 JSONL 中保留 transport failure 与 fallback worker，不把 fallback 当生产 sandbox。
+- **Evidence:** [PIPE3 profile episode composition](../docs/coordination/task_reports/20260930_pipe3_profile_episode_composition.md)；`experiments/logs/n03_pipe3_profile_episode_qualification_20260930_v1/events.jsonl`。

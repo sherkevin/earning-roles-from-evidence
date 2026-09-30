@@ -189,3 +189,7 @@ Goal 修改。
   assignment runner 的 opt-in 子进程只消费 sealed public offer，父进程核对 offer/profile/read-cut/policy-input digest 后记录 worker hash；5 格离线资格、3 项定向测试、完整 PeerRoleBench 298 项通过，0 API/0 GPU。仍是 non-adversarial process boundary，未接真实 next episode 或科学效果。
 - [done] 2026-09-30 isolated read → selection → task-start composition (task_reports/20260930_isolated_assignment_task_start_qualification.md)：
   在同一 runner trace 中闭合 isolated profile consumption、selection seal 和 native `PeerRoleLedger.task_start`，核对 worker/attestation digest 与同一 decision index；4 格离线资格、4 项定向测试、完整 PeerRoleBench 299 项通过，0 API/0 GPU。仍不是 live episode 或 online-learning evidence。
+- [done] 2026-09-30 public profile generator seam qualification (task_reports/20260930_profile_generator_seam_qualification.md)：
+  新增 typed public-only profile generator seam 与 generation receipt；确定性 fixture 只接收 eligible public projection，拒绝 UNKNOWN、private/terminal 字段和未选 candidate，并记录 digest、耗时、token、成本、API/GPU 计数及科学声明开关。5 格零调用 qualification、3 项定向测试通过；真实 summarizer、profile quality、later assignment 和 benchmark freeze 仍开放。
+- [done] 2026-09-30 PIPE3 profile episode composition qualification (task_reports/20260930_pipe3_profile_episode_composition.md)：
+  用 pinned PIPE3 material 与 v2 CPU scorer 执行 producer-owned / recipient-owned 两个控制；责任 gate 由实际 scorer/action/outcome 输出计算，前者生成 profile 并闭合 isolated read→selection→task_start，后者保持 PENDING_ATTRIBUTION/no-profile。25 条 JSONL 事件、0 API/0 GPU；仍是单 root、deterministic profile 和协议资格，不是科学效果或 baseline 结果。

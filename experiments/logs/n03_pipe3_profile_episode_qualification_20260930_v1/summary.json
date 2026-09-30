@@ -1,0 +1,766 @@
+{
+  "qualification": "pipe3-profile-episode-cpu-v2",
+  "task_id": "PIPE3_stream_processing",
+  "seed": 0,
+  "cases": [
+    {
+      "case": "producer_fix",
+      "delivery_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "producer_score": {
+        "status": "FAIL",
+        "label": 0,
+        "quality_score": 0.6666666666666666,
+        "scorer_version": "pipe3-producer-objective-v2",
+        "decision_complete": true,
+        "coverage_complete": true,
+        "checks": [
+          {
+            "id": "P1_import",
+            "status": "PASS"
+          },
+          {
+            "id": "P2_iso_serialization",
+            "status": "FAIL",
+            "reason": ""
+          },
+          {
+            "id": "P3_batch_output",
+            "status": "PASS"
+          }
+        ],
+        "failed_check_ids": [
+          "P2_iso_serialization"
+        ],
+        "transport": {
+          "status": "direct_cpu_fallback",
+          "worker": "peerrolebench_pipe3_producer_scorer_worker_v2.py"
+        }
+      },
+      "recipient_before": {
+        "status": "PASS",
+        "label": 1,
+        "quality_score": 1.0,
+        "scorer_version": "pipe3-recipient-objective-v2",
+        "mode": "recipient",
+        "decision_complete": true,
+        "coverage_complete": true,
+        "checks": [
+          {
+            "id": "R1_process",
+            "status": "PASS",
+            "reason": ""
+          },
+          {
+            "id": "R2_shape",
+            "status": "PASS"
+          },
+          {
+            "id": "R3_utf8_semantics",
+            "status": "PASS"
+          }
+        ],
+        "failed_check_ids": [],
+        "transport": {
+          "status": "direct_cpu_fallback",
+          "worker": "peerrolebench_pipe3_recipient_scorer_worker_v2.py"
+        }
+      },
+      "adoption_before": {
+        "status": "FAIL",
+        "label": 0,
+        "quality_score": 0.5,
+        "scorer_version": "pipe3-recipient-objective-v2",
+        "mode": "adoption",
+        "decision_complete": true,
+        "coverage_complete": true,
+        "checks": [
+          {
+            "id": "A1_producer_boundary",
+            "status": "FAIL"
+          },
+          {
+            "id": "A2_sink_adoption",
+            "status": "PASS"
+          }
+        ],
+        "failed_check_ids": [
+          "A1_producer_boundary"
+        ],
+        "transport": {
+          "status": "direct_cpu_fallback",
+          "worker": "peerrolebench_pipe3_recipient_scorer_worker_v2.py"
+        }
+      },
+      "recipient_after": {
+        "status": "PASS",
+        "label": 1,
+        "quality_score": 1.0,
+        "scorer_version": "pipe3-recipient-objective-v2",
+        "mode": "recipient",
+        "decision_complete": true,
+        "coverage_complete": true,
+        "checks": [
+          {
+            "id": "R1_process",
+            "status": "PASS",
+            "reason": ""
+          },
+          {
+            "id": "R2_shape",
+            "status": "PASS"
+          },
+          {
+            "id": "R3_utf8_semantics",
+            "status": "PASS"
+          }
+        ],
+        "failed_check_ids": [],
+        "transport": {
+          "status": "direct_cpu_fallback",
+          "worker": "peerrolebench_pipe3_recipient_scorer_worker_v2.py"
+        }
+      },
+      "adoption_after": {
+        "status": "PASS",
+        "label": 1,
+        "quality_score": 1.0,
+        "scorer_version": "pipe3-recipient-objective-v2",
+        "mode": "adoption",
+        "decision_complete": true,
+        "coverage_complete": true,
+        "checks": [
+          {
+            "id": "A1_producer_boundary",
+            "status": "PASS"
+          },
+          {
+            "id": "A2_sink_adoption",
+            "status": "PASS"
+          }
+        ],
+        "failed_check_ids": [],
+        "transport": {
+          "status": "direct_cpu_fallback",
+          "worker": "peerrolebench_pipe3_recipient_scorer_worker_v2.py"
+        }
+      },
+      "action": {
+        "consumer_action": "repair",
+        "source_files": {
+          "processor.py": "\nimport json\nimport os\nfrom datetime import datetime\n\n\ndef parse_timestamp(ts_str: str) -> datetime:\n    \n    return datetime.fromisoformat(ts_str)\n\n\ndef transform_event(event_data: dict) -> dict:\n    \n    processed = dict(event_data)\n    \n    ts = parse_timestamp(event_data[\"timestamp\"])\n    processed[\"timestamp\"] = ts.isoformat()\n    processed[\"processed_at\"] = datetime.utcnow().isoformat()\n    processed[\"action\"] = event_data[\"action\"].upper()\n    return processed\n\n\ndef process_events(input_path: str, output_path: str) -> int:\n    \n    count = 0\n    \n    with open(input_path, \"r\", encoding=\"utf-8\") as fin,\\\n         open(output_path, \"w\", encoding=\"utf-8\") as fout:\n        for line in fin:\n            line = line.strip()\n            if not line:\n                continue\n            event_data = json.loads(line)\n            processed = transform_event(event_data)\n            \n            fout.write(json.dumps(processed, ensure_ascii=False) + \"\\n\")\n            count += 1\n    return count\n",
+          "models.py": "\nfrom __future__ import annotations\nfrom dataclasses import dataclass\nfrom datetime import datetime\n\n\nVALID_ACTIONS = [\"page_view\", \"click\", \"scroll\", \"purchase\"]\n\n\n@dataclass\nclass UserEvent:\n    \n    event_id: str\n    timestamp: datetime\n    user_name: str\n    action: str\n    page_url: str\n\n    def validate(self) -> bool:\n        \n        if not self.event_id:\n            raise ValueError(\"event_id is required\")\n        if self.action not in VALID_ACTIONS:\n            raise ValueError(f\"Invalid action: {self.action}\")\n        return True\n",
+          "sink.py": "\nimport json\nimport os\nfrom datetime import datetime\n\n\ndef load_processed_events(input_path: str) -> list[dict]:\n    \n    events = []\n    with open(input_path, \"r\", encoding=\"utf-8\") as f:\n        for line in f:\n            line = line.strip()\n            if not line:\n                continue\n            event = json.loads(line)\n            \n            _ = event[\"event_id\"]  \n            _ = event[\"timestamp\"]\n            events.append(event)\n    return events\n\n\ndef write_summary(events: list[dict], output_path: str) -> dict:\n    \n    summary = {\n        \"total_events\": len(events),\n        \"actions\": {},\n        \"users\": set(),\n    }\n    for evt in events:\n        action = evt[\"action\"]\n        summary[\"actions\"][action] = summary[\"actions\"].get(action, 0) + 1\n        summary[\"users\"].add(evt[\"user_name\"])\n\n    summary[\"unique_users\"] = len(summary[\"users\"])\n    summary[\"users\"] = sorted(summary[\"users\"])\n\n    with open(output_path, \"w\", encoding=\"utf-8\") as f:\n        json.dump(summary, f, indent=2, ensure_ascii=False)\n\n    return summary\n",
+          "producer.py": "\nimport json\nimport os\nfrom datetime import datetime\nfrom models import UserEvent\n\n\ndef serialize_event(event: UserEvent) -> str:\n    \n    data = {\n        \"event_id\": event.event_id,\n        \"timestamp\": event.timestamp,\n        \"user_name\": event.user_name,\n        \"action\": event.action,\n        \"page_url\": event.page_url,\n    }\n    \n    data[\"timestamp\"] = event.timestamp.isoformat()\n    return json.dumps(data)\n\n\ndef produce_events(events: list[UserEvent], output_path: str) -> None:\n    \n    with open(output_path, \"w\", encoding=\"utf-8\") as f:\n        for event in events:\n            f.write(serialize_event(event) + \"\\n\")\n"
+        },
+        "input_source_sha256": "819118801d4ccfab2801b36032d4f0808bdf938eedf9ee532d8ea798fd7ffa29",
+        "output_source_sha256": "4d949e54cf2cce4927230a4c0ee5c41025f0d27cb8fc3eeb7993c7c465fe1569",
+        "delivery_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+        "changed_paths": [
+          "producer.py"
+        ],
+        "action_initialization": "selected_delivery_copy",
+        "prior_delivery_may_have_been_seen": true,
+        "independent_redo_is_blinded_control": false
+      },
+      "outcome": {
+        "status": "PASS",
+        "coverage_complete": true,
+        "decision_complete": true
+      },
+      "eligibility": {
+        "gate_version": "pipe3-responsibility-label-v1",
+        "producer_owned_paths_changed": [
+          "producer.py"
+        ],
+        "recipient_owned_paths_changed": [],
+        "q_complete": true,
+        "outcome_complete": true,
+        "judgment_target_role": "producer",
+        "artifact_binding_present": true,
+        "later_use_valid": false,
+        "producer_feedback_status": "ELIGIBLE",
+        "producer_feedback_eligible": true,
+        "reason": "complete Qp/Y with producer-owned change or valid later-use evidence",
+        "policy_update_allowed": false,
+        "scientific_claim_allowed": false
+      },
+      "offer": {
+        "offer_id": "offer-producer_fix",
+        "task_id": "PIPE3_stream_processing",
+        "task_index": 0,
+        "role": "producer",
+        "context_key": "PIPE3:1",
+        "candidate_keys": [
+          "peer-b@v1",
+          "peer-c@v1"
+        ],
+        "evidence_ids": [
+          "policy-selection-producer_fix"
+        ],
+        "evidence_version": "pipe3-cpu-v1",
+        "public_rows": [
+          {
+            "feedback_id": "feedback-producer_fix",
+            "source_event_id": "policy-selection-producer_fix",
+            "source": "recipient_judgment",
+            "candidate_key": "peer-b@v1",
+            "evidence_version": "pipe3-cpu-v1",
+            "source_index": 0,
+            "arrived_at": 1.0,
+            "delay": 1.0,
+            "action": "repair",
+            "disposition": "eligible",
+            "provenance": "public",
+            "arrival_index": 0,
+            "label": 1.0
+          }
+        ],
+        "available_index": 0,
+        "watermark_schema": "global-event-index-v1"
+      },
+      "profile": {
+        "sidecar_version": "metateam-l2-public-sidecar-v1",
+        "profile_id": "profile-producer_fix-r1",
+        "profile_revision": 1,
+        "adapter_variant": "public",
+        "candidate_key": "peer-b@v1",
+        "producer_id": "peer-b",
+        "producer_version": "v1",
+        "recipient_id": "peer-a",
+        "selected_candidate_key": "peer-b@v1",
+        "selection_event_id": "selection-producer_fix",
+        "source_event_id": "policy-selection-producer_fix",
+        "delivery_id": "delivery-producer_fix",
+        "source_decision_index": 0,
+        "source_arrival_index": 0,
+        "available_index": 0,
+        "source_disposition": "eligible",
+        "source_provenance": "public",
+        "source_input_digest": "7ec583d8de2c61259c32e5636a684cc037a2e6e123cfc224a88a000c27d57243",
+        "profile_schema": "metateam-profile-v1",
+        "parser_version": "cpu-v1",
+        "model_config_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "profile": {
+          "reliability": "medium",
+          "strengths": [
+            "public producer feedback"
+          ],
+          "weaknesses": [
+            "requires later validation"
+          ],
+          "communication_style": "concise",
+          "notes": [
+            "deterministic qualification fixture"
+          ]
+        }
+      },
+      "assignment_trace": [
+        {
+          "seq": 0,
+          "event": "offer_emitted",
+          "status": "accepted",
+          "offer_id": "assignment-producer_fix",
+          "offer_digest": "cdd014d39d261107659425b035a175b04c66e6fa16c8450a353ca2ee8d9ca1dd",
+          "policy_input_digest": null,
+          "policy_read_trace_mode": "recorded_public_input_digest",
+          "isolated_policy_trace": false,
+          "profile_ids": [
+            "profile-producer_fix-r1"
+          ]
+        },
+        {
+          "seq": 1,
+          "event": "profile_consumed",
+          "status": "accepted",
+          "offer_id": "assignment-producer_fix",
+          "offer_digest": "cdd014d39d261107659425b035a175b04c66e6fa16c8450a353ca2ee8d9ca1dd",
+          "policy_input_digest": "bd2741b6cb9650868bfdd3f2e40a6861066a1157fe478d3069597c8716c7a8b4",
+          "policy_read_trace_mode": "isolated_process_public_digest",
+          "isolated_policy_trace": true,
+          "profile_ids": [
+            "profile-producer_fix-r1"
+          ],
+          "isolated_read": {
+            "schema_version": "peerrole-public-profile-read-v1",
+            "worker_sha256": "027817f9ad9946a372654981493a6048d267800321dd7adfdc946ea6b60c9961",
+            "offer_digest": "cdd014d39d261107659425b035a175b04c66e6fa16c8450a353ca2ee8d9ca1dd",
+            "profile_ids": [
+              "profile-producer_fix-r1"
+            ],
+            "read_cut": 1,
+            "policy_input_digest": "bd2741b6cb9650868bfdd3f2e40a6861066a1157fe478d3069597c8716c7a8b4",
+            "public_profiles_digest": "2062adcf673d8d857e360faa384b3d8b9245cd313c45d2c5a52342ec5cc7dac7",
+            "isolated": true
+          }
+        },
+        {
+          "seq": 2,
+          "event": "selection_sealed",
+          "status": "accepted",
+          "offer_id": "assignment-producer_fix",
+          "offer_digest": "cdd014d39d261107659425b035a175b04c66e6fa16c8450a353ca2ee8d9ca1dd",
+          "policy_input_digest": "bd2741b6cb9650868bfdd3f2e40a6861066a1157fe478d3069597c8716c7a8b4",
+          "policy_read_trace_mode": "isolated_process_public_digest",
+          "isolated_policy_trace": true,
+          "task_index": 1
+        },
+        {
+          "seq": 3,
+          "event": "task_started",
+          "status": "accepted",
+          "offer_id": "assignment-producer_fix",
+          "offer_digest": "cdd014d39d261107659425b035a175b04c66e6fa16c8450a353ca2ee8d9ca1dd",
+          "policy_input_digest": "bd2741b6cb9650868bfdd3f2e40a6861066a1157fe478d3069597c8716c7a8b4",
+          "policy_read_trace_mode": "isolated_process_public_digest",
+          "isolated_policy_trace": true,
+          "task_id": "PIPE3_stream_processing",
+          "task_index": 1,
+          "ledger_record_hash": "9a4de7a8af9896a52430bb23a9905fc8398f6b242867cb6c608f998bba83be64"
+        }
+      ],
+      "ledger": [
+        {
+          "event_type": "peer_selection",
+          "payload": {
+            "selection_id": "selection-producer_fix",
+            "task_id": "PIPE3_stream_processing",
+            "task_index": 0,
+            "selector_id": "selector",
+            "role": "producer",
+            "candidate_ids": [
+              "peer-b",
+              "peer-c"
+            ],
+            "chosen_peer_id": "peer-b",
+            "propensity": 0.5
+          },
+          "previous_hash": "GENESIS",
+          "record_hash": "13c58918562da35e281df7b57d6839fca5cad1bb97ce73efe6b32463268e48c5"
+        },
+        {
+          "event_type": "task_start",
+          "payload": {
+            "task_id": "PIPE3_stream_processing",
+            "task_index": 0
+          },
+          "previous_hash": "13c58918562da35e281df7b57d6839fca5cad1bb97ce73efe6b32463268e48c5",
+          "record_hash": "73ac25f42939ed1007583c1cf35485ef85b6cee66f99077694491ff0b1721fa3"
+        },
+        {
+          "event_type": "producer_delivery",
+          "payload": {
+            "delivery_id": "delivery-producer_fix",
+            "task_id": "PIPE3_stream_processing",
+            "producer_id": "peer-b",
+            "recipient_id": "peer-a",
+            "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+            "source_event_id": "request-producer_fix",
+            "task_index": 0,
+            "selection_id": "selection-producer_fix"
+          },
+          "previous_hash": "73ac25f42939ed1007583c1cf35485ef85b6cee66f99077694491ff0b1721fa3",
+          "record_hash": "0f556f032b15ea195364d0cbbea421da827f28e1a8ba557bd8e9e498054ee52d"
+        },
+        {
+          "event_type": "recipient_judgment",
+          "payload": {
+            "judgment_id": "judgment-producer_fix",
+            "delivery_id": "delivery-producer_fix",
+            "consumer_id": "peer-a",
+            "decision": "accept_with_rework",
+            "observed_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+            "terminal_outcome_available": false,
+            "repair_note": "CPU qualification control"
+          },
+          "previous_hash": "0f556f032b15ea195364d0cbbea421da827f28e1a8ba557bd8e9e498054ee52d",
+          "record_hash": "4bfe4e398f95a30e2e8300e06fc4857c291513dc71623749314e126500e6c992"
+        },
+        {
+          "event_type": "consumer_action",
+          "payload": {
+            "action_id": "action-producer_fix",
+            "delivery_id": "delivery-producer_fix",
+            "consumer_id": "peer-a",
+            "used_artifact": true,
+            "input_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+            "output_artifact_sha256": "4d949e54cf2cce4927230a4c0ee5c41025f0d27cb8fc3eeb7993c7c465fe1569",
+            "repair_cost": 0.0,
+            "action": "repair"
+          },
+          "previous_hash": "4bfe4e398f95a30e2e8300e06fc4857c291513dc71623749314e126500e6c992",
+          "record_hash": "ab210773a1bee404c0a3f8f140c3e71fede79a477fd1cf8993119928a1ba5ae0"
+        },
+        {
+          "event_type": "terminal_outcome",
+          "payload": {
+            "outcome_id": "outcome-producer_fix",
+            "delivery_id": "delivery-producer_fix",
+            "success": true,
+            "scorer_version": "pipe3-recipient-objective-v2",
+            "partial_score": 1.0,
+            "score_payload_sha256": "ae4d88775bb4bc1f5c0e67b6b87cc160e1005cfae064e0c7a24a29edeb0579c7"
+          },
+          "previous_hash": "ab210773a1bee404c0a3f8f140c3e71fede79a477fd1cf8993119928a1ba5ae0",
+          "record_hash": "67b66add5d72ee406bb0ba847d0d7a80785f5c7b293b0388d9e508706317be7c"
+        },
+        {
+          "event_type": "peer_selection",
+          "payload": {
+            "selection_id": "selection-producer_fix-1",
+            "task_id": "PIPE3_stream_processing",
+            "task_index": 1,
+            "selector_id": "selector",
+            "role": "producer",
+            "candidate_ids": [
+              "peer-b",
+              "peer-c"
+            ],
+            "chosen_peer_id": "peer-b",
+            "propensity": 0.5
+          },
+          "previous_hash": "67b66add5d72ee406bb0ba847d0d7a80785f5c7b293b0388d9e508706317be7c",
+          "record_hash": "7e89a8fb7bbb68e17ad606a2e32715b30226d72a9760574ad72928c787a29f65"
+        },
+        {
+          "event_type": "task_start",
+          "payload": {
+            "task_id": "PIPE3_stream_processing",
+            "task_index": 1
+          },
+          "previous_hash": "7e89a8fb7bbb68e17ad606a2e32715b30226d72a9760574ad72928c787a29f65",
+          "record_hash": "9a4de7a8af9896a52430bb23a9905fc8398f6b242867cb6c608f998bba83be64"
+        }
+      ]
+    },
+    {
+      "case": "recipient_fix",
+      "delivery_artifact_sha256": "e5084ee161666739bf1ea54353ea225ec590c51b79d74130071aa97c85469a30",
+      "producer_score": {
+        "status": "PASS",
+        "label": 1,
+        "quality_score": 1.0,
+        "scorer_version": "pipe3-producer-objective-v2",
+        "decision_complete": true,
+        "coverage_complete": true,
+        "checks": [
+          {
+            "id": "P1_import",
+            "status": "PASS"
+          },
+          {
+            "id": "P2_iso_serialization",
+            "status": "PASS"
+          },
+          {
+            "id": "P3_batch_output",
+            "status": "PASS"
+          }
+        ],
+        "failed_check_ids": [],
+        "transport": {
+          "status": "direct_cpu_fallback",
+          "worker": "peerrolebench_pipe3_producer_scorer_worker_v2.py"
+        }
+      },
+      "recipient_before": {
+        "status": "FAIL",
+        "label": 0,
+        "quality_score": 0.0,
+        "scorer_version": "pipe3-recipient-objective-v2",
+        "mode": "recipient",
+        "decision_complete": true,
+        "coverage_complete": true,
+        "checks": [
+          {
+            "id": "R1_process",
+            "status": "FAIL",
+            "reason": "UnicodeEncodeError('latin-1', '{\"data\": {\"event_id\": \"probe-001\", \"timestamp\": \"2023-11-14T22:13:20\", \"user_name\": \"Müller\", \"action\": \"PAGE_VIEW\", \"page_url\": \"€probe\", \"processed_at\": \"2026-09-30T07:21:39.267469\"}}\\n', 130, 131, 'ordinal not in range(256)')",
+            "failure_origin": "candidate",
+            "failure_stage": "processing",
+            "failure_code": "PROCESSOR_ERROR_IN_DELIVERY",
+            "exception_class": "UnicodeEncodeError",
+            "source_path": "processor.py"
+          },
+          {
+            "id": "R2_shape",
+            "status": "FAIL",
+            "reason": "blocked_by_candidate_processor_failure"
+          },
+          {
+            "id": "R3_utf8_semantics",
+            "status": "FAIL",
+            "reason": "blocked_by_candidate_processor_failure"
+          }
+        ],
+        "failed_check_ids": [
+          "R1_process",
+          "R2_shape",
+          "R3_utf8_semantics"
+        ],
+        "transport": {
+          "status": "direct_cpu_fallback",
+          "worker": "peerrolebench_pipe3_recipient_scorer_worker_v2.py"
+        }
+      },
+      "adoption_before": {
+        "status": "FAIL",
+        "label": 0,
+        "quality_score": 0.5,
+        "scorer_version": "pipe3-recipient-objective-v2",
+        "mode": "adoption",
+        "decision_complete": true,
+        "coverage_complete": true,
+        "checks": [
+          {
+            "id": "A1_producer_boundary",
+            "status": "PASS"
+          },
+          {
+            "id": "A2_sink_adoption",
+            "status": "FAIL",
+            "reason": "UnicodeEncodeError('latin-1', '{\"data\": {\"event_id\": \"probe-001\", \"timestamp\": \"2023-11-14T22:13:20\", \"user_name\": \"Müller\", \"action\": \"PAGE_VIEW\", \"page_url\": \"€probe\", \"processed_at\": \"2026-09-30T07:21:39.272556\"}}\\n', 130, 131, 'ordinal not in range(256)')"
+          }
+        ],
+        "failed_check_ids": [
+          "A2_sink_adoption"
+        ],
+        "transport": {
+          "status": "direct_cpu_fallback",
+          "worker": "peerrolebench_pipe3_recipient_scorer_worker_v2.py"
+        }
+      },
+      "recipient_after": {
+        "status": "PASS",
+        "label": 1,
+        "quality_score": 1.0,
+        "scorer_version": "pipe3-recipient-objective-v2",
+        "mode": "recipient",
+        "decision_complete": true,
+        "coverage_complete": true,
+        "checks": [
+          {
+            "id": "R1_process",
+            "status": "PASS",
+            "reason": ""
+          },
+          {
+            "id": "R2_shape",
+            "status": "PASS"
+          },
+          {
+            "id": "R3_utf8_semantics",
+            "status": "PASS"
+          }
+        ],
+        "failed_check_ids": [],
+        "transport": {
+          "status": "direct_cpu_fallback",
+          "worker": "peerrolebench_pipe3_recipient_scorer_worker_v2.py"
+        }
+      },
+      "adoption_after": {
+        "status": "PASS",
+        "label": 1,
+        "quality_score": 1.0,
+        "scorer_version": "pipe3-recipient-objective-v2",
+        "mode": "adoption",
+        "decision_complete": true,
+        "coverage_complete": true,
+        "checks": [
+          {
+            "id": "A1_producer_boundary",
+            "status": "PASS"
+          },
+          {
+            "id": "A2_sink_adoption",
+            "status": "PASS"
+          }
+        ],
+        "failed_check_ids": [],
+        "transport": {
+          "status": "direct_cpu_fallback",
+          "worker": "peerrolebench_pipe3_recipient_scorer_worker_v2.py"
+        }
+      },
+      "action": {
+        "consumer_action": "repair",
+        "source_files": {
+          "processor.py": "\nimport json\nimport os\nfrom datetime import datetime\n\n\ndef parse_timestamp(ts_str: str) -> datetime:\n    \n    return datetime.fromisoformat(ts_str)\n\n\ndef transform_event(event_data: dict) -> dict:\n    \n    processed = dict(event_data)\n    \n    ts = parse_timestamp(event_data[\"timestamp\"])\n    processed[\"timestamp\"] = ts.isoformat()\n    processed[\"processed_at\"] = datetime.utcnow().isoformat()\n    processed[\"action\"] = event_data[\"action\"].upper()\n    return processed\n\n\ndef process_events(input_path: str, output_path: str) -> int:\n    \n    count = 0\n    \n    with open(input_path, \"r\", encoding=\"utf-8\") as fin,\\\n         open(output_path, \"w\", encoding=\"utf-8\") as fout:\n        for line in fin:\n            line = line.strip()\n            if not line:\n                continue\n            event_data = json.loads(line)\n            processed = transform_event(event_data)\n            \n            fout.write(json.dumps(processed, ensure_ascii=False) + \"\\n\")\n            count += 1\n    return count\n",
+          "models.py": "\nfrom __future__ import annotations\nfrom dataclasses import dataclass\nfrom datetime import datetime\n\n\nVALID_ACTIONS = [\"page_view\", \"click\", \"scroll\", \"purchase\"]\n\n\n@dataclass\nclass UserEvent:\n    \n    event_id: str\n    timestamp: datetime\n    user_name: str\n    action: str\n    page_url: str\n\n    def validate(self) -> bool:\n        \n        if not self.event_id:\n            raise ValueError(\"event_id is required\")\n        if self.action not in VALID_ACTIONS:\n            raise ValueError(f\"Invalid action: {self.action}\")\n        return True\n",
+          "sink.py": "\nimport json\nimport os\nfrom datetime import datetime\n\n\ndef load_processed_events(input_path: str) -> list[dict]:\n    \n    events = []\n    with open(input_path, \"r\", encoding=\"utf-8\") as f:\n        for line in f:\n            line = line.strip()\n            if not line:\n                continue\n            event = json.loads(line)\n            \n            _ = event[\"event_id\"]  \n            _ = event[\"timestamp\"]\n            events.append(event)\n    return events\n\n\ndef write_summary(events: list[dict], output_path: str) -> dict:\n    \n    summary = {\n        \"total_events\": len(events),\n        \"actions\": {},\n        \"users\": set(),\n    }\n    for evt in events:\n        action = evt[\"action\"]\n        summary[\"actions\"][action] = summary[\"actions\"].get(action, 0) + 1\n        summary[\"users\"].add(evt[\"user_name\"])\n\n    summary[\"unique_users\"] = len(summary[\"users\"])\n    summary[\"users\"] = sorted(summary[\"users\"])\n\n    with open(output_path, \"w\", encoding=\"utf-8\") as f:\n        json.dump(summary, f, indent=2, ensure_ascii=False)\n\n    return summary\n",
+          "producer.py": "\nimport json\nimport os\nfrom datetime import datetime\nfrom models import UserEvent\n\n\ndef serialize_event(event: UserEvent) -> str:\n    \n    data = {\n        \"event_id\": event.event_id,\n        \"timestamp\": event.timestamp,\n        \"user_name\": event.user_name,\n        \"action\": event.action,\n        \"page_url\": event.page_url,\n    }\n    \n    data[\"timestamp\"] = event.timestamp.isoformat()\n    return json.dumps(data)\n\n\ndef produce_events(events: list[UserEvent], output_path: str) -> None:\n    \n    with open(output_path, \"w\", encoding=\"utf-8\") as f:\n        for event in events:\n            f.write(serialize_event(event) + \"\\n\")\n"
+        },
+        "input_source_sha256": "0146ad5a64365d12d8f684623128e8f4048d33b940155147b7dbdaee747f92b7",
+        "output_source_sha256": "4d949e54cf2cce4927230a4c0ee5c41025f0d27cb8fc3eeb7993c7c465fe1569",
+        "delivery_sha256": "e5084ee161666739bf1ea54353ea225ec590c51b79d74130071aa97c85469a30",
+        "changed_paths": [
+          "processor.py"
+        ],
+        "action_initialization": "selected_delivery_copy",
+        "prior_delivery_may_have_been_seen": true,
+        "independent_redo_is_blinded_control": false
+      },
+      "outcome": {
+        "status": "PASS",
+        "coverage_complete": true,
+        "decision_complete": true
+      },
+      "eligibility": {
+        "gate_version": "pipe3-responsibility-label-v1",
+        "producer_owned_paths_changed": [],
+        "recipient_owned_paths_changed": [
+          "processor.py"
+        ],
+        "q_complete": true,
+        "outcome_complete": true,
+        "judgment_target_role": "recipient",
+        "artifact_binding_present": true,
+        "later_use_valid": false,
+        "producer_feedback_status": "PENDING_ATTRIBUTION",
+        "producer_feedback_eligible": false,
+        "reason": "recipient-owned integration change cannot label producer",
+        "policy_update_allowed": false,
+        "scientific_claim_allowed": false
+      },
+      "offer": {
+        "offer_id": "offer-recipient_fix",
+        "task_id": "PIPE3_stream_processing",
+        "task_index": 0,
+        "role": "producer",
+        "context_key": "PIPE3:1",
+        "candidate_keys": [
+          "peer-b@v1",
+          "peer-c@v1"
+        ],
+        "evidence_ids": [
+          "policy-selection-recipient_fix"
+        ],
+        "evidence_version": "pipe3-cpu-v1",
+        "public_rows": [
+          {
+            "feedback_id": "feedback-recipient_fix",
+            "source_event_id": "policy-selection-recipient_fix",
+            "source": "recipient_judgment",
+            "candidate_key": "peer-b@v1",
+            "evidence_version": "pipe3-cpu-v1",
+            "source_index": 0,
+            "arrived_at": 1.0,
+            "delay": 1.0,
+            "action": "repair",
+            "disposition": "unknown",
+            "provenance": "unknown",
+            "arrival_index": 0,
+            "unknown_reason": "recipient-owned-or-unattributed"
+          }
+        ],
+        "available_index": 0,
+        "watermark_schema": "global-event-index-v1"
+      },
+      "profile": null,
+      "assignment_trace": null,
+      "ledger": [
+        {
+          "event_type": "peer_selection",
+          "payload": {
+            "selection_id": "selection-recipient_fix",
+            "task_id": "PIPE3_stream_processing",
+            "task_index": 0,
+            "selector_id": "selector",
+            "role": "producer",
+            "candidate_ids": [
+              "peer-b",
+              "peer-c"
+            ],
+            "chosen_peer_id": "peer-b",
+            "propensity": 0.5
+          },
+          "previous_hash": "GENESIS",
+          "record_hash": "347d3d740e6c663456fedda8c8978cef9882c25b6ad61c936f838a749200c423"
+        },
+        {
+          "event_type": "task_start",
+          "payload": {
+            "task_id": "PIPE3_stream_processing",
+            "task_index": 0
+          },
+          "previous_hash": "347d3d740e6c663456fedda8c8978cef9882c25b6ad61c936f838a749200c423",
+          "record_hash": "18742e75452ac8c218e15a5fece58e86061f050052998c3646369f06405c49c2"
+        },
+        {
+          "event_type": "producer_delivery",
+          "payload": {
+            "delivery_id": "delivery-recipient_fix",
+            "task_id": "PIPE3_stream_processing",
+            "producer_id": "peer-b",
+            "recipient_id": "peer-a",
+            "artifact_sha256": "e5084ee161666739bf1ea54353ea225ec590c51b79d74130071aa97c85469a30",
+            "source_event_id": "request-recipient_fix",
+            "task_index": 0,
+            "selection_id": "selection-recipient_fix"
+          },
+          "previous_hash": "18742e75452ac8c218e15a5fece58e86061f050052998c3646369f06405c49c2",
+          "record_hash": "6bf48b540fc147d535056776ef264cf59f5bf28125d136e3da12e5e76ade3f5f"
+        },
+        {
+          "event_type": "recipient_judgment",
+          "payload": {
+            "judgment_id": "judgment-recipient_fix",
+            "delivery_id": "delivery-recipient_fix",
+            "consumer_id": "peer-a",
+            "decision": "accept_with_rework",
+            "observed_artifact_sha256": "e5084ee161666739bf1ea54353ea225ec590c51b79d74130071aa97c85469a30",
+            "terminal_outcome_available": false,
+            "repair_note": "CPU qualification control"
+          },
+          "previous_hash": "6bf48b540fc147d535056776ef264cf59f5bf28125d136e3da12e5e76ade3f5f",
+          "record_hash": "d857d6f288dad0e5f700a797e3c0193e3cf74923d4408b26b1b590ccb5b165aa"
+        },
+        {
+          "event_type": "consumer_action",
+          "payload": {
+            "action_id": "action-recipient_fix",
+            "delivery_id": "delivery-recipient_fix",
+            "consumer_id": "peer-a",
+            "used_artifact": true,
+            "input_artifact_sha256": "e5084ee161666739bf1ea54353ea225ec590c51b79d74130071aa97c85469a30",
+            "output_artifact_sha256": "4d949e54cf2cce4927230a4c0ee5c41025f0d27cb8fc3eeb7993c7c465fe1569",
+            "repair_cost": 0.0,
+            "action": "repair"
+          },
+          "previous_hash": "d857d6f288dad0e5f700a797e3c0193e3cf74923d4408b26b1b590ccb5b165aa",
+          "record_hash": "e6dde59cdc1769feb417182564ec471797524b45e16d7b3b93f3a070ff79c48f"
+        },
+        {
+          "event_type": "terminal_outcome",
+          "payload": {
+            "outcome_id": "outcome-recipient_fix",
+            "delivery_id": "delivery-recipient_fix",
+            "success": true,
+            "scorer_version": "pipe3-recipient-objective-v2",
+            "partial_score": 1.0,
+            "score_payload_sha256": "ae4d88775bb4bc1f5c0e67b6b87cc160e1005cfae064e0c7a24a29edeb0579c7"
+          },
+          "previous_hash": "e6dde59cdc1769feb417182564ec471797524b45e16d7b3b93f3a070ff79c48f",
+          "record_hash": "6e168ad0e2e618051227970113e9b9a851fa280472fb72275de807f15fed0129"
+        }
+      ]
+    }
+  ],
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "source_commit": "1cbd47c95cb9aefa3c727c20e28d37c4fa7e51a4",
+  "python": "3.9.6",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "runner_sha256": "c36e6a5a8d573cedffcc202432676686709df120e723d1b04fd6942e9aafa81c",
+  "started_at_utc": "2026-09-30T07:21:39.178103+00:00",
+  "status": "QUALIFIED_OFFLINE",
+  "passed": true,
+  "elapsed_cpu_seconds": 0.18470612499999997,
+  "ended_at_utc": "2026-09-30T07:21:39.284551+00:00",
+  "remaining_gates": [
+    "replace deterministic profile fixture with a metered public-only generator",
+    "execute one bounded real episode only after this composition remains stable",
+    "independent roots, live history, baseline parity, and later-use effect remain open"
+  ]
+}

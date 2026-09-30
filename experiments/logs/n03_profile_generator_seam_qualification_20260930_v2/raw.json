@@ -1,0 +1,79 @@
+{
+  "profile": {
+    "sidecar_version": "metateam-l2-public-sidecar-v1",
+    "profile_id": "profile-a-r1",
+    "profile_revision": 1,
+    "adapter_variant": "public",
+    "candidate_key": "agent-a@v1",
+    "producer_id": "agent-a",
+    "producer_version": "v1",
+    "recipient_id": "agent-r",
+    "selected_candidate_key": "agent-a@v1",
+    "selection_event_id": "selection-0",
+    "source_event_id": "judgment-0",
+    "delivery_id": "delivery-0",
+    "source_decision_index": 0,
+    "source_arrival_index": 2,
+    "available_index": 2,
+    "source_disposition": "eligible",
+    "source_provenance": "public",
+    "source_input_digest": "7f6a02fa9421cc16e3301eac84575b1d87bfa04cbe6c342881295b9bc256e7a2",
+    "profile_schema": "metateam-profile-v1",
+    "parser_version": "fixture-parser-v1",
+    "model_config_digest": "9372c470eeadd5ecd9c3c74c2b3cb633f8e2f2fad799250a0f70d652b6b825e4",
+    "profile": {
+      "reliability": "medium",
+      "strengths": [
+        "queue integration"
+      ],
+      "weaknesses": [
+        "priority ordering"
+      ],
+      "communication_style": "concise status updates",
+      "notes": [
+        "derived from selected public interaction"
+      ]
+    }
+  },
+  "receipt": {
+    "generator_version": "deterministic-public-profile-fixture-v1",
+    "generation_mode": "deterministic_fixture",
+    "source_input_digest": "7f6a02fa9421cc16e3301eac84575b1d87bfa04cbe6c342881295b9bc256e7a2",
+    "attribution_gate_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "profile_digest": "57c9ebcb50ce8f86d5ec6daefea05f71c00d9d17f6b9e891c600528c8ba88bee",
+    "elapsed_seconds": 0.0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cost_usd": 0.0,
+    "real_api_calls": 0,
+    "gpu_jobs": 0,
+    "scientific_claim_allowed": false
+  },
+  "checks": [
+    {
+      "name": "eligible_public_input_generates_profile",
+      "status": "PASS",
+      "source_input_digest": "7f6a02fa9421cc16e3301eac84575b1d87bfa04cbe6c342881295b9bc256e7a2",
+      "profile_digest": "57c9ebcb50ce8f86d5ec6daefea05f71c00d9d17f6b9e891c600528c8ba88bee"
+    },
+    {
+      "name": "receipt_cost_and_claim_boundary",
+      "status": "PASS"
+    },
+    {
+      "name": "unknown_does_not_generate_profile",
+      "status": "PASS",
+      "error": "Meta-Team-L2-public profile requires eligible public projection"
+    },
+    {
+      "name": "private_terminal_field_rejected",
+      "status": "PASS",
+      "error": "public Meta-Team adapter input contains forbidden fields: ['terminal_score']"
+    },
+    {
+      "name": "unselected_candidate_rejected",
+      "status": "PASS",
+      "error": "profile source is not the selected candidate"
+    }
+  ]
+}
