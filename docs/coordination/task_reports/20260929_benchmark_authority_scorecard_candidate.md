@@ -35,5 +35,5 @@ decision without claiming their missing fields were measured upstream.
 ## Evidence
 
 - [`benchmark_authority_scorecard_v0.1_20260929.md`](../../research/candidates/benchmark_authority_scorecard_v0.1_20260929.md)
-- [`n03_candidate_cell_manifest_v0.1.json`](../../../configs/aamas2027/n03_candidate_cell_manifest_v0.1.json)
+- [`n03_candidate_cell_manifest_v0.2.json`](../../../configs/aamas2027/n03_candidate_cell_manifest_v0.2.json)
 - [`benchmark_baseline_v1.2_20260929_eval.md`](../../research/versions/evaluation/benchmark-baseline/benchmark_baseline_v1.2_20260929_eval.md)

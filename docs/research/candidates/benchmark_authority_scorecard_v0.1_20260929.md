@@ -49,7 +49,7 @@ selected-only/UNKNOWN semantics are executable on the same root and schedule.
 ## 4. Candidate cell manifest contract
 
 The machine-readable design is
-[`n03_candidate_cell_manifest_v0.1.json`](../../../configs/aamas2027/n03_candidate_cell_manifest_v0.1.json).
+[`n03_candidate_cell_manifest_v0.2.json`](../../../configs/aamas2027/n03_candidate_cell_manifest_v0.2.json).
 Each cell freezes track/root/split, policy arm, responsibility case, arrival
 schedule, independent stream unit, primary endpoint, cost fields, and the stop
 rule. It deliberately contains no result values and sets API/GPU permission to

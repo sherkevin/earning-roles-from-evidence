@@ -56,3 +56,4 @@
 - [open] 2026-09-30 将 source-bound adapter 接到 versioned PIPE3 的隔离 source/scorer/action/outcome live runner，并保留 isolated policy-read trace；未完成前不扩大真实 API 样本或启动 A800。
 - [open] 2026-09-30 将 offer/attestation 接到 versioned PIPE3 runner 的隔离 policy-read trace 和 next-episode execution：验证真实 assignment 在执行前消费已到 watermark 的 profile；profile 摘要生成器、成本、独立 history 和 later-use 效果未资格化前，保持 `NO-GO`，不启动正式 API/A800。
 - [open] 2026-09-30 benchmark/baseline gate reconciliation: before any real API or A800 run, close root independence, executable same-information baselines, closest published adapter, independent live histories, later-use outcome, complete cost and precision. See [gate audit](docs/coordination/task_reports/20260930_benchmark_gate_status_audit.md).
+- [done] 2026-09-30 repaired candidate ArtifactRole matrix omission: v0.2 lists uniform/no_update/raw/terminal/contextual/pooled/closest/RARE in every ArtifactRole cell; activation remains gated.
