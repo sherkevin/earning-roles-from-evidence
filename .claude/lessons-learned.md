@@ -267,6 +267,12 @@
 - **避免:** public offer 只依据 `policy_update_allowed` 产生 eligible label；gate 关闭时保留 UNKNOWN reason 并断言 policy 不更新。v2 原始日志保留，v3 作为接受版本。
 - **Evidence:** [versioned source-bound composition](../docs/coordination/task_reports/20260930_pipe3_versioned_source_bound_composition.md)；`experiments/logs/n03_pipe3_versioned_source_bound_composition_qualification_20260930_v1/`、`v2/`、`v3/`。
 
+### 0043-co-ordered-policy-read-is-not-source-offer-consumption | 2026-09-30 | earning-roles
+- **现象:** isolated live trace 已把 public profile read 放在 later selection 之前，但 reader 使用的是独立的 Meta-Team-style profile offer，source-bound feedback offer 没有进入子进程。
+- **根因:** “同一时序”和“同一 public information object”是两个不同的绑定条件；只检查事件顺序会掩盖 offer 错配。
+- **避免:** 将 source-bound public feedback bundle 直接封装为 isolated reader 的输入，或记录可验证的 typed projection equivalence；在此之前只声称 order/process qualification，不声称完整 feedback consumption。
+- **Evidence:** [isolated live-trace qualification](../docs/coordination/task_reports/20260930_pipe3_isolated_live_trace_qualification.md)；`experiments/logs/n03_pipe3_isolated_live_trace_qualification_20260930_v2/`、`v3/`。
+
 ### 0041-selection-boundaries-must-preflight-before-mutation | 2026-09-30 | earning-roles
 - **现象:** `choose_and_seal` 原先先写 auxiliary offer、消费反馈和 policy decision，之后才构造 consumption attestation；read-cut 越界、offer 尚不可用、角色/menu 不匹配或后续 policy/ledger 异常可能留下部分状态。
 - **根因:** 输入时序约束和对象构造校验分散在 attestation、policy、native ledger 三层，入口没有在第一次写入前统一检查，也没有失败回滚。
