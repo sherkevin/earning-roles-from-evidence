@@ -16,6 +16,7 @@ from peerrolebench_metateam_profile_sidecar import (
     MetaTeamAssignmentOffer,
     bind_assignment_to_selection,
 )
+from peerrolebench_isolated_policy_read import read_profiles_isolated
 
 
 @dataclass
@@ -54,7 +55,9 @@ class Pipe3AssignmentRunner:
         self._record("offer_emitted", profile_ids=[p.profile_id for p in self.offer.profiles])
         return self.offer
 
-    def consume_profiles(self, profile_ids: tuple[str, ...]) -> MetaTeamAssignmentAttestation:
+    def consume_profiles(
+        self, profile_ids: tuple[str, ...], *, isolated_policy_read: bool = False,
+    ) -> MetaTeamAssignmentAttestation:
         if self.attestation is not None:
             self._reject("profile_consumed", "duplicate profile consumption")
         if self.state != "offer_emitted":
@@ -65,11 +68,23 @@ class Pipe3AssignmentRunner:
         if current != self._profile_digests:
             self._reject("profile_consumed", "profile mutation detected")
         try:
-            self.attestation = self.offer.attest_consumption(profile_ids)
+            attestation = self.offer.attest_consumption(profile_ids)
+            isolated_trace = None
+            if isolated_policy_read:
+                isolated_trace = read_profiles_isolated(
+                    self.offer, profile_ids, read_cut=self.offer.read_cut,
+                )
         except ValueError as exc:
             self._reject("profile_consumed", str(exc))
+        self.attestation = attestation
+        if isolated_trace is not None:
+            self.policy_read_trace_mode = "isolated_process_public_digest"
+            self.isolated_policy_trace = True
         self.state = "profile_consumed"
-        self._record("profile_consumed", profile_ids=list(profile_ids))
+        self._record(
+            "profile_consumed", profile_ids=list(profile_ids),
+            isolated_read=(isolated_trace.__dict__ if isolated_trace is not None else None),
+        )
         return self.attestation
 
     def seal_selection(self, selection: Any, attestation: MetaTeamAssignmentAttestation | None = None) -> None:

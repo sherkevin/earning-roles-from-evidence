@@ -218,3 +218,9 @@
 - **根因:** 终局成功、消费者修复和 producer responsibility 是不同因果量，历史 ledger 以 UNKNOWN 表达等待归因。
 - **避免:** 对真实历史 ledger 先做 canonical replay，再经 v4 lineage/schedule adapter；pending attribution 只生成带公开原因的 UNKNOWN row，不能写 label 或 policy update，也不能回写历史结果。
 - **Evidence:** [frozen v6 source-bound replay](../docs/coordination/task_reports/20260930_v6_source_bound_replay_qualification.md)；`experiments/logs/n03_v6_source_bound_replay_qualification_20260930_v1/`。
+
+### 0035-a-process-flag-is-not-an-isolated-read-trace | 2026-09-30 | earning-roles
+- **现象:** runner 原先把 `recorded_public_input_digest` 和 `isolated_policy_trace=false` 作为同一条边界；仅在父进程记录 profile digest 不能证明 policy 真读了公开 profile。
+- **根因:** profile consumption、attestation 和 policy read 没有明确的进程边界与响应核对顺序。
+- **避免:** opt-in 子进程只接收 sealed public payload，父进程核对 offer/profile/read-cut/policy-input digest 后才提交 state transition；worker hash、schema 和 trace 一起记录。明确这是 non-adversarial boundary，不冒充 hostile sandbox。
+- **Evidence:** [isolated policy-read qualification](../docs/coordination/task_reports/20260930_isolated_policy_read_qualification.md)；`experiments/logs/n03_isolated_policy_read_qualification_20260930_v1/`。

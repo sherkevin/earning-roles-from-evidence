@@ -185,3 +185,5 @@ Goal 修改。
   将 canonical ledger binding、v4 responsibility lineage、frozen arrival schedule、typed projection 与 public offer sealing 接成强制顺序；5 格离线资格、5 项定向测试、完整 PeerRoleBench 295 项通过，0 API/0 GPU。仍未执行真实 source/scorer/action/outcome/profile generator 或 isolated policy-read，不能解冻 benchmark/baseline。
 - [done] 2026-09-30 frozen real v6 source-bound replay (task_reports/20260930_v6_source_bound_replay_qualification.md)：
   对历史真实 PIPE3 v6 ledger/artifact lineage 做零调用 canonical replay，recipient-owned repair 保持 `UNKNOWN` 和公开原因，未生成 producer label；1 项定向测试、完整 PeerRoleBench 296 项通过，0 API/0 GPU。仍不是新 live episode、online-learning result 或 benchmark evidence。
+- [done] 2026-09-30 isolated public-profile read qualification (task_reports/20260930_isolated_policy_read_qualification.md)：
+  assignment runner 的 opt-in 子进程只消费 sealed public offer，父进程核对 offer/profile/read-cut/policy-input digest 后记录 worker hash；5 格离线资格、3 项定向测试、完整 PeerRoleBench 298 项通过，0 API/0 GPU。仍是 non-adversarial process boundary，未接真实 next episode 或科学效果。

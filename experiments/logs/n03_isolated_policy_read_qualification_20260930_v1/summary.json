@@ -1,0 +1,81 @@
+{
+  "qualification": "isolated-public-profile-read-v1",
+  "script": "/Users/jingwu/work/earning-roles/scripts/peerrolebench_isolated_policy_read_qualification.py",
+  "script_sha256": "7a0ec342e2f98f31d2ac2fc7901c6dee717f6fe0b96486fc2d49e8acca470cb3",
+  "worker_sha256": "027817f9ad9946a372654981493a6048d267800321dd7adfdc946ea6b60c9961",
+  "parent_sha256": "4a51bf32b20200544bcfe7e8c7a1a39f79fbbee10c80dd3a3642a99c1c77667c",
+  "fixture_mode": "hand-authored-metateam-public-offer",
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "python": "3.9.6",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "status": "QUALIFIED_OFFLINE",
+  "checks": [
+    {
+      "name": "separate_process_read",
+      "status": "PASS",
+      "isolated_policy_trace": true,
+      "trace_mode": "isolated_process_public_digest"
+    },
+    {
+      "name": "attestation_and_worker_input_match",
+      "status": "PASS"
+    },
+    {
+      "name": "reject_unavailable_profile",
+      "status": "PASS",
+      "error": "read cut is before the sealed offer cut"
+    },
+    {
+      "name": "reject_unknown_profile",
+      "status": "PASS",
+      "error": "profile is not in the sealed offer"
+    },
+    {
+      "name": "reject_unsorted_profile_ids",
+      "status": "PASS",
+      "error": "profile_ids must be sorted and unique"
+    }
+  ],
+  "trace": [
+    {
+      "seq": 0,
+      "event": "offer_emitted",
+      "status": "accepted",
+      "offer_id": "isolated-offer-0",
+      "offer_digest": "2d3658bd9172fe343fa445b582979a4defaf9c6aa958f8bf09ed1bc99490e5f3",
+      "policy_input_digest": null,
+      "policy_read_trace_mode": "recorded_public_input_digest",
+      "isolated_policy_trace": false,
+      "profile_ids": [
+        "profile-a-r1"
+      ]
+    },
+    {
+      "seq": 1,
+      "event": "profile_consumed",
+      "status": "accepted",
+      "offer_id": "isolated-offer-0",
+      "offer_digest": "2d3658bd9172fe343fa445b582979a4defaf9c6aa958f8bf09ed1bc99490e5f3",
+      "policy_input_digest": "09650cdbf45aa74da52a4f2a271d58b6b4766eef7e905c487268856ab91d7cba",
+      "policy_read_trace_mode": "isolated_process_public_digest",
+      "isolated_policy_trace": true,
+      "profile_ids": [
+        "profile-a-r1"
+      ],
+      "isolated_read": {
+        "schema_version": "peerrole-public-profile-read-v1",
+        "worker_sha256": "027817f9ad9946a372654981493a6048d267800321dd7adfdc946ea6b60c9961",
+        "offer_digest": "2d3658bd9172fe343fa445b582979a4defaf9c6aa958f8bf09ed1bc99490e5f3",
+        "profile_ids": [
+          "profile-a-r1"
+        ],
+        "read_cut": 2,
+        "policy_input_digest": "09650cdbf45aa74da52a4f2a271d58b6b4766eef7e905c487268856ab91d7cba",
+        "public_profiles_digest": "1857e31c214da751d617d5c283f58370c36bdb3cff16b2dd6d2c9a35a8455775",
+        "isolated": true
+      }
+    }
+  ]
+}
