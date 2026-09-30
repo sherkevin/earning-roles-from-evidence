@@ -200,3 +200,9 @@
 - **根因:** ledger identity、policy candidate key 和 assignment read-cut 被不同模块分别表示，却没有显式的 canonical view。
 - **避免:** 通过严格 registry adapter 显式映射版本，保留菜单顺序、chosen index、task index、选择时间和 selector；未知版本、菜单变更、错误选择和非单调时间一律拒绝，绑定前不从 bare ID 猜版本。
 - **Evidence:** [selection view qualification](../docs/coordination/task_reports/20260930_selection_view_adapter_qualification.md)；`experiments/logs/n03_selection_view_adapter_qualification_20260930_v1/`。
+
+### 0032-unknown-projections-must-retain-event-time-lineage | 2026-09-30 | earning-roles
+- **现象:** `project_feedback` 的 UNKNOWN 分支原本只保留 label 为空，丢失了 v4 `arrival_index` 和 `supersedes`；后续 offer 无法检查迟到顺序或 correction lineage。
+- **根因:** eligible 与 ineligible 分支分别构造 projection 时，没有把事件时间与修订元数据视为 policy-visible 的审计字段；误把“没有 label”当成“没有事件元数据”。
+- **避免:** UNKNOWN 仍必须保留 event-time 和修订引用，但不能携带 label 或 gate/raw 私有原因；offer adapter 对旧 wall-clock-only projection 直接拒绝，并要求公开、固定的 unknown reason。
+- **Evidence:** [public feedback-row adapter qualification](../docs/coordination/task_reports/20260930_public_feedback_row_adapter_qualification.md)；`experiments/logs/n03_public_feedback_rows_qualification_20260930_v1/`。

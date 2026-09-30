@@ -184,7 +184,13 @@ def test_raw_acceptance_projection_rejects_rework_and_canonical_mutation():
 
 
 def test_ineligible_gate_projects_unknown_and_cannot_update_policy():
-    unknown_sidecar = sidecar(disposition="unknown", provenance="unknown", raw_value=None, label=None)
+    unknown_sidecar = sidecar(
+        disposition="unknown", provenance="unknown", raw_value=None, label=None,
+        sidecar_version="peerrole-policy-sidecar-v4", arrival_index=9,
+        supersedes="feedback-previous",
+        artifact_sha256="c" * 64, delivery_record_hash="d" * 64,
+        action_id="action-0", action_record_hash="e" * 64,
+    )
     projection = project_feedback(
         unknown_sidecar,
         gate(sidecar_obj=unknown_sidecar, eligible=False, weight=None, label=None),
@@ -194,6 +200,8 @@ def test_ineligible_gate_projects_unknown_and_cannot_update_policy():
     assert projection.to_feedback() is None
     payload = projection.public_payload()
     assert "label" not in payload and "weight" not in payload
+    assert payload["arrival_index"] == 9
+    assert payload["supersedes"] == "feedback-previous"
 
 
 def test_projection_rejects_eligible_gate_for_non_public_sidecar():

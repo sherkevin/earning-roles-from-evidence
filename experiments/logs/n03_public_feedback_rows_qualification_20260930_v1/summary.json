@@ -1,0 +1,78 @@
+{
+  "qualification": "typed-projection-public-feedback-row-v1",
+  "script": "/Users/jingwu/work/earning-roles/scripts/peerrolebench_public_feedback_rows_qualification.py",
+  "script_sha256": "0e97e353485a706bde6823be3cbf1e32a76d37136a69b88e0e0e3e70e4e9a472",
+  "adapter_sha256": "c2a3dadaccdc6de66f2a397c52aa0f46d169b702c343e58d8903cdbf25d1e786",
+  "fixture_mode": "typed-projection-and-assignment-offer",
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "python": "3.9.6",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "status": "QUALIFIED_OFFLINE",
+  "checks": [
+    {
+      "name": "eligible_projection_to_public_row",
+      "status": "PASS",
+      "keys": [
+        "action",
+        "arrival_index",
+        "arrived_at",
+        "candidate_key",
+        "delay",
+        "disposition",
+        "evidence_version",
+        "feedback_id",
+        "label",
+        "provenance",
+        "source",
+        "source_event_id",
+        "source_index"
+      ]
+    },
+    {
+      "name": "unknown_projection_keeps_reason_without_label",
+      "status": "PASS",
+      "row": {
+        "feedback_id": "f-unknown",
+        "source_event_id": "policy-selection-f-unknown",
+        "source": "recipient_judgment",
+        "candidate_key": "agent-b@v1",
+        "evidence_version": "pipe3-evidence-v1",
+        "source_index": 0,
+        "arrived_at": 5.0,
+        "delay": 3.0,
+        "action": "repair",
+        "disposition": "unknown",
+        "provenance": "unknown",
+        "arrival_index": 3,
+        "unknown_reason": "mixed-ownership"
+      }
+    },
+    {
+      "name": "offer_from_typed_projections",
+      "status": "PASS",
+      "bundle_digest": "7270ef22ad2ba0e4ad4395107974276aec022e766dec00293433dfb7e251166c"
+    },
+    {
+      "name": "reject_wall_clock_only_projection",
+      "status": "PASS",
+      "error": "public feedback row requires event-time arrival_index"
+    },
+    {
+      "name": "reject_projection_outside_menu",
+      "status": "PASS",
+      "error": "public projection candidate is outside the offer menu"
+    },
+    {
+      "name": "reject_unknown_without_reason",
+      "status": "PASS",
+      "error": "unknown public feedback row requires unknown_reason"
+    },
+    {
+      "name": "reject_private_projection_shape",
+      "status": "PASS",
+      "error": "projection must be a PolicyFeedbackProjection"
+    }
+  ]
+}

@@ -336,7 +336,8 @@ def project_feedback(
         evidence_version=gate.evidence_version, source_index=gate.source_index,
         arrived_at=float(sidecar.arrived_at), delay=float(sidecar.delay),
         action=sidecar.action, disposition="unknown", provenance="unknown",
-        label=None,
+        label=None, arrival_index=sidecar.arrival_index,
+        supersedes=sidecar.supersedes,
     )
 
 
