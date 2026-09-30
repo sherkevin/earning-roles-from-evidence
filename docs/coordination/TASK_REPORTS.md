@@ -173,3 +173,5 @@ Goal 修改。
   profile-specific offer/attestation 绑定候选菜单、watermark、later decision、profile IDs 和 policy input digest；13 格语义检查、定向 14 项、完整 PeerRoleBench 279 项通过。仍不是隔离 policy-read trace、真实 selector/next episode 或 profile effect，runner、成本和独立 history 仍开放。
 - [done] 2026-09-30 Meta-Team profile offer → next selection binding (task_reports/20260930_metateam_assignment_runner_binding.md)：
   将 offer/attestation 绑定到后续 selection 的 decision index、candidate menu 和 read-cut；v11 menu fixture mismatch 失败保留，v12 14 格 qualification、定向 15 项、完整 PeerRoleBench 280 项通过。仍不是隔离 policy-read trace、真实 selector/next episode 或 profile effect，runner、成本和独立 history 仍开放。
+- [done] 2026-09-30 PIPE3 assignment runner boundary qualification (task_reports/20260930_pipe3_assignment_runner_boundary_qualification.md)：
+  将 profile offer/consumption attestation 接入 selection→task-start 状态机，记录四阶段 JSONL trace；缺失 attestation、消费前 selection、错误 menu、重复消费、过早 watermark 和 post-offer profile mutation 均被拒绝。最终 v3 zero-call qualification 通过，定向 1 项、全量 PeerRoleBench 281 项通过；输入仍是 hand-authored offline fixture，`isolated_policy_trace=false`，不能替代真实 PIPE3 episode、profile generator、隔离读取、完整成本或科学结果。

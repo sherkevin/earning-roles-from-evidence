@@ -1,0 +1,93 @@
+"""Offline PIPE3 assignment runner boundary.
+
+The runner is deliberately a small state machine around the already qualified
+``MetaTeamAssignmentOffer``/attestation contract.  It performs no model, API,
+or GPU work; its purpose is to make the selection -> task-start boundary
+auditable and replayable.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Any
+
+from peerrolebench_metateam_profile_sidecar import (
+    MetaTeamAssignmentAttestation,
+    MetaTeamAssignmentOffer,
+    bind_assignment_to_selection,
+)
+
+
+@dataclass
+class Pipe3AssignmentRunner:
+    offer: MetaTeamAssignmentOffer
+    policy_read_trace_mode: str = "recorded_public_input_digest"
+    isolated_policy_trace: bool = False
+
+    def __post_init__(self) -> None:
+        self.state = "created"
+        self.trace: list[dict[str, Any]] = []
+        self.attestation: MetaTeamAssignmentAttestation | None = None
+        self.selection: Any | None = None
+        self._profile_digests = {p.profile_id: p.profile_digest for p in self.offer.profiles}
+
+    def _record(self, event: str, status: str = "accepted", **extra: Any) -> None:
+        self.trace.append({
+            "seq": len(self.trace), "event": event, "status": status,
+            "offer_id": self.offer.offer_id,
+            "offer_digest": self.offer.offer_digest,
+            "policy_input_digest": self.attestation.policy_input_digest if self.attestation else None,
+            "policy_read_trace_mode": self.policy_read_trace_mode,
+            "isolated_policy_trace": self.isolated_policy_trace,
+            **extra,
+        })
+
+    def _reject(self, event: str, reason: str) -> None:
+        self._record(event, "rejected", reason=reason)
+        raise ValueError(reason)
+
+    def emit_offer(self) -> MetaTeamAssignmentOffer:
+        if self.state != "created":
+            self._reject("offer_emitted", "offer already emitted")
+        self.state = "offer_emitted"
+        self._record("offer_emitted", profile_ids=[p.profile_id for p in self.offer.profiles])
+        return self.offer
+
+    def consume_profiles(self, profile_ids: tuple[str, ...]) -> MetaTeamAssignmentAttestation:
+        if self.attestation is not None:
+            self._reject("profile_consumed", "duplicate profile consumption")
+        if self.state != "offer_emitted":
+            self._reject("profile_consumed", "profile consumption requires emitted offer")
+        # Verify the records still match the sealed offer before constructing a
+        # consumption proof.  This catches post-offer profile replacement.
+        current = {p.profile_id: p.profile_digest for p in self.offer.profiles}
+        if current != self._profile_digests:
+            self._reject("profile_consumed", "profile mutation detected")
+        try:
+            self.attestation = self.offer.attest_consumption(profile_ids)
+        except ValueError as exc:
+            self._reject("profile_consumed", str(exc))
+        self.state = "profile_consumed"
+        self._record("profile_consumed", profile_ids=list(profile_ids))
+        return self.attestation
+
+    def seal_selection(self, selection: Any, attestation: MetaTeamAssignmentAttestation | None = None) -> None:
+        if self.state != "profile_consumed" or self.attestation is None:
+            self._reject("selection_sealed", "selection requires consumed attestation")
+        if attestation is None:
+            self._reject("selection_sealed", "missing attestation")
+        if attestation != self.attestation:
+            self._reject("selection_sealed", "attestation does not match consumed proof")
+        try:
+            bind_assignment_to_selection(self.offer, attestation, selection)
+        except ValueError as exc:
+            self._reject("selection_sealed", str(exc))
+        self.selection = selection
+        self.state = "selection_sealed"
+        self._record("selection_sealed", task_index=getattr(selection, "task_index", None))
+
+    def start_task(self) -> None:
+        if self.state != "selection_sealed":
+            self._reject("task_started", "task start requires sealed selection")
+        self.state = "task_started"
+        self._record("task_started", task_id=self.offer.task_id)
