@@ -254,3 +254,15 @@
 - **根因:** adapter 只验证调用者提供的 record 与 sidecar hash 一致，没有把它与传入 ledger 的 canonical `(event_type,event_id)` record 做 membership 比较。
 - **避免:** 在 source-bound offer sealing 前，从 supplied ledger 的 event index 取 canonical selection 与 feedback records，并要求它们与参数逐字一致；随后才做 lineage、schedule 和公开投影。
 - **Evidence:** [source-bound boundary qualification](../docs/coordination/task_reports/20260930_pipe3_source_bound_boundary_qualification.md)。
+
+### 0041-preflight-before-mutation-is-required-at-selection-boundaries | 2026-09-30 | earning-roles
+- **现象:** `choose_and_seal` 原先先追加 offer、消费反馈和更新 policy，再构造 consumption attestation；`read_cut`、offer availability 或后续 RNG/ledger 错误可能留下半条 selection 链。
+- **根因:** attestation 的部分合法性检查发生在状态改变之后，且 policy/ledger/manifest 没有统一事务边界。
+- **避免:** 在 mutation 前检查角色、菜单、重复 task/selection、版本、时间、水位、可用性和 selected-only feedback 绑定；随后以对象级快照保护仍可能在采样后抛出的错误，并恢复 policy、ledger、selection cache 及双 manifest。
+- **Evidence:** [PIPE3 preflight-before-mutation qualification](../docs/coordination/task_reports/20260930_pipe3_preflight_mutation_qualification.md)；`experiments/logs/n03_pipe3_preflight_mutation_qualification_20260930/`。
+
+### 0041-selection-boundaries-must-preflight-before-mutation | 2026-09-30 | earning-roles
+- **现象:** `choose_and_seal` 原先先写 auxiliary offer、消费反馈和 policy decision，之后才构造 consumption attestation；read-cut 越界、offer 尚不可用、角色/menu 不匹配或后续 policy/ledger 异常可能留下部分状态。
+- **根因:** 输入时序约束和对象构造校验分散在 attestation、policy、native ledger 三层，入口没有在第一次写入前统一检查，也没有失败回滚。
+- **避免:** 先 preflight role/selector、episode/event identity、版本与时间、`read_cut <= decision_index`、offer availability、menu/features 和 selected-only feedback binding；再进入 mutation transaction。对 preflight 后仍可能出现的 policy/ledger/RNG/attestation 异常，恢复 policy、ledger、selection cache 与两条 manifest 链。
+- **Evidence:** [preflight qualification](../docs/coordination/task_reports/20260930_pipe3_preflight_mutation_qualification.md)；`experiments/logs/n03_pipe3_preflight_mutation_qualification_20260930/`；309 项 PeerRoleBench 回归通过。

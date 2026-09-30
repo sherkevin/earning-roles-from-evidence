@@ -1,0 +1,13 @@
+{
+  "qualification": "pipe3-preflight-before-mutation-v1",
+  "purpose": "Verify invalid selection inputs do not mutate policy, native ledger, auxiliary manifest, or selection cache.",
+  "api_calls": 0,
+  "gpu_jobs": 0,
+  "cases": [
+    "read_cut_after_decision",
+    "offer_unavailable_at_read_cut",
+    "unknown_candidate",
+    "post-preflight-rng-failure"
+  ],
+  "command": "PYTHONPATH=scripts:references/aamas python3 -m pytest -q tests/test_peerrolebench_pipe3_runner_v1.py tests/test_peerrolebench_pipe3_source_bound_boundary.py"
+}

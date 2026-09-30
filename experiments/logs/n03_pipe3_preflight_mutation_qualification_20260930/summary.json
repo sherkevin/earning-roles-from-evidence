@@ -1,0 +1,24 @@
+{
+  "status": "QUALIFIED_OFFLINE",
+  "qualification": "pipe3-preflight-before-mutation-v1",
+  "tests": {
+    "targeted": 8,
+    "passed": 8,
+    "failed": 0
+  },
+  "checks": {
+    "read_cut_failure_is_state_preserving": true,
+    "unavailable_offer_failure_is_state_preserving": true,
+    "unknown_candidate_failure_is_state_preserving": true,
+    "post_preflight_rng_failure_rolls_back": true,
+    "success_path_regression": true
+  },
+  "scientific_readiness": false,
+  "api_calls": 0,
+  "gpu_jobs": 0,
+  "limitations": [
+    "Offline boundary qualification only; no live API, task execution, or efficacy claim.",
+    "Rollback snapshot uses deepcopy and may add runtime overhead.",
+    "Custom policies with external side effects are outside this qualification."
+  ]
+}
