@@ -224,3 +224,9 @@
 - **根因:** profile consumption、attestation 和 policy read 没有明确的进程边界与响应核对顺序。
 - **避免:** opt-in 子进程只接收 sealed public payload，父进程核对 offer/profile/read-cut/policy-input digest 后才提交 state transition；worker hash、schema 和 trace 一起记录。明确这是 non-adversarial boundary，不冒充 hostile sandbox。
 - **Evidence:** [isolated policy-read qualification](../docs/coordination/task_reports/20260930_isolated_policy_read_qualification.md)；`experiments/logs/n03_isolated_policy_read_qualification_20260930_v1/`。
+
+### 0036-isolated-read-must-share-the-task-start-decision-index | 2026-09-30 | earning-roles
+- **现象:** isolated profile read、selection binding 和 native `task_start` 各自通过并不代表它们属于同一个 later assignment；若 decision index 漂移，profile consumption 可能被错配到另一任务。
+- **根因:** 之前三个 boundary qualification 是分开的，缺少一个组合 trace 检查 worker digest、selection seal 和 native task-start 的同一 decision index。
+- **避免:** 在同一 runner 中按固定顺序执行并记录四阶段 trace，要求 attestation digest 与 worker digest相同，native task_start 的 task index 等于 offer decision index。
+- **Evidence:** [isolated assignment/task-start qualification](../docs/coordination/task_reports/20260930_isolated_assignment_task_start_qualification.md)；`experiments/logs/n03_isolated_assignment_runner_qualification_20260930_v1/`。

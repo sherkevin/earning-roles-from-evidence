@@ -187,3 +187,5 @@ Goal 修改。
   对历史真实 PIPE3 v6 ledger/artifact lineage 做零调用 canonical replay，recipient-owned repair 保持 `UNKNOWN` 和公开原因，未生成 producer label；1 项定向测试、完整 PeerRoleBench 296 项通过，0 API/0 GPU。仍不是新 live episode、online-learning result 或 benchmark evidence。
 - [done] 2026-09-30 isolated public-profile read qualification (task_reports/20260930_isolated_policy_read_qualification.md)：
   assignment runner 的 opt-in 子进程只消费 sealed public offer，父进程核对 offer/profile/read-cut/policy-input digest 后记录 worker hash；5 格离线资格、3 项定向测试、完整 PeerRoleBench 298 项通过，0 API/0 GPU。仍是 non-adversarial process boundary，未接真实 next episode 或科学效果。
+- [done] 2026-09-30 isolated read → selection → task-start composition (task_reports/20260930_isolated_assignment_task_start_qualification.md)：
+  在同一 runner trace 中闭合 isolated profile consumption、selection seal 和 native `PeerRoleLedger.task_start`，核对 worker/attestation digest 与同一 decision index；4 格离线资格、4 项定向测试、完整 PeerRoleBench 299 项通过，0 API/0 GPU。仍不是 live episode 或 online-learning evidence。
