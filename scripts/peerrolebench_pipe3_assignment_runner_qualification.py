@@ -6,11 +6,16 @@ import hashlib
 import json
 import platform
 from pathlib import Path
+import sys
 from types import SimpleNamespace
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "references/aamas"))
 
 from peerrolebench_metateam_profile_qualification import profile, digest
 from peerrolebench_pipe3_assignment_runner import Pipe3AssignmentRunner
 from peerrolebench_metateam_profile_sidecar import MetaTeamAssignmentOffer
+from peer_role_protocol_20260925 import PeerRoleLedger, PeerSelection
 
 
 def fixture_offer() -> MetaTeamAssignmentOffer:
@@ -43,11 +48,21 @@ def run(out_dir: Path) -> dict:
     }
     (out_dir / "config.json").write_text(json.dumps(config, indent=2) + "\n")
     runner = Pipe3AssignmentRunner(fixture_offer())
+    ledger = PeerRoleLedger(require_selection=True, require_terminal_outcome=False)
+    ledger.record_selection(PeerSelection(
+        selection_id="native-selection-3", task_id="PIPE3_stream_processing", task_index=3,
+        selector_id="agent-recipient", role="producer",
+        candidate_ids=("agent-a", "agent-b"), chosen_peer_id="agent-a", propensity=0.5,
+    ))
     runner.emit_offer()
     att = runner.consume_profiles(("pipe3-profile-0",))
     runner.seal_selection(selection(), att)
-    runner.start_task()
-    checks = [{"name": "happy_path", "status": "PASS"}]
+    runner.start_task(ledger)
+    checks = [{"name": "happy_path", "status": "PASS"},
+              {"name": "ledger_task_start", "status": "PASS"
+               if ledger.events[-1]["event_type"] == "task_start"
+               and ledger.events[-1]["payload"]["task_index"] == fixture_offer().decision_index
+               else "FAIL"}]
 
     def rejected(name, fn):
         try:

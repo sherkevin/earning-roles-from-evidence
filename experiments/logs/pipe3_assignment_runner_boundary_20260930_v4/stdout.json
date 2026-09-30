@@ -1,0 +1,56 @@
+{
+  "qualification": "pipe3-assignment-runner-boundary-v1",
+  "status": "QUALIFIED_OFFLINE",
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "fixture_mode": "hand-authored-offer-profile",
+  "source": "offline fixture; not a real PIPE3 episode",
+  "policy_read_trace_mode": "recorded_public_input_digest",
+  "isolated_policy_trace": false,
+  "trace_events": [
+    "offer_emitted",
+    "profile_consumed",
+    "selection_sealed",
+    "task_started"
+  ],
+  "checks": [
+    {
+      "name": "happy_path",
+      "status": "PASS"
+    },
+    {
+      "name": "ledger_task_start",
+      "status": "PASS"
+    },
+    {
+      "name": "no_attestation",
+      "status": "PASS",
+      "error": "selection requires consumed attestation"
+    },
+    {
+      "name": "selection_before_consumption",
+      "status": "PASS",
+      "error": "selection requires consumed attestation"
+    },
+    {
+      "name": "wrong_menu",
+      "status": "PASS",
+      "error": "selection candidate menu does not match assignment offer"
+    },
+    {
+      "name": "duplicate_consumption",
+      "status": "PASS",
+      "error": "duplicate profile consumption"
+    },
+    {
+      "name": "pre_watermark",
+      "status": "PASS",
+      "error": "profile cannot be available before its source arrival"
+    },
+    {
+      "name": "profile_mutation",
+      "status": "PASS",
+      "error": "profile mutation detected"
+    }
+  ]
+}

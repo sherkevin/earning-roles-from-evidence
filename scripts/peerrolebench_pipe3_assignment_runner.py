@@ -29,6 +29,7 @@ class Pipe3AssignmentRunner:
         self.trace: list[dict[str, Any]] = []
         self.attestation: MetaTeamAssignmentAttestation | None = None
         self.selection: Any | None = None
+        self.task_start_event: Any | None = None
         self._profile_digests = {p.profile_id: p.profile_digest for p in self.offer.profiles}
 
     def _record(self, event: str, status: str = "accepted", **extra: Any) -> None:
@@ -86,8 +87,25 @@ class Pipe3AssignmentRunner:
         self.state = "selection_sealed"
         self._record("selection_sealed", task_index=getattr(selection, "task_index", None))
 
-    def start_task(self) -> None:
+    def start_task(self, ledger: Any | None = None) -> None:
+        """Cross the assignment -> task-start seam.
+
+        When a PIPE3 ``PeerRoleLedger`` is supplied, append the native
+        ``task_start`` event at the same decision index that was bound by the
+        assignment attestation.  The ledger is deliberately duck-typed so the
+        offline boundary does not import or execute the episode runner.  This
+        method only records the protocol event; source dispatch, scoring,
+        action execution, and outcome production remain downstream gates.
+        """
         if self.state != "selection_sealed":
             self._reject("task_started", "task start requires sealed selection")
+        if ledger is not None:
+            if not hasattr(ledger, "record_task_start"):
+                self._reject("task_started", "ledger lacks record_task_start")
+            ledger.record_task_start(self.offer.task_id, self.offer.decision_index)
+            self.task_start_event = ledger.events[-1] if hasattr(ledger, "events") else None
         self.state = "task_started"
-        self._record("task_started", task_id=self.offer.task_id)
+        self._record("task_started", task_id=self.offer.task_id,
+                     task_index=self.offer.decision_index,
+                     ledger_record_hash=(self.task_start_event or {}).get("record_hash")
+                     if isinstance(self.task_start_event, dict) else None)
