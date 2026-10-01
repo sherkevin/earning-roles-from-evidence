@@ -595,6 +595,17 @@ held at UNKNOWN/no-update. The v4 receipt and earlier failure are both preserved
 same-root engineering evidence only: no LLM API, GPU, benchmark efficacy, or online-learning
 claim is made.
 
+### 2026-10-02 baseline live-parity contract seam
+
+The assistant added a strict `LiveRuntimeBinding` receipt for future measured
+parity runs. It binds material, task contract, sandbox/runtime, scorer,
+worker-limit, policy-namespace and candidate-source digests, and refuses
+unmeasured cost ledgers. PIPE3 composition v1.3 now accepts an explicit policy
+factory while retaining terminal-only as the default, so historical v1.2
+receipts remain immutable. The seam is covered by the full 371-test regression,
+but no seven-arm live runner, benchmark cell, LLM/API call, GPU job or
+scientific claim has been enabled.
+
 ### 2026-09-28 baseline bridge audit
 
 The frozen N02 v3 ledger was checked for lossless mapping into the new policy
