@@ -18,6 +18,7 @@ Goal 修改。
 ## Reports
 
 - [partial] 2026-10-01 baseline manifest runner integration：离线 matrix runner 现在消费每个 case 的 root manifest，绑定 schedule/registry digest 并把 manifest digest 写入回执；v13 为 `QUALIFIED_OFFLINE`，PeerRoleBench 360 项通过，仍未接入 canonical-ledger live runner，见 [task report](task_reports/20261001_baseline_manifest_runner_integration.md)。
+- [partial] 2026-10-01 baseline manifest scope audit：独立审查收紧 v13 的证据边界：历史 receipt 保留但不能宣称完整 root manifest enforcement；修复了身份/组件 hash、arrival order、denominator 绑定、root seed、预算与执行前封存，并要求提交后重跑 v14。无 API/A800，无 Goal 降级，见 [task report](task_reports/20261001_baseline_manifest_scope_audit.md)。
 
 - [partial] 2026-10-01 root manifest qualification：封存 root/source/generator/scorer、seed split、schedule/registry digest、arm 顺序、visibility rule 与预算；定向 14 项及 PeerRoleBench 359 项通过，仍未接入 live runner，见 [task report](task_reports/20261001_root_manifest_qualification.md)。
 

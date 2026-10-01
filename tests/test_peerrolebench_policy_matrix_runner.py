@@ -1,5 +1,7 @@
 from dataclasses import replace
+import hashlib
 from pathlib import Path
+import subprocess
 import sys
 
 import pytest
@@ -47,21 +49,32 @@ def test_runner_rejects_future_read_cut_and_schedule_digest():
 def test_runner_consumes_root_manifest_identity_and_schedule():
     offers, schedule, digest = fixture_case("recipient_only")
     manifest = RootRunnerManifest(
-        root_id="offline:recipient_only", root_commit="d" * 40,
-        source_digest="a" * 64, generator_digest="b" * 64, scorer_digest="c" * 64,
+        root_id="offline:recipient_only",
+        root_commit=subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
+        source_digest=hashlib.sha256((ROOT / "scripts/peerrolebench_policy_matrix_runner_v1.py").read_bytes()).hexdigest(),
+        generator_digest=hashlib.sha256((ROOT / "scripts/peerrolebench_baseline_contract.py").read_bytes()).hexdigest(),
+        scorer_digest=hashlib.sha256((ROOT / "scripts/peerrolebench_baseline_policies.py").read_bytes()).hexdigest(),
         schedule_digest=digest, registry_digest=registry_digest(_registry()),
         seed_split=(0,), arm_names=ARM_NAMES, rng_algorithm="numpy-pcg64",
-        visibility_rule="canonical_schedule_prefix_v1", max_episode_attempts=1,
+        visibility_rule="canonical_schedule_prefix_v1", max_episode_attempts=2,
         max_api_calls=0, max_wall_seconds=60.0,
     )
     result = PolicyMatrixRunner(registry=_registry()).run(
-        offers, schedule, expected_schedule_digest=digest, manifest=manifest,
+        offers, schedule, expected_schedule_digest=digest, manifest=manifest, root_seed=0,
     )
     assert result["manifest"]["manifest_digest"] == manifest.digest()
     with pytest.raises(ValueError, match="manifest schedule digest"):
         PolicyMatrixRunner(registry=_registry()).run(
             offers, schedule, expected_schedule_digest=digest,
-            manifest=RootRunnerManifest(**{**manifest.__dict__, "schedule_digest": "e" * 64}),
+            manifest=RootRunnerManifest(**{**manifest.__dict__, "schedule_digest": "e" * 64}), root_seed=0,
+        )
+
+
+def test_manifest_required_runner_rejects_bypass():
+    offers, schedule, digest = fixture_case("recipient_only")
+    with pytest.raises(ValueError, match="manifest is required"):
+        PolicyMatrixRunner(registry=_registry(), require_manifest=True).run(
+            offers, schedule, expected_schedule_digest=digest,
         )
 
 

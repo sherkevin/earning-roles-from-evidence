@@ -16,6 +16,7 @@ from pathlib import Path
 import platform
 import subprocess
 import sys
+import time
 from typing import Any, Mapping, Sequence
 
 import numpy as np
@@ -162,9 +163,13 @@ def _offer(
 class PolicyMatrixRunner:
     """Run all policy arms over one frozen, selected-only offer stream."""
 
-    def __init__(self, *, registry: Sequence[CandidateRegistryEntry], arm_names: Sequence[str] = ARM_NAMES):
+    def __init__(
+        self, *, registry: Sequence[CandidateRegistryEntry], arm_names: Sequence[str] = ARM_NAMES,
+        require_manifest: bool = False,
+    ):
         self.registry = validate_registry(registry)
         self.arm_names = tuple(arm_names)
+        self.require_manifest = bool(require_manifest)
         unknown = set(self.arm_names) - set(ARM_NAMES)
         if unknown:
             raise ValueError(f"unsupported matrix arms={sorted(unknown)}")
@@ -221,9 +226,13 @@ class PolicyMatrixRunner:
         expected_schedule_digest: str,
         expected_registry_digest: str | None = None,
         manifest: RootRunnerManifest | None = None,
+        root_seed: int | None = None,
     ) -> dict[str, Any]:
+        started = time.perf_counter()
         baseline_contract = validate_contract()
         manifest_payload = None if manifest is None else manifest.validate()
+        if self.require_manifest and manifest is None:
+            raise ValueError("root manifest is required for this runner")
         actual_registry_digest = registry_digest(self.registry)
         if expected_registry_digest is not None and actual_registry_digest != expected_registry_digest:
             raise ValueError("frozen candidate registry digest mismatch")
@@ -232,6 +241,29 @@ class PolicyMatrixRunner:
         if schedule_digest(schedule) != expected_schedule_digest:
             raise ValueError("frozen arrival schedule digest mismatch")
         if manifest is not None:
+            if root_seed is None or isinstance(root_seed, bool) or not isinstance(root_seed, int):
+                raise ValueError("manifest run requires an explicit integer root seed")
+            if root_seed not in manifest.seed_split:
+                raise ValueError("runtime root seed is outside the manifest seed split")
+            if tuple(manifest.arm_names) != self.arm_names:
+                raise ValueError("manifest arm names do not match runner arms")
+            current_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
+            if manifest.root_commit != current_commit:
+                raise ValueError("manifest root commit does not match runtime commit")
+            component_digests = {
+                "source_digest": _sha(ROOT / "scripts/peerrolebench_policy_matrix_runner_v1.py"),
+                "generator_digest": _sha(ROOT / "scripts/peerrolebench_baseline_contract.py"),
+                "scorer_digest": _sha(ROOT / "scripts/peerrolebench_baseline_policies.py"),
+            }
+            for field, expected in component_digests.items():
+                if getattr(manifest, field) != expected:
+                    raise ValueError(f"manifest {field} does not match runtime source")
+            if manifest.rng_algorithm != "numpy-pcg64":
+                raise ValueError("unsupported runtime RNG algorithm")
+            if manifest.visibility_rule != "canonical_schedule_prefix_v1":
+                raise ValueError("unsupported runtime visibility rule")
+            if manifest.max_episode_attempts < len(offers):
+                raise ValueError("manifest episode budget is smaller than the offer stream")
             if manifest.registry_digest != actual_registry_digest:
                 raise ValueError("manifest candidate registry digest mismatch")
             if manifest.schedule_digest != expected_schedule_digest:
@@ -247,6 +279,7 @@ class PolicyMatrixRunner:
                    "updates": 0, "unknown_reasons": {}}
             for name in self.arm_names
         }
+        seen_feedback_rows: dict[str, set[str]] = {name: set() for name in self.arm_names}
         seen_offer_ids: set[str] = set()
         seen_selection_ids: set[str] = set()
         seen_decision_indices: set[int] = set()
@@ -288,6 +321,11 @@ class PolicyMatrixRunner:
                 feedback_trace = []
                 for row in item.offer.public_rows:
                     feedback_id = str(row["feedback_id"])
+                    if feedback_id in seen_feedback_rows[name]:
+                        metrics[name]["n_duplicate"] += 1
+                        feedback_trace.append({"feedback_id": feedback_id, "disposition": "duplicate"})
+                        continue
+                    seen_feedback_rows[name].add(feedback_id)
                     source_selection = policy._decisions.get(str(row["source_event_id"]))
                     if source_selection is None:
                         raise ValueError("feedback references an unknown source selection")
@@ -363,6 +401,8 @@ class PolicyMatrixRunner:
             replay[name] = {"snapshot_equal": restored.snapshot() == snapshot}
         cost_ledger = {name: self._cost_ledger() for name in self.arm_names}
         validate_cost_ledger(cost_ledger, require_measured=False)
+        if manifest is not None and time.perf_counter() - started > manifest.max_wall_seconds:
+            raise ValueError("manifest wall-clock budget exceeded")
         return {
             "status": "PASS", "arms": list(self.arm_names),
             "registry_digest": actual_registry_digest,
@@ -524,30 +564,37 @@ def run_fixture_suite(out_dir: Path) -> dict[str, Any]:
         "registry_digest": registry_digest(_registry()),
         "real_api_calls": 0, "gpu_jobs": 0, "scientific_claim_allowed": False,
     }
+    registry = _registry()
+    manifest_objects: dict[str, RootRunnerManifest] = {}
+    manifests: dict[str, dict[str, Any]] = {}
+    for case in config["cases"]:
+        _, _, digest = fixture_specs[case]
+        manifest = RootRunnerManifest(
+            root_id=f"offline_policy_matrix:{case}",
+            root_commit=config["runtime"]["git_commit"],
+            source_digest=_sha(ROOT / "scripts/peerrolebench_policy_matrix_runner_v1.py"),
+            generator_digest=_sha(ROOT / "scripts/peerrolebench_baseline_contract.py"),
+            scorer_digest=_sha(ROOT / "scripts/peerrolebench_baseline_policies.py"),
+            schedule_digest=digest,
+            registry_digest=config["registry_digest"],
+            seed_split=(0,), arm_names=ARM_NAMES,
+            rng_algorithm="numpy-pcg64", visibility_rule="canonical_schedule_prefix_v1",
+            max_episode_attempts=3, max_api_calls=0, max_wall_seconds=60.0,
+        )
+        manifest_objects[case] = manifest
+        manifests[case] = manifest.validate()
+    # All manifest material is sealed before any case is executed.
+    config["manifests"] = manifests
     (out_dir / "config.json").write_text(json.dumps(config, indent=2) + "\n")
     cases = {}
-    manifests = {}
     try:
-        registry = _registry()
         for case in config["cases"]:
             offers, schedule, digest = fixture_specs[case]
-            manifest = RootRunnerManifest(
-                root_id=f"offline_policy_matrix:{case}",
-                root_commit=config["runtime"]["git_commit"],
-                source_digest=_sha(ROOT / "scripts/peerrolebench_policy_matrix_runner_v1.py"),
-                generator_digest=_sha(ROOT / "scripts/peerrolebench_baseline_contract.py"),
-                scorer_digest=_sha(ROOT / "scripts/peerrolebench_baseline_policies.py"),
-                schedule_digest=digest,
-                registry_digest=config["registry_digest"],
-                seed_split=(0,), arm_names=ARM_NAMES,
-                rng_algorithm="numpy-pcg64", visibility_rule="canonical_schedule_prefix_v1",
-                max_episode_attempts=1, max_api_calls=0, max_wall_seconds=60.0,
-            )
-            manifests[case] = manifest.validate()
-            cases[case] = PolicyMatrixRunner(registry=registry).run(
+            cases[case] = PolicyMatrixRunner(registry=registry, require_manifest=True).run(
                 offers, schedule, expected_schedule_digest=digest,
                 expected_registry_digest=config["registry_digest"],
-                manifest=manifest,
+                manifest=manifest_objects[case],
+                root_seed=0,
             )
     except Exception as exc:
         failure = {
@@ -560,8 +607,6 @@ def run_fixture_suite(out_dir: Path) -> dict[str, Any]:
         (out_dir / "summary.json").write_text(json.dumps(failure, indent=2) + "\n")
         return failure
     (out_dir / "raw_output.json").write_text(json.dumps(cases, indent=2) + "\n")
-    config["manifests"] = manifests
-    (out_dir / "config.json").write_text(json.dumps(config, indent=2) + "\n")
     passed = all(
         result["status"] == "PASS"
         and all(item["snapshot_equal"] for item in result["replay"].values())

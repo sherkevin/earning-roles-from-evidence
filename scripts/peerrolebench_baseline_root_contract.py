@@ -14,6 +14,7 @@ from collections import Counter
 from dataclasses import asdict, dataclass
 import hashlib
 import json
+import math
 from typing import Any, Mapping, Sequence
 
 from peerrolebench_baseline_contract import COST_FIELDS, BASELINE_ARM_SPECS, validate_cost_ledger
@@ -57,18 +58,35 @@ class RootRunnerManifest:
     def validate(self) -> dict[str, Any]:
         if not self.root_id or not self.root_commit or not self.rng_algorithm or not self.visibility_rule:
             raise ValueError("root manifest identity and visibility fields are required")
+        if len(self.root_commit) != 40 or self.root_commit != self.root_commit.lower() or any(
+            char not in "0123456789abcdef" for char in self.root_commit
+        ):
+            raise ValueError("root_commit must be a lowercase 40-character git SHA")
         for name, digest in (
             ("source_digest", self.source_digest), ("generator_digest", self.generator_digest),
             ("scorer_digest", self.scorer_digest), ("schedule_digest", self.schedule_digest),
             ("registry_digest", self.registry_digest),
         ):
-            if len(digest) != 64 or any(char not in "0123456789abcdef" for char in digest.lower()):
+            if len(digest) != 64 or digest != digest.lower() or any(
+                char not in "0123456789abcdef" for char in digest
+            ):
                 raise ValueError(f"{name} must be a lowercase 64-character sha256")
         if tuple(self.arm_names) != tuple(spec.name for spec in BASELINE_ARM_SPECS):
             raise ValueError("manifest arm order differs from the registered baseline matrix")
-        if not self.seed_split or tuple(sorted(set(self.seed_split))) != self.seed_split:
+        if not self.seed_split or any(isinstance(seed, bool) or not isinstance(seed, int) or seed < 0 for seed in self.seed_split):
+            raise ValueError("seed_split must contain non-negative integer seeds")
+        if tuple(sorted(set(self.seed_split))) != self.seed_split:
             raise ValueError("seed_split must be sorted and unique")
-        if self.max_episode_attempts <= 0 or self.max_api_calls < 0 or self.max_wall_seconds <= 0:
+        if (
+            isinstance(self.max_episode_attempts, bool)
+            or isinstance(self.max_api_calls, bool)
+            or not isinstance(self.max_episode_attempts, int)
+            or not isinstance(self.max_api_calls, int)
+            or not math.isfinite(float(self.max_wall_seconds))
+            or self.max_episode_attempts <= 0
+            or self.max_api_calls < 0
+            or self.max_wall_seconds <= 0
+        ):
             raise ValueError("manifest budgets are invalid")
         payload = self.payload()
         payload["manifest_digest"] = self.digest()
@@ -106,6 +124,8 @@ def validate_public_prefix(
         raise ValueError(f"future feedback visible before read cut: {future}")
     if missing:
         raise ValueError(f"public prefix omits arrived feedback: {missing}")
+    if observed != expected:
+        raise ValueError("observed public prefix order differs from frozen arrival order")
     return {
         "contract_version": ROOT_CONTRACT_VERSION,
         "read_cut": int(read_cut),
@@ -123,7 +143,14 @@ def feedback_denominators(rows: Sequence[Mapping[str, Any]]) -> dict[str, int]:
         "n_eligible": 0, "n_unknown": 0, "n_ignored": 0,
         "n_duplicate": 0, "n_pending": 0,
     })
+    seen_feedback_ids: set[str] = set()
     for row in rows:
+        feedback_id = str(row.get("feedback_id", ""))
+        if not feedback_id:
+            raise ValueError("feedback denominator row requires feedback_id")
+        if feedback_id in seen_feedback_ids:
+            raise ValueError("feedback denominator rows must have unique feedback_id")
+        seen_feedback_ids.add(feedback_id)
         counts["n_feedback_rows"] += 1
         selected = bool(row.get("selected", False))
         counts["n_selected" if selected else "n_unselected"] += 1
@@ -179,6 +206,9 @@ def validate_root_receipt(
     require_measured_cost: bool,
 ) -> dict[str, Any]:
     prefix = validate_public_prefix(schedule, observed_feedback_ids, read_cut=read_cut)
+    row_ids = [str(row.get("feedback_id", "")) for row in feedback_rows]
+    if row_ids != list(prefix["observed_feedback_ids"]):
+        raise ValueError("denominator rows must match the observed public prefix in order")
     denominators = feedback_denominators(feedback_rows)
     assignment_receipt = validate_assignment_before_start(assignment)
     normalized_cost = validate_cost_ledger(cost_ledger, require_measured=require_measured_cost)

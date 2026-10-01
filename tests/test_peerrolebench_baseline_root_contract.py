@@ -1,5 +1,6 @@
 from pathlib import Path
 import sys
+import math
 
 import pytest
 
@@ -84,6 +85,8 @@ def test_root_manifest_seals_identity_split_budget_and_digest():
         _manifest(seed_split=(1, 0)).validate()
     with pytest.raises(ValueError, match="budgets"):
         _manifest(max_api_calls=-1).validate()
+    with pytest.raises(ValueError, match="budgets"):
+        _manifest(max_wall_seconds=math.nan).validate()
 
 
 def test_public_prefix_requires_complete_schedule_prefix():
@@ -95,14 +98,16 @@ def test_public_prefix_requires_complete_schedule_prefix():
         validate_public_prefix(schedule, ["f0", "f1"], read_cut=1)
     with pytest.raises(ValueError, match="duplicate"):
         validate_public_prefix(schedule, ["f0", "f0"], read_cut=1)
+    with pytest.raises(ValueError, match="order"):
+        validate_public_prefix(schedule, ["f1", "f0"], read_cut=3)
 
 
 def test_denominators_make_selected_unknown_and_unselected_explicit():
     rows = [
-        {"selected": True, "classification": "eligible"},
-        {"selected": True, "classification": "unknown"},
-        {"selected": True, "classification": "ignored"},
-        {"selected": False, "classification": "pending"},
+        {"feedback_id": "f0", "selected": True, "classification": "eligible"},
+        {"feedback_id": "f1", "selected": True, "classification": "unknown"},
+        {"feedback_id": "f2", "selected": True, "classification": "ignored"},
+        {"feedback_id": "f3", "selected": False, "classification": "pending"},
     ]
     result = feedback_denominators(rows)
     assert result == {
@@ -111,7 +116,7 @@ def test_denominators_make_selected_unknown_and_unselected_explicit():
         "n_duplicate": 0, "n_pending": 1,
     }
     with pytest.raises(ValueError, match="invalid feedback"):
-        feedback_denominators([{"selected": True, "classification": "label_guess"}])
+        feedback_denominators([{"feedback_id": "f0", "selected": True, "classification": "label_guess"}])
 
 
 def test_assignment_must_be_sealed_before_task_start():
@@ -122,8 +127,7 @@ def test_assignment_must_be_sealed_before_task_start():
 
 def test_root_receipt_combines_gates_without_scientific_claim():
     rows = [
-        {"selected": True, "classification": "eligible"},
-        {"selected": False, "classification": "unknown"},
+        {"feedback_id": "f0", "selected": True, "classification": "unknown"},
     ]
     result = validate_root_receipt(
         schedule=_schedule(), observed_feedback_ids=["f0"], read_cut=1,
@@ -138,4 +142,13 @@ def test_root_receipt_combines_gates_without_scientific_claim():
             schedule=_schedule(), observed_feedback_ids=["f0"], read_cut=1,
             feedback_rows=rows, assignment=_assignment(), cost_ledger=_costs(),
             require_measured_cost=True,
+        )
+
+
+def test_root_receipt_binds_denominator_rows_to_prefix():
+    with pytest.raises(ValueError, match="denominator rows"):
+        validate_root_receipt(
+            schedule=_schedule(), observed_feedback_ids=["f0"], read_cut=1,
+            feedback_rows=[{"feedback_id": "other", "selected": True, "classification": "unknown"}],
+            assignment=_assignment(), cost_ledger=_costs(), require_measured_cost=False,
         )
