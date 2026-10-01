@@ -27,7 +27,9 @@ from peerrolebench_assignment_attestation import (
 from peerrolebench_assignment_manifest import build_manifest as build_aux_manifest
 from peerrolebench_assignment_manifest import validate_manifest as validate_aux_manifest
 from peerrolebench_baseline_policies import BaselinePolicy, CandidateRef, Feedback, Selection
-from peerrolebench_candidate_registry import CandidateRegistryEntry, candidate_refs, validate_registry
+from peerrolebench_candidate_registry import (
+    CandidateRegistryEntry, candidate_refs, registry_digest, validate_registry,
+)
 from peerrolebench_policy_sidecar import DecisionSidecar
 from peerrolebench_policy_sidecar_manifest import build_manifest as build_native_manifest
 from peerrolebench_policy_sidecar_manifest import validate_manifest as validate_native_manifest
@@ -150,6 +152,7 @@ class Pipe3SelectionBoundary:
     def __init__(self, policy: BaselinePolicy, registry: Sequence[CandidateRegistryEntry | Mapping[str, Any]]):
         self.policy = policy
         self.registry = validate_registry(registry)
+        self.registry_digest = registry_digest(self.registry)
         self.ledger = PeerRoleLedger(require_selection=True, require_terminal_outcome=True)
         self.selections: dict[str, Selection] = {}
         self.native_manifest_rows: list[dict[str, str]] = []
@@ -275,6 +278,7 @@ class Pipe3SelectionBoundary:
                 base_score_version=base_score_version, rng_algorithm=rng_algorithm,
                 rng_draw=int(rng_draw), selected_at=selected_at,
                 captured_features=policy_selection.captured_features, state_digest=state_digest,
+                candidate_registry_digest=self.registry_digest,
             )
             attestation = build_consumption_attestation(
                 offer, decision_sidecar, consumed=bool(consume_evidence),

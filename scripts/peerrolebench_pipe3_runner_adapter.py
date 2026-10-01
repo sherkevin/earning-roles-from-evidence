@@ -58,13 +58,18 @@ def attach_pipe3_delivery(recipient_payload: Mapping[str, Any],
     return result
 
 
-def prepare_pipe3_action(materials: Mapping[str, Any], delivery: Mapping[str, str], action: str) -> dict[str, Any]:
+def prepare_pipe3_action(
+    materials: Mapping[str, Any], delivery: Mapping[str, str], action: str,
+    *, allow_producer_rewrite: bool = True,
+) -> dict[str, Any]:
     """Prepare the recipient action view and its explicit write permissions.
 
     ``use`` can complete only processor.py. ``repair`` may revise the selected
-    producer copy as a repair action, while the immutable pre-action producer
-    digest remains the Qp subject. ``independent_redo`` starts from the original
-    public producer/processor snapshot and is not treated as use of the delivery.
+    producer copy only in the legacy mixed-ownership mode; current
+    responsibility-aware runs pass ``allow_producer_rewrite=False``. The
+    immutable pre-action producer digest remains the Qp subject.
+    ``independent_redo`` starts from the original public producer/processor
+    snapshot and is not treated as use of the delivery.
     """
     if action not in CONSUMER_ACTIONS:
         raise ValueError(f"Unsupported PIPE3 action: {action}")
@@ -80,9 +85,12 @@ def prepare_pipe3_action(materials: Mapping[str, Any], delivery: Mapping[str, st
     elif action == "use":
         writable = set(RECIPIENT_OWNED)
         initialization = "selected_delivery_copy"
-    else:
+    elif allow_producer_rewrite:
         writable = set(RECIPIENT_OWNED) | set(PRODUCER_OWNED)
         initialization = "selected_delivery_copy"
+    else:
+        writable = set(RECIPIENT_OWNED)
+        initialization = "selected_delivery_copy_producer_read_only"
     attached["writable_paths"] = sorted(writable)
     attached.update({"consumer_action": action,
                      "action_initialization": initialization,

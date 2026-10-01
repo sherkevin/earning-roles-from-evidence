@@ -87,16 +87,31 @@ def evaluate_source_gate(
     )
     target_role = judgment.get("target_role")
     binding = bool(judgment.get("observed_artifact_sha256"))
+    # A producer defect may be pre-registered by an independent objective
+    # scorer.  This is distinct from a recipient rewrite: the delivered
+    # producer snapshot remains the attribution subject, and any recipient
+    # integration edit is accounted for separately.
+    strict_attribution = "producer_defect_registered" in judgment
+    producer_defect_registered = bool(judgment.get("producer_defect_registered") is True)
+    producer_defect_observed = producer_score.get("status") == "FAIL" and producer_score.get("label") == 0
+    # Historical qualification receipts predate the explicit defect field and
+    # retain the old producer-owned change contract. Current runners always
+    # send the field, so this compatibility branch cannot weaken new runs.
+    if not strict_attribution:
+        producer_defect_registered = bool(producer_changed and target_role == "producer" and binding)
+        producer_defect_observed = True
     later_valid = bool(later_use and later_use.get("valid") is True)
     # A later outcome validates a future assignment.  It is intentionally not
     # an alternative source of producer attribution.
     attribution = bool(
         q_complete and y_complete and target_role == "producer" and binding
-        and producer_changed and not recipient_changed
+        and producer_defect_registered and producer_defect_observed
+        and (producer_changed if not strict_attribution else not producer_changed)
+        and not (producer_changed and recipient_changed)
     )
     if attribution:
         status = "ELIGIBLE"
-        reason = "complete source Qp/Y with producer-owned contract change"
+        reason = "complete source Qp/Y with independently registered producer defect"
     elif producer_changed and recipient_changed:
         status = "UNKNOWN"
         reason = "mixed ownership change requires a registered counterfactual"

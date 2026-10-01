@@ -28,16 +28,17 @@ from peer_role_protocol_20260925 import (  # noqa: E402
     ConsumerAction, Delivery, LaterAssignment, ProducerScore,
     RecipientJudgment, RoleEvidenceUpdate, TerminalOutcome,
 )
-from peerrolebench_baseline_policies import ContextualTrustPolicy, Feedback  # noqa: E402
+from peerrolebench_baseline_policies import Feedback, TerminalOnlyPolicy  # noqa: E402
 from peerrolebench_ledger_replay import replay_ledger_events  # noqa: E402
 from peerrolebench_pipe3_full_chain_qualification import registry  # noqa: E402
+from peerrolebench_candidate_registry import CandidateRegistryEntry  # noqa: E402
 from peerrolebench_pipe3_material_adapter import build_materials, digest_files  # noqa: E402
 from peerrolebench_pipe3_producer_scorer_qualification import interfaces  # noqa: E402
 from peerrolebench_pipe3_producer_scorer_v2 import run_producer_scorer  # noqa: E402
 from peerrolebench_pipe3_recipient_scorer_v2 import run_scorer  # noqa: E402
 from peerrolebench_pipe3_responsibility_label import producer_feedback_eligibility  # noqa: E402
 from peerrolebench_pipe3_runner_adapter import prepare_pipe3_action, validate_pipe3_action_result  # noqa: E402
-from peerrolebench_pipe3_runner_v1 import Pipe3SelectionBoundary, make_offer  # noqa: E402
+from peerrolebench_pipe3_runner_v1 import auxiliary_manifest_root, Pipe3SelectionBoundary, make_offer  # noqa: E402
 from peerrolebench_pipe3_task_qualification import load_pipe3  # noqa: E402
 from peerrolebench_role_evidence_offer import (  # noqa: E402
     build_role_evidence_from_ledger, make_role_evidence_offer,
@@ -52,9 +53,22 @@ from peerrolebench_two_stage_gate import (  # noqa: E402
 
 
 TASK_ID = "PIPE3_stream_processing"
-VERSION = "pipe3-two-stage-composition-v1.1"
+VERSION = "pipe3-two-stage-composition-v1.2"
 CONTROLS = ("producer_owned", "recipient_owned", "mixed")
 CandidateScorer = Callable[[str, Mapping[str, str], Mapping[str, str], Path, Path, int], dict[str, Any]]
+
+
+def _candidate_registry(materials: Mapping[str, Any]) -> list[CandidateRegistryEntry]:
+    """Bind each menu key to a concrete producer snapshot for this run."""
+    base = dict(materials["agent_payloads"]["producer"]["source_files"])
+    fixed = _patch_producer(base, interfaces(materials)["timestamp_field"])
+    model_config = hashlib.sha256(b"pipe3-qualification-model-config-v2").hexdigest()
+    return [
+        CandidateRegistryEntry("peer-b", "v1", digest_files({"producer.py": base["producer.py"]}),
+                               "fixture-model", model_config),
+        CandidateRegistryEntry("peer-c", "v1", digest_files({"producer.py": fixed["producer.py"]}),
+                               "fixture-model", model_config),
+    ]
 
 
 def _digest(value: Any) -> str:
@@ -162,14 +176,17 @@ def _prepare_case(materials: dict[str, Any], control: str) -> tuple[dict[str, An
     if control == "producer_owned":
         case["agent_payloads"]["recipient"]["source_files"]["processor.py"] = recipient_fixed["processor.py"]
         delivery = {"producer.py": base["producer.py"]}
-        final = {**recipient_fixed, "producer.py": producer_fixed["producer.py"]}
+        # The source producer snapshot remains immutable during recipient
+        # integration.  A producer defect is attributed only from the
+        # objective pre-action scorer; recipient repair cannot rewrite it.
+        final = {**recipient_fixed, "producer.py": base["producer.py"]}
     elif control == "recipient_owned":
         case["agent_payloads"]["producer"]["source_files"]["producer.py"] = producer_fixed["producer.py"]
         delivery = {"producer.py": producer_fixed["producer.py"]}
         final = {**base, "producer.py": producer_fixed["producer.py"], "processor.py": recipient_fixed["processor.py"]}
     elif control == "mixed":
         delivery = {"producer.py": base["producer.py"]}
-        final = {**base, "producer.py": producer_fixed["producer.py"], "processor.py": recipient_fixed["processor.py"]}
+        final = {**base, "processor.py": recipient_fixed["processor.py"]}
     else:
         raise ValueError(f"unknown control {control!r}")
     return case, delivery, final
@@ -182,15 +199,49 @@ def _record_episode(*, boundary: Pipe3SelectionBoundary, materials: dict[str, An
     out.mkdir(parents=False, exist_ok=False)
     info = interfaces(materials)
     delivery_digest = digest_files(delivery_sources)
+    index = 0 if selection_id.endswith("-0") else 1
+    delivery_id = f"{control}-delivery-{index}"
+    registry_entry = next((entry for entry in boundary.registry if entry.candidate_id == selected_peer), None)
+    if registry_entry is None:
+        raise ValueError(f"selected peer is absent from candidate registry: {selected_peer}")
+    if registry_entry.source_digest != delivery_digest:
+        _log(raw, "treatment_binding_mismatch", {
+            "candidate_key": registry_entry.key,
+            "registered_source_digest": registry_entry.source_digest,
+            "delivered_source_digest": delivery_digest,
+        })
+        return {
+            "delivery_id": delivery_id, "delivery_digest": delivery_digest,
+            "candidate_key": registry_entry.key,
+            "candidate_source_digest": registry_entry.source_digest,
+            "producer_defect_registered": False,
+            "producer": {"status": "UNKNOWN", "label": None, "quality_score": None,
+                          "coverage_complete": False, "decision_complete": False,
+                          "unknown_reason": "candidate_treatment_binding_mismatch"},
+            "scores_before": {}, "scores_after": {},
+            "action": {"changed_paths": [], "output_source_sha256": delivery_digest,
+                       "consumer_action": "repair"},
+            "outcome": {"status": "UNKNOWN", "quality_score": None,
+                        "coverage_complete": False, "decision_complete": False},
+            "eligibility": {"producer_feedback_eligible": False,
+                             "policy_update_allowed": False,
+                             "reason": "candidate artifact does not match registered treatment"},
+            "index": index,
+        }
     # The task start is sealed before actor/scorer execution by contract.
     boundary.ledger.record_task_start(TASK_ID, 0 if selection_id.endswith("-0") else 1)
     _log(raw, "task_start_sealed", {"selection_id": selection_id, "task_index": 0 if selection_id.endswith("-0") else 1})
     before = dict(materials["agent_payloads"]["recipient"]["source_files"])
     before["producer.py"] = delivery_sources["producer.py"]
-    index = 0 if selection_id.endswith("-0") else 1
-    delivery_id = f"{control}-delivery-{index}"
     scores_before = _score_triplet(before, info, out / "before_action", raw, seed, scorer)
     _log(raw, "scorer_before", scores_before)
+    _log(raw, "scorer_input_manifest", {
+        "candidate_key": registry_entry.key,
+        "candidate_source_digest": registry_entry.source_digest,
+        "candidate_registry_digest": boundary.registry_digest,
+        "artifact_sha256": delivery_digest,
+        "stage": "before_action",
+    })
     complete = all(scores_before[k].get("status") in {"PASS", "FAIL"}
                    and scores_before[k].get("coverage_complete") is True
                    and scores_before[k].get("decision_complete") is True
@@ -201,14 +252,20 @@ def _record_episode(*, boundary: Pipe3SelectionBoundary, materials: dict[str, An
         outcome_payload = {"status": "UNKNOWN", "quality_score": None,
                            "coverage_complete": False, "decision_complete": False}
         return {"delivery_id": delivery_id, "delivery_digest": delivery_digest,
+                "candidate_key": registry_entry.key,
+                "candidate_source_digest": registry_entry.source_digest,
+                "producer_defect_registered": False,
                 "producer": scores_before["producer"], "scores_before": scores_before,
                 "scores_after": {}, "action": unknown_action, "outcome": outcome_payload,
                 "eligibility": {"producer_feedback_eligible": False,
                                  "policy_update_allowed": False,
                                  "reason": "source scorer UNKNOWN; stop before delivery/action"},
                 "index": index}
-    boundary.ledger.record_delivery(Delivery(delivery_id, TASK_ID, selected_peer, "peer-a", delivery_digest,
-                                              f"request-{control}-{index}", index, selection_id))
+    boundary.ledger.record_delivery(Delivery(
+        delivery_id, TASK_ID, selected_peer, "peer-a", delivery_digest,
+        f"request-{control}-{index}", index, selection_id,
+        registry_entry.source_digest,
+    ))
     producer = scores_before["producer"]
     boundary.ledger.record_producer_score(ProducerScore(
         f"{control}-producer-score-{index}", delivery_id, delivery_digest,
@@ -221,7 +278,9 @@ def _record_episode(*, boundary: Pipe3SelectionBoundary, materials: dict[str, An
         f"{control}-judgment-{index}", delivery_id, "peer-a", "accept_with_rework", delivery_digest,
         repair_note=f"{VERSION}:{control}",
     ))
-    action_payload = prepare_pipe3_action(materials, delivery_sources, "repair")
+    action_payload = prepare_pipe3_action(
+        materials, delivery_sources, "repair", allow_producer_rewrite=False,
+    )
     action_result = validate_pipe3_action_result(action_payload, final_sources)
     boundary.ledger.record_action(ConsumerAction(
         f"{control}-action-{index}", delivery_id, "peer-a", True, delivery_digest,
@@ -230,6 +289,14 @@ def _record_episode(*, boundary: Pipe3SelectionBoundary, materials: dict[str, An
     _log(raw, "actor_action", {"changed_paths": action_result["changed_paths"], "output_source_sha256": action_result["output_source_sha256"]})
     scores_after = _score_triplet(final_sources, info, out / "after_action", raw, seed, scorer)
     _log(raw, "scorer_after", scores_after)
+    _log(raw, "scorer_input_manifest", {
+        "candidate_key": registry_entry.key,
+        "candidate_source_digest": registry_entry.source_digest,
+        "candidate_registry_digest": boundary.registry_digest,
+        "artifact_sha256": delivery_digest,
+        "stage": "after_action",
+        "changed_paths": action_result["changed_paths"],
+    })
     recipient_after, adoption_after = scores_after["recipient"], scores_after["adoption"]
     outcome_payload = {
         "status": "PASS" if recipient_after.get("status") == "PASS" and adoption_after.get("status") == "PASS" else (
@@ -250,7 +317,11 @@ def _record_episode(*, boundary: Pipe3SelectionBoundary, materials: dict[str, An
         {"observed_artifact_sha256": delivery_digest, "target_role": "producer" if control == "producer_owned" else "recipient"},
         action_result, outcome_payload,
     )
-    return {"delivery_id": delivery_id, "delivery_digest": delivery_digest, "producer": producer,
+    return {"delivery_id": delivery_id, "delivery_digest": delivery_digest,
+            "candidate_key": registry_entry.key,
+            "candidate_source_digest": registry_entry.source_digest,
+            "producer_defect_registered": producer.get("status") == "FAIL" and producer.get("label") == 0,
+            "producer": producer,
             "scores_before": scores_before, "scores_after": scores_after,
             "action": action_result, "outcome": outcome_payload, "eligibility": eligibility,
             "index": index}
@@ -279,12 +350,22 @@ def _source_offer(boundary: Pipe3SelectionBoundary, *, control: str, source: Map
         ledger=boundary.ledger, evidence_id=evidence_id, candidate_key=f"{selected_peer}@v1", role="producer",
         target_task_index=target_task_index, evidence_version=VERSION, available_index=1,
     )
+    previous_aux_hash = auxiliary_manifest_root(boundary.auxiliary_manifest_rows)
     role_offer = make_role_evidence_offer(
         offer_id=f"role-offer-{control}", task_id=TASK_ID, task_index=target_task_index, role="producer",
         context_key=f"PIPE3:{target_task_index}", candidate_keys=("peer-b@v1", "peer-c@v1"), evidence=(evidence,),
         evidence_version=VERSION, available_index=1,
+        previous_aux_hash=previous_aux_hash,
+        candidate_registry_digest=boundary.registry_digest,
     )
-    return role_offer, {"records": records, "evidence_id": evidence_id, "eligible": True, "sidecar": sidecar_payload}
+    boundary.auxiliary_manifest_rows.append({
+        "event_type": "role_evidence_offer", "event_id": role_offer.offer_id,
+        "offer_id": role_offer.offer_id, "decision_event_id": "",
+        "record_hash": role_offer.offer_record_hash,
+        "attestation_digest": role_offer.bundle_digest,
+    })
+    return role_offer, {"records": records, "evidence_id": evidence_id, "eligible": True,
+                        "sidecar": sidecar_payload, "previous_aux_hash": previous_aux_hash}
 
 
 def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
@@ -304,7 +385,7 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
             "scripts/peerrolebench_pipe3_two_stage_composition.py", "scripts/peerrolebench_two_stage_gate.py",
             "scripts/peerrolebench_role_evidence_selection.py", "scripts/peerrolebench_role_evidence_offer.py",
         )},
-        "policy": "ContextualTrustPolicy", "overlay_values": "qualification_control_only",
+    "policy": "TerminalOnlyPolicy", "overlay_values": "qualification_control_only",
         "authored_controls": {"source_judgment": "parent-authored", "action": "parent-authored", "patched_actor": "parent-authored"},
     }
     (out / "config.json").write_text(json.dumps(config, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
@@ -312,12 +393,16 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
     # Freeze the run configuration before loading or executing any generated
     # actor/scorer material.  The hashes and seeds above are the audit anchor.
     generated_source = load_pipe3(source_seed)
-    generated_target = load_pipe3(target_seed)
+    # This qualification intentionally keeps one structural root so the
+    # treatment-binding and lineage seam can be isolated.  Independent roots
+    # remain a live benchmark gate and are not claimed here.
+    generated_target = generated_source
     source_materials = build_materials(generated_source)
     target_materials = build_materials(generated_target)
     source_case, source_delivery, source_final = _prepare_case(source_materials, control)
     target_case, target_delivery, target_final = _prepare_case(target_materials, control)
-    boundary = Pipe3SelectionBoundary(ContextualTrustPolicy(), registry())
+    candidate_registry = _candidate_registry(source_materials)
+    boundary = Pipe3SelectionBoundary(TerminalOnlyPolicy(), candidate_registry)
     offer0 = make_offer(offer_id=f"offer-{control}-0", task_id=TASK_ID, task_index=0, role="producer",
                         context_key="PIPE3:0", candidate_keys=("peer-b@v1", "peer-c@v1"), public_rows=(),
                         evidence_version=VERSION, available_index=0)
@@ -334,13 +419,23 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
                              out=out / "source", raw=raw, seed=source_seed, scorer=scorer)
     gate = evaluate_source_gate(
         source_case, source["producer"], {"target_role": "producer" if control == "producer_owned" else "recipient",
-        "observed_artifact_sha256": source["delivery_digest"]}, source["action"], source["outcome"], None,
+        "observed_artifact_sha256": source["delivery_digest"],
+        "producer_defect_registered": source.get("producer_defect_registered") is True},
+        source["action"], source["outcome"], None,
     )
     source["source_gate"] = gate.payload()
+    # The source gate is the sole attribution authority.  The legacy helper
+    # remains diagnostic only and must not suppress a producer defect that was
+    # independently scored while the recipient kept producer.py read-only.
+    source["eligibility"] = {
+        **source.get("eligibility", {}),
+        "producer_feedback_eligible": gate.evidence_publish_allowed,
+        "policy_update_allowed": gate.policy_update_allowed,
+    }
     _log(raw, "source_gate", gate.payload())
     if not gate.evidence_publish_allowed:
         expected_rejection = (control in {"recipient_owned", "mixed"}
-                              and source["outcome"]["status"] in {"PASS", "FAIL"}
+                              and source["outcome"]["status"] in {"PASS", "FAIL", "UNKNOWN"}
                               and gate.status in {"UNKNOWN", "PENDING_ATTRIBUTION"}
                               and boundary.policy.updates == 0)
         summary = {**config, "status": "UNKNOWN", "passed": False,
@@ -357,13 +452,24 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
                                      selected_peer=seal0.native_selection.chosen_peer_id, target_task_index=1)
     if role_offer is None:
         raise AssertionError("eligible source must publish role evidence")
-    feedback_offer = make_offer(offer_id=f"feedback-offer-{control}", task_id=TASK_ID, task_index=1,
-                                role="producer", context_key="PIPE3:1", candidate_keys=("peer-b@v1", "peer-c@v1"),
-                                public_rows=(), evidence_version=VERSION, available_index=1)
+    feedback_offer = make_offer(
+        offer_id=f"feedback-offer-{control}", task_id=TASK_ID, task_index=1,
+        role="producer", context_key="PIPE3:1", candidate_keys=("peer-b@v1", "peer-c@v1"),
+        public_rows=(), evidence_version=VERSION, available_index=1,
+        previous_aux_hash=auxiliary_manifest_root(boundary.auxiliary_manifest_rows),
+    )
     _log(raw, "source_publication", {"evidence_id": meta["evidence_id"], "offer_id": role_offer.offer_id,
                                       "bundle_digest": role_offer.bundle_digest, "policy_updates": boundary.policy.updates,
                                       "read_cut": 1})
-    isolated_read = read_role_evidence_offer_isolated(role_offer, read_cut=1, previous_aux_hash="GENESIS")
+    isolated_read = read_role_evidence_offer_isolated(
+        role_offer, read_cut=1, previous_aux_hash=meta["previous_aux_hash"],
+    )
+    boundary.auxiliary_manifest_rows.append({
+        "event_type": "role_evidence_read", "event_id": f"read-{role_offer.offer_id}",
+        "offer_id": role_offer.offer_id, "decision_event_id": f"read-{role_offer.offer_id}",
+        "record_hash": role_offer.offer_record_hash,
+        "attestation_digest": isolated_read.policy_input_digest,
+    })
     _log(raw, "isolated_role_evidence_read", {"offer_id": isolated_read.offer_id,
                                                "policy_input_digest": isolated_read.policy_input_digest,
                                                "read_cut": isolated_read.read_cut})
@@ -425,7 +531,7 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
         quality = target["outcome"].get("quality_score")
         feedback = Feedback(
             feedback_id=f"later-feedback-{control}", source_event_id=selected.event_id,
-            source="recipient_judgment", label=None if quality is None else float(quality),
+            source="terminal_outcome", label=None if quality is None else float(quality),
             arrived_at=2.0, delay=1.0, action="repair", disposition="eligible", provenance="public", arrival_index=2,
         )
         before = deepcopy(boundary.policy.__dict__)
@@ -433,8 +539,15 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
                                             snapshot=lambda: deepcopy(boundary.policy.__dict__),
                                             restore=lambda state: (boundary.policy.__dict__.clear(), boundary.policy.__dict__.update(state)))
         _log(raw, "delayed_update", {"applied": update_applied, "credit": credit.__dict__, "source_event_id": selected.event_id,
+                                      "feedback_source": feedback.source,
                                       "policy_updates": boundary.policy.updates, "before_state_digest": _digest(before),
                                       "after_state_digest": _digest(boundary.policy.__dict__)})
+    native_root, auxiliary_root = boundary.validate_selection_manifests()
+    _log(raw, "manifest_validation", {
+        "native_root": native_root, "auxiliary_root": auxiliary_root,
+        "native_rows": len(boundary.native_manifest_rows),
+        "auxiliary_rows": len(boundary.auxiliary_manifest_rows),
+    })
     summary = {**config, "status": "QUALIFIED_OFFLINE" if credit is not None and update_applied else "UNKNOWN",
                "passed": credit is not None and update_applied,
                "contract_passed": credit is not None and update_applied, "source": source, "target": target,
@@ -442,6 +555,7 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
                "replay": replay.as_dict(), "credit": None if credit is None else credit.__dict__,
                "policy_updates": boundary.policy.updates, "delayed_credit_count": len(delayed.credits),
                "unknown_denominator": {"source_rows": 1, "unknown_rows": 0}, "ledger": boundary.ledger.events,
+               "native_manifest_root": native_root, "auxiliary_manifest_root": auxiliary_root,
                "scientific_claim_allowed": False, "interpretation": "engineering comparator; overlay controls are hand-authored qualification values"}
     (out / "ledger.json").write_text(json.dumps(boundary.ledger.events, indent=2, default=str) + "\n", encoding="utf-8")
     (out / "summary.json").write_text(json.dumps(summary, indent=2, ensure_ascii=False, default=str) + "\n", encoding="utf-8")

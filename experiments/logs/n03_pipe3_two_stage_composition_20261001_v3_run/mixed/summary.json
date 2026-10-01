@@ -1,0 +1,183 @@
+{
+  "version": "pipe3-two-stage-composition-v1.2",
+  "control": "mixed",
+  "task_id": "PIPE3_stream_processing",
+  "source_seed": 0,
+  "target_seed": 1,
+  "root": "PIPE3_stream_processing",
+  "same_root_qualification": true,
+  "independent_benchmark": false,
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "source_commit": "7536530e4cbcd9959f3381e2c749cc057c174c92",
+  "python": "3.9.6",
+  "python_executable": "/Library/Developer/CommandLineTools/usr/bin/python3",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "component_sha256": {
+    "scripts/peerrolebench_pipe3_two_stage_composition.py": "2b0fe39e10518e3ff7c4acef71c64ffac79392cddd928e6185f7d4a5693766de",
+    "scripts/peerrolebench_two_stage_gate.py": "38972ded8c68b541830adb9b4d46af19455989b25e8e394e6ddfcf6e8aa06da7",
+    "scripts/peerrolebench_role_evidence_selection.py": "3caa17611f9f391a112ef98650b622c175fa2344e587c1ef69c7f4d5084c8477",
+    "scripts/peerrolebench_role_evidence_offer.py": "ffeff6e46a461350d4e9913641ad2f0eb891e6b0b7ee6a200599e6725113bea5"
+  },
+  "policy": "TerminalOnlyPolicy",
+  "overlay_values": "qualification_control_only",
+  "authored_controls": {
+    "source_judgment": "parent-authored",
+    "action": "parent-authored",
+    "patched_actor": "parent-authored"
+  },
+  "status": "UNKNOWN",
+  "passed": false,
+  "contract_passed": true,
+  "stop_reason": "incomplete source scorer/outcome, target, or artifact binding",
+  "source": {
+    "delivery_id": "mixed-delivery-0",
+    "delivery_digest": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+    "candidate_key": "peer-b@v1",
+    "candidate_source_digest": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+    "producer_defect_registered": false,
+    "producer": {
+      "status": "UNKNOWN",
+      "label": null,
+      "quality_score": null,
+      "scorer_version": "pipe3-producer-objective-v2",
+      "decision_complete": false,
+      "coverage_complete": false,
+      "reason": "scorer_transport_error",
+      "error_type": "PermissionError",
+      "response_digest": null,
+      "transport": {
+        "status": "error",
+        "error_type": "PermissionError",
+        "message": "[Errno 1] Operation not permitted (originated from sysctl() malloc 1/3)"
+      },
+      "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2"
+    },
+    "scores_before": {
+      "producer": {
+        "status": "UNKNOWN",
+        "label": null,
+        "quality_score": null,
+        "scorer_version": "pipe3-producer-objective-v2",
+        "decision_complete": false,
+        "coverage_complete": false,
+        "reason": "scorer_transport_error",
+        "error_type": "PermissionError",
+        "response_digest": null,
+        "transport": {
+          "status": "error",
+          "error_type": "PermissionError",
+          "message": "[Errno 1] Operation not permitted (originated from sysctl() malloc 1/3)"
+        },
+        "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2"
+      },
+      "recipient": {
+        "status": "UNKNOWN",
+        "label": null,
+        "quality_score": null,
+        "scorer_version": "pipe3-recipient-objective-v2",
+        "mode": null,
+        "decision_complete": false,
+        "coverage_complete": false,
+        "reason": "scorer_transport_error",
+        "error_type": "PermissionError",
+        "response_digest": null,
+        "transport": {
+          "status": "error",
+          "error_type": "PermissionError",
+          "message": "[Errno 1] Operation not permitted (originated from sysctl() malloc 1/3)"
+        },
+        "artifact_sha256": "16223542de99f20807fcf97463c16edd8883b0e90df5919942f2da1c6cdedcf5"
+      },
+      "adoption": {
+        "status": "UNKNOWN",
+        "label": null,
+        "quality_score": null,
+        "scorer_version": "pipe3-recipient-objective-v2",
+        "mode": null,
+        "decision_complete": false,
+        "coverage_complete": false,
+        "reason": "scorer_transport_error",
+        "error_type": "PermissionError",
+        "response_digest": null,
+        "transport": {
+          "status": "error",
+          "error_type": "PermissionError",
+          "message": "[Errno 1] Operation not permitted (originated from sysctl() malloc 1/3)"
+        },
+        "artifact_sha256": "263804f82aa6a4ba4834a7ceec7aaad049ec31a944d44137ecc976f0a4771014"
+      }
+    },
+    "scores_after": {},
+    "action": {
+      "changed_paths": [],
+      "output_source_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "consumer_action": "repair"
+    },
+    "outcome": {
+      "status": "UNKNOWN",
+      "quality_score": null,
+      "coverage_complete": false,
+      "decision_complete": false
+    },
+    "eligibility": {
+      "producer_feedback_eligible": false,
+      "policy_update_allowed": false,
+      "reason": "source scorer UNKNOWN; stop before delivery/action"
+    },
+    "index": 0,
+    "source_gate": {
+      "gate_version": "two-stage-role-evidence-v1",
+      "producer_paths_changed": [],
+      "recipient_paths_changed": [],
+      "q_complete": false,
+      "y_complete": false,
+      "target_role": "recipient",
+      "artifact_binding_present": true,
+      "later_use_valid": false,
+      "attribution_eligible": false,
+      "evidence_publish_allowed": false,
+      "policy_update_allowed": false,
+      "status": "UNKNOWN",
+      "reason": "incomplete source scorer/outcome, target, or artifact binding"
+    }
+  },
+  "target": {
+    "status": "NOT_RUN_UNKNOWN"
+  },
+  "policy_updates": 0,
+  "unknown_denominator": {
+    "source_rows": 1,
+    "unknown_rows": 1
+  },
+  "ledger": [
+    {
+      "event_type": "peer_selection",
+      "payload": {
+        "selection_id": "selection-mixed-0",
+        "task_id": "PIPE3_stream_processing",
+        "task_index": 0,
+        "selector_id": "peer-a",
+        "role": "producer",
+        "candidate_ids": [
+          "peer-b",
+          "peer-c"
+        ],
+        "chosen_peer_id": "peer-b",
+        "propensity": 1.0
+      },
+      "previous_hash": "GENESIS",
+      "record_hash": "8897e07af96dd972cdba9d962bc7258277e580cd138c6196f038796fddda8e12"
+    },
+    {
+      "event_type": "task_start",
+      "payload": {
+        "task_id": "PIPE3_stream_processing",
+        "task_index": 0
+      },
+      "previous_hash": "8897e07af96dd972cdba9d962bc7258277e580cd138c6196f038796fddda8e12",
+      "record_hash": "7996bfbffdba97d4243e09d8af8a0b4418c77d1c1038d27156c9a4c4789c604e"
+    }
+  ]
+}

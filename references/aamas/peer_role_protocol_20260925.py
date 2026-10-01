@@ -86,6 +86,10 @@ class Delivery:
     source_event_id: str
     task_index: int
     selection_id: str | None = None
+    # New runners populate this from the immutable candidate registry.  The
+    # optional field keeps historical ledgers readable while allowing a
+    # treatment-binding gate on current runs.
+    candidate_source_digest: str | None = None
 
     def __post_init__(self) -> None:
         if not self.delivery_id or not self.task_id or not self.source_event_id:
@@ -97,6 +101,8 @@ class Delivery:
         if int(self.task_index) < 0:
             raise ValueError("task_index must be non-negative")
         _artifact_hash(self.artifact_sha256)
+        if self.candidate_source_digest is not None:
+            _artifact_hash(self.candidate_source_digest)
 
 
 @dataclass(frozen=True)
@@ -329,7 +335,13 @@ class PeerRoleLedger:
             if selection.chosen_peer_id != delivery.producer_id:
                 raise ValueError("delivery producer must be the selected peer")
         self.deliveries[delivery.delivery_id] = delivery
-        self._append("producer_delivery", delivery.__dict__)
+        payload = dict(delivery.__dict__)
+        # Preserve historical serialized ledgers. New runs include the
+        # candidate treatment digest; an omitted optional field must not turn
+        # into an explicit null during replay.
+        if payload.get("candidate_source_digest") is None:
+            payload.pop("candidate_source_digest", None)
+        self._append("producer_delivery", payload)
 
     def record_judgment(self, judgment: RecipientJudgment) -> None:
         if judgment.judgment_id in self.judgments:

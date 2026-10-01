@@ -34,6 +34,16 @@ PIPE3 v2 的 two-stage CPU composition 只关闭有限 evidence→assignment→l
 real situated judgment 仍开放。详见 [manifest hardening v2](../../../coordination/task_reports/20261001_baseline_manifest_hardening_v2.md)
 和 [PIPE3 two-stage composition](../../../coordination/task_reports/20261001_pipe3_two_stage_composition.md)。
 
+2026-10-01 P0 amendment：v1.2 qualification 已把 candidate source digest、producer-read-only
+ attribution、`terminal_outcome` delayed channel 和 role-offer/read auxiliary-chain continuation
+ 接入候选 runner；368 项回归与 injected contract qualification 通过。首次完整重跑遇到一次
+ macOS `sysctl()` transport 权限错误；预注册的单 scorer probe 成功后，第二次完整 v1.2 CPU
+ qualification 以 `QUALIFIED_OFFLINE` 完成：producer-owned control 走通 delayed update，
+ recipient-owned/mixed controls 被责任门保护性地停止为 UNKNOWN/no-update。该结果仍是同一
+ structural root 的工程资格（0 LLM API、0 GPU、`scientific_claim_allowed=false`），不能升级为
+ benchmark、baseline 或方法效果；independent root、真实 situated judgment 与 baseline parity
+ 仍开放。详见 [P0 repair report](../../../coordination/task_reports/20261001_pipe3_p0_repairs.md)。
+
 对照审查还保留 `MULTI3_polyglot` 作为 `CONDITIONAL-LOW` fallback，而不是 active root：其 JSON fixtures 可解析，但 native tests 使用 hardcoded `correct_wire/correct_envelope`，没有真实 producer→recipient artifact binding；sample generator、seed split、schema contract 和 prompt oracle 也未冻结。详见 [MULTI3 fallback audit](../../../coordination/task_reports/20261001_multi3_fallback_audit.md)。
 
 副轨候选为 `graph-ipd@00ef417f60053569175b2b50d0f0e25ff8eb7007`（MIT，arXiv:2608.28977），用于机制 sanity check，不改变主轨的 artifact claim。

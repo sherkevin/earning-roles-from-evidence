@@ -108,6 +108,7 @@ class RoleEvidenceOffer:
     available_index: int
     bundle_digest: str
     watermark_schema: str = "global-event-index-v1"
+    candidate_registry_digest: str | None = None
 
     def __post_init__(self) -> None:
         if not all(isinstance(value, str) and value for value in (
@@ -116,6 +117,8 @@ class RoleEvidenceOffer:
             raise ValueError("role evidence offer identity is required")
         _sha(self.offer_record_hash, "offer_record_hash")
         _sha(self.bundle_digest, "bundle_digest")
+        if self.candidate_registry_digest is not None:
+            _sha(self.candidate_registry_digest, "candidate_registry_digest")
         if int(self.task_index) < 0 or int(self.available_index) < 0:
             raise ValueError("task_index and available_index must be non-negative")
         if not self.candidate_keys or tuple(sorted(set(self.candidate_keys))) != tuple(self.candidate_keys):
@@ -168,6 +171,7 @@ class RoleEvidenceOffer:
             "public_evidence": [dict(row) for row in self.public_evidence],
             "available_index": int(self.available_index),
             "watermark_schema": self.watermark_schema,
+            "candidate_registry_digest": self.candidate_registry_digest,
         }
 
     def operator_binding_payload(self) -> dict[str, Any]:
@@ -178,6 +182,7 @@ def make_role_evidence_offer(
     *, offer_id: str, task_id: str, task_index: int, role: str, context_key: str,
     candidate_keys: Sequence[str], evidence: Sequence[PublicRoleEvidence],
     evidence_version: str, available_index: int, previous_aux_hash: str = "GENESIS",
+    candidate_registry_digest: str | None = None,
 ) -> RoleEvidenceOffer:
     if not all(isinstance(item, PublicRoleEvidence) for item in evidence):
         raise ValueError("evidence must contain typed PublicRoleEvidence records")
@@ -190,6 +195,7 @@ def make_role_evidence_offer(
         "candidate_keys": list(refs), "evidence_ids": list(ids),
         "evidence_version": evidence_version, "public_evidence": list(rows),
         "available_index": int(available_index), "watermark_schema": "global-event-index-v1",
+        "candidate_registry_digest": candidate_registry_digest,
     }
     bundle = _digest(payload)
     record = {"record_version": SCHEMA, "previous_aux_hash": previous_aux_hash, **payload}
@@ -199,6 +205,7 @@ def make_role_evidence_offer(
         task_id=task_id, task_index=int(task_index), role=role, context_key=context_key,
         candidate_keys=refs, evidence_ids=ids, evidence_version=evidence_version,
         public_evidence=rows, available_index=int(available_index), bundle_digest=bundle,
+        candidate_registry_digest=candidate_registry_digest,
     )
 
 

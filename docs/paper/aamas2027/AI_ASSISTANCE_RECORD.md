@@ -581,6 +581,20 @@ producer/action attribution, real PIPE3 ledger/scorer integration, propensity
 and label-mapping choices, RLS/RARE integration, benchmark freeze, and A800
 evidence remain open.
 
+### 2026-10-01 PIPE3 P0 contract repair and sandbox gate
+
+The assistant tightened the PIPE3 composition so candidate source digests are bound to delivery
+and scorer manifests, producer attribution requires an independently scored producer defect while
+recipient integration keeps `producer.py` read-only, delayed credit uses the `terminal_outcome`
+channel, and role-evidence publication/read continues the same auxiliary hash chain. The full
+PeerRoleBench regression (368 tests) and an injected qualification passed. The first real pinned
+CPU rerun stopped before labels with a macOS `sysctl()` permission error; after a pre-registered
+transport probe, one complete v1.2 qualification finished as `QUALIFIED_OFFLINE`: the
+producer-owned control reached delayed update, while recipient-owned and mixed controls were
+held at UNKNOWN/no-update. The v4 receipt and earlier failure are both preserved. This is
+same-root engineering evidence only: no LLM API, GPU, benchmark efficacy, or online-learning
+claim is made.
+
 ### 2026-09-28 baseline bridge audit
 
 The frozen N02 v3 ledger was checked for lossless mapping into the new policy

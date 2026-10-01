@@ -31,7 +31,7 @@ SOURCE_ROW_KEYS = frozenset({
 ROLE_EVIDENCE_OFFER_KEYS = frozenset({
     "schema", "offer_id", "task_id", "task_index", "role", "context_key",
     "candidate_keys", "evidence_ids", "evidence_version", "public_evidence",
-    "available_index", "watermark_schema",
+    "available_index", "watermark_schema", "candidate_registry_digest",
 })
 ROLE_EVIDENCE_ROW_KEYS = frozenset({
     "evidence_id", "candidate_key", "role", "source_task_index", "delivery_id",
@@ -200,6 +200,7 @@ def read_role_evidence_offer(request: Mapping[str, Any]) -> dict[str, Any]:
         "role": offer["role"], "context_key": offer["context_key"],
         "evidence_version": offer["evidence_version"], "available_index": offer["available_index"],
         "watermark_schema": offer["watermark_schema"], "read_cut": read_cut,
+        "candidate_registry_digest": offer["candidate_registry_digest"],
         "policy_input_digest": request["policy_input_digest"],
         "public_evidence_digest": digest({"public_evidence": rows}),
     }

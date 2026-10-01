@@ -15,7 +15,10 @@ from typing import Any, Iterable, Mapping
 
 
 GENESIS = "GENESIS"
-EVENT_TYPES = frozenset({"assignment_evidence_offer", "decision_consumption_attestation"})
+EVENT_TYPES = frozenset({
+    "assignment_evidence_offer", "decision_consumption_attestation",
+    "role_evidence_offer", "role_evidence_read",
+})
 HASH_LENGTH = 64
 
 
@@ -41,7 +44,7 @@ def _row_payload(row: Mapping[str, Any], previous_hash: str) -> dict[str, Any]:
     decision_event_id = str(row.get("decision_event_id", ""))
     if event_type not in EVENT_TYPES or not event_id or not offer_id:
         raise ValueError("assignment manifest event, event id and offer id are required")
-    if event_type == "assignment_evidence_offer":
+    if event_type in {"assignment_evidence_offer", "role_evidence_offer"}:
         if event_id != offer_id or decision_event_id:
             raise ValueError("offer manifest row has invalid identity")
     else:
@@ -73,7 +76,7 @@ def build_manifest(rows: Iterable[Mapping[str, Any]]) -> list[dict[str, Any]]:
         key = (payload["event_type"], payload["event_id"])
         if key in seen:
             raise ValueError("duplicate assignment manifest event")
-        if payload["event_type"] == "decision_consumption_attestation":
+        if payload["event_type"] in {"decision_consumption_attestation", "role_evidence_read"}:
             if payload["offer_id"] not in offered:
                 raise ValueError("consumption attestation precedes its offer")
             if payload["offer_id"] in consumed:
@@ -120,7 +123,7 @@ def validate_manifest(manifest: Iterable[Mapping[str, Any]], rows: Iterable[Mapp
             raise ValueError(f"assignment manifest hash mismatch at record {index}")
         if expected.get(key) != tuple(payload[field] for field in ("record_hash", "offer_id", "decision_event_id", "attestation_digest")):
             raise ValueError(f"assignment manifest coverage mismatch for {key}")
-        if payload["event_type"] == "assignment_evidence_offer":
+        if payload["event_type"] in {"assignment_evidence_offer", "role_evidence_offer"}:
             if payload["offer_id"] in offered:
                 raise ValueError("duplicate assignment offer")
             offered.add(payload["offer_id"])

@@ -142,6 +142,8 @@ def preview_role_evidence_selection(
 ) -> SelectionPlan:
     """Preview a role-evidence-informed choice without persistent mutation."""
     _validate_offer_pair(role_offer, feedback_offer, read_cut=read_cut)
+    if role_offer.candidate_registry_digest is not None and role_offer.candidate_registry_digest != boundary.registry_digest:
+        raise ValueError("role evidence offer is bound to a different candidate registry")
     if not assignment_id or not native_selection_id:
         raise ValueError("assignment and selection identifiers are required")
     scores = tuple(float(value) for value in base_scores)
@@ -201,6 +203,8 @@ def commit_role_evidence_selection(
 ) -> SelectionSeal:
     """Commit one reserved plan as assignment then exact native selection."""
     _validate_offer_pair(role_offer, feedback_offer, read_cut=plan.read_cut)
+    if role_offer.candidate_registry_digest is not None and role_offer.candidate_registry_digest != boundary.registry_digest:
+        raise ValueError("role evidence offer is bound to a different candidate registry")
     if role_offer.offer_id != plan.role_offer_id or role_offer.bundle_digest != plan.role_offer_digest:
         raise ValueError("role evidence offer changed after preview")
     if feedback_offer.offer_id != plan.feedback_offer_id:

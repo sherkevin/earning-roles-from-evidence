@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT / "references/aamas"))
 
-from peerrolebench_pipe3_two_stage_composition import _prepare_case, run  # noqa: E402
+from peerrolebench_pipe3_two_stage_composition import _patch_producer, _prepare_case, run  # noqa: E402
 from peerrolebench_pipe3_task_qualification import load_pipe3  # noqa: E402
 from peerrolebench_pipe3_material_adapter import build_materials  # noqa: E402
 
@@ -24,7 +24,9 @@ from peerrolebench_pipe3_material_adapter import build_materials  # noqa: E402
 def _unit_scorer(kind, sources, info, out, log, seed):
     out.mkdir(parents=True, exist_ok=True)
     return {
-        "status": "PASS", "label": 1, "quality_score": 0.8,
+        "status": "FAIL" if kind == "producer" else "PASS",
+        "label": 0 if kind == "producer" else 1,
+        "quality_score": 0.0 if kind == "producer" else 0.8,
         "coverage_complete": True, "decision_complete": True,
         "scorer_version": "unit-injected-scorer", "response_digest": "a" * 64,
     }
@@ -46,6 +48,9 @@ def test_producer_source_publication_is_separate_from_later_update(tmp_path: Pat
                           if row["event_type"] == "task_start" and row["payload"]["task_index"] == 1)
     assert assignment_i < target_selection_i < target_start_i
     assert producer["credit"]["assignment_id"] == producer["assignment_id"]
+    delayed_rows = [json.loads(line) for line in (tmp_path / "composition" / "producer_owned" / "raw.jsonl").read_text().splitlines()]
+    assert any(row["event"] == "delayed_update" and row["payload"]["feedback_source"] == "terminal_outcome"
+               for row in delayed_rows)
 
 
 def test_recipient_and_mixed_controls_stop_unknown_without_fabricated_target(tmp_path: Path):
@@ -71,8 +76,8 @@ def test_raw_stage_logs_are_written_incrementally(tmp_path: Path):
 def test_producer_patch_uses_seed_specific_timestamp_field():
     for seed, field in ((0, "timestamp"), (1, "measured_at")):
         materials = build_materials(load_pipe3(seed))
-        _, _, final = _prepare_case(materials, "producer_owned")
-        assert f'data["{field}"] = event.{field}.isoformat()' in final["producer.py"]
+        patched = _patch_producer(materials["agent_payloads"]["producer"]["source_files"], field)
+        assert f'data["{field}"] = event.{field}.isoformat()' in patched["producer.py"]
 
 
 def test_target_unknown_preserves_incomplete_ledger_and_does_not_update(tmp_path: Path):

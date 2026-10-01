@@ -265,6 +265,7 @@ def read_role_evidence_offer_isolated(
         ("task_index", offer.task_index), ("role", offer.role),
         ("context_key", offer.context_key), ("evidence_version", offer.evidence_version),
         ("available_index", offer.available_index), ("watermark_schema", offer.watermark_schema),
+        ("candidate_registry_digest", offer.candidate_registry_digest),
         ("read_cut", read_cut), ("policy_input_digest", expected_policy_input),
         ("public_evidence_digest", expected_public_digest),
     ):
