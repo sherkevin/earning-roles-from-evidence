@@ -17,6 +17,8 @@ Goal 修改。
 
 ## Reports
 
+- [partial] 2026-10-01 root manifest qualification：封存 root/source/generator/scorer、seed split、schedule/registry digest、arm 顺序、visibility rule 与预算；定向 14 项及 PeerRoleBench 359 项通过，仍未接入 live runner，见 [task report](task_reports/20261001_root_manifest_qualification.md)。
+
 - [partial] 2026-10-01 baseline root-runner contract：将七个 ArtifactRole baseline 的信息通道、UNKNOWN 规则、16 项成本字段、完整 schedule prefix、denominator 与 assignment-before-task-start 写成版本化零调用契约；定向 16 项与 PeerRoleBench 358 项通过，仍未接入正式 root runner、独立 live histories 或科学比较，见 [task report](task_reports/20261001_baseline_root_runner_contract.md)。
 
 - [partial] 2026-10-01 PIPE2 material/ownership qualification：3 个 seed 的 ETL ownership、去 oracle、hidden output 隔离与 typed delivery 通过；v2 将 operator correctness 字段移出 public artifact，定向 3 项、完整 337 项通过，0 API/0 GPU，见 [task report](task_reports/20261001_pipe2_material_qualification.md)。

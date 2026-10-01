@@ -11,14 +11,68 @@ replay without introducing model calls.
 from __future__ import annotations
 
 from collections import Counter
+from dataclasses import asdict, dataclass
+import hashlib
+import json
 from typing import Any, Mapping, Sequence
 
-from peerrolebench_baseline_contract import COST_FIELDS, validate_cost_ledger
+from peerrolebench_baseline_contract import COST_FIELDS, BASELINE_ARM_SPECS, validate_cost_ledger
 from peerrolebench_event_time_schedule import ArrivalAssignment
 
 
 ROOT_CONTRACT_VERSION = "artifactrole-root-runner-v1"
 FEEDBACK_CLASSES = ("eligible", "unknown", "ignored", "duplicate", "pending")
+
+
+@dataclass(frozen=True)
+class RootRunnerManifest:
+    """Immutable identity and budget for one root-level comparison stream."""
+
+    root_id: str
+    root_commit: str
+    source_digest: str
+    generator_digest: str
+    scorer_digest: str
+    schedule_digest: str
+    registry_digest: str
+    seed_split: tuple[int, ...]
+    arm_names: tuple[str, ...]
+    rng_algorithm: str
+    visibility_rule: str
+    max_episode_attempts: int
+    max_api_calls: int
+    max_wall_seconds: float
+
+    def payload(self) -> dict[str, Any]:
+        data = asdict(self)
+        data["seed_split"] = list(self.seed_split)
+        data["arm_names"] = list(self.arm_names)
+        data["contract_version"] = ROOT_CONTRACT_VERSION
+        return data
+
+    def digest(self) -> str:
+        canonical = json.dumps(self.payload(), ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+    def validate(self) -> dict[str, Any]:
+        if not self.root_id or not self.root_commit or not self.rng_algorithm or not self.visibility_rule:
+            raise ValueError("root manifest identity and visibility fields are required")
+        for name, digest in (
+            ("source_digest", self.source_digest), ("generator_digest", self.generator_digest),
+            ("scorer_digest", self.scorer_digest), ("schedule_digest", self.schedule_digest),
+            ("registry_digest", self.registry_digest),
+        ):
+            if len(digest) != 64 or any(char not in "0123456789abcdef" for char in digest.lower()):
+                raise ValueError(f"{name} must be a lowercase 64-character sha256")
+        if tuple(self.arm_names) != tuple(spec.name for spec in BASELINE_ARM_SPECS):
+            raise ValueError("manifest arm order differs from the registered baseline matrix")
+        if not self.seed_split or tuple(sorted(set(self.seed_split))) != self.seed_split:
+            raise ValueError("seed_split must be sorted and unique")
+        if self.max_episode_attempts <= 0 or self.max_api_calls < 0 or self.max_wall_seconds <= 0:
+            raise ValueError("manifest budgets are invalid")
+        payload = self.payload()
+        payload["manifest_digest"] = self.digest()
+        return payload
 
 
 def validate_public_prefix(
@@ -140,6 +194,6 @@ def validate_root_receipt(
 
 
 __all__ = [
-    "FEEDBACK_CLASSES", "ROOT_CONTRACT_VERSION", "feedback_denominators",
+    "FEEDBACK_CLASSES", "ROOT_CONTRACT_VERSION", "RootRunnerManifest", "feedback_denominators",
     "validate_assignment_before_start", "validate_public_prefix", "validate_root_receipt",
 ]

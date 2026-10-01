@@ -8,6 +8,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from peerrolebench_baseline_contract import BASELINE_ARM_SPECS, COST_FIELDS  # noqa: E402
 from peerrolebench_baseline_root_contract import (  # noqa: E402
+    RootRunnerManifest,
     feedback_denominators,
     validate_assignment_before_start,
     validate_public_prefix,
@@ -49,6 +50,40 @@ def _costs(measured=False):
         }
         for spec in BASELINE_ARM_SPECS
     }
+
+
+def _manifest(**overrides):
+    payload = {
+        "root_id": "PIPE3_stream_processing",
+        "root_commit": "d" * 40,
+        "source_digest": "a" * 64,
+        "generator_digest": "b" * 64,
+        "scorer_digest": "c" * 64,
+        "schedule_digest": "d" * 64,
+        "registry_digest": "e" * 64,
+        "seed_split": (0, 1),
+        "arm_names": ("uniform", "no_update", "raw_acceptance", "terminal_only", "contextual_trust", "pooled_controller", "RARE"),
+        "rng_algorithm": "numpy-pcg64",
+        "visibility_rule": "canonical_schedule_prefix_v1",
+        "max_episode_attempts": 4,
+        "max_api_calls": 12,
+        "max_wall_seconds": 3600.0,
+    }
+    payload.update(overrides)
+    return RootRunnerManifest(**payload)
+
+
+def test_root_manifest_seals_identity_split_budget_and_digest():
+    manifest = _manifest()
+    payload = manifest.validate()
+    assert payload["contract_version"] == "artifactrole-root-runner-v1"
+    assert payload["manifest_digest"] == manifest.digest()
+    with pytest.raises(ValueError, match="arm order"):
+        _manifest(arm_names=("RARE",)).validate()
+    with pytest.raises(ValueError, match="seed_split"):
+        _manifest(seed_split=(1, 0)).validate()
+    with pytest.raises(ValueError, match="budgets"):
+        _manifest(max_api_calls=-1).validate()
 
 
 def test_public_prefix_requires_complete_schedule_prefix():
