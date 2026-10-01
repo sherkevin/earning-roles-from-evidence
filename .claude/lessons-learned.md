@@ -320,6 +320,13 @@
 - **避免:** public artifact 只保留 schema/rows/digest；质量标签、coverage 和 UNKNOWN 原因只写 parent/operator receipt，不进入 agent payload。
 - **Evidence:** `scripts/peerrolebench_pipe2_material_adapter.py`；`experiments/logs/n03_pipe2_material_qualification_20261001_v2/`；`docs/coordination/task_reports/20261001_pipe2_material_qualification.md`。
 
+### 0051-invalid-fixture-must-not-become-a-peer-label | 2026-10-01 | earning-roles
+
+- **现象:** PIPE2 的 seed=1 CSV 含未转义逗号；`csv.DictReader` 产生未声明的 `None` 字段。若直接把 extractor 的结果与 expected output 比较，可能把数据契约错误误记成 producer 失败。
+- **根因:** fixture schema validity、producer contract correctness 和 recipient quality 原先没有在 runtime qualification 的最前面分层；invalid input 会穿过 candidate scorer。
+- **避免:** 先由父进程检查 source/expected CSV 的声明字段；发现额外字段时分类为 `INVALID_FIXTURE`，不发 peer label、不更新 policy、不删除 seed。有效 seed 仍可单独做 runtime/control discrimination，但不能升格为完整 root benchmark。
+- **Evidence:** `scripts/peerrolebench_pipe2_runtime_qualification.py`；`experiments/logs/n03_pipe2_runtime_adoption_qualification_20261001_v6/`；`docs/coordination/task_reports/20261001_pipe2_runtime_adoption_qualification.md`。
+
 ### 0041-selection-boundaries-must-preflight-before-mutation | 2026-09-30 | earning-roles
 - **现象:** `choose_and_seal` 原先先写 auxiliary offer、消费反馈和 policy decision，之后才构造 consumption attestation；read-cut 越界、offer 尚不可用、角色/menu 不匹配或后续 policy/ledger 异常可能留下部分状态。
 - **根因:** 输入时序约束和对象构造校验分散在 attestation、policy、native ledger 三层，入口没有在第一次写入前统一检查，也没有失败回滚。

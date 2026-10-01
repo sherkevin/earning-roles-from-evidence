@@ -1,0 +1,22 @@
+{
+  "request": {
+    "op": "extract",
+    "csv_text": "emp_id,full_name,department,notes\n1,Alice Johnson,Engineering,Senior engineer with 10 years of experience in distributed systems and cloud architecture\n2,Bob Smith,Marketing,\n3,Charlie Brown,Engineering,Recently promoted to tech lead after successful delivery of the platform migration project\n4,,Sales,New hire\n5,Eve Davis,,Transferred from the London office; specializes in data analytics and machine learning pipelines\n6,Frank Miller,HR,Head of talent acquisition with expertise in technical recruiting across multiple regions\n7,Grace Lee,Engineering,\n8,,,Should be dropped - both key columns null\n",
+    "columns": [
+      "emp_id",
+      "full_name",
+      "department",
+      "notes"
+    ]
+  },
+  "response": {
+    "ok": false,
+    "error_type": "PermissionError",
+    "message": "[Errno 1] Operation not permitted: '/private/var/folders/18/6x97xlvs65gg9v7vkvlbpfkr0000gn/T/scratch/source.csv'",
+    "errno": 1
+  },
+  "transport": {
+    "status": "complete"
+  },
+  "response_digest": "52420fc5f07ff3e5d1118aba4a8aab83e7f3f8326f81597eccf6c00c44ace9ba"
+}

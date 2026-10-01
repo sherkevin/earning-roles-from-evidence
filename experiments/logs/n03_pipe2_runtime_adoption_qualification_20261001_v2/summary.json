@@ -1,0 +1,180 @@
+{
+  "runner_version": "pipe2-runtime-adoption-qualification-v1",
+  "schema_version": "pipe2-runtime-result-v1",
+  "task_id": "PIPE2_data_pipeline",
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "command": [
+    "scripts/peerrolebench_pipe2_runtime_qualification.py",
+    "--output",
+    "experiments/logs/n03_pipe2_runtime_adoption_qualification_20261001_v2"
+  ],
+  "git_commit": "bd9d7de5b888016a1712bb0ed97d722f444e0931",
+  "working_tree_dirty": true,
+  "worker_sha256": "b18ca2a66f993122da54e63779d72808799713902bffc8e057bed61c26b0f96c",
+  "llm_calls": 0,
+  "gpu_jobs": 0,
+  "native_grader_invoked": false,
+  "candidate_code_executed": true,
+  "scientific_claim_allowed": false,
+  "score_dimensions": [
+    "producer_contract",
+    "recipient_self",
+    "artifact_adoption"
+  ],
+  "unknown_policy": "transport, malformed response, and runtime/resource errors remain UNKNOWN",
+  "started_at_utc": "2026-10-01T03:17:24.642862+00:00",
+  "status": "FAILED_OFFLINE",
+  "cases": [
+    {
+      "seed": 0,
+      "task_id": "PIPE2_data_pipeline",
+      "columns": [
+        "emp_id",
+        "full_name",
+        "department",
+        "notes"
+      ],
+      "expected_row_count": 6,
+      "producer": {
+        "original_producer": {
+          "status": "FAIL",
+          "label": 0,
+          "rows": [
+            {
+              "emp_id": "1",
+              "full_name": "Alice Johnson",
+              "department": "Engineering",
+              "notes": "Senior engineer with 10 years of experience in distributed systems and cloud architecture"
+            },
+            {
+              "emp_id": "3",
+              "full_name": "Charlie Brown",
+              "department": "Engineering",
+              "notes": "Recently promoted to tech lead after successful delivery of the platform migration project"
+            },
+            {
+              "emp_id": "6",
+              "full_name": "Frank Miller",
+              "department": "HR",
+              "notes": "Head of talent acquisition with expertise in technical recruiting across multiple regions"
+            }
+          ],
+          "row_count": 3,
+          "expected_row_count": 6,
+          "artifact_sha256": "235ece834a13ccf524e92f5e8e3adf27c8ea666ad246e3f69c4c27562939d12f",
+          "source_path": "pipeline/extract.py",
+          "transport": {
+            "status": "complete"
+          }
+        },
+        "correct_producer_control": {
+          "status": "PASS",
+          "label": 1,
+          "rows": [
+            {
+              "emp_id": "1",
+              "full_name": "Alice Johnson",
+              "department": "Engineering",
+              "notes": "Senior engineer with 10 years of experience in distributed systems and cloud architecture"
+            },
+            {
+              "emp_id": "2",
+              "full_name": "Bob Smith",
+              "department": "Marketing",
+              "notes": ""
+            },
+            {
+              "emp_id": "3",
+              "full_name": "Charlie Brown",
+              "department": "Engineering",
+              "notes": "Recently promoted to tech lead after successful delivery of the platform migration project"
+            },
+            {
+              "emp_id": "5",
+              "full_name": "Eve Davis",
+              "department": "",
+              "notes": "Transferred from the London office; specializes in data analytics and machine learning pipelines"
+            },
+            {
+              "emp_id": "6",
+              "full_name": "Frank Miller",
+              "department": "HR",
+              "notes": "Head of talent acquisition with expertise in technical recruiting across multiple regions"
+            },
+            {
+              "emp_id": "7",
+              "full_name": "Grace Lee",
+              "department": "Engineering",
+              "notes": ""
+            }
+          ],
+          "row_count": 6,
+          "expected_row_count": 6,
+          "artifact_sha256": "14dfac2373510d2401ff7283a2b2594d6c1fd5e0e088e397042bfddff5e7ffed",
+          "source_path": "pipeline/extract.py",
+          "transport": {
+            "status": "complete"
+          }
+        }
+      },
+      "recipient": {
+        "original_recipient": {
+          "status": "FAIL",
+          "label": 0,
+          "recipient_self": {
+            "status": "FAIL",
+            "label": 0
+          },
+          "artifact_adoption": {
+            "status": "PASS",
+            "label": 1
+          },
+          "output_csv": "emp_id,department,full_name,notes\nv-0-0-emp_id,v-0-0-department,canary-0-0,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,,canary-0-1,\n",
+          "expected_output_csv": "emp_id,full_name,department,notes\nv-0-0-emp_id,canary-0-0,v-0-0-department,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,canary-0-1,,\n",
+          "source_paths": [
+            "pipeline/transform.py",
+            "pipeline/load.py"
+          ],
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "c357924b66a8bb29d405f744aa21166fa66d238390daae3923ea0544f17673e8"
+        },
+        "correct_recipient_control": {
+          "status": "PASS",
+          "label": 1,
+          "recipient_self": {
+            "status": "PASS",
+            "label": 1
+          },
+          "artifact_adoption": {
+            "status": "PASS",
+            "label": 1
+          },
+          "output_csv": "emp_id,full_name,department,notes\nv-0-0-emp_id,canary-0-0,v-0-0-department,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,canary-0-1,,\n",
+          "expected_output_csv": "emp_id,full_name,department,notes\nv-0-0-emp_id,canary-0-0,v-0-0-department,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,canary-0-1,,\n",
+          "source_paths": [
+            "pipeline/transform.py",
+            "pipeline/load.py"
+          ],
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "c357924b66a8bb29d405f744aa21166fa66d238390daae3923ea0544f17673e8"
+        }
+      }
+    }
+  ],
+  "error": {
+    "type": "ValueError",
+    "message": "extracted row columns do not match the public schema",
+    "traceback": "Traceback (most recent call last):\n  File \"/Users/jingwu/work/earning-roles/scripts/peerrolebench_pipe2_runtime_qualification.py\", line 183, in main\n    artifact = validate_extracted_rows(rows, columns=columns) if isinstance(rows, list) else None\n  File \"/Users/jingwu/work/earning-roles/scripts/peerrolebench_pipe2_material_adapter.py\", line 136, in validate_extracted_rows\n    raise ValueError(\"extracted row columns do not match the public schema\")\nValueError: extracted row columns do not match the public schema\n"
+  },
+  "ended_at_utc": "2026-10-01T03:17:27.014433+00:00"
+}

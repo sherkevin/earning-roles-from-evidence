@@ -39,9 +39,21 @@
 统计分析，但不能把 seed 当独立 root，也不能把 native TeamBench score 直接当 situated
 judgment label。
 
+## 新增运行时证据（2026-10-01）
+
+PIPE2 已完成一轮 parent-side runtime/adoption qualification。seed 0/2 在 pinned
+sandbox 中实际执行 producer extractor 和 recipient transform/load，能够分别区分
+producer contract、recipient self 与 artifact adoption；原始代码和手工修正版 control
+均按预期分离。完整 seed 0/1/2 运行没有通过：seed 1 的 source/expected CSV 含未转义逗号，
+`csv.DictReader` 产生未声明的 `None` 字段，因而被标为 `INVALID_FIXTURE`，不产生 peer label。
+详见 [task report](../../coordination/task_reports/20261001_pipe2_runtime_adoption_qualification.md)
+及 v5/v6 回执。该发现提高了审计精度，但不改变 PIPE2 的候选身份，也不允许删除或重写
+seed 1 来制造通过结果。
+
 ## 当前判定
 
-- `PIPE2_data_pipeline` 只是第二 root 候选，不是已冻结 benchmark；
+- `PIPE2_data_pipeline` 只是第二 root 候选，不是已冻结 benchmark；运行时子集通过不能抵消
+  seed 1 fixture 缺陷；
 - 在新增 adapter 通过 source/artifact/adoption/replay qualification 之前，active manifest
   仍保持 `CANDIDATE_NOT_FROZEN`，不启动正式 API/A800；
 - 若 PIPE2 的 independent scorer 仍无法隔离 expected output 或真实 recipient use，立即

@@ -1,0 +1,58 @@
+{
+  "request": {
+    "op": "transform_load",
+    "artifact": {
+      "schema": "pipe2-extracted-rows-v1",
+      "columns": [
+        "txn_id",
+        "account_name",
+        "amount",
+        "memo"
+      ],
+      "row_count": 2,
+      "rows": [
+        {
+          "txn_id": "v-2-0-txn_id",
+          "account_name": " canary-2-0 ",
+          "amount": "v-2-0-amount",
+          "memo": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {
+          "txn_id": "",
+          "account_name": "canary-2-1",
+          "amount": "",
+          "memo": ""
+        }
+      ],
+      "artifact_sha256": "c3734586a4aba0eb237673e57e4aa17cf125fdc9cda88d6024afb58435042509"
+    }
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "output_csv": "txn_id,account_name,amount,memo\nv-2-0-txn_id,canary-2-0,v-2-0-amount,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,canary-2-1,,\n",
+      "parsed_rows": [
+        {
+          "txn_id": "v-2-0-txn_id",
+          "account_name": "canary-2-0",
+          "amount": "v-2-0-amount",
+          "memo": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {
+          "txn_id": "",
+          "account_name": "canary-2-1",
+          "amount": "",
+          "memo": ""
+        }
+      ],
+      "source_paths": [
+        "pipeline/transform.py",
+        "pipeline/load.py"
+      ]
+    }
+  },
+  "transport": {
+    "status": "complete"
+  },
+  "response_digest": "1c6d5f1059ad6704fd6c2e85959d9ab13adaac03aecacb5091f0718229ab3d21"
+}

@@ -120,3 +120,14 @@ pytest 同进程 gold 的问题仍存在。[ADR 0017](../user/decisions/0017-n02
 
 当前同构producer调用无个人持久经验，是N03信号设计的另一个必要缺口。完成
 限定链只支持可观测流程；严格N01及正式benchmark资格仍开放，不因API成功关闭。
+
+## PIPE2 第二 root 运行时复核（2026-10-01）
+
+PIPE2 进一步通过了一个零调用 runtime/adoption 子门：seed 0/2 在 pinned sandbox
+中实际运行 extractor 与 transform/load，父进程分别核对 producer contract、recipient
+self 和 artifact adoption；原始代码与手工修正版 control 可区分。完整 seed 0/1/2
+仍不能作为 root 资格结果：seed 1 的 source/expected CSV 因未转义逗号产生未声明的
+`None` 列，被分类为 `INVALID_FIXTURE`，不生成 peer label。回执与失败版本见
+[runtime qualification report](../coordination/task_reports/20261001_pipe2_runtime_adoption_qualification.md)。
+这提高了 fixture/责任测量的精确度，但没有关闭严格 N01、benchmark freeze、baseline
+parity 或科学效果门。

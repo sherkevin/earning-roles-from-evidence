@@ -1,0 +1,378 @@
+{
+  "runner_version": "pipe2-runtime-adoption-qualification-v1",
+  "schema_version": "pipe2-runtime-result-v1",
+  "task_id": "PIPE2_data_pipeline",
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "command": [
+    "scripts/peerrolebench_pipe2_runtime_qualification.py",
+    "--output",
+    "experiments/logs/n03_pipe2_runtime_adoption_qualification_20261001_v3"
+  ],
+  "git_commit": "bd9d7de5b888016a1712bb0ed97d722f444e0931",
+  "working_tree_dirty": true,
+  "worker_sha256": "b18ca2a66f993122da54e63779d72808799713902bffc8e057bed61c26b0f96c",
+  "llm_calls": 0,
+  "gpu_jobs": 0,
+  "native_grader_invoked": false,
+  "candidate_code_executed": true,
+  "scientific_claim_allowed": false,
+  "score_dimensions": [
+    "producer_contract",
+    "recipient_self",
+    "artifact_adoption"
+  ],
+  "unknown_policy": "transport, malformed response, and runtime/resource errors remain UNKNOWN",
+  "started_at_utc": "2026-10-01T03:21:29.120819+00:00",
+  "status": "FAILED_OFFLINE",
+  "producer_discrimination_passed": false,
+  "recipient_discrimination_passed": false,
+  "valid_case_count": 2,
+  "invalid_fixture_count": 1,
+  "runtime_adoption_scorer_qualified": false,
+  "benchmark_qualified": false,
+  "cases": [
+    {
+      "seed": 0,
+      "task_id": "PIPE2_data_pipeline",
+      "columns": [
+        "emp_id",
+        "full_name",
+        "department",
+        "notes"
+      ],
+      "expected_row_count": 6,
+      "producer": {
+        "original_producer": {
+          "status": "FAIL",
+          "label": 0,
+          "rows": [
+            {
+              "emp_id": "1",
+              "full_name": "Alice Johnson",
+              "department": "Engineering",
+              "notes": "Senior engineer with 10 years of experience in distributed systems and cloud architecture"
+            },
+            {
+              "emp_id": "3",
+              "full_name": "Charlie Brown",
+              "department": "Engineering",
+              "notes": "Recently promoted to tech lead after successful delivery of the platform migration project"
+            },
+            {
+              "emp_id": "6",
+              "full_name": "Frank Miller",
+              "department": "HR",
+              "notes": "Head of talent acquisition with expertise in technical recruiting across multiple regions"
+            }
+          ],
+          "row_count": 3,
+          "expected_row_count": 6,
+          "artifact_sha256": "235ece834a13ccf524e92f5e8e3adf27c8ea666ad246e3f69c4c27562939d12f",
+          "source_path": "pipeline/extract.py",
+          "transport": {
+            "status": "complete"
+          }
+        },
+        "correct_producer_control": {
+          "status": "PASS",
+          "label": 1,
+          "rows": [
+            {
+              "emp_id": "1",
+              "full_name": "Alice Johnson",
+              "department": "Engineering",
+              "notes": "Senior engineer with 10 years of experience in distributed systems and cloud architecture"
+            },
+            {
+              "emp_id": "2",
+              "full_name": "Bob Smith",
+              "department": "Marketing",
+              "notes": ""
+            },
+            {
+              "emp_id": "3",
+              "full_name": "Charlie Brown",
+              "department": "Engineering",
+              "notes": "Recently promoted to tech lead after successful delivery of the platform migration project"
+            },
+            {
+              "emp_id": "5",
+              "full_name": "Eve Davis",
+              "department": "",
+              "notes": "Transferred from the London office; specializes in data analytics and machine learning pipelines"
+            },
+            {
+              "emp_id": "6",
+              "full_name": "Frank Miller",
+              "department": "HR",
+              "notes": "Head of talent acquisition with expertise in technical recruiting across multiple regions"
+            },
+            {
+              "emp_id": "7",
+              "full_name": "Grace Lee",
+              "department": "Engineering",
+              "notes": ""
+            }
+          ],
+          "row_count": 6,
+          "expected_row_count": 6,
+          "artifact_sha256": "14dfac2373510d2401ff7283a2b2594d6c1fd5e0e088e397042bfddff5e7ffed",
+          "source_path": "pipeline/extract.py",
+          "transport": {
+            "status": "complete"
+          }
+        }
+      },
+      "recipient": {
+        "original_recipient": {
+          "status": "FAIL",
+          "label": 0,
+          "recipient_self": {
+            "status": "FAIL",
+            "label": 0
+          },
+          "artifact_adoption": {
+            "status": "PASS",
+            "label": 1
+          },
+          "output_csv": "emp_id,department,full_name,notes\nv-0-0-emp_id,v-0-0-department,canary-0-0,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,,canary-0-1,\n",
+          "expected_output_csv": "emp_id,full_name,department,notes\nv-0-0-emp_id,canary-0-0,v-0-0-department,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,canary-0-1,,\n",
+          "source_paths": [
+            "pipeline/transform.py",
+            "pipeline/load.py"
+          ],
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "c357924b66a8bb29d405f744aa21166fa66d238390daae3923ea0544f17673e8"
+        },
+        "correct_recipient_control": {
+          "status": "PASS",
+          "label": 1,
+          "recipient_self": {
+            "status": "PASS",
+            "label": 1
+          },
+          "artifact_adoption": {
+            "status": "PASS",
+            "label": 1
+          },
+          "output_csv": "emp_id,full_name,department,notes\nv-0-0-emp_id,canary-0-0,v-0-0-department,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,canary-0-1,,\n",
+          "expected_output_csv": "emp_id,full_name,department,notes\nv-0-0-emp_id,canary-0-0,v-0-0-department,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,canary-0-1,,\n",
+          "source_paths": [
+            "pipeline/transform.py",
+            "pipeline/load.py"
+          ],
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "c357924b66a8bb29d405f744aa21166fa66d238390daae3923ea0544f17673e8"
+        }
+      },
+      "fixture_shape_errors": {
+        "source_csv": [],
+        "expected_output_csv": []
+      },
+      "fixture_status": "VALID"
+    },
+    {
+      "seed": 1,
+      "task_id": "PIPE2_data_pipeline",
+      "columns": [
+        "product_id",
+        "product_name",
+        "category",
+        "description"
+      ],
+      "expected_row_count": 6,
+      "producer": {},
+      "recipient": {},
+      "fixture_shape_errors": {
+        "source_csv": [
+          {
+            "row_index": 5,
+            "keys": [
+              "product_id",
+              "product_name",
+              "category",
+              "description",
+              null
+            ],
+            "unexpected_keys": [
+              null
+            ]
+          }
+        ],
+        "expected_output_csv": [
+          {
+            "row_index": 4,
+            "keys": [
+              "product_id",
+              "product_name",
+              "category",
+              "description",
+              null
+            ],
+            "unexpected_keys": [
+              null
+            ]
+          }
+        ]
+      },
+      "fixture_status": "INVALID_FIXTURE",
+      "reason": "CSV rows contain undeclared fields; no peer label is emitted"
+    },
+    {
+      "seed": 2,
+      "task_id": "PIPE2_data_pipeline",
+      "columns": [
+        "txn_id",
+        "account_name",
+        "amount",
+        "memo"
+      ],
+      "expected_row_count": 6,
+      "producer": {
+        "original_producer": {
+          "status": "FAIL",
+          "label": 0,
+          "rows": [
+            {
+              "txn_id": "1001",
+              "account_name": "Acme Corp",
+              "amount": "5000.00",
+              "memo": "Quarterly payment for consulting services including project management and technical advisory support"
+            },
+            {
+              "txn_id": "1003",
+              "account_name": "Gamma LLC",
+              "amount": "7800.00",
+              "memo": "Annual license renewal for enterprise software suite with premium support and training modules included"
+            },
+            {
+              "txn_id": "1006",
+              "account_name": "Epsilon Ltd",
+              "amount": "3200.00",
+              "memo": "One-time setup fee for new data center integration with full redundancy and disaster recovery capabilities"
+            }
+          ],
+          "row_count": 3,
+          "expected_row_count": 6,
+          "artifact_sha256": "7e2222b6591db7271c7f8d02c90b0013a12bee197233a482363583d5fd15dce1",
+          "source_path": "pipeline/extract.py",
+          "transport": {
+            "status": "complete"
+          }
+        },
+        "correct_producer_control": {
+          "status": "PASS",
+          "label": 1,
+          "rows": [
+            {
+              "txn_id": "1001",
+              "account_name": "Acme Corp",
+              "amount": "5000.00",
+              "memo": "Quarterly payment for consulting services including project management and technical advisory support"
+            },
+            {
+              "txn_id": "1002",
+              "account_name": "Beta Inc",
+              "amount": "2500.50",
+              "memo": ""
+            },
+            {
+              "txn_id": "1003",
+              "account_name": "Gamma LLC",
+              "amount": "7800.00",
+              "memo": "Annual license renewal for enterprise software suite with premium support and training modules included"
+            },
+            {
+              "txn_id": "1005",
+              "account_name": "Delta Co",
+              "amount": "",
+              "memo": "Monthly subscription for cloud infrastructure services spanning three availability zones worldwide"
+            },
+            {
+              "txn_id": "1006",
+              "account_name": "Epsilon Ltd",
+              "amount": "3200.00",
+              "memo": "One-time setup fee for new data center integration with full redundancy and disaster recovery capabilities"
+            },
+            {
+              "txn_id": "1007",
+              "account_name": "Zeta Group",
+              "amount": "900.00",
+              "memo": ""
+            }
+          ],
+          "row_count": 6,
+          "expected_row_count": 6,
+          "artifact_sha256": "18ebf3b5f3b2368ad10403c7aab0c661d2e589f329d59ebfe4b04fe1bcfbcef7",
+          "source_path": "pipeline/extract.py",
+          "transport": {
+            "status": "complete"
+          }
+        }
+      },
+      "recipient": {
+        "original_recipient": {
+          "status": "FAIL",
+          "label": 0,
+          "recipient_self": {
+            "status": "FAIL",
+            "label": 0
+          },
+          "artifact_adoption": {
+            "status": "PASS",
+            "label": 1
+          },
+          "output_csv": "txn_id,amount,account_name,memo\nv-2-0-txn_id,v-2-0-amount,canary-2-0,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,,canary-2-1,\n",
+          "expected_output_csv": "txn_id,account_name,amount,memo\nv-2-0-txn_id,canary-2-0,v-2-0-amount,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,canary-2-1,,\n",
+          "source_paths": [
+            "pipeline/transform.py",
+            "pipeline/load.py"
+          ],
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "c3734586a4aba0eb237673e57e4aa17cf125fdc9cda88d6024afb58435042509"
+        },
+        "correct_recipient_control": {
+          "status": "PASS",
+          "label": 1,
+          "recipient_self": {
+            "status": "PASS",
+            "label": 1
+          },
+          "artifact_adoption": {
+            "status": "PASS",
+            "label": 1
+          },
+          "output_csv": "txn_id,account_name,amount,memo\nv-2-0-txn_id,canary-2-0,v-2-0-amount,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,canary-2-1,,\n",
+          "expected_output_csv": "txn_id,account_name,amount,memo\nv-2-0-txn_id,canary-2-0,v-2-0-amount,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,canary-2-1,,\n",
+          "source_paths": [
+            "pipeline/transform.py",
+            "pipeline/load.py"
+          ],
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "c3734586a4aba0eb237673e57e4aa17cf125fdc9cda88d6024afb58435042509"
+        }
+      },
+      "fixture_shape_errors": {
+        "source_csv": [],
+        "expected_output_csv": []
+      },
+      "fixture_status": "VALID"
+    }
+  ],
+  "ended_at_utc": "2026-10-01T03:21:32.284014+00:00",
+  "interpretation": "Actual PIPE2 producer/recipient code execution and parent-side responsibility/adoption checks only; no LLM, GPU, native score, or efficacy claim."
+}

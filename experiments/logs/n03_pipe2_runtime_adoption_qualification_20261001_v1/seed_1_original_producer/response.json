@@ -1,0 +1,22 @@
+{
+  "request": {
+    "op": "extract",
+    "csv_text": "product_id,product_name,category,description\n101,Widget Pro,Electronics,Professional-grade widget with advanced features including wireless connectivity and real-time monitoring\n102,Gadget X,Electronics,\n103,Tool Kit,Hardware,Complete toolkit for home improvement containing over fifty individual precision-crafted tools for every occasion\n104,,Software,Missing product name\n105,Cable Set,,High-quality cable set compatible with all major devices; includes USB-C, Lightning, and micro-USB connectors\n106,Monitor Stand,Furniture,Ergonomic adjustable monitor stand designed for dual-monitor setups with integrated cable management system\n107,Keyboard,Electronics,\n108,,,Both key columns null\n",
+    "columns": [
+      "product_id",
+      "product_name",
+      "category",
+      "description"
+    ]
+  },
+  "response": {
+    "ok": false,
+    "error_type": "PermissionError",
+    "message": "[Errno 1] Operation not permitted: '/private/var/folders/18/6x97xlvs65gg9v7vkvlbpfkr0000gn/T/scratch/source.csv'",
+    "errno": 1
+  },
+  "transport": {
+    "status": "complete"
+  },
+  "response_digest": "52420fc5f07ff3e5d1118aba4a8aab83e7f3f8326f81597eccf6c00c44ace9ba"
+}

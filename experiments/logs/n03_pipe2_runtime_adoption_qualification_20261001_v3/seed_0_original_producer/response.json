@@ -1,0 +1,42 @@
+{
+  "request": {
+    "op": "extract",
+    "csv_text": "emp_id,full_name,department,notes\n1,Alice Johnson,Engineering,Senior engineer with 10 years of experience in distributed systems and cloud architecture\n2,Bob Smith,Marketing,\n3,Charlie Brown,Engineering,Recently promoted to tech lead after successful delivery of the platform migration project\n4,,Sales,New hire\n5,Eve Davis,,Transferred from the London office; specializes in data analytics and machine learning pipelines\n6,Frank Miller,HR,Head of talent acquisition with expertise in technical recruiting across multiple regions\n7,Grace Lee,Engineering,\n8,,,Should be dropped - both key columns null\n",
+    "columns": [
+      "emp_id",
+      "full_name",
+      "department",
+      "notes"
+    ]
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "rows": [
+        {
+          "emp_id": "1",
+          "full_name": "Alice Johnson",
+          "department": "Engineering",
+          "notes": "Senior engineer with 10 years of experience in distributed systems and cloud architecture"
+        },
+        {
+          "emp_id": "3",
+          "full_name": "Charlie Brown",
+          "department": "Engineering",
+          "notes": "Recently promoted to tech lead after successful delivery of the platform migration project"
+        },
+        {
+          "emp_id": "6",
+          "full_name": "Frank Miller",
+          "department": "HR",
+          "notes": "Head of talent acquisition with expertise in technical recruiting across multiple regions"
+        }
+      ],
+      "source_path": "pipeline/extract.py"
+    }
+  },
+  "transport": {
+    "status": "complete"
+  },
+  "response_digest": "9da00fa5666caea927e1c8767be1e10e87df566fdc18a40731921a1e7d072dac"
+}

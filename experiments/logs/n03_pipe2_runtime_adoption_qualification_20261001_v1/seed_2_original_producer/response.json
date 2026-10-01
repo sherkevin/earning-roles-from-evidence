@@ -1,0 +1,22 @@
+{
+  "request": {
+    "op": "extract",
+    "csv_text": "txn_id,account_name,amount,memo\n1001,Acme Corp,5000.00,Quarterly payment for consulting services including project management and technical advisory support\n1002,Beta Inc,2500.50,\n1003,Gamma LLC,7800.00,Annual license renewal for enterprise software suite with premium support and training modules included\n1004,,100.00,Missing account name\n1005,Delta Co,,Monthly subscription for cloud infrastructure services spanning three availability zones worldwide\n1006,Epsilon Ltd,3200.00,One-time setup fee for new data center integration with full redundancy and disaster recovery capabilities\n1007,Zeta Group,900.00,\n1008,,,Both key columns null\n",
+    "columns": [
+      "txn_id",
+      "account_name",
+      "amount",
+      "memo"
+    ]
+  },
+  "response": {
+    "ok": false,
+    "error_type": "PermissionError",
+    "message": "[Errno 1] Operation not permitted: '/private/var/folders/18/6x97xlvs65gg9v7vkvlbpfkr0000gn/T/scratch/source.csv'",
+    "errno": 1
+  },
+  "transport": {
+    "status": "complete"
+  },
+  "response_digest": "52420fc5f07ff3e5d1118aba4a8aab83e7f3f8326f81597eccf6c00c44ace9ba"
+}
