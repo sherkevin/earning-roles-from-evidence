@@ -405,6 +405,7 @@ class PolicyMatrixRunner:
             raise ValueError("manifest wall-clock budget exceeded")
         return {
             "status": "PASS", "arms": list(self.arm_names),
+            "root_seed": root_seed,
             "registry_digest": actual_registry_digest,
             "schedule_digest": expected_schedule_digest,
             "metrics": metrics, "traces": traces,
