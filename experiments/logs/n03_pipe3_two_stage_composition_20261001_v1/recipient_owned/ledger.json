@@ -1,0 +1,103 @@
+[
+  {
+    "event_type": "peer_selection",
+    "payload": {
+      "selection_id": "selection-recipient_owned-0",
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 0,
+      "selector_id": "peer-a",
+      "role": "producer",
+      "candidate_ids": [
+        "peer-b",
+        "peer-c"
+      ],
+      "chosen_peer_id": "peer-b",
+      "propensity": 1.0
+    },
+    "previous_hash": "GENESIS",
+    "record_hash": "7754eda1b25b5dcfa3691854c8bf3f64cba20964551fa5c2c30a40c3702ddc03"
+  },
+  {
+    "event_type": "task_start",
+    "payload": {
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 0
+    },
+    "previous_hash": "7754eda1b25b5dcfa3691854c8bf3f64cba20964551fa5c2c30a40c3702ddc03",
+    "record_hash": "f6d796ca4406086df1031a8aa3ab8bcadd74a3b4d5301e4bc1d9d23503a00688"
+  },
+  {
+    "event_type": "producer_delivery",
+    "payload": {
+      "delivery_id": "recipient_owned-delivery-0",
+      "task_id": "PIPE3_stream_processing",
+      "producer_id": "peer-b",
+      "recipient_id": "peer-a",
+      "artifact_sha256": "e5084ee161666739bf1ea54353ea225ec590c51b79d74130071aa97c85469a30",
+      "source_event_id": "request-recipient_owned-0",
+      "task_index": 0,
+      "selection_id": "selection-recipient_owned-0"
+    },
+    "previous_hash": "f6d796ca4406086df1031a8aa3ab8bcadd74a3b4d5301e4bc1d9d23503a00688",
+    "record_hash": "96e0b4f34b0d69e7846cae9d01ad8b6844a41e3eb235c1b8daf0d7e0f05ee76b"
+  },
+  {
+    "event_type": "producer_score",
+    "payload": {
+      "producer_score_id": "recipient_owned-producer-score-0",
+      "delivery_id": "recipient_owned-delivery-0",
+      "artifact_sha256": "e5084ee161666739bf1ea54353ea225ec590c51b79d74130071aa97c85469a30",
+      "scorer_version": "pipe3-producer-objective-v2",
+      "status": "PASS",
+      "label": 1,
+      "quality_score": 1.0,
+      "score_payload_sha256": "feecde3b663f898100c0a12781be7fffcd7dd3c701af7248dcec46b3a4d305f5",
+      "coverage_complete": true,
+      "decision_complete": true
+    },
+    "previous_hash": "96e0b4f34b0d69e7846cae9d01ad8b6844a41e3eb235c1b8daf0d7e0f05ee76b",
+    "record_hash": "28236e99b42ca77b266db1a4aa5a707c5b7b648ba1331106e3115c2269c6019a"
+  },
+  {
+    "event_type": "recipient_judgment",
+    "payload": {
+      "judgment_id": "recipient_owned-judgment-0",
+      "delivery_id": "recipient_owned-delivery-0",
+      "consumer_id": "peer-a",
+      "decision": "accept_with_rework",
+      "observed_artifact_sha256": "e5084ee161666739bf1ea54353ea225ec590c51b79d74130071aa97c85469a30",
+      "terminal_outcome_available": false,
+      "repair_note": "pipe3-two-stage-composition-v1.1:recipient_owned"
+    },
+    "previous_hash": "28236e99b42ca77b266db1a4aa5a707c5b7b648ba1331106e3115c2269c6019a",
+    "record_hash": "fc7d3636a95bf8b932f79fea695ef0150a1ad03874e7e5cf80b2ec436978eb96"
+  },
+  {
+    "event_type": "consumer_action",
+    "payload": {
+      "action_id": "recipient_owned-action-0",
+      "delivery_id": "recipient_owned-delivery-0",
+      "consumer_id": "peer-a",
+      "used_artifact": true,
+      "input_artifact_sha256": "e5084ee161666739bf1ea54353ea225ec590c51b79d74130071aa97c85469a30",
+      "output_artifact_sha256": "4d949e54cf2cce4927230a4c0ee5c41025f0d27cb8fc3eeb7993c7c465fe1569",
+      "repair_cost": 0.0,
+      "action": "repair"
+    },
+    "previous_hash": "fc7d3636a95bf8b932f79fea695ef0150a1ad03874e7e5cf80b2ec436978eb96",
+    "record_hash": "63d573f21daaa3344f9939c3e82661fe4c2a92c60dc88a8ac98a7a93dba8baaf"
+  },
+  {
+    "event_type": "terminal_outcome",
+    "payload": {
+      "outcome_id": "recipient_owned-outcome-0",
+      "delivery_id": "recipient_owned-delivery-0",
+      "success": true,
+      "scorer_version": "pipe3-recipient-objective-v2",
+      "partial_score": 1.0,
+      "score_payload_sha256": "68b6c7fe7a025002a8c6d3a9dafbffa6e8f4e70cfca3d0a36ba4e10022238cb7"
+    },
+    "previous_hash": "63d573f21daaa3344f9939c3e82661fe4c2a92c60dc88a8ac98a7a93dba8baaf",
+    "record_hash": "e5d9e2162e131b5120719f87d9a6a947b7654935cba0238ba3e287fd3e9576bf"
+  }
+]

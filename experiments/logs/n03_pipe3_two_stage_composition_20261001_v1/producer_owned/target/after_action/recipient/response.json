@@ -1,0 +1,82 @@
+{
+  "transport": {
+    "status": "complete"
+  },
+  "request": {
+    "op": "score_recipient",
+    "schema_version": "pipe3-recipient-score-request-v2",
+    "task_id": "PIPE3_stream_processing",
+    "seed": 1,
+    "artifact_sha256": "e84cae40e5502dda16cd54551827312c9014e2f73f2e4eae67fc395f85f52496",
+    "scorer_version": "pipe3-recipient-objective-v2",
+    "mode": "recipient",
+    "event_class": "SensorReading",
+    "timestamp_field": "measured_at",
+    "id_field": "reading_id"
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "schema_version": "pipe3-recipient-score-response-v2",
+      "scorer_version": "pipe3-recipient-objective-v2",
+      "task_id": "PIPE3_stream_processing",
+      "seed": 1,
+      "mode": "recipient",
+      "artifact_sha256": "e84cae40e5502dda16cd54551827312c9014e2f73f2e4eae67fc395f85f52496",
+      "status": "PASS",
+      "label": 1,
+      "quality_score": 1.0,
+      "decision_complete": true,
+      "coverage_complete": true,
+      "checks": [
+        {
+          "id": "R1_process",
+          "status": "PASS",
+          "reason": ""
+        },
+        {
+          "id": "R2_shape",
+          "status": "PASS"
+        },
+        {
+          "id": "R3_utf8_semantics",
+          "status": "PASS"
+        }
+      ],
+      "failed_check_ids": [],
+      "observed_check_count": 3,
+      "required_check_ids": [
+        "R1_process",
+        "R2_shape",
+        "R3_utf8_semantics"
+      ]
+    }
+  },
+  "response_digest": "bf94a38e4c4dda620370043f30a48bdbea7117431153dc5b18d498036afd0d66",
+  "result": {
+    "status": "PASS",
+    "label": 1,
+    "quality_score": 1.0,
+    "scorer_version": "pipe3-recipient-objective-v2",
+    "mode": "recipient",
+    "decision_complete": true,
+    "coverage_complete": true,
+    "checks": [
+      {
+        "id": "R1_process",
+        "status": "PASS",
+        "reason": ""
+      },
+      {
+        "id": "R2_shape",
+        "status": "PASS"
+      },
+      {
+        "id": "R3_utf8_semantics",
+        "status": "PASS"
+      }
+    ],
+    "failed_check_ids": []
+  },
+  "candidate_received_hidden_assertions": false
+}

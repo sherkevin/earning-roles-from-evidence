@@ -1,0 +1,22 @@
+{
+  "version": "pipe3-two-stage-composition-v1.1",
+  "task_id": "PIPE3_stream_processing",
+  "source_seed": 0,
+  "target_seed": 1,
+  "controls": [
+    "producer_owned",
+    "recipient_owned",
+    "mixed"
+  ],
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "started_at_utc": "2026-10-01T06:42:50.455880+00:00",
+  "execution_injection": false,
+  "control": "producer_owned",
+  "status": "FAILED_OFFLINE",
+  "passed": false,
+  "error_type": "LedgerReplayError",
+  "error": "incomplete_ledger: missing required causal stages: [{'stage': 'terminal_outcome', 'delivery_id': 'producer_owned-delivery-1'}, {'stage': 'role_evidence_update', 'delivery_id': 'producer_owned-delivery-1'}]",
+  "failure_preserved": true
+}

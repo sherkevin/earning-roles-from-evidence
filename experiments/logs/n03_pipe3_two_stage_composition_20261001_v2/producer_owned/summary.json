@@ -1,0 +1,885 @@
+{
+  "version": "pipe3-two-stage-composition-v1.1",
+  "control": "producer_owned",
+  "task_id": "PIPE3_stream_processing",
+  "source_seed": 0,
+  "target_seed": 1,
+  "root": "PIPE3_stream_processing",
+  "same_root_qualification": true,
+  "independent_benchmark": false,
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "source_commit": "073708ebb4c8a5c897b3ef96517084a068423353",
+  "python": "3.9.6",
+  "python_executable": "/Library/Developer/CommandLineTools/usr/bin/python3",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "component_sha256": {
+    "scripts/peerrolebench_pipe3_two_stage_composition.py": "2f20f8472aaf4861582249006156a86c3cf751f53bee779bb26698ce0b004e6f",
+    "scripts/peerrolebench_two_stage_gate.py": "6b485956a69dbc8ca424b75b77b9f7f3430929682d9d9e2a15f853c333126f10",
+    "scripts/peerrolebench_role_evidence_selection.py": "74d1f842f582f62383f635cdf07c4356e9521db57522fdbdb5758bb68598d2d4",
+    "scripts/peerrolebench_role_evidence_offer.py": "1a59ac51657aa77a4f2d340db4e6d39efb4d39674a1611be753f02ee4ed00af2"
+  },
+  "policy": "ContextualTrustPolicy",
+  "overlay_values": "qualification_control_only",
+  "authored_controls": {
+    "source_judgment": "parent-authored",
+    "action": "parent-authored",
+    "patched_actor": "parent-authored"
+  },
+  "status": "QUALIFIED_OFFLINE",
+  "passed": true,
+  "contract_passed": true,
+  "source": {
+    "delivery_id": "producer_owned-delivery-0",
+    "delivery_digest": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+    "producer": {
+      "status": "FAIL",
+      "label": 0,
+      "quality_score": 0.6666666666666666,
+      "scorer_version": "pipe3-producer-objective-v2",
+      "decision_complete": true,
+      "coverage_complete": true,
+      "checks": [
+        {
+          "id": "P1_import",
+          "status": "PASS"
+        },
+        {
+          "id": "P2_iso_serialization",
+          "status": "FAIL",
+          "reason": ""
+        },
+        {
+          "id": "P3_batch_output",
+          "status": "PASS"
+        }
+      ],
+      "failed_check_ids": [
+        "P2_iso_serialization"
+      ],
+      "response_digest": "470d153773afa0d97e10cf0aa37355cdacc97168692d801b486f991b6489038c",
+      "transport": {
+        "status": "complete"
+      },
+      "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2"
+    },
+    "scores_before": {
+      "producer": {
+        "status": "FAIL",
+        "label": 0,
+        "quality_score": 0.6666666666666666,
+        "scorer_version": "pipe3-producer-objective-v2",
+        "decision_complete": true,
+        "coverage_complete": true,
+        "checks": [
+          {
+            "id": "P1_import",
+            "status": "PASS"
+          },
+          {
+            "id": "P2_iso_serialization",
+            "status": "FAIL",
+            "reason": ""
+          },
+          {
+            "id": "P3_batch_output",
+            "status": "PASS"
+          }
+        ],
+        "failed_check_ids": [
+          "P2_iso_serialization"
+        ],
+        "response_digest": "470d153773afa0d97e10cf0aa37355cdacc97168692d801b486f991b6489038c",
+        "transport": {
+          "status": "complete"
+        },
+        "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2"
+      },
+      "recipient": {
+        "status": "PASS",
+        "label": 1,
+        "quality_score": 1.0,
+        "scorer_version": "pipe3-recipient-objective-v2",
+        "mode": "recipient",
+        "decision_complete": true,
+        "coverage_complete": true,
+        "checks": [
+          {
+            "id": "R1_process",
+            "status": "PASS",
+            "reason": ""
+          },
+          {
+            "id": "R2_shape",
+            "status": "PASS"
+          },
+          {
+            "id": "R3_utf8_semantics",
+            "status": "PASS"
+          }
+        ],
+        "failed_check_ids": [],
+        "response_digest": "be69c76f6d4abaf11351058bb225247889ee77069dc75d9696998b9f9b573620",
+        "transport": {
+          "status": "complete"
+        },
+        "artifact_sha256": "4c43f79c95e650d5cf945d14b39e062202ae5f59e9094d9c0d5202952257cd0a"
+      },
+      "adoption": {
+        "status": "FAIL",
+        "label": 0,
+        "quality_score": 0.5,
+        "scorer_version": "pipe3-recipient-objective-v2",
+        "mode": "adoption",
+        "decision_complete": true,
+        "coverage_complete": true,
+        "checks": [
+          {
+            "id": "A1_producer_boundary",
+            "status": "FAIL"
+          },
+          {
+            "id": "A2_sink_adoption",
+            "status": "PASS"
+          }
+        ],
+        "failed_check_ids": [
+          "A1_producer_boundary"
+        ],
+        "response_digest": "04d50c9ffaaa8b8ab57b1c4ec5b4073373261ebad63edcf6f0317d5272f99fc3",
+        "transport": {
+          "status": "complete"
+        },
+        "artifact_sha256": "f4b436fc8f759216c5656b12c0cc7de5bde509fc169c070c6e45875361575192"
+      }
+    },
+    "scores_after": {
+      "producer": {
+        "status": "PASS",
+        "label": 1,
+        "quality_score": 1.0,
+        "scorer_version": "pipe3-producer-objective-v2",
+        "decision_complete": true,
+        "coverage_complete": true,
+        "checks": [
+          {
+            "id": "P1_import",
+            "status": "PASS"
+          },
+          {
+            "id": "P2_iso_serialization",
+            "status": "PASS"
+          },
+          {
+            "id": "P3_batch_output",
+            "status": "PASS"
+          }
+        ],
+        "failed_check_ids": [],
+        "response_digest": "feecde3b663f898100c0a12781be7fffcd7dd3c701af7248dcec46b3a4d305f5",
+        "transport": {
+          "status": "complete"
+        },
+        "artifact_sha256": "e5084ee161666739bf1ea54353ea225ec590c51b79d74130071aa97c85469a30"
+      },
+      "recipient": {
+        "status": "PASS",
+        "label": 1,
+        "quality_score": 1.0,
+        "scorer_version": "pipe3-recipient-objective-v2",
+        "mode": "recipient",
+        "decision_complete": true,
+        "coverage_complete": true,
+        "checks": [
+          {
+            "id": "R1_process",
+            "status": "PASS",
+            "reason": ""
+          },
+          {
+            "id": "R2_shape",
+            "status": "PASS"
+          },
+          {
+            "id": "R3_utf8_semantics",
+            "status": "PASS"
+          }
+        ],
+        "failed_check_ids": [],
+        "response_digest": "be69c76f6d4abaf11351058bb225247889ee77069dc75d9696998b9f9b573620",
+        "transport": {
+          "status": "complete"
+        },
+        "artifact_sha256": "4c43f79c95e650d5cf945d14b39e062202ae5f59e9094d9c0d5202952257cd0a"
+      },
+      "adoption": {
+        "status": "PASS",
+        "label": 1,
+        "quality_score": 1.0,
+        "scorer_version": "pipe3-recipient-objective-v2",
+        "mode": "adoption",
+        "decision_complete": true,
+        "coverage_complete": true,
+        "checks": [
+          {
+            "id": "A1_producer_boundary",
+            "status": "PASS"
+          },
+          {
+            "id": "A2_sink_adoption",
+            "status": "PASS"
+          }
+        ],
+        "failed_check_ids": [],
+        "response_digest": "443c124b57defd886319ad69a98eee9139f01b6421cc9984b96cf3d1639ef48f",
+        "transport": {
+          "status": "complete"
+        },
+        "artifact_sha256": "4bf7d1999b96d38cb33581531ddc8d4025a3577da0d56487d77931b9288710b8"
+      }
+    },
+    "action": {
+      "consumer_action": "repair",
+      "source_files": {
+        "producer.py": "\nimport json\nimport os\nfrom datetime import datetime\nfrom models import UserEvent\n\n\ndef serialize_event(event: UserEvent) -> str:\n    \n    data = {\n        \"event_id\": event.event_id,\n        \"timestamp\": event.timestamp,\n        \"user_name\": event.user_name,\n        \"action\": event.action,\n        \"page_url\": event.page_url,\n    }\n    \n    data[\"timestamp\"] = event.timestamp.isoformat()\n    return json.dumps(data)\n\n\ndef produce_events(events: list[UserEvent], output_path: str) -> None:\n    \n    with open(output_path, \"w\", encoding=\"utf-8\") as f:\n        for event in events:\n            f.write(serialize_event(event) + \"\\n\")\n",
+        "models.py": "\nfrom __future__ import annotations\nfrom dataclasses import dataclass\nfrom datetime import datetime\n\n\nVALID_ACTIONS = [\"page_view\", \"click\", \"scroll\", \"purchase\"]\n\n\n@dataclass\nclass UserEvent:\n    \n    event_id: str\n    timestamp: datetime\n    user_name: str\n    action: str\n    page_url: str\n\n    def validate(self) -> bool:\n        \n        if not self.event_id:\n            raise ValueError(\"event_id is required\")\n        if self.action not in VALID_ACTIONS:\n            raise ValueError(f\"Invalid action: {self.action}\")\n        return True\n",
+        "sink.py": "\nimport json\nimport os\nfrom datetime import datetime\n\n\ndef load_processed_events(input_path: str) -> list[dict]:\n    \n    events = []\n    with open(input_path, \"r\", encoding=\"utf-8\") as f:\n        for line in f:\n            line = line.strip()\n            if not line:\n                continue\n            event = json.loads(line)\n            \n            _ = event[\"event_id\"]  \n            _ = event[\"timestamp\"]\n            events.append(event)\n    return events\n\n\ndef write_summary(events: list[dict], output_path: str) -> dict:\n    \n    summary = {\n        \"total_events\": len(events),\n        \"actions\": {},\n        \"users\": set(),\n    }\n    for evt in events:\n        action = evt[\"action\"]\n        summary[\"actions\"][action] = summary[\"actions\"].get(action, 0) + 1\n        summary[\"users\"].add(evt[\"user_name\"])\n\n    summary[\"unique_users\"] = len(summary[\"users\"])\n    summary[\"users\"] = sorted(summary[\"users\"])\n\n    with open(output_path, \"w\", encoding=\"utf-8\") as f:\n        json.dump(summary, f, indent=2, ensure_ascii=False)\n\n    return summary\n",
+        "processor.py": "\nimport json\nimport os\nfrom datetime import datetime\n\n\ndef parse_timestamp(ts_str: str) -> datetime:\n    \n    return datetime.fromisoformat(ts_str)\n\n\ndef transform_event(event_data: dict) -> dict:\n    \n    processed = dict(event_data)\n    \n    ts = parse_timestamp(event_data[\"timestamp\"])\n    processed[\"timestamp\"] = ts.isoformat()\n    processed[\"processed_at\"] = datetime.utcnow().isoformat()\n    processed[\"action\"] = event_data[\"action\"].upper()\n    return processed\n\n\ndef process_events(input_path: str, output_path: str) -> int:\n    \n    count = 0\n    \n    with open(input_path, \"r\", encoding=\"utf-8\") as fin,\\\n         open(output_path, \"w\", encoding=\"utf-8\") as fout:\n        for line in fin:\n            line = line.strip()\n            if not line:\n                continue\n            event_data = json.loads(line)\n            processed = transform_event(event_data)\n            \n            fout.write(json.dumps(processed, ensure_ascii=False) + \"\\n\")\n            count += 1\n    return count\n"
+      },
+      "input_source_sha256": "819118801d4ccfab2801b36032d4f0808bdf938eedf9ee532d8ea798fd7ffa29",
+      "output_source_sha256": "4d949e54cf2cce4927230a4c0ee5c41025f0d27cb8fc3eeb7993c7c465fe1569",
+      "delivery_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "changed_paths": [
+        "producer.py"
+      ],
+      "action_initialization": "selected_delivery_copy",
+      "prior_delivery_may_have_been_seen": true,
+      "independent_redo_is_blinded_control": false
+    },
+    "outcome": {
+      "status": "PASS",
+      "quality_score": 1.0,
+      "coverage_complete": true,
+      "decision_complete": true
+    },
+    "eligibility": {
+      "gate_version": "pipe3-responsibility-label-v1",
+      "producer_owned_paths_changed": [
+        "producer.py"
+      ],
+      "recipient_owned_paths_changed": [],
+      "q_complete": true,
+      "outcome_complete": true,
+      "judgment_target_role": "producer",
+      "artifact_binding_present": true,
+      "later_use_valid": false,
+      "producer_feedback_status": "ELIGIBLE",
+      "producer_feedback_eligible": true,
+      "reason": "complete Qp/Y with producer-owned change or valid later-use evidence",
+      "policy_update_allowed": false,
+      "scientific_claim_allowed": false
+    },
+    "index": 0,
+    "source_gate": {
+      "gate_version": "two-stage-role-evidence-v1",
+      "producer_paths_changed": [
+        "producer.py"
+      ],
+      "recipient_paths_changed": [],
+      "q_complete": true,
+      "y_complete": true,
+      "target_role": "producer",
+      "artifact_binding_present": true,
+      "later_use_valid": false,
+      "attribution_eligible": true,
+      "evidence_publish_allowed": true,
+      "policy_update_allowed": false,
+      "status": "ELIGIBLE",
+      "reason": "complete source Qp/Y with producer-owned contract change"
+    }
+  },
+  "target": {
+    "delivery_id": "producer_owned-delivery-1",
+    "delivery_digest": "b88f70a95048b8d2d6b4610833197431d17825a738f9e93e2feae403fd44d0b5",
+    "producer": {
+      "status": "FAIL",
+      "label": 0,
+      "quality_score": 0.6666666666666666,
+      "scorer_version": "pipe3-producer-objective-v2",
+      "decision_complete": true,
+      "coverage_complete": true,
+      "checks": [
+        {
+          "id": "P1_import",
+          "status": "PASS"
+        },
+        {
+          "id": "P2_iso_serialization",
+          "status": "FAIL",
+          "reason": ""
+        },
+        {
+          "id": "P3_batch_output",
+          "status": "PASS"
+        }
+      ],
+      "failed_check_ids": [
+        "P2_iso_serialization"
+      ],
+      "response_digest": "cc2398c35f233b1e019c034a8fbd313173b7e84880ccf7f6ec9ff55c8abca761",
+      "transport": {
+        "status": "complete"
+      },
+      "artifact_sha256": "b88f70a95048b8d2d6b4610833197431d17825a738f9e93e2feae403fd44d0b5"
+    },
+    "scores_before": {
+      "producer": {
+        "status": "FAIL",
+        "label": 0,
+        "quality_score": 0.6666666666666666,
+        "scorer_version": "pipe3-producer-objective-v2",
+        "decision_complete": true,
+        "coverage_complete": true,
+        "checks": [
+          {
+            "id": "P1_import",
+            "status": "PASS"
+          },
+          {
+            "id": "P2_iso_serialization",
+            "status": "FAIL",
+            "reason": ""
+          },
+          {
+            "id": "P3_batch_output",
+            "status": "PASS"
+          }
+        ],
+        "failed_check_ids": [
+          "P2_iso_serialization"
+        ],
+        "response_digest": "cc2398c35f233b1e019c034a8fbd313173b7e84880ccf7f6ec9ff55c8abca761",
+        "transport": {
+          "status": "complete"
+        },
+        "artifact_sha256": "b88f70a95048b8d2d6b4610833197431d17825a738f9e93e2feae403fd44d0b5"
+      },
+      "recipient": {
+        "status": "PASS",
+        "label": 1,
+        "quality_score": 1.0,
+        "scorer_version": "pipe3-recipient-objective-v2",
+        "mode": "recipient",
+        "decision_complete": true,
+        "coverage_complete": true,
+        "checks": [
+          {
+            "id": "R1_process",
+            "status": "PASS",
+            "reason": ""
+          },
+          {
+            "id": "R2_shape",
+            "status": "PASS"
+          },
+          {
+            "id": "R3_utf8_semantics",
+            "status": "PASS"
+          }
+        ],
+        "failed_check_ids": [],
+        "response_digest": "bf94a38e4c4dda620370043f30a48bdbea7117431153dc5b18d498036afd0d66",
+        "transport": {
+          "status": "complete"
+        },
+        "artifact_sha256": "e84cae40e5502dda16cd54551827312c9014e2f73f2e4eae67fc395f85f52496"
+      },
+      "adoption": {
+        "status": "FAIL",
+        "label": 0,
+        "quality_score": 0.5,
+        "scorer_version": "pipe3-recipient-objective-v2",
+        "mode": "adoption",
+        "decision_complete": true,
+        "coverage_complete": true,
+        "checks": [
+          {
+            "id": "A1_producer_boundary",
+            "status": "FAIL"
+          },
+          {
+            "id": "A2_sink_adoption",
+            "status": "PASS"
+          }
+        ],
+        "failed_check_ids": [
+          "A1_producer_boundary"
+        ],
+        "response_digest": "860dc7b3b414c5b1cfb2af44263f5c938397002f341191fd17387115125b865a",
+        "transport": {
+          "status": "complete"
+        },
+        "artifact_sha256": "e88f36bd47b3caf76b4856f44fff7bdf1619b2f06910ed6b5d941abae90fe27d"
+      }
+    },
+    "scores_after": {
+      "producer": {
+        "status": "PASS",
+        "label": 1,
+        "quality_score": 1.0,
+        "scorer_version": "pipe3-producer-objective-v2",
+        "decision_complete": true,
+        "coverage_complete": true,
+        "checks": [
+          {
+            "id": "P1_import",
+            "status": "PASS"
+          },
+          {
+            "id": "P2_iso_serialization",
+            "status": "PASS"
+          },
+          {
+            "id": "P3_batch_output",
+            "status": "PASS"
+          }
+        ],
+        "failed_check_ids": [],
+        "response_digest": "e78331d47ae04b148b15ded43728476647d4a036a85818c82ff157c40dddc0dc",
+        "transport": {
+          "status": "complete"
+        },
+        "artifact_sha256": "2bad0c0fa181dcefe2b1948faa0e5f03683eb72161d867aff0d2726dd3ad55f0"
+      },
+      "recipient": {
+        "status": "PASS",
+        "label": 1,
+        "quality_score": 1.0,
+        "scorer_version": "pipe3-recipient-objective-v2",
+        "mode": "recipient",
+        "decision_complete": true,
+        "coverage_complete": true,
+        "checks": [
+          {
+            "id": "R1_process",
+            "status": "PASS",
+            "reason": ""
+          },
+          {
+            "id": "R2_shape",
+            "status": "PASS"
+          },
+          {
+            "id": "R3_utf8_semantics",
+            "status": "PASS"
+          }
+        ],
+        "failed_check_ids": [],
+        "response_digest": "bf94a38e4c4dda620370043f30a48bdbea7117431153dc5b18d498036afd0d66",
+        "transport": {
+          "status": "complete"
+        },
+        "artifact_sha256": "e84cae40e5502dda16cd54551827312c9014e2f73f2e4eae67fc395f85f52496"
+      },
+      "adoption": {
+        "status": "PASS",
+        "label": 1,
+        "quality_score": 1.0,
+        "scorer_version": "pipe3-recipient-objective-v2",
+        "mode": "adoption",
+        "decision_complete": true,
+        "coverage_complete": true,
+        "checks": [
+          {
+            "id": "A1_producer_boundary",
+            "status": "PASS"
+          },
+          {
+            "id": "A2_sink_adoption",
+            "status": "PASS"
+          }
+        ],
+        "failed_check_ids": [],
+        "response_digest": "088ef81b388cb3afb9a00b9461b12cec4747cc0fb5d6ddb680cc9628f2f5bffc",
+        "transport": {
+          "status": "complete"
+        },
+        "artifact_sha256": "99710a03cb5730665be0c09ef8e9c676d9e85ac9e9803f626d01c455a9fb3e24"
+      }
+    },
+    "action": {
+      "consumer_action": "repair",
+      "source_files": {
+        "producer.py": "\nimport json\nimport os\nfrom datetime import datetime\nfrom models import SensorReading\n\n\ndef serialize_event(event: SensorReading) -> str:\n    \n    data = {\n        \"reading_id\": event.reading_id,\n        \"measured_at\": event.measured_at,\n        \"sensor_name\": event.sensor_name,\n        \"metric_type\": event.metric_type,\n        \"location\": event.location,\n    }\n    \n    data[\"measured_at\"] = event.measured_at.isoformat()\n    return json.dumps(data)\n\n\ndef produce_events(events: list[SensorReading], output_path: str) -> None:\n    \n    with open(output_path, \"w\", encoding=\"utf-8\") as f:\n        for event in events:\n            f.write(serialize_event(event) + \"\\n\")\n",
+        "models.py": "\nfrom __future__ import annotations\nfrom dataclasses import dataclass\nfrom datetime import datetime\n\n\nVALID_ACTIONS = [\"temperature\", \"humidity\", \"pressure\", \"vibration\"]\n\n\n@dataclass\nclass SensorReading:\n    \n    reading_id: str\n    measured_at: datetime\n    sensor_name: str\n    metric_type: str\n    location: str\n\n    def validate(self) -> bool:\n        \n        if not self.reading_id:\n            raise ValueError(\"reading_id is required\")\n        if self.metric_type not in VALID_ACTIONS:\n            raise ValueError(f\"Invalid action: {self.metric_type}\")\n        return True\n",
+        "sink.py": "\nimport json\nimport os\nfrom datetime import datetime\n\n\ndef load_processed_events(input_path: str) -> list[dict]:\n    \n    events = []\n    with open(input_path, \"r\", encoding=\"utf-8\") as f:\n        for line in f:\n            line = line.strip()\n            if not line:\n                continue\n            event = json.loads(line)\n            \n            _ = event[\"reading_id\"]  \n            _ = event[\"measured_at\"]\n            events.append(event)\n    return events\n\n\ndef write_summary(events: list[dict], output_path: str) -> dict:\n    \n    summary = {\n        \"total_events\": len(events),\n        \"actions\": {},\n        \"users\": set(),\n    }\n    for evt in events:\n        action = evt[\"metric_type\"]\n        summary[\"actions\"][action] = summary[\"actions\"].get(action, 0) + 1\n        summary[\"users\"].add(evt[\"sensor_name\"])\n\n    summary[\"unique_users\"] = len(summary[\"users\"])\n    summary[\"users\"] = sorted(summary[\"users\"])\n\n    with open(output_path, \"w\", encoding=\"utf-8\") as f:\n        json.dump(summary, f, indent=2, ensure_ascii=False)\n\n    return summary\n",
+        "processor.py": "\nimport json\nimport os\nfrom datetime import datetime\n\n\ndef parse_timestamp(ts_str: str) -> datetime:\n    \n    return datetime.fromisoformat(ts_str)\n\n\ndef transform_event(event_data: dict) -> dict:\n    \n    processed = dict(event_data)\n    \n    ts = parse_timestamp(event_data[\"measured_at\"])\n    processed[\"measured_at\"] = ts.isoformat()\n    processed[\"processed_at\"] = datetime.utcnow().isoformat()\n    processed[\"metric_type\"] = event_data[\"metric_type\"].upper()\n    return processed\n\n\ndef process_events(input_path: str, output_path: str) -> int:\n    \n    count = 0\n    \n    with open(input_path, \"r\", encoding=\"utf-8\") as fin,\\\n         open(output_path, \"w\", encoding=\"utf-8\") as fout:\n        for line in fin:\n            line = line.strip()\n            if not line:\n                continue\n            event_data = json.loads(line)\n            processed = transform_event(event_data)\n            \n            fout.write(json.dumps(processed, ensure_ascii=False) + \"\\n\")\n            count += 1\n    return count\n"
+      },
+      "input_source_sha256": "2267c44969e329fd7b2ccf5a008defb78fcb87a5d56d697121e8919bcd25163f",
+      "output_source_sha256": "9dd2f2ee2012457654a2ef43707c0f586d6e5552a879dc97c70f8ca177cc12ac",
+      "delivery_sha256": "b88f70a95048b8d2d6b4610833197431d17825a738f9e93e2feae403fd44d0b5",
+      "changed_paths": [
+        "producer.py"
+      ],
+      "action_initialization": "selected_delivery_copy",
+      "prior_delivery_may_have_been_seen": true,
+      "independent_redo_is_blinded_control": false
+    },
+    "outcome": {
+      "status": "PASS",
+      "quality_score": 1.0,
+      "coverage_complete": true,
+      "decision_complete": true
+    },
+    "eligibility": {
+      "gate_version": "pipe3-responsibility-label-v1",
+      "producer_owned_paths_changed": [
+        "producer.py"
+      ],
+      "recipient_owned_paths_changed": [],
+      "q_complete": true,
+      "outcome_complete": true,
+      "judgment_target_role": "producer",
+      "artifact_binding_present": true,
+      "later_use_valid": false,
+      "producer_feedback_status": "ELIGIBLE",
+      "producer_feedback_eligible": true,
+      "reason": "complete Qp/Y with producer-owned change or valid later-use evidence",
+      "policy_update_allowed": false,
+      "scientific_claim_allowed": false
+    },
+    "index": 1
+  },
+  "source_gate": {
+    "gate_version": "two-stage-role-evidence-v1",
+    "producer_paths_changed": [
+      "producer.py"
+    ],
+    "recipient_paths_changed": [],
+    "q_complete": true,
+    "y_complete": true,
+    "target_role": "producer",
+    "artifact_binding_present": true,
+    "later_use_valid": false,
+    "attribution_eligible": true,
+    "evidence_publish_allowed": true,
+    "policy_update_allowed": false,
+    "status": "ELIGIBLE",
+    "reason": "complete source Qp/Y with producer-owned contract change"
+  },
+  "role_offer": {
+    "schema": "peerrole-role-evidence-offer-v1",
+    "offer_id": "role-offer-producer_owned",
+    "task_id": "PIPE3_stream_processing",
+    "task_index": 1,
+    "role": "producer",
+    "context_key": "PIPE3:1",
+    "candidate_keys": [
+      "peer-b@v1",
+      "peer-c@v1"
+    ],
+    "evidence_ids": [
+      "evidence-producer_owned-source"
+    ],
+    "evidence_version": "pipe3-two-stage-composition-v1.1",
+    "public_evidence": [
+      {
+        "evidence_id": "evidence-producer_owned-source",
+        "candidate_key": "peer-b@v1",
+        "role": "producer",
+        "source_task_index": 0,
+        "delivery_id": "producer_owned-delivery-0",
+        "judgment_id": "producer_owned-judgment-0",
+        "action_id": "producer_owned-action-0",
+        "outcome_id": "producer_owned-outcome-0",
+        "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+        "judgment": "accept_with_rework",
+        "action": "repair",
+        "outcome_status": "PASS",
+        "quality_score": 1.0,
+        "available_index": 1
+      }
+    ],
+    "available_index": 1,
+    "watermark_schema": "global-event-index-v1"
+  },
+  "assignment_id": "assignment-producer_owned",
+  "replay": {
+    "status": "PASS",
+    "complete": true,
+    "event_count": 17,
+    "missing": [],
+    "snapshot": {
+      "event_count": 17,
+      "last_hash": "5d917c55e056040bc3c13df452af7a175ec4f04d4e482a292664f2f732eda5a5",
+      "delivery_count": 2,
+      "producer_score_count": 2,
+      "judgment_count": 2,
+      "action_count": 2,
+      "outcome_count": 2,
+      "evidence_count": 2,
+      "assignment_count": 1
+    }
+  },
+  "credit": {
+    "assignment_id": "assignment-producer_owned",
+    "source_evidence_id": "evidence-producer_owned-source",
+    "later_outcome_id": "producer_owned-outcome-1",
+    "later_quality": 1.0,
+    "credit_digest": "d468bdfc6477ac46f14701d88771f7f6f84f57b7aa9cf0e556b40f864cff149f"
+  },
+  "policy_updates": 1,
+  "delayed_credit_count": 1,
+  "unknown_denominator": {
+    "source_rows": 1,
+    "unknown_rows": 0
+  },
+  "ledger": [
+    {
+      "event_type": "peer_selection",
+      "payload": {
+        "selection_id": "selection-producer_owned-0",
+        "task_id": "PIPE3_stream_processing",
+        "task_index": 0,
+        "selector_id": "peer-a",
+        "role": "producer",
+        "candidate_ids": [
+          "peer-b",
+          "peer-c"
+        ],
+        "chosen_peer_id": "peer-b",
+        "propensity": 1.0
+      },
+      "previous_hash": "GENESIS",
+      "record_hash": "0cd47d831b66782ad8e15d6868b1a11b9d20e4496337270e5f92ac1c9e048060"
+    },
+    {
+      "event_type": "task_start",
+      "payload": {
+        "task_id": "PIPE3_stream_processing",
+        "task_index": 0
+      },
+      "previous_hash": "0cd47d831b66782ad8e15d6868b1a11b9d20e4496337270e5f92ac1c9e048060",
+      "record_hash": "3ce159559592de0758e870d07fb2f0fa46d1c3115947933c6919074c43b1113c"
+    },
+    {
+      "event_type": "producer_delivery",
+      "payload": {
+        "delivery_id": "producer_owned-delivery-0",
+        "task_id": "PIPE3_stream_processing",
+        "producer_id": "peer-b",
+        "recipient_id": "peer-a",
+        "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+        "source_event_id": "request-producer_owned-0",
+        "task_index": 0,
+        "selection_id": "selection-producer_owned-0"
+      },
+      "previous_hash": "3ce159559592de0758e870d07fb2f0fa46d1c3115947933c6919074c43b1113c",
+      "record_hash": "68b339ac02d8a060cb9824e109894945cbbb14851a34afa2421d14af3df62d05"
+    },
+    {
+      "event_type": "producer_score",
+      "payload": {
+        "producer_score_id": "producer_owned-producer-score-0",
+        "delivery_id": "producer_owned-delivery-0",
+        "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+        "scorer_version": "pipe3-producer-objective-v2",
+        "status": "FAIL",
+        "label": 0,
+        "quality_score": 0.6666666666666666,
+        "score_payload_sha256": "470d153773afa0d97e10cf0aa37355cdacc97168692d801b486f991b6489038c",
+        "coverage_complete": true,
+        "decision_complete": true
+      },
+      "previous_hash": "68b339ac02d8a060cb9824e109894945cbbb14851a34afa2421d14af3df62d05",
+      "record_hash": "09b413aad89794d9cf6fd1a6e18203d726254548c3246c195dbabb4ac6271ba7"
+    },
+    {
+      "event_type": "recipient_judgment",
+      "payload": {
+        "judgment_id": "producer_owned-judgment-0",
+        "delivery_id": "producer_owned-delivery-0",
+        "consumer_id": "peer-a",
+        "decision": "accept_with_rework",
+        "observed_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+        "terminal_outcome_available": false,
+        "repair_note": "pipe3-two-stage-composition-v1.1:producer_owned"
+      },
+      "previous_hash": "09b413aad89794d9cf6fd1a6e18203d726254548c3246c195dbabb4ac6271ba7",
+      "record_hash": "346937c6f4e37cd1bbeda473e0ae357c7a8ada6ef3361352b83651501a9629bc"
+    },
+    {
+      "event_type": "consumer_action",
+      "payload": {
+        "action_id": "producer_owned-action-0",
+        "delivery_id": "producer_owned-delivery-0",
+        "consumer_id": "peer-a",
+        "used_artifact": true,
+        "input_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+        "output_artifact_sha256": "4d949e54cf2cce4927230a4c0ee5c41025f0d27cb8fc3eeb7993c7c465fe1569",
+        "repair_cost": 0.0,
+        "action": "repair"
+      },
+      "previous_hash": "346937c6f4e37cd1bbeda473e0ae357c7a8ada6ef3361352b83651501a9629bc",
+      "record_hash": "a64ac2b6651183e18dd0bdf86db06e33c051bcdfec880f67e6813f72e8b08eee"
+    },
+    {
+      "event_type": "terminal_outcome",
+      "payload": {
+        "outcome_id": "producer_owned-outcome-0",
+        "delivery_id": "producer_owned-delivery-0",
+        "success": true,
+        "scorer_version": "pipe3-recipient-objective-v2",
+        "partial_score": 1.0,
+        "score_payload_sha256": "68b6c7fe7a025002a8c6d3a9dafbffa6e8f4e70cfca3d0a36ba4e10022238cb7"
+      },
+      "previous_hash": "a64ac2b6651183e18dd0bdf86db06e33c051bcdfec880f67e6813f72e8b08eee",
+      "record_hash": "96f7d9c8aab55fe258449f3be9e016f933f10dee2ddfb99fc19e654133c78ef7"
+    },
+    {
+      "event_type": "role_evidence_update",
+      "payload": {
+        "evidence_id": "evidence-producer_owned-source",
+        "judgment_id": "producer_owned-judgment-0",
+        "action_id": "producer_owned-action-0",
+        "outcome_id": "producer_owned-outcome-0",
+        "update_version": "pipe3-two-stage-composition-v1.1",
+        "arrived_at": 1.0
+      },
+      "previous_hash": "96f7d9c8aab55fe258449f3be9e016f933f10dee2ddfb99fc19e654133c78ef7",
+      "record_hash": "33f83c32d413277b566b7435d8735cd60131ee5252e1284a8a0fde2d95480dd3"
+    },
+    {
+      "event_type": "later_assignment",
+      "payload": {
+        "assignment_id": "assignment-producer_owned",
+        "task_id": "PIPE3_stream_processing",
+        "task_index": 1,
+        "agent_id": "peer-b",
+        "role": "producer",
+        "evidence_ids": [
+          "evidence-producer_owned-source"
+        ],
+        "decision_propensity": 0.7310585786300049
+      },
+      "previous_hash": "33f83c32d413277b566b7435d8735cd60131ee5252e1284a8a0fde2d95480dd3",
+      "record_hash": "823c5a21f8d6bbb1374b38da863ed30b5c173de32b76e00201ea5dc12d7e0e10"
+    },
+    {
+      "event_type": "peer_selection",
+      "payload": {
+        "selection_id": "selection-producer_owned-1",
+        "task_id": "PIPE3_stream_processing",
+        "task_index": 1,
+        "selector_id": "peer-a",
+        "role": "producer",
+        "candidate_ids": [
+          "peer-b",
+          "peer-c"
+        ],
+        "chosen_peer_id": "peer-b",
+        "propensity": 0.7310585786300049
+      },
+      "previous_hash": "823c5a21f8d6bbb1374b38da863ed30b5c173de32b76e00201ea5dc12d7e0e10",
+      "record_hash": "04016b5473bf213d0c2e4ffd582e243153b01d7fcd45aff5c1f38dffabcccb27"
+    },
+    {
+      "event_type": "task_start",
+      "payload": {
+        "task_id": "PIPE3_stream_processing",
+        "task_index": 1
+      },
+      "previous_hash": "04016b5473bf213d0c2e4ffd582e243153b01d7fcd45aff5c1f38dffabcccb27",
+      "record_hash": "6f50a4f0e86fd5ca83a0b7baf9a50417e536de0f4980c9703b4267c4cc7918a7"
+    },
+    {
+      "event_type": "producer_delivery",
+      "payload": {
+        "delivery_id": "producer_owned-delivery-1",
+        "task_id": "PIPE3_stream_processing",
+        "producer_id": "peer-b",
+        "recipient_id": "peer-a",
+        "artifact_sha256": "b88f70a95048b8d2d6b4610833197431d17825a738f9e93e2feae403fd44d0b5",
+        "source_event_id": "request-producer_owned-1",
+        "task_index": 1,
+        "selection_id": "selection-producer_owned-1"
+      },
+      "previous_hash": "6f50a4f0e86fd5ca83a0b7baf9a50417e536de0f4980c9703b4267c4cc7918a7",
+      "record_hash": "f32edebcf1fa31bc93caa5b961c5d7ac2e6308cfacdda9f2537a0aaa64c03d19"
+    },
+    {
+      "event_type": "producer_score",
+      "payload": {
+        "producer_score_id": "producer_owned-producer-score-1",
+        "delivery_id": "producer_owned-delivery-1",
+        "artifact_sha256": "b88f70a95048b8d2d6b4610833197431d17825a738f9e93e2feae403fd44d0b5",
+        "scorer_version": "pipe3-producer-objective-v2",
+        "status": "FAIL",
+        "label": 0,
+        "quality_score": 0.6666666666666666,
+        "score_payload_sha256": "cc2398c35f233b1e019c034a8fbd313173b7e84880ccf7f6ec9ff55c8abca761",
+        "coverage_complete": true,
+        "decision_complete": true
+      },
+      "previous_hash": "f32edebcf1fa31bc93caa5b961c5d7ac2e6308cfacdda9f2537a0aaa64c03d19",
+      "record_hash": "4bb2072bb74eb974f9065a8018f90f0a61e70e11418eca8d437705c1b95b1dba"
+    },
+    {
+      "event_type": "recipient_judgment",
+      "payload": {
+        "judgment_id": "producer_owned-judgment-1",
+        "delivery_id": "producer_owned-delivery-1",
+        "consumer_id": "peer-a",
+        "decision": "accept_with_rework",
+        "observed_artifact_sha256": "b88f70a95048b8d2d6b4610833197431d17825a738f9e93e2feae403fd44d0b5",
+        "terminal_outcome_available": false,
+        "repair_note": "pipe3-two-stage-composition-v1.1:producer_owned"
+      },
+      "previous_hash": "4bb2072bb74eb974f9065a8018f90f0a61e70e11418eca8d437705c1b95b1dba",
+      "record_hash": "6837aa0d499a21e9b1b359293fd3efb1861d7d417fd7738a7845539aaafcb2c4"
+    },
+    {
+      "event_type": "consumer_action",
+      "payload": {
+        "action_id": "producer_owned-action-1",
+        "delivery_id": "producer_owned-delivery-1",
+        "consumer_id": "peer-a",
+        "used_artifact": true,
+        "input_artifact_sha256": "b88f70a95048b8d2d6b4610833197431d17825a738f9e93e2feae403fd44d0b5",
+        "output_artifact_sha256": "9dd2f2ee2012457654a2ef43707c0f586d6e5552a879dc97c70f8ca177cc12ac",
+        "repair_cost": 0.0,
+        "action": "repair"
+      },
+      "previous_hash": "6837aa0d499a21e9b1b359293fd3efb1861d7d417fd7738a7845539aaafcb2c4",
+      "record_hash": "331ecc0f92650016bd94670bb279fcb63bde38710fa33417473936ee2f7ba509"
+    },
+    {
+      "event_type": "terminal_outcome",
+      "payload": {
+        "outcome_id": "producer_owned-outcome-1",
+        "delivery_id": "producer_owned-delivery-1",
+        "success": true,
+        "scorer_version": "pipe3-recipient-objective-v2",
+        "partial_score": 1.0,
+        "score_payload_sha256": "68b6c7fe7a025002a8c6d3a9dafbffa6e8f4e70cfca3d0a36ba4e10022238cb7"
+      },
+      "previous_hash": "331ecc0f92650016bd94670bb279fcb63bde38710fa33417473936ee2f7ba509",
+      "record_hash": "5bd36facdbbbb24bc6492f3abb07722510ceed4413b2831b745d6fd7912711a7"
+    },
+    {
+      "event_type": "role_evidence_update",
+      "payload": {
+        "evidence_id": "target-completion-evidence-producer_owned",
+        "judgment_id": "producer_owned-judgment-1",
+        "action_id": "producer_owned-action-1",
+        "outcome_id": "producer_owned-outcome-1",
+        "update_version": "target-completion-v1",
+        "arrived_at": 2.0
+      },
+      "previous_hash": "5bd36facdbbbb24bc6492f3abb07722510ceed4413b2831b745d6fd7912711a7",
+      "record_hash": "5d917c55e056040bc3c13df452af7a175ec4f04d4e482a292664f2f732eda5a5"
+    }
+  ],
+  "interpretation": "engineering comparator; overlay controls are hand-authored qualification values"
+}

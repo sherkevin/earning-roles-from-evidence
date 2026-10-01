@@ -1,0 +1,79 @@
+{
+  "transport": {
+    "status": "complete"
+  },
+  "request": {
+    "op": "score_recipient",
+    "schema_version": "pipe3-recipient-score-request-v2",
+    "task_id": "PIPE3_stream_processing",
+    "seed": 0,
+    "artifact_sha256": "263804f82aa6a4ba4834a7ceec7aaad049ec31a944d44137ecc976f0a4771014",
+    "scorer_version": "pipe3-recipient-objective-v2",
+    "mode": "adoption",
+    "event_class": "UserEvent",
+    "timestamp_field": "timestamp",
+    "id_field": "event_id"
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "schema_version": "pipe3-recipient-score-response-v2",
+      "scorer_version": "pipe3-recipient-objective-v2",
+      "task_id": "PIPE3_stream_processing",
+      "seed": 0,
+      "mode": "adoption",
+      "artifact_sha256": "263804f82aa6a4ba4834a7ceec7aaad049ec31a944d44137ecc976f0a4771014",
+      "status": "FAIL",
+      "label": 0,
+      "quality_score": 0.0,
+      "decision_complete": true,
+      "coverage_complete": true,
+      "checks": [
+        {
+          "id": "A1_producer_boundary",
+          "status": "FAIL"
+        },
+        {
+          "id": "A2_sink_adoption",
+          "status": "FAIL",
+          "reason": "UnicodeEncodeError('latin-1', '{\"data\": {\"event_id\": \"probe-001\", \"timestamp\": \"2023-11-14T22:13:20\", \"user_name\": \"Müller\", \"action\": \"PAGE_VIEW\", \"page_url\": \"€probe\", \"processed_at\": \"2026-10-01T06:59:41.957386\"}}\\n', 130, 131, 'ordinal not in range(256)')"
+        }
+      ],
+      "failed_check_ids": [
+        "A1_producer_boundary",
+        "A2_sink_adoption"
+      ],
+      "observed_check_count": 2,
+      "required_check_ids": [
+        "A1_producer_boundary",
+        "A2_sink_adoption"
+      ]
+    }
+  },
+  "response_digest": "b78e706a996562e4b62d261f41e0c6b004f6e992aca21b9d9d6c5c0ebf3b94d6",
+  "result": {
+    "status": "FAIL",
+    "label": 0,
+    "quality_score": 0.0,
+    "scorer_version": "pipe3-recipient-objective-v2",
+    "mode": "adoption",
+    "decision_complete": true,
+    "coverage_complete": true,
+    "checks": [
+      {
+        "id": "A1_producer_boundary",
+        "status": "FAIL"
+      },
+      {
+        "id": "A2_sink_adoption",
+        "status": "FAIL",
+        "reason": "UnicodeEncodeError('latin-1', '{\"data\": {\"event_id\": \"probe-001\", \"timestamp\": \"2023-11-14T22:13:20\", \"user_name\": \"Müller\", \"action\": \"PAGE_VIEW\", \"page_url\": \"€probe\", \"processed_at\": \"2026-10-01T06:59:41.957386\"}}\\n', 130, 131, 'ordinal not in range(256)')"
+      }
+    ],
+    "failed_check_ids": [
+      "A1_producer_boundary",
+      "A2_sink_adoption"
+    ]
+  },
+  "candidate_received_hidden_assertions": false
+}

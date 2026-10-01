@@ -1,0 +1,420 @@
+{
+  "version": "pipe3-two-stage-composition-v1.1",
+  "control": "recipient_owned",
+  "task_id": "PIPE3_stream_processing",
+  "source_seed": 0,
+  "target_seed": 1,
+  "root": "PIPE3_stream_processing",
+  "same_root_qualification": true,
+  "independent_benchmark": false,
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "source_commit": "073708ebb4c8a5c897b3ef96517084a068423353",
+  "python": "3.9.6",
+  "python_executable": "/Library/Developer/CommandLineTools/usr/bin/python3",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "component_sha256": {
+    "scripts/peerrolebench_pipe3_two_stage_composition.py": "2f20f8472aaf4861582249006156a86c3cf751f53bee779bb26698ce0b004e6f",
+    "scripts/peerrolebench_two_stage_gate.py": "6b485956a69dbc8ca424b75b77b9f7f3430929682d9d9e2a15f853c333126f10",
+    "scripts/peerrolebench_role_evidence_selection.py": "74d1f842f582f62383f635cdf07c4356e9521db57522fdbdb5758bb68598d2d4",
+    "scripts/peerrolebench_role_evidence_offer.py": "1a59ac51657aa77a4f2d340db4e6d39efb4d39674a1611be753f02ee4ed00af2"
+  },
+  "policy": "ContextualTrustPolicy",
+  "overlay_values": "qualification_control_only",
+  "authored_controls": {
+    "source_judgment": "parent-authored",
+    "action": "parent-authored",
+    "patched_actor": "parent-authored"
+  },
+  "status": "UNKNOWN",
+  "passed": false,
+  "contract_passed": true,
+  "stop_reason": "recipient-owned integration change cannot label producer",
+  "source": {
+    "delivery_id": "recipient_owned-delivery-0",
+    "delivery_digest": "e5084ee161666739bf1ea54353ea225ec590c51b79d74130071aa97c85469a30",
+    "producer": {
+      "status": "PASS",
+      "label": 1,
+      "quality_score": 1.0,
+      "scorer_version": "pipe3-producer-objective-v2",
+      "decision_complete": true,
+      "coverage_complete": true,
+      "checks": [
+        {
+          "id": "P1_import",
+          "status": "PASS"
+        },
+        {
+          "id": "P2_iso_serialization",
+          "status": "PASS"
+        },
+        {
+          "id": "P3_batch_output",
+          "status": "PASS"
+        }
+      ],
+      "failed_check_ids": [],
+      "response_digest": "feecde3b663f898100c0a12781be7fffcd7dd3c701af7248dcec46b3a4d305f5",
+      "transport": {
+        "status": "complete"
+      },
+      "artifact_sha256": "e5084ee161666739bf1ea54353ea225ec590c51b79d74130071aa97c85469a30"
+    },
+    "scores_before": {
+      "producer": {
+        "status": "PASS",
+        "label": 1,
+        "quality_score": 1.0,
+        "scorer_version": "pipe3-producer-objective-v2",
+        "decision_complete": true,
+        "coverage_complete": true,
+        "checks": [
+          {
+            "id": "P1_import",
+            "status": "PASS"
+          },
+          {
+            "id": "P2_iso_serialization",
+            "status": "PASS"
+          },
+          {
+            "id": "P3_batch_output",
+            "status": "PASS"
+          }
+        ],
+        "failed_check_ids": [],
+        "response_digest": "feecde3b663f898100c0a12781be7fffcd7dd3c701af7248dcec46b3a4d305f5",
+        "transport": {
+          "status": "complete"
+        },
+        "artifact_sha256": "e5084ee161666739bf1ea54353ea225ec590c51b79d74130071aa97c85469a30"
+      },
+      "recipient": {
+        "status": "FAIL",
+        "label": 0,
+        "quality_score": 0.0,
+        "scorer_version": "pipe3-recipient-objective-v2",
+        "mode": "recipient",
+        "decision_complete": true,
+        "coverage_complete": true,
+        "checks": [
+          {
+            "id": "R1_process",
+            "status": "FAIL",
+            "reason": "UnicodeEncodeError('latin-1', '{\"data\": {\"event_id\": \"probe-001\", \"timestamp\": \"2023-11-14T22:13:20\", \"user_name\": \"Müller\", \"action\": \"PAGE_VIEW\", \"page_url\": \"€probe\", \"processed_at\": \"2026-10-01T06:59:39.276341\"}}\\n', 130, 131, 'ordinal not in range(256)')",
+            "failure_origin": "candidate",
+            "failure_stage": "processing",
+            "failure_code": "PROCESSOR_ERROR_IN_DELIVERY",
+            "exception_class": "UnicodeEncodeError",
+            "source_path": "processor.py"
+          },
+          {
+            "id": "R2_shape",
+            "status": "FAIL",
+            "reason": "blocked_by_candidate_processor_failure"
+          },
+          {
+            "id": "R3_utf8_semantics",
+            "status": "FAIL",
+            "reason": "blocked_by_candidate_processor_failure"
+          }
+        ],
+        "failed_check_ids": [
+          "R1_process",
+          "R2_shape",
+          "R3_utf8_semantics"
+        ],
+        "response_digest": "5b26b1104408ce578e704be641f9638a2a414891a3614c6d0f73db314aa85981",
+        "transport": {
+          "status": "complete"
+        },
+        "artifact_sha256": "16223542de99f20807fcf97463c16edd8883b0e90df5919942f2da1c6cdedcf5"
+      },
+      "adoption": {
+        "status": "FAIL",
+        "label": 0,
+        "quality_score": 0.5,
+        "scorer_version": "pipe3-recipient-objective-v2",
+        "mode": "adoption",
+        "decision_complete": true,
+        "coverage_complete": true,
+        "checks": [
+          {
+            "id": "A1_producer_boundary",
+            "status": "PASS"
+          },
+          {
+            "id": "A2_sink_adoption",
+            "status": "FAIL",
+            "reason": "UnicodeEncodeError('latin-1', '{\"data\": {\"event_id\": \"probe-001\", \"timestamp\": \"2023-11-14T22:13:20\", \"user_name\": \"Müller\", \"action\": \"PAGE_VIEW\", \"page_url\": \"€probe\", \"processed_at\": \"2026-10-01T06:59:39.658903\"}}\\n', 130, 131, 'ordinal not in range(256)')"
+          }
+        ],
+        "failed_check_ids": [
+          "A2_sink_adoption"
+        ],
+        "response_digest": "1b44bea6ddb867ef73f4bba8a871bf9d2a27343a9a1ee205e81104fc69e63e4d",
+        "transport": {
+          "status": "complete"
+        },
+        "artifact_sha256": "5cd518fa1c0cc346f33e69ee0d935490777a557dbf342304c4c441b5d3c6d251"
+      }
+    },
+    "scores_after": {
+      "producer": {
+        "status": "PASS",
+        "label": 1,
+        "quality_score": 1.0,
+        "scorer_version": "pipe3-producer-objective-v2",
+        "decision_complete": true,
+        "coverage_complete": true,
+        "checks": [
+          {
+            "id": "P1_import",
+            "status": "PASS"
+          },
+          {
+            "id": "P2_iso_serialization",
+            "status": "PASS"
+          },
+          {
+            "id": "P3_batch_output",
+            "status": "PASS"
+          }
+        ],
+        "failed_check_ids": [],
+        "response_digest": "feecde3b663f898100c0a12781be7fffcd7dd3c701af7248dcec46b3a4d305f5",
+        "transport": {
+          "status": "complete"
+        },
+        "artifact_sha256": "e5084ee161666739bf1ea54353ea225ec590c51b79d74130071aa97c85469a30"
+      },
+      "recipient": {
+        "status": "PASS",
+        "label": 1,
+        "quality_score": 1.0,
+        "scorer_version": "pipe3-recipient-objective-v2",
+        "mode": "recipient",
+        "decision_complete": true,
+        "coverage_complete": true,
+        "checks": [
+          {
+            "id": "R1_process",
+            "status": "PASS",
+            "reason": ""
+          },
+          {
+            "id": "R2_shape",
+            "status": "PASS"
+          },
+          {
+            "id": "R3_utf8_semantics",
+            "status": "PASS"
+          }
+        ],
+        "failed_check_ids": [],
+        "response_digest": "be69c76f6d4abaf11351058bb225247889ee77069dc75d9696998b9f9b573620",
+        "transport": {
+          "status": "complete"
+        },
+        "artifact_sha256": "4c43f79c95e650d5cf945d14b39e062202ae5f59e9094d9c0d5202952257cd0a"
+      },
+      "adoption": {
+        "status": "PASS",
+        "label": 1,
+        "quality_score": 1.0,
+        "scorer_version": "pipe3-recipient-objective-v2",
+        "mode": "adoption",
+        "decision_complete": true,
+        "coverage_complete": true,
+        "checks": [
+          {
+            "id": "A1_producer_boundary",
+            "status": "PASS"
+          },
+          {
+            "id": "A2_sink_adoption",
+            "status": "PASS"
+          }
+        ],
+        "failed_check_ids": [],
+        "response_digest": "443c124b57defd886319ad69a98eee9139f01b6421cc9984b96cf3d1639ef48f",
+        "transport": {
+          "status": "complete"
+        },
+        "artifact_sha256": "4bf7d1999b96d38cb33581531ddc8d4025a3577da0d56487d77931b9288710b8"
+      }
+    },
+    "action": {
+      "consumer_action": "repair",
+      "source_files": {
+        "producer.py": "\nimport json\nimport os\nfrom datetime import datetime\nfrom models import UserEvent\n\n\ndef serialize_event(event: UserEvent) -> str:\n    \n    data = {\n        \"event_id\": event.event_id,\n        \"timestamp\": event.timestamp,\n        \"user_name\": event.user_name,\n        \"action\": event.action,\n        \"page_url\": event.page_url,\n    }\n    \n    data[\"timestamp\"] = event.timestamp.isoformat()\n    return json.dumps(data)\n\n\ndef produce_events(events: list[UserEvent], output_path: str) -> None:\n    \n    with open(output_path, \"w\", encoding=\"utf-8\") as f:\n        for event in events:\n            f.write(serialize_event(event) + \"\\n\")\n",
+        "models.py": "\nfrom __future__ import annotations\nfrom dataclasses import dataclass\nfrom datetime import datetime\n\n\nVALID_ACTIONS = [\"page_view\", \"click\", \"scroll\", \"purchase\"]\n\n\n@dataclass\nclass UserEvent:\n    \n    event_id: str\n    timestamp: datetime\n    user_name: str\n    action: str\n    page_url: str\n\n    def validate(self) -> bool:\n        \n        if not self.event_id:\n            raise ValueError(\"event_id is required\")\n        if self.action not in VALID_ACTIONS:\n            raise ValueError(f\"Invalid action: {self.action}\")\n        return True\n",
+        "sink.py": "\nimport json\nimport os\nfrom datetime import datetime\n\n\ndef load_processed_events(input_path: str) -> list[dict]:\n    \n    events = []\n    with open(input_path, \"r\", encoding=\"utf-8\") as f:\n        for line in f:\n            line = line.strip()\n            if not line:\n                continue\n            event = json.loads(line)\n            \n            _ = event[\"event_id\"]  \n            _ = event[\"timestamp\"]\n            events.append(event)\n    return events\n\n\ndef write_summary(events: list[dict], output_path: str) -> dict:\n    \n    summary = {\n        \"total_events\": len(events),\n        \"actions\": {},\n        \"users\": set(),\n    }\n    for evt in events:\n        action = evt[\"action\"]\n        summary[\"actions\"][action] = summary[\"actions\"].get(action, 0) + 1\n        summary[\"users\"].add(evt[\"user_name\"])\n\n    summary[\"unique_users\"] = len(summary[\"users\"])\n    summary[\"users\"] = sorted(summary[\"users\"])\n\n    with open(output_path, \"w\", encoding=\"utf-8\") as f:\n        json.dump(summary, f, indent=2, ensure_ascii=False)\n\n    return summary\n",
+        "processor.py": "\nimport json\nimport os\nfrom datetime import datetime\n\n\ndef parse_timestamp(ts_str: str) -> datetime:\n    \n    return datetime.fromisoformat(ts_str)\n\n\ndef transform_event(event_data: dict) -> dict:\n    \n    processed = dict(event_data)\n    \n    ts = parse_timestamp(event_data[\"timestamp\"])\n    processed[\"timestamp\"] = ts.isoformat()\n    processed[\"processed_at\"] = datetime.utcnow().isoformat()\n    processed[\"action\"] = event_data[\"action\"].upper()\n    return processed\n\n\ndef process_events(input_path: str, output_path: str) -> int:\n    \n    count = 0\n    \n    with open(input_path, \"r\", encoding=\"utf-8\") as fin,\\\n         open(output_path, \"w\", encoding=\"utf-8\") as fout:\n        for line in fin:\n            line = line.strip()\n            if not line:\n                continue\n            event_data = json.loads(line)\n            processed = transform_event(event_data)\n            \n            fout.write(json.dumps(processed, ensure_ascii=False) + \"\\n\")\n            count += 1\n    return count\n"
+      },
+      "input_source_sha256": "0146ad5a64365d12d8f684623128e8f4048d33b940155147b7dbdaee747f92b7",
+      "output_source_sha256": "4d949e54cf2cce4927230a4c0ee5c41025f0d27cb8fc3eeb7993c7c465fe1569",
+      "delivery_sha256": "e5084ee161666739bf1ea54353ea225ec590c51b79d74130071aa97c85469a30",
+      "changed_paths": [
+        "processor.py"
+      ],
+      "action_initialization": "selected_delivery_copy",
+      "prior_delivery_may_have_been_seen": true,
+      "independent_redo_is_blinded_control": false
+    },
+    "outcome": {
+      "status": "PASS",
+      "quality_score": 1.0,
+      "coverage_complete": true,
+      "decision_complete": true
+    },
+    "eligibility": {
+      "gate_version": "pipe3-responsibility-label-v1",
+      "producer_owned_paths_changed": [],
+      "recipient_owned_paths_changed": [
+        "processor.py"
+      ],
+      "q_complete": true,
+      "outcome_complete": true,
+      "judgment_target_role": "recipient",
+      "artifact_binding_present": true,
+      "later_use_valid": false,
+      "producer_feedback_status": "PENDING_ATTRIBUTION",
+      "producer_feedback_eligible": false,
+      "reason": "recipient-owned integration change cannot label producer",
+      "policy_update_allowed": false,
+      "scientific_claim_allowed": false
+    },
+    "index": 0,
+    "source_gate": {
+      "gate_version": "two-stage-role-evidence-v1",
+      "producer_paths_changed": [],
+      "recipient_paths_changed": [
+        "processor.py"
+      ],
+      "q_complete": true,
+      "y_complete": true,
+      "target_role": "recipient",
+      "artifact_binding_present": true,
+      "later_use_valid": false,
+      "attribution_eligible": false,
+      "evidence_publish_allowed": false,
+      "policy_update_allowed": false,
+      "status": "PENDING_ATTRIBUTION",
+      "reason": "recipient-owned integration change cannot label producer"
+    }
+  },
+  "target": {
+    "status": "NOT_RUN_UNKNOWN"
+  },
+  "policy_updates": 0,
+  "unknown_denominator": {
+    "source_rows": 1,
+    "unknown_rows": 1
+  },
+  "ledger": [
+    {
+      "event_type": "peer_selection",
+      "payload": {
+        "selection_id": "selection-recipient_owned-0",
+        "task_id": "PIPE3_stream_processing",
+        "task_index": 0,
+        "selector_id": "peer-a",
+        "role": "producer",
+        "candidate_ids": [
+          "peer-b",
+          "peer-c"
+        ],
+        "chosen_peer_id": "peer-b",
+        "propensity": 1.0
+      },
+      "previous_hash": "GENESIS",
+      "record_hash": "7754eda1b25b5dcfa3691854c8bf3f64cba20964551fa5c2c30a40c3702ddc03"
+    },
+    {
+      "event_type": "task_start",
+      "payload": {
+        "task_id": "PIPE3_stream_processing",
+        "task_index": 0
+      },
+      "previous_hash": "7754eda1b25b5dcfa3691854c8bf3f64cba20964551fa5c2c30a40c3702ddc03",
+      "record_hash": "f6d796ca4406086df1031a8aa3ab8bcadd74a3b4d5301e4bc1d9d23503a00688"
+    },
+    {
+      "event_type": "producer_delivery",
+      "payload": {
+        "delivery_id": "recipient_owned-delivery-0",
+        "task_id": "PIPE3_stream_processing",
+        "producer_id": "peer-b",
+        "recipient_id": "peer-a",
+        "artifact_sha256": "e5084ee161666739bf1ea54353ea225ec590c51b79d74130071aa97c85469a30",
+        "source_event_id": "request-recipient_owned-0",
+        "task_index": 0,
+        "selection_id": "selection-recipient_owned-0"
+      },
+      "previous_hash": "f6d796ca4406086df1031a8aa3ab8bcadd74a3b4d5301e4bc1d9d23503a00688",
+      "record_hash": "96e0b4f34b0d69e7846cae9d01ad8b6844a41e3eb235c1b8daf0d7e0f05ee76b"
+    },
+    {
+      "event_type": "producer_score",
+      "payload": {
+        "producer_score_id": "recipient_owned-producer-score-0",
+        "delivery_id": "recipient_owned-delivery-0",
+        "artifact_sha256": "e5084ee161666739bf1ea54353ea225ec590c51b79d74130071aa97c85469a30",
+        "scorer_version": "pipe3-producer-objective-v2",
+        "status": "PASS",
+        "label": 1,
+        "quality_score": 1.0,
+        "score_payload_sha256": "feecde3b663f898100c0a12781be7fffcd7dd3c701af7248dcec46b3a4d305f5",
+        "coverage_complete": true,
+        "decision_complete": true
+      },
+      "previous_hash": "96e0b4f34b0d69e7846cae9d01ad8b6844a41e3eb235c1b8daf0d7e0f05ee76b",
+      "record_hash": "28236e99b42ca77b266db1a4aa5a707c5b7b648ba1331106e3115c2269c6019a"
+    },
+    {
+      "event_type": "recipient_judgment",
+      "payload": {
+        "judgment_id": "recipient_owned-judgment-0",
+        "delivery_id": "recipient_owned-delivery-0",
+        "consumer_id": "peer-a",
+        "decision": "accept_with_rework",
+        "observed_artifact_sha256": "e5084ee161666739bf1ea54353ea225ec590c51b79d74130071aa97c85469a30",
+        "terminal_outcome_available": false,
+        "repair_note": "pipe3-two-stage-composition-v1.1:recipient_owned"
+      },
+      "previous_hash": "28236e99b42ca77b266db1a4aa5a707c5b7b648ba1331106e3115c2269c6019a",
+      "record_hash": "fc7d3636a95bf8b932f79fea695ef0150a1ad03874e7e5cf80b2ec436978eb96"
+    },
+    {
+      "event_type": "consumer_action",
+      "payload": {
+        "action_id": "recipient_owned-action-0",
+        "delivery_id": "recipient_owned-delivery-0",
+        "consumer_id": "peer-a",
+        "used_artifact": true,
+        "input_artifact_sha256": "e5084ee161666739bf1ea54353ea225ec590c51b79d74130071aa97c85469a30",
+        "output_artifact_sha256": "4d949e54cf2cce4927230a4c0ee5c41025f0d27cb8fc3eeb7993c7c465fe1569",
+        "repair_cost": 0.0,
+        "action": "repair"
+      },
+      "previous_hash": "fc7d3636a95bf8b932f79fea695ef0150a1ad03874e7e5cf80b2ec436978eb96",
+      "record_hash": "63d573f21daaa3344f9939c3e82661fe4c2a92c60dc88a8ac98a7a93dba8baaf"
+    },
+    {
+      "event_type": "terminal_outcome",
+      "payload": {
+        "outcome_id": "recipient_owned-outcome-0",
+        "delivery_id": "recipient_owned-delivery-0",
+        "success": true,
+        "scorer_version": "pipe3-recipient-objective-v2",
+        "partial_score": 1.0,
+        "score_payload_sha256": "68b6c7fe7a025002a8c6d3a9dafbffa6e8f4e70cfca3d0a36ba4e10022238cb7"
+      },
+      "previous_hash": "63d573f21daaa3344f9939c3e82661fe4c2a92c60dc88a8ac98a7a93dba8baaf",
+      "record_hash": "e5d9e2162e131b5120719f87d9a6a947b7654935cba0238ba3e287fd3e9576bf"
+    }
+  ]
+}

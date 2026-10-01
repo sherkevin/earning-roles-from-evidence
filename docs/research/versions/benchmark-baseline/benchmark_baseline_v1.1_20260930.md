@@ -25,6 +25,15 @@
 
 一个不改变 pinned checkout 的 CSV-writer probe 已证明 option A 可以在保留逻辑 ETL 合同的前提下修复四个 malformed seed；它生成了新的 derived-root digest，但未写入 active manifest。详见 [derived fixture probe](../../../coordination/task_reports/20261001_pipe2_derived_fixture_probe.md)。
 
+2026-10-01 manifest amendment：v13/v14/v15 的历史离线 receipts 保留但不再被解释为完整
+root enforcement；提交 `073708e` 后的 v16 才通过逐 offer RNG schedule、prefix content
+immutability、re-visible accounting 和交叉分母的离线 implementation-parity 检查。它仍
+不是 TeamBench/canonical-ledger root manifest，也没有解冻 benchmark、baseline 或 API/A800。
+PIPE3 v2 的 two-stage CPU composition 只关闭有限 evidence→assignment→later-credit
+工程接缝，candidate treatment、责任归因、terminal channel、independent history 与
+real situated judgment 仍开放。详见 [manifest hardening v2](../../../coordination/task_reports/20261001_baseline_manifest_hardening_v2.md)
+和 [PIPE3 two-stage composition](../../../coordination/task_reports/20261001_pipe3_two_stage_composition.md)。
+
 对照审查还保留 `MULTI3_polyglot` 作为 `CONDITIONAL-LOW` fallback，而不是 active root：其 JSON fixtures 可解析，但 native tests 使用 hardcoded `correct_wire/correct_envelope`，没有真实 producer→recipient artifact binding；sample generator、seed split、schema contract 和 prompt oracle 也未冻结。详见 [MULTI3 fallback audit](../../../coordination/task_reports/20261001_multi3_fallback_audit.md)。
 
 副轨候选为 `graph-ipd@00ef417f60053569175b2b50d0f0e25ff8eb7007`（MIT，arXiv:2608.28977），用于机制 sanity check，不改变主轨的 artifact claim。
