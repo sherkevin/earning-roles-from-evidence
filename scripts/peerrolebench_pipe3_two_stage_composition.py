@@ -74,13 +74,15 @@ def _log(path: Path, event: str, payload: Any) -> None:
         handle.flush()
 
 
-def _patch_producer(sources: Mapping[str, str]) -> dict[str, str]:
+def _patch_producer(sources: Mapping[str, str], timestamp_field: str) -> dict[str, str]:
     text = sources["producer.py"]
     anchor = "    return json.dumps(data, default=str)"
     if anchor not in text:
         raise RuntimeError("producer correction anchor not found")
+    if not timestamp_field.isidentifier() or f"event.{timestamp_field}" not in text:
+        raise RuntimeError("timestamp field is absent from producer source")
     return {**dict(sources), "producer.py": text.replace(
-        anchor, '    data["timestamp"] = event.timestamp.isoformat()\n    return json.dumps(data)', 1,
+        anchor, f'    data["{timestamp_field}"] = event.{timestamp_field}.isoformat()\n    return json.dumps(data)', 1,
     )}
 
 
@@ -154,7 +156,7 @@ def _event_record(boundary: Pipe3SelectionBoundary, event_type: str, event_id: s
 def _prepare_case(materials: dict[str, Any], control: str) -> tuple[dict[str, Any], dict[str, str], dict[str, str]]:
     base = dict(materials["agent_payloads"]["producer"]["source_files"])
     base.update(materials["agent_payloads"]["recipient"]["source_files"])
-    producer_fixed = _patch_producer(base)
+    producer_fixed = _patch_producer(base, interfaces(materials)["timestamp_field"])
     recipient_fixed = _patch_recipient(base)
     case = deepcopy(materials)
     if control == "producer_owned":
@@ -337,7 +339,12 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
     source["source_gate"] = gate.payload()
     _log(raw, "source_gate", gate.payload())
     if not gate.evidence_publish_allowed:
-        summary = {**config, "status": "UNKNOWN", "passed": False, "stop_reason": gate.reason,
+        expected_rejection = (control in {"recipient_owned", "mixed"}
+                              and source["outcome"]["status"] in {"PASS", "FAIL"}
+                              and gate.status in {"UNKNOWN", "PENDING_ATTRIBUTION"}
+                              and boundary.policy.updates == 0)
+        summary = {**config, "status": "UNKNOWN", "passed": False,
+                   "contract_passed": expected_rejection, "stop_reason": gate.reason,
                    "source": source, "target": {"status": "NOT_RUN_UNKNOWN"}, "policy_updates": boundary.policy.updates,
                    "unknown_denominator": {"source_rows": 1, "unknown_rows": 1}, "ledger": boundary.ledger.events,
                    "scientific_claim_allowed": False}
@@ -380,6 +387,21 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
                              selection_id=f"selection-{control}-1", selected_peer=target_seal.native_selection.chosen_peer_id,
                              delivery_sources=target_delivery, final_sources=target_final,
                              out=out / "target", raw=raw, seed=target_seed, scorer=scorer)
+    if target["outcome"]["status"] == "UNKNOWN":
+        _log(raw, "target_unknown_no_update", {"assignment_id": plan.assignment_id,
+                                                 "outcome": target["outcome"],
+                                                 "policy_updates": boundary.policy.updates})
+        summary = {**config, "status": "UNKNOWN", "passed": False, "contract_passed": False,
+                   "stop_reason": "target scorer/outcome UNKNOWN; complete replay and delayed credit skipped",
+                   "source": source, "target": target, "source_gate": gate.payload(),
+                   "role_offer": role_offer.payload(), "assignment_id": plan.assignment_id,
+                   "replay": {"status": "NOT_RUN_INCOMPLETE"}, "credit": None,
+                   "policy_updates": boundary.policy.updates, "delayed_credit_count": 0,
+                   "unknown_denominator": {"source_rows": 1, "unknown_rows": 1},
+                   "ledger": boundary.ledger.events, "scientific_claim_allowed": False}
+        (out / "ledger.json").write_text(json.dumps(boundary.ledger.events, indent=2, default=str) + "\n", encoding="utf-8")
+        (out / "summary.json").write_text(json.dumps(summary, indent=2, ensure_ascii=False, default=str) + "\n", encoding="utf-8")
+        return summary
     # The strict replay contract requires a terminal evidence row for every
     # delivery.  This target completion row is auxiliary lineage for replay;
     # it is never added to the public role-evidence offer and never updates
@@ -414,7 +436,8 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
                                       "policy_updates": boundary.policy.updates, "before_state_digest": _digest(before),
                                       "after_state_digest": _digest(boundary.policy.__dict__)})
     summary = {**config, "status": "QUALIFIED_OFFLINE" if credit is not None and update_applied else "UNKNOWN",
-               "passed": credit is not None and update_applied, "source": source, "target": target,
+               "passed": credit is not None and update_applied,
+               "contract_passed": credit is not None and update_applied, "source": source, "target": target,
                "source_gate": gate.payload(), "role_offer": role_offer.payload(), "assignment_id": plan.assignment_id,
                "replay": replay.as_dict(), "credit": None if credit is None else credit.__dict__,
                "policy_updates": boundary.policy.updates, "delayed_credit_count": len(delayed.credits),
@@ -451,8 +474,9 @@ def run(out_dir: Path, *, source_seed: int = 0, target_seed: int = 1,
                        "error_type": type(exc).__name__, "error": str(exc), "failure_preserved": True}
             (case_dir / "failure.json").write_text(json.dumps(failure, indent=2, default=str) + "\n", encoding="utf-8")
             cases.append(failure)
-    result = {**top, "status": "QUALIFIED_OFFLINE" if all(c.get("passed") for c in cases) else "UNKNOWN",
-              "passed": all(c.get("passed") for c in cases), "cases": cases,
+    contract_passed = len(cases) == len(CONTROLS) and all(c.get("contract_passed") is True for c in cases)
+    result = {**top, "status": "QUALIFIED_OFFLINE" if contract_passed else "UNKNOWN",
+              "passed": contract_passed, "contract_passed": contract_passed, "cases": cases,
               "ended_at_utc": datetime.now(timezone.utc).isoformat(),
               "interpretation": "CPU engineering composition only; no LLM efficacy, RARE or benchmark claim"}
     (out_dir / "summary.json").write_text(json.dumps(result, indent=2, ensure_ascii=False, default=str) + "\n", encoding="utf-8")

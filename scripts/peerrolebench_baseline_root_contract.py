@@ -35,6 +35,7 @@ class RootRunnerManifest:
     generator_digest: str
     scorer_digest: str
     schedule_digest: str
+    rng_schedule_digest: str
     registry_digest: str
     seed_split: tuple[int, ...]
     arm_names: tuple[str, ...]
@@ -65,6 +66,7 @@ class RootRunnerManifest:
         for name, digest in (
             ("source_digest", self.source_digest), ("generator_digest", self.generator_digest),
             ("scorer_digest", self.scorer_digest), ("schedule_digest", self.schedule_digest),
+            ("rng_schedule_digest", self.rng_schedule_digest),
             ("registry_digest", self.registry_digest),
         ):
             if len(digest) != 64 or digest != digest.lower() or any(
@@ -111,6 +113,9 @@ def validate_public_prefix(
     schedule_ids = [str(row.feedback_id) for row in schedule]
     if len(schedule_ids) != len(set(schedule_ids)):
         raise ValueError("schedule contains duplicate feedback ids")
+    arrival_indices = [int(row.arrival_index) for row in schedule]
+    if arrival_indices != sorted(arrival_indices) or len(arrival_indices) != len(set(arrival_indices)):
+        raise ValueError("schedule must be strictly ordered by unique arrival_index")
     expected = [str(row.feedback_id) for row in schedule if int(row.arrival_index) <= read_cut]
     observed = [str(item) for item in observed_feedback_ids]
     if len(observed) != len(set(observed)):
@@ -143,6 +148,9 @@ def feedback_denominators(rows: Sequence[Mapping[str, Any]]) -> dict[str, int]:
         "n_eligible": 0, "n_unknown": 0, "n_ignored": 0,
         "n_duplicate": 0, "n_pending": 0,
     })
+    for selectedness in ("selected", "unselected"):
+        for classification in FEEDBACK_CLASSES:
+            counts[f"n_{selectedness}_{classification}"] = 0
     seen_feedback_ids: set[str] = set()
     for row in rows:
         feedback_id = str(row.get("feedback_id", ""))
@@ -152,12 +160,16 @@ def feedback_denominators(rows: Sequence[Mapping[str, Any]]) -> dict[str, int]:
             raise ValueError("feedback denominator rows must have unique feedback_id")
         seen_feedback_ids.add(feedback_id)
         counts["n_feedback_rows"] += 1
-        selected = bool(row.get("selected", False))
+        selected_value = row.get("selected", False)
+        if type(selected_value) is not bool:
+            raise ValueError("feedback denominator selected must be boolean")
+        selected = selected_value
         counts["n_selected" if selected else "n_unselected"] += 1
         classification = str(row.get("classification", ""))
         if classification not in FEEDBACK_CLASSES:
             raise ValueError(f"invalid feedback classification={classification!r}")
         counts[f"n_{classification}"] += 1
+        counts[f"n_{'selected' if selected else 'unselected'}_{classification}"] += 1
     if counts["n_feedback_rows"] != counts["n_selected"] + counts["n_unselected"]:
         raise AssertionError("selected/unselected denominator does not sum to total")
     if counts["n_feedback_rows"] != sum(counts[f"n_{name}"] for name in FEEDBACK_CLASSES):

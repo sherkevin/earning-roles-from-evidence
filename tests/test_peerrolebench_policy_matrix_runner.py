@@ -15,6 +15,8 @@ from peerrolebench_policy_matrix_runner_v1 import (  # noqa: E402
     fixture_case,
     _registry,
     run_fixture_suite,
+    rng_schedule_digest,
+    make_offer,
 )
 from peerrolebench_event_time_schedule import schedule_digest  # noqa: E402
 from peerrolebench_event_time_schedule import ArrivalAssignment  # noqa: E402
@@ -54,7 +56,8 @@ def test_runner_consumes_root_manifest_identity_and_schedule():
         source_digest=hashlib.sha256((ROOT / "scripts/peerrolebench_policy_matrix_runner_v1.py").read_bytes()).hexdigest(),
         generator_digest=hashlib.sha256((ROOT / "scripts/peerrolebench_baseline_contract.py").read_bytes()).hexdigest(),
         scorer_digest=hashlib.sha256((ROOT / "scripts/peerrolebench_baseline_policies.py").read_bytes()).hexdigest(),
-        schedule_digest=digest, registry_digest=registry_digest(_registry()),
+        schedule_digest=digest, rng_schedule_digest=rng_schedule_digest(offers),
+        registry_digest=registry_digest(_registry()),
         seed_split=(0,), arm_names=ARM_NAMES, rng_algorithm="numpy-pcg64",
         visibility_rule="canonical_schedule_prefix_v1", max_episode_attempts=2,
         max_api_calls=0, max_wall_seconds=60.0,
@@ -67,6 +70,11 @@ def test_runner_consumes_root_manifest_identity_and_schedule():
         PolicyMatrixRunner(registry=_registry()).run(
             offers, schedule, expected_schedule_digest=digest,
             manifest=RootRunnerManifest(**{**manifest.__dict__, "schedule_digest": "e" * 64}), root_seed=0,
+        )
+    with pytest.raises(ValueError, match="RNG schedule digest"):
+        PolicyMatrixRunner(registry=_registry()).run(
+            offers, schedule, expected_schedule_digest=digest,
+            manifest=RootRunnerManifest(**{**manifest.__dict__, "rng_schedule_digest": "f" * 64}), root_seed=0,
         )
 
 
@@ -93,6 +101,33 @@ def test_runner_binds_protocol_event_identity_and_decision_order():
         runner.run(
             [replace(offers[0], decision_index=1), replace(offers[1], decision_index=1)],
             schedule, expected_schedule_digest=digest,
+        )
+
+
+def test_revisible_prefix_is_not_duplicate_and_content_mutation_is_rejected():
+    offers, schedule, digest = fixture_case("unknown_late_correction")
+    result = PolicyMatrixRunner(registry=_registry()).run(
+        offers, schedule, expected_schedule_digest=digest,
+    )
+    rare = result["metrics"]["RARE"]
+    assert rare["n_eligible"] == 2
+    assert rare["n_duplicate"] == 0
+    assert rare["n_revisible_prefix_rows"] == 1
+
+    mutated_rows = [dict(row) for row in offers[2].offer.public_rows]
+    mutated_rows[0]["label"] = 0.25
+    original_offer = offers[2].offer
+    mutated_offer = make_offer(
+        offer_id=original_offer.offer_id, task_id=original_offer.task_id,
+        task_index=original_offer.task_index, role=original_offer.role,
+        context_key=original_offer.context_key, candidate_keys=original_offer.candidate_keys,
+        public_rows=mutated_rows, evidence_version=original_offer.evidence_version,
+        available_index=original_offer.available_index,
+    )
+    mutated_offers = [*offers[:2], replace(offers[2], offer=mutated_offer)]
+    with pytest.raises(ValueError, match="feedback content changed"):
+        PolicyMatrixRunner(registry=_registry()).run(
+            mutated_offers, schedule, expected_schedule_digest=digest,
         )
 
 

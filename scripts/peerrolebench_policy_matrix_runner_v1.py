@@ -62,6 +62,22 @@ def _sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def rng_schedule_digest(offers: Sequence["MatrixOffer"]) -> str:
+    """Hash the exact per-offer RNG schedule used by a matrix replay."""
+    payload = [
+        {"offer_id": str(item.offer.offer_id), "decision_index": int(item.decision_index),
+         "rng_seed": int(item.rng_seed)}
+        for item in offers
+    ]
+    canonical = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+def _feedback_row_digest(row: Mapping[str, Any]) -> str:
+    canonical = json.dumps(dict(row), sort_keys=True, separators=(",", ":"), ensure_ascii=False, default=str)
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
 @dataclass(frozen=True)
 class MatrixOffer:
     offer: Any
@@ -268,18 +284,20 @@ class PolicyMatrixRunner:
                 raise ValueError("manifest candidate registry digest mismatch")
             if manifest.schedule_digest != expected_schedule_digest:
                 raise ValueError("manifest schedule digest mismatch")
+            if manifest.rng_schedule_digest != rng_schedule_digest(offers):
+                raise ValueError("manifest RNG schedule digest mismatch")
         schedule_by_id = {row.feedback_id: row for row in schedule}
         registered_keys = {entry.key for entry in self.registry}
         policies = {name: policy_from_name(name, exploration=0.10) for name in self.arm_names}
         traces: dict[str, list[dict[str, Any]]] = {name: [] for name in self.arm_names}
         metrics = {
             name: {"n_selected": 0, "n_eligible": 0, "n_unknown": 0,
-                   "n_duplicate": 0, "n_ignored": 0, "n_unsupported_correction": 0,
+                   "n_duplicate": 0, "n_revisible_prefix_rows": 0, "n_ignored": 0, "n_unsupported_correction": 0,
                    "n_unselected": 0,
                    "updates": 0, "unknown_reasons": {}}
             for name in self.arm_names
         }
-        seen_feedback_rows: dict[str, set[str]] = {name: set() for name in self.arm_names}
+        feedback_row_digests: dict[str, dict[str, str]] = {name: {} for name in self.arm_names}
         seen_offer_ids: set[str] = set()
         seen_selection_ids: set[str] = set()
         seen_decision_indices: set[int] = set()
@@ -321,11 +339,15 @@ class PolicyMatrixRunner:
                 feedback_trace = []
                 for row in item.offer.public_rows:
                     feedback_id = str(row["feedback_id"])
-                    if feedback_id in seen_feedback_rows[name]:
-                        metrics[name]["n_duplicate"] += 1
-                        feedback_trace.append({"feedback_id": feedback_id, "disposition": "duplicate"})
+                    row_digest = _feedback_row_digest(row)
+                    previous_digest = feedback_row_digests[name].get(feedback_id)
+                    if previous_digest is not None:
+                        if previous_digest != row_digest:
+                            raise ValueError(f"feedback content changed for repeated feedback_id={feedback_id}")
+                        metrics[name]["n_revisible_prefix_rows"] += 1
+                        feedback_trace.append({"feedback_id": feedback_id, "disposition": "revisible_prefix"})
                         continue
-                    seen_feedback_rows[name].add(feedback_id)
+                    feedback_row_digests[name][feedback_id] = row_digest
                     source_selection = policy._decisions.get(str(row["source_event_id"]))
                     if source_selection is None:
                         raise ValueError("feedback references an unknown source selection")
@@ -406,6 +428,7 @@ class PolicyMatrixRunner:
         return {
             "status": "PASS", "arms": list(self.arm_names),
             "root_seed": root_seed,
+            "rng_schedule_digest": None if manifest is None else manifest.rng_schedule_digest,
             "registry_digest": actual_registry_digest,
             "schedule_digest": expected_schedule_digest,
             "metrics": metrics, "traces": traces,
@@ -576,7 +599,7 @@ def run_fixture_suite(out_dir: Path) -> dict[str, Any]:
             source_digest=_sha(ROOT / "scripts/peerrolebench_policy_matrix_runner_v1.py"),
             generator_digest=_sha(ROOT / "scripts/peerrolebench_baseline_contract.py"),
             scorer_digest=_sha(ROOT / "scripts/peerrolebench_baseline_policies.py"),
-            schedule_digest=digest,
+            schedule_digest=digest, rng_schedule_digest=rng_schedule_digest(fixture_specs[case][0]),
             registry_digest=config["registry_digest"],
             seed_split=(0,), arm_names=ARM_NAMES,
             rng_algorithm="numpy-pcg64", visibility_rule="canonical_schedule_prefix_v1",
@@ -619,7 +642,9 @@ def run_fixture_suite(out_dir: Path) -> dict[str, Any]:
     summary = {
         "experiment_id": config["experiment_id"], "status": "QUALIFIED_OFFLINE" if passed else "FAILED_OFFLINE",
         "passed": passed, "case_count": len(cases), "results": {
-            case: {"status": result["status"], "metrics": result["metrics"], "replay": result["replay"]}
+            case: {"status": result["status"], "root_seed": result.get("root_seed"),
+                   "rng_schedule_digest": result.get("rng_schedule_digest"),
+                   "metrics": result["metrics"], "replay": result["replay"]}
             for case, result in cases.items()
         }, "real_api_calls": 0, "gpu_jobs": 0, "scientific_claim_allowed": False,
         "ended_at_utc": datetime.now(timezone.utc).isoformat(),

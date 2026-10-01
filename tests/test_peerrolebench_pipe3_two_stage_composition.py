@@ -16,7 +16,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT / "references/aamas"))
 
-from peerrolebench_pipe3_two_stage_composition import run  # noqa: E402
+from peerrolebench_pipe3_two_stage_composition import _prepare_case, run  # noqa: E402
+from peerrolebench_pipe3_task_qualification import load_pipe3  # noqa: E402
+from peerrolebench_pipe3_material_adapter import build_materials  # noqa: E402
 
 
 def _unit_scorer(kind, sources, info, out, log, seed):
@@ -30,6 +32,7 @@ def _unit_scorer(kind, sources, info, out, log, seed):
 
 def test_producer_source_publication_is_separate_from_later_update(tmp_path: Path):
     result = run(tmp_path / "composition", scorer=_unit_scorer)
+    assert result["contract_passed"] is True
     producer = next(case for case in result["cases"] if case.get("control") == "producer_owned")
     assert producer["status"] == "QUALIFIED_OFFLINE"
     assert producer["source_gate"]["evidence_publish_allowed"] is True
@@ -50,6 +53,8 @@ def test_recipient_and_mixed_controls_stop_unknown_without_fabricated_target(tmp
     for control in ("recipient_owned", "mixed"):
         case = next(item for item in result["cases"] if item.get("control") == control)
         assert case["status"] == "UNKNOWN"
+        assert case["contract_passed"] is True
+        assert case["passed"] is False
         assert case["target"]["status"] == "NOT_RUN_UNKNOWN"
         assert case["policy_updates"] == 0
 
@@ -61,3 +66,32 @@ def test_raw_stage_logs_are_written_incrementally(tmp_path: Path):
     assert rows[0]["event"] == "config"
     assert any(row["event"] == "task_start_sealed" for row in rows)
     assert any(row["event"] == "delayed_update" for row in rows)
+
+
+def test_producer_patch_uses_seed_specific_timestamp_field():
+    for seed, field in ((0, "timestamp"), (1, "measured_at")):
+        materials = build_materials(load_pipe3(seed))
+        _, _, final = _prepare_case(materials, "producer_owned")
+        assert f'data["{field}"] = event.{field}.isoformat()' in final["producer.py"]
+
+
+def test_target_unknown_preserves_incomplete_ledger_and_does_not_update(tmp_path: Path):
+    def target_unknown(kind, sources, info, out, log, seed):
+        if seed == 1 and kind == "adoption" and "after_action" in out.parts:
+            out.mkdir(parents=True, exist_ok=True)
+            return {"status": "UNKNOWN", "label": None, "quality_score": None,
+                    "coverage_complete": False, "decision_complete": False,
+                    "unknown_reason": "unit-target-adoption-unknown"}
+        return _unit_scorer(kind, sources, info, out, log, seed)
+
+    result = run(tmp_path / "composition", scorer=target_unknown)
+    producer = next(case for case in result["cases"] if case.get("control") == "producer_owned")
+    assert producer["status"] == "UNKNOWN"
+    assert producer["contract_passed"] is False
+    assert producer["target"]["outcome"]["status"] == "UNKNOWN"
+    assert producer["replay"]["status"] == "NOT_RUN_INCOMPLETE"
+    assert producer["credit"] is None
+    assert producer["policy_updates"] == 0
+    assert any(row["event_type"] == "later_assignment" for row in producer["ledger"])
+    assert not any(row["event_type"] == "terminal_outcome" and row["payload"]["outcome_id"].endswith("-1")
+                   for row in producer["ledger"])

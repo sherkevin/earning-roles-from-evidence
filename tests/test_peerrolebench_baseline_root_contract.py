@@ -61,6 +61,7 @@ def _manifest(**overrides):
         "generator_digest": "b" * 64,
         "scorer_digest": "c" * 64,
         "schedule_digest": "d" * 64,
+        "rng_schedule_digest": "f" * 64,
         "registry_digest": "e" * 64,
         "seed_split": (0, 1),
         "arm_names": ("uniform", "no_update", "raw_acceptance", "terminal_only", "contextual_trust", "pooled_controller", "RARE"),
@@ -92,6 +93,8 @@ def test_root_manifest_seals_identity_split_budget_and_digest():
 def test_public_prefix_requires_complete_schedule_prefix():
     schedule = _schedule()
     assert validate_public_prefix(schedule, ["f0"], read_cut=1)["prefix_complete"]
+    with pytest.raises(ValueError, match="strictly ordered"):
+        validate_public_prefix((schedule[1], schedule[0]), ["f1", "f0"], read_cut=3)
     with pytest.raises(ValueError, match="omits arrived"):
         validate_public_prefix(schedule, [], read_cut=1)
     with pytest.raises(ValueError, match="future feedback"):
@@ -114,9 +117,15 @@ def test_denominators_make_selected_unknown_and_unselected_explicit():
         "n_feedback_rows": 4, "n_selected": 3, "n_unselected": 1,
         "n_eligible": 1, "n_unknown": 1, "n_ignored": 1,
         "n_duplicate": 0, "n_pending": 1,
+        "n_selected_eligible": 1, "n_selected_unknown": 1, "n_selected_ignored": 1,
+        "n_selected_duplicate": 0, "n_selected_pending": 0,
+        "n_unselected_eligible": 0, "n_unselected_unknown": 0, "n_unselected_ignored": 0,
+        "n_unselected_duplicate": 0, "n_unselected_pending": 1,
     }
     with pytest.raises(ValueError, match="invalid feedback"):
         feedback_denominators([{"feedback_id": "f0", "selected": True, "classification": "label_guess"}])
+    with pytest.raises(ValueError, match="selected must be boolean"):
+        feedback_denominators([{"feedback_id": "f0", "selected": "false", "classification": "eligible"}])
 
 
 def test_assignment_must_be_sealed_before_task_start():
