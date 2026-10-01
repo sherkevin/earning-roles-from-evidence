@@ -23,6 +23,8 @@
 
 `PIPE2_data_pipeline` 已完成条件性第二 root screen，并进入“下一候选”队列；它尚未进入本版本的 active root split，也没有改变当前 `DIST1_queue_race`/`PIPE3_stream_processing` 的开发—确认安排。PIPE2 v2 只在 valid seed 0/2 上通过有限 runtime handoff/scorer qualification，完整 seed 0–9 被 generator fixture validity gate 阻塞（`1,4,6,9`），因此不能升格为 benchmark、baseline cell 或 confirmation root。只有在共同确认 fixture/generator authority 处理、独立 history、baseline parity、later-use 和完整成本门之后，才可另行更新本文件版本与 manifest。
 
+一个不改变 pinned checkout 的 CSV-writer probe 已证明 option A 可以在保留逻辑 ETL 合同的前提下修复四个 malformed seed；它生成了新的 derived-root digest，但未写入 active manifest。详见 [derived fixture probe](../../../coordination/task_reports/20261001_pipe2_derived_fixture_probe.md)。
+
 对照审查还保留 `MULTI3_polyglot` 作为 `CONDITIONAL-LOW` fallback，而不是 active root：其 JSON fixtures 可解析，但 native tests 使用 hardcoded `correct_wire/correct_envelope`，没有真实 producer→recipient artifact binding；sample generator、seed split、schema contract 和 prompt oracle 也未冻结。详见 [MULTI3 fallback audit](../../../coordination/task_reports/20261001_multi3_fallback_audit.md)。
 
 副轨候选为 `graph-ipd@00ef417f60053569175b2b50d0f0e25ff8eb7007`（MIT，arXiv:2608.28977），用于机制 sanity check，不改变主轨的 artifact claim。

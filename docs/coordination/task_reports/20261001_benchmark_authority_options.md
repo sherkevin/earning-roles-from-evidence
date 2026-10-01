@@ -22,6 +22,11 @@
 | C. 转向 MULTI3 | 新写 producer wire→sealed envelope→recipient handler adapter；修 sample bug、schema runtime 校验、seed split 和 neutral payload | 跨模块 artifact 语义更接近 serializer/consumer 协作 | 当前 native oracle 泄漏和 handoff 缺失较多，adapter 成本高；不应把 native pass 当真实协作证据 | 独立 adapter 的 2×2 handoff、完整 lineage、负对照、replay、baseline parity、independent history 通过 |
 | D. 暂缓第二 root | 保留 PIPE2/MULTI3 审计，先在现有 active root 完成 baseline/confirmation 资格 | 不引入未经确认的 benchmark 改动 | 延后两 root 的确认实验，主线仍不能宣称跨 root 泛化 | active root 自身达到完整 API、baseline、later-use 和 confirmation 门后再重开 |
 
+选项 A 已有一个不改变 pinned checkout 的可复现探针：标准 CSV writer 能让 seed 0–9
+全部 shape-valid，且只改变原本 invalid 的 `1,4,6,9`；详见
+[derived fixture probe](20261001_pipe2_derived_fixture_probe.md)。这证明 A 可行，但不
+替代 derived root 的 authority、manifest 和后续 scientific gates。
+
 ## 不允许的捷径
 
 - 不把 valid seed 子集的 v8 结果写成 TeamBench root 的 benchmark 结果。
