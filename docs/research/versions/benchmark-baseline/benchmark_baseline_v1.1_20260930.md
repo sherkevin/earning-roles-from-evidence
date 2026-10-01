@@ -19,6 +19,10 @@
 
 主轨候选为 TeamBench-derived `PeerRoleBench-TB`。它目前是候选协议，不是已冻结 benchmark。候选 root 为 `DIST1_queue_race`（development/诊断）和 `PIPE3_stream_processing`（confirmation 候选）；改 seed、改名或字段替换不增加独立 root。DIST1 的历史任务文本泄露修复方向，因此不能直接充当 discovery 科学样本；PIPE3 也必须先通过完整 runner、scorer、ledger、adoption 和 later-assignment 资格。
 
+### 2026-10-01 候选状态 amendment
+
+`PIPE2_data_pipeline` 已完成条件性第二 root screen，并进入“下一候选”队列；它尚未进入本版本的 active root split，也没有改变当前 `DIST1_queue_race`/`PIPE3_stream_processing` 的开发—确认安排。PIPE2 v2 只在 valid seed 0/2 上通过有限 runtime handoff/scorer qualification，完整 seed 0–9 被 generator fixture validity gate 阻塞（`1,4,6,9`），因此不能升格为 benchmark、baseline cell 或 confirmation root。只有在共同确认 fixture/generator authority 处理、独立 history、baseline parity、later-use 和完整成本门之后，才可另行更新本文件版本与 manifest。
+
 副轨候选为 `graph-ipd@00ef417f60053569175b2b50d0f0e25ff8eb7007`（MIT，arXiv:2608.28977），用于机制 sanity check，不改变主轨的 artifact claim。
 
 冻结前必须有不可变 manifest：TeamBench commit、root/source/generator hash、seed 与 root split、角色可见文件、写权限、scorer/ledger schema、模型/API 配置、预算、主指标和停止规则。任何 root 的信息泄漏、责任归因、评分覆盖或 replay 失败都只能是 `UNKNOWN`/停止，不能靠改 label、减少检查或扩大 timeout 变成通过。
