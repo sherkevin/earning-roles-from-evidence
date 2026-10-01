@@ -264,7 +264,7 @@ def _source_offer(boundary: Pipe3SelectionBoundary, *, control: str, source: Map
     sidecar_payload = {
         "feedback_id": f"feedback-{control}", "source_event_id": selection.event_id,
         "selection_event_id": f"selection-{control}-0", "delivery_id": source["delivery_id"],
-        "producer_id": "peer-b", "eligible": eligible,
+        "producer_id": selected_peer, "eligible": eligible,
     }
     evidence_id = f"evidence-{control}-source"
     if not eligible:
@@ -362,7 +362,8 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
                                                "read_cut": isolated_read.read_cut})
     plan = preview_role_evidence_selection(
         boundary, role_offer=role_offer, feedback_offer=feedback_offer, assignment_id=f"assignment-{control}",
-        native_selection_id=f"selection-{control}-1", selector_id="peer-a", base_scores=(1.0, 0.0),
+        native_selection_id=f"selection-{control}-1", selector_id="peer-a",
+        base_scores=(1.0, 0.0) if seal0.native_selection.chosen_peer_id == "peer-b" else (0.0, 1.0),
         rng=__import__("numpy").random.default_rng(target_seed), state_version="target-state-v1",
         encoder_version="pipe3-v1", feature_schema="pipe3", policy_version="contextual-v1",
         base_score_version="qualification-overlay-v1", rng_algorithm="numpy-pcg64", rng_draw=1,
