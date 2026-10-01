@@ -13,7 +13,9 @@
 - producer ownership：`pipeline/extract.py`；recipient ownership：`pipeline/transform.py`、
   `pipeline/load.py`、`pipeline/run_pipeline.py`；`expected_output.csv`、tests、requirements
   留在 operator-only hidden paths。
-- 运行回执：`experiments/logs/n03_pipe2_material_qualification_20261001_v1/`。
+- 运行回执：`experiments/logs/n03_pipe2_material_qualification_20261001_v1/`；发现 public
+  artifact 不应携带诊断字段后，v2 回执保留在
+  `experiments/logs/n03_pipe2_material_qualification_20261001_v2/`。
 - LLM API=0、GPU=0、`scientific_claim_allowed=false`。
 
 ## 结果
@@ -22,8 +24,9 @@
   hidden path 不泄漏和 public delivery schema 检查。
 - recipient 在交付前明确等待 `artifact/extracted_rows.json`；附加合法形状的 producer
   artifact 后才可进入 ready 状态。
-- artifact 的 `correctness_label` 固定为 `null`。本轮没有把一行 hand-authored fixture
-  当作 producer correctness，也没有执行 candidate source。
+- public artifact 只包含 schema/rows/digest；operator 回执单独记录
+  `operator_correctness_label=null`。本轮没有把一行 hand-authored fixture 当作 producer
+  correctness，也没有执行 candidate source。
 - `python3 -m pytest -q tests`：**337 passed**；定向 PIPE2 测试 3 项通过，`py_compile`
   与 `git diff --check` 通过。
 

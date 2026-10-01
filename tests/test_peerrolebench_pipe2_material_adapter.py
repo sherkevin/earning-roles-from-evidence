@@ -35,10 +35,11 @@ def test_pipe2_delivery_shape_is_separate_from_correctness_label():
     materials = build_materials(load_pipe2(1))
     columns = load_pipe2(1).expected["columns"]
     artifact = validate_extracted_rows([{column: "x" for column in columns}], columns=columns)
-    assert artifact["correctness_label"] is None
+    assert "correctness_label" not in artifact
     attached = attach_extracted_rows(materials["agent_payloads"]["recipient"], artifact)
     assert attached["required_delivery_paths"] == []
     assert DELIVERY_PATH in attached["source_files"]
+    assert "correctness_label" not in attached["source_files"][DELIVERY_PATH]
 
 
 def test_pipe2_delivery_rejects_wrong_columns():

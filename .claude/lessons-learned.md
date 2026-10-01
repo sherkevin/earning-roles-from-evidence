@@ -313,6 +313,13 @@
 - **避免:** updater 成功后才登记 key；多对象更新显式传入 `snapshot`/`restore`，失败先回滚再传播异常，允许安全重试。
 - **Evidence:** `scripts/peerrolebench_two_stage_gate.py`；`tests/test_peerrolebench_two_stage_gate.py`；`docs/coordination/task_reports/20261001_delayed_credit_atomicity.md`。
 
+### 0050-public-artifact-must-not-carry-diagnostic-label-fields | 2026-10-01 | earning-roles
+
+- **现象:** 为了说明“尚无 correctness label”，PIPE2 public artifact 一度携带 `correctness_label: null`；recipient 仍能看到 scorer 语义字段。
+- **根因:** public delivery schema 与 operator 诊断 receipt 没有分层；即使值为 null，字段存在也会污染信息边界。
+- **避免:** public artifact 只保留 schema/rows/digest；质量标签、coverage 和 UNKNOWN 原因只写 parent/operator receipt，不进入 agent payload。
+- **Evidence:** `scripts/peerrolebench_pipe2_material_adapter.py`；`experiments/logs/n03_pipe2_material_qualification_20261001_v2/`；`docs/coordination/task_reports/20261001_pipe2_material_qualification.md`。
+
 ### 0041-selection-boundaries-must-preflight-before-mutation | 2026-09-30 | earning-roles
 - **现象:** `choose_and_seal` 原先先写 auxiliary offer、消费反馈和 policy decision，之后才构造 consumption attestation；read-cut 越界、offer 尚不可用、角色/menu 不匹配或后续 policy/ledger 异常可能留下部分状态。
 - **根因:** 输入时序约束和对象构造校验分散在 attestation、policy、native ledger 三层，入口没有在第一次写入前统一检查，也没有失败回滚。

@@ -47,7 +47,7 @@ def run(out_dir: Path, *, seeds: tuple[int, ...] = (0, 1, 2)) -> dict:
             "required_delivery_paths_before": materials["agent_payloads"]["recipient"]["required_delivery_paths"],
             "required_delivery_paths_after": recipient["required_delivery_paths"],
             "delivery_schema": artifact["schema"], "delivery_row_count": artifact["row_count"],
-            "correctness_label": artifact["correctness_label"],
+            "operator_correctness_label": None,
             "passed": bool(manifest["scientific_task_text_qualified"] and
                            recipient["required_delivery_paths"] == [] and
                            recipient["source_files"]),

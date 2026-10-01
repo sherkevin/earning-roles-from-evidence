@@ -138,7 +138,7 @@ def validate_extracted_rows(rows: Sequence[Mapping[str, Any]], *, columns: Seque
     return {
         "schema": "pipe2-extracted-rows-v1", "columns": list(cols),
         "row_count": len(normalized), "rows": normalized,
-        "correctness_label": None, "artifact_sha256": digest_files({DELIVERY_PATH: json.dumps(normalized, sort_keys=True)}),
+        "artifact_sha256": digest_files({DELIVERY_PATH: json.dumps(normalized, sort_keys=True)}),
     }
 
 

@@ -17,7 +17,7 @@ Goal 修改。
 
 ## Reports
 
-- [partial] 2026-10-01 PIPE2 material/ownership qualification：3 个 seed 的 ETL ownership、去 oracle、hidden output 隔离与 typed delivery 通过，artifact correctness label 保持 null；定向 3 项、完整 337 项通过，0 API/0 GPU，见 [task report](task_reports/20261001_pipe2_material_qualification.md)。
+- [partial] 2026-10-01 PIPE2 material/ownership qualification：3 个 seed 的 ETL ownership、去 oracle、hidden output 隔离与 typed delivery 通过；v2 将 operator correctness 字段移出 public artifact，定向 3 项、完整 337 项通过，0 API/0 GPU，见 [task report](task_reports/20261001_pipe2_material_qualification.md)。
 - [partial] 2026-10-01 second structural root screen：筛选 `PIPE2_data_pipeline` 作为比 MULTI3 更合适的第二 root 候选，明确其三段 ETL 资产与 native scorer 缺陷；尚未冻结或启动 API/GPU，见 [task report](task_reports/20261001_second_root_screen.md)。
 - [partial] 2026-10-01 benchmark authority re-audit：以官方论文/仓库复核 TeamBench、CooperBench、MARBLE、Collab-Overcooked、AgentCollabBench 与 graph-ipd，确立 TeamBench 权威底座 + PeerRoleBench-TB 因果扩展的边界，active benchmark 仍未冻结，见 [task report](task_reports/20261001_benchmark_authority_reaudit.md)。
 - [partial] 2026-10-01 role-evidence selection plan：公开证据只形成 overlay 输入，preview 固化 choice/propensity，commit 先写 `LaterAssignment` 再 exact replay selection，失败可回滚；定向 16 项与完整 334 项通过，未调用 API/GPU，见 [task report](task_reports/20261001_role_evidence_selection_plan.md)。
