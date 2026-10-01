@@ -6,6 +6,15 @@
 - **状态**：`PARTIAL`。seed 0/2 的运行时与父进程 scorer 资格通过；完整 seed 集合因 seed 1 的 fixture 数据错误不能通过 root qualification。
 - **goal_change_requested**：`false`。
 
+## 后续审查修正（2026-10-01）
+
+本报告最初引用的 v5/v6 运行器把 parent 生成的 synthetic canary artifact 写成了
+“真实 producer artifact”，并且旧版 material contract 还把 `pipeline/run_pipeline.py`
+放在 recipient payload 中。该表述和边界已撤回；历史日志保持不可变，只作为早期
+工程失败/诊断记录。新的 v2 adapter 与 runner 见
+[PIPE2 v2 runtime report](20261001_pipe2_runtime_adoption_v2.md)，其结果不能回填到
+本报告的 v5/v6 receipt。
+
 ## 冻结范围与执行边界
 
 - TeamBench pin：`d185aef1916fd86a9ba554d581fd256319a973af`；task：`PIPE2_data_pipeline`。

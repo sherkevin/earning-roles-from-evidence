@@ -123,11 +123,12 @@ pytest 同进程 gold 的问题仍存在。[ADR 0017](../user/decisions/0017-n02
 
 ## PIPE2 第二 root 运行时复核（2026-10-01）
 
-PIPE2 进一步通过了一个零调用 runtime/adoption 子门：seed 0/2 在 pinned sandbox
-中实际运行 extractor 与 transform/load，父进程分别核对 producer contract、recipient
-self 和 artifact adoption；原始代码与手工修正版 control 可区分。完整 seed 0/1/2
-仍不能作为 root 资格结果：seed 1 的 source/expected CSV 因未转义逗号产生未声明的
-`None` 列，被分类为 `INVALID_FIXTURE`，不生成 peer label。回执与失败版本见
-[runtime qualification report](../coordination/task_reports/20261001_pipe2_runtime_adoption_qualification.md)。
+PIPE2 的 v2 零调用 runtime/adoption 子门在 seed 0/2 通过：pinned sandbox 实际运行
+producer×recipient 2×2 交接矩阵，父进程分别核对 producer contract、recipient self、
+完整 key sequence/row count adoption，并用独立 canary、drop-row、ignore-artifact
+controls 检查 scorer sensitivity。完整 seed 0–9 的 v9 replay 仍拒绝 root qualification：
+`1,4,6,9` 的 source/expected CSV 因未转义逗号产生未声明的 `None` 列，被分类为
+`INVALID_FIXTURE`，不生成 peer label。详见
+[v2 runtime report](../coordination/task_reports/20261001_pipe2_runtime_adoption_v2.md)。
 这提高了 fixture/责任测量的精确度，但没有关闭严格 N01、benchmark freeze、baseline
-parity 或科学效果门。
+parity 或科学效果门；v2 仍只是有限工程资格，不是角色学习或效能结果。

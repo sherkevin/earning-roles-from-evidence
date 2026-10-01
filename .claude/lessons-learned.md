@@ -327,8 +327,27 @@
 - **避免:** 先由父进程检查 source/expected CSV 的声明字段；发现额外字段时分类为 `INVALID_FIXTURE`，不发 peer label、不更新 policy、不删除 seed。有效 seed 仍可单独做 runtime/control discrimination，但不能升格为完整 root benchmark。
 - **Evidence:** `scripts/peerrolebench_pipe2_runtime_qualification.py`；`experiments/logs/n03_pipe2_runtime_adoption_qualification_20261001_v6/`；`docs/coordination/task_reports/20261001_pipe2_runtime_adoption_qualification.md`。
 
+### 0052-a-public-seed-failure-can-reveal-a-generator-level-benchmark-defect | 2026-10-01 | earning-roles
+
+- **现象:** PIPE2 seed=1 的形状错误不是孤立样本；对 TeamBench seed 0–9 审计后，1/4/6/9 都有未转义逗号字段。public seed 0–2 已含 1 个 invalid fixture，hidden 3–9 也含 3 个。
+- **根因:** generator 用 `','.join(row)` 代替 CSV writer，schema validity 没有作为 benchmark freeze 的前置门。
+- **避免:** 在 root freeze 前对所有声明 seed 做 source/expected shape census；invalid fixture 只能记为 benchmark blocker，不能静默改写、删除或给候选负标签。有效 seed 的 runtime control 结果只作工程资格。
+- **Evidence:** `scripts/peerrolebench_pipe2_fixture_shape_audit.py`；`experiments/logs/n03_pipe2_fixture_shape_audit_20261001_v1/`；`docs/coordination/task_reports/20261001_pipe2_fixture_shape_audit.md`。
+
 ### 0041-selection-boundaries-must-preflight-before-mutation | 2026-09-30 | earning-roles
 - **现象:** `choose_and_seal` 原先先写 auxiliary offer、消费反馈和 policy decision，之后才构造 consumption attestation；read-cut 越界、offer 尚不可用、角色/menu 不匹配或后续 policy/ledger 异常可能留下部分状态。
 - **根因:** 输入时序约束和对象构造校验分散在 attestation、policy、native ledger 三层，入口没有在第一次写入前统一检查，也没有失败回滚。
 - **避免:** 先 preflight role/selector、episode/event identity、版本与时间、`read_cut <= decision_index`、offer availability、menu/features 和 selected-only feedback binding；再进入 mutation transaction。对 preflight 后仍可能出现的 policy/ledger/RNG/attestation 异常，恢复 policy、ledger、selection cache、两条 manifest 链和可捕获的 numpy/getstate RNG 状态；无状态接口的 RNG 不宣称可恢复。
 - **Evidence:** [preflight qualification](../docs/coordination/task_reports/20260930_pipe3_preflight_mutation_qualification.md)；`experiments/logs/n03_pipe3_preflight_mutation_qualification_20260930/`；309 项 PeerRoleBench 回归通过。
+
+### 0053-versioned-runtime-receipts-must-not-reuse-old-adoption-semantics | 2026-10-01 | earning-roles
+- **现象:** PIPE2 v1/v5 的 canary artifact 是 parent synthetic data，却一度被描述为真实 producer lineage；同时旧 payload 把 operator/orchestrator 文件放进 recipient 边界。
+- **根因:** material contract、runtime runner 和历史 receipt 没有共享显式 schema/version，工程诊断与真实交接被同名字段混在一起。
+- **避免:** 新语义必须使用显式 v2 adapter/runner 和新日志目录；producer→sealed artifact→recipient 逐 cell 记录 provenance；旧 receipt 只保留为历史证据，不静默重写。
+- **Evidence:** `scripts/peerrolebench_pipe2_material_adapter_v2.py`、`scripts/peerrolebench_pipe2_runtime_qualification.py`；`experiments/logs/n03_pipe2_runtime_adoption_qualification_20261001_v8/`。
+
+### 0054-adoption-lineage-needs-complete-sequence-and-negative-controls | 2026-10-01 | earning-roles
+- **现象:** `any(source_key in output)` 能放过重复、重排或额外行；只有自洽 recipient control 通过，不能证明 scorer 会发现丢行或忽略交付物。
+- **根因:** adoption 被当成一个布尔存在性检查，缺少 row count、ordered key sequence、artifact/output digest 与独立负对照。
+- **避免:** 以完整 key sequence 和 row count 比较 lineage，记录 source/output digest；把 synthetic canary、drop-row、ignore-artifact 作为独立 sensitivity diagnostics，不能混入真实 handoff label。
+- **Evidence:** `scripts/peerrolebench_pipe2_runtime_qualification.py`；`experiments/logs/n03_pipe2_runtime_adoption_qualification_20261001_v8/`。

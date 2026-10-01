@@ -1,0 +1,42 @@
+{
+  "request": {
+    "op": "extract",
+    "csv_text": "txn_id,account_name,amount,memo\n1001,Acme Corp,5000.00,Quarterly payment for consulting services including project management and technical advisory support\n1002,Beta Inc,2500.50,\n1003,Gamma LLC,7800.00,Annual license renewal for enterprise software suite with premium support and training modules included\n1004,,100.00,Missing account name\n1005,Delta Co,,Monthly subscription for cloud infrastructure services spanning three availability zones worldwide\n1006,Epsilon Ltd,3200.00,One-time setup fee for new data center integration with full redundancy and disaster recovery capabilities\n1007,Zeta Group,900.00,\n1008,,,Both key columns null\n",
+    "columns": [
+      "txn_id",
+      "account_name",
+      "amount",
+      "memo"
+    ]
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "rows": [
+        {
+          "txn_id": "1001",
+          "account_name": "Acme Corp",
+          "amount": "5000.00",
+          "memo": "Quarterly payment for consulting services including project management and technical advisory support"
+        },
+        {
+          "txn_id": "1003",
+          "account_name": "Gamma LLC",
+          "amount": "7800.00",
+          "memo": "Annual license renewal for enterprise software suite with premium support and training modules included"
+        },
+        {
+          "txn_id": "1006",
+          "account_name": "Epsilon Ltd",
+          "amount": "3200.00",
+          "memo": "One-time setup fee for new data center integration with full redundancy and disaster recovery capabilities"
+        }
+      ],
+      "source_path": "pipeline/extract.py"
+    }
+  },
+  "transport": {
+    "status": "complete"
+  },
+  "response_digest": "29f665ba57a8501ba0f5880ff471c904858a65c9e1fd7b960a035e06396b3a54"
+}

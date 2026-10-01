@@ -1,0 +1,58 @@
+{
+  "request": {
+    "op": "transform_load",
+    "artifact": {
+      "schema": "pipe2-extracted-rows-v1",
+      "columns": [
+        "txn_id",
+        "account_name",
+        "amount",
+        "memo"
+      ],
+      "row_count": 2,
+      "rows": [
+        {
+          "txn_id": "v-2-0-txn_id",
+          "account_name": " canary-2-0 ",
+          "amount": "v-2-0-amount",
+          "memo": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {
+          "txn_id": "",
+          "account_name": "canary-2-1",
+          "amount": "",
+          "memo": ""
+        }
+      ],
+      "artifact_sha256": "2c1c305bd7c8509c396b7fba6ffd128d60745aff8211819f491698c33e1a2c77"
+    }
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "output_csv": "txn_id,amount,account_name,memo\nv-2-0-txn_id,v-2-0-amount,canary-2-0,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,,canary-2-1,\n",
+      "parsed_rows": [
+        {
+          "txn_id": "v-2-0-txn_id",
+          "amount": "v-2-0-amount",
+          "account_name": "canary-2-0",
+          "memo": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {
+          "txn_id": "",
+          "amount": "",
+          "account_name": "canary-2-1",
+          "memo": ""
+        }
+      ],
+      "source_paths": [
+        "pipeline/transform.py",
+        "pipeline/load.py"
+      ]
+    }
+  },
+  "transport": {
+    "status": "complete"
+  },
+  "response_digest": "33a1b3fd14841ad30d8fe651c13115396c3cc2db89d71f4a2ecefa61799f18bd"
+}

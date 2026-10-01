@@ -1,0 +1,3532 @@
+{
+  "runner_version": "pipe2-runtime-adoption-qualification-v2",
+  "schema_version": "pipe2-runtime-result-v2",
+  "task_id": "PIPE2_data_pipeline",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "command": [
+    "scripts/peerrolebench_pipe2_runtime_qualification.py",
+    "--output",
+    "experiments/logs/n03_pipe2_runtime_adoption_qualification_20261001_v9",
+    "--seeds",
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9"
+  ],
+  "git_commit": "cfd2c263428a8682568b251fee41ea08e8c78bf2",
+  "working_tree_dirty": true,
+  "worker_sha256": "1073eb20057bfab0ddeaa5141feb6ae3d1a7e242db15bf8fda5fde77cf398d99",
+  "llm_calls": 0,
+  "gpu_jobs": 0,
+  "native_grader_invoked": false,
+  "candidate_code_executed": true,
+  "scientific_claim_allowed": false,
+  "material_schema_version": "peerrolebench-pipe2-materials-v2",
+  "material_adapter": "peerrolebench_pipe2_material_adapter_v2",
+  "score_dimensions": [
+    "producer_contract",
+    "recipient_self",
+    "artifact_adoption"
+  ],
+  "unknown_policy": "transport, malformed response, and runtime/resource errors remain UNKNOWN",
+  "started_at_utc": "2026-10-01T04:30:55.286490+00:00",
+  "status": "FAILED_OFFLINE",
+  "producer_discrimination_passed": false,
+  "handoff_matrix_passed": false,
+  "canary_sensitivity_passed": false,
+  "negative_controls_passed": false,
+  "recipient_discrimination_passed": false,
+  "valid_case_count": 6,
+  "invalid_fixture_count": 4,
+  "runtime_adoption_scorer_qualified": false,
+  "benchmark_qualified": false,
+  "cases": [
+    {
+      "seed": 0,
+      "task_id": "PIPE2_data_pipeline",
+      "columns": [
+        "emp_id",
+        "full_name",
+        "department",
+        "notes"
+      ],
+      "key_columns": [
+        "emp_id",
+        "full_name"
+      ],
+      "col_types": [
+        "int",
+        "str",
+        "str",
+        "str"
+      ],
+      "expected_row_count": 6,
+      "producer": {
+        "original_producer": {
+          "status": "FAIL",
+          "label": 0,
+          "rows": [
+            {
+              "emp_id": "1",
+              "full_name": "Alice Johnson",
+              "department": "Engineering",
+              "notes": "Senior engineer with 10 years of experience in distributed systems and cloud architecture"
+            },
+            {
+              "emp_id": "3",
+              "full_name": "Charlie Brown",
+              "department": "Engineering",
+              "notes": "Recently promoted to tech lead after successful delivery of the platform migration project"
+            },
+            {
+              "emp_id": "6",
+              "full_name": "Frank Miller",
+              "department": "HR",
+              "notes": "Head of talent acquisition with expertise in technical recruiting across multiple regions"
+            }
+          ],
+          "row_count": 3,
+          "expected_row_count": 6,
+          "artifact_sha256": "d52d004229aea4f61e4c9f4dcdfff9c5f81d574a2973ec20f301528ae04d54f0",
+          "artifact_error": null,
+          "source_path": "pipeline/extract.py",
+          "transport": {
+            "status": "complete"
+          }
+        },
+        "correct_producer_control": {
+          "status": "PASS",
+          "label": 1,
+          "rows": [
+            {
+              "emp_id": "1",
+              "full_name": "Alice Johnson",
+              "department": "Engineering",
+              "notes": "Senior engineer with 10 years of experience in distributed systems and cloud architecture"
+            },
+            {
+              "emp_id": "2",
+              "full_name": "Bob Smith",
+              "department": "Marketing",
+              "notes": ""
+            },
+            {
+              "emp_id": "3",
+              "full_name": "Charlie Brown",
+              "department": "Engineering",
+              "notes": "Recently promoted to tech lead after successful delivery of the platform migration project"
+            },
+            {
+              "emp_id": "5",
+              "full_name": "Eve Davis",
+              "department": "",
+              "notes": "Transferred from the London office; specializes in data analytics and machine learning pipelines"
+            },
+            {
+              "emp_id": "6",
+              "full_name": "Frank Miller",
+              "department": "HR",
+              "notes": "Head of talent acquisition with expertise in technical recruiting across multiple regions"
+            },
+            {
+              "emp_id": "7",
+              "full_name": "Grace Lee",
+              "department": "Engineering",
+              "notes": ""
+            }
+          ],
+          "row_count": 6,
+          "expected_row_count": 6,
+          "artifact_sha256": "cc57ea0d7d6010bad72408452c349f3a43f436c1b3a82fe22e2b5cd63c8524bc",
+          "artifact_error": null,
+          "source_path": "pipeline/extract.py",
+          "transport": {
+            "status": "complete"
+          }
+        }
+      },
+      "recipient": {
+        "original_producer": {
+          "original_recipient": {
+            "status": "FAIL",
+            "label": 0,
+            "recipient_self": {
+              "status": "FAIL",
+              "label": 0
+            },
+            "artifact_adoption": {
+              "status": "PASS",
+              "label": 1,
+              "source_row_count": 3,
+              "output_row_count": 3,
+              "key_columns": [
+                "emp_id",
+                "full_name"
+              ],
+              "source_key_sequence": [
+                [
+                  "1",
+                  "Alice Johnson"
+                ],
+                [
+                  "3",
+                  "Charlie Brown"
+                ],
+                [
+                  "6",
+                  "Frank Miller"
+                ]
+              ],
+              "output_key_sequence": [
+                [
+                  "1",
+                  "Alice Johnson"
+                ],
+                [
+                  "3",
+                  "Charlie Brown"
+                ],
+                [
+                  "6",
+                  "Frank Miller"
+                ]
+              ]
+            },
+            "output_csv": "emp_id,department,full_name,notes\n1,Engineering,Alice Johnson,Senior engineer with 10 years of experience in dis\n3,Engineering,Charlie Brown,Recently promoted to tech lead after successful de\n6,HR,Frank Miller,Head of talent acquisition with expertise in techn\n",
+            "expected_output_csv": "emp_id,full_name,department,notes\n1,Alice Johnson,Engineering,Senior engineer with 10 years of experience in distributed systems and cloud architecture\n3,Charlie Brown,Engineering,Recently promoted to tech lead after successful delivery of the platform migration project\n6,Frank Miller,HR,Head of talent acquisition with expertise in technical recruiting across multiple regions\n",
+            "source_paths": [
+              "pipeline/transform.py",
+              "pipeline/load.py"
+            ],
+            "transport": {
+              "status": "complete"
+            },
+            "artifact_sha256": "d52d004229aea4f61e4c9f4dcdfff9c5f81d574a2973ec20f301528ae04d54f0",
+            "output_sha256": "be58b53c3fc12c2c0e57b8c0a2689a5a2049b86578bc9fe075196fb120be3f23",
+            "artifact_source": "producer:original_producer"
+          },
+          "correct_recipient_control": {
+            "status": "PASS",
+            "label": 1,
+            "recipient_self": {
+              "status": "PASS",
+              "label": 1
+            },
+            "artifact_adoption": {
+              "status": "PASS",
+              "label": 1,
+              "source_row_count": 3,
+              "output_row_count": 3,
+              "key_columns": [
+                "emp_id",
+                "full_name"
+              ],
+              "source_key_sequence": [
+                [
+                  "1",
+                  "Alice Johnson"
+                ],
+                [
+                  "3",
+                  "Charlie Brown"
+                ],
+                [
+                  "6",
+                  "Frank Miller"
+                ]
+              ],
+              "output_key_sequence": [
+                [
+                  "1",
+                  "Alice Johnson"
+                ],
+                [
+                  "3",
+                  "Charlie Brown"
+                ],
+                [
+                  "6",
+                  "Frank Miller"
+                ]
+              ]
+            },
+            "output_csv": "emp_id,full_name,department,notes\n1,Alice Johnson,Engineering,Senior engineer with 10 years of experience in distributed systems and cloud architecture\n3,Charlie Brown,Engineering,Recently promoted to tech lead after successful delivery of the platform migration project\n6,Frank Miller,HR,Head of talent acquisition with expertise in technical recruiting across multiple regions\n",
+            "expected_output_csv": "emp_id,full_name,department,notes\n1,Alice Johnson,Engineering,Senior engineer with 10 years of experience in distributed systems and cloud architecture\n3,Charlie Brown,Engineering,Recently promoted to tech lead after successful delivery of the platform migration project\n6,Frank Miller,HR,Head of talent acquisition with expertise in technical recruiting across multiple regions\n",
+            "source_paths": [
+              "pipeline/transform.py",
+              "pipeline/load.py"
+            ],
+            "transport": {
+              "status": "complete"
+            },
+            "artifact_sha256": "d52d004229aea4f61e4c9f4dcdfff9c5f81d574a2973ec20f301528ae04d54f0",
+            "output_sha256": "25ed6ec429550314ce68974bbb86c82240d470f1be469ed4e95a57b32e348ed6",
+            "artifact_source": "producer:original_producer"
+          }
+        },
+        "correct_producer_control": {
+          "original_recipient": {
+            "status": "FAIL",
+            "label": 0,
+            "recipient_self": {
+              "status": "FAIL",
+              "label": 0
+            },
+            "artifact_adoption": {
+              "status": "PASS",
+              "label": 1,
+              "source_row_count": 6,
+              "output_row_count": 6,
+              "key_columns": [
+                "emp_id",
+                "full_name"
+              ],
+              "source_key_sequence": [
+                [
+                  "1",
+                  "Alice Johnson"
+                ],
+                [
+                  "2",
+                  "Bob Smith"
+                ],
+                [
+                  "3",
+                  "Charlie Brown"
+                ],
+                [
+                  "5",
+                  "Eve Davis"
+                ],
+                [
+                  "6",
+                  "Frank Miller"
+                ],
+                [
+                  "7",
+                  "Grace Lee"
+                ]
+              ],
+              "output_key_sequence": [
+                [
+                  "1",
+                  "Alice Johnson"
+                ],
+                [
+                  "2",
+                  "Bob Smith"
+                ],
+                [
+                  "3",
+                  "Charlie Brown"
+                ],
+                [
+                  "5",
+                  "Eve Davis"
+                ],
+                [
+                  "6",
+                  "Frank Miller"
+                ],
+                [
+                  "7",
+                  "Grace Lee"
+                ]
+              ]
+            },
+            "output_csv": "emp_id,department,full_name,notes\n1,Engineering,Alice Johnson,Senior engineer with 10 years of experience in dis\n2,Marketing,Bob Smith,\n3,Engineering,Charlie Brown,Recently promoted to tech lead after successful de\n5,,Eve Davis,Transferred from the London office; specializes in\n6,HR,Frank Miller,Head of talent acquisition with expertise in techn\n7,Engineering,Grace Lee,\n",
+            "expected_output_csv": "emp_id,full_name,department,notes\n1,Alice Johnson,Engineering,Senior engineer with 10 years of experience in distributed systems and cloud architecture\n2,Bob Smith,Marketing,\n3,Charlie Brown,Engineering,Recently promoted to tech lead after successful delivery of the platform migration project\n5,Eve Davis,,Transferred from the London office; specializes in data analytics and machine learning pipelines\n6,Frank Miller,HR,Head of talent acquisition with expertise in technical recruiting across multiple regions\n7,Grace Lee,Engineering,\n",
+            "source_paths": [
+              "pipeline/transform.py",
+              "pipeline/load.py"
+            ],
+            "transport": {
+              "status": "complete"
+            },
+            "artifact_sha256": "cc57ea0d7d6010bad72408452c349f3a43f436c1b3a82fe22e2b5cd63c8524bc",
+            "output_sha256": "42541e0779127a1638673361881b2a4546c3eb9ba8e04bf79106fdb9abd09f9f",
+            "artifact_source": "producer:correct_producer_control"
+          },
+          "correct_recipient_control": {
+            "status": "PASS",
+            "label": 1,
+            "recipient_self": {
+              "status": "PASS",
+              "label": 1
+            },
+            "artifact_adoption": {
+              "status": "PASS",
+              "label": 1,
+              "source_row_count": 6,
+              "output_row_count": 6,
+              "key_columns": [
+                "emp_id",
+                "full_name"
+              ],
+              "source_key_sequence": [
+                [
+                  "1",
+                  "Alice Johnson"
+                ],
+                [
+                  "2",
+                  "Bob Smith"
+                ],
+                [
+                  "3",
+                  "Charlie Brown"
+                ],
+                [
+                  "5",
+                  "Eve Davis"
+                ],
+                [
+                  "6",
+                  "Frank Miller"
+                ],
+                [
+                  "7",
+                  "Grace Lee"
+                ]
+              ],
+              "output_key_sequence": [
+                [
+                  "1",
+                  "Alice Johnson"
+                ],
+                [
+                  "2",
+                  "Bob Smith"
+                ],
+                [
+                  "3",
+                  "Charlie Brown"
+                ],
+                [
+                  "5",
+                  "Eve Davis"
+                ],
+                [
+                  "6",
+                  "Frank Miller"
+                ],
+                [
+                  "7",
+                  "Grace Lee"
+                ]
+              ]
+            },
+            "output_csv": "emp_id,full_name,department,notes\n1,Alice Johnson,Engineering,Senior engineer with 10 years of experience in distributed systems and cloud architecture\n2,Bob Smith,Marketing,\n3,Charlie Brown,Engineering,Recently promoted to tech lead after successful delivery of the platform migration project\n5,Eve Davis,,Transferred from the London office; specializes in data analytics and machine learning pipelines\n6,Frank Miller,HR,Head of talent acquisition with expertise in technical recruiting across multiple regions\n7,Grace Lee,Engineering,\n",
+            "expected_output_csv": "emp_id,full_name,department,notes\n1,Alice Johnson,Engineering,Senior engineer with 10 years of experience in distributed systems and cloud architecture\n2,Bob Smith,Marketing,\n3,Charlie Brown,Engineering,Recently promoted to tech lead after successful delivery of the platform migration project\n5,Eve Davis,,Transferred from the London office; specializes in data analytics and machine learning pipelines\n6,Frank Miller,HR,Head of talent acquisition with expertise in technical recruiting across multiple regions\n7,Grace Lee,Engineering,\n",
+            "source_paths": [
+              "pipeline/transform.py",
+              "pipeline/load.py"
+            ],
+            "transport": {
+              "status": "complete"
+            },
+            "artifact_sha256": "cc57ea0d7d6010bad72408452c349f3a43f436c1b3a82fe22e2b5cd63c8524bc",
+            "output_sha256": "2c6028133be8e1f2a9f72d7ca6ccf2c2365e046597545eb6d01fbbf1645a1ea7",
+            "artifact_source": "producer:correct_producer_control"
+          }
+        }
+      },
+      "fixture_shape_errors": {
+        "source_csv": [],
+        "expected_output_csv": []
+      },
+      "source_fixture_status": "VALID",
+      "oracle_fixture_audit_status": "VALID",
+      "fixture_status": "VALID",
+      "canary": {
+        "original_recipient": {
+          "status": "FAIL",
+          "label": 0,
+          "output_csv": "emp_id,department,full_name,notes\nv-0-0-emp_id,v-0-0-department,canary-0-0,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,,canary-0-1,\n",
+          "expected_output_csv": "emp_id,full_name,department,notes\nv-0-0-emp_id,canary-0-0,v-0-0-department,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,canary-0-1,,\n",
+          "transport": {
+            "status": "complete"
+          }
+        },
+        "correct_recipient_control": {
+          "status": "PASS",
+          "label": 1,
+          "output_csv": "emp_id,full_name,department,notes\nv-0-0-emp_id,canary-0-0,v-0-0-department,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,canary-0-1,,\n",
+          "expected_output_csv": "emp_id,full_name,department,notes\nv-0-0-emp_id,canary-0-0,v-0-0-department,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,canary-0-1,,\n",
+          "transport": {
+            "status": "complete"
+          }
+        }
+      },
+      "negative_controls": {
+        "drop_row": {
+          "status": "PASS",
+          "label": 1,
+          "expected_detection": "FAIL",
+          "recipient_self": {
+            "status": "FAIL",
+            "label": 0
+          },
+          "artifact_adoption": {
+            "status": "FAIL",
+            "label": 0,
+            "source_row_count": 6,
+            "output_row_count": 5,
+            "source_key_sequence": [
+              [
+                "1",
+                "Alice Johnson"
+              ],
+              [
+                "2",
+                "Bob Smith"
+              ],
+              [
+                "3",
+                "Charlie Brown"
+              ],
+              [
+                "5",
+                "Eve Davis"
+              ],
+              [
+                "6",
+                "Frank Miller"
+              ],
+              [
+                "7",
+                "Grace Lee"
+              ]
+            ],
+            "output_key_sequence": [
+              [
+                "1",
+                "Alice Johnson"
+              ],
+              [
+                "2",
+                "Bob Smith"
+              ],
+              [
+                "3",
+                "Charlie Brown"
+              ],
+              [
+                "5",
+                "Eve Davis"
+              ],
+              [
+                "6",
+                "Frank Miller"
+              ]
+            ]
+          },
+          "output_csv": "emp_id,full_name,department,notes\n1,Alice Johnson,Engineering,Senior engineer with 10 years of experience in distributed systems and cloud architecture\n2,Bob Smith,Marketing,\n3,Charlie Brown,Engineering,Recently promoted to tech lead after successful delivery of the platform migration project\n5,Eve Davis,,Transferred from the London office; specializes in data analytics and machine learning pipelines\n6,Frank Miller,HR,Head of talent acquisition with expertise in technical recruiting across multiple regions\n",
+          "expected_output_csv": "emp_id,full_name,department,notes\n1,Alice Johnson,Engineering,Senior engineer with 10 years of experience in distributed systems and cloud architecture\n2,Bob Smith,Marketing,\n3,Charlie Brown,Engineering,Recently promoted to tech lead after successful delivery of the platform migration project\n5,Eve Davis,,Transferred from the London office; specializes in data analytics and machine learning pipelines\n6,Frank Miller,HR,Head of talent acquisition with expertise in technical recruiting across multiple regions\n7,Grace Lee,Engineering,\n",
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "cc57ea0d7d6010bad72408452c349f3a43f436c1b3a82fe22e2b5cd63c8524bc"
+        },
+        "ignore_artifact": {
+          "status": "PASS",
+          "label": 1,
+          "expected_detection": "FAIL",
+          "recipient_self": {
+            "status": "FAIL",
+            "label": 0
+          },
+          "artifact_adoption": {
+            "status": "FAIL",
+            "label": 0,
+            "source_row_count": 6,
+            "output_row_count": 0,
+            "source_key_sequence": [
+              [
+                "1",
+                "Alice Johnson"
+              ],
+              [
+                "2",
+                "Bob Smith"
+              ],
+              [
+                "3",
+                "Charlie Brown"
+              ],
+              [
+                "5",
+                "Eve Davis"
+              ],
+              [
+                "6",
+                "Frank Miller"
+              ],
+              [
+                "7",
+                "Grace Lee"
+              ]
+            ],
+            "output_key_sequence": []
+          },
+          "output_csv": "emp_id,full_name,department,notes\n",
+          "expected_output_csv": "emp_id,full_name,department,notes\n1,Alice Johnson,Engineering,Senior engineer with 10 years of experience in distributed systems and cloud architecture\n2,Bob Smith,Marketing,\n3,Charlie Brown,Engineering,Recently promoted to tech lead after successful delivery of the platform migration project\n5,Eve Davis,,Transferred from the London office; specializes in data analytics and machine learning pipelines\n6,Frank Miller,HR,Head of talent acquisition with expertise in technical recruiting across multiple regions\n7,Grace Lee,Engineering,\n",
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "cc57ea0d7d6010bad72408452c349f3a43f436c1b3a82fe22e2b5cd63c8524bc"
+        }
+      }
+    },
+    {
+      "seed": 1,
+      "task_id": "PIPE2_data_pipeline",
+      "columns": [
+        "product_id",
+        "product_name",
+        "category",
+        "description"
+      ],
+      "key_columns": [
+        "product_id",
+        "product_name"
+      ],
+      "col_types": [
+        "int",
+        "str",
+        "str",
+        "str"
+      ],
+      "expected_row_count": 0,
+      "producer": {},
+      "recipient": {},
+      "fixture_shape_errors": {
+        "source_csv": [
+          {
+            "row_index": 5,
+            "keys": [
+              "product_id",
+              "product_name",
+              "category",
+              "description",
+              null
+            ],
+            "unexpected_keys": [
+              null
+            ],
+            "missing_values": []
+          }
+        ],
+        "expected_output_csv": [
+          {
+            "row_index": 4,
+            "keys": [
+              "product_id",
+              "product_name",
+              "category",
+              "description",
+              null
+            ],
+            "unexpected_keys": [
+              null
+            ],
+            "missing_values": []
+          }
+        ]
+      },
+      "source_fixture_status": "INVALID_FIXTURE",
+      "oracle_fixture_audit_status": "INVALID_FIXTURE",
+      "fixture_status": "INVALID_FIXTURE",
+      "reason": "CSV rows contain undeclared fields; no peer label is emitted"
+    },
+    {
+      "seed": 2,
+      "task_id": "PIPE2_data_pipeline",
+      "columns": [
+        "txn_id",
+        "account_name",
+        "amount",
+        "memo"
+      ],
+      "key_columns": [
+        "txn_id",
+        "account_name"
+      ],
+      "col_types": [
+        "int",
+        "str",
+        "float",
+        "str"
+      ],
+      "expected_row_count": 6,
+      "producer": {
+        "original_producer": {
+          "status": "FAIL",
+          "label": 0,
+          "rows": [
+            {
+              "txn_id": "1001",
+              "account_name": "Acme Corp",
+              "amount": "5000.00",
+              "memo": "Quarterly payment for consulting services including project management and technical advisory support"
+            },
+            {
+              "txn_id": "1003",
+              "account_name": "Gamma LLC",
+              "amount": "7800.00",
+              "memo": "Annual license renewal for enterprise software suite with premium support and training modules included"
+            },
+            {
+              "txn_id": "1006",
+              "account_name": "Epsilon Ltd",
+              "amount": "3200.00",
+              "memo": "One-time setup fee for new data center integration with full redundancy and disaster recovery capabilities"
+            }
+          ],
+          "row_count": 3,
+          "expected_row_count": 6,
+          "artifact_sha256": "bd305f1553ce15c5ecf5831944ea56706a97dbd1778b7f2992053bd6c1ecac97",
+          "artifact_error": null,
+          "source_path": "pipeline/extract.py",
+          "transport": {
+            "status": "complete"
+          }
+        },
+        "correct_producer_control": {
+          "status": "PASS",
+          "label": 1,
+          "rows": [
+            {
+              "txn_id": "1001",
+              "account_name": "Acme Corp",
+              "amount": "5000.00",
+              "memo": "Quarterly payment for consulting services including project management and technical advisory support"
+            },
+            {
+              "txn_id": "1002",
+              "account_name": "Beta Inc",
+              "amount": "2500.50",
+              "memo": ""
+            },
+            {
+              "txn_id": "1003",
+              "account_name": "Gamma LLC",
+              "amount": "7800.00",
+              "memo": "Annual license renewal for enterprise software suite with premium support and training modules included"
+            },
+            {
+              "txn_id": "1005",
+              "account_name": "Delta Co",
+              "amount": "",
+              "memo": "Monthly subscription for cloud infrastructure services spanning three availability zones worldwide"
+            },
+            {
+              "txn_id": "1006",
+              "account_name": "Epsilon Ltd",
+              "amount": "3200.00",
+              "memo": "One-time setup fee for new data center integration with full redundancy and disaster recovery capabilities"
+            },
+            {
+              "txn_id": "1007",
+              "account_name": "Zeta Group",
+              "amount": "900.00",
+              "memo": ""
+            }
+          ],
+          "row_count": 6,
+          "expected_row_count": 6,
+          "artifact_sha256": "a40baf06330d859ca72e31060cbff55619a37d3a70c040d7c4132623e3ad9025",
+          "artifact_error": null,
+          "source_path": "pipeline/extract.py",
+          "transport": {
+            "status": "complete"
+          }
+        }
+      },
+      "recipient": {
+        "original_producer": {
+          "original_recipient": {
+            "status": "FAIL",
+            "label": 0,
+            "recipient_self": {
+              "status": "FAIL",
+              "label": 0
+            },
+            "artifact_adoption": {
+              "status": "PASS",
+              "label": 1,
+              "source_row_count": 3,
+              "output_row_count": 3,
+              "key_columns": [
+                "txn_id",
+                "account_name"
+              ],
+              "source_key_sequence": [
+                [
+                  "1001",
+                  "Acme Corp"
+                ],
+                [
+                  "1003",
+                  "Gamma LLC"
+                ],
+                [
+                  "1006",
+                  "Epsilon Ltd"
+                ]
+              ],
+              "output_key_sequence": [
+                [
+                  "1001",
+                  "Acme Corp"
+                ],
+                [
+                  "1003",
+                  "Gamma LLC"
+                ],
+                [
+                  "1006",
+                  "Epsilon Ltd"
+                ]
+              ]
+            },
+            "output_csv": "txn_id,amount,account_name,memo\n1001,5000.00,Acme Corp,Quarterly payment for consulting services includin\n1003,7800.00,Gamma LLC,Annual license renewal for enterprise software sui\n1006,3200.00,Epsilon Ltd,One-time setup fee for new data center integration\n",
+            "expected_output_csv": "txn_id,account_name,amount,memo\n1001,Acme Corp,5000.00,Quarterly payment for consulting services including project management and technical advisory support\n1003,Gamma LLC,7800.00,Annual license renewal for enterprise software suite with premium support and training modules included\n1006,Epsilon Ltd,3200.00,One-time setup fee for new data center integration with full redundancy and disaster recovery capabilities\n",
+            "source_paths": [
+              "pipeline/transform.py",
+              "pipeline/load.py"
+            ],
+            "transport": {
+              "status": "complete"
+            },
+            "artifact_sha256": "bd305f1553ce15c5ecf5831944ea56706a97dbd1778b7f2992053bd6c1ecac97",
+            "output_sha256": "1848b0454c40be042e3cfabc21df5727ed46c1fabda4b8296689100b194c25f4",
+            "artifact_source": "producer:original_producer"
+          },
+          "correct_recipient_control": {
+            "status": "PASS",
+            "label": 1,
+            "recipient_self": {
+              "status": "PASS",
+              "label": 1
+            },
+            "artifact_adoption": {
+              "status": "PASS",
+              "label": 1,
+              "source_row_count": 3,
+              "output_row_count": 3,
+              "key_columns": [
+                "txn_id",
+                "account_name"
+              ],
+              "source_key_sequence": [
+                [
+                  "1001",
+                  "Acme Corp"
+                ],
+                [
+                  "1003",
+                  "Gamma LLC"
+                ],
+                [
+                  "1006",
+                  "Epsilon Ltd"
+                ]
+              ],
+              "output_key_sequence": [
+                [
+                  "1001",
+                  "Acme Corp"
+                ],
+                [
+                  "1003",
+                  "Gamma LLC"
+                ],
+                [
+                  "1006",
+                  "Epsilon Ltd"
+                ]
+              ]
+            },
+            "output_csv": "txn_id,account_name,amount,memo\n1001,Acme Corp,5000.00,Quarterly payment for consulting services including project management and technical advisory support\n1003,Gamma LLC,7800.00,Annual license renewal for enterprise software suite with premium support and training modules included\n1006,Epsilon Ltd,3200.00,One-time setup fee for new data center integration with full redundancy and disaster recovery capabilities\n",
+            "expected_output_csv": "txn_id,account_name,amount,memo\n1001,Acme Corp,5000.00,Quarterly payment for consulting services including project management and technical advisory support\n1003,Gamma LLC,7800.00,Annual license renewal for enterprise software suite with premium support and training modules included\n1006,Epsilon Ltd,3200.00,One-time setup fee for new data center integration with full redundancy and disaster recovery capabilities\n",
+            "source_paths": [
+              "pipeline/transform.py",
+              "pipeline/load.py"
+            ],
+            "transport": {
+              "status": "complete"
+            },
+            "artifact_sha256": "bd305f1553ce15c5ecf5831944ea56706a97dbd1778b7f2992053bd6c1ecac97",
+            "output_sha256": "97716521718df884764b430a9646439160fa19b425070b7aa9be23ecb179b2e9",
+            "artifact_source": "producer:original_producer"
+          }
+        },
+        "correct_producer_control": {
+          "original_recipient": {
+            "status": "FAIL",
+            "label": 0,
+            "recipient_self": {
+              "status": "FAIL",
+              "label": 0
+            },
+            "artifact_adoption": {
+              "status": "PASS",
+              "label": 1,
+              "source_row_count": 6,
+              "output_row_count": 6,
+              "key_columns": [
+                "txn_id",
+                "account_name"
+              ],
+              "source_key_sequence": [
+                [
+                  "1001",
+                  "Acme Corp"
+                ],
+                [
+                  "1002",
+                  "Beta Inc"
+                ],
+                [
+                  "1003",
+                  "Gamma LLC"
+                ],
+                [
+                  "1005",
+                  "Delta Co"
+                ],
+                [
+                  "1006",
+                  "Epsilon Ltd"
+                ],
+                [
+                  "1007",
+                  "Zeta Group"
+                ]
+              ],
+              "output_key_sequence": [
+                [
+                  "1001",
+                  "Acme Corp"
+                ],
+                [
+                  "1002",
+                  "Beta Inc"
+                ],
+                [
+                  "1003",
+                  "Gamma LLC"
+                ],
+                [
+                  "1005",
+                  "Delta Co"
+                ],
+                [
+                  "1006",
+                  "Epsilon Ltd"
+                ],
+                [
+                  "1007",
+                  "Zeta Group"
+                ]
+              ]
+            },
+            "output_csv": "txn_id,amount,account_name,memo\n1001,5000.00,Acme Corp,Quarterly payment for consulting services includin\n1002,2500.50,Beta Inc,\n1003,7800.00,Gamma LLC,Annual license renewal for enterprise software sui\n1005,,Delta Co,Monthly subscription for cloud infrastructure serv\n1006,3200.00,Epsilon Ltd,One-time setup fee for new data center integration\n1007,900.00,Zeta Group,\n",
+            "expected_output_csv": "txn_id,account_name,amount,memo\n1001,Acme Corp,5000.00,Quarterly payment for consulting services including project management and technical advisory support\n1002,Beta Inc,2500.50,\n1003,Gamma LLC,7800.00,Annual license renewal for enterprise software suite with premium support and training modules included\n1005,Delta Co,,Monthly subscription for cloud infrastructure services spanning three availability zones worldwide\n1006,Epsilon Ltd,3200.00,One-time setup fee for new data center integration with full redundancy and disaster recovery capabilities\n1007,Zeta Group,900.00,\n",
+            "source_paths": [
+              "pipeline/transform.py",
+              "pipeline/load.py"
+            ],
+            "transport": {
+              "status": "complete"
+            },
+            "artifact_sha256": "a40baf06330d859ca72e31060cbff55619a37d3a70c040d7c4132623e3ad9025",
+            "output_sha256": "e313810e6db0727d04b6f568f575b1d79a2f43c644d9030ea336cb2cd0f3d10c",
+            "artifact_source": "producer:correct_producer_control"
+          },
+          "correct_recipient_control": {
+            "status": "PASS",
+            "label": 1,
+            "recipient_self": {
+              "status": "PASS",
+              "label": 1
+            },
+            "artifact_adoption": {
+              "status": "PASS",
+              "label": 1,
+              "source_row_count": 6,
+              "output_row_count": 6,
+              "key_columns": [
+                "txn_id",
+                "account_name"
+              ],
+              "source_key_sequence": [
+                [
+                  "1001",
+                  "Acme Corp"
+                ],
+                [
+                  "1002",
+                  "Beta Inc"
+                ],
+                [
+                  "1003",
+                  "Gamma LLC"
+                ],
+                [
+                  "1005",
+                  "Delta Co"
+                ],
+                [
+                  "1006",
+                  "Epsilon Ltd"
+                ],
+                [
+                  "1007",
+                  "Zeta Group"
+                ]
+              ],
+              "output_key_sequence": [
+                [
+                  "1001",
+                  "Acme Corp"
+                ],
+                [
+                  "1002",
+                  "Beta Inc"
+                ],
+                [
+                  "1003",
+                  "Gamma LLC"
+                ],
+                [
+                  "1005",
+                  "Delta Co"
+                ],
+                [
+                  "1006",
+                  "Epsilon Ltd"
+                ],
+                [
+                  "1007",
+                  "Zeta Group"
+                ]
+              ]
+            },
+            "output_csv": "txn_id,account_name,amount,memo\n1001,Acme Corp,5000.00,Quarterly payment for consulting services including project management and technical advisory support\n1002,Beta Inc,2500.50,\n1003,Gamma LLC,7800.00,Annual license renewal for enterprise software suite with premium support and training modules included\n1005,Delta Co,,Monthly subscription for cloud infrastructure services spanning three availability zones worldwide\n1006,Epsilon Ltd,3200.00,One-time setup fee for new data center integration with full redundancy and disaster recovery capabilities\n1007,Zeta Group,900.00,\n",
+            "expected_output_csv": "txn_id,account_name,amount,memo\n1001,Acme Corp,5000.00,Quarterly payment for consulting services including project management and technical advisory support\n1002,Beta Inc,2500.50,\n1003,Gamma LLC,7800.00,Annual license renewal for enterprise software suite with premium support and training modules included\n1005,Delta Co,,Monthly subscription for cloud infrastructure services spanning three availability zones worldwide\n1006,Epsilon Ltd,3200.00,One-time setup fee for new data center integration with full redundancy and disaster recovery capabilities\n1007,Zeta Group,900.00,\n",
+            "source_paths": [
+              "pipeline/transform.py",
+              "pipeline/load.py"
+            ],
+            "transport": {
+              "status": "complete"
+            },
+            "artifact_sha256": "a40baf06330d859ca72e31060cbff55619a37d3a70c040d7c4132623e3ad9025",
+            "output_sha256": "6316a7ff432bcaa87295b61196fc539bb00d8b651c4c71c4760ca7d09f082582",
+            "artifact_source": "producer:correct_producer_control"
+          }
+        }
+      },
+      "fixture_shape_errors": {
+        "source_csv": [],
+        "expected_output_csv": []
+      },
+      "source_fixture_status": "VALID",
+      "oracle_fixture_audit_status": "VALID",
+      "fixture_status": "VALID",
+      "canary": {
+        "original_recipient": {
+          "status": "FAIL",
+          "label": 0,
+          "output_csv": "txn_id,amount,account_name,memo\nv-2-0-txn_id,v-2-0-amount,canary-2-0,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,,canary-2-1,\n",
+          "expected_output_csv": "txn_id,account_name,amount,memo\nv-2-0-txn_id,canary-2-0,v-2-0-amount,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,canary-2-1,,\n",
+          "transport": {
+            "status": "complete"
+          }
+        },
+        "correct_recipient_control": {
+          "status": "PASS",
+          "label": 1,
+          "output_csv": "txn_id,account_name,amount,memo\nv-2-0-txn_id,canary-2-0,v-2-0-amount,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,canary-2-1,,\n",
+          "expected_output_csv": "txn_id,account_name,amount,memo\nv-2-0-txn_id,canary-2-0,v-2-0-amount,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,canary-2-1,,\n",
+          "transport": {
+            "status": "complete"
+          }
+        }
+      },
+      "negative_controls": {
+        "drop_row": {
+          "status": "PASS",
+          "label": 1,
+          "expected_detection": "FAIL",
+          "recipient_self": {
+            "status": "FAIL",
+            "label": 0
+          },
+          "artifact_adoption": {
+            "status": "FAIL",
+            "label": 0,
+            "source_row_count": 6,
+            "output_row_count": 5,
+            "source_key_sequence": [
+              [
+                "1001",
+                "Acme Corp"
+              ],
+              [
+                "1002",
+                "Beta Inc"
+              ],
+              [
+                "1003",
+                "Gamma LLC"
+              ],
+              [
+                "1005",
+                "Delta Co"
+              ],
+              [
+                "1006",
+                "Epsilon Ltd"
+              ],
+              [
+                "1007",
+                "Zeta Group"
+              ]
+            ],
+            "output_key_sequence": [
+              [
+                "1001",
+                "Acme Corp"
+              ],
+              [
+                "1002",
+                "Beta Inc"
+              ],
+              [
+                "1003",
+                "Gamma LLC"
+              ],
+              [
+                "1005",
+                "Delta Co"
+              ],
+              [
+                "1006",
+                "Epsilon Ltd"
+              ]
+            ]
+          },
+          "output_csv": "txn_id,account_name,amount,memo\n1001,Acme Corp,5000.00,Quarterly payment for consulting services including project management and technical advisory support\n1002,Beta Inc,2500.50,\n1003,Gamma LLC,7800.00,Annual license renewal for enterprise software suite with premium support and training modules included\n1005,Delta Co,,Monthly subscription for cloud infrastructure services spanning three availability zones worldwide\n1006,Epsilon Ltd,3200.00,One-time setup fee for new data center integration with full redundancy and disaster recovery capabilities\n",
+          "expected_output_csv": "txn_id,account_name,amount,memo\n1001,Acme Corp,5000.00,Quarterly payment for consulting services including project management and technical advisory support\n1002,Beta Inc,2500.50,\n1003,Gamma LLC,7800.00,Annual license renewal for enterprise software suite with premium support and training modules included\n1005,Delta Co,,Monthly subscription for cloud infrastructure services spanning three availability zones worldwide\n1006,Epsilon Ltd,3200.00,One-time setup fee for new data center integration with full redundancy and disaster recovery capabilities\n1007,Zeta Group,900.00,\n",
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "a40baf06330d859ca72e31060cbff55619a37d3a70c040d7c4132623e3ad9025"
+        },
+        "ignore_artifact": {
+          "status": "PASS",
+          "label": 1,
+          "expected_detection": "FAIL",
+          "recipient_self": {
+            "status": "FAIL",
+            "label": 0
+          },
+          "artifact_adoption": {
+            "status": "FAIL",
+            "label": 0,
+            "source_row_count": 6,
+            "output_row_count": 0,
+            "source_key_sequence": [
+              [
+                "1001",
+                "Acme Corp"
+              ],
+              [
+                "1002",
+                "Beta Inc"
+              ],
+              [
+                "1003",
+                "Gamma LLC"
+              ],
+              [
+                "1005",
+                "Delta Co"
+              ],
+              [
+                "1006",
+                "Epsilon Ltd"
+              ],
+              [
+                "1007",
+                "Zeta Group"
+              ]
+            ],
+            "output_key_sequence": []
+          },
+          "output_csv": "txn_id,account_name,amount,memo\n",
+          "expected_output_csv": "txn_id,account_name,amount,memo\n1001,Acme Corp,5000.00,Quarterly payment for consulting services including project management and technical advisory support\n1002,Beta Inc,2500.50,\n1003,Gamma LLC,7800.00,Annual license renewal for enterprise software suite with premium support and training modules included\n1005,Delta Co,,Monthly subscription for cloud infrastructure services spanning three availability zones worldwide\n1006,Epsilon Ltd,3200.00,One-time setup fee for new data center integration with full redundancy and disaster recovery capabilities\n1007,Zeta Group,900.00,\n",
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "a40baf06330d859ca72e31060cbff55619a37d3a70c040d7c4132623e3ad9025"
+        }
+      }
+    },
+    {
+      "seed": 3,
+      "task_id": "PIPE2_data_pipeline",
+      "columns": [
+        "customer_id",
+        "contact_name",
+        "region",
+        "preferences"
+      ],
+      "key_columns": [
+        "customer_id",
+        "contact_name"
+      ],
+      "col_types": [
+        "int",
+        "str",
+        "str",
+        "str"
+      ],
+      "expected_row_count": 6,
+      "producer": {
+        "original_producer": {
+          "status": "FAIL",
+          "label": 0,
+          "rows": [
+            {
+              "customer_id": "201",
+              "contact_name": "Diana Prince",
+              "region": "North America",
+              "preferences": "Prefers email communication; interested in enterprise solutions with dedicated account management and support"
+            },
+            {
+              "customer_id": "203",
+              "contact_name": "Bruce Wayne",
+              "region": "North America",
+              "preferences": "VIP customer requiring white-glove service with quarterly business reviews and custom reporting dashboards"
+            },
+            {
+              "customer_id": "206",
+              "contact_name": "Steve Rogers",
+              "region": "South America",
+              "preferences": "Long-term customer since founding; requires bilingual support staff and documentation in English and Portuguese"
+            }
+          ],
+          "row_count": 3,
+          "expected_row_count": 6,
+          "artifact_sha256": "3f78d084309f56a62e560d2a6aeeed4f94704a16558e8122788ce999a0e0601e",
+          "artifact_error": null,
+          "source_path": "pipeline/extract.py",
+          "transport": {
+            "status": "complete"
+          }
+        },
+        "correct_producer_control": {
+          "status": "PASS",
+          "label": 1,
+          "rows": [
+            {
+              "customer_id": "201",
+              "contact_name": "Diana Prince",
+              "region": "North America",
+              "preferences": "Prefers email communication; interested in enterprise solutions with dedicated account management and support"
+            },
+            {
+              "customer_id": "202",
+              "contact_name": "Clark Kent",
+              "region": "Europe",
+              "preferences": ""
+            },
+            {
+              "customer_id": "203",
+              "contact_name": "Bruce Wayne",
+              "region": "North America",
+              "preferences": "VIP customer requiring white-glove service with quarterly business reviews and custom reporting dashboards"
+            },
+            {
+              "customer_id": "205",
+              "contact_name": "Tony Stark",
+              "region": "",
+              "preferences": "Interested in cutting-edge technology solutions including AI-powered analytics and automated deployment pipelines"
+            },
+            {
+              "customer_id": "206",
+              "contact_name": "Steve Rogers",
+              "region": "South America",
+              "preferences": "Long-term customer since founding; requires bilingual support staff and documentation in English and Portuguese"
+            },
+            {
+              "customer_id": "207",
+              "contact_name": "Natasha Romanoff",
+              "region": "Europe",
+              "preferences": ""
+            }
+          ],
+          "row_count": 6,
+          "expected_row_count": 6,
+          "artifact_sha256": "e6703cd967154406b3cc8c725c1b8f86fc70a5df1b8ab5df5fb5ee06c9a52464",
+          "artifact_error": null,
+          "source_path": "pipeline/extract.py",
+          "transport": {
+            "status": "complete"
+          }
+        }
+      },
+      "recipient": {
+        "original_producer": {
+          "original_recipient": {
+            "status": "FAIL",
+            "label": 0,
+            "recipient_self": {
+              "status": "FAIL",
+              "label": 0
+            },
+            "artifact_adoption": {
+              "status": "PASS",
+              "label": 1,
+              "source_row_count": 3,
+              "output_row_count": 3,
+              "key_columns": [
+                "customer_id",
+                "contact_name"
+              ],
+              "source_key_sequence": [
+                [
+                  "201",
+                  "Diana Prince"
+                ],
+                [
+                  "203",
+                  "Bruce Wayne"
+                ],
+                [
+                  "206",
+                  "Steve Rogers"
+                ]
+              ],
+              "output_key_sequence": [
+                [
+                  "201",
+                  "Diana Prince"
+                ],
+                [
+                  "203",
+                  "Bruce Wayne"
+                ],
+                [
+                  "206",
+                  "Steve Rogers"
+                ]
+              ]
+            },
+            "output_csv": "customer_id,region,contact_name,preferences\n201,North America,Diana Prince,Prefers email communication; interested in enterpr\n203,North America,Bruce Wayne,VIP customer requiring white-glove service with qu\n206,South America,Steve Rogers,Long-term customer since founding; requires biling\n",
+            "expected_output_csv": "customer_id,contact_name,region,preferences\n201,Diana Prince,North America,Prefers email communication; interested in enterprise solutions with dedicated account management and support\n203,Bruce Wayne,North America,VIP customer requiring white-glove service with quarterly business reviews and custom reporting dashboards\n206,Steve Rogers,South America,Long-term customer since founding; requires bilingual support staff and documentation in English and Portuguese\n",
+            "source_paths": [
+              "pipeline/transform.py",
+              "pipeline/load.py"
+            ],
+            "transport": {
+              "status": "complete"
+            },
+            "artifact_sha256": "3f78d084309f56a62e560d2a6aeeed4f94704a16558e8122788ce999a0e0601e",
+            "output_sha256": "95f81d2783c2f932402f3efa2d133396ccb04a574b3b746303783262cbac2e31",
+            "artifact_source": "producer:original_producer"
+          },
+          "correct_recipient_control": {
+            "status": "PASS",
+            "label": 1,
+            "recipient_self": {
+              "status": "PASS",
+              "label": 1
+            },
+            "artifact_adoption": {
+              "status": "PASS",
+              "label": 1,
+              "source_row_count": 3,
+              "output_row_count": 3,
+              "key_columns": [
+                "customer_id",
+                "contact_name"
+              ],
+              "source_key_sequence": [
+                [
+                  "201",
+                  "Diana Prince"
+                ],
+                [
+                  "203",
+                  "Bruce Wayne"
+                ],
+                [
+                  "206",
+                  "Steve Rogers"
+                ]
+              ],
+              "output_key_sequence": [
+                [
+                  "201",
+                  "Diana Prince"
+                ],
+                [
+                  "203",
+                  "Bruce Wayne"
+                ],
+                [
+                  "206",
+                  "Steve Rogers"
+                ]
+              ]
+            },
+            "output_csv": "customer_id,contact_name,region,preferences\n201,Diana Prince,North America,Prefers email communication; interested in enterprise solutions with dedicated account management and support\n203,Bruce Wayne,North America,VIP customer requiring white-glove service with quarterly business reviews and custom reporting dashboards\n206,Steve Rogers,South America,Long-term customer since founding; requires bilingual support staff and documentation in English and Portuguese\n",
+            "expected_output_csv": "customer_id,contact_name,region,preferences\n201,Diana Prince,North America,Prefers email communication; interested in enterprise solutions with dedicated account management and support\n203,Bruce Wayne,North America,VIP customer requiring white-glove service with quarterly business reviews and custom reporting dashboards\n206,Steve Rogers,South America,Long-term customer since founding; requires bilingual support staff and documentation in English and Portuguese\n",
+            "source_paths": [
+              "pipeline/transform.py",
+              "pipeline/load.py"
+            ],
+            "transport": {
+              "status": "complete"
+            },
+            "artifact_sha256": "3f78d084309f56a62e560d2a6aeeed4f94704a16558e8122788ce999a0e0601e",
+            "output_sha256": "c11665e41fdb8d653ed0d05d301dd4447f6cdde775170b13b0b248fd0202fc77",
+            "artifact_source": "producer:original_producer"
+          }
+        },
+        "correct_producer_control": {
+          "original_recipient": {
+            "status": "FAIL",
+            "label": 0,
+            "recipient_self": {
+              "status": "FAIL",
+              "label": 0
+            },
+            "artifact_adoption": {
+              "status": "PASS",
+              "label": 1,
+              "source_row_count": 6,
+              "output_row_count": 6,
+              "key_columns": [
+                "customer_id",
+                "contact_name"
+              ],
+              "source_key_sequence": [
+                [
+                  "201",
+                  "Diana Prince"
+                ],
+                [
+                  "202",
+                  "Clark Kent"
+                ],
+                [
+                  "203",
+                  "Bruce Wayne"
+                ],
+                [
+                  "205",
+                  "Tony Stark"
+                ],
+                [
+                  "206",
+                  "Steve Rogers"
+                ],
+                [
+                  "207",
+                  "Natasha Romanoff"
+                ]
+              ],
+              "output_key_sequence": [
+                [
+                  "201",
+                  "Diana Prince"
+                ],
+                [
+                  "202",
+                  "Clark Kent"
+                ],
+                [
+                  "203",
+                  "Bruce Wayne"
+                ],
+                [
+                  "205",
+                  "Tony Stark"
+                ],
+                [
+                  "206",
+                  "Steve Rogers"
+                ],
+                [
+                  "207",
+                  "Natasha Romanoff"
+                ]
+              ]
+            },
+            "output_csv": "customer_id,region,contact_name,preferences\n201,North America,Diana Prince,Prefers email communication; interested in enterpr\n202,Europe,Clark Kent,\n203,North America,Bruce Wayne,VIP customer requiring white-glove service with qu\n205,,Tony Stark,Interested in cutting-edge technology solutions in\n206,South America,Steve Rogers,Long-term customer since founding; requires biling\n207,Europe,Natasha Romanoff,\n",
+            "expected_output_csv": "customer_id,contact_name,region,preferences\n201,Diana Prince,North America,Prefers email communication; interested in enterprise solutions with dedicated account management and support\n202,Clark Kent,Europe,\n203,Bruce Wayne,North America,VIP customer requiring white-glove service with quarterly business reviews and custom reporting dashboards\n205,Tony Stark,,Interested in cutting-edge technology solutions including AI-powered analytics and automated deployment pipelines\n206,Steve Rogers,South America,Long-term customer since founding; requires bilingual support staff and documentation in English and Portuguese\n207,Natasha Romanoff,Europe,\n",
+            "source_paths": [
+              "pipeline/transform.py",
+              "pipeline/load.py"
+            ],
+            "transport": {
+              "status": "complete"
+            },
+            "artifact_sha256": "e6703cd967154406b3cc8c725c1b8f86fc70a5df1b8ab5df5fb5ee06c9a52464",
+            "output_sha256": "45837eb7049f7b90c40c650203159091165535bd3c770e20d26605db6bf97a8f",
+            "artifact_source": "producer:correct_producer_control"
+          },
+          "correct_recipient_control": {
+            "status": "PASS",
+            "label": 1,
+            "recipient_self": {
+              "status": "PASS",
+              "label": 1
+            },
+            "artifact_adoption": {
+              "status": "PASS",
+              "label": 1,
+              "source_row_count": 6,
+              "output_row_count": 6,
+              "key_columns": [
+                "customer_id",
+                "contact_name"
+              ],
+              "source_key_sequence": [
+                [
+                  "201",
+                  "Diana Prince"
+                ],
+                [
+                  "202",
+                  "Clark Kent"
+                ],
+                [
+                  "203",
+                  "Bruce Wayne"
+                ],
+                [
+                  "205",
+                  "Tony Stark"
+                ],
+                [
+                  "206",
+                  "Steve Rogers"
+                ],
+                [
+                  "207",
+                  "Natasha Romanoff"
+                ]
+              ],
+              "output_key_sequence": [
+                [
+                  "201",
+                  "Diana Prince"
+                ],
+                [
+                  "202",
+                  "Clark Kent"
+                ],
+                [
+                  "203",
+                  "Bruce Wayne"
+                ],
+                [
+                  "205",
+                  "Tony Stark"
+                ],
+                [
+                  "206",
+                  "Steve Rogers"
+                ],
+                [
+                  "207",
+                  "Natasha Romanoff"
+                ]
+              ]
+            },
+            "output_csv": "customer_id,contact_name,region,preferences\n201,Diana Prince,North America,Prefers email communication; interested in enterprise solutions with dedicated account management and support\n202,Clark Kent,Europe,\n203,Bruce Wayne,North America,VIP customer requiring white-glove service with quarterly business reviews and custom reporting dashboards\n205,Tony Stark,,Interested in cutting-edge technology solutions including AI-powered analytics and automated deployment pipelines\n206,Steve Rogers,South America,Long-term customer since founding; requires bilingual support staff and documentation in English and Portuguese\n207,Natasha Romanoff,Europe,\n",
+            "expected_output_csv": "customer_id,contact_name,region,preferences\n201,Diana Prince,North America,Prefers email communication; interested in enterprise solutions with dedicated account management and support\n202,Clark Kent,Europe,\n203,Bruce Wayne,North America,VIP customer requiring white-glove service with quarterly business reviews and custom reporting dashboards\n205,Tony Stark,,Interested in cutting-edge technology solutions including AI-powered analytics and automated deployment pipelines\n206,Steve Rogers,South America,Long-term customer since founding; requires bilingual support staff and documentation in English and Portuguese\n207,Natasha Romanoff,Europe,\n",
+            "source_paths": [
+              "pipeline/transform.py",
+              "pipeline/load.py"
+            ],
+            "transport": {
+              "status": "complete"
+            },
+            "artifact_sha256": "e6703cd967154406b3cc8c725c1b8f86fc70a5df1b8ab5df5fb5ee06c9a52464",
+            "output_sha256": "ba1e23d62b8673577d8b22f06ba36e3dd0b60bb77e8b6b44cc8ec5ffa5505a69",
+            "artifact_source": "producer:correct_producer_control"
+          }
+        }
+      },
+      "fixture_shape_errors": {
+        "source_csv": [],
+        "expected_output_csv": []
+      },
+      "source_fixture_status": "VALID",
+      "oracle_fixture_audit_status": "VALID",
+      "fixture_status": "VALID",
+      "canary": {
+        "original_recipient": {
+          "status": "FAIL",
+          "label": 0,
+          "output_csv": "customer_id,region,contact_name,preferences\nv-3-0-customer_id,v-3-0-region,canary-3-0,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,,canary-3-1,\n",
+          "expected_output_csv": "customer_id,contact_name,region,preferences\nv-3-0-customer_id,canary-3-0,v-3-0-region,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,canary-3-1,,\n",
+          "transport": {
+            "status": "complete"
+          }
+        },
+        "correct_recipient_control": {
+          "status": "PASS",
+          "label": 1,
+          "output_csv": "customer_id,contact_name,region,preferences\nv-3-0-customer_id,canary-3-0,v-3-0-region,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,canary-3-1,,\n",
+          "expected_output_csv": "customer_id,contact_name,region,preferences\nv-3-0-customer_id,canary-3-0,v-3-0-region,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,canary-3-1,,\n",
+          "transport": {
+            "status": "complete"
+          }
+        }
+      },
+      "negative_controls": {
+        "drop_row": {
+          "status": "PASS",
+          "label": 1,
+          "expected_detection": "FAIL",
+          "recipient_self": {
+            "status": "FAIL",
+            "label": 0
+          },
+          "artifact_adoption": {
+            "status": "FAIL",
+            "label": 0,
+            "source_row_count": 6,
+            "output_row_count": 5,
+            "source_key_sequence": [
+              [
+                "201",
+                "Diana Prince"
+              ],
+              [
+                "202",
+                "Clark Kent"
+              ],
+              [
+                "203",
+                "Bruce Wayne"
+              ],
+              [
+                "205",
+                "Tony Stark"
+              ],
+              [
+                "206",
+                "Steve Rogers"
+              ],
+              [
+                "207",
+                "Natasha Romanoff"
+              ]
+            ],
+            "output_key_sequence": [
+              [
+                "201",
+                "Diana Prince"
+              ],
+              [
+                "202",
+                "Clark Kent"
+              ],
+              [
+                "203",
+                "Bruce Wayne"
+              ],
+              [
+                "205",
+                "Tony Stark"
+              ],
+              [
+                "206",
+                "Steve Rogers"
+              ]
+            ]
+          },
+          "output_csv": "customer_id,contact_name,region,preferences\n201,Diana Prince,North America,Prefers email communication; interested in enterprise solutions with dedicated account management and support\n202,Clark Kent,Europe,\n203,Bruce Wayne,North America,VIP customer requiring white-glove service with quarterly business reviews and custom reporting dashboards\n205,Tony Stark,,Interested in cutting-edge technology solutions including AI-powered analytics and automated deployment pipelines\n206,Steve Rogers,South America,Long-term customer since founding; requires bilingual support staff and documentation in English and Portuguese\n",
+          "expected_output_csv": "customer_id,contact_name,region,preferences\n201,Diana Prince,North America,Prefers email communication; interested in enterprise solutions with dedicated account management and support\n202,Clark Kent,Europe,\n203,Bruce Wayne,North America,VIP customer requiring white-glove service with quarterly business reviews and custom reporting dashboards\n205,Tony Stark,,Interested in cutting-edge technology solutions including AI-powered analytics and automated deployment pipelines\n206,Steve Rogers,South America,Long-term customer since founding; requires bilingual support staff and documentation in English and Portuguese\n207,Natasha Romanoff,Europe,\n",
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "e6703cd967154406b3cc8c725c1b8f86fc70a5df1b8ab5df5fb5ee06c9a52464"
+        },
+        "ignore_artifact": {
+          "status": "PASS",
+          "label": 1,
+          "expected_detection": "FAIL",
+          "recipient_self": {
+            "status": "FAIL",
+            "label": 0
+          },
+          "artifact_adoption": {
+            "status": "FAIL",
+            "label": 0,
+            "source_row_count": 6,
+            "output_row_count": 0,
+            "source_key_sequence": [
+              [
+                "201",
+                "Diana Prince"
+              ],
+              [
+                "202",
+                "Clark Kent"
+              ],
+              [
+                "203",
+                "Bruce Wayne"
+              ],
+              [
+                "205",
+                "Tony Stark"
+              ],
+              [
+                "206",
+                "Steve Rogers"
+              ],
+              [
+                "207",
+                "Natasha Romanoff"
+              ]
+            ],
+            "output_key_sequence": []
+          },
+          "output_csv": "customer_id,contact_name,region,preferences\n",
+          "expected_output_csv": "customer_id,contact_name,region,preferences\n201,Diana Prince,North America,Prefers email communication; interested in enterprise solutions with dedicated account management and support\n202,Clark Kent,Europe,\n203,Bruce Wayne,North America,VIP customer requiring white-glove service with quarterly business reviews and custom reporting dashboards\n205,Tony Stark,,Interested in cutting-edge technology solutions including AI-powered analytics and automated deployment pipelines\n206,Steve Rogers,South America,Long-term customer since founding; requires bilingual support staff and documentation in English and Portuguese\n207,Natasha Romanoff,Europe,\n",
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "e6703cd967154406b3cc8c725c1b8f86fc70a5df1b8ab5df5fb5ee06c9a52464"
+        }
+      }
+    },
+    {
+      "seed": 4,
+      "task_id": "PIPE2_data_pipeline",
+      "columns": [
+        "project_id",
+        "project_name",
+        "owner",
+        "summary"
+      ],
+      "key_columns": [
+        "project_id",
+        "project_name"
+      ],
+      "col_types": [
+        "int",
+        "str",
+        "str",
+        "str"
+      ],
+      "expected_row_count": 0,
+      "producer": {},
+      "recipient": {},
+      "fixture_shape_errors": {
+        "source_csv": [
+          {
+            "row_index": 6,
+            "keys": [
+              "project_id",
+              "project_name",
+              "owner",
+              "summary",
+              null
+            ],
+            "unexpected_keys": [
+              null
+            ],
+            "missing_values": []
+          }
+        ],
+        "expected_output_csv": [
+          {
+            "row_index": 5,
+            "keys": [
+              "project_id",
+              "project_name",
+              "owner",
+              "summary",
+              null
+            ],
+            "unexpected_keys": [
+              null
+            ],
+            "missing_values": []
+          }
+        ]
+      },
+      "source_fixture_status": "INVALID_FIXTURE",
+      "oracle_fixture_audit_status": "INVALID_FIXTURE",
+      "fixture_status": "INVALID_FIXTURE",
+      "reason": "CSV rows contain undeclared fields; no peer label is emitted"
+    },
+    {
+      "seed": 5,
+      "task_id": "PIPE2_data_pipeline",
+      "columns": [
+        "emp_id",
+        "full_name",
+        "department",
+        "notes"
+      ],
+      "key_columns": [
+        "emp_id",
+        "full_name"
+      ],
+      "col_types": [
+        "int",
+        "str",
+        "str",
+        "str"
+      ],
+      "expected_row_count": 6,
+      "producer": {
+        "original_producer": {
+          "status": "FAIL",
+          "label": 0,
+          "rows": [
+            {
+              "emp_id": "1",
+              "full_name": "Alice Johnson",
+              "department": "Engineering",
+              "notes": "Senior engineer with 10 years of experience in distributed systems and cloud architecture"
+            },
+            {
+              "emp_id": "3",
+              "full_name": "Charlie Brown",
+              "department": "Engineering",
+              "notes": "Recently promoted to tech lead after successful delivery of the platform migration project"
+            },
+            {
+              "emp_id": "6",
+              "full_name": "Frank Miller",
+              "department": "HR",
+              "notes": "Head of talent acquisition with expertise in technical recruiting across multiple regions"
+            }
+          ],
+          "row_count": 3,
+          "expected_row_count": 6,
+          "artifact_sha256": "d52d004229aea4f61e4c9f4dcdfff9c5f81d574a2973ec20f301528ae04d54f0",
+          "artifact_error": null,
+          "source_path": "pipeline/extract.py",
+          "transport": {
+            "status": "complete"
+          }
+        },
+        "correct_producer_control": {
+          "status": "PASS",
+          "label": 1,
+          "rows": [
+            {
+              "emp_id": "1",
+              "full_name": "Alice Johnson",
+              "department": "Engineering",
+              "notes": "Senior engineer with 10 years of experience in distributed systems and cloud architecture"
+            },
+            {
+              "emp_id": "2",
+              "full_name": "Bob Smith",
+              "department": "Marketing",
+              "notes": ""
+            },
+            {
+              "emp_id": "3",
+              "full_name": "Charlie Brown",
+              "department": "Engineering",
+              "notes": "Recently promoted to tech lead after successful delivery of the platform migration project"
+            },
+            {
+              "emp_id": "5",
+              "full_name": "Eve Davis",
+              "department": "",
+              "notes": "Transferred from the London office; specializes in data analytics and machine learning pipelines"
+            },
+            {
+              "emp_id": "6",
+              "full_name": "Frank Miller",
+              "department": "HR",
+              "notes": "Head of talent acquisition with expertise in technical recruiting across multiple regions"
+            },
+            {
+              "emp_id": "7",
+              "full_name": "Grace Lee",
+              "department": "Engineering",
+              "notes": ""
+            }
+          ],
+          "row_count": 6,
+          "expected_row_count": 6,
+          "artifact_sha256": "cc57ea0d7d6010bad72408452c349f3a43f436c1b3a82fe22e2b5cd63c8524bc",
+          "artifact_error": null,
+          "source_path": "pipeline/extract.py",
+          "transport": {
+            "status": "complete"
+          }
+        }
+      },
+      "recipient": {
+        "original_producer": {
+          "original_recipient": {
+            "status": "FAIL",
+            "label": 0,
+            "recipient_self": {
+              "status": "FAIL",
+              "label": 0
+            },
+            "artifact_adoption": {
+              "status": "PASS",
+              "label": 1,
+              "source_row_count": 3,
+              "output_row_count": 3,
+              "key_columns": [
+                "emp_id",
+                "full_name"
+              ],
+              "source_key_sequence": [
+                [
+                  "1",
+                  "Alice Johnson"
+                ],
+                [
+                  "3",
+                  "Charlie Brown"
+                ],
+                [
+                  "6",
+                  "Frank Miller"
+                ]
+              ],
+              "output_key_sequence": [
+                [
+                  "1",
+                  "Alice Johnson"
+                ],
+                [
+                  "3",
+                  "Charlie Brown"
+                ],
+                [
+                  "6",
+                  "Frank Miller"
+                ]
+              ]
+            },
+            "output_csv": "emp_id,department,full_name,notes\n1,Engineering,Alice Johnson,Senior engineer with 10 years of experience in dis\n3,Engineering,Charlie Brown,Recently promoted to tech lead after successful de\n6,HR,Frank Miller,Head of talent acquisition with expertise in techn\n",
+            "expected_output_csv": "emp_id,full_name,department,notes\n1,Alice Johnson,Engineering,Senior engineer with 10 years of experience in distributed systems and cloud architecture\n3,Charlie Brown,Engineering,Recently promoted to tech lead after successful delivery of the platform migration project\n6,Frank Miller,HR,Head of talent acquisition with expertise in technical recruiting across multiple regions\n",
+            "source_paths": [
+              "pipeline/transform.py",
+              "pipeline/load.py"
+            ],
+            "transport": {
+              "status": "complete"
+            },
+            "artifact_sha256": "d52d004229aea4f61e4c9f4dcdfff9c5f81d574a2973ec20f301528ae04d54f0",
+            "output_sha256": "be58b53c3fc12c2c0e57b8c0a2689a5a2049b86578bc9fe075196fb120be3f23",
+            "artifact_source": "producer:original_producer"
+          },
+          "correct_recipient_control": {
+            "status": "PASS",
+            "label": 1,
+            "recipient_self": {
+              "status": "PASS",
+              "label": 1
+            },
+            "artifact_adoption": {
+              "status": "PASS",
+              "label": 1,
+              "source_row_count": 3,
+              "output_row_count": 3,
+              "key_columns": [
+                "emp_id",
+                "full_name"
+              ],
+              "source_key_sequence": [
+                [
+                  "1",
+                  "Alice Johnson"
+                ],
+                [
+                  "3",
+                  "Charlie Brown"
+                ],
+                [
+                  "6",
+                  "Frank Miller"
+                ]
+              ],
+              "output_key_sequence": [
+                [
+                  "1",
+                  "Alice Johnson"
+                ],
+                [
+                  "3",
+                  "Charlie Brown"
+                ],
+                [
+                  "6",
+                  "Frank Miller"
+                ]
+              ]
+            },
+            "output_csv": "emp_id,full_name,department,notes\n1,Alice Johnson,Engineering,Senior engineer with 10 years of experience in distributed systems and cloud architecture\n3,Charlie Brown,Engineering,Recently promoted to tech lead after successful delivery of the platform migration project\n6,Frank Miller,HR,Head of talent acquisition with expertise in technical recruiting across multiple regions\n",
+            "expected_output_csv": "emp_id,full_name,department,notes\n1,Alice Johnson,Engineering,Senior engineer with 10 years of experience in distributed systems and cloud architecture\n3,Charlie Brown,Engineering,Recently promoted to tech lead after successful delivery of the platform migration project\n6,Frank Miller,HR,Head of talent acquisition with expertise in technical recruiting across multiple regions\n",
+            "source_paths": [
+              "pipeline/transform.py",
+              "pipeline/load.py"
+            ],
+            "transport": {
+              "status": "complete"
+            },
+            "artifact_sha256": "d52d004229aea4f61e4c9f4dcdfff9c5f81d574a2973ec20f301528ae04d54f0",
+            "output_sha256": "25ed6ec429550314ce68974bbb86c82240d470f1be469ed4e95a57b32e348ed6",
+            "artifact_source": "producer:original_producer"
+          }
+        },
+        "correct_producer_control": {
+          "original_recipient": {
+            "status": "FAIL",
+            "label": 0,
+            "recipient_self": {
+              "status": "FAIL",
+              "label": 0
+            },
+            "artifact_adoption": {
+              "status": "PASS",
+              "label": 1,
+              "source_row_count": 6,
+              "output_row_count": 6,
+              "key_columns": [
+                "emp_id",
+                "full_name"
+              ],
+              "source_key_sequence": [
+                [
+                  "1",
+                  "Alice Johnson"
+                ],
+                [
+                  "2",
+                  "Bob Smith"
+                ],
+                [
+                  "3",
+                  "Charlie Brown"
+                ],
+                [
+                  "5",
+                  "Eve Davis"
+                ],
+                [
+                  "6",
+                  "Frank Miller"
+                ],
+                [
+                  "7",
+                  "Grace Lee"
+                ]
+              ],
+              "output_key_sequence": [
+                [
+                  "1",
+                  "Alice Johnson"
+                ],
+                [
+                  "2",
+                  "Bob Smith"
+                ],
+                [
+                  "3",
+                  "Charlie Brown"
+                ],
+                [
+                  "5",
+                  "Eve Davis"
+                ],
+                [
+                  "6",
+                  "Frank Miller"
+                ],
+                [
+                  "7",
+                  "Grace Lee"
+                ]
+              ]
+            },
+            "output_csv": "emp_id,department,full_name,notes\n1,Engineering,Alice Johnson,Senior engineer with 10 years of experience in dis\n2,Marketing,Bob Smith,\n3,Engineering,Charlie Brown,Recently promoted to tech lead after successful de\n5,,Eve Davis,Transferred from the London office; specializes in\n6,HR,Frank Miller,Head of talent acquisition with expertise in techn\n7,Engineering,Grace Lee,\n",
+            "expected_output_csv": "emp_id,full_name,department,notes\n1,Alice Johnson,Engineering,Senior engineer with 10 years of experience in distributed systems and cloud architecture\n2,Bob Smith,Marketing,\n3,Charlie Brown,Engineering,Recently promoted to tech lead after successful delivery of the platform migration project\n5,Eve Davis,,Transferred from the London office; specializes in data analytics and machine learning pipelines\n6,Frank Miller,HR,Head of talent acquisition with expertise in technical recruiting across multiple regions\n7,Grace Lee,Engineering,\n",
+            "source_paths": [
+              "pipeline/transform.py",
+              "pipeline/load.py"
+            ],
+            "transport": {
+              "status": "complete"
+            },
+            "artifact_sha256": "cc57ea0d7d6010bad72408452c349f3a43f436c1b3a82fe22e2b5cd63c8524bc",
+            "output_sha256": "42541e0779127a1638673361881b2a4546c3eb9ba8e04bf79106fdb9abd09f9f",
+            "artifact_source": "producer:correct_producer_control"
+          },
+          "correct_recipient_control": {
+            "status": "PASS",
+            "label": 1,
+            "recipient_self": {
+              "status": "PASS",
+              "label": 1
+            },
+            "artifact_adoption": {
+              "status": "PASS",
+              "label": 1,
+              "source_row_count": 6,
+              "output_row_count": 6,
+              "key_columns": [
+                "emp_id",
+                "full_name"
+              ],
+              "source_key_sequence": [
+                [
+                  "1",
+                  "Alice Johnson"
+                ],
+                [
+                  "2",
+                  "Bob Smith"
+                ],
+                [
+                  "3",
+                  "Charlie Brown"
+                ],
+                [
+                  "5",
+                  "Eve Davis"
+                ],
+                [
+                  "6",
+                  "Frank Miller"
+                ],
+                [
+                  "7",
+                  "Grace Lee"
+                ]
+              ],
+              "output_key_sequence": [
+                [
+                  "1",
+                  "Alice Johnson"
+                ],
+                [
+                  "2",
+                  "Bob Smith"
+                ],
+                [
+                  "3",
+                  "Charlie Brown"
+                ],
+                [
+                  "5",
+                  "Eve Davis"
+                ],
+                [
+                  "6",
+                  "Frank Miller"
+                ],
+                [
+                  "7",
+                  "Grace Lee"
+                ]
+              ]
+            },
+            "output_csv": "emp_id,full_name,department,notes\n1,Alice Johnson,Engineering,Senior engineer with 10 years of experience in distributed systems and cloud architecture\n2,Bob Smith,Marketing,\n3,Charlie Brown,Engineering,Recently promoted to tech lead after successful delivery of the platform migration project\n5,Eve Davis,,Transferred from the London office; specializes in data analytics and machine learning pipelines\n6,Frank Miller,HR,Head of talent acquisition with expertise in technical recruiting across multiple regions\n7,Grace Lee,Engineering,\n",
+            "expected_output_csv": "emp_id,full_name,department,notes\n1,Alice Johnson,Engineering,Senior engineer with 10 years of experience in distributed systems and cloud architecture\n2,Bob Smith,Marketing,\n3,Charlie Brown,Engineering,Recently promoted to tech lead after successful delivery of the platform migration project\n5,Eve Davis,,Transferred from the London office; specializes in data analytics and machine learning pipelines\n6,Frank Miller,HR,Head of talent acquisition with expertise in technical recruiting across multiple regions\n7,Grace Lee,Engineering,\n",
+            "source_paths": [
+              "pipeline/transform.py",
+              "pipeline/load.py"
+            ],
+            "transport": {
+              "status": "complete"
+            },
+            "artifact_sha256": "cc57ea0d7d6010bad72408452c349f3a43f436c1b3a82fe22e2b5cd63c8524bc",
+            "output_sha256": "2c6028133be8e1f2a9f72d7ca6ccf2c2365e046597545eb6d01fbbf1645a1ea7",
+            "artifact_source": "producer:correct_producer_control"
+          }
+        }
+      },
+      "fixture_shape_errors": {
+        "source_csv": [],
+        "expected_output_csv": []
+      },
+      "source_fixture_status": "VALID",
+      "oracle_fixture_audit_status": "VALID",
+      "fixture_status": "VALID",
+      "canary": {
+        "original_recipient": {
+          "status": "FAIL",
+          "label": 0,
+          "output_csv": "emp_id,department,full_name,notes\nv-5-0-emp_id,v-5-0-department,canary-5-0,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,,canary-5-1,\n",
+          "expected_output_csv": "emp_id,full_name,department,notes\nv-5-0-emp_id,canary-5-0,v-5-0-department,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,canary-5-1,,\n",
+          "transport": {
+            "status": "complete"
+          }
+        },
+        "correct_recipient_control": {
+          "status": "PASS",
+          "label": 1,
+          "output_csv": "emp_id,full_name,department,notes\nv-5-0-emp_id,canary-5-0,v-5-0-department,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,canary-5-1,,\n",
+          "expected_output_csv": "emp_id,full_name,department,notes\nv-5-0-emp_id,canary-5-0,v-5-0-department,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,canary-5-1,,\n",
+          "transport": {
+            "status": "complete"
+          }
+        }
+      },
+      "negative_controls": {
+        "drop_row": {
+          "status": "PASS",
+          "label": 1,
+          "expected_detection": "FAIL",
+          "recipient_self": {
+            "status": "FAIL",
+            "label": 0
+          },
+          "artifact_adoption": {
+            "status": "FAIL",
+            "label": 0,
+            "source_row_count": 6,
+            "output_row_count": 5,
+            "source_key_sequence": [
+              [
+                "1",
+                "Alice Johnson"
+              ],
+              [
+                "2",
+                "Bob Smith"
+              ],
+              [
+                "3",
+                "Charlie Brown"
+              ],
+              [
+                "5",
+                "Eve Davis"
+              ],
+              [
+                "6",
+                "Frank Miller"
+              ],
+              [
+                "7",
+                "Grace Lee"
+              ]
+            ],
+            "output_key_sequence": [
+              [
+                "1",
+                "Alice Johnson"
+              ],
+              [
+                "2",
+                "Bob Smith"
+              ],
+              [
+                "3",
+                "Charlie Brown"
+              ],
+              [
+                "5",
+                "Eve Davis"
+              ],
+              [
+                "6",
+                "Frank Miller"
+              ]
+            ]
+          },
+          "output_csv": "emp_id,full_name,department,notes\n1,Alice Johnson,Engineering,Senior engineer with 10 years of experience in distributed systems and cloud architecture\n2,Bob Smith,Marketing,\n3,Charlie Brown,Engineering,Recently promoted to tech lead after successful delivery of the platform migration project\n5,Eve Davis,,Transferred from the London office; specializes in data analytics and machine learning pipelines\n6,Frank Miller,HR,Head of talent acquisition with expertise in technical recruiting across multiple regions\n",
+          "expected_output_csv": "emp_id,full_name,department,notes\n1,Alice Johnson,Engineering,Senior engineer with 10 years of experience in distributed systems and cloud architecture\n2,Bob Smith,Marketing,\n3,Charlie Brown,Engineering,Recently promoted to tech lead after successful delivery of the platform migration project\n5,Eve Davis,,Transferred from the London office; specializes in data analytics and machine learning pipelines\n6,Frank Miller,HR,Head of talent acquisition with expertise in technical recruiting across multiple regions\n7,Grace Lee,Engineering,\n",
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "cc57ea0d7d6010bad72408452c349f3a43f436c1b3a82fe22e2b5cd63c8524bc"
+        },
+        "ignore_artifact": {
+          "status": "PASS",
+          "label": 1,
+          "expected_detection": "FAIL",
+          "recipient_self": {
+            "status": "FAIL",
+            "label": 0
+          },
+          "artifact_adoption": {
+            "status": "FAIL",
+            "label": 0,
+            "source_row_count": 6,
+            "output_row_count": 0,
+            "source_key_sequence": [
+              [
+                "1",
+                "Alice Johnson"
+              ],
+              [
+                "2",
+                "Bob Smith"
+              ],
+              [
+                "3",
+                "Charlie Brown"
+              ],
+              [
+                "5",
+                "Eve Davis"
+              ],
+              [
+                "6",
+                "Frank Miller"
+              ],
+              [
+                "7",
+                "Grace Lee"
+              ]
+            ],
+            "output_key_sequence": []
+          },
+          "output_csv": "emp_id,full_name,department,notes\n",
+          "expected_output_csv": "emp_id,full_name,department,notes\n1,Alice Johnson,Engineering,Senior engineer with 10 years of experience in distributed systems and cloud architecture\n2,Bob Smith,Marketing,\n3,Charlie Brown,Engineering,Recently promoted to tech lead after successful delivery of the platform migration project\n5,Eve Davis,,Transferred from the London office; specializes in data analytics and machine learning pipelines\n6,Frank Miller,HR,Head of talent acquisition with expertise in technical recruiting across multiple regions\n7,Grace Lee,Engineering,\n",
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "cc57ea0d7d6010bad72408452c349f3a43f436c1b3a82fe22e2b5cd63c8524bc"
+        }
+      }
+    },
+    {
+      "seed": 6,
+      "task_id": "PIPE2_data_pipeline",
+      "columns": [
+        "product_id",
+        "product_name",
+        "category",
+        "description"
+      ],
+      "key_columns": [
+        "product_id",
+        "product_name"
+      ],
+      "col_types": [
+        "int",
+        "str",
+        "str",
+        "str"
+      ],
+      "expected_row_count": 0,
+      "producer": {},
+      "recipient": {},
+      "fixture_shape_errors": {
+        "source_csv": [
+          {
+            "row_index": 5,
+            "keys": [
+              "product_id",
+              "product_name",
+              "category",
+              "description",
+              null
+            ],
+            "unexpected_keys": [
+              null
+            ],
+            "missing_values": []
+          }
+        ],
+        "expected_output_csv": [
+          {
+            "row_index": 4,
+            "keys": [
+              "product_id",
+              "product_name",
+              "category",
+              "description",
+              null
+            ],
+            "unexpected_keys": [
+              null
+            ],
+            "missing_values": []
+          }
+        ]
+      },
+      "source_fixture_status": "INVALID_FIXTURE",
+      "oracle_fixture_audit_status": "INVALID_FIXTURE",
+      "fixture_status": "INVALID_FIXTURE",
+      "reason": "CSV rows contain undeclared fields; no peer label is emitted"
+    },
+    {
+      "seed": 7,
+      "task_id": "PIPE2_data_pipeline",
+      "columns": [
+        "txn_id",
+        "account_name",
+        "amount",
+        "memo"
+      ],
+      "key_columns": [
+        "txn_id",
+        "account_name"
+      ],
+      "col_types": [
+        "int",
+        "str",
+        "float",
+        "str"
+      ],
+      "expected_row_count": 6,
+      "producer": {
+        "original_producer": {
+          "status": "FAIL",
+          "label": 0,
+          "rows": [
+            {
+              "txn_id": "1001",
+              "account_name": "Acme Corp",
+              "amount": "5000.00",
+              "memo": "Quarterly payment for consulting services including project management and technical advisory support"
+            },
+            {
+              "txn_id": "1003",
+              "account_name": "Gamma LLC",
+              "amount": "7800.00",
+              "memo": "Annual license renewal for enterprise software suite with premium support and training modules included"
+            },
+            {
+              "txn_id": "1006",
+              "account_name": "Epsilon Ltd",
+              "amount": "3200.00",
+              "memo": "One-time setup fee for new data center integration with full redundancy and disaster recovery capabilities"
+            }
+          ],
+          "row_count": 3,
+          "expected_row_count": 6,
+          "artifact_sha256": "bd305f1553ce15c5ecf5831944ea56706a97dbd1778b7f2992053bd6c1ecac97",
+          "artifact_error": null,
+          "source_path": "pipeline/extract.py",
+          "transport": {
+            "status": "complete"
+          }
+        },
+        "correct_producer_control": {
+          "status": "PASS",
+          "label": 1,
+          "rows": [
+            {
+              "txn_id": "1001",
+              "account_name": "Acme Corp",
+              "amount": "5000.00",
+              "memo": "Quarterly payment for consulting services including project management and technical advisory support"
+            },
+            {
+              "txn_id": "1002",
+              "account_name": "Beta Inc",
+              "amount": "2500.50",
+              "memo": ""
+            },
+            {
+              "txn_id": "1003",
+              "account_name": "Gamma LLC",
+              "amount": "7800.00",
+              "memo": "Annual license renewal for enterprise software suite with premium support and training modules included"
+            },
+            {
+              "txn_id": "1005",
+              "account_name": "Delta Co",
+              "amount": "",
+              "memo": "Monthly subscription for cloud infrastructure services spanning three availability zones worldwide"
+            },
+            {
+              "txn_id": "1006",
+              "account_name": "Epsilon Ltd",
+              "amount": "3200.00",
+              "memo": "One-time setup fee for new data center integration with full redundancy and disaster recovery capabilities"
+            },
+            {
+              "txn_id": "1007",
+              "account_name": "Zeta Group",
+              "amount": "900.00",
+              "memo": ""
+            }
+          ],
+          "row_count": 6,
+          "expected_row_count": 6,
+          "artifact_sha256": "a40baf06330d859ca72e31060cbff55619a37d3a70c040d7c4132623e3ad9025",
+          "artifact_error": null,
+          "source_path": "pipeline/extract.py",
+          "transport": {
+            "status": "complete"
+          }
+        }
+      },
+      "recipient": {
+        "original_producer": {
+          "original_recipient": {
+            "status": "FAIL",
+            "label": 0,
+            "recipient_self": {
+              "status": "FAIL",
+              "label": 0
+            },
+            "artifact_adoption": {
+              "status": "PASS",
+              "label": 1,
+              "source_row_count": 3,
+              "output_row_count": 3,
+              "key_columns": [
+                "txn_id",
+                "account_name"
+              ],
+              "source_key_sequence": [
+                [
+                  "1001",
+                  "Acme Corp"
+                ],
+                [
+                  "1003",
+                  "Gamma LLC"
+                ],
+                [
+                  "1006",
+                  "Epsilon Ltd"
+                ]
+              ],
+              "output_key_sequence": [
+                [
+                  "1001",
+                  "Acme Corp"
+                ],
+                [
+                  "1003",
+                  "Gamma LLC"
+                ],
+                [
+                  "1006",
+                  "Epsilon Ltd"
+                ]
+              ]
+            },
+            "output_csv": "txn_id,amount,account_name,memo\n1001,5000.00,Acme Corp,Quarterly payment for consulting services includin\n1003,7800.00,Gamma LLC,Annual license renewal for enterprise software sui\n1006,3200.00,Epsilon Ltd,One-time setup fee for new data center integration\n",
+            "expected_output_csv": "txn_id,account_name,amount,memo\n1001,Acme Corp,5000.00,Quarterly payment for consulting services including project management and technical advisory support\n1003,Gamma LLC,7800.00,Annual license renewal for enterprise software suite with premium support and training modules included\n1006,Epsilon Ltd,3200.00,One-time setup fee for new data center integration with full redundancy and disaster recovery capabilities\n",
+            "source_paths": [
+              "pipeline/transform.py",
+              "pipeline/load.py"
+            ],
+            "transport": {
+              "status": "complete"
+            },
+            "artifact_sha256": "bd305f1553ce15c5ecf5831944ea56706a97dbd1778b7f2992053bd6c1ecac97",
+            "output_sha256": "1848b0454c40be042e3cfabc21df5727ed46c1fabda4b8296689100b194c25f4",
+            "artifact_source": "producer:original_producer"
+          },
+          "correct_recipient_control": {
+            "status": "PASS",
+            "label": 1,
+            "recipient_self": {
+              "status": "PASS",
+              "label": 1
+            },
+            "artifact_adoption": {
+              "status": "PASS",
+              "label": 1,
+              "source_row_count": 3,
+              "output_row_count": 3,
+              "key_columns": [
+                "txn_id",
+                "account_name"
+              ],
+              "source_key_sequence": [
+                [
+                  "1001",
+                  "Acme Corp"
+                ],
+                [
+                  "1003",
+                  "Gamma LLC"
+                ],
+                [
+                  "1006",
+                  "Epsilon Ltd"
+                ]
+              ],
+              "output_key_sequence": [
+                [
+                  "1001",
+                  "Acme Corp"
+                ],
+                [
+                  "1003",
+                  "Gamma LLC"
+                ],
+                [
+                  "1006",
+                  "Epsilon Ltd"
+                ]
+              ]
+            },
+            "output_csv": "txn_id,account_name,amount,memo\n1001,Acme Corp,5000.00,Quarterly payment for consulting services including project management and technical advisory support\n1003,Gamma LLC,7800.00,Annual license renewal for enterprise software suite with premium support and training modules included\n1006,Epsilon Ltd,3200.00,One-time setup fee for new data center integration with full redundancy and disaster recovery capabilities\n",
+            "expected_output_csv": "txn_id,account_name,amount,memo\n1001,Acme Corp,5000.00,Quarterly payment for consulting services including project management and technical advisory support\n1003,Gamma LLC,7800.00,Annual license renewal for enterprise software suite with premium support and training modules included\n1006,Epsilon Ltd,3200.00,One-time setup fee for new data center integration with full redundancy and disaster recovery capabilities\n",
+            "source_paths": [
+              "pipeline/transform.py",
+              "pipeline/load.py"
+            ],
+            "transport": {
+              "status": "complete"
+            },
+            "artifact_sha256": "bd305f1553ce15c5ecf5831944ea56706a97dbd1778b7f2992053bd6c1ecac97",
+            "output_sha256": "97716521718df884764b430a9646439160fa19b425070b7aa9be23ecb179b2e9",
+            "artifact_source": "producer:original_producer"
+          }
+        },
+        "correct_producer_control": {
+          "original_recipient": {
+            "status": "FAIL",
+            "label": 0,
+            "recipient_self": {
+              "status": "FAIL",
+              "label": 0
+            },
+            "artifact_adoption": {
+              "status": "PASS",
+              "label": 1,
+              "source_row_count": 6,
+              "output_row_count": 6,
+              "key_columns": [
+                "txn_id",
+                "account_name"
+              ],
+              "source_key_sequence": [
+                [
+                  "1001",
+                  "Acme Corp"
+                ],
+                [
+                  "1002",
+                  "Beta Inc"
+                ],
+                [
+                  "1003",
+                  "Gamma LLC"
+                ],
+                [
+                  "1005",
+                  "Delta Co"
+                ],
+                [
+                  "1006",
+                  "Epsilon Ltd"
+                ],
+                [
+                  "1007",
+                  "Zeta Group"
+                ]
+              ],
+              "output_key_sequence": [
+                [
+                  "1001",
+                  "Acme Corp"
+                ],
+                [
+                  "1002",
+                  "Beta Inc"
+                ],
+                [
+                  "1003",
+                  "Gamma LLC"
+                ],
+                [
+                  "1005",
+                  "Delta Co"
+                ],
+                [
+                  "1006",
+                  "Epsilon Ltd"
+                ],
+                [
+                  "1007",
+                  "Zeta Group"
+                ]
+              ]
+            },
+            "output_csv": "txn_id,amount,account_name,memo\n1001,5000.00,Acme Corp,Quarterly payment for consulting services includin\n1002,2500.50,Beta Inc,\n1003,7800.00,Gamma LLC,Annual license renewal for enterprise software sui\n1005,,Delta Co,Monthly subscription for cloud infrastructure serv\n1006,3200.00,Epsilon Ltd,One-time setup fee for new data center integration\n1007,900.00,Zeta Group,\n",
+            "expected_output_csv": "txn_id,account_name,amount,memo\n1001,Acme Corp,5000.00,Quarterly payment for consulting services including project management and technical advisory support\n1002,Beta Inc,2500.50,\n1003,Gamma LLC,7800.00,Annual license renewal for enterprise software suite with premium support and training modules included\n1005,Delta Co,,Monthly subscription for cloud infrastructure services spanning three availability zones worldwide\n1006,Epsilon Ltd,3200.00,One-time setup fee for new data center integration with full redundancy and disaster recovery capabilities\n1007,Zeta Group,900.00,\n",
+            "source_paths": [
+              "pipeline/transform.py",
+              "pipeline/load.py"
+            ],
+            "transport": {
+              "status": "complete"
+            },
+            "artifact_sha256": "a40baf06330d859ca72e31060cbff55619a37d3a70c040d7c4132623e3ad9025",
+            "output_sha256": "e313810e6db0727d04b6f568f575b1d79a2f43c644d9030ea336cb2cd0f3d10c",
+            "artifact_source": "producer:correct_producer_control"
+          },
+          "correct_recipient_control": {
+            "status": "PASS",
+            "label": 1,
+            "recipient_self": {
+              "status": "PASS",
+              "label": 1
+            },
+            "artifact_adoption": {
+              "status": "PASS",
+              "label": 1,
+              "source_row_count": 6,
+              "output_row_count": 6,
+              "key_columns": [
+                "txn_id",
+                "account_name"
+              ],
+              "source_key_sequence": [
+                [
+                  "1001",
+                  "Acme Corp"
+                ],
+                [
+                  "1002",
+                  "Beta Inc"
+                ],
+                [
+                  "1003",
+                  "Gamma LLC"
+                ],
+                [
+                  "1005",
+                  "Delta Co"
+                ],
+                [
+                  "1006",
+                  "Epsilon Ltd"
+                ],
+                [
+                  "1007",
+                  "Zeta Group"
+                ]
+              ],
+              "output_key_sequence": [
+                [
+                  "1001",
+                  "Acme Corp"
+                ],
+                [
+                  "1002",
+                  "Beta Inc"
+                ],
+                [
+                  "1003",
+                  "Gamma LLC"
+                ],
+                [
+                  "1005",
+                  "Delta Co"
+                ],
+                [
+                  "1006",
+                  "Epsilon Ltd"
+                ],
+                [
+                  "1007",
+                  "Zeta Group"
+                ]
+              ]
+            },
+            "output_csv": "txn_id,account_name,amount,memo\n1001,Acme Corp,5000.00,Quarterly payment for consulting services including project management and technical advisory support\n1002,Beta Inc,2500.50,\n1003,Gamma LLC,7800.00,Annual license renewal for enterprise software suite with premium support and training modules included\n1005,Delta Co,,Monthly subscription for cloud infrastructure services spanning three availability zones worldwide\n1006,Epsilon Ltd,3200.00,One-time setup fee for new data center integration with full redundancy and disaster recovery capabilities\n1007,Zeta Group,900.00,\n",
+            "expected_output_csv": "txn_id,account_name,amount,memo\n1001,Acme Corp,5000.00,Quarterly payment for consulting services including project management and technical advisory support\n1002,Beta Inc,2500.50,\n1003,Gamma LLC,7800.00,Annual license renewal for enterprise software suite with premium support and training modules included\n1005,Delta Co,,Monthly subscription for cloud infrastructure services spanning three availability zones worldwide\n1006,Epsilon Ltd,3200.00,One-time setup fee for new data center integration with full redundancy and disaster recovery capabilities\n1007,Zeta Group,900.00,\n",
+            "source_paths": [
+              "pipeline/transform.py",
+              "pipeline/load.py"
+            ],
+            "transport": {
+              "status": "complete"
+            },
+            "artifact_sha256": "a40baf06330d859ca72e31060cbff55619a37d3a70c040d7c4132623e3ad9025",
+            "output_sha256": "6316a7ff432bcaa87295b61196fc539bb00d8b651c4c71c4760ca7d09f082582",
+            "artifact_source": "producer:correct_producer_control"
+          }
+        }
+      },
+      "fixture_shape_errors": {
+        "source_csv": [],
+        "expected_output_csv": []
+      },
+      "source_fixture_status": "VALID",
+      "oracle_fixture_audit_status": "VALID",
+      "fixture_status": "VALID",
+      "canary": {
+        "original_recipient": {
+          "status": "FAIL",
+          "label": 0,
+          "output_csv": "txn_id,amount,account_name,memo\nv-7-0-txn_id,v-7-0-amount,canary-7-0,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,,canary-7-1,\n",
+          "expected_output_csv": "txn_id,account_name,amount,memo\nv-7-0-txn_id,canary-7-0,v-7-0-amount,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,canary-7-1,,\n",
+          "transport": {
+            "status": "complete"
+          }
+        },
+        "correct_recipient_control": {
+          "status": "PASS",
+          "label": 1,
+          "output_csv": "txn_id,account_name,amount,memo\nv-7-0-txn_id,canary-7-0,v-7-0-amount,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,canary-7-1,,\n",
+          "expected_output_csv": "txn_id,account_name,amount,memo\nv-7-0-txn_id,canary-7-0,v-7-0-amount,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,canary-7-1,,\n",
+          "transport": {
+            "status": "complete"
+          }
+        }
+      },
+      "negative_controls": {
+        "drop_row": {
+          "status": "PASS",
+          "label": 1,
+          "expected_detection": "FAIL",
+          "recipient_self": {
+            "status": "FAIL",
+            "label": 0
+          },
+          "artifact_adoption": {
+            "status": "FAIL",
+            "label": 0,
+            "source_row_count": 6,
+            "output_row_count": 5,
+            "source_key_sequence": [
+              [
+                "1001",
+                "Acme Corp"
+              ],
+              [
+                "1002",
+                "Beta Inc"
+              ],
+              [
+                "1003",
+                "Gamma LLC"
+              ],
+              [
+                "1005",
+                "Delta Co"
+              ],
+              [
+                "1006",
+                "Epsilon Ltd"
+              ],
+              [
+                "1007",
+                "Zeta Group"
+              ]
+            ],
+            "output_key_sequence": [
+              [
+                "1001",
+                "Acme Corp"
+              ],
+              [
+                "1002",
+                "Beta Inc"
+              ],
+              [
+                "1003",
+                "Gamma LLC"
+              ],
+              [
+                "1005",
+                "Delta Co"
+              ],
+              [
+                "1006",
+                "Epsilon Ltd"
+              ]
+            ]
+          },
+          "output_csv": "txn_id,account_name,amount,memo\n1001,Acme Corp,5000.00,Quarterly payment for consulting services including project management and technical advisory support\n1002,Beta Inc,2500.50,\n1003,Gamma LLC,7800.00,Annual license renewal for enterprise software suite with premium support and training modules included\n1005,Delta Co,,Monthly subscription for cloud infrastructure services spanning three availability zones worldwide\n1006,Epsilon Ltd,3200.00,One-time setup fee for new data center integration with full redundancy and disaster recovery capabilities\n",
+          "expected_output_csv": "txn_id,account_name,amount,memo\n1001,Acme Corp,5000.00,Quarterly payment for consulting services including project management and technical advisory support\n1002,Beta Inc,2500.50,\n1003,Gamma LLC,7800.00,Annual license renewal for enterprise software suite with premium support and training modules included\n1005,Delta Co,,Monthly subscription for cloud infrastructure services spanning three availability zones worldwide\n1006,Epsilon Ltd,3200.00,One-time setup fee for new data center integration with full redundancy and disaster recovery capabilities\n1007,Zeta Group,900.00,\n",
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "a40baf06330d859ca72e31060cbff55619a37d3a70c040d7c4132623e3ad9025"
+        },
+        "ignore_artifact": {
+          "status": "PASS",
+          "label": 1,
+          "expected_detection": "FAIL",
+          "recipient_self": {
+            "status": "FAIL",
+            "label": 0
+          },
+          "artifact_adoption": {
+            "status": "FAIL",
+            "label": 0,
+            "source_row_count": 6,
+            "output_row_count": 0,
+            "source_key_sequence": [
+              [
+                "1001",
+                "Acme Corp"
+              ],
+              [
+                "1002",
+                "Beta Inc"
+              ],
+              [
+                "1003",
+                "Gamma LLC"
+              ],
+              [
+                "1005",
+                "Delta Co"
+              ],
+              [
+                "1006",
+                "Epsilon Ltd"
+              ],
+              [
+                "1007",
+                "Zeta Group"
+              ]
+            ],
+            "output_key_sequence": []
+          },
+          "output_csv": "txn_id,account_name,amount,memo\n",
+          "expected_output_csv": "txn_id,account_name,amount,memo\n1001,Acme Corp,5000.00,Quarterly payment for consulting services including project management and technical advisory support\n1002,Beta Inc,2500.50,\n1003,Gamma LLC,7800.00,Annual license renewal for enterprise software suite with premium support and training modules included\n1005,Delta Co,,Monthly subscription for cloud infrastructure services spanning three availability zones worldwide\n1006,Epsilon Ltd,3200.00,One-time setup fee for new data center integration with full redundancy and disaster recovery capabilities\n1007,Zeta Group,900.00,\n",
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "a40baf06330d859ca72e31060cbff55619a37d3a70c040d7c4132623e3ad9025"
+        }
+      }
+    },
+    {
+      "seed": 8,
+      "task_id": "PIPE2_data_pipeline",
+      "columns": [
+        "customer_id",
+        "contact_name",
+        "region",
+        "preferences"
+      ],
+      "key_columns": [
+        "customer_id",
+        "contact_name"
+      ],
+      "col_types": [
+        "int",
+        "str",
+        "str",
+        "str"
+      ],
+      "expected_row_count": 6,
+      "producer": {
+        "original_producer": {
+          "status": "FAIL",
+          "label": 0,
+          "rows": [
+            {
+              "customer_id": "201",
+              "contact_name": "Diana Prince",
+              "region": "North America",
+              "preferences": "Prefers email communication; interested in enterprise solutions with dedicated account management and support"
+            },
+            {
+              "customer_id": "203",
+              "contact_name": "Bruce Wayne",
+              "region": "North America",
+              "preferences": "VIP customer requiring white-glove service with quarterly business reviews and custom reporting dashboards"
+            },
+            {
+              "customer_id": "206",
+              "contact_name": "Steve Rogers",
+              "region": "South America",
+              "preferences": "Long-term customer since founding; requires bilingual support staff and documentation in English and Portuguese"
+            }
+          ],
+          "row_count": 3,
+          "expected_row_count": 6,
+          "artifact_sha256": "3f78d084309f56a62e560d2a6aeeed4f94704a16558e8122788ce999a0e0601e",
+          "artifact_error": null,
+          "source_path": "pipeline/extract.py",
+          "transport": {
+            "status": "complete"
+          }
+        },
+        "correct_producer_control": {
+          "status": "PASS",
+          "label": 1,
+          "rows": [
+            {
+              "customer_id": "201",
+              "contact_name": "Diana Prince",
+              "region": "North America",
+              "preferences": "Prefers email communication; interested in enterprise solutions with dedicated account management and support"
+            },
+            {
+              "customer_id": "202",
+              "contact_name": "Clark Kent",
+              "region": "Europe",
+              "preferences": ""
+            },
+            {
+              "customer_id": "203",
+              "contact_name": "Bruce Wayne",
+              "region": "North America",
+              "preferences": "VIP customer requiring white-glove service with quarterly business reviews and custom reporting dashboards"
+            },
+            {
+              "customer_id": "205",
+              "contact_name": "Tony Stark",
+              "region": "",
+              "preferences": "Interested in cutting-edge technology solutions including AI-powered analytics and automated deployment pipelines"
+            },
+            {
+              "customer_id": "206",
+              "contact_name": "Steve Rogers",
+              "region": "South America",
+              "preferences": "Long-term customer since founding; requires bilingual support staff and documentation in English and Portuguese"
+            },
+            {
+              "customer_id": "207",
+              "contact_name": "Natasha Romanoff",
+              "region": "Europe",
+              "preferences": ""
+            }
+          ],
+          "row_count": 6,
+          "expected_row_count": 6,
+          "artifact_sha256": "e6703cd967154406b3cc8c725c1b8f86fc70a5df1b8ab5df5fb5ee06c9a52464",
+          "artifact_error": null,
+          "source_path": "pipeline/extract.py",
+          "transport": {
+            "status": "complete"
+          }
+        }
+      },
+      "recipient": {
+        "original_producer": {
+          "original_recipient": {
+            "status": "FAIL",
+            "label": 0,
+            "recipient_self": {
+              "status": "FAIL",
+              "label": 0
+            },
+            "artifact_adoption": {
+              "status": "PASS",
+              "label": 1,
+              "source_row_count": 3,
+              "output_row_count": 3,
+              "key_columns": [
+                "customer_id",
+                "contact_name"
+              ],
+              "source_key_sequence": [
+                [
+                  "201",
+                  "Diana Prince"
+                ],
+                [
+                  "203",
+                  "Bruce Wayne"
+                ],
+                [
+                  "206",
+                  "Steve Rogers"
+                ]
+              ],
+              "output_key_sequence": [
+                [
+                  "201",
+                  "Diana Prince"
+                ],
+                [
+                  "203",
+                  "Bruce Wayne"
+                ],
+                [
+                  "206",
+                  "Steve Rogers"
+                ]
+              ]
+            },
+            "output_csv": "customer_id,region,contact_name,preferences\n201,North America,Diana Prince,Prefers email communication; interested in enterpr\n203,North America,Bruce Wayne,VIP customer requiring white-glove service with qu\n206,South America,Steve Rogers,Long-term customer since founding; requires biling\n",
+            "expected_output_csv": "customer_id,contact_name,region,preferences\n201,Diana Prince,North America,Prefers email communication; interested in enterprise solutions with dedicated account management and support\n203,Bruce Wayne,North America,VIP customer requiring white-glove service with quarterly business reviews and custom reporting dashboards\n206,Steve Rogers,South America,Long-term customer since founding; requires bilingual support staff and documentation in English and Portuguese\n",
+            "source_paths": [
+              "pipeline/transform.py",
+              "pipeline/load.py"
+            ],
+            "transport": {
+              "status": "complete"
+            },
+            "artifact_sha256": "3f78d084309f56a62e560d2a6aeeed4f94704a16558e8122788ce999a0e0601e",
+            "output_sha256": "95f81d2783c2f932402f3efa2d133396ccb04a574b3b746303783262cbac2e31",
+            "artifact_source": "producer:original_producer"
+          },
+          "correct_recipient_control": {
+            "status": "PASS",
+            "label": 1,
+            "recipient_self": {
+              "status": "PASS",
+              "label": 1
+            },
+            "artifact_adoption": {
+              "status": "PASS",
+              "label": 1,
+              "source_row_count": 3,
+              "output_row_count": 3,
+              "key_columns": [
+                "customer_id",
+                "contact_name"
+              ],
+              "source_key_sequence": [
+                [
+                  "201",
+                  "Diana Prince"
+                ],
+                [
+                  "203",
+                  "Bruce Wayne"
+                ],
+                [
+                  "206",
+                  "Steve Rogers"
+                ]
+              ],
+              "output_key_sequence": [
+                [
+                  "201",
+                  "Diana Prince"
+                ],
+                [
+                  "203",
+                  "Bruce Wayne"
+                ],
+                [
+                  "206",
+                  "Steve Rogers"
+                ]
+              ]
+            },
+            "output_csv": "customer_id,contact_name,region,preferences\n201,Diana Prince,North America,Prefers email communication; interested in enterprise solutions with dedicated account management and support\n203,Bruce Wayne,North America,VIP customer requiring white-glove service with quarterly business reviews and custom reporting dashboards\n206,Steve Rogers,South America,Long-term customer since founding; requires bilingual support staff and documentation in English and Portuguese\n",
+            "expected_output_csv": "customer_id,contact_name,region,preferences\n201,Diana Prince,North America,Prefers email communication; interested in enterprise solutions with dedicated account management and support\n203,Bruce Wayne,North America,VIP customer requiring white-glove service with quarterly business reviews and custom reporting dashboards\n206,Steve Rogers,South America,Long-term customer since founding; requires bilingual support staff and documentation in English and Portuguese\n",
+            "source_paths": [
+              "pipeline/transform.py",
+              "pipeline/load.py"
+            ],
+            "transport": {
+              "status": "complete"
+            },
+            "artifact_sha256": "3f78d084309f56a62e560d2a6aeeed4f94704a16558e8122788ce999a0e0601e",
+            "output_sha256": "c11665e41fdb8d653ed0d05d301dd4447f6cdde775170b13b0b248fd0202fc77",
+            "artifact_source": "producer:original_producer"
+          }
+        },
+        "correct_producer_control": {
+          "original_recipient": {
+            "status": "FAIL",
+            "label": 0,
+            "recipient_self": {
+              "status": "FAIL",
+              "label": 0
+            },
+            "artifact_adoption": {
+              "status": "PASS",
+              "label": 1,
+              "source_row_count": 6,
+              "output_row_count": 6,
+              "key_columns": [
+                "customer_id",
+                "contact_name"
+              ],
+              "source_key_sequence": [
+                [
+                  "201",
+                  "Diana Prince"
+                ],
+                [
+                  "202",
+                  "Clark Kent"
+                ],
+                [
+                  "203",
+                  "Bruce Wayne"
+                ],
+                [
+                  "205",
+                  "Tony Stark"
+                ],
+                [
+                  "206",
+                  "Steve Rogers"
+                ],
+                [
+                  "207",
+                  "Natasha Romanoff"
+                ]
+              ],
+              "output_key_sequence": [
+                [
+                  "201",
+                  "Diana Prince"
+                ],
+                [
+                  "202",
+                  "Clark Kent"
+                ],
+                [
+                  "203",
+                  "Bruce Wayne"
+                ],
+                [
+                  "205",
+                  "Tony Stark"
+                ],
+                [
+                  "206",
+                  "Steve Rogers"
+                ],
+                [
+                  "207",
+                  "Natasha Romanoff"
+                ]
+              ]
+            },
+            "output_csv": "customer_id,region,contact_name,preferences\n201,North America,Diana Prince,Prefers email communication; interested in enterpr\n202,Europe,Clark Kent,\n203,North America,Bruce Wayne,VIP customer requiring white-glove service with qu\n205,,Tony Stark,Interested in cutting-edge technology solutions in\n206,South America,Steve Rogers,Long-term customer since founding; requires biling\n207,Europe,Natasha Romanoff,\n",
+            "expected_output_csv": "customer_id,contact_name,region,preferences\n201,Diana Prince,North America,Prefers email communication; interested in enterprise solutions with dedicated account management and support\n202,Clark Kent,Europe,\n203,Bruce Wayne,North America,VIP customer requiring white-glove service with quarterly business reviews and custom reporting dashboards\n205,Tony Stark,,Interested in cutting-edge technology solutions including AI-powered analytics and automated deployment pipelines\n206,Steve Rogers,South America,Long-term customer since founding; requires bilingual support staff and documentation in English and Portuguese\n207,Natasha Romanoff,Europe,\n",
+            "source_paths": [
+              "pipeline/transform.py",
+              "pipeline/load.py"
+            ],
+            "transport": {
+              "status": "complete"
+            },
+            "artifact_sha256": "e6703cd967154406b3cc8c725c1b8f86fc70a5df1b8ab5df5fb5ee06c9a52464",
+            "output_sha256": "45837eb7049f7b90c40c650203159091165535bd3c770e20d26605db6bf97a8f",
+            "artifact_source": "producer:correct_producer_control"
+          },
+          "correct_recipient_control": {
+            "status": "PASS",
+            "label": 1,
+            "recipient_self": {
+              "status": "PASS",
+              "label": 1
+            },
+            "artifact_adoption": {
+              "status": "PASS",
+              "label": 1,
+              "source_row_count": 6,
+              "output_row_count": 6,
+              "key_columns": [
+                "customer_id",
+                "contact_name"
+              ],
+              "source_key_sequence": [
+                [
+                  "201",
+                  "Diana Prince"
+                ],
+                [
+                  "202",
+                  "Clark Kent"
+                ],
+                [
+                  "203",
+                  "Bruce Wayne"
+                ],
+                [
+                  "205",
+                  "Tony Stark"
+                ],
+                [
+                  "206",
+                  "Steve Rogers"
+                ],
+                [
+                  "207",
+                  "Natasha Romanoff"
+                ]
+              ],
+              "output_key_sequence": [
+                [
+                  "201",
+                  "Diana Prince"
+                ],
+                [
+                  "202",
+                  "Clark Kent"
+                ],
+                [
+                  "203",
+                  "Bruce Wayne"
+                ],
+                [
+                  "205",
+                  "Tony Stark"
+                ],
+                [
+                  "206",
+                  "Steve Rogers"
+                ],
+                [
+                  "207",
+                  "Natasha Romanoff"
+                ]
+              ]
+            },
+            "output_csv": "customer_id,contact_name,region,preferences\n201,Diana Prince,North America,Prefers email communication; interested in enterprise solutions with dedicated account management and support\n202,Clark Kent,Europe,\n203,Bruce Wayne,North America,VIP customer requiring white-glove service with quarterly business reviews and custom reporting dashboards\n205,Tony Stark,,Interested in cutting-edge technology solutions including AI-powered analytics and automated deployment pipelines\n206,Steve Rogers,South America,Long-term customer since founding; requires bilingual support staff and documentation in English and Portuguese\n207,Natasha Romanoff,Europe,\n",
+            "expected_output_csv": "customer_id,contact_name,region,preferences\n201,Diana Prince,North America,Prefers email communication; interested in enterprise solutions with dedicated account management and support\n202,Clark Kent,Europe,\n203,Bruce Wayne,North America,VIP customer requiring white-glove service with quarterly business reviews and custom reporting dashboards\n205,Tony Stark,,Interested in cutting-edge technology solutions including AI-powered analytics and automated deployment pipelines\n206,Steve Rogers,South America,Long-term customer since founding; requires bilingual support staff and documentation in English and Portuguese\n207,Natasha Romanoff,Europe,\n",
+            "source_paths": [
+              "pipeline/transform.py",
+              "pipeline/load.py"
+            ],
+            "transport": {
+              "status": "complete"
+            },
+            "artifact_sha256": "e6703cd967154406b3cc8c725c1b8f86fc70a5df1b8ab5df5fb5ee06c9a52464",
+            "output_sha256": "ba1e23d62b8673577d8b22f06ba36e3dd0b60bb77e8b6b44cc8ec5ffa5505a69",
+            "artifact_source": "producer:correct_producer_control"
+          }
+        }
+      },
+      "fixture_shape_errors": {
+        "source_csv": [],
+        "expected_output_csv": []
+      },
+      "source_fixture_status": "VALID",
+      "oracle_fixture_audit_status": "VALID",
+      "fixture_status": "VALID",
+      "canary": {
+        "original_recipient": {
+          "status": "FAIL",
+          "label": 0,
+          "output_csv": "customer_id,region,contact_name,preferences\nv-8-0-customer_id,v-8-0-region,canary-8-0,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,,canary-8-1,\n",
+          "expected_output_csv": "customer_id,contact_name,region,preferences\nv-8-0-customer_id,canary-8-0,v-8-0-region,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,canary-8-1,,\n",
+          "transport": {
+            "status": "complete"
+          }
+        },
+        "correct_recipient_control": {
+          "status": "PASS",
+          "label": 1,
+          "output_csv": "customer_id,contact_name,region,preferences\nv-8-0-customer_id,canary-8-0,v-8-0-region,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,canary-8-1,,\n",
+          "expected_output_csv": "customer_id,contact_name,region,preferences\nv-8-0-customer_id,canary-8-0,v-8-0-region,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,canary-8-1,,\n",
+          "transport": {
+            "status": "complete"
+          }
+        }
+      },
+      "negative_controls": {
+        "drop_row": {
+          "status": "PASS",
+          "label": 1,
+          "expected_detection": "FAIL",
+          "recipient_self": {
+            "status": "FAIL",
+            "label": 0
+          },
+          "artifact_adoption": {
+            "status": "FAIL",
+            "label": 0,
+            "source_row_count": 6,
+            "output_row_count": 5,
+            "source_key_sequence": [
+              [
+                "201",
+                "Diana Prince"
+              ],
+              [
+                "202",
+                "Clark Kent"
+              ],
+              [
+                "203",
+                "Bruce Wayne"
+              ],
+              [
+                "205",
+                "Tony Stark"
+              ],
+              [
+                "206",
+                "Steve Rogers"
+              ],
+              [
+                "207",
+                "Natasha Romanoff"
+              ]
+            ],
+            "output_key_sequence": [
+              [
+                "201",
+                "Diana Prince"
+              ],
+              [
+                "202",
+                "Clark Kent"
+              ],
+              [
+                "203",
+                "Bruce Wayne"
+              ],
+              [
+                "205",
+                "Tony Stark"
+              ],
+              [
+                "206",
+                "Steve Rogers"
+              ]
+            ]
+          },
+          "output_csv": "customer_id,contact_name,region,preferences\n201,Diana Prince,North America,Prefers email communication; interested in enterprise solutions with dedicated account management and support\n202,Clark Kent,Europe,\n203,Bruce Wayne,North America,VIP customer requiring white-glove service with quarterly business reviews and custom reporting dashboards\n205,Tony Stark,,Interested in cutting-edge technology solutions including AI-powered analytics and automated deployment pipelines\n206,Steve Rogers,South America,Long-term customer since founding; requires bilingual support staff and documentation in English and Portuguese\n",
+          "expected_output_csv": "customer_id,contact_name,region,preferences\n201,Diana Prince,North America,Prefers email communication; interested in enterprise solutions with dedicated account management and support\n202,Clark Kent,Europe,\n203,Bruce Wayne,North America,VIP customer requiring white-glove service with quarterly business reviews and custom reporting dashboards\n205,Tony Stark,,Interested in cutting-edge technology solutions including AI-powered analytics and automated deployment pipelines\n206,Steve Rogers,South America,Long-term customer since founding; requires bilingual support staff and documentation in English and Portuguese\n207,Natasha Romanoff,Europe,\n",
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "e6703cd967154406b3cc8c725c1b8f86fc70a5df1b8ab5df5fb5ee06c9a52464"
+        },
+        "ignore_artifact": {
+          "status": "PASS",
+          "label": 1,
+          "expected_detection": "FAIL",
+          "recipient_self": {
+            "status": "FAIL",
+            "label": 0
+          },
+          "artifact_adoption": {
+            "status": "FAIL",
+            "label": 0,
+            "source_row_count": 6,
+            "output_row_count": 0,
+            "source_key_sequence": [
+              [
+                "201",
+                "Diana Prince"
+              ],
+              [
+                "202",
+                "Clark Kent"
+              ],
+              [
+                "203",
+                "Bruce Wayne"
+              ],
+              [
+                "205",
+                "Tony Stark"
+              ],
+              [
+                "206",
+                "Steve Rogers"
+              ],
+              [
+                "207",
+                "Natasha Romanoff"
+              ]
+            ],
+            "output_key_sequence": []
+          },
+          "output_csv": "customer_id,contact_name,region,preferences\n",
+          "expected_output_csv": "customer_id,contact_name,region,preferences\n201,Diana Prince,North America,Prefers email communication; interested in enterprise solutions with dedicated account management and support\n202,Clark Kent,Europe,\n203,Bruce Wayne,North America,VIP customer requiring white-glove service with quarterly business reviews and custom reporting dashboards\n205,Tony Stark,,Interested in cutting-edge technology solutions including AI-powered analytics and automated deployment pipelines\n206,Steve Rogers,South America,Long-term customer since founding; requires bilingual support staff and documentation in English and Portuguese\n207,Natasha Romanoff,Europe,\n",
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "e6703cd967154406b3cc8c725c1b8f86fc70a5df1b8ab5df5fb5ee06c9a52464"
+        }
+      }
+    },
+    {
+      "seed": 9,
+      "task_id": "PIPE2_data_pipeline",
+      "columns": [
+        "project_id",
+        "project_name",
+        "owner",
+        "summary"
+      ],
+      "key_columns": [
+        "project_id",
+        "project_name"
+      ],
+      "col_types": [
+        "int",
+        "str",
+        "str",
+        "str"
+      ],
+      "expected_row_count": 0,
+      "producer": {},
+      "recipient": {},
+      "fixture_shape_errors": {
+        "source_csv": [
+          {
+            "row_index": 6,
+            "keys": [
+              "project_id",
+              "project_name",
+              "owner",
+              "summary",
+              null
+            ],
+            "unexpected_keys": [
+              null
+            ],
+            "missing_values": []
+          }
+        ],
+        "expected_output_csv": [
+          {
+            "row_index": 5,
+            "keys": [
+              "project_id",
+              "project_name",
+              "owner",
+              "summary",
+              null
+            ],
+            "unexpected_keys": [
+              null
+            ],
+            "missing_values": []
+          }
+        ]
+      },
+      "source_fixture_status": "INVALID_FIXTURE",
+      "oracle_fixture_audit_status": "INVALID_FIXTURE",
+      "fixture_status": "INVALID_FIXTURE",
+      "reason": "CSV rows contain undeclared fields; no peer label is emitted"
+    }
+  ],
+  "ended_at_utc": "2026-10-01T04:31:17.197485+00:00",
+  "interpretation": "Actual PIPE2 producer/recipient code execution and parent-side responsibility/adoption checks only; no LLM, GPU, native score, or efficacy claim."
+}

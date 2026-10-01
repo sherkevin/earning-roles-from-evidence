@@ -1,0 +1,69 @@
+{
+  "request": {
+    "op": "transform_load",
+    "artifact": {
+      "schema": "pipe2-extracted-rows-v1",
+      "columns": [
+        "emp_id",
+        "full_name",
+        "department",
+        "notes"
+      ],
+      "row_count": 6,
+      "rows": [
+        {
+          "emp_id": "1",
+          "full_name": "Alice Johnson",
+          "department": "Engineering",
+          "notes": "Senior engineer with 10 years of experience in distributed systems and cloud architecture"
+        },
+        {
+          "emp_id": "2",
+          "full_name": "Bob Smith",
+          "department": "Marketing",
+          "notes": ""
+        },
+        {
+          "emp_id": "3",
+          "full_name": "Charlie Brown",
+          "department": "Engineering",
+          "notes": "Recently promoted to tech lead after successful delivery of the platform migration project"
+        },
+        {
+          "emp_id": "5",
+          "full_name": "Eve Davis",
+          "department": "",
+          "notes": "Transferred from the London office; specializes in data analytics and machine learning pipelines"
+        },
+        {
+          "emp_id": "6",
+          "full_name": "Frank Miller",
+          "department": "HR",
+          "notes": "Head of talent acquisition with expertise in technical recruiting across multiple regions"
+        },
+        {
+          "emp_id": "7",
+          "full_name": "Grace Lee",
+          "department": "Engineering",
+          "notes": ""
+        }
+      ],
+      "artifact_sha256": "cc57ea0d7d6010bad72408452c349f3a43f436c1b3a82fe22e2b5cd63c8524bc"
+    }
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "output_csv": "emp_id,full_name,department,notes\n",
+      "parsed_rows": [],
+      "source_paths": [
+        "pipeline/transform.py",
+        "pipeline/load.py"
+      ]
+    }
+  },
+  "transport": {
+    "status": "complete"
+  },
+  "response_digest": "db98f2712555db93a51cfe6cf874103a7be602752f9abd65cfc5ea01f761ef5a"
+}

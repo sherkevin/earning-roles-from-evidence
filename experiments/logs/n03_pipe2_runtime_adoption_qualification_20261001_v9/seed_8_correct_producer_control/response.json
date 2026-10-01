@@ -1,0 +1,60 @@
+{
+  "request": {
+    "op": "extract",
+    "csv_text": "customer_id,contact_name,region,preferences\n201,Diana Prince,North America,Prefers email communication; interested in enterprise solutions with dedicated account management and support\n202,Clark Kent,Europe,\n203,Bruce Wayne,North America,VIP customer requiring white-glove service with quarterly business reviews and custom reporting dashboards\n204,,Asia,Missing contact name\n205,Tony Stark,,Interested in cutting-edge technology solutions including AI-powered analytics and automated deployment pipelines\n206,Steve Rogers,South America,Long-term customer since founding; requires bilingual support staff and documentation in English and Portuguese\n207,Natasha Romanoff,Europe,\n208,,,Both keys null\n",
+    "columns": [
+      "customer_id",
+      "contact_name",
+      "region",
+      "preferences"
+    ]
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "rows": [
+        {
+          "customer_id": "201",
+          "contact_name": "Diana Prince",
+          "region": "North America",
+          "preferences": "Prefers email communication; interested in enterprise solutions with dedicated account management and support"
+        },
+        {
+          "customer_id": "202",
+          "contact_name": "Clark Kent",
+          "region": "Europe",
+          "preferences": ""
+        },
+        {
+          "customer_id": "203",
+          "contact_name": "Bruce Wayne",
+          "region": "North America",
+          "preferences": "VIP customer requiring white-glove service with quarterly business reviews and custom reporting dashboards"
+        },
+        {
+          "customer_id": "205",
+          "contact_name": "Tony Stark",
+          "region": "",
+          "preferences": "Interested in cutting-edge technology solutions including AI-powered analytics and automated deployment pipelines"
+        },
+        {
+          "customer_id": "206",
+          "contact_name": "Steve Rogers",
+          "region": "South America",
+          "preferences": "Long-term customer since founding; requires bilingual support staff and documentation in English and Portuguese"
+        },
+        {
+          "customer_id": "207",
+          "contact_name": "Natasha Romanoff",
+          "region": "Europe",
+          "preferences": ""
+        }
+      ],
+      "source_path": "pipeline/extract.py"
+    }
+  },
+  "transport": {
+    "status": "complete"
+  },
+  "response_digest": "954b4f0490d7428582d72b476cea513223eef012e89d4cdb9104312817f9a783"
+}

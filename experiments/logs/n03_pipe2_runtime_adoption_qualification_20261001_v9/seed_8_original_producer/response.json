@@ -1,0 +1,42 @@
+{
+  "request": {
+    "op": "extract",
+    "csv_text": "customer_id,contact_name,region,preferences\n201,Diana Prince,North America,Prefers email communication; interested in enterprise solutions with dedicated account management and support\n202,Clark Kent,Europe,\n203,Bruce Wayne,North America,VIP customer requiring white-glove service with quarterly business reviews and custom reporting dashboards\n204,,Asia,Missing contact name\n205,Tony Stark,,Interested in cutting-edge technology solutions including AI-powered analytics and automated deployment pipelines\n206,Steve Rogers,South America,Long-term customer since founding; requires bilingual support staff and documentation in English and Portuguese\n207,Natasha Romanoff,Europe,\n208,,,Both keys null\n",
+    "columns": [
+      "customer_id",
+      "contact_name",
+      "region",
+      "preferences"
+    ]
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "rows": [
+        {
+          "customer_id": "201",
+          "contact_name": "Diana Prince",
+          "region": "North America",
+          "preferences": "Prefers email communication; interested in enterprise solutions with dedicated account management and support"
+        },
+        {
+          "customer_id": "203",
+          "contact_name": "Bruce Wayne",
+          "region": "North America",
+          "preferences": "VIP customer requiring white-glove service with quarterly business reviews and custom reporting dashboards"
+        },
+        {
+          "customer_id": "206",
+          "contact_name": "Steve Rogers",
+          "region": "South America",
+          "preferences": "Long-term customer since founding; requires bilingual support staff and documentation in English and Portuguese"
+        }
+      ],
+      "source_path": "pipeline/extract.py"
+    }
+  },
+  "transport": {
+    "status": "complete"
+  },
+  "response_digest": "0563c163801022fd35bdcbb5aed5482358e09620bf8b2183c8a4bf3ccc2c37dd"
+}

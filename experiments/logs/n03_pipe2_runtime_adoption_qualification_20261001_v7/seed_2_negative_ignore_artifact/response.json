@@ -1,0 +1,69 @@
+{
+  "request": {
+    "op": "transform_load",
+    "artifact": {
+      "schema": "pipe2-extracted-rows-v1",
+      "columns": [
+        "txn_id",
+        "account_name",
+        "amount",
+        "memo"
+      ],
+      "row_count": 6,
+      "rows": [
+        {
+          "txn_id": "1001",
+          "account_name": "Acme Corp",
+          "amount": "5000.00",
+          "memo": "Quarterly payment for consulting services including project management and technical advisory support"
+        },
+        {
+          "txn_id": "1002",
+          "account_name": "Beta Inc",
+          "amount": "2500.50",
+          "memo": ""
+        },
+        {
+          "txn_id": "1003",
+          "account_name": "Gamma LLC",
+          "amount": "7800.00",
+          "memo": "Annual license renewal for enterprise software suite with premium support and training modules included"
+        },
+        {
+          "txn_id": "1005",
+          "account_name": "Delta Co",
+          "amount": "",
+          "memo": "Monthly subscription for cloud infrastructure services spanning three availability zones worldwide"
+        },
+        {
+          "txn_id": "1006",
+          "account_name": "Epsilon Ltd",
+          "amount": "3200.00",
+          "memo": "One-time setup fee for new data center integration with full redundancy and disaster recovery capabilities"
+        },
+        {
+          "txn_id": "1007",
+          "account_name": "Zeta Group",
+          "amount": "900.00",
+          "memo": ""
+        }
+      ],
+      "artifact_sha256": "a40baf06330d859ca72e31060cbff55619a37d3a70c040d7c4132623e3ad9025"
+    }
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "output_csv": "txn_id,account_name,amount,memo\n",
+      "parsed_rows": [],
+      "source_paths": [
+        "pipeline/transform.py",
+        "pipeline/load.py"
+      ]
+    }
+  },
+  "transport": {
+    "status": "complete"
+  },
+  "response_digest": "079848e476b686da3f6783ca58916be1bc5239507541979d89643c42c232e07d"
+}

@@ -1,0 +1,70 @@
+{
+  "request": {
+    "op": "transform_load",
+    "artifact": {
+      "schema": "pipe2-extracted-rows-v1",
+      "columns": [
+        "txn_id",
+        "account_name",
+        "amount",
+        "memo"
+      ],
+      "row_count": 3,
+      "rows": [
+        {
+          "txn_id": "1001",
+          "account_name": "Acme Corp",
+          "amount": "5000.00",
+          "memo": "Quarterly payment for consulting services including project management and technical advisory support"
+        },
+        {
+          "txn_id": "1003",
+          "account_name": "Gamma LLC",
+          "amount": "7800.00",
+          "memo": "Annual license renewal for enterprise software suite with premium support and training modules included"
+        },
+        {
+          "txn_id": "1006",
+          "account_name": "Epsilon Ltd",
+          "amount": "3200.00",
+          "memo": "One-time setup fee for new data center integration with full redundancy and disaster recovery capabilities"
+        }
+      ],
+      "artifact_sha256": "bd305f1553ce15c5ecf5831944ea56706a97dbd1778b7f2992053bd6c1ecac97"
+    }
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "output_csv": "txn_id,account_name,amount,memo\n1001,Acme Corp,5000.00,Quarterly payment for consulting services including project management and technical advisory support\n1003,Gamma LLC,7800.00,Annual license renewal for enterprise software suite with premium support and training modules included\n1006,Epsilon Ltd,3200.00,One-time setup fee for new data center integration with full redundancy and disaster recovery capabilities\n",
+      "parsed_rows": [
+        {
+          "txn_id": "1001",
+          "account_name": "Acme Corp",
+          "amount": "5000.00",
+          "memo": "Quarterly payment for consulting services including project management and technical advisory support"
+        },
+        {
+          "txn_id": "1003",
+          "account_name": "Gamma LLC",
+          "amount": "7800.00",
+          "memo": "Annual license renewal for enterprise software suite with premium support and training modules included"
+        },
+        {
+          "txn_id": "1006",
+          "account_name": "Epsilon Ltd",
+          "amount": "3200.00",
+          "memo": "One-time setup fee for new data center integration with full redundancy and disaster recovery capabilities"
+        }
+      ],
+      "source_paths": [
+        "pipeline/transform.py",
+        "pipeline/load.py"
+      ]
+    }
+  },
+  "transport": {
+    "status": "complete"
+  },
+  "response_digest": "958c654e414f913823e052ddab23036a2b1ed9dbeb5b4a208779d81be410e99f"
+}

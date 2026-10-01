@@ -41,14 +41,17 @@ judgment label。
 
 ## 新增运行时证据（2026-10-01）
 
-PIPE2 已完成一轮 parent-side runtime/adoption qualification。seed 0/2 在 pinned
-sandbox 中实际执行 producer extractor 和 recipient transform/load，能够分别区分
-producer contract、recipient self 与 artifact adoption；原始代码和手工修正版 control
-均按预期分离。完整 seed 0/1/2 运行没有通过：seed 1 的 source/expected CSV 含未转义逗号，
-`csv.DictReader` 产生未声明的 `None` 字段，因而被标为 `INVALID_FIXTURE`，不产生 peer label。
-详见 [task report](../../coordination/task_reports/20261001_pipe2_runtime_adoption_qualification.md)
-及 v5/v6 回执。该发现提高了审计精度，但不改变 PIPE2 的候选身份，也不允许删除或重写
-seed 1 来制造通过结果。
+PIPE2 已完成一轮 v2 parent-side runtime/adoption qualification。seed 0/2 在 pinned
+sandbox 中实际执行 producer extractor 和 recipient transform/load，按 producer×recipient
+2×2 交接矩阵分别区分 producer contract、recipient self 与 artifact adoption；原始代码
+和手工修正版 control 均按预期分离，并加入独立 canary、drop-row、ignore-artifact
+diagnostics。旧 v5 的“真实 producer artifact”表述已撤回，不能与 v2 receipt 混用。
+随后对 TeamBench public/hidden seed 范围 0–9 做了 shape census：
+`0,2,3,5,7,8` 有效，`1,4,6,9` 因生成器未转义逗号而产生未声明的 `None` 字段，被标为
+`INVALID_FIXTURE`，不产生 peer label。详见 [runtime report](../../coordination/task_reports/20261001_pipe2_runtime_adoption_qualification.md)、
+[v2 runtime report](../../coordination/task_reports/20261001_pipe2_runtime_adoption_v2.md)、
+[shape audit](../../coordination/task_reports/20261001_pipe2_fixture_shape_audit.md) 及 v3/v8/v9 回执。
+该发现提高了审计精度，但不允许删除、重写或静默排除 invalid seed 来制造通过结果。
 
 ## 当前判定
 
