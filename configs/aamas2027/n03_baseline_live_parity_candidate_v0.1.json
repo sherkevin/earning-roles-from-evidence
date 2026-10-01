@@ -1,0 +1,60 @@
+{
+  "manifest_version": "peerrolebench-live-baseline-parity-candidate-v0.1",
+  "status": "DESIGN_ONLY",
+  "primary_track": "ArtifactRole",
+  "root": "PIPE3_stream_processing",
+  "root_status": "provisional_engineering_only",
+  "independent_root": false,
+  "source_commit": "to_be_sealed_at_activation",
+  "seed_split": [0],
+  "matched_replay": true,
+  "independent_live_arm_histories": true,
+  "scientific_claim_allowed": false,
+  "effect_not_estimable": true,
+  "api_runs_allowed": false,
+  "gpu_runs_allowed": false,
+  "arms": [
+    "uniform",
+    "no_update",
+    "raw_acceptance",
+    "terminal_only",
+    "contextual_trust",
+    "pooled_controller",
+    "RARE"
+  ],
+  "closest_published": {
+    "name": "Meta-Team-L2-public",
+    "status": "BLOCKED_NO_GO",
+    "reason": "public profile parser, model budget, and assignment consumer are not executable"
+  },
+  "shared_contract": {
+    "candidate_registry": "same immutable id@version/source/model/config digest",
+    "candidate_menu": "same ordered menu per matched cell",
+    "base_scores_and_features": "same frozen public inputs; policy may ignore but cannot receive extra information",
+    "rng_schedule": "same pre-registered per-offer schedule",
+    "public_prefix": "same event-time read cut",
+    "responsibility": "producer defect / recipient only / sink only / mixed UNKNOWN",
+    "unknown": "no update and preserved denominator",
+    "cost": "measured COST_FIELDS; measured zero requires a stage receipt",
+    "runtime": "same pinned sandbox, worker limits, scorer config and task contract"
+  },
+  "required_receipts": [
+    "matched_public_trace_digest",
+    "independent_policy_namespace_digest",
+    "selected_candidate_source_digest",
+    "native_manifest_root",
+    "auxiliary_manifest_root",
+    "assignment_before_task_start",
+    "measured_cost_ledger",
+    "unknown_and_failure_denominators",
+    "visible_input_digest",
+    "snapshot_restore_replay"
+  ],
+  "continuation_requirement": "third pre-execution decision or equivalent receipt before claiming update_to_choice",
+  "activation_blockers": [
+    "second_root_authority_not_confirmed",
+    "policy_factory_injection_not_qualified",
+    "material/task/sandbox runtime digests not bound",
+    "live measured-cost gate not implemented"
+  ]
+}

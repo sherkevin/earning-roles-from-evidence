@@ -49,6 +49,11 @@ adoption scorer 和 action：
 
 ## 必须先实现的接口约束
 
+机器可读的候选卡已登记为
+[`n03_baseline_live_parity_candidate_v0.1.json`](../../../configs/aamas2027/n03_baseline_live_parity_candidate_v0.1.json)。
+它明确 `DESIGN_ONLY`、0 API/0 GPU 和 `scientific_claim_allowed=false`，在第二 root authority
+确认前不得被 runner 当成 active manifest。
+
 1. 将当前 PIPE3 composition 的 `TerminalOnlyPolicy` 改为显式 policy factory 注入；不改变
    active method，只允许 runner 选择已登记的 comparator。
 2. 为每个 arm 写入 policy、state、encoder、feature、registry、schedule 和 prompt/model
