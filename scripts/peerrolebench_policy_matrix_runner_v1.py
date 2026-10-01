@@ -31,6 +31,12 @@ from peerrolebench_baseline_policies import (  # noqa: E402
     Selection,
     policy_from_name,
 )
+from peerrolebench_baseline_contract import (  # noqa: E402
+    COST_FIELDS,
+    validate_contract,
+    validate_cost_ledger,
+)
+from peerrolebench_baseline_root_contract import validate_public_prefix  # noqa: E402
 from peerrolebench_candidate_registry import (  # noqa: E402
     CandidateRegistryEntry,
     registry_digest,
@@ -48,12 +54,6 @@ ARM_NAMES = (
     "uniform", "no_update", "raw_acceptance", "terminal_only",
     "contextual_trust", "pooled_controller", "RARE",
 )
-COST_FIELDS = (
-    "producer", "recipient", "judge", "scorer", "retry",
-    "communication", "repair", "replay",
-)
-
-
 def _sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -197,8 +197,16 @@ class PolicyMatrixRunner:
 
     @staticmethod
     def _cost_ledger() -> dict[str, dict[str, Any]]:
+        units = {
+            "producer": "seconds", "recipient": "seconds", "judge": "seconds",
+            "scorer": "seconds", "selection": "seconds", "policy_update": "seconds",
+            "retry": "count", "communication": "records", "repair": "count",
+            "replay": "records", "state": "bytes", "api_calls": "count",
+            "input_tokens": "tokens", "output_tokens": "tokens",
+            "gpu_seconds": "seconds", "wall_seconds": "seconds",
+        }
         return {
-            field: {"value": 0.0, "measured": False, "source": "offline_fixture"}
+            field: {"value": 0.0, "measured": False, "source": "offline_fixture", "unit": units[field]}
             for field in COST_FIELDS
         }
 
@@ -210,6 +218,7 @@ class PolicyMatrixRunner:
         expected_schedule_digest: str,
         expected_registry_digest: str | None = None,
     ) -> dict[str, Any]:
+        baseline_contract = validate_contract()
         actual_registry_digest = registry_digest(self.registry)
         if expected_registry_digest is not None and actual_registry_digest != expected_registry_digest:
             raise ValueError("frozen candidate registry digest mismatch")
@@ -236,6 +245,11 @@ class PolicyMatrixRunner:
         previous_selected_at = float("-inf")
         for item in offers:
             self._validate_offer(item, schedule_by_id)
+            validate_public_prefix(
+                schedule,
+                [str(row["feedback_id"]) for row in item.offer.public_rows],
+                read_cut=item.read_cut,
+            )
             unknown_keys = set(item.offer.candidate_keys) - registered_keys
             if unknown_keys:
                 raise ValueError(f"offer contains unregistered candidate keys: {sorted(unknown_keys)}")
@@ -322,8 +336,9 @@ class PolicyMatrixRunner:
                     "visible_fields": [
                         "context_key", "candidate_menu", "base_scores", "state_version",
                         "encoder_version", "feature_schema", "captured_features",
-                        "public_feedback_rows_at_read_cut",
+                        "public_feedback_rows_at_read_cut", "visible_feedback_ids",
                     ],
+                    "visible_feedback_ids": [str(row["feedback_id"]) for row in item.offer.public_rows],
                     "chosen_key": selection.chosen.key,
                     "probabilities": list(selection.probabilities),
                     "propensity": selection.propensity,
@@ -336,12 +351,15 @@ class PolicyMatrixRunner:
             snapshot = policy.snapshot()
             restored = BaselinePolicy.restore(snapshot)
             replay[name] = {"snapshot_equal": restored.snapshot() == snapshot}
+        cost_ledger = {name: self._cost_ledger() for name in self.arm_names}
+        validate_cost_ledger(cost_ledger, require_measured=False)
         return {
             "status": "PASS", "arms": list(self.arm_names),
             "registry_digest": actual_registry_digest,
             "schedule_digest": expected_schedule_digest,
             "metrics": metrics, "traces": traces,
-            "replay": replay, "cost_ledger": self._cost_ledger(),
+            "replay": replay, "cost_ledger": cost_ledger,
+            "baseline_contract": baseline_contract,
             "scientific_claim_allowed": False,
         }
 
@@ -400,10 +418,13 @@ def fixture_case(case: str) -> tuple[list[MatrixOffer], tuple[ArrivalAssignment,
     if len(rows) > 1:
         offers.append(_offer(
             offer_id=f"{case}-offer-2", task_index=2, candidate_keys=candidate_keys,
-            public_rows=(rows[1],), available_index=int(rows[1]["arrival_index"]),
+            public_rows=(rows[0], rows[1]), available_index=int(rows[1]["arrival_index"]),
             native_selection_id="selection-2", read_cut=int(rows[1]["arrival_index"]),
             decision_index=3, selected_at=3.0, rng_seed=13,
-            protocol_event_ids={str(rows[1]["feedback_id"]): str(rows[1]["_protocol_event_id"])},
+            protocol_event_ids={
+                str(rows[0]["feedback_id"]): str(rows[0]["_protocol_event_id"]),
+                str(rows[1]["feedback_id"]): str(rows[1]["_protocol_event_id"]),
+            },
         ))
     schedule_rows = tuple(
         ArrivalAssignment(
@@ -475,8 +496,10 @@ def run_fixture_suite(out_dir: Path) -> dict[str, Any]:
                 "scripts/peerrolebench_baseline_policies.py",
                 "scripts/peerrolebench_event_time_schedule.py",
                 "scripts/peerrolebench_assignment_attestation.py",
+                "scripts/peerrolebench_baseline_contract.py",
             )},
         },
+        "baseline_contract": validate_contract(),
         "cases": case_names,
         "arrival_schedules": {
             case: {

@@ -1,0 +1,14 @@
+{
+  "experiment_id": "n03_baseline_root_contract_20261001_v1",
+  "kind": "zero_llm_baseline_root_contract_qualification",
+  "contract_versions": ["artifactrole-baselines-v1", "artifactrole-root-runner-v1"],
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "commands": [
+    "python3 -m pytest -q tests/test_peerrolebench_baseline_contract.py tests/test_peerrolebench_baseline_root_contract.py tests/test_peerrolebench_policy_matrix_runner.py",
+    "python3 -m pytest -q tests/test_peerrolebench_*.py",
+    "python3 scripts/peerrolebench_policy_matrix_runner_v1.py --out-dir experiments/logs/n03_policy_matrix_runner_20261001_v10"
+  ],
+  "notes": "The full repository pytest command is intentionally excluded: nested archived workspaces have duplicate test module names and external clones with incompatible dependencies."
+}
