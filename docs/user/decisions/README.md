@@ -47,3 +47,4 @@
 - [0040 — 组合机制的对外创新定位与内部验证](0040-integrated-mechanism-public-positioning.md)：正文呈现有机整体机制，内部用匹配组合、消融和交互效应验证其是否产生新系统性质。
 - [0041 — 选择 Earning Roles 工作标题](0041-select-earning-roles-title.md)：确认当前 pre-results/proposal 使用 `Earning Roles: Self-Evolving Responsibility from Situated Peer Judgments`，不改变 Goal 或科学证据边界。
 - [0042 — Confirm ArtifactRole primary and PeerSelect secondary](0042-confirm-artifactrole-primary-peerselect-secondary.md)：用户确认 ArtifactRole 承载论文主轨与完整因果链，PeerSelect 仅作机制副轨；两轨不合并评分，benchmark/method 仍需独立资格化。
+- [0043 — Two-stage evidence publication and delayed policy update](0043-two-stage-evidence-publication-and-delayed-update.md)：将责任归因、公共 evidence 发布和持久 policy 更新分开；未来 assignment/use 完成后才允许 selected-only delayed credit。

@@ -1,0 +1,84 @@
+{
+  "runner_version": "two-stage-role-evidence-qualification-v1",
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "benchmark_status": "qualification_only",
+  "source_commit": "fbbb22699dda2c599d72f1f716f1d0f78056eff9",
+  "started_at_utc": "2026-09-30T09:43:10.205792+00:00",
+  "status": "QUALIFIED_OFFLINE",
+  "passed": true,
+  "cases": [
+    {
+      "control": "producer_owned",
+      "status": "QUALIFIED_OFFLINE",
+      "passed": true,
+      "source_gate": {
+        "gate_version": "two-stage-role-evidence-v1",
+        "producer_paths_changed": [
+          "producer.py"
+        ],
+        "recipient_paths_changed": [],
+        "q_complete": true,
+        "y_complete": true,
+        "target_role": "producer",
+        "artifact_binding_present": true,
+        "later_use_valid": false,
+        "attribution_eligible": true,
+        "evidence_publish_allowed": true,
+        "policy_update_allowed": false,
+        "status": "ELIGIBLE",
+        "reason": "complete source Qp/Y with producer-owned contract change"
+      },
+      "evidence_published": true,
+      "assignment_recorded": true,
+      "later_outcome_recorded": true,
+      "policy_updates": 1,
+      "duplicate_update_applied": false,
+      "persistent_digest_before": "478ee95840b3d97c6550d95ccd211550ae055fc3a43ff7f8cf8a560a119ccad9",
+      "persistent_digest_after_publication": "f2e739f49a4d9b029b2be27fa21735e4c7a2dd0f0d3105de1a0357a35d297ace",
+      "persistent_digest_after_credit": "55556598248f115a388c0c93432034d8fa08f2c2e4220015a65b6c5ab04364ae",
+      "ledger_event_count": 17,
+      "replay": {
+        "status": "PASS",
+        "complete": true
+      },
+      "credit_digest": "9fcef9f5dd4a288a695fa864921c4cda8a5abab1e41c8d17e0a24c9f24f0b106"
+    },
+    {
+      "control": "recipient_owned",
+      "status": "BLOCKED_BY_ATTRIBUTION_GATE",
+      "passed": true,
+      "source_gate": {
+        "gate_version": "two-stage-role-evidence-v1",
+        "producer_paths_changed": [],
+        "recipient_paths_changed": [
+          "processor.py"
+        ],
+        "q_complete": true,
+        "y_complete": true,
+        "target_role": "producer",
+        "artifact_binding_present": true,
+        "later_use_valid": false,
+        "attribution_eligible": false,
+        "evidence_publish_allowed": false,
+        "policy_update_allowed": false,
+        "status": "PENDING_ATTRIBUTION",
+        "reason": "recipient-owned integration change cannot label producer"
+      },
+      "evidence_published": false,
+      "assignment_recorded": false,
+      "later_outcome_recorded": false,
+      "policy_updates": 0,
+      "persistent_digest_before": "478ee95840b3d97c6550d95ccd211550ae055fc3a43ff7f8cf8a560a119ccad9",
+      "persistent_digest_after_publication": "478ee95840b3d97c6550d95ccd211550ae055fc3a43ff7f8cf8a560a119ccad9",
+      "ledger_event_count": 7,
+      "replay": {
+        "status": "UNKNOWN",
+        "complete": false
+      }
+    }
+  ],
+  "interpretation": "two-stage protocol qualification only; no efficacy, API, GPU, or benchmark claim",
+  "ended_at_utc": "2026-09-30T09:43:10.207578+00:00"
+}

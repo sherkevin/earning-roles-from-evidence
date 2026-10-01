@@ -87,3 +87,16 @@ report.
 
 This report records the blocker and options only. It does not select an option
 or modify `method_v1.0_20260928.md`, the active benchmark manifest, or the Goal.
+
+## Post-review correction (2026-09-30)
+
+The independent code review narrowed the wording above.  The native ledger does
+not make `task_start` depend on `LaterAssignment`; under strict mode it requires
+an earlier `PeerSelection`.  The live runner stopped because it deliberately
+kept the public row `UNKNOWN` while `policy_update_allowed` was hard-closed,
+and therefore chose not to append a role evidence record or assignment.  Thus
+the cycle is a runner/method conflation of publication and persistent update,
+not an unavoidable protocol theorem.  The user subsequently confirmed option A;
+its accepted ADR and implementation are recorded in
+[`0043`](../../user/decisions/0043-two-stage-evidence-publication-and-delayed-update.md)
+and [the follow-up task report](20260930_two_stage_evidence_update_qualification.md).

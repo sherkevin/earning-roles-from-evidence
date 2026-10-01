@@ -1,6 +1,6 @@
 # 方法论评价标准 v1.1
 
-- **状态**：`ACTIVE`
+- **状态**：`SUPERSEDED`（由 [`method_v1.2_20260930_eval.md`](method_v1.2_20260930_eval.md) 取代）
 - **类别**：evaluation/method
 - **评价对象**：[`method_v1.0_20260928.md`](../../method/method_v1.0_20260928.md)
 - **生效日期**：2026-09-28

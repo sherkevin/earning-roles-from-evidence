@@ -17,6 +17,11 @@ Goal 修改。
 
 ## Reports
 
+- [partial] 2026-10-01 delayed credit 原子性：updater 失败时 snapshot/restore 回滚、credit key 仅成功后登记，定向 15 项与完整 332 项通过，未调用 API/GPU，见 [task report](task_reports/20261001_delayed_credit_atomicity.md)。
+- [partial] 2026-10-01 RoleEvidenceOffer 与 selection preview 接缝：分离 native evidence id/source event id，从 canonical ledger 绑定 subject/lineage，资格化 preview→assignment→exact propensity commit；修正旧 B-evidence→C-assignment 歧义，未启动 API/GPU，见 [task report](task_reports/20261001_role_evidence_offer_and_preview.md)。
+
+- [partial] 2026-09-30 两阶段 evidence 发布与 delayed update 资格：用户确认方案 A；active method/evaluation 升级为 v1.1/v1.2，producer-owned/recipient-owned CPU controls 通过发布、assignment、later credit、replay 和幂等检查，仍无 benchmark/baseline/效能证据，见 [task report](task_reports/20260930_two_stage_evidence_update_qualification.md)。
+
 - [done] 2026-09-29 Benchmark、baseline 与实验结果验收审计：新增 active 评价标准 v1.2，补齐 benchmark 选型评分卡、primary/secondary track、baseline parity、完整 cell manifest、数值精度门和结果 truth table；当前科学 benchmark/baseline 仍未通过，未启动新 API/GPU，见 [task report](task_reports/20260929_benchmark_baseline_acceptance_audit.md)。
 - [partial] 2026-09-29 Benchmark 轨道选择审计：从 Goal 的因果链区分 PeerSelect/IPD 机制轨道与 ArtifactRole/PeerRoleBench-TB 核心任务轨道，形成未激活候选方案；等待 primary/secondary 确认，未启动新 API/GPU，见 [task report](task_reports/20260929_benchmark_track_decision_audit.md)。
 - [partial] 2026-09-29 论文标题候选：围绕动态、自进化、situated judgment 和跨领域适用性形成三档标题候选；未覆盖正式论文源文件，等待作者选择，见 [task report](task_reports/20260929_title_candidates.md)。

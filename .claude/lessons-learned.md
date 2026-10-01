@@ -285,6 +285,34 @@
 - **避免:** 保留 `ELIGIBLE` 与 `policy_update_allowed` 的分离，不把诊断状态写成训练标签；先在方法合同中定义可审计的两阶段 evidence/update 语义，再允许真实 runner 进入 next task。
 - **Evidence:** [versioned live-runner promotion gate](../docs/coordination/task_reports/20260930_pipe3_live_runner_promotion_gate.md)；`experiments/logs/n03_pipe3_live_runner_v2_qualification_20260930_v1/`（重复 offer 失败）与 `..._v3/`（责任门阻塞）。
 
+### 0046-public-evidence-and-persistent-update-are-different-events | 2026-09-30 | earning-roles
+
+- **现象:** runner 把 diagnostic `ELIGIBLE`、public evidence、`LaterAssignment` 和 policy update 绑定成一个开关，导致它必须在 later-use 发生前等待 later-use 证明；同时容易误以为原生 ledger 要求每个 `task_start` 都有 later assignment。
+- **根因:** “事实可以被未来决策看见”和“事实已经足够改变持久状态”是不同的因果阶段；代码只暴露了 `observe_feedback` 一个入口。
+- **避免:** 采用两阶段合同：source attribution → immutable evidence publication（不更新）→ pre-execution assignment/read cut → later outcome → selected-only delayed credit；later outcome 不得制造旧 producer 归因，assignment/selection/task-start 的底层约束必须按实际 ledger 逐项检查。
+- **Evidence:** `docs/user/decisions/0043-two-stage-evidence-publication-and-delayed-update.md`；`scripts/peerrolebench_two_stage_gate.py`；`experiments/logs/n03_two_stage_role_evidence_qualification_20260930_v2/`。
+
+### 0047-policy-source-id-is-not-native-role-evidence-id | 2026-10-01 | earning-roles
+
+- **现象:** assignment offer 的 `evidence_ids` 原先来自 policy selection `source_event_id`，不能证明 `LaterAssignment` 引用了真实 `RoleEvidenceUpdate`；同时原生 ledger 接受了 producer B evidence 配 producer C assignment。
+- **根因:** feedback channel 的 lineage id 与 native role-evidence id 被复用了，ledger 只验证 evidence 存在，不验证其 producer subject。
+- **避免:** 为 role evidence 使用独立 offer schema；从 canonical evidence→judgment/action/outcome→delivery 派生 producer、版本、artifact 和 task，并在 assignment 前拒绝 subject mismatch。
+- **Evidence:** `scripts/peerrolebench_role_evidence_offer.py`；`tests/test_peerrolebench_role_evidence_offer.py`；`docs/coordination/task_reports/20261001_role_evidence_offer_and_preview.md`。
+
+### 0048-assignment-must-precede-selection-without-resampling | 2026-10-01 | earning-roles
+
+- **现象:** 普通 `choose_and_seal` 在内部先采样 selection，无法满足 later assignment 必须先写入的顺序；事后补 assignment 会破坏因果语义。
+- **根因:** selector API 把 policy sampling、native selection 和 ledger commit 绑定成一个不可预览事务。
+- **避免:** 在事务快照中 preview 完整 probabilities/propensity，恢复 policy/RNG；记录 assignment 后使用固定选择重放，任何菜单或概率变化都拒绝。
+- **Evidence:** `scripts/peerrolebench_selection_preview.py`；`tests/test_peerrolebench_selection_preview.py`；`experiments/logs/n03_two_stage_role_evidence_qualification_20261001_v1/`。
+
+### 0049-delayed-credit-must-rollback-before-idempotency | 2026-10-01 | earning-roles
+
+- **现象:** selected-only delayed updater 在写入多个持久字段后抛错时，若先登记幂等键或不恢复快照，重试会留下半更新状态。
+- **根因:** “只应用一次”既要求去重，也要求失败不产生不可见的部分状态；单独检查 credit key 不能提供事务性。
+- **避免:** updater 成功后才登记 key；多对象更新显式传入 `snapshot`/`restore`，失败先回滚再传播异常，允许安全重试。
+- **Evidence:** `scripts/peerrolebench_two_stage_gate.py`；`tests/test_peerrolebench_two_stage_gate.py`；`docs/coordination/task_reports/20261001_delayed_credit_atomicity.md`。
+
 ### 0041-selection-boundaries-must-preflight-before-mutation | 2026-09-30 | earning-roles
 - **现象:** `choose_and_seal` 原先先写 auxiliary offer、消费反馈和 policy decision，之后才构造 consumption attestation；read-cut 越界、offer 尚不可用、角色/menu 不匹配或后续 policy/ledger 异常可能留下部分状态。
 - **根因:** 输入时序约束和对象构造校验分散在 attestation、policy、native ledger 三层，入口没有在第一次写入前统一检查，也没有失败回滚。

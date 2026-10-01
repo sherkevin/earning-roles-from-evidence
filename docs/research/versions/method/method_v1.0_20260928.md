@@ -1,12 +1,12 @@
 # 方法论与训练合同 v1.0
 
-- **状态**：`ACTIVE`
+- **状态**：`SUPERSEDED`（由 [`method_v1.1_20260930.md`](method_v1.1_20260930.md) 取代）
 - **生效日期**：2026-09-28
 - **类别**：method
 - **前一版本**：无；历史候选见 `docs/archive/document_reorganization_20260928/`
 - **目标约束**：[`docs/coordination/GOAL.md`](../../../coordination/GOAL.md) ER-G2
 
-`ACTIVE` 只表示这是当前唯一的方法合同，不表示算法已经验证或 backbone/updater 已经选定。
+该版本保留为历史方法合同；当前唯一生效版本见 `method_v1.1_20260930.md`。它不表示算法已经验证或 backbone/updater 已经选定。
 
 ## 1. 方法要解决的最小数学问题
 
