@@ -3,6 +3,10 @@
 状态：`PARTIAL / DESIGN_ONLY`。本报告只冻结下一道 runner 工程门的边界，不激活 benchmark
 cell、不选择第二 root authority，也不授权新的 API/GPU/A800 科学实验。
 
+本轮已把 runtime/material binding 的纯合同接缝实现为
+`LiveRuntimeBinding`/`validate_live_root_receipt`，并加入 2 项定向测试。它仍未接入 live
+runner；没有任何科学 cell 被激活。
+
 ## 为什么不能直接把 v16 当 live parity
 
 当前 `peerrolebench_policy_matrix_runner_v1.py` 的 v16 receipt 只使用 hand-authored offers，

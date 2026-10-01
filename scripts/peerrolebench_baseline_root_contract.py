@@ -22,7 +22,81 @@ from peerrolebench_event_time_schedule import ArrivalAssignment
 
 
 ROOT_CONTRACT_VERSION = "artifactrole-root-runner-v1"
+LIVE_BINDING_VERSION = "artifactrole-live-binding-v1"
 FEEDBACK_CLASSES = ("eligible", "unknown", "ignored", "duplicate", "pending")
+
+
+def _validate_digest(name: str, value: str) -> str:
+    if not isinstance(value, str) or len(value) != 64 or value != value.lower() or any(
+        char not in "0123456789abcdef" for char in value
+    ):
+        raise ValueError(f"{name} must be a lowercase 64-character sha256")
+    return value
+
+
+@dataclass(frozen=True)
+class LiveRuntimeBinding:
+    """Runtime/material identity required by a measured live parity receipt.
+
+    ``RootRunnerManifest`` identifies the policy matrix and event schedule.  A
+    live run additionally needs to bind the actual neutral material, task
+    contract, sandbox/runtime settings, scorer configuration, worker limits,
+    policy namespace, and selected candidate snapshots.  Keeping this as a
+    separate object preserves replay compatibility with historical offline
+    manifests while giving the live runner a strict opt-in gate.
+    """
+
+    arm_name: str
+    material_manifest_digest: str
+    task_contract_digest: str
+    sandbox_runtime_digest: str
+    scorer_config_digest: str
+    worker_limits_digest: str
+    policy_namespace_digest: str
+    candidate_source_digests: tuple[tuple[str, str], ...]
+
+    def payload(self) -> dict[str, Any]:
+        return {
+            "binding_version": LIVE_BINDING_VERSION,
+            "arm_name": self.arm_name,
+            "material_manifest_digest": self.material_manifest_digest,
+            "task_contract_digest": self.task_contract_digest,
+            "sandbox_runtime_digest": self.sandbox_runtime_digest,
+            "scorer_config_digest": self.scorer_config_digest,
+            "worker_limits_digest": self.worker_limits_digest,
+            "policy_namespace_digest": self.policy_namespace_digest,
+            "candidate_source_digests": [
+                {"candidate_key": key, "source_digest": digest}
+                for key, digest in self.candidate_source_digests
+            ],
+        }
+
+    def digest(self) -> str:
+        canonical = json.dumps(self.payload(), ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+    def validate(self) -> dict[str, Any]:
+        if not isinstance(self.arm_name, str) or not self.arm_name:
+            raise ValueError("live binding arm_name is required")
+        for name in (
+            "material_manifest_digest", "task_contract_digest", "sandbox_runtime_digest",
+            "scorer_config_digest", "worker_limits_digest", "policy_namespace_digest",
+        ):
+            _validate_digest(name, getattr(self, name))
+        if not self.candidate_source_digests:
+            raise ValueError("live binding requires candidate source snapshots")
+        keys: set[str] = set()
+        normalized: list[tuple[str, str]] = []
+        for key, digest in self.candidate_source_digests:
+            if not isinstance(key, str) or not key or key in keys:
+                raise ValueError("candidate source snapshot keys must be non-empty and unique")
+            keys.add(key)
+            normalized.append((key, _validate_digest(f"candidate_source_digest[{key}]", digest)))
+        if tuple(sorted(normalized)) != tuple(normalized):
+            raise ValueError("candidate source snapshots must be sorted by candidate key")
+        payload = self.payload()
+        payload["binding_digest"] = self.digest()
+        return payload
 
 
 @dataclass(frozen=True)
@@ -235,7 +309,32 @@ def validate_root_receipt(
     }
 
 
+def validate_live_root_receipt(
+    *,
+    schedule: Sequence[ArrivalAssignment],
+    observed_feedback_ids: Sequence[str],
+    read_cut: int,
+    feedback_rows: Sequence[Mapping[str, Any]],
+    assignment: Mapping[str, Any],
+    cost_ledger: Mapping[str, Mapping[str, Mapping[str, Any]]],
+    live_binding: LiveRuntimeBinding,
+) -> dict[str, Any]:
+    """Strict live parity gate with measured costs and runtime/material binding."""
+
+    result = validate_root_receipt(
+        schedule=schedule, observed_feedback_ids=observed_feedback_ids,
+        read_cut=read_cut, feedback_rows=feedback_rows, assignment=assignment,
+        cost_ledger=cost_ledger, require_measured_cost=True,
+    )
+    binding = live_binding.validate()
+    result["live_binding"] = binding
+    result["live_parity_contract"] = True
+    result["scientific_claim_allowed"] = False
+    return result
+
+
 __all__ = [
-    "FEEDBACK_CLASSES", "ROOT_CONTRACT_VERSION", "RootRunnerManifest", "feedback_denominators",
-    "validate_assignment_before_start", "validate_public_prefix", "validate_root_receipt",
+    "FEEDBACK_CLASSES", "LIVE_BINDING_VERSION", "ROOT_CONTRACT_VERSION", "LiveRuntimeBinding",
+    "RootRunnerManifest", "feedback_denominators", "validate_assignment_before_start",
+    "validate_live_root_receipt", "validate_public_prefix", "validate_root_receipt",
 ]

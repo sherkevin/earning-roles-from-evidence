@@ -9,9 +9,11 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from peerrolebench_baseline_contract import BASELINE_ARM_SPECS, COST_FIELDS  # noqa: E402
 from peerrolebench_baseline_root_contract import (  # noqa: E402
+    LiveRuntimeBinding,
     RootRunnerManifest,
     feedback_denominators,
     validate_assignment_before_start,
+    validate_live_root_receipt,
     validate_public_prefix,
     validate_root_receipt,
 )
@@ -160,4 +162,49 @@ def test_root_receipt_binds_denominator_rows_to_prefix():
             schedule=_schedule(), observed_feedback_ids=["f0"], read_cut=1,
             feedback_rows=[{"feedback_id": "other", "selected": True, "classification": "unknown"}],
             assignment=_assignment(), cost_ledger=_costs(), require_measured_cost=False,
+        )
+
+
+def _live_binding(**overrides):
+    payload = {
+        "arm_name": "contextual_trust",
+        "material_manifest_digest": "1" * 64,
+        "task_contract_digest": "2" * 64,
+        "sandbox_runtime_digest": "3" * 64,
+        "scorer_config_digest": "4" * 64,
+        "worker_limits_digest": "5" * 64,
+        "policy_namespace_digest": "6" * 64,
+        "candidate_source_digests": (("agent-a@v1", "7" * 64), ("agent-b@v1", "8" * 64)),
+    }
+    payload.update(overrides)
+    return LiveRuntimeBinding(**payload)
+
+
+def test_live_binding_seals_material_runtime_and_candidate_snapshots():
+    binding = _live_binding()
+    payload = binding.validate()
+    assert payload["binding_version"] == "artifactrole-live-binding-v1"
+    assert payload["binding_digest"] == binding.digest()
+    with pytest.raises(ValueError, match="candidate source snapshots must be sorted"):
+        _live_binding(candidate_source_digests=(("agent-b@v1", "8" * 64), ("agent-a@v1", "7" * 64))).validate()
+    with pytest.raises(ValueError, match="64-character sha256"):
+        _live_binding(worker_limits_digest="bad").validate()
+
+
+def test_live_root_receipt_requires_measured_cost_and_runtime_binding():
+    rows = [{"feedback_id": "f0", "selected": True, "classification": "unknown"}]
+    binding = _live_binding()
+    result = validate_live_root_receipt(
+        schedule=_schedule(), observed_feedback_ids=["f0"], read_cut=1,
+        feedback_rows=rows, assignment=_assignment(), cost_ledger=_costs(measured=True),
+        live_binding=binding,
+    )
+    assert result["live_parity_contract"] is True
+    assert result["scientific_claim_allowed"] is False
+    assert result["live_binding"]["binding_digest"] == binding.digest()
+    with pytest.raises(ValueError, match="not measured"):
+        validate_live_root_receipt(
+            schedule=_schedule(), observed_feedback_ids=["f0"], read_cut=1,
+            feedback_rows=rows, assignment=_assignment(), cost_ledger=_costs(measured=False),
+            live_binding=binding,
         )
