@@ -4,8 +4,9 @@
 cell、不选择第二 root authority，也不授权新的 API/GPU/A800 科学实验。
 
 本轮已把 runtime/material binding 的纯合同接缝实现为
-`LiveRuntimeBinding`/`validate_live_root_receipt`，并加入 2 项定向测试。它仍未接入 live
-runner；没有任何科学 cell 被激活。
+`LiveRuntimeBinding`/`validate_live_root_receipt`，并加入 2 项定向测试；同时将 PIPE3
+composition 升为 v1.3，支持显式 `policy_factory` 注入，默认仍为 terminal-only。它仍未接入
+七 arm live runner；没有任何科学 cell 被激活，历史 v1.2 回执不变。
 
 ## 为什么不能直接把 v16 当 live parity
 

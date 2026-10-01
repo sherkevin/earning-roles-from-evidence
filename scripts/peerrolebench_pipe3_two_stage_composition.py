@@ -28,7 +28,7 @@ from peer_role_protocol_20260925 import (  # noqa: E402
     ConsumerAction, Delivery, LaterAssignment, ProducerScore,
     RecipientJudgment, RoleEvidenceUpdate, TerminalOutcome,
 )
-from peerrolebench_baseline_policies import Feedback, TerminalOnlyPolicy  # noqa: E402
+from peerrolebench_baseline_policies import BaselinePolicy, Feedback, TerminalOnlyPolicy  # noqa: E402
 from peerrolebench_ledger_replay import replay_ledger_events  # noqa: E402
 from peerrolebench_pipe3_full_chain_qualification import registry  # noqa: E402
 from peerrolebench_candidate_registry import CandidateRegistryEntry  # noqa: E402
@@ -53,9 +53,24 @@ from peerrolebench_two_stage_gate import (  # noqa: E402
 
 
 TASK_ID = "PIPE3_stream_processing"
-VERSION = "pipe3-two-stage-composition-v1.2"
+VERSION = "pipe3-two-stage-composition-v1.3"
 CONTROLS = ("producer_owned", "recipient_owned", "mixed")
 CandidateScorer = Callable[[str, Mapping[str, str], Mapping[str, str], Path, Path, int], dict[str, Any]]
+PolicyFactory = Callable[[str], BaselinePolicy]
+
+
+def default_policy_factory(name: str) -> BaselinePolicy:
+    """Construct a registered policy for a future parity run.
+
+    The qualification default remains terminal-only; callers must inject a
+    factory explicitly to compare another arm.  Keeping construction outside
+    the composition prevents a policy name from silently changing the
+    historical v1.2 receipts.
+    """
+
+    if name != "terminal_only":
+        raise ValueError("default qualification policy is terminal_only; inject a factory for another arm")
+    return TerminalOnlyPolicy()
 
 
 def _candidate_registry(materials: Mapping[str, Any]) -> list[CandidateRegistryEntry]:
@@ -369,7 +384,8 @@ def _source_offer(boundary: Pipe3SelectionBoundary, *, control: str, source: Map
 
 
 def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
-                 scorer: CandidateScorer | None = None) -> dict[str, Any]:
+                 scorer: CandidateScorer | None = None,
+                 policy_factory: PolicyFactory | None = None) -> dict[str, Any]:
     out.mkdir(parents=False, exist_ok=False)
     raw = out / "raw.jsonl"
     raw.write_text("", encoding="utf-8")
@@ -402,7 +418,11 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
     source_case, source_delivery, source_final = _prepare_case(source_materials, control)
     target_case, target_delivery, target_final = _prepare_case(target_materials, control)
     candidate_registry = _candidate_registry(source_materials)
-    boundary = Pipe3SelectionBoundary(TerminalOnlyPolicy(), candidate_registry)
+    make_policy = policy_factory or default_policy_factory
+    policy = make_policy("terminal_only")
+    if not isinstance(policy, BaselinePolicy):
+        raise TypeError("policy factory must return a BaselinePolicy")
+    boundary = Pipe3SelectionBoundary(policy, candidate_registry)
     offer0 = make_offer(offer_id=f"offer-{control}-0", task_id=TASK_ID, task_index=0, role="producer",
                         context_key="PIPE3:0", candidate_keys=("peer-b@v1", "peer-c@v1"), public_rows=(),
                         evidence_version=VERSION, available_index=0)
@@ -563,7 +583,8 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
 
 
 def run(out_dir: Path, *, source_seed: int = 0, target_seed: int = 1,
-        scorer: CandidateScorer | None = None) -> dict[str, Any]:
+        scorer: CandidateScorer | None = None,
+        policy_factory: PolicyFactory | None = None) -> dict[str, Any]:
     out_dir = out_dir.resolve()
     out_dir.mkdir(parents=False, exist_ok=False)
     started = datetime.now(timezone.utc).isoformat()
@@ -576,7 +597,8 @@ def run(out_dir: Path, *, source_seed: int = 0, target_seed: int = 1,
     for control in CONTROLS:
         try:
             cases.append(_run_control(control, out=out_dir / control, source_seed=source_seed,
-                                      target_seed=target_seed, scorer=scorer))
+                                      target_seed=target_seed, scorer=scorer,
+                                      policy_factory=policy_factory))
         except Exception as exc:
             case_dir = out_dir / control
             if not case_dir.exists():

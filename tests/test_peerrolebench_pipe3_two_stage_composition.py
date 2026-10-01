@@ -17,6 +17,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT / "references/aamas"))
 
 from peerrolebench_pipe3_two_stage_composition import _patch_producer, _prepare_case, run  # noqa: E402
+from peerrolebench_baseline_policies import TerminalOnlyPolicy  # noqa: E402
 from peerrolebench_pipe3_task_qualification import load_pipe3  # noqa: E402
 from peerrolebench_pipe3_material_adapter import build_materials  # noqa: E402
 
@@ -100,3 +101,17 @@ def test_target_unknown_preserves_incomplete_ledger_and_does_not_update(tmp_path
     assert any(row["event_type"] == "later_assignment" for row in producer["ledger"])
     assert not any(row["event_type"] == "terminal_outcome" and row["payload"]["outcome_id"].endswith("-1")
                    for row in producer["ledger"])
+
+
+def test_policy_factory_is_explicit_and_default_behavior_remains_terminal_only(tmp_path: Path):
+    calls = []
+
+    def factory(name):
+        calls.append(name)
+        return TerminalOnlyPolicy()
+
+    result = run(tmp_path / "composition", scorer=_unit_scorer, policy_factory=factory)
+    assert result["status"] == "QUALIFIED_OFFLINE"
+    assert calls == ["terminal_only", "terminal_only", "terminal_only"]
+    assert all(case["policy"] == "TerminalOnlyPolicy" for case in result["cases"])
+    assert all(case["version"] == "pipe3-two-stage-composition-v1.3" for case in result["cases"])
