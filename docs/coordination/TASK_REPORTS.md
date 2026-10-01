@@ -17,6 +17,8 @@ Goal 修改。
 
 ## Reports
 
+- [partial] 2026-10-01 baseline manifest runner integration：离线 matrix runner 现在消费每个 case 的 root manifest，绑定 schedule/registry digest 并把 manifest digest 写入回执；v13 为 `QUALIFIED_OFFLINE`，PeerRoleBench 360 项通过，仍未接入 canonical-ledger live runner，见 [task report](task_reports/20261001_baseline_manifest_runner_integration.md)。
+
 - [partial] 2026-10-01 root manifest qualification：封存 root/source/generator/scorer、seed split、schedule/registry digest、arm 顺序、visibility rule 与预算；定向 14 项及 PeerRoleBench 359 项通过，仍未接入 live runner，见 [task report](task_reports/20261001_root_manifest_qualification.md)。
 
 - [partial] 2026-10-01 baseline root-runner contract：将七个 ArtifactRole baseline 的信息通道、UNKNOWN 规则、16 项成本字段、完整 schedule prefix、denominator 与 assignment-before-task-start 写成版本化零调用契约；定向 16 项与 PeerRoleBench 358 项通过，仍未接入正式 root runner、独立 live histories 或科学比较，见 [task report](task_reports/20261001_baseline_root_runner_contract.md)。

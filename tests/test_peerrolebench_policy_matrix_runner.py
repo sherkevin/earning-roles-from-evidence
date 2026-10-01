@@ -16,6 +16,8 @@ from peerrolebench_policy_matrix_runner_v1 import (  # noqa: E402
 )
 from peerrolebench_event_time_schedule import schedule_digest  # noqa: E402
 from peerrolebench_event_time_schedule import ArrivalAssignment  # noqa: E402
+from peerrolebench_baseline_root_contract import RootRunnerManifest  # noqa: E402
+from peerrolebench_candidate_registry import registry_digest  # noqa: E402
 
 
 def test_all_arms_pass_seven_offline_contract_cases(tmp_path):
@@ -40,6 +42,27 @@ def test_runner_rejects_future_read_cut_and_schedule_digest():
         runner.run([replace(offers[0], read_cut=1), offers[1]], schedule, expected_schedule_digest=digest)
     with pytest.raises(ValueError, match="digest mismatch"):
         runner.run(offers, schedule, expected_schedule_digest="0" * 64)
+
+
+def test_runner_consumes_root_manifest_identity_and_schedule():
+    offers, schedule, digest = fixture_case("recipient_only")
+    manifest = RootRunnerManifest(
+        root_id="offline:recipient_only", root_commit="d" * 40,
+        source_digest="a" * 64, generator_digest="b" * 64, scorer_digest="c" * 64,
+        schedule_digest=digest, registry_digest=registry_digest(_registry()),
+        seed_split=(0,), arm_names=ARM_NAMES, rng_algorithm="numpy-pcg64",
+        visibility_rule="canonical_schedule_prefix_v1", max_episode_attempts=1,
+        max_api_calls=0, max_wall_seconds=60.0,
+    )
+    result = PolicyMatrixRunner(registry=_registry()).run(
+        offers, schedule, expected_schedule_digest=digest, manifest=manifest,
+    )
+    assert result["manifest"]["manifest_digest"] == manifest.digest()
+    with pytest.raises(ValueError, match="manifest schedule digest"):
+        PolicyMatrixRunner(registry=_registry()).run(
+            offers, schedule, expected_schedule_digest=digest,
+            manifest=RootRunnerManifest(**{**manifest.__dict__, "schedule_digest": "e" * 64}),
+        )
 
 
 def test_runner_binds_protocol_event_identity_and_decision_order():

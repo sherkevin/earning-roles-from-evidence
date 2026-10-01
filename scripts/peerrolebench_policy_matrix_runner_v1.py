@@ -36,7 +36,10 @@ from peerrolebench_baseline_contract import (  # noqa: E402
     validate_contract,
     validate_cost_ledger,
 )
-from peerrolebench_baseline_root_contract import validate_public_prefix  # noqa: E402
+from peerrolebench_baseline_root_contract import (  # noqa: E402
+    RootRunnerManifest,
+    validate_public_prefix,
+)
 from peerrolebench_candidate_registry import (  # noqa: E402
     CandidateRegistryEntry,
     registry_digest,
@@ -217,8 +220,10 @@ class PolicyMatrixRunner:
         *,
         expected_schedule_digest: str,
         expected_registry_digest: str | None = None,
+        manifest: RootRunnerManifest | None = None,
     ) -> dict[str, Any]:
         baseline_contract = validate_contract()
+        manifest_payload = None if manifest is None else manifest.validate()
         actual_registry_digest = registry_digest(self.registry)
         if expected_registry_digest is not None and actual_registry_digest != expected_registry_digest:
             raise ValueError("frozen candidate registry digest mismatch")
@@ -226,6 +231,11 @@ class PolicyMatrixRunner:
         schedule = validate_schedule(schedule_rows, expected_feedback_ids=set(feedback_ids))
         if schedule_digest(schedule) != expected_schedule_digest:
             raise ValueError("frozen arrival schedule digest mismatch")
+        if manifest is not None:
+            if manifest.registry_digest != actual_registry_digest:
+                raise ValueError("manifest candidate registry digest mismatch")
+            if manifest.schedule_digest != expected_schedule_digest:
+                raise ValueError("manifest schedule digest mismatch")
         schedule_by_id = {row.feedback_id: row for row in schedule}
         registered_keys = {entry.key for entry in self.registry}
         policies = {name: policy_from_name(name, exploration=0.10) for name in self.arm_names}
@@ -360,6 +370,7 @@ class PolicyMatrixRunner:
             "metrics": metrics, "traces": traces,
             "replay": replay, "cost_ledger": cost_ledger,
             "baseline_contract": baseline_contract,
+            "manifest": manifest_payload,
             "scientific_claim_allowed": False,
         }
 
@@ -497,6 +508,7 @@ def run_fixture_suite(out_dir: Path) -> dict[str, Any]:
                 "scripts/peerrolebench_event_time_schedule.py",
                 "scripts/peerrolebench_assignment_attestation.py",
                 "scripts/peerrolebench_baseline_contract.py",
+                "scripts/peerrolebench_baseline_root_contract.py",
             )},
         },
         "baseline_contract": validate_contract(),
@@ -514,13 +526,28 @@ def run_fixture_suite(out_dir: Path) -> dict[str, Any]:
     }
     (out_dir / "config.json").write_text(json.dumps(config, indent=2) + "\n")
     cases = {}
+    manifests = {}
     try:
         registry = _registry()
         for case in config["cases"]:
             offers, schedule, digest = fixture_specs[case]
+            manifest = RootRunnerManifest(
+                root_id=f"offline_policy_matrix:{case}",
+                root_commit=config["runtime"]["git_commit"],
+                source_digest=_sha(ROOT / "scripts/peerrolebench_policy_matrix_runner_v1.py"),
+                generator_digest=_sha(ROOT / "scripts/peerrolebench_baseline_contract.py"),
+                scorer_digest=_sha(ROOT / "scripts/peerrolebench_baseline_policies.py"),
+                schedule_digest=digest,
+                registry_digest=config["registry_digest"],
+                seed_split=(0,), arm_names=ARM_NAMES,
+                rng_algorithm="numpy-pcg64", visibility_rule="canonical_schedule_prefix_v1",
+                max_episode_attempts=1, max_api_calls=0, max_wall_seconds=60.0,
+            )
+            manifests[case] = manifest.validate()
             cases[case] = PolicyMatrixRunner(registry=registry).run(
                 offers, schedule, expected_schedule_digest=digest,
                 expected_registry_digest=config["registry_digest"],
+                manifest=manifest,
             )
     except Exception as exc:
         failure = {
@@ -533,6 +560,8 @@ def run_fixture_suite(out_dir: Path) -> dict[str, Any]:
         (out_dir / "summary.json").write_text(json.dumps(failure, indent=2) + "\n")
         return failure
     (out_dir / "raw_output.json").write_text(json.dumps(cases, indent=2) + "\n")
+    config["manifests"] = manifests
+    (out_dir / "config.json").write_text(json.dumps(config, indent=2) + "\n")
     passed = all(
         result["status"] == "PASS"
         and all(item["snapshot_equal"] for item in result["replay"].values())
