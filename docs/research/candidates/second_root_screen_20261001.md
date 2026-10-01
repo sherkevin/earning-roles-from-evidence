@@ -14,7 +14,7 @@
 
 | 候选 | 结构 | 主要缺陷 | 筛选结论 |
 |---|---|---|---|
-| `PIPE2_data_pipeline` | Extractor → Transformer → Loader 的三段 ETL；中间 rows 会改变后续输入，seed 只替换 schema/data | upstream brief/spec 直接描述三类 bug；native `grade.sh` 混用静态源码检查、candidate workspace 的 pytest 和 expected output，不能直接作为独立 producer/adoption scorer | **CONDITIONAL-HIGH**：比 MULTI3 更容易切出 producer/recipient ownership 和 sink adoption，进入 adapter qualification |
+| `PIPE2_data_pipeline` | Extractor → Transformer → Loader 的三段 ETL；中间 rows 会改变后续输入，seed 只替换 schema/data | upstream brief/spec 直接描述三类 bug；native `grade.sh` 混用静态源码检查、candidate workspace 的 pytest 和 expected output，不能直接作为独立 producer/adoption scorer | **CONDITIONAL-HIGH**：材料/ownership/delivery 资格已通过；下一道是 runtime/adoption scorer，仍未冻结 |
 | `MULTI3_polyglot` | Backend serializer → Frontend handler，另有 shared schema | schema ownership 未决；native tests 使用 hardcoded `correct_wire`，不能证明 frontend 使用本次 producer wire；生成器有 sample-record 缺陷 | **CONDITIONAL-LOW**：保留 fallback，不先投入 |
 | `DIST4_clock_skew` | Lamport clock 与 ordering 两个模块 | 更像单体修复；没有自然 recipient 使用 producer artifact 的闭环 | **NO-GO** for primary causal extension |
 

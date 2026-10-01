@@ -1,0 +1,83 @@
+{
+  "runner_version": "pipe2-material-qualification-v1",
+  "task_id": "PIPE2_data_pipeline",
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "source_commit": "a0ce8922b4384791cf0654989d8de3d326f664ce",
+  "started_at_utc": "2026-10-01T02:57:39.869121+00:00",
+  "status": "QUALIFIED_OFFLINE",
+  "passed": true,
+  "cases": [
+    {
+      "seed": 0,
+      "task_id": "PIPE2_data_pipeline",
+      "scientific_task_text_qualified": true,
+      "producer_paths": [
+        "pipeline/extract.py"
+      ],
+      "recipient_paths": [
+        "pipeline/transform.py",
+        "pipeline/load.py",
+        "pipeline/run_pipeline.py"
+      ],
+      "required_delivery_paths_before": [
+        "artifact/extracted_rows.json"
+      ],
+      "required_delivery_paths_after": [],
+      "delivery_schema": "pipe2-extracted-rows-v1",
+      "delivery_row_count": 1,
+      "correctness_label": null,
+      "passed": true
+    },
+    {
+      "seed": 1,
+      "task_id": "PIPE2_data_pipeline",
+      "scientific_task_text_qualified": true,
+      "producer_paths": [
+        "pipeline/extract.py"
+      ],
+      "recipient_paths": [
+        "pipeline/transform.py",
+        "pipeline/load.py",
+        "pipeline/run_pipeline.py"
+      ],
+      "required_delivery_paths_before": [
+        "artifact/extracted_rows.json"
+      ],
+      "required_delivery_paths_after": [],
+      "delivery_schema": "pipe2-extracted-rows-v1",
+      "delivery_row_count": 1,
+      "correctness_label": null,
+      "passed": true
+    },
+    {
+      "seed": 2,
+      "task_id": "PIPE2_data_pipeline",
+      "scientific_task_text_qualified": true,
+      "producer_paths": [
+        "pipeline/extract.py"
+      ],
+      "recipient_paths": [
+        "pipeline/transform.py",
+        "pipeline/load.py",
+        "pipeline/run_pipeline.py"
+      ],
+      "required_delivery_paths_before": [
+        "artifact/extracted_rows.json"
+      ],
+      "required_delivery_paths_after": [],
+      "delivery_schema": "pipe2-extracted-rows-v1",
+      "delivery_row_count": 1,
+      "correctness_label": null,
+      "passed": true
+    }
+  ],
+  "interpretation": "PIPE2 material/ownership/delivery shape only; no scorer, adoption, API, GPU, or efficacy claim",
+  "ended_at_utc": "2026-10-01T02:57:39.888114+00:00"
+}
