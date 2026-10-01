@@ -17,6 +17,7 @@ Goal 修改。
 
 ## Reports
 
+- [partial] 2026-10-01 role-evidence selection plan：公开证据只形成 overlay 输入，preview 固化 choice/propensity，commit 先写 `LaterAssignment` 再 exact replay selection，失败可回滚；定向 16 项与完整 334 项通过，未调用 API/GPU，见 [task report](task_reports/20261001_role_evidence_selection_plan.md)。
 - [partial] 2026-10-01 delayed credit 原子性：updater 失败时 snapshot/restore 回滚、credit key 仅成功后登记，定向 15 项与完整 332 项通过，未调用 API/GPU，见 [task report](task_reports/20261001_delayed_credit_atomicity.md)。
 - [partial] 2026-10-01 RoleEvidenceOffer 与 selection preview 接缝：分离 native evidence id/source event id，从 canonical ledger 绑定 subject/lineage，资格化 preview→assignment→exact propensity commit；修正旧 B-evidence→C-assignment 歧义，未启动 API/GPU，见 [task report](task_reports/20261001_role_evidence_offer_and_preview.md)。
 
