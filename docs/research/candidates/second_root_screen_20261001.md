@@ -61,3 +61,12 @@ diagnostics。旧 v5 的“真实 producer artifact”表述已撤回，不能�
   仍保持 `CANDIDATE_NOT_FROZEN`，不启动正式 API/A800；
 - 若 PIPE2 的 independent scorer 仍无法隔离 expected output 或真实 recipient use，立即
   保留失败证据并回退到 MULTI3/外部 CooperBench substrate，不修改 Goal。
+
+## MULTI3 fallback audit（2026-10-01）
+
+对 pinned TeamBench 的 `MULTI3_polyglot` 做了独立静态审查。seed 0–9 均能生成可解析的
+JSON schema 与 envelope，但 native tests 直接使用 hardcoded `correct_wire`/
+`correct_envelope`，没有把 producer 的 `serialize_batch` 输出交给 recipient 的
+`process_envelope`；sample generator 还存在三条记录实际只返回一条的缩进错误。schema
+运行时校验、seed split、neutral prompt 和 oracle 隔离也未冻结。因此它保留为
+`CONDITIONAL-LOW` fallback，不能替代 PIPE2 或当前 active root。
