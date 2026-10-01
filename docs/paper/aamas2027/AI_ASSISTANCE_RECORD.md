@@ -602,9 +602,11 @@ parity runs. It binds material, task contract, sandbox/runtime, scorer,
 worker-limit, policy-namespace and candidate-source digests, and refuses
 unmeasured cost ledgers. PIPE3 composition v1.3 now accepts an explicit policy
 factory while retaining terminal-only as the default, so historical v1.2
-receipts remain immutable. The seam is covered by the full 371-test regression,
-but no seven-arm live runner, benchmark cell, LLM/API call, GPU job or
-scientific claim has been enabled.
+receipts remain immutable. PIPE3 v1.3 also exposes the policy name; a negative
+`no_update` qualification commits later credit while preserving zero policy
+updates, instead of treating terminal-only's update requirement as universal. The
+seam is covered by the full regression, but no seven-arm live runner, benchmark
+cell, LLM/API call, GPU job or scientific claim has been enabled.
 
 ### 2026-09-28 baseline bridge audit
 

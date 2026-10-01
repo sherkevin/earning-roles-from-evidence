@@ -385,7 +385,8 @@ def _source_offer(boundary: Pipe3SelectionBoundary, *, control: str, source: Map
 
 def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
                  scorer: CandidateScorer | None = None,
-                 policy_factory: PolicyFactory | None = None) -> dict[str, Any]:
+                 policy_factory: PolicyFactory | None = None,
+                 policy_name: str = "terminal_only") -> dict[str, Any]:
     out.mkdir(parents=False, exist_ok=False)
     raw = out / "raw.jsonl"
     raw.write_text("", encoding="utf-8")
@@ -401,7 +402,7 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
             "scripts/peerrolebench_pipe3_two_stage_composition.py", "scripts/peerrolebench_two_stage_gate.py",
             "scripts/peerrolebench_role_evidence_selection.py", "scripts/peerrolebench_role_evidence_offer.py",
         )},
-    "policy": "TerminalOnlyPolicy", "overlay_values": "qualification_control_only",
+    "policy": policy_name, "overlay_values": "qualification_control_only",
         "authored_controls": {"source_judgment": "parent-authored", "action": "parent-authored", "patched_actor": "parent-authored"},
     }
     (out / "config.json").write_text(json.dumps(config, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
@@ -419,7 +420,7 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
     target_case, target_delivery, target_final = _prepare_case(target_materials, control)
     candidate_registry = _candidate_registry(source_materials)
     make_policy = policy_factory or default_policy_factory
-    policy = make_policy("terminal_only")
+    policy = make_policy(policy_name)
     if not isinstance(policy, BaselinePolicy):
         raise TypeError("policy factory must return a BaselinePolicy")
     boundary = Pipe3SelectionBoundary(policy, candidate_registry)
@@ -545,7 +546,9 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
         later_outcome_id=f"{control}-outcome-1",
     ) if replay.status == "PASS" and replay.complete and target["outcome"]["status"] in {"PASS", "FAIL"} else None
     delayed = DelayedCreditLedger()
-    update_applied = False
+    credit_committed = False
+    policy_update_applied = False
+    policy_update_expected = "terminal_outcome" in boundary.policy.accepted_sources
     if credit is not None:
         selected = boundary.selections[f"policy-{plan.native_selection_id}"]
         quality = target["outcome"].get("quality_score")
@@ -555,10 +558,15 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
             arrived_at=2.0, delay=1.0, action="repair", disposition="eligible", provenance="public", arrival_index=2,
         )
         before = deepcopy(boundary.policy.__dict__)
-        update_applied = delayed.apply_once(credit, lambda _: boundary.policy.observe_feedback(feedback),
-                                            snapshot=lambda: deepcopy(boundary.policy.__dict__),
-                                            restore=lambda state: (boundary.policy.__dict__.clear(), boundary.policy.__dict__.update(state)))
-        _log(raw, "delayed_update", {"applied": update_applied, "credit": credit.__dict__, "source_event_id": selected.event_id,
+        before_updates = boundary.policy.updates
+        credit_committed = delayed.apply_once(credit, lambda _: boundary.policy.observe_feedback(feedback),
+                                              snapshot=lambda: deepcopy(boundary.policy.__dict__),
+                                              restore=lambda state: (boundary.policy.__dict__.clear(), boundary.policy.__dict__.update(state)))
+        policy_update_applied = boundary.policy.updates > before_updates
+        _log(raw, "delayed_update", {"credit_committed": credit_committed,
+                                      "policy_update_applied": policy_update_applied,
+                                      "policy_update_expected": policy_update_expected,
+                                      "credit": credit.__dict__, "source_event_id": selected.event_id,
                                       "feedback_source": feedback.source,
                                       "policy_updates": boundary.policy.updates, "before_state_digest": _digest(before),
                                       "after_state_digest": _digest(boundary.policy.__dict__)})
@@ -568,12 +576,14 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
         "native_rows": len(boundary.native_manifest_rows),
         "auxiliary_rows": len(boundary.auxiliary_manifest_rows),
     })
-    summary = {**config, "status": "QUALIFIED_OFFLINE" if credit is not None and update_applied else "UNKNOWN",
-               "passed": credit is not None and update_applied,
-               "contract_passed": credit is not None and update_applied, "source": source, "target": target,
+    summary = {**config, "status": "QUALIFIED_OFFLINE" if credit is not None and credit_committed else "UNKNOWN",
+               "passed": credit is not None and credit_committed,
+               "contract_passed": credit is not None and credit_committed, "source": source, "target": target,
                "source_gate": gate.payload(), "role_offer": role_offer.payload(), "assignment_id": plan.assignment_id,
                "replay": replay.as_dict(), "credit": None if credit is None else credit.__dict__,
-               "policy_updates": boundary.policy.updates, "delayed_credit_count": len(delayed.credits),
+               "policy_updates": boundary.policy.updates, "policy_update_expected": policy_update_expected,
+               "policy_update_applied": policy_update_applied,
+               "delayed_credit_count": len(delayed.credits),
                "unknown_denominator": {"source_rows": 1, "unknown_rows": 0}, "ledger": boundary.ledger.events,
                "native_manifest_root": native_root, "auxiliary_manifest_root": auxiliary_root,
                "scientific_claim_allowed": False, "interpretation": "engineering comparator; overlay controls are hand-authored qualification values"}
@@ -584,21 +594,22 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
 
 def run(out_dir: Path, *, source_seed: int = 0, target_seed: int = 1,
         scorer: CandidateScorer | None = None,
-        policy_factory: PolicyFactory | None = None) -> dict[str, Any]:
+        policy_factory: PolicyFactory | None = None,
+        policy_name: str = "terminal_only") -> dict[str, Any]:
     out_dir = out_dir.resolve()
     out_dir.mkdir(parents=False, exist_ok=False)
     started = datetime.now(timezone.utc).isoformat()
     top = {"version": VERSION, "task_id": TASK_ID, "source_seed": source_seed, "target_seed": target_seed,
            "controls": list(CONTROLS), "real_api_calls": 0, "gpu_jobs": 0,
            "scientific_claim_allowed": False, "started_at_utc": started,
-           "execution_injection": scorer is not None}
+           "execution_injection": scorer is not None, "policy": policy_name}
     (out_dir / "config.json").write_text(json.dumps(top, indent=2) + "\n", encoding="utf-8")
     cases = []
     for control in CONTROLS:
         try:
             cases.append(_run_control(control, out=out_dir / control, source_seed=source_seed,
                                       target_seed=target_seed, scorer=scorer,
-                                      policy_factory=policy_factory))
+                                      policy_factory=policy_factory, policy_name=policy_name))
         except Exception as exc:
             case_dir = out_dir / control
             if not case_dir.exists():
