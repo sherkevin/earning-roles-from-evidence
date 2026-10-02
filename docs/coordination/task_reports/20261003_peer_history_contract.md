@@ -55,4 +55,19 @@ errors、update latency 和完整成本。若 E1 不优于 no-history，或打�
 两 episode 只足以检查协议和最小可学习性，不能证明稳定专业化、跨 root 泛化或最终方法
 收益。该 contract 是下一 runner 的放行条件，不是已完成的科学证据。
 
+## 零调用实现回执
+
+`scripts/peerrolebench_peer_history.py` 已实现 `AssignmentSealV1`、`HistoryEntryV1`、
+`HistoryCostV1` 和 `PeerHistoryV1`；它拒绝未 seal 追加、重复或 scope 不匹配 lineage，
+并把 UNKNOWN 计入审计但不计入正向平滑率。`selector_projection()` 只输出 scope 聚合、
+成本和 digest，不输出 artifact、task、gold、private text 或 raw prompt。
+
+- v1 receipt：`experiments/logs/n03_peer_history_qualification_20261003_v1/`，一个平滑率
+  断言写错，`FAILED_OFFLINE`，失败已保留；
+- v2 receipt：`experiments/logs/n03_peer_history_qualification_20261003_v2/`，5/5
+  `QUALIFIED_OFFLINE`，0 API、0 GPU；
+- focused tests：`tests/test_peerrolebench_peer_history.py`，5 passed。
+
+这仍只是状态/投影工程子门；真实 E0/E1、同信息对照、later-use 和科学结果没有运行。
+
 `goal_change_requested=false`。
