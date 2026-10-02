@@ -24,7 +24,7 @@ selection → task_start → delivery → producer score → recipient judgment
 事件类型序列和逐事件 record hash。首次 v1 的 event-count 合约错误（将未追加
 evidence 的控制写成 8 而非 7）原样保留；v2 在源码尚未提交时通过但不作为最终
 provenance receipt；v3 暴露事件类型合约漏项并保留；提交 provenance 修复后用 v4
-重新执行。
+重新执行；v5 在不变源码上补齐 receipt 中的逐事件 hash。
 
 ## 证据
 
@@ -32,11 +32,11 @@ provenance receipt；v3 暴露事件类型合约漏项并保留；提交 provena
 
 ```bash
 python3 scripts/peerrolebench_pipe2_chain_qualification.py \
-  --output experiments/logs/n03_pipe2_chain_qualification_20261003_v4 \
+  --output experiments/logs/n03_pipe2_chain_qualification_20261003_v5 \
   --seeds 0 1 2 3 4
 ```
 
-结果：`QUALIFIED_OFFLINE`，15/15 authored controls 通过；v4 config 的 `git_commit`
+结果：`QUALIFIED_OFFLINE`，15/15 authored controls 通过；v5 config 的 `git_commit`
 与源码 SHA256 对应已提交版本，并保留完整事件序列与逐事件 hash；0 candidate code、0
 LLM/API、0 GPU、0 native grader。测试覆盖链组合 3 项；与派生材料、责任 gate、
 manifest、shape/runtime qualification 的定向集合合计 37 项通过（具体命令和原始

@@ -1,0 +1,836 @@
+{
+  "runner_version": "pipe2-chain-qualification-v1",
+  "chain_version": "pipe2-responsibility-chain-v1",
+  "task_id": "PIPE2_data_pipeline",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "variants": [
+    "eligible",
+    "repair",
+    "mixed"
+  ],
+  "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+  "material_adapter": "peerrolebench_pipe2_derived_material_adapter",
+  "source_sha256": {
+    "scripts/peerrolebench_pipe2_chain_composition.py": "c6dc15150cef2cb07bfe1e29c5dfd461beeb1024d2c3d583aacf9c517b7b18a9",
+    "scripts/peerrolebench_pipe2_chain_qualification.py": "c4ceec6cfa16423fd99c0ce2ebfcc44a97b9464254500d03445b65c2327bb143",
+    "scripts/peerrolebench_pipe2_derived_material_adapter.py": "3dd1b31d83d7ffb5f46ebb469d74fcd0a2eb759254c8eb3f8495caada07f2390",
+    "scripts/peerrolebench_pipe2_responsibility_label.py": "48b37de3b26f7109eca3b1330f1c665844cec96e3456b894fb1126a67b227d1f",
+    "references/aamas/peer_role_protocol_20260925.py": "c9c3082f5edc45c69ad190eaa9ab9282656c93cd1d512df170f90e8bf7b98b86"
+  },
+  "fixture_mode": "authored-chain-controls-only",
+  "argv": [
+    "scripts/peerrolebench_pipe2_chain_qualification.py",
+    "--output",
+    "experiments/logs/n03_pipe2_chain_qualification_20261003_v5",
+    "--seeds",
+    "0",
+    "1",
+    "2",
+    "3",
+    "4"
+  ],
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "git_commit": "35a4a5af6589a7d3af707e00646406b80f91c364",
+  "candidate_code_executed": false,
+  "llm_calls": 0,
+  "gpu_jobs": 0,
+  "native_grader_invoked": false,
+  "benchmark_qualified": false,
+  "scientific_claim_allowed": false,
+  "started_at_utc": "2026-10-02T18:32:15.726118+00:00",
+  "status": "QUALIFIED_OFFLINE",
+  "control_count": 15,
+  "passed_count": 15,
+  "failed_count": 0,
+  "cases": [
+    {
+      "seed": 0,
+      "variant": "eligible",
+      "expected": {
+        "feedback_status": "ELIGIBLE",
+        "evidence_recorded": true,
+        "assignment_recorded": true,
+        "next_selection_recorded": true,
+        "event_count": 11,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome",
+          "role_evidence_update",
+          "later_assignment",
+          "peer_selection",
+          "task_start"
+        ]
+      },
+      "observed": {
+        "feedback_status": "ELIGIBLE",
+        "evidence_recorded": true,
+        "assignment_recorded": true,
+        "next_selection_recorded": true,
+        "event_count": 11,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome",
+          "role_evidence_update",
+          "later_assignment",
+          "peer_selection",
+          "task_start"
+        ]
+      },
+      "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+      "ledger_event_digest": "e4665d3abbb9166db412214d48e28e2ee6742f0c8c5f7543b6918f3efb59660b",
+      "ledger_event_hashes": [
+        "97e4ee2a0e8a6389ee0531b0bfddafb7da577160da86425d716a837e64cb3f8b",
+        "17624e3c448861ecc7db9a4571db3af5e325bf95bffda6301abe5278ce2076cc",
+        "c639896de8d7f9349297761465643868188f04d96813545b9312f147f0736499",
+        "10f4c3cbc18397e30e231271e84bb1927abbea0582e149107fd59d30bee60a74",
+        "08f90ea8016930f93a64a60ceb5cd2fb90d7439542e3b28f089e6ed3246fae2a",
+        "615f7512f1cad47357e184bfcd95eedf7c9b7eda4ce3f79f2f8d1311367d0274",
+        "a5308d36a9eb23af2ddbeb33fa9a09f7d2c367df81bfe5f9b5b6154bc024b53b",
+        "c6cccf47868990b3c3e00891fafa27019a29942f521241d48b283b77bb240f86",
+        "7e6cacb77f2a60be40796ff6d0f36f4658db7e4512bbf103fd0375eb356270d3",
+        "67d5c82ff656770f5d39488cb82649570d6e13939ff2945a518c6869047569e6",
+        "0db1dbcd1e6e99753c81f996c8c3f2f5c25517e174fa2ec8de5f222cd2838b32"
+      ],
+      "passed": true
+    },
+    {
+      "seed": 0,
+      "variant": "repair",
+      "expected": {
+        "feedback_status": "PENDING_ATTRIBUTION",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "observed": {
+        "feedback_status": "PENDING_ATTRIBUTION",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+      "ledger_event_digest": "a527062f69b4ddde62c5597502cd6519e4f4b2204b7fef182901ff7320532a95",
+      "ledger_event_hashes": [
+        "97e4ee2a0e8a6389ee0531b0bfddafb7da577160da86425d716a837e64cb3f8b",
+        "17624e3c448861ecc7db9a4571db3af5e325bf95bffda6301abe5278ce2076cc",
+        "9dcc0bd540af25ed4a09c3c4708841613bbc77d3dd17cf1cc433bd2eafcb7606",
+        "b878c0b4f21fdba3eecbec653b1203f9e6ddaf81a09c28459fab4e01bbdb2e08",
+        "f0df54cfca717dd0ab53373b49ce8d62f9ac388abf02b34a6732d765a8721fec",
+        "1bf23317b7fad1f061c804d59caa7549f2532b57b1becc7daef0ef242e70e5c5",
+        "18fdc5def11f8799de0023aba32d38993deff6f44e44bada84fa31b617578974"
+      ],
+      "passed": true
+    },
+    {
+      "seed": 0,
+      "variant": "mixed",
+      "expected": {
+        "feedback_status": "UNKNOWN",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "observed": {
+        "feedback_status": "UNKNOWN",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+      "ledger_event_digest": "a3c1d1a24d6903a4305df278a3b4fb81ddb8e7f5e1ce5b95e9fc4a15fa83a75b",
+      "ledger_event_hashes": [
+        "97e4ee2a0e8a6389ee0531b0bfddafb7da577160da86425d716a837e64cb3f8b",
+        "17624e3c448861ecc7db9a4571db3af5e325bf95bffda6301abe5278ce2076cc",
+        "484d0cbbe0c22c1a0b6845db8b8b46170012e741dbb13a65176b57d2e66b3291",
+        "648a482078a9b2ca3f2c2bea50675524e7a25de01188dc2e973f65a2f0f7f24a",
+        "fb52b9f1910a3b9c850b037e2a497c85070e74883d629da2c063d18fcf514b61",
+        "9865d2c229d903abc426639dd27b760635593a8287b1678ec67bf817eeba0abf",
+        "f944b1d91b8c43dfbb4a94b70d4c9daef16ce98edcbd40bfb9bc8253fb008c70"
+      ],
+      "passed": true
+    },
+    {
+      "seed": 1,
+      "variant": "eligible",
+      "expected": {
+        "feedback_status": "ELIGIBLE",
+        "evidence_recorded": true,
+        "assignment_recorded": true,
+        "next_selection_recorded": true,
+        "event_count": 11,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome",
+          "role_evidence_update",
+          "later_assignment",
+          "peer_selection",
+          "task_start"
+        ]
+      },
+      "observed": {
+        "feedback_status": "ELIGIBLE",
+        "evidence_recorded": true,
+        "assignment_recorded": true,
+        "next_selection_recorded": true,
+        "event_count": 11,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome",
+          "role_evidence_update",
+          "later_assignment",
+          "peer_selection",
+          "task_start"
+        ]
+      },
+      "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+      "ledger_event_digest": "7ade642dec6afb4aba70a6cf8583c59573fe17d76424f9dae8eea5d5f5d8762f",
+      "ledger_event_hashes": [
+        "97e4ee2a0e8a6389ee0531b0bfddafb7da577160da86425d716a837e64cb3f8b",
+        "17624e3c448861ecc7db9a4571db3af5e325bf95bffda6301abe5278ce2076cc",
+        "1f2d112a68c75900778cf1cfd50a3041294daa1ac0283f2580ed9227256b5926",
+        "70f77ee2b84f6ccbe4dd0fa354d2ca1c4d491528fca91b20527d80c640fa7b4e",
+        "66f0222ad18db531e30ed819e9b1655b7094cf8937456a1176f43b92327e2de7",
+        "5cd8561b92696f247da481366dece80fa27d4054417f11d61454129dc813c26d",
+        "91839a72ccb05c1c7fe359dd532bb4346ba527918f06a8b6ee244b9d890ad26d",
+        "8305ab591b5643514a05e32ae9fe8c7f2a40592a41b31d5e165a8f4473ef65b4",
+        "c6e5d6ad609fa7da24d2457abea2078923b1b38f6996d01b7a9be82d8d09e04e",
+        "f58a69a123512761aaa22f43914c42f8a9743cf15171879679dfc0f956bf02b1",
+        "1e21ebda25f4aa4e3e86b96af3508e9aaf0a536ba7834f4a7706f56982e71b3f"
+      ],
+      "passed": true
+    },
+    {
+      "seed": 1,
+      "variant": "repair",
+      "expected": {
+        "feedback_status": "PENDING_ATTRIBUTION",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "observed": {
+        "feedback_status": "PENDING_ATTRIBUTION",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+      "ledger_event_digest": "6956962741401c16cbd7e0b01fb24ed82ec04bfe32631a969072bb08a06c3654",
+      "ledger_event_hashes": [
+        "97e4ee2a0e8a6389ee0531b0bfddafb7da577160da86425d716a837e64cb3f8b",
+        "17624e3c448861ecc7db9a4571db3af5e325bf95bffda6301abe5278ce2076cc",
+        "385febfc69577e3c00c29b5fe07888e4be47b855faff964cabee10bcd2e34aa6",
+        "dc066e176e98eece0bc6263214a07d45a70e63796916e6d914197b08aa52e14c",
+        "284b746b13b47154cdd863587189afe530c83b6186b6242881ed1836bb6f3973",
+        "2ff28a410dbeb7cb88ef6a9c00b6e66766a74524c08c4b5e23825c68206ed091",
+        "bbc680ede684f321dee2754d447ed5ee4c7baf94e780eb1465461bb3261fe06c"
+      ],
+      "passed": true
+    },
+    {
+      "seed": 1,
+      "variant": "mixed",
+      "expected": {
+        "feedback_status": "UNKNOWN",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "observed": {
+        "feedback_status": "UNKNOWN",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+      "ledger_event_digest": "7d57d4597be039db001477527da065a526ad0f33d6d5c2ba0cedc3df010a10ef",
+      "ledger_event_hashes": [
+        "97e4ee2a0e8a6389ee0531b0bfddafb7da577160da86425d716a837e64cb3f8b",
+        "17624e3c448861ecc7db9a4571db3af5e325bf95bffda6301abe5278ce2076cc",
+        "7b9c027075dede069cce302de94a1ac372b0091a09a31452d97dce81d70ea8ac",
+        "35302b67fe42c63200af3141a64f1b89dcaeecd109f1d47704c446cda34452eb",
+        "1544ae36bdd595699777e5e67ddff440293a68898b041f548b204c2a7a570124",
+        "b0050924d806de8754e329202eac464848fcc9de032895a0999763db07f653f2",
+        "909a118b7f073a4272d46fbce7b1598e499144cdc79f34ffdc17d5d137704233"
+      ],
+      "passed": true
+    },
+    {
+      "seed": 2,
+      "variant": "eligible",
+      "expected": {
+        "feedback_status": "ELIGIBLE",
+        "evidence_recorded": true,
+        "assignment_recorded": true,
+        "next_selection_recorded": true,
+        "event_count": 11,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome",
+          "role_evidence_update",
+          "later_assignment",
+          "peer_selection",
+          "task_start"
+        ]
+      },
+      "observed": {
+        "feedback_status": "ELIGIBLE",
+        "evidence_recorded": true,
+        "assignment_recorded": true,
+        "next_selection_recorded": true,
+        "event_count": 11,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome",
+          "role_evidence_update",
+          "later_assignment",
+          "peer_selection",
+          "task_start"
+        ]
+      },
+      "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+      "ledger_event_digest": "46bbe712cecf9cee8dec1cc71ccabad00c447df2ff0aa66bc38de4baf32e478c",
+      "ledger_event_hashes": [
+        "97e4ee2a0e8a6389ee0531b0bfddafb7da577160da86425d716a837e64cb3f8b",
+        "17624e3c448861ecc7db9a4571db3af5e325bf95bffda6301abe5278ce2076cc",
+        "02ce657a574e640cc5a8f7eafd5add64c4ba9350f0cb36adb77d4ca63183600e",
+        "a9951bfaefc00166a95d30b01e00e735972bf0206e0c136e608fc4b34e91057e",
+        "dc90fcdf77dab83db81c0707d82af9fc06cd64e28251cb406bb5c89037f89590",
+        "94128c0f4687cfd74041d132cfb60aeefb44e533c3c8867b690c18342241f597",
+        "7a710e1ca51357b0b0d2cfc40767ddd6bd7dcc565e9966492f0b64652611672c",
+        "ac02268578bca9e9b6b307e770c51a6f1411ed71613ce488b4868d33516b42dd",
+        "ec32bebed9f1a15acc0e317be5217b04d81c9ab380f76af73377849b80f3f7f9",
+        "ee11502c2ad8fbeace6422ce92b43446a45a1950a8b2fb0c05fe35ab7fdcb3b1",
+        "6b21109d76dc0b1bb4c9fab4518f8ac554856e123f1090ca1d8a276376ecb082"
+      ],
+      "passed": true
+    },
+    {
+      "seed": 2,
+      "variant": "repair",
+      "expected": {
+        "feedback_status": "PENDING_ATTRIBUTION",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "observed": {
+        "feedback_status": "PENDING_ATTRIBUTION",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+      "ledger_event_digest": "01329cefc59f7b8dedd2d2b002b8f8c2d1e74dd67edbe0beb7052028d8b5d336",
+      "ledger_event_hashes": [
+        "97e4ee2a0e8a6389ee0531b0bfddafb7da577160da86425d716a837e64cb3f8b",
+        "17624e3c448861ecc7db9a4571db3af5e325bf95bffda6301abe5278ce2076cc",
+        "35260b30ccf6e12c78fdd17fa25016f1d5cd2c2207c883d19e5ef92909b116b6",
+        "e22c22da5ed2ba63cba8210dc975dd1ce15cc5f6410b9f58176ecb92b1b16179",
+        "7cd5a70a7738186a567d95e1f0a5c2d8180559a55028d184e4357807e38b1861",
+        "996431ae334893be64511c0b58fff0c418bc74f826d48e117c5c19ad87ff14e2",
+        "7d94eca19269320ef427839c7401e8977509181b3f19d84c95f9583c598135fc"
+      ],
+      "passed": true
+    },
+    {
+      "seed": 2,
+      "variant": "mixed",
+      "expected": {
+        "feedback_status": "UNKNOWN",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "observed": {
+        "feedback_status": "UNKNOWN",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+      "ledger_event_digest": "b32a6c2b8f1852e731df506fd6c22351fc3705dc480ec988bf8c7bbc6af48f32",
+      "ledger_event_hashes": [
+        "97e4ee2a0e8a6389ee0531b0bfddafb7da577160da86425d716a837e64cb3f8b",
+        "17624e3c448861ecc7db9a4571db3af5e325bf95bffda6301abe5278ce2076cc",
+        "bec6640d0ac3eea129c17168cdb78ff44961379a129f407216f3d4a7d779a2a7",
+        "8a27d03d01055c70447d4f89660a2fe8437b1c31a864557a959be7fed03749bd",
+        "f37ce760cc307dc01e5f222f73f7deb7b294853b106fcbc092026d0d01888100",
+        "49ee23ad9e0605d29254890daddf7916ffc78cf743d391dece53434d2ce53d5a",
+        "b02c6a2310671830b0e615e814d6d213197611fcadfee89c5c6e3f439f831517"
+      ],
+      "passed": true
+    },
+    {
+      "seed": 3,
+      "variant": "eligible",
+      "expected": {
+        "feedback_status": "ELIGIBLE",
+        "evidence_recorded": true,
+        "assignment_recorded": true,
+        "next_selection_recorded": true,
+        "event_count": 11,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome",
+          "role_evidence_update",
+          "later_assignment",
+          "peer_selection",
+          "task_start"
+        ]
+      },
+      "observed": {
+        "feedback_status": "ELIGIBLE",
+        "evidence_recorded": true,
+        "assignment_recorded": true,
+        "next_selection_recorded": true,
+        "event_count": 11,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome",
+          "role_evidence_update",
+          "later_assignment",
+          "peer_selection",
+          "task_start"
+        ]
+      },
+      "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+      "ledger_event_digest": "1153867e6ffd6c30929c89a3d2e8071bb95ea525334a42d0b2e126c9134b7295",
+      "ledger_event_hashes": [
+        "97e4ee2a0e8a6389ee0531b0bfddafb7da577160da86425d716a837e64cb3f8b",
+        "17624e3c448861ecc7db9a4571db3af5e325bf95bffda6301abe5278ce2076cc",
+        "1b4c85c4824a5cf0eb47bd5191baa017dc424c2a98a4e34ba7ca1eb30efd6faf",
+        "b57b9827dd905f7feaf902615cf78ee305d4afee70a74d8b536b05d75787974e",
+        "28cd4ac2443e45e41bd7403843c7e6236d97c19198f985eedeaf642435dd1b9b",
+        "7c6a18b32713180188ca137c55f089d3a6b75e8a48bd361b7c1ee9b6962e9936",
+        "00cb5561e865ae5f1fa5e47cf573abe7642584a032267c2663ea10cc5d987ea1",
+        "06bbd3b1b04078b0dda6a242f565558ef43df57257e0761df9c9d57b6122c572",
+        "2e448ef7b2e43023417175e3fabaa7ffa3e4aef48857511137e2516d6be77318",
+        "14fcf5cea3c0dc97449a076a5e9b52598c31415034aca8ea62d274b6844ad11b",
+        "e98d3e5ffd47956ef47c9faca06bf99322af90f4c55693801ebd738a377e1d3c"
+      ],
+      "passed": true
+    },
+    {
+      "seed": 3,
+      "variant": "repair",
+      "expected": {
+        "feedback_status": "PENDING_ATTRIBUTION",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "observed": {
+        "feedback_status": "PENDING_ATTRIBUTION",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+      "ledger_event_digest": "05e4bf2a310247566037863458c4cb5763a234e50fcbd614c2257b27f8e0ab33",
+      "ledger_event_hashes": [
+        "97e4ee2a0e8a6389ee0531b0bfddafb7da577160da86425d716a837e64cb3f8b",
+        "17624e3c448861ecc7db9a4571db3af5e325bf95bffda6301abe5278ce2076cc",
+        "8aeb550f856a801bd5775fbb722b963885fc3e8277f7121f67f83a99c47256ae",
+        "06f824b02df40afa4360011e181c111f5f0586459db606247c6e23f35bf69074",
+        "fe8e457144392db8de228479b0bfe3bbd55ea4c6dce6cc421fdba206fc13fbd2",
+        "9c4f30bf309ceadc4fe4f21f2a79baad6c4e3ab629d637500e921e014761caf3",
+        "18c28b50512fca407093ea83a63f8bc4a3b49be8d29f46f5a936101889161d03"
+      ],
+      "passed": true
+    },
+    {
+      "seed": 3,
+      "variant": "mixed",
+      "expected": {
+        "feedback_status": "UNKNOWN",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "observed": {
+        "feedback_status": "UNKNOWN",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+      "ledger_event_digest": "fb31ec681b087229489e9d0aa0f1e7c82aec40903f4e62b1fbb06fd02e747aa3",
+      "ledger_event_hashes": [
+        "97e4ee2a0e8a6389ee0531b0bfddafb7da577160da86425d716a837e64cb3f8b",
+        "17624e3c448861ecc7db9a4571db3af5e325bf95bffda6301abe5278ce2076cc",
+        "080c0bad988620acf1e8868cf624957f44f0a3c4bc3591ebeb31224230d48857",
+        "46229d23267ed216d18f60f21f66e0201b79934f41d7c5d52d8e82c02fce96ca",
+        "ea2f11a42bf0788d477784b92cf0f5f4ba5642dbc98e990a5f6e651d33cd9c15",
+        "3f01f41b4d48fc182ffe036c38cf3fdd3638270ad0e1571a2eacf900687541c0",
+        "53330e92dbd4060255c991a3725fe42d58a27bb913f98fecd6de18aba20e7477"
+      ],
+      "passed": true
+    },
+    {
+      "seed": 4,
+      "variant": "eligible",
+      "expected": {
+        "feedback_status": "ELIGIBLE",
+        "evidence_recorded": true,
+        "assignment_recorded": true,
+        "next_selection_recorded": true,
+        "event_count": 11,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome",
+          "role_evidence_update",
+          "later_assignment",
+          "peer_selection",
+          "task_start"
+        ]
+      },
+      "observed": {
+        "feedback_status": "ELIGIBLE",
+        "evidence_recorded": true,
+        "assignment_recorded": true,
+        "next_selection_recorded": true,
+        "event_count": 11,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome",
+          "role_evidence_update",
+          "later_assignment",
+          "peer_selection",
+          "task_start"
+        ]
+      },
+      "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+      "ledger_event_digest": "126af6099835f0a9a53f9bdd863509317ba6e7128d7682001dcb44951caf9a44",
+      "ledger_event_hashes": [
+        "97e4ee2a0e8a6389ee0531b0bfddafb7da577160da86425d716a837e64cb3f8b",
+        "17624e3c448861ecc7db9a4571db3af5e325bf95bffda6301abe5278ce2076cc",
+        "fbf188a0042e8b3a35225a4f1ba5c4ac1643a6ed0dae2deafab7e5f86e5c3cdc",
+        "02443b8e445fcd9b8a47f987fe6b4e7ac175be12561e16c4de4e03f221071c18",
+        "a7f22b7144228960ec6fc3ad59b224c76ef00fd897630b0c11041764f73080f8",
+        "9a2843f685fcb235f25676a9dd3a59a0fae6aa093f68d8ede5fb2eb70a7d3901",
+        "991ec3fe1dc6bfed1aeab4955b44da524ae182bd5ed27a41c7cfe40bad4f186b",
+        "75017f859215ccb9af31fb34405355b61385f2cd828d19c548d97731e85285b5",
+        "d6bd08bd85a4ad2c094fc7a21b0b6bedb97e33d7e55549a48bad8f0e0baa2164",
+        "cde57efa544c8187a4c04cf4cfdf14938eebc79336985e471b6f175b919590ea",
+        "a142467c5b4c7f5003c8efe23f3cf4c0eeb3aa2f9006ff00cab2edf602939b11"
+      ],
+      "passed": true
+    },
+    {
+      "seed": 4,
+      "variant": "repair",
+      "expected": {
+        "feedback_status": "PENDING_ATTRIBUTION",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "observed": {
+        "feedback_status": "PENDING_ATTRIBUTION",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+      "ledger_event_digest": "8ea0a621e93ec0316e8ce3d8001b3325c7c81d089a8c3a64fb845f0eb73745df",
+      "ledger_event_hashes": [
+        "97e4ee2a0e8a6389ee0531b0bfddafb7da577160da86425d716a837e64cb3f8b",
+        "17624e3c448861ecc7db9a4571db3af5e325bf95bffda6301abe5278ce2076cc",
+        "d916c674756752164c492610c6711a8f4c178c2f9a10f0728b9e7c35254b8896",
+        "e45e71fe05b57b92e36b195f08b741f62de5d7ae96ee2cf20f5738bb42f9a38f",
+        "3919b136c8f47f882f1cbeb920b00feba067b8b165b2cf0cdc785dc778bd4f9b",
+        "33145238bd7ef34279aab235e6d7fd77e1c1bf8491e9796e0b57bdc9d69ce672",
+        "c0fac8699deb5b794e0055c4c35c2435d586cdb9b37856089aad075bd0139faa"
+      ],
+      "passed": true
+    },
+    {
+      "seed": 4,
+      "variant": "mixed",
+      "expected": {
+        "feedback_status": "UNKNOWN",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "observed": {
+        "feedback_status": "UNKNOWN",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+      "ledger_event_digest": "8013f202d6044222c86573df5d626ad60e1914ac0329cc1fcc3c2adfce09e41b",
+      "ledger_event_hashes": [
+        "97e4ee2a0e8a6389ee0531b0bfddafb7da577160da86425d716a837e64cb3f8b",
+        "17624e3c448861ecc7db9a4571db3af5e325bf95bffda6301abe5278ce2076cc",
+        "addde363dcacf3f45473984d03ce28a526adb57a60cb6b484508801e0f3dca47",
+        "6709e81ae35156faec9030745a34eeba2f772d36648b673037afa2e762a10620",
+        "29e9973d82d99d3a37bbd34a056f22f0c92851308e5265504423a3e48ab966ae",
+        "c828057b092ddcc4aea6de1ea521cbabb86953797bb7ee358ba16e799b9fdf02",
+        "106dbe09cd60c27f9ac1878425eecde22eed8a00f2e22c7676c23c92957cd15d"
+      ],
+      "passed": true
+    }
+  ],
+  "interpretation": "Authored typed-ledger composition only.  This validates ordering, digest binding, responsibility gating and future-assignment plumbing; it supplies no model judgment, benchmark label, efficacy or training evidence.",
+  "ended_at_utc": "2026-10-02T18:32:43.489909+00:00"
+}
