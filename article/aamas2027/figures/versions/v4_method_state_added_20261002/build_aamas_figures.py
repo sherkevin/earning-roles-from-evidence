@@ -167,15 +167,15 @@ def method_state():
         ax.add_patch(FancyBboxPatch((x, y), w, 0.15, boxstyle=style,
                                     linewidth=1.0, linestyle="--" if dashed else "-",
                                     edgecolor=color, facecolor="white"))
-        ax.text(x + 0.012, y + 0.112, title, fontsize=7.2, weight="bold",
+        ax.text(x + 0.012, y + 0.112, title, fontsize=7.0, weight="bold",
                 color=color, va="top", ha="left")
-        ax.text(x + 0.012, y + 0.058, body, fontsize=6.45, color=TEXT,
+        ax.text(x + 0.012, y + 0.058, body, fontsize=6.1, color=TEXT,
                 va="center", ha="left", linespacing=1.04)
 
     # Three lanes share aligned interfaces but retain their legal boundaries.
     lane_node(0.145, 0.735, 0.18, "producer artifact", "version | digest", ORANGE)
     lane_node(0.385, 0.735, 0.205, "recipient judgment", "action | owner | changed paths", ORANGE)
-    lane_node(0.665, 0.735, 0.235, "target outcome", "after seal: quality | adoption | cost", BLUE)
+    lane_node(0.665, 0.735, 0.235, "target outcome", "quality | adoption | cost", BLUE)
     arrow(ax, (0.325, 0.81), (0.385, 0.81), ORANGE)
     arrow(ax, (0.590, 0.81), (0.665, 0.81), ORANGE)
 
@@ -188,7 +188,7 @@ def method_state():
     lane_node(0.145, 0.115, 0.18, "local peers (k)", "candidate menu | graph", BLUE)
     lane_node(0.385, 0.115, 0.18, "read-cut state", "local state | representation", BLUE)
     lane_node(0.61, 0.115, 0.17, "sealed assignment", "p(a) | task start", BLUE)
-    lane_node(0.805, 0.115, 0.15, "selected-only", "update state'", BLUE)
+    lane_node(0.825, 0.115, 0.13, "selected-only update", "state'", BLUE)
     arrow(ax, (0.325, 0.19), (0.385, 0.19), BLUE)
     arrow(ax, (0.565, 0.19), (0.61, 0.19), BLUE)
     arrow(ax, (0.78, 0.19), (0.825, 0.19), BLUE)
@@ -200,12 +200,9 @@ def method_state():
     ax.text(0.65, 0.335, "eligible rows at read cut", fontsize=5.7, color=GREEN,
             ha="center", va="center", rotation=-8)
     arrow(ax, (0.78, 0.735), (0.89, 0.265), GREY, dashed=True, rad=-0.12)
-    # The update writes a future read-cut state; it never rewrites the sealed assignment.
-    y_next = 0.055
-    arrow(ax, (0.88, 0.115), (0.88, y_next), BLUE, dashed=True)
-    arrow(ax, (0.88, y_next), (0.475, y_next), BLUE, dashed=True)
-    arrow(ax, (0.475, y_next), (0.475, 0.115), BLUE, dashed=True)
-    ax.text(0.68, 0.074, "future read cut", fontsize=5.7, color=BLUE, ha="center", va="center")
+    ax.text(0.91, 0.55, "after seal", fontsize=5.7, color=GREY, ha="center", va="center", rotation=78)
+    arrow(ax, (0.89, 0.115), (0.75, 0.265), BLUE, dashed=True, rad=0.15)
+    ax.text(0.87, 0.28, "matching opportunity", fontsize=5.7, color=BLUE, ha="center", va="center")
     ax.text(0.56, 0.025,
             "only public rows before the read cut can affect selection; target outcomes arrive after the seal",
             fontsize=6.2, color=GREY, ha="center", va="bottom")

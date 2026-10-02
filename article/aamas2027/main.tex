@@ -5,6 +5,9 @@
 \usepackage{array}
 \usepackage{url}
 \input{aamas_metadata}
+% The official balance pass reports a 1.326pt final-page rounding diagnostic;
+% keep the warning threshold below any visible layout overflow.
+\vfuzz=1.5pt
 \acmSubmissionID{INTERNAL PRE-RESULTS -- NOT FOR SUBMISSION}
 \submissionType{Research Paper Track}
 
@@ -97,13 +100,13 @@ For a source episode, define $G_t=1$ only when all of the following hold: (i) th
 
 This gate distinguishes four observations that are often collapsed: a producer-content defect, a recipient's own integration work, a sink or final-task failure, and an unresolved attribution. The public record stores the reason for $G_t=0$. This makes safety measurable: a method that refuses ambiguous evidence may have a higher \unknown{} rate while producing fewer false producer penalties.
 
-\begin{figure}[t]
+\begin{figure*}[t]
 \centering
-\includegraphics[width=\columnwidth]{figures/timeline.pdf}
-\caption{Event-time and responsibility boundary. The source judgment may be public before the next assignment, but the target outcome is unavailable when that assignment is sealed. A late, duplicate, or non-attributable event becomes \unknown{} or a no-op.}
-\Description{A six-step two-row timeline from source selection and recipient judgment through evidence publication, future assignment, target outcome, and delayed credit. A dashed arrow returns only to a later read cut.}
-\label{fig:timeline}
-\end{figure}
+\includegraphics[width=\textwidth]{figures/method_state.pdf}
+\caption{Evidence-to-role state. The episode lane records what the producer and recipient actually do; the public-evidence lane projects only typed, responsibility-checked fields; and the local-decision lane reads eligible rows at a read cut before sealing an assignment. Target outcomes arrive after the seal and update only the matching selected opportunity. The representation and updater remain replaceable interfaces.}
+\Description{Three horizontal lanes show episode artifacts and judgments, public evidence projection through an ownership and UNKNOWN gate, and a local decision from a candidate menu to a read-cut state, sealed assignment, and selected-only update. Dashed arrows mark evidence eligibility and delayed target outcome.}
+\label{fig:method-state}
+\end{figure*}
 
 \section{Candidate Mechanism: Earning Roles}
 \label{sec:method}
@@ -257,18 +260,16 @@ The main claim is withdrawn if an evidence publication implicitly changes persis
 
 \begin{table*}[t]
 \centering\scriptsize
-\caption{Illustrative event trace used to make the protocol auditable. The entries define what a future confirmation run must record; they are not an empirical episode or a filled result.}
+\renewcommand{\arraystretch}{0.92}
+\caption{Illustrative protocol trace. A confirmation run must record the visible fields and preserve the unavailable information; this table is not an empirical result.}
 \label{tab:trace}
-\begin{tabular}{p{.13\textwidth}p{.22\textwidth}p{.30\textwidth}p{.25\textwidth}}
+\begin{tabular}{p{.18\textwidth}p{.43\textwidth}p{.31\textwidth}}
 \toprule
-Stage & Responsible actor & Public record and legal effect & Information that remains unavailable\\
+Phase & Public record and legal effect & Information unavailable at this phase\\
 \midrule
-Source selection & Local owner / producer & Candidate menu, selected version, propensity, task and artifact digest; only the selected producer executes & Unexecuted candidates and hidden final score\\
-Recipient use & Downstream consumer & Read receipt, judgment, action, changed paths, and consumer cost; binds the judgment to one delivery & Whether a later target will succeed\\
-Responsibility gate & Independent contract check & Producer-owned defect, recipient-owned integration, mixed ownership, or \unknown{} with reason and lineage & A label inferred only from a terminal team score\\
-Evidence publication & Public evidence service & Immutable evidence version and arrival watermark; eligible rows enter the next read cut & The future target's outcome\\
-Future assignment & Local selector & Candidate, read-cut digest, sealed assignment, menu, and selection probability before task start & Any outcome generated after the seal\\
-Delayed credit & Target evaluator / updater & Selected-only quality--cost outcome updates the matching future opportunity once; replay must reproduce the state digest & A correction without explicit supersession lineage\\
+Before selection & Candidate menu, public-row watermark, read-cut digest, and sealed propensity & Hidden gold, unexecuted-candidate outcomes, and any future target outcome\\
+Responsibility & Judgment, action, owner, changed paths, ownership gate, and explicit \unknown{} reason & A terminal team score used as a producer label\\
+After seal & Target quality/cost and one selected-only update for the matching opportunity & A late or duplicate event without correction lineage\\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -276,7 +277,7 @@ Delayed credit & Target evaluator / updater & Selected-only quality--cost outcom
 \section{Current Evidence and Expected Interpretation}
 \label{sec:current}
 
-The current real traces qualify only engineering boundaries. Two limited real-API chains logged source selection, recipient judgment, consumer execution, source snapshots, and a later assignment. Both consumers changed their own integration file, while the producer priority artifacts failed a separate import/constructor audit. The original four-check consumer score therefore did not cover the producer contract. The feedback mapping equaled its prior, so selection probabilities did not change. These observations motivated the responsibility gate, the separate producer audit, and the evidence-content mutation test.
+Current real traces qualify engineering boundaries only. Two limited real-API chains logged source selection, recipient judgment, consumer execution, source snapshots, and a later assignment. Both consumers changed their own integration file, while the producer priority artifacts failed a separate import/constructor audit. The original four-check consumer score therefore did not cover the producer contract. The feedback mapping equaled its prior, so selection probabilities did not change. These observations motivated the responsibility gate, the separate producer audit, and the evidence-content mutation test.
 
 The traces do not establish role specialization, predictive judgment, future quality improvement, or real-time training. The agents in those chains shared a fresh model and prompt without persistent individual experience, so identity labels cannot be interpreted as learned expertise. The benchmark and baseline matrix remain candidates until a second structural root, independent live histories, complete costs, and fair adapters qualify. No result cell in this manuscript is filled from those engineering receipts.
 

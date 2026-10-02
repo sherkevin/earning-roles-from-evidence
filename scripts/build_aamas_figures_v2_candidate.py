@@ -9,6 +9,8 @@ import textwrap
 
 import matplotlib
 matplotlib.use("Agg")
+matplotlib.rcParams["pdf.fonttype"] = 42
+matplotlib.rcParams["ps.fonttype"] = 42
 import matplotlib.pyplot as plt
 
 # Keep all labels as embedded TrueType text in the final vector PDFs.
@@ -18,7 +20,7 @@ matplotlib.rcParams['font.family'] = 'DejaVu Sans'
 from matplotlib.patches import FancyBboxPatch, FancyArrowPatch, Rectangle
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "article/aamas2027/figures"
+OUT = ROOT / "article/aamas2027/figures/versions/20261002_v2_candidate"
 OUT.mkdir(parents=True, exist_ok=True)
 
 BLUE = "#276091"
@@ -87,16 +89,12 @@ def overview():
     arrow(ax, (xs[1], cy_bottom), (xs[0] + w, cy_bottom), GREEN)
     # Route delayed feedback around the stages so it cannot be mistaken for a
     # synchronous edge or obscure the labels.
-    x0, x1 = 0.008, xs[2] + w + 0.012
-    # Leave stage 6 at its outside edge and enter stage 4 from its outside right edge;
-    # the delayed path never crosses a node or the public-evidence box.
-    arrow(ax, (xs[0], bottom + h / 2), (x0, bottom + h / 2), GREY, dashed=True)
-    arrow(ax, (x0, bottom + h / 2), (x0, 0.94), GREY, dashed=True)
-    arrow(ax, (x0, 0.94), (x1, 0.94), GREY, dashed=True)
+    x0, x1 = xs[0] + 0.10, xs[2] + w / 2
+    arrow(ax, (x0, bottom + h), (x0, 0.94), ORANGE, dashed=True)
+    arrow(ax, (x0, 0.94), (x1, 0.94), ORANGE, dashed=True)
     # Delayed credit returns to the later assignment/read-cut (stage 4),
     # never to the public-evidence box (stage 3).
-    arrow(ax, (x1, 0.94), (x1, bottom + h / 2), GREY, dashed=True)
-    arrow(ax, (x1, bottom + h / 2), (xs[2] + w, bottom + h / 2), GREY, dashed=True)
+    arrow(ax, (x1, 0.94), (x1, bottom + h), ORANGE, dashed=True)
     ax.text(0.51, 0.02, "dashed edge: delayed feedback changes a later read cut only",
             fontsize=6.5, color=GREY, ha="center", va="bottom")
     fig.subplots_adjust(left=0.005, right=0.995, top=0.995, bottom=0.02)
@@ -130,88 +128,17 @@ def timeline():
     arrow(ax, (xs[2] + w / 2, ytop), (xs[2] + w / 2, ybot + h), BLUE)
     arrow(ax, (xs[2], arrow_y_bottom), (xs[1] + w, arrow_y_bottom), BLUE)
     arrow(ax, (xs[1], arrow_y_bottom), (xs[0] + w, arrow_y_bottom), GREEN)
-    x0, x1 = 0.006, xs[2] + w + 0.008
-    # Route outside both rows so the delayed path does not cross a node.
-    arrow(ax, (xs[0], ybot + h / 2), (x0, ybot + h / 2), GREY, dashed=True)
-    arrow(ax, (x0, ybot + h / 2), (x0, 0.93), GREY, dashed=True)
-    arrow(ax, (x0, 0.93), (x1, 0.93), GREY, dashed=True)
+    x0, x1 = xs[0] + 0.09, xs[2] + w / 2
+    arrow(ax, (x0, ybot + h), (x0, 0.93), ORANGE, dashed=True)
+    arrow(ax, (x0, 0.93), (x1, 0.93), ORANGE, dashed=True)
     # Delayed credit changes the later read cut, not the already published row.
-    arrow(ax, (x1, 0.93), (x1, ybot + h / 2), GREY, dashed=True)
-    arrow(ax, (x1, ybot + h / 2), (xs[2] + w, ybot + h / 2), GREY, dashed=True)
+    arrow(ax, (x1, 0.93), (x1, ybot + h), ORANGE, dashed=True)
     ax.text(0.5, 0.04, "future outcome is unavailable at the sealed assignment",
             fontsize=6.1, color=GREY, ha="center", va="center")
     fig.subplots_adjust(left=0.005, right=0.995, top=0.995, bottom=0.02)
     fig.savefig(OUT / "timeline.pdf", bbox_inches="tight", pad_inches=0.015)
     plt.close(fig)
 
-
-
-def method_state():
-    """Draw the evidence-to-role state schematic (method figure, no results)."""
-    fig, ax = plt.subplots(figsize=(7.0, 2.72))
-    ax.set_xlim(0, 1); ax.set_ylim(0, 1); ax.axis("off")
-    lanes = [
-        (0.70, 0.22, "EPISODE", ORANGE),
-        (0.39, 0.22, "PUBLIC EVIDENCE", GREEN),
-        (0.08, 0.22, "LOCAL DECISION", BLUE),
-    ]
-    for y, h, title, color in lanes:
-        ax.add_patch(FancyBboxPatch(
-            (0.115, y), 0.865, h, boxstyle="round,pad=0.008,rounding_size=0.012",
-            linewidth=0.7, edgecolor="#D4D9DE", facecolor="#FBFCFD"))
-        ax.text(0.018, y + h / 2, title, fontsize=7.0, weight="bold", color=color,
-                va="center", ha="left", rotation=90)
-
-    def lane_node(x, y, w, title, body, color, dashed=False):
-        style = "round,pad=0.008,rounding_size=0.012"
-        ax.add_patch(FancyBboxPatch((x, y), w, 0.15, boxstyle=style,
-                                    linewidth=1.0, linestyle="--" if dashed else "-",
-                                    edgecolor=color, facecolor="white"))
-        ax.text(x + 0.012, y + 0.112, title, fontsize=7.2, weight="bold",
-                color=color, va="top", ha="left")
-        ax.text(x + 0.012, y + 0.058, body, fontsize=6.45, color=TEXT,
-                va="center", ha="left", linespacing=1.04)
-
-    # Three lanes share aligned interfaces but retain their legal boundaries.
-    lane_node(0.145, 0.735, 0.18, "producer artifact", "version | digest", ORANGE)
-    lane_node(0.385, 0.735, 0.205, "recipient judgment", "action | owner | changed paths", ORANGE)
-    lane_node(0.665, 0.735, 0.235, "target outcome", "after seal: quality | adoption | cost", BLUE)
-    arrow(ax, (0.325, 0.81), (0.385, 0.81), ORANGE)
-    arrow(ax, (0.590, 0.81), (0.665, 0.81), ORANGE)
-
-    lane_node(0.385, 0.425, 0.15, "typed projection", "public fields only", GREEN)
-    lane_node(0.565, 0.425, 0.19, "ownership / UNKNOWN", "producer defect? recipient work?", GREEN, dashed=True)
-    lane_node(0.785, 0.425, 0.17, "versioned row", "evidence | watermark", GREEN)
-    arrow(ax, (0.535, 0.50), (0.565, 0.50), GREEN)
-    arrow(ax, (0.755, 0.50), (0.785, 0.50), GREEN)
-
-    lane_node(0.145, 0.115, 0.18, "local peers (k)", "candidate menu | graph", BLUE)
-    lane_node(0.385, 0.115, 0.18, "read-cut state", "local state | representation", BLUE)
-    lane_node(0.61, 0.115, 0.17, "sealed assignment", "p(a) | task start", BLUE)
-    lane_node(0.805, 0.115, 0.15, "selected-only", "update state'", BLUE)
-    arrow(ax, (0.325, 0.19), (0.385, 0.19), BLUE)
-    arrow(ax, (0.565, 0.19), (0.61, 0.19), BLUE)
-    arrow(ax, (0.78, 0.19), (0.825, 0.19), BLUE)
-
-    # Cross-lane relationships are explicitly labelled and delayed where needed.
-    arrow(ax, (0.485, 0.735), (0.46, 0.575), ORANGE)
-    ax.text(0.488, 0.635, "project", fontsize=5.7, color=ORANGE, ha="left", va="center")
-    arrow(ax, (0.87, 0.425), (0.475, 0.265), GREEN, dashed=True, rad=0.12)
-    ax.text(0.65, 0.335, "eligible rows at read cut", fontsize=5.7, color=GREEN,
-            ha="center", va="center", rotation=-8)
-    arrow(ax, (0.78, 0.735), (0.89, 0.265), GREY, dashed=True, rad=-0.12)
-    # The update writes a future read-cut state; it never rewrites the sealed assignment.
-    y_next = 0.055
-    arrow(ax, (0.88, 0.115), (0.88, y_next), BLUE, dashed=True)
-    arrow(ax, (0.88, y_next), (0.475, y_next), BLUE, dashed=True)
-    arrow(ax, (0.475, y_next), (0.475, 0.115), BLUE, dashed=True)
-    ax.text(0.68, 0.074, "future read cut", fontsize=5.7, color=BLUE, ha="center", va="center")
-    ax.text(0.56, 0.025,
-            "only public rows before the read cut can affect selection; target outcomes arrive after the seal",
-            fontsize=6.2, color=GREY, ha="center", va="bottom")
-    fig.subplots_adjust(left=0.005, right=0.995, top=0.995, bottom=0.025)
-    fig.savefig(OUT / "method_state.pdf", bbox_inches="tight", pad_inches=0.02)
-    plt.close(fig)
 
 def experiment_map():
     fig, ax = plt.subplots(figsize=(7.0, 2.30))
@@ -260,5 +187,4 @@ if __name__ == "__main__":
     overview()
     timeline()
     experiment_map()
-    method_state()
     print(f"wrote protocol figures under {OUT}")

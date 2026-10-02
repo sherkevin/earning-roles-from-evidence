@@ -200,12 +200,8 @@ def method_state():
     ax.text(0.65, 0.335, "eligible rows at read cut", fontsize=5.7, color=GREEN,
             ha="center", va="center", rotation=-8)
     arrow(ax, (0.78, 0.735), (0.89, 0.265), GREY, dashed=True, rad=-0.12)
-    # The update writes a future read-cut state; it never rewrites the sealed assignment.
-    y_next = 0.055
-    arrow(ax, (0.88, 0.115), (0.88, y_next), BLUE, dashed=True)
-    arrow(ax, (0.88, y_next), (0.475, y_next), BLUE, dashed=True)
-    arrow(ax, (0.475, y_next), (0.475, 0.115), BLUE, dashed=True)
-    ax.text(0.68, 0.074, "future read cut", fontsize=5.7, color=BLUE, ha="center", va="center")
+    arrow(ax, (0.88, 0.115), (0.75, 0.265), BLUE, dashed=True, rad=0.15)
+    ax.text(0.86, 0.29, "matching opportunity", fontsize=5.7, color=BLUE, ha="center", va="center")
     ax.text(0.56, 0.025,
             "only public rows before the read cut can affect selection; target outcomes arrive after the seal",
             fontsize=6.2, color=GREY, ha="center", va="bottom")
