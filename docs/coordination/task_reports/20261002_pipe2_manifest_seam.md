@@ -38,6 +38,14 @@ TeamBench pinned checkout，也不启动候选代码、LLM、GPU 或 native grad
 
 定向结果：`8 passed`。
 
+随后用 pinned TeamBench generator 的真实 bytes 做了一次临时 bundle round-trip，使用
+`valid_subset` 候选类型，仅选同一 schema family（`employees`，seed 0/5），避免在
+manifest 中虚构跨 schema 合并。`create_manifest → load_manifest → load_public_fixture`
+成功，public loader 只返回 seed 0 的 source/schema，expected path/digest/bytes 均未进入
+payload。回执保存在
+`experiments/logs/n03_pipe2_manifest_actual_bundle_20261002_v1/{preflight.json,summary.json}`；
+临时 bundle 已删除，`benchmark_qualified=false`、`scientific_claim_allowed=false`。
+
 ## 边界
 
 此 seam 没有把任何 derived fixture、valid subset 或 manifest 升格为 benchmark，也没有
