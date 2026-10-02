@@ -84,7 +84,7 @@ def run(out_dir: Path, seeds: list[int]) -> dict:
             "event_types": [
                 "peer_selection", "task_start", "producer_delivery", "producer_score",
                 "recipient_judgment", "consumer_action", "terminal_outcome",
-                "role_evidence_update", "later_assignment", "selection", "task_start",
+                "role_evidence_update", "later_assignment", "peer_selection", "task_start",
             ],
         },
         "repair": {
@@ -104,6 +104,10 @@ def run(out_dir: Path, seeds: list[int]) -> dict:
             "assignment_recorded": False,
             "next_selection_recorded": False,
             "event_count": 7,
+            "event_types": [
+                "peer_selection", "task_start", "producer_delivery", "producer_score",
+                "recipient_judgment", "consumer_action", "terminal_outcome",
+            ],
         },
     }
     rows: list[dict] = []
