@@ -36,9 +36,10 @@
 - `v4_method_state_added_20261002`：加入方法内部结构图；
 - `v5_method_readability_20261002`：增大方法图正文标签、缩短长标题并把 after-seal 语义放入节点。
 - `v6_update_to_future_read_cut_20261002`：根据故事线终审修正方法图的关键时序语义；selected-only update 的蓝色虚线现在真正回到 **future read cut**，不再指向已经封存的 assignment。
+- `v7_future_target_semantics_20261002`：把 recipient judgment 到 target outcome 改成灰色虚线的 **after seal** 关系，避免读者把目标结果误读成判断的直接后果；v6 仍完整保留。
 - `20261002_v1/`, `20261002_v2_candidate/`, `20261002_v3_candidate/`：独立协作者生成的未选中候选，保留 PDF 与说明供后续复核。
 
-最终正文选择 v6 的方法图与 v3 的闭环/实验图视觉方案。所有 PDF 都由 `scripts/build_aamas_figures.py` 重新生成；`pdffonts` 已确认嵌入 CID TrueType，未使用 Type 3 字体。
+最终正文选择 v7 的方法图与 v3 的闭环/实验图视觉方案。所有 PDF 都由 `scripts/build_aamas_figures.py` 重新生成；`pdffonts` 已确认嵌入 CID TrueType，未使用 Type 3 字体。
 
 ## 排版验证
 

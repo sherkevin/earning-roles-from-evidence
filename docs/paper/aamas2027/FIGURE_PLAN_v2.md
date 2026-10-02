@@ -1,6 +1,6 @@
 # AAMAS Figure Plan v2 — active
 
-更新时间：2026-10-02（v6 语义修订）
+更新时间：2026-10-02（v7 语义修订）
 
 本版本吸收了故事线审查和视觉审查。v1 保留为历史计划；本文件是当前有效的正文图配置。
 
@@ -21,14 +21,15 @@ Figure 2 需要回答审稿人的核心问题：判断如何成为角色证据�
 - **Local decision**：local peers、read-cut state、sealed assignment、selected-only update。
 
 跨泳道箭头只表示合法的数据关系：判断进入 projection，eligible public rows 进入 read-cut state，after-seal outcome 进入 matching opportunity。Representation/updater 画成可替换接口，不画成已确定的 backbone。
-selected-only update 的回写箭头必须落在 **future read-cut state**；它不能回写已经 sealed 的 assignment。当前实现与版本快照为 `v6_update_to_future_read_cut_20261002`。
+selected-only update 的回写箭头必须落在 **future read-cut state**；它不能回写已经 sealed 的 assignment。当前实现与版本快照为 `v7_future_target_semantics_20261002`。
+recipient judgment 到 target outcome 是灰色虚线的 **after seal** 时间关系，不表示判断直接导致结果；目标结果只能在 assignment 封存后到达。
 
 ## 验收要求
 
 - 一句话测试：只看图和 caption，能说出“recipient judgment → responsibility gate → public evidence → later assignment → unseen outcome → delayed credit”。
 - 30 秒测试：能区分 observed episode、public state、future decision 和 delayed feedback。
 - 版式测试：全宽图约 7in，嵌入 TrueType，灰度仍可读，正文标签不小于约 7pt；不出现越界、交叉穿框或未经验证数字。
-- 版本测试：v0、v1、v2、v3、v4、v5、v6 的 PDF、脚本和评审记录全部保留，不能覆盖历史版本。
+- 版本测试：v0、v1、v2、v3、v4、v5、v6、v7 的 PDF、脚本和评审记录全部保留，不能覆盖历史版本。
 
 ## 结果图预留
 
