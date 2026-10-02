@@ -612,6 +612,10 @@ cell, LLM/API call, GPU job or scientific claim has been enabled.
 
 An independent parity review found a false-pass path: non-terminal arms could receive the runner's fixed terminal-outcome event while the receipt checked only delayed-credit commitment. The v1.3 gate now requires an actual policy update whenever an arm declares an accepted feedback source; a contextual-trust arm receiving the terminal event is preserved as `UNKNOWN`. A zero-call evidence-content mutation audit further shows that the current hand-authored overlay leaves the selected candidate unchanged, so evidence consumption is not yet identifiable. This is a contract repair and negative audit, not a baseline or efficacy result. Per-arm public feedback adapters, independent root and live histories remain open.
 
+### 2026-10-02 stateless role-evidence assignment scorer
+
+The assistant added an opt-in `role-evidence-judgment-beta-v1` assignment comparator. It aggregates only read-cut-visible public recipient judgments with a frozen `accept=1`, `accept_with_rework=.5`, `reject_redo=0` mapping and a Beta(1,1) overlay; terminal quality, producer scores and later outcomes are excluded, and no persistent policy state is changed. Nine targeted tests pass, including judgment-versus-quality mutations. This is an assignment-side comparator seam, not a locked method, live baseline, or scientific result.
+
 ### 2026-09-28 baseline bridge audit
 
 The frozen N02 v3 ledger was checked for lossless mapping into the new policy

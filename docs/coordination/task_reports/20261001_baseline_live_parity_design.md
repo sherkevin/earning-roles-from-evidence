@@ -107,3 +107,9 @@ decision-digest mutation。因此当前 composition 只证明 lineage、assignme
 和 delayed-credit seam，不能证明 selector 消费 evidence，也不能宣称 update-to-choice
 因果效果。七 arm live parity 必须先完成每 arm 的合法 public feedback adapter 与
 evidence-consumption mutation test。
+
+2026-10-02 已新增一个不改变持久 policy 的 assignment-side comparator
+`role-evidence-judgment-beta-v1`：它只聚合 read-cut 前的 public recipient judgment，以
+Beta(1,1) 和 `accept=1 / accept_with_rework=.5 / reject_redo=0` 生成 overlay score。该
+comparator 目前只完成定向测试，尚未接入七 arm runner；它不能替代 raw-acceptance projection、
+terminal-only channel、独立 live history 或 B/C evidence decision-mutation gate。

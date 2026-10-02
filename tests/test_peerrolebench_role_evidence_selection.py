@@ -22,6 +22,7 @@ from peerrolebench_role_evidence_offer import (  # noqa: E402
 from peerrolebench_role_evidence_selection import (  # noqa: E402
     commit_role_evidence_selection, preview_role_evidence_selection,
 )
+from peerrolebench_role_evidence_scorer import score_role_evidence  # noqa: E402
 
 
 DIGEST = "a" * 64
@@ -123,7 +124,7 @@ def test_evidence_content_mutation_does_not_change_hand_authored_overlay_choice(
     """The current seam must expose this gap instead of claiming evidence use."""
     boundary = Pipe3SelectionBoundary(ContextualTrustPolicy(), registry())
     role_offer, feedback_offer = _source(boundary)
-    common = _common()
+    common = _common(rng=np.random.default_rng(7))
     first = preview_role_evidence_selection(
         boundary, role_offer=role_offer, feedback_offer=feedback_offer,
         assignment_id="as-evidence-0", native_selection_id="s-evidence-0", **common,
@@ -131,7 +132,7 @@ def test_evidence_content_mutation_does_not_change_hand_authored_overlay_choice(
     row = PublicRoleEvidence(**dict(role_offer.public_evidence[0]))
     mutated_row = replace(row, quality_score=0.0)
     mutated_offer = make_role_evidence_offer(
-        offer_id="role-offer-mutated", task_id=role_offer.task_id,
+        offer_id=role_offer.offer_id, task_id=role_offer.task_id,
         task_index=role_offer.task_index, role=role_offer.role,
         context_key=role_offer.context_key, candidate_keys=role_offer.candidate_keys,
         evidence=(mutated_row,), evidence_version=role_offer.evidence_version,
@@ -140,10 +141,45 @@ def test_evidence_content_mutation_does_not_change_hand_authored_overlay_choice(
     )
     second = preview_role_evidence_selection(
         boundary, role_offer=mutated_offer, feedback_offer=feedback_offer,
-        assignment_id="as-evidence-1", native_selection_id="s-evidence-1", **common,
+        assignment_id="as-evidence-0", native_selection_id="s-evidence-0",
+        **_common(rng=np.random.default_rng(7)),
     )
     assert first.assigned_agent_id == second.assigned_agent_id == "peer-b"
     assert first.selection.chosen_index == second.selection.chosen_index
     assert first.selection.probabilities == second.selection.probabilities
     assert first.role_offer_digest != second.role_offer_digest
     assert first.overlay_input_digest != second.overlay_input_digest
+
+
+def test_judgment_score_changes_but_quality_score_is_not_read():
+    boundary = Pipe3SelectionBoundary(ContextualTrustPolicy(), registry())
+    role_offer, _ = _source(boundary)
+    base = (0.0, 0.0)
+    original = score_role_evidence(role_offer, base_scores=base, read_cut=1)
+    original_row = PublicRoleEvidence(**dict(role_offer.public_evidence[0]))
+    judgment_changed = make_role_evidence_offer(
+        offer_id=role_offer.offer_id, task_id=role_offer.task_id,
+        task_index=role_offer.task_index, role=role_offer.role,
+        context_key=role_offer.context_key, candidate_keys=role_offer.candidate_keys,
+        evidence=(replace(original_row, judgment="reject_redo"),),
+        evidence_version=role_offer.evidence_version,
+        available_index=role_offer.available_index,
+        candidate_registry_digest=role_offer.candidate_registry_digest,
+    )
+    quality_changed = make_role_evidence_offer(
+        offer_id=role_offer.offer_id, task_id=role_offer.task_id,
+        task_index=role_offer.task_index, role=role_offer.role,
+        context_key=role_offer.context_key, candidate_keys=role_offer.candidate_keys,
+        evidence=(replace(original_row, quality_score=0.0),),
+        evidence_version=role_offer.evidence_version,
+        available_index=role_offer.available_index,
+        candidate_registry_digest=role_offer.candidate_registry_digest,
+    )
+    changed = score_role_evidence(judgment_changed, base_scores=base, read_cut=1)
+    unchanged = score_role_evidence(quality_changed, base_scores=base, read_cut=1)
+    assert original.posterior_means == (0.5, 0.5)
+    assert changed.posterior_means[0] == 1.0 / 3.0
+    assert changed.scores != original.scores
+    assert changed.input_digest != original.input_digest
+    assert unchanged.scores == original.scores
+    assert unchanged.input_digest == original.input_digest

@@ -54,3 +54,25 @@ root 均通过 replay；runner 报告 `QUALIFIED_OFFLINE`、`contract_passed=tru
 不再重跑已经通过的 v1.2 local transport。先完成第二 root authority 的共同决策材料和
 baseline live-runner parity qualification；随后才提交一条有明确成本上限的真实 API 小流。
 在这些门通过前不启动 A800，也不修改 Goal 的标准或把 `QUALIFIED_OFFLINE` 写成科学效果。
+
+## 2026-10-02 反馈通道与 evidence-consumption 复核
+
+v1.3 的显式 policy factory 已经接入，但独立 parity review 发现两个不能忽略的识别问题：
+
+1. `credit_committed` 不能单独作为通过条件。当前 composition 固定构造
+   `terminal_outcome`；因此声明 `recipient_judgment` 或 `raw_acceptance` 的 arm 若没有实际
+   对应 update，必须是 `UNKNOWN`。这一点已由 contextual-trust 负向测试固定，历史回执不变。
+2. 当前 target selection 仍使用 hand-authored base-score overlay，role evidence 只检查
+   最终 selected candidate 有 published evidence。把同一 candidate 的 evidence
+   `quality_score` 从 1.0 改为 0.0，在 menu/base-score/RNG/state 全部不变时，chosen index 和
+   probabilities 不变。因此这条 composition 只能证明 lineage 和 assignment 顺序，不能证明
+   selector 消费 evidence，更不能识别 update→future choice 的效果。
+
+这两个问题没有降低任何验收标准；它们把 baseline live parity 的前置门收紧为“每个 arm 的
+合法 public feedback adapter + 可识别的 evidence-to-decision mutation”。详见
+[`PIPE3 feedback-channel gate`](20261002_pipe3_feedback_channel_gate.md)。三份科学 gate 仍为
+`NOT_READY`，不启动 live parity cell 或 A800。
+
+一个无状态 `role-evidence-judgment-beta-v1` assignment comparator 已作为可复用的 public
+judgment 输入适配器实现，但只完成离线定向测试。它不改变持久状态，也没有接入七 arm live
+runner；因此不能关闭同信息 baseline、独立 live history 或 evidence-to-decision 因果门。
