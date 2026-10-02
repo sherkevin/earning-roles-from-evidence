@@ -608,6 +608,10 @@ updates, instead of treating terminal-only's update requirement as universal. Th
 seam is covered by the full regression, but no seven-arm live runner, benchmark
 cell, LLM/API call, GPU job or scientific claim has been enabled.
 
+### 2026-10-02 PIPE3 feedback-channel gate
+
+An independent parity review found a false-pass path: non-terminal arms could receive the runner's fixed terminal-outcome event while the receipt checked only delayed-credit commitment. The v1.3 gate now requires an actual policy update whenever an arm declares an accepted feedback source; a contextual-trust arm receiving the terminal event is preserved as `UNKNOWN`. This is a zero-call contract repair, not a baseline or efficacy result. Evidence-consumption decision mutation, per-arm public feedback adapters, independent root and live histories remain open.
+
 ### 2026-09-28 baseline bridge audit
 
 The frozen N02 v3 ledger was checked for lossless mapping into the new policy

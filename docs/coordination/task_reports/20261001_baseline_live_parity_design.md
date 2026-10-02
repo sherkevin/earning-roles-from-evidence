@@ -91,3 +91,19 @@ timeout、不启动 A800。
 
 这份设计不替代第二 root authority。第二 root 未经确认前，只能在当前 PIPE3 上做 runner
 工程资格，不能把它写成 benchmark freeze 或论文科学结果。
+
+## v1.3 review correction — 2026-10-02
+
+独立 parity review 对 v1.3 seam 做了 P0 复核。当前 composition 的 later event 仍固定为
+`terminal_outcome`，而 `raw_acceptance`、`contextual_trust`、`pooled_controller` 和 `RARE`
+声明的 accepted source 不同；如果只检查 delayed credit，就会出现非本 arm 通道的假通过。
+因此 v1.3 现在要求声明了非空 accepted source 的 arm 必须有实际 policy update，否则为
+`UNKNOWN`。`no_update` 是唯一允许“credit committed、policy update 为零”的工程 negative
+control；这不代表它已经是科学 baseline。
+
+复核还确认，当前 qualification 使用 hand-authored base-score overlay，role evidence 仅
+检查最终 selected candidate 有 published evidence；没有 evidence mutation 导致的
+decision-digest mutation。因此当前 composition 只证明 lineage、assignment-before-task-start
+和 delayed-credit seam，不能证明 selector 消费 evidence，也不能宣称 update-to-choice
+因果效果。七 arm live parity 必须先完成每 arm 的合法 public feedback adapter 与
+evidence-consumption mutation test。

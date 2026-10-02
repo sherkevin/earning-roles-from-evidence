@@ -548,7 +548,11 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
     delayed = DelayedCreditLedger()
     credit_committed = False
     policy_update_applied = False
-    policy_update_expected = "terminal_outcome" in boundary.policy.accepted_sources
+    # Any non-empty declared source set means this arm expects its own public
+    # channel to change policy state.  The runner currently constructs only a
+    # terminal_outcome event, so non-terminal arms must remain UNKNOWN rather
+    # than silently inheriting the terminal channel.
+    policy_update_expected = bool(boundary.policy.accepted_sources)
     if credit is not None:
         selected = boundary.selections[f"policy-{plan.native_selection_id}"]
         quality = target["outcome"].get("quality_score")
@@ -576,9 +580,20 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
         "native_rows": len(boundary.native_manifest_rows),
         "auxiliary_rows": len(boundary.auxiliary_manifest_rows),
     })
-    summary = {**config, "status": "QUALIFIED_OFFLINE" if credit is not None and credit_committed else "UNKNOWN",
-               "passed": credit is not None and credit_committed,
-               "contract_passed": credit is not None and credit_committed, "source": source, "target": target,
+    # A delayed credit commit alone is not sufficient for an arm whose
+    # declared feedback channel should update policy state.  In particular,
+    # passing a recipient_judgment/raw_acceptance arm while constructing a
+    # terminal_outcome event would be a silent channel substitution.  Keep the
+    # receipt explicit and fail qualification until the adapter constructs the
+    # arm's declared public event.
+    feedback_contract_ok = (
+        credit is not None
+        and credit_committed
+        and (not policy_update_expected or policy_update_applied)
+    )
+    summary = {**config, "status": "QUALIFIED_OFFLINE" if feedback_contract_ok else "UNKNOWN",
+               "passed": feedback_contract_ok,
+               "contract_passed": feedback_contract_ok, "source": source, "target": target,
                "source_gate": gate.payload(), "role_offer": role_offer.payload(), "assignment_id": plan.assignment_id,
                "replay": replay.as_dict(), "credit": None if credit is None else credit.__dict__,
                "policy_updates": boundary.policy.updates, "policy_update_expected": policy_update_expected,
@@ -586,6 +601,7 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
                "delayed_credit_count": len(delayed.credits),
                "unknown_denominator": {"source_rows": 1, "unknown_rows": 0}, "ledger": boundary.ledger.events,
                "native_manifest_root": native_root, "auxiliary_manifest_root": auxiliary_root,
+               "feedback_contract_ok": feedback_contract_ok,
                "scientific_claim_allowed": False, "interpretation": "engineering comparator; overlay controls are hand-authored qualification values"}
     (out / "ledger.json").write_text(json.dumps(boundary.ledger.events, indent=2, default=str) + "\n", encoding="utf-8")
     (out / "summary.json").write_text(json.dumps(summary, indent=2, ensure_ascii=False, default=str) + "\n", encoding="utf-8")

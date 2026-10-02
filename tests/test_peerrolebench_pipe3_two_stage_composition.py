@@ -17,7 +17,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT / "references/aamas"))
 
 from peerrolebench_pipe3_two_stage_composition import _patch_producer, _prepare_case, run  # noqa: E402
-from peerrolebench_baseline_policies import NoUpdatePolicy, TerminalOnlyPolicy  # noqa: E402
+from peerrolebench_baseline_policies import NoUpdatePolicy, TerminalOnlyPolicy, policy_from_name  # noqa: E402
 from peerrolebench_pipe3_task_qualification import load_pipe3  # noqa: E402
 from peerrolebench_pipe3_material_adapter import build_materials  # noqa: E402
 
@@ -137,3 +137,19 @@ def test_no_update_policy_is_explicitly_not_counted_as_terminal_update_success(t
     assert producer["policy_update_expected"] is False
     assert producer["policy_update_applied"] is False
     assert producer["scientific_claim_allowed"] is False
+
+
+def test_declared_nonterminal_feedback_arm_cannot_pass_on_terminal_event(tmp_path: Path):
+    """A policy arm may not pass when the runner feeds it another channel."""
+    result = run(
+        tmp_path / "composition", scorer=_unit_scorer,
+        policy_factory=lambda name: policy_from_name(name),
+        policy_name="contextual_trust",
+    )
+    assert result["status"] == "UNKNOWN"
+    assert result["contract_passed"] is False
+    producer = next(case for case in result["cases"] if case.get("control") == "producer_owned")
+    assert producer["policy_update_expected"] is True
+    assert producer["policy_update_applied"] is False
+    assert producer["feedback_contract_ok"] is False
+    assert producer["status"] == "UNKNOWN"

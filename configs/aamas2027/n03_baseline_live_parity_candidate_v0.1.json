@@ -22,6 +22,43 @@
     "pooled_controller",
     "RARE"
   ],
+  "arm_semantics": {
+    "uniform": {
+      "accepted_feedback_sources": [],
+      "policy_update_expected": false,
+      "purpose": "fixed uniform lower bound"
+    },
+    "no_update": {
+      "accepted_feedback_sources": [],
+      "policy_update_expected": false,
+      "purpose": "frozen execution control"
+    },
+    "raw_acceptance": {
+      "accepted_feedback_sources": ["raw_acceptance"],
+      "policy_update_expected": true,
+      "purpose": "raw recipient accept/reject ablation"
+    },
+    "terminal_only": {
+      "accepted_feedback_sources": ["terminal_outcome"],
+      "policy_update_expected": true,
+      "purpose": "independent final-outcome control"
+    },
+    "contextual_trust": {
+      "accepted_feedback_sources": ["recipient_judgment"],
+      "policy_update_expected": true,
+      "purpose": "strong same-information contextual control"
+    },
+    "pooled_controller": {
+      "accepted_feedback_sources": ["recipient_judgment"],
+      "policy_update_expected": true,
+      "purpose": "shared-history upper-bound control"
+    },
+    "RARE": {
+      "accepted_feedback_sources": ["recipient_judgment"],
+      "policy_update_expected": true,
+      "purpose": "responsibility-aware candidate method"
+    }
+  },
   "closest_published": {
     "name": "Meta-Team-L2-public",
     "status": "BLOCKED_NO_GO",
@@ -53,8 +90,9 @@
   "continuation_requirement": "third pre-execution decision or equivalent receipt before claiming update_to_choice",
   "activation_blockers": [
     "second_root_authority_not_confirmed",
-    "policy_factory_injection_not_qualified",
+    "seven_arm_feedback_channel_adapters_not_qualified",
+    "role_evidence_consumption_decision_not_identified",
     "material/task/sandbox runtime digests not bound",
-    "live measured-cost gate not implemented"
+    "live measured-cost gate not integrated into runner"
   ]
 }
