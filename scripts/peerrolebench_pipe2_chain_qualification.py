@@ -131,6 +131,7 @@ def run(out_dir: Path, seeds: list[int]) -> dict:
                 "observed": observed,
                 "material_root_digest": result["material_root_digest"],
                 "ledger_event_digest": result["ledger_event_digest"],
+                "ledger_event_hashes": result["ledger_event_hashes"],
                 "passed": passed,
             }
             rows.append(row)

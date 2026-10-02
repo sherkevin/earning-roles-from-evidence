@@ -20,9 +20,11 @@ selection → task_start → delivery → producer score → recipient judgment
 两者都停止在 gate，不写 producer evidence，不改变后续 policy。
 
 新增 `scripts/peerrolebench_pipe2_chain_qualification.py`，在 5 个材料等价类、3
-种责任控制上写出 config、append-only raw JSONL、summary 和 ledger event digest。
-首次 v1 的 event-count 合约错误（将未追加 evidence 的控制写成 8 而非 7）原样保留；
-修正后 v2 重新执行，未覆盖 v1。
+种责任控制上写出 config、append-only raw JSONL、summary、源码 SHA256、实际 argv、
+事件类型序列和逐事件 record hash。首次 v1 的 event-count 合约错误（将未追加
+evidence 的控制写成 8 而非 7）原样保留；v2 在源码尚未提交时通过但不作为最终
+provenance receipt；v3 暴露事件类型合约漏项并保留；提交 provenance 修复后用 v4
+重新执行。
 
 ## 证据
 
@@ -30,11 +32,12 @@ selection → task_start → delivery → producer score → recipient judgment
 
 ```bash
 python3 scripts/peerrolebench_pipe2_chain_qualification.py \
-  --output experiments/logs/n03_pipe2_chain_qualification_20261003_v2 \
+  --output experiments/logs/n03_pipe2_chain_qualification_20261003_v4 \
   --seeds 0 1 2 3 4
 ```
 
-结果：`QUALIFIED_OFFLINE`，15/15 authored controls 通过；0 candidate code、0
+结果：`QUALIFIED_OFFLINE`，15/15 authored controls 通过；v4 config 的 `git_commit`
+与源码 SHA256 对应已提交版本，并保留完整事件序列与逐事件 hash；0 candidate code、0
 LLM/API、0 GPU、0 native grader。测试覆盖链组合 3 项；与派生材料、责任 gate、
 manifest、shape/runtime qualification 的定向集合合计 37 项通过（具体命令和原始
 日志保留在仓库）。
