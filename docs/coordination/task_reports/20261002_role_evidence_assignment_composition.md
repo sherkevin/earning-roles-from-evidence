@@ -9,7 +9,7 @@
 PIPE3 two-stage canonical composition。默认 `hand_authored` 路径保持不变；新路径在
 同一个 source-bound `RoleEvidenceOffer` 上先计算公共 judgment score，再执行既有的
 isolated read → `LaterAssignment` → exact selection commit。runner 版本从 v1.3 升到
-`pipe3-two-stage-composition-v1.5`，并把 scorer 源码 hash 与 score `input_digest`
+`pipe3-two-stage-composition-v1.6`，并把 scorer 源码 hash 与 score `input_digest`
 写入回执，避免新旧语义共用一个版本号。
 
 public-judgment 模式使用中性 base score；另有显式的 `public_judgment_fixture` sensitivity
@@ -23,8 +23,10 @@ public-judgment 模式使用中性 base score；另有显式的 `public_judgment
   [`n03_role_evidence_assignment_composition_20261002_v2`](../../../experiments/logs/n03_role_evidence_assignment_composition_20261002_v2/)，不能替代后续版本；
 - v3 是 v1.4 版本化后的历史回执：
   [`n03_role_evidence_assignment_composition_20261002_v3`](../../../experiments/logs/n03_role_evidence_assignment_composition_20261002_v3/)；
-- v4 是 v1.5 sensitivity fixture 的当前主回执，将记录非零 judgment→score delta：
+- v4 是 v1.5 sensitivity fixture 的历史回执，将记录非零 judgment→score delta：
   [`n03_role_evidence_assignment_composition_20261002_v4`](../../../experiments/logs/n03_role_evidence_assignment_composition_20261002_v4/)；
+- v5 是 v1.6 `contextual_trust` feedback-channel qualification：
+  [`n03_role_evidence_assignment_composition_20261002_v5`](../../../experiments/logs/n03_role_evidence_assignment_composition_20261002_v5/)；
 - `producer_owned`：`QUALIFIED_OFFLINE`，完成 source evidence、isolated public read、
   assignment-before-selection、target execution 和 delayed terminal update；
 - `recipient_owned` / `mixed`：`UNKNOWN`，责任门拒绝伪造 producer evidence、assignment
@@ -45,6 +47,11 @@ public-judgment 模式使用中性 base score；另有显式的 `public_judgment
 v1.5 移除 public 模式的 base 偏置并加入显式 sensitivity fixture。另一个负向测试发现
 同一 delivery 的重复 evidence 没有 correction lineage 会被 scorer 双计；现在 scorer 直接
 拒绝这类 offer，等待带有明确 supersession 语义的后续 schema。
+
+v1.6 将 `recipient_judgment` 接入 delayed update：`contextual_trust` 与
+`pooled_controller` 读取 target episode 的公开 judgment，`terminal_only` 继续读取 terminal
+outcome；`raw_acceptance` 没有独立 projection 时保持 `UNKNOWN`，不把 terminal label 冒充
+raw acceptance。这关闭了一个 baseline channel 错配，但不等于七 arm parity 已完成。
 
 ## 这条证据支持什么
 

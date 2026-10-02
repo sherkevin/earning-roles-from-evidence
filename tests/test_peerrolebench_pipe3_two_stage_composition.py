@@ -114,7 +114,7 @@ def test_policy_factory_is_explicit_and_default_behavior_remains_terminal_only(t
     assert result["status"] == "QUALIFIED_OFFLINE"
     assert calls == ["terminal_only", "terminal_only", "terminal_only"]
     assert all(case["policy"] == "terminal_only" for case in result["cases"])
-    assert all(case["version"] == "pipe3-two-stage-composition-v1.5" for case in result["cases"])
+    assert all(case["version"] == "pipe3-two-stage-composition-v1.6" for case in result["cases"])
 
 
 def test_no_update_policy_is_explicitly_not_counted_as_terminal_update_success(tmp_path: Path):
@@ -139,20 +139,36 @@ def test_no_update_policy_is_explicitly_not_counted_as_terminal_update_success(t
     assert producer["scientific_claim_allowed"] is False
 
 
-def test_declared_nonterminal_feedback_arm_cannot_pass_on_terminal_event(tmp_path: Path):
-    """A policy arm may not pass when the runner feeds it another channel."""
+def test_recipient_judgment_arm_uses_its_declared_feedback_channel(tmp_path: Path):
+    """Contextual trust consumes target recipient judgment, not terminal quality."""
     result = run(
         tmp_path / "composition", scorer=_unit_scorer,
         policy_factory=lambda name: policy_from_name(name),
         policy_name="contextual_trust",
     )
+    assert result["status"] == "QUALIFIED_OFFLINE"
+    assert result["contract_passed"] is True
+    producer = next(case for case in result["cases"] if case.get("control") == "producer_owned")
+    assert producer["policy_update_expected"] is True
+    assert producer["policy_update_applied"] is True
+    assert producer["feedback_contract_ok"] is True
+    assert producer["status"] == "QUALIFIED_OFFLINE"
+    rows = [json.loads(line) for line in (tmp_path / "composition" / "producer_owned" / "raw.jsonl").read_text().splitlines()]
+    delayed = next(row["payload"] for row in rows if row["event"] == "delayed_update")
+    assert delayed["feedback_source"] == "recipient_judgment"
+
+
+def test_raw_acceptance_arm_stays_unknown_without_raw_projection(tmp_path: Path):
+    result = run(
+        tmp_path / "composition", scorer=_unit_scorer,
+        policy_factory=lambda name: policy_from_name(name),
+        policy_name="raw_acceptance",
+    )
     assert result["status"] == "UNKNOWN"
-    assert result["contract_passed"] is False
     producer = next(case for case in result["cases"] if case.get("control") == "producer_owned")
     assert producer["policy_update_expected"] is True
     assert producer["policy_update_applied"] is False
     assert producer["feedback_contract_ok"] is False
-    assert producer["status"] == "UNKNOWN"
 
 
 def test_public_judgment_assignment_mode_reaches_canonical_composition(tmp_path: Path):

@@ -646,6 +646,15 @@ without correction lineage, rather than double-counting it. These are zero-call
 engineering qualifications; native judgment, live baseline parity, and
 scientific efficacy remain unclaimed.
 
+### 2026-10-02 recipient-judgment baseline channel
+
+Composition v1.6 now routes `contextual_trust` and `pooled_controller` delayed
+updates through the target episode's public recipient judgment, while
+`terminal_only` retains the terminal-outcome channel. `raw_acceptance` remains
+`UNKNOWN` without an independent raw projection. The v5 receipt records this
+channel-specific qualification; seven-arm parity and scientific results remain
+open.
+
 ### 2026-09-28 baseline bridge audit
 
 The frozen N02 v3 ledger was checked for lossless mapping into the new policy

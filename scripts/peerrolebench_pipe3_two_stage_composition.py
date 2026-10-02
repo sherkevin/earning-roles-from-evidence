@@ -48,7 +48,7 @@ from peerrolebench_role_evidence_selection import (  # noqa: E402
     commit_role_evidence_selection, preview_role_evidence_selection,
     preview_role_evidence_selection_with_public_judgment,
 )
-from peerrolebench_role_evidence_scorer import RoleEvidenceScoreConfig  # noqa: E402
+from peerrolebench_role_evidence_scorer import JUDGMENT_LABELS, RoleEvidenceScoreConfig  # noqa: E402
 from peerrolebench_isolated_policy_read import read_role_evidence_offer_isolated  # noqa: E402
 from peerrolebench_two_stage_gate import (  # noqa: E402
     DelayedCreditLedger, derive_later_credit_from_ledger, evaluate_source_gate,
@@ -56,7 +56,7 @@ from peerrolebench_two_stage_gate import (  # noqa: E402
 
 
 TASK_ID = "PIPE3_stream_processing"
-VERSION = "pipe3-two-stage-composition-v1.5"
+VERSION = "pipe3-two-stage-composition-v1.6"
 CONTROLS = ("producer_owned", "recipient_owned", "mixed")
 CandidateScorer = Callable[[str, Mapping[str, str], Mapping[str, str], Path, Path, int], dict[str, Any]]
 PolicyFactory = Callable[[str], BaselinePolicy]
@@ -292,8 +292,9 @@ def _record_episode(*, boundary: Pipe3SelectionBoundary, materials: dict[str, An
         producer.get("response_digest", _digest(producer)), producer.get("coverage_complete") is True,
         producer.get("decision_complete") is True,
     ))
+    judgment = "accept_with_rework"
     boundary.ledger.record_judgment(RecipientJudgment(
-        f"{control}-judgment-{index}", delivery_id, "peer-a", "accept_with_rework", delivery_digest,
+        f"{control}-judgment-{index}", delivery_id, "peer-a", judgment, delivery_digest,
         repair_note=f"{VERSION}:{control}",
     ))
     action_payload = prepare_pipe3_action(
@@ -341,7 +342,7 @@ def _record_episode(*, boundary: Pipe3SelectionBoundary, materials: dict[str, An
             "producer_defect_registered": producer.get("status") == "FAIL" and producer.get("label") == 0,
             "producer": producer,
             "scores_before": scores_before, "scores_after": scores_after,
-            "action": action_result, "outcome": outcome_payload, "eligibility": eligibility,
+            "action": action_result, "judgment": judgment, "outcome": outcome_payload, "eligibility": eligibility,
             "index": index}
 
 
@@ -597,29 +598,48 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
     credit_committed = False
     policy_update_applied = False
     # Any non-empty declared source set means this arm expects its own public
-    # channel to change policy state.  The runner currently constructs only a
-    # terminal_outcome event, so non-terminal arms must remain UNKNOWN rather
-    # than silently inheriting the terminal channel.
+    # channel to change policy state.  Build the channel from the target
+    # episode; never relabel terminal quality as raw acceptance or judgment.
     policy_update_expected = bool(boundary.policy.accepted_sources)
     if credit is not None:
         selected = boundary.selections[f"policy-{plan.native_selection_id}"]
-        quality = target["outcome"].get("quality_score")
-        feedback = Feedback(
-            feedback_id=f"later-feedback-{control}", source_event_id=selected.event_id,
-            source="terminal_outcome", label=None if quality is None else float(quality),
-            arrived_at=2.0, delay=1.0, action="repair", disposition="eligible", provenance="public", arrival_index=2,
-        )
+        feedback = None
+        feedback_source = None
+        if "recipient_judgment" in boundary.policy.accepted_sources:
+            judgment = str(target.get("judgment", ""))
+            if judgment not in JUDGMENT_LABELS:
+                raise ValueError(f"unsupported target recipient judgment={judgment!r}")
+            feedback_source = "recipient_judgment"
+            feedback = Feedback(
+                feedback_id=f"later-feedback-{control}", source_event_id=selected.event_id,
+                source=feedback_source, label=float(JUDGMENT_LABELS[judgment]),
+                arrived_at=2.0, delay=1.0, action="repair", disposition="eligible", provenance="public", arrival_index=2,
+            )
+        elif "terminal_outcome" in boundary.policy.accepted_sources:
+            quality = target["outcome"].get("quality_score")
+            feedback_source = "terminal_outcome"
+            feedback = Feedback(
+                feedback_id=f"later-feedback-{control}", source_event_id=selected.event_id,
+                source=feedback_source, label=None if quality is None else float(quality),
+                arrived_at=2.0, delay=1.0, action="repair", disposition="eligible", provenance="public", arrival_index=2,
+            )
         before = deepcopy(boundary.policy.__dict__)
         before_updates = boundary.policy.updates
-        credit_committed = delayed.apply_once(credit, lambda _: boundary.policy.observe_feedback(feedback),
-                                              snapshot=lambda: deepcopy(boundary.policy.__dict__),
-                                              restore=lambda state: (boundary.policy.__dict__.clear(), boundary.policy.__dict__.update(state)))
+        def apply_feedback(_: Any) -> bool:
+            if feedback is None:
+                return False
+            return boundary.policy.observe_feedback(feedback)
+        credit_committed = delayed.apply_once(
+            credit, apply_feedback,
+            snapshot=lambda: deepcopy(boundary.policy.__dict__),
+            restore=lambda state: (boundary.policy.__dict__.clear(), boundary.policy.__dict__.update(state)),
+        )
         policy_update_applied = boundary.policy.updates > before_updates
         _log(raw, "delayed_update", {"credit_committed": credit_committed,
                                       "policy_update_applied": policy_update_applied,
                                       "policy_update_expected": policy_update_expected,
                                       "credit": credit.__dict__, "source_event_id": selected.event_id,
-                                      "feedback_source": feedback.source,
+                                      "feedback_source": feedback_source,
                                       "policy_updates": boundary.policy.updates, "before_state_digest": _digest(before),
                                       "after_state_digest": _digest(boundary.policy.__dict__)})
     native_root, auxiliary_root = boundary.validate_selection_manifests()
