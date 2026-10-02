@@ -16,6 +16,7 @@ from peerrolebench_pipe2_material_adapter_v2 import TEAMBENCH_COMMIT, load_pipe2
 
 ROOT = Path(__file__).resolve().parents[1]
 RUNNER_VERSION = "pipe2-fixture-shape-audit-v2"
+MATERIAL_ROOT_DIGEST = None
 
 
 def errors(text: str, columns: list[str]) -> list[dict[str, object]]:
@@ -60,6 +61,7 @@ def run(out_dir: Path, seeds: list[int]) -> dict:
               "source_commit_matches_expected": source_commit == TEAMBENCH_COMMIT,
               "source_worktree_dirty": bool(source_status),
               "generator_sha256": hashlib.sha256(generator.read_bytes()).hexdigest(),
+              "material_root_digest": MATERIAL_ROOT_DIGEST,
               "registry_sha256": hashlib.sha256(registry.read_bytes()).hexdigest(),
               "git_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
               "llm_calls": 0, "gpu_jobs": 0, "candidate_code_executed": False,

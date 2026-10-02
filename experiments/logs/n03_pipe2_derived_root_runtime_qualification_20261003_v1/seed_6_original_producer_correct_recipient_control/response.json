@@ -1,0 +1,70 @@
+{
+  "request": {
+    "op": "transform_load",
+    "artifact": {
+      "schema": "pipe2-extracted-rows-v1",
+      "columns": [
+        "product_id",
+        "product_name",
+        "category",
+        "description"
+      ],
+      "row_count": 3,
+      "rows": [
+        {
+          "product_id": "101",
+          "product_name": "Widget Pro",
+          "category": "Electronics",
+          "description": "Professional-grade widget with advanced features including wireless connectivity and real-time monitoring"
+        },
+        {
+          "product_id": "103",
+          "product_name": "Tool Kit",
+          "category": "Hardware",
+          "description": "Complete toolkit for home improvement containing over fifty individual precision-crafted tools for every occasion"
+        },
+        {
+          "product_id": "106",
+          "product_name": "Monitor Stand",
+          "category": "Furniture",
+          "description": "Ergonomic adjustable monitor stand designed for dual-monitor setups with integrated cable management system"
+        }
+      ],
+      "artifact_sha256": "c245e116571bd55a253ec26f708f29bf447c93b3d5ad777329de47156dbb8441"
+    }
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "output_csv": "product_id,product_name,category,description\n101,Widget Pro,Electronics,Professional-grade widget with advanced features including wireless connectivity and real-time monitoring\n103,Tool Kit,Hardware,Complete toolkit for home improvement containing over fifty individual precision-crafted tools for every occasion\n106,Monitor Stand,Furniture,Ergonomic adjustable monitor stand designed for dual-monitor setups with integrated cable management system\n",
+      "parsed_rows": [
+        {
+          "product_id": "101",
+          "product_name": "Widget Pro",
+          "category": "Electronics",
+          "description": "Professional-grade widget with advanced features including wireless connectivity and real-time monitoring"
+        },
+        {
+          "product_id": "103",
+          "product_name": "Tool Kit",
+          "category": "Hardware",
+          "description": "Complete toolkit for home improvement containing over fifty individual precision-crafted tools for every occasion"
+        },
+        {
+          "product_id": "106",
+          "product_name": "Monitor Stand",
+          "category": "Furniture",
+          "description": "Ergonomic adjustable monitor stand designed for dual-monitor setups with integrated cable management system"
+        }
+      ],
+      "source_paths": [
+        "pipeline/transform.py",
+        "pipeline/load.py"
+      ]
+    }
+  },
+  "transport": {
+    "status": "complete"
+  },
+  "response_digest": "49dcbe80aa859824a050b84ef003fddfa56952b8a85f122a1da05d829532536d"
+}

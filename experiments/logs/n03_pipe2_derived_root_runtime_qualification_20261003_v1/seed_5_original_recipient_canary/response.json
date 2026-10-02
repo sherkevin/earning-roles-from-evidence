@@ -1,0 +1,58 @@
+{
+  "request": {
+    "op": "transform_load",
+    "artifact": {
+      "schema": "pipe2-extracted-rows-v1",
+      "columns": [
+        "emp_id",
+        "full_name",
+        "department",
+        "notes"
+      ],
+      "row_count": 2,
+      "rows": [
+        {
+          "emp_id": "v-5-0-emp_id",
+          "full_name": " canary-5-0 ",
+          "department": "v-5-0-department",
+          "notes": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {
+          "emp_id": "",
+          "full_name": "canary-5-1",
+          "department": "",
+          "notes": ""
+        }
+      ],
+      "artifact_sha256": "d8b5fa371d076576ce90ac85cfa6d767442fbee401dbeac6fd9b27d9ac25f56e"
+    }
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "output_csv": "emp_id,department,full_name,notes\nv-5-0-emp_id,v-5-0-department,canary-5-0,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,,canary-5-1,\n",
+      "parsed_rows": [
+        {
+          "emp_id": "v-5-0-emp_id",
+          "department": "v-5-0-department",
+          "full_name": "canary-5-0",
+          "notes": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {
+          "emp_id": "",
+          "department": "",
+          "full_name": "canary-5-1",
+          "notes": ""
+        }
+      ],
+      "source_paths": [
+        "pipeline/transform.py",
+        "pipeline/load.py"
+      ]
+    }
+  },
+  "transport": {
+    "status": "complete"
+  },
+  "response_digest": "b3b23cdf2ce02ff99c757b665111c2bb1cf826e495fd9ac25173bf4b6e37f07c"
+}

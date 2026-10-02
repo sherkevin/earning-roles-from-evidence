@@ -1,0 +1,70 @@
+{
+  "request": {
+    "op": "transform_load",
+    "artifact": {
+      "schema": "pipe2-extracted-rows-v1",
+      "columns": [
+        "customer_id",
+        "contact_name",
+        "region",
+        "preferences"
+      ],
+      "row_count": 3,
+      "rows": [
+        {
+          "customer_id": "201",
+          "contact_name": "Diana Prince",
+          "region": "North America",
+          "preferences": "Prefers email communication; interested in enterprise solutions with dedicated account management and support"
+        },
+        {
+          "customer_id": "203",
+          "contact_name": "Bruce Wayne",
+          "region": "North America",
+          "preferences": "VIP customer requiring white-glove service with quarterly business reviews and custom reporting dashboards"
+        },
+        {
+          "customer_id": "206",
+          "contact_name": "Steve Rogers",
+          "region": "South America",
+          "preferences": "Long-term customer since founding; requires bilingual support staff and documentation in English and Portuguese"
+        }
+      ],
+      "artifact_sha256": "3f78d084309f56a62e560d2a6aeeed4f94704a16558e8122788ce999a0e0601e"
+    }
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "output_csv": "customer_id,region,contact_name,preferences\n201,North America,Diana Prince,Prefers email communication; interested in enterpr\n203,North America,Bruce Wayne,VIP customer requiring white-glove service with qu\n206,South America,Steve Rogers,Long-term customer since founding; requires biling\n",
+      "parsed_rows": [
+        {
+          "customer_id": "201",
+          "region": "North America",
+          "contact_name": "Diana Prince",
+          "preferences": "Prefers email communication; interested in enterpr"
+        },
+        {
+          "customer_id": "203",
+          "region": "North America",
+          "contact_name": "Bruce Wayne",
+          "preferences": "VIP customer requiring white-glove service with qu"
+        },
+        {
+          "customer_id": "206",
+          "region": "South America",
+          "contact_name": "Steve Rogers",
+          "preferences": "Long-term customer since founding; requires biling"
+        }
+      ],
+      "source_paths": [
+        "pipeline/transform.py",
+        "pipeline/load.py"
+      ]
+    }
+  },
+  "transport": {
+    "status": "complete"
+  },
+  "response_digest": "e92f907b787dbd6bb6741e4e7e7424162cfe1918d8d4ab9e4ab5a215008e5e57"
+}

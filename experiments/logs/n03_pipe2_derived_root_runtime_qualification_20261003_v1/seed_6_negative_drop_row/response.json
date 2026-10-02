@@ -1,0 +1,100 @@
+{
+  "request": {
+    "op": "transform_load",
+    "artifact": {
+      "schema": "pipe2-extracted-rows-v1",
+      "columns": [
+        "product_id",
+        "product_name",
+        "category",
+        "description"
+      ],
+      "row_count": 6,
+      "rows": [
+        {
+          "product_id": "101",
+          "product_name": "Widget Pro",
+          "category": "Electronics",
+          "description": "Professional-grade widget with advanced features including wireless connectivity and real-time monitoring"
+        },
+        {
+          "product_id": "102",
+          "product_name": "Gadget X",
+          "category": "Electronics",
+          "description": ""
+        },
+        {
+          "product_id": "103",
+          "product_name": "Tool Kit",
+          "category": "Hardware",
+          "description": "Complete toolkit for home improvement containing over fifty individual precision-crafted tools for every occasion"
+        },
+        {
+          "product_id": "105",
+          "product_name": "Cable Set",
+          "category": "",
+          "description": "High-quality cable set compatible with all major devices; includes USB-C, Lightning, and micro-USB connectors"
+        },
+        {
+          "product_id": "106",
+          "product_name": "Monitor Stand",
+          "category": "Furniture",
+          "description": "Ergonomic adjustable monitor stand designed for dual-monitor setups with integrated cable management system"
+        },
+        {
+          "product_id": "107",
+          "product_name": "Keyboard",
+          "category": "Electronics",
+          "description": ""
+        }
+      ],
+      "artifact_sha256": "ff22394af4f3dfbddffc3d0b0a39163099d53dbdfe3e00cc52e9ec5c479f1b88"
+    }
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "output_csv": "product_id,product_name,category,description\n101,Widget Pro,Electronics,Professional-grade widget with advanced features including wireless connectivity and real-time monitoring\n102,Gadget X,Electronics,\n103,Tool Kit,Hardware,Complete toolkit for home improvement containing over fifty individual precision-crafted tools for every occasion\n105,Cable Set,,\"High-quality cable set compatible with all major devices; includes USB-C, Lightning, and micro-USB connectors\"\n106,Monitor Stand,Furniture,Ergonomic adjustable monitor stand designed for dual-monitor setups with integrated cable management system\n",
+      "parsed_rows": [
+        {
+          "product_id": "101",
+          "product_name": "Widget Pro",
+          "category": "Electronics",
+          "description": "Professional-grade widget with advanced features including wireless connectivity and real-time monitoring"
+        },
+        {
+          "product_id": "102",
+          "product_name": "Gadget X",
+          "category": "Electronics",
+          "description": ""
+        },
+        {
+          "product_id": "103",
+          "product_name": "Tool Kit",
+          "category": "Hardware",
+          "description": "Complete toolkit for home improvement containing over fifty individual precision-crafted tools for every occasion"
+        },
+        {
+          "product_id": "105",
+          "product_name": "Cable Set",
+          "category": "",
+          "description": "High-quality cable set compatible with all major devices; includes USB-C, Lightning, and micro-USB connectors"
+        },
+        {
+          "product_id": "106",
+          "product_name": "Monitor Stand",
+          "category": "Furniture",
+          "description": "Ergonomic adjustable monitor stand designed for dual-monitor setups with integrated cable management system"
+        }
+      ],
+      "source_paths": [
+        "pipeline/transform.py",
+        "pipeline/load.py"
+      ]
+    }
+  },
+  "transport": {
+    "status": "complete"
+  },
+  "response_digest": "e5127c5d63a207db5057aab4a2c6f27d7250045433ae31a1678ed5c69ad7c1b1"
+}

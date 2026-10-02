@@ -17,6 +17,8 @@ Goal 修改。
 
 ## Reports
 
+- [partial] 2026-10-03 PIPE2 派生候选根：CSV-writer overlay 在版本化 hash-only recipe 下修复 seeds 1/4/6/9 的 malformed CSV；全 10 seed 形状审计与同一 sandbox 的 producer×recipient/adoption qualification 通过（0 LLM/0 GPU），但仍不是 active benchmark，situated judgment、later assignment、独立 outcome 和 baseline parity 未开始，见 [task report](task_reports/20261003_pipe2_derived_candidate.md)。
+
 - [partial] 2026-10-01 baseline manifest runner integration：离线 matrix runner 现在消费每个 case 的 root manifest，绑定 schedule/registry digest 并把 manifest digest 写入回执；v13 为 `QUALIFIED_OFFLINE`，PeerRoleBench 360 项通过，仍未接入 canonical-ledger live runner，见 [task report](task_reports/20261001_baseline_manifest_runner_integration.md)。
 - [partial] 2026-10-01 baseline manifest scope audit：独立审查收紧 v13 的证据边界：历史 receipt 保留但不能宣称完整 root manifest enforcement；修复了身份/组件 hash、arrival order、denominator 绑定、root seed、预算与执行前封存，并要求提交后重跑 v14。无 API/A800，无 Goal 降级，见 [task report](task_reports/20261001_baseline_manifest_scope_audit.md)。
 - [partial] 2026-10-01 baseline manifest hardening v2：v16 在新 commit 上重跑七个 hand-authored case，封存逐 offer RNG schedule、反馈行内容不可变性、正常 prefix re-visible 与 selected×classification 分母；只证明 offline implementation parity，见 [task report](task_reports/20261001_baseline_manifest_hardening_v2.md)。

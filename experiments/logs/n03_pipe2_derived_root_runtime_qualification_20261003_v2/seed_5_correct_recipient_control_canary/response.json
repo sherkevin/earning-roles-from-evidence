@@ -1,0 +1,58 @@
+{
+  "request": {
+    "op": "transform_load",
+    "artifact": {
+      "schema": "pipe2-extracted-rows-v1",
+      "columns": [
+        "emp_id",
+        "full_name",
+        "department",
+        "notes"
+      ],
+      "row_count": 2,
+      "rows": [
+        {
+          "emp_id": "v-5-0-emp_id",
+          "full_name": " canary-5-0 ",
+          "department": "v-5-0-department",
+          "notes": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {
+          "emp_id": "",
+          "full_name": "canary-5-1",
+          "department": "",
+          "notes": ""
+        }
+      ],
+      "artifact_sha256": "d8b5fa371d076576ce90ac85cfa6d767442fbee401dbeac6fd9b27d9ac25f56e"
+    }
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "output_csv": "emp_id,full_name,department,notes\nv-5-0-emp_id,canary-5-0,v-5-0-department,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,canary-5-1,,\n",
+      "parsed_rows": [
+        {
+          "emp_id": "v-5-0-emp_id",
+          "full_name": "canary-5-0",
+          "department": "v-5-0-department",
+          "notes": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {
+          "emp_id": "",
+          "full_name": "canary-5-1",
+          "department": "",
+          "notes": ""
+        }
+      ],
+      "source_paths": [
+        "pipeline/transform.py",
+        "pipeline/load.py"
+      ]
+    }
+  },
+  "transport": {
+    "status": "complete"
+  },
+  "response_digest": "8fa1e2d2639ff30418b76b0d95adde32f355ad0ab1c08f47523ba2ac5c769e43"
+}

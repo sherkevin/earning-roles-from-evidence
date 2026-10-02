@@ -31,6 +31,8 @@ ROOT = Path(__file__).resolve().parents[1]
 WORKER = ROOT / "scripts/peerrolebench_pipe2_runtime_worker.py"
 RUNNER_VERSION = "pipe2-runtime-adoption-qualification-v2"
 SCHEMA_VERSION = "pipe2-runtime-result-v2"
+MATERIAL_ADAPTER = "peerrolebench_pipe2_material_adapter_v2"
+MATERIAL_ROOT_DIGEST = None
 UNKNOWN_ERRORS = (TimeoutError, PermissionError, OSError, RuntimeError, ValueError, TypeError, KeyError)
 
 
@@ -223,7 +225,8 @@ def main() -> int:
               "llm_calls": 0, "gpu_jobs": 0, "native_grader_invoked": False,
               "candidate_code_executed": True, "scientific_claim_allowed": False,
               "material_schema_version": "peerrolebench-pipe2-materials-v2",
-              "material_adapter": "peerrolebench_pipe2_material_adapter_v2",
+              "material_adapter": MATERIAL_ADAPTER,
+              "material_root_digest": MATERIAL_ROOT_DIGEST,
               "score_dimensions": ["producer_contract", "recipient_self", "artifact_adoption"],
               "unknown_policy": "transport, malformed response, and runtime/resource errors remain UNKNOWN",
               "started_at_utc": datetime.now(timezone.utc).isoformat()}

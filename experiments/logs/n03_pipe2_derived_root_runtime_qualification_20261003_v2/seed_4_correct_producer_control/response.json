@@ -1,0 +1,60 @@
+{
+  "request": {
+    "op": "extract",
+    "csv_text": "project_id,project_name,owner,summary\n301,Project Alpha,Engineering,Complete rewrite of the legacy authentication system using modern OAuth2 and OpenID Connect standards\n302,Project Beta,Marketing,\n303,Project Gamma,Engineering,Migration of all on-premises databases to cloud-managed instances with zero-downtime cutover strategy\n304,,Sales,Missing project name\n305,Project Epsilon,,Implement real-time event streaming pipeline replacing the existing batch processing system for faster insights\n306,Project Zeta,Operations,\"Infrastructure automation initiative covering provisioning, monitoring, alerting, and incident response workflows\"\n307,Project Eta,Engineering,\n308,,,Both keys null\n",
+    "columns": [
+      "project_id",
+      "project_name",
+      "owner",
+      "summary"
+    ]
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "rows": [
+        {
+          "project_id": "301",
+          "project_name": "Project Alpha",
+          "owner": "Engineering",
+          "summary": "Complete rewrite of the legacy authentication system using modern OAuth2 and OpenID Connect standards"
+        },
+        {
+          "project_id": "302",
+          "project_name": "Project Beta",
+          "owner": "Marketing",
+          "summary": ""
+        },
+        {
+          "project_id": "303",
+          "project_name": "Project Gamma",
+          "owner": "Engineering",
+          "summary": "Migration of all on-premises databases to cloud-managed instances with zero-downtime cutover strategy"
+        },
+        {
+          "project_id": "305",
+          "project_name": "Project Epsilon",
+          "owner": "",
+          "summary": "Implement real-time event streaming pipeline replacing the existing batch processing system for faster insights"
+        },
+        {
+          "project_id": "306",
+          "project_name": "Project Zeta",
+          "owner": "Operations",
+          "summary": "Infrastructure automation initiative covering provisioning, monitoring, alerting, and incident response workflows"
+        },
+        {
+          "project_id": "307",
+          "project_name": "Project Eta",
+          "owner": "Engineering",
+          "summary": ""
+        }
+      ],
+      "source_path": "pipeline/extract.py"
+    }
+  },
+  "transport": {
+    "status": "complete"
+  },
+  "response_digest": "a78b146f4965c44a16400a150ed6e5fd7006efd1cc1d1532435cf7486860345f"
+}

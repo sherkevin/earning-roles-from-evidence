@@ -1,0 +1,69 @@
+{
+  "request": {
+    "op": "transform_load",
+    "artifact": {
+      "schema": "pipe2-extracted-rows-v1",
+      "columns": [
+        "project_id",
+        "project_name",
+        "owner",
+        "summary"
+      ],
+      "row_count": 6,
+      "rows": [
+        {
+          "project_id": "301",
+          "project_name": "Project Alpha",
+          "owner": "Engineering",
+          "summary": "Complete rewrite of the legacy authentication system using modern OAuth2 and OpenID Connect standards"
+        },
+        {
+          "project_id": "302",
+          "project_name": "Project Beta",
+          "owner": "Marketing",
+          "summary": ""
+        },
+        {
+          "project_id": "303",
+          "project_name": "Project Gamma",
+          "owner": "Engineering",
+          "summary": "Migration of all on-premises databases to cloud-managed instances with zero-downtime cutover strategy"
+        },
+        {
+          "project_id": "305",
+          "project_name": "Project Epsilon",
+          "owner": "",
+          "summary": "Implement real-time event streaming pipeline replacing the existing batch processing system for faster insights"
+        },
+        {
+          "project_id": "306",
+          "project_name": "Project Zeta",
+          "owner": "Operations",
+          "summary": "Infrastructure automation initiative covering provisioning, monitoring, alerting, and incident response workflows"
+        },
+        {
+          "project_id": "307",
+          "project_name": "Project Eta",
+          "owner": "Engineering",
+          "summary": ""
+        }
+      ],
+      "artifact_sha256": "e6ab8cb91935784341ed699c5c899bf099a1f1f221e714c6620255a4796f065f"
+    }
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "output_csv": "project_id,project_name,owner,summary\n",
+      "parsed_rows": [],
+      "source_paths": [
+        "pipeline/transform.py",
+        "pipeline/load.py"
+      ]
+    }
+  },
+  "transport": {
+    "status": "complete"
+  },
+  "response_digest": "2a08d13190b47eaa839b6b580737cc84cb33462bbb8873accfe16c5c276cf148"
+}

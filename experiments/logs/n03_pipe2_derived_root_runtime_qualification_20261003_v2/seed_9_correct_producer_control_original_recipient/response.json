@@ -1,0 +1,106 @@
+{
+  "request": {
+    "op": "transform_load",
+    "artifact": {
+      "schema": "pipe2-extracted-rows-v1",
+      "columns": [
+        "project_id",
+        "project_name",
+        "owner",
+        "summary"
+      ],
+      "row_count": 6,
+      "rows": [
+        {
+          "project_id": "301",
+          "project_name": "Project Alpha",
+          "owner": "Engineering",
+          "summary": "Complete rewrite of the legacy authentication system using modern OAuth2 and OpenID Connect standards"
+        },
+        {
+          "project_id": "302",
+          "project_name": "Project Beta",
+          "owner": "Marketing",
+          "summary": ""
+        },
+        {
+          "project_id": "303",
+          "project_name": "Project Gamma",
+          "owner": "Engineering",
+          "summary": "Migration of all on-premises databases to cloud-managed instances with zero-downtime cutover strategy"
+        },
+        {
+          "project_id": "305",
+          "project_name": "Project Epsilon",
+          "owner": "",
+          "summary": "Implement real-time event streaming pipeline replacing the existing batch processing system for faster insights"
+        },
+        {
+          "project_id": "306",
+          "project_name": "Project Zeta",
+          "owner": "Operations",
+          "summary": "Infrastructure automation initiative covering provisioning, monitoring, alerting, and incident response workflows"
+        },
+        {
+          "project_id": "307",
+          "project_name": "Project Eta",
+          "owner": "Engineering",
+          "summary": ""
+        }
+      ],
+      "artifact_sha256": "e6ab8cb91935784341ed699c5c899bf099a1f1f221e714c6620255a4796f065f"
+    }
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "output_csv": "project_id,owner,project_name,summary\n301,Engineering,Project Alpha,Complete rewrite of the legacy authentication syst\n302,Marketing,Project Beta,\n303,Engineering,Project Gamma,Migration of all on-premises databases to cloud-ma\n305,,Project Epsilon,Implement real-time event streaming pipeline repla\n306,Operations,Project Zeta,Infrastructure automation initiative covering prov\n307,Engineering,Project Eta,\n",
+      "parsed_rows": [
+        {
+          "project_id": "301",
+          "owner": "Engineering",
+          "project_name": "Project Alpha",
+          "summary": "Complete rewrite of the legacy authentication syst"
+        },
+        {
+          "project_id": "302",
+          "owner": "Marketing",
+          "project_name": "Project Beta",
+          "summary": ""
+        },
+        {
+          "project_id": "303",
+          "owner": "Engineering",
+          "project_name": "Project Gamma",
+          "summary": "Migration of all on-premises databases to cloud-ma"
+        },
+        {
+          "project_id": "305",
+          "owner": "",
+          "project_name": "Project Epsilon",
+          "summary": "Implement real-time event streaming pipeline repla"
+        },
+        {
+          "project_id": "306",
+          "owner": "Operations",
+          "project_name": "Project Zeta",
+          "summary": "Infrastructure automation initiative covering prov"
+        },
+        {
+          "project_id": "307",
+          "owner": "Engineering",
+          "project_name": "Project Eta",
+          "summary": ""
+        }
+      ],
+      "source_paths": [
+        "pipeline/transform.py",
+        "pipeline/load.py"
+      ]
+    }
+  },
+  "transport": {
+    "status": "complete"
+  },
+  "response_digest": "4b467cd095be111f08dae16e34a6597932cf3354a98e069c013b6d8928929e6e"
+}

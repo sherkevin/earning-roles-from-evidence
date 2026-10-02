@@ -1,0 +1,70 @@
+{
+  "request": {
+    "op": "transform_load",
+    "artifact": {
+      "schema": "pipe2-extracted-rows-v1",
+      "columns": [
+        "customer_id",
+        "contact_name",
+        "region",
+        "preferences"
+      ],
+      "row_count": 3,
+      "rows": [
+        {
+          "customer_id": "201",
+          "contact_name": "Diana Prince",
+          "region": "North America",
+          "preferences": "Prefers email communication; interested in enterprise solutions with dedicated account management and support"
+        },
+        {
+          "customer_id": "203",
+          "contact_name": "Bruce Wayne",
+          "region": "North America",
+          "preferences": "VIP customer requiring white-glove service with quarterly business reviews and custom reporting dashboards"
+        },
+        {
+          "customer_id": "206",
+          "contact_name": "Steve Rogers",
+          "region": "South America",
+          "preferences": "Long-term customer since founding; requires bilingual support staff and documentation in English and Portuguese"
+        }
+      ],
+      "artifact_sha256": "3f78d084309f56a62e560d2a6aeeed4f94704a16558e8122788ce999a0e0601e"
+    }
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "output_csv": "customer_id,contact_name,region,preferences\n201,Diana Prince,North America,Prefers email communication; interested in enterprise solutions with dedicated account management and support\n203,Bruce Wayne,North America,VIP customer requiring white-glove service with quarterly business reviews and custom reporting dashboards\n206,Steve Rogers,South America,Long-term customer since founding; requires bilingual support staff and documentation in English and Portuguese\n",
+      "parsed_rows": [
+        {
+          "customer_id": "201",
+          "contact_name": "Diana Prince",
+          "region": "North America",
+          "preferences": "Prefers email communication; interested in enterprise solutions with dedicated account management and support"
+        },
+        {
+          "customer_id": "203",
+          "contact_name": "Bruce Wayne",
+          "region": "North America",
+          "preferences": "VIP customer requiring white-glove service with quarterly business reviews and custom reporting dashboards"
+        },
+        {
+          "customer_id": "206",
+          "contact_name": "Steve Rogers",
+          "region": "South America",
+          "preferences": "Long-term customer since founding; requires bilingual support staff and documentation in English and Portuguese"
+        }
+      ],
+      "source_paths": [
+        "pipeline/transform.py",
+        "pipeline/load.py"
+      ]
+    }
+  },
+  "transport": {
+    "status": "complete"
+  },
+  "response_digest": "bea6ce06e00939f6183098e697340fbb8843979e96181e30e32c285d6cbe1619"
+}

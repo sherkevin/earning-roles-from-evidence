@@ -1,0 +1,58 @@
+{
+  "request": {
+    "op": "transform_load",
+    "artifact": {
+      "schema": "pipe2-extracted-rows-v1",
+      "columns": [
+        "product_id",
+        "product_name",
+        "category",
+        "description"
+      ],
+      "row_count": 2,
+      "rows": [
+        {
+          "product_id": "v-6-0-product_id",
+          "product_name": " canary-6-0 ",
+          "category": "v-6-0-category",
+          "description": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {
+          "product_id": "",
+          "product_name": "canary-6-1",
+          "category": "",
+          "description": ""
+        }
+      ],
+      "artifact_sha256": "82c2f9f03e8c5868f796c3bed1bd067d417d7a2c1c9cb93a1097063ec7616b53"
+    }
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "output_csv": "product_id,product_name,category,description\nv-6-0-product_id,canary-6-0,v-6-0-category,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,canary-6-1,,\n",
+      "parsed_rows": [
+        {
+          "product_id": "v-6-0-product_id",
+          "product_name": "canary-6-0",
+          "category": "v-6-0-category",
+          "description": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {
+          "product_id": "",
+          "product_name": "canary-6-1",
+          "category": "",
+          "description": ""
+        }
+      ],
+      "source_paths": [
+        "pipeline/transform.py",
+        "pipeline/load.py"
+      ]
+    }
+  },
+  "transport": {
+    "status": "complete"
+  },
+  "response_digest": "3ac086d4227ee96d8b2ffd539c066731658bc3fdb5a65661a9522b80937d9830"
+}
