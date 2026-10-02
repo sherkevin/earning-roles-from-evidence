@@ -73,6 +73,7 @@ class RoleEvidenceScore:
             "scores": list(self.scores),
             "posterior_means": list(self.posterior_means),
             "evidence_ids": list(self.evidence_ids),
+            "input_digest": self.input_digest,
         }
 
 

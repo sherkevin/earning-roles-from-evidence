@@ -114,7 +114,7 @@ def test_policy_factory_is_explicit_and_default_behavior_remains_terminal_only(t
     assert result["status"] == "QUALIFIED_OFFLINE"
     assert calls == ["terminal_only", "terminal_only", "terminal_only"]
     assert all(case["policy"] == "terminal_only" for case in result["cases"])
-    assert all(case["version"] == "pipe3-two-stage-composition-v1.3" for case in result["cases"])
+    assert all(case["version"] == "pipe3-two-stage-composition-v1.4" for case in result["cases"])
 
 
 def test_no_update_policy_is_explicitly_not_counted_as_terminal_update_success(tmp_path: Path):
@@ -153,3 +153,20 @@ def test_declared_nonterminal_feedback_arm_cannot_pass_on_terminal_event(tmp_pat
     assert producer["policy_update_applied"] is False
     assert producer["feedback_contract_ok"] is False
     assert producer["status"] == "UNKNOWN"
+
+
+def test_public_judgment_assignment_mode_reaches_canonical_composition(tmp_path: Path):
+    result = run(
+        tmp_path / "composition", scorer=_unit_scorer,
+        assignment_mode="public_judgment",
+    )
+    assert result["status"] == "QUALIFIED_OFFLINE"
+    producer = next(case for case in result["cases"] if case.get("control") == "producer_owned")
+    assert producer["assignment_mode"] == "public_judgment"
+    preview_rows = [json.loads(line) for line in (tmp_path / "composition" / "producer_owned" / "raw.jsonl").read_text().splitlines()
+                    if json.loads(line)["event"] == "target_selection_preview"]
+    assert len(preview_rows) == 1
+    payload = preview_rows[0]["payload"]
+    assert payload["assignment_mode"] == "public_judgment"
+    assert payload["assignment_score"]["version"] == "role-evidence-judgment-beta-v1"
+    assert payload["assignment_score"]["input_digest"]

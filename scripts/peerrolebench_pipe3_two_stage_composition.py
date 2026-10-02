@@ -45,7 +45,9 @@ from peerrolebench_role_evidence_offer import (  # noqa: E402
 )
 from peerrolebench_role_evidence_selection import (  # noqa: E402
     commit_role_evidence_selection, preview_role_evidence_selection,
+    preview_role_evidence_selection_with_public_judgment,
 )
+from peerrolebench_role_evidence_scorer import RoleEvidenceScoreConfig  # noqa: E402
 from peerrolebench_isolated_policy_read import read_role_evidence_offer_isolated  # noqa: E402
 from peerrolebench_two_stage_gate import (  # noqa: E402
     DelayedCreditLedger, derive_later_credit_from_ledger, evaluate_source_gate,
@@ -53,7 +55,7 @@ from peerrolebench_two_stage_gate import (  # noqa: E402
 
 
 TASK_ID = "PIPE3_stream_processing"
-VERSION = "pipe3-two-stage-composition-v1.3"
+VERSION = "pipe3-two-stage-composition-v1.4"
 CONTROLS = ("producer_owned", "recipient_owned", "mixed")
 CandidateScorer = Callable[[str, Mapping[str, str], Mapping[str, str], Path, Path, int], dict[str, Any]]
 PolicyFactory = Callable[[str], BaselinePolicy]
@@ -386,7 +388,10 @@ def _source_offer(boundary: Pipe3SelectionBoundary, *, control: str, source: Map
 def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
                  scorer: CandidateScorer | None = None,
                  policy_factory: PolicyFactory | None = None,
-                 policy_name: str = "terminal_only") -> dict[str, Any]:
+                 policy_name: str = "terminal_only",
+                 assignment_mode: str = "hand_authored") -> dict[str, Any]:
+    if assignment_mode not in {"hand_authored", "public_judgment"}:
+        raise ValueError("unsupported assignment_mode")
     out.mkdir(parents=False, exist_ok=False)
     raw = out / "raw.jsonl"
     raw.write_text("", encoding="utf-8")
@@ -401,8 +406,10 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
         "component_sha256": {name: _sha_file(ROOT / name) for name in (
             "scripts/peerrolebench_pipe3_two_stage_composition.py", "scripts/peerrolebench_two_stage_gate.py",
             "scripts/peerrolebench_role_evidence_selection.py", "scripts/peerrolebench_role_evidence_offer.py",
+            "scripts/peerrolebench_role_evidence_scorer.py",
         )},
-    "policy": policy_name, "overlay_values": "qualification_control_only",
+        "policy": policy_name, "assignment_mode": assignment_mode,
+        "overlay_values": "qualification_control_only",
         "authored_controls": {"source_judgment": "parent-authored", "action": "parent-authored", "patched_actor": "parent-authored"},
     }
     (out / "config.json").write_text(json.dumps(config, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
@@ -494,20 +501,33 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
     _log(raw, "isolated_role_evidence_read", {"offer_id": isolated_read.offer_id,
                                                "policy_input_digest": isolated_read.policy_input_digest,
                                                "read_cut": isolated_read.read_cut})
-    plan = preview_role_evidence_selection(
-        boundary, role_offer=role_offer, feedback_offer=feedback_offer, assignment_id=f"assignment-{control}",
-        native_selection_id=f"selection-{control}-1", selector_id="peer-a",
-        base_scores=(1.0, 0.0) if seal0.native_selection.chosen_peer_id == "peer-b" else (0.0, 1.0),
-        rng=__import__("numpy").random.default_rng(target_seed), state_version="target-state-v1",
-        encoder_version="pipe3-v1", feature_schema="pipe3", policy_version="contextual-v1",
-        base_score_version="qualification-overlay-v1", rng_algorithm="numpy-pcg64", rng_draw=1,
-        selected_at=1.0, read_cut=1, decision_index=1,
+    target_base_scores = (1.0, 0.0) if seal0.native_selection.chosen_peer_id == "peer-b" else (0.0, 1.0)
+    target_kwargs = dict(
+        boundary=boundary, role_offer=role_offer, feedback_offer=feedback_offer,
+        assignment_id=f"assignment-{control}", native_selection_id=f"selection-{control}-1",
+        selector_id="peer-a", rng=__import__("numpy").random.default_rng(target_seed),
+        state_version="target-state-v1", encoder_version="pipe3-v1", feature_schema="pipe3",
+        policy_version="contextual-v1", base_score_version="qualification-overlay-v1",
+        rng_algorithm="numpy-pcg64", rng_draw=1, selected_at=1.0,
+        decision_index=1,
     )
+    assignment_score = None
+    if assignment_mode == "public_judgment":
+        plan, assignment_score = preview_role_evidence_selection_with_public_judgment(
+            **target_kwargs, base_scores=target_base_scores, read_cut=1,
+            scorer_config=RoleEvidenceScoreConfig(),
+        )
+    else:
+        plan = preview_role_evidence_selection(
+            **target_kwargs, base_scores=target_base_scores, read_cut=1,
+        )
     _log(raw, "target_selection_preview", {"assignment_id": plan.assignment_id,
                                              "selected_peer": plan.assigned_agent_id,
                                              "propensity": plan.selection.propensity,
                                              "read_cut": plan.read_cut,
-                                             "persistent_state_digest": plan.persistent_state_digest})
+                                             "persistent_state_digest": plan.persistent_state_digest,
+                                             "assignment_mode": assignment_mode,
+                                             "assignment_score": None if assignment_score is None else assignment_score.payload()})
     target_seal = commit_role_evidence_selection(boundary, plan=plan, role_offer=role_offer, feedback_offer=feedback_offer)
     _log(raw, "assignment_committed_before_selection", {"assignment_id": plan.assignment_id, "selection_id": target_seal.native_selection.selection_id})
     target = _record_episode(boundary=boundary, materials=target_case, control=control,
@@ -611,21 +631,26 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
 def run(out_dir: Path, *, source_seed: int = 0, target_seed: int = 1,
         scorer: CandidateScorer | None = None,
         policy_factory: PolicyFactory | None = None,
-        policy_name: str = "terminal_only") -> dict[str, Any]:
+        policy_name: str = "terminal_only",
+        assignment_mode: str = "hand_authored") -> dict[str, Any]:
+    if assignment_mode not in {"hand_authored", "public_judgment"}:
+        raise ValueError("unsupported assignment_mode")
     out_dir = out_dir.resolve()
     out_dir.mkdir(parents=False, exist_ok=False)
     started = datetime.now(timezone.utc).isoformat()
     top = {"version": VERSION, "task_id": TASK_ID, "source_seed": source_seed, "target_seed": target_seed,
            "controls": list(CONTROLS), "real_api_calls": 0, "gpu_jobs": 0,
            "scientific_claim_allowed": False, "started_at_utc": started,
-           "execution_injection": scorer is not None, "policy": policy_name}
+           "execution_injection": scorer is not None, "policy": policy_name,
+           "assignment_mode": assignment_mode}
     (out_dir / "config.json").write_text(json.dumps(top, indent=2) + "\n", encoding="utf-8")
     cases = []
     for control in CONTROLS:
         try:
             cases.append(_run_control(control, out=out_dir / control, source_seed=source_seed,
                                       target_seed=target_seed, scorer=scorer,
-                                      policy_factory=policy_factory, policy_name=policy_name))
+                                      policy_factory=policy_factory, policy_name=policy_name,
+                                      assignment_mode=assignment_mode))
         except Exception as exc:
             case_dir = out_dir / control
             if not case_dir.exists():

@@ -626,6 +626,16 @@ live runner has not consumed the comparator, independent histories and complete 
 are missing, and no scientific result or A800 run is claimed. The report is
 `docs/coordination/task_reports/20261002_benchmark_baseline_gate_reaudit.md`.
 
+### 2026-10-02 public judgment assignment composition
+
+The opt-in public-judgment comparator was connected to the versioned PIPE3
+canonical composition as `pipe3-two-stage-composition-v1.4`; the previous v1.3
+receipt remains immutable. The producer-owned control qualified offline, while
+recipient-owned and mixed controls stayed `UNKNOWN` under the responsibility
+gate. The v3 receipt records the runner/scorer hashes and assignment score
+digest. This used an injected zero-call scorer and makes no benchmark, online
+learning, or scientific efficacy claim.
+
 ### 2026-09-28 baseline bridge audit
 
 The frozen N02 v3 ledger was checked for lossless mapping into the new policy

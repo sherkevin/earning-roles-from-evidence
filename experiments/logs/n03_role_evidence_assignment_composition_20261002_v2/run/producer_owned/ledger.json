@@ -1,0 +1,248 @@
+[
+  {
+    "event_type": "peer_selection",
+    "payload": {
+      "selection_id": "selection-producer_owned-0",
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 0,
+      "selector_id": "peer-a",
+      "role": "producer",
+      "candidate_ids": [
+        "peer-b",
+        "peer-c"
+      ],
+      "chosen_peer_id": "peer-b",
+      "propensity": 1.0
+    },
+    "previous_hash": "GENESIS",
+    "record_hash": "0cd47d831b66782ad8e15d6868b1a11b9d20e4496337270e5f92ac1c9e048060"
+  },
+  {
+    "event_type": "task_start",
+    "payload": {
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 0
+    },
+    "previous_hash": "0cd47d831b66782ad8e15d6868b1a11b9d20e4496337270e5f92ac1c9e048060",
+    "record_hash": "3ce159559592de0758e870d07fb2f0fa46d1c3115947933c6919074c43b1113c"
+  },
+  {
+    "event_type": "producer_delivery",
+    "payload": {
+      "delivery_id": "producer_owned-delivery-0",
+      "task_id": "PIPE3_stream_processing",
+      "producer_id": "peer-b",
+      "recipient_id": "peer-a",
+      "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "source_event_id": "request-producer_owned-0",
+      "task_index": 0,
+      "selection_id": "selection-producer_owned-0",
+      "candidate_source_digest": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2"
+    },
+    "previous_hash": "3ce159559592de0758e870d07fb2f0fa46d1c3115947933c6919074c43b1113c",
+    "record_hash": "bae17701fb7d5e394d1136bdf5621e849bb99e6ac10373f43df35aca44a8a5f2"
+  },
+  {
+    "event_type": "producer_score",
+    "payload": {
+      "producer_score_id": "producer_owned-producer-score-0",
+      "delivery_id": "producer_owned-delivery-0",
+      "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "scorer_version": "unit-injected-scorer",
+      "status": "FAIL",
+      "label": 0,
+      "quality_score": 0.0,
+      "score_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "coverage_complete": true,
+      "decision_complete": true
+    },
+    "previous_hash": "bae17701fb7d5e394d1136bdf5621e849bb99e6ac10373f43df35aca44a8a5f2",
+    "record_hash": "66eca15b12c50f404964674b4b029b78d1638d2656cbd05dc1c30268e9f3db93"
+  },
+  {
+    "event_type": "recipient_judgment",
+    "payload": {
+      "judgment_id": "producer_owned-judgment-0",
+      "delivery_id": "producer_owned-delivery-0",
+      "consumer_id": "peer-a",
+      "decision": "accept_with_rework",
+      "observed_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "terminal_outcome_available": false,
+      "repair_note": "pipe3-two-stage-composition-v1.3:producer_owned"
+    },
+    "previous_hash": "66eca15b12c50f404964674b4b029b78d1638d2656cbd05dc1c30268e9f3db93",
+    "record_hash": "ed623bf04914cf382d66e83e28f70ac7891fa999c4540015593d72a7c120a768"
+  },
+  {
+    "event_type": "consumer_action",
+    "payload": {
+      "action_id": "producer_owned-action-0",
+      "delivery_id": "producer_owned-delivery-0",
+      "consumer_id": "peer-a",
+      "used_artifact": true,
+      "input_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "output_artifact_sha256": "819118801d4ccfab2801b36032d4f0808bdf938eedf9ee532d8ea798fd7ffa29",
+      "repair_cost": 0.0,
+      "action": "repair"
+    },
+    "previous_hash": "ed623bf04914cf382d66e83e28f70ac7891fa999c4540015593d72a7c120a768",
+    "record_hash": "9652ff90f697f29c194bd5ad8253716e026b4131e60050b1d924500e1f4598a2"
+  },
+  {
+    "event_type": "terminal_outcome",
+    "payload": {
+      "outcome_id": "producer_owned-outcome-0",
+      "delivery_id": "producer_owned-delivery-0",
+      "success": true,
+      "scorer_version": "pipe3-recipient-objective-v2",
+      "partial_score": 0.8,
+      "score_payload_sha256": "7d7827e95201b56c08965243902b313a6d12aef07610ad68c7a1d020a0f0ed70"
+    },
+    "previous_hash": "9652ff90f697f29c194bd5ad8253716e026b4131e60050b1d924500e1f4598a2",
+    "record_hash": "8b842c452a763d58d695aede1b9543966d8137738f31abac47e1a2b5e2181850"
+  },
+  {
+    "event_type": "role_evidence_update",
+    "payload": {
+      "evidence_id": "evidence-producer_owned-source",
+      "judgment_id": "producer_owned-judgment-0",
+      "action_id": "producer_owned-action-0",
+      "outcome_id": "producer_owned-outcome-0",
+      "update_version": "pipe3-two-stage-composition-v1.3",
+      "arrived_at": 1.0
+    },
+    "previous_hash": "8b842c452a763d58d695aede1b9543966d8137738f31abac47e1a2b5e2181850",
+    "record_hash": "7d8069805494a4b9aad1728ea6c46407a2a8204ded522f05cebfa6a2f11c88ff"
+  },
+  {
+    "event_type": "later_assignment",
+    "payload": {
+      "assignment_id": "assignment-producer_owned",
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 1,
+      "agent_id": "peer-b",
+      "role": "producer",
+      "evidence_ids": [
+        "evidence-producer_owned-source"
+      ],
+      "decision_propensity": 0.7310585786300049
+    },
+    "previous_hash": "7d8069805494a4b9aad1728ea6c46407a2a8204ded522f05cebfa6a2f11c88ff",
+    "record_hash": "80cf6cd4187647f65ea25c88c6ed51d15de7a5e67bf6b57a39f9f2f5807e08ee"
+  },
+  {
+    "event_type": "peer_selection",
+    "payload": {
+      "selection_id": "selection-producer_owned-1",
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 1,
+      "selector_id": "peer-a",
+      "role": "producer",
+      "candidate_ids": [
+        "peer-b",
+        "peer-c"
+      ],
+      "chosen_peer_id": "peer-b",
+      "propensity": 0.7310585786300049
+    },
+    "previous_hash": "80cf6cd4187647f65ea25c88c6ed51d15de7a5e67bf6b57a39f9f2f5807e08ee",
+    "record_hash": "dcd81470dee6a0229ff086b25d57e98530b6d5575096a5044f964819a4aa96e2"
+  },
+  {
+    "event_type": "task_start",
+    "payload": {
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 1
+    },
+    "previous_hash": "dcd81470dee6a0229ff086b25d57e98530b6d5575096a5044f964819a4aa96e2",
+    "record_hash": "7df86dc3fec2b87d207de3f3eeb7ffdc00e7e4d5103a631b258cd7b45762fb4b"
+  },
+  {
+    "event_type": "producer_delivery",
+    "payload": {
+      "delivery_id": "producer_owned-delivery-1",
+      "task_id": "PIPE3_stream_processing",
+      "producer_id": "peer-b",
+      "recipient_id": "peer-a",
+      "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "source_event_id": "request-producer_owned-1",
+      "task_index": 1,
+      "selection_id": "selection-producer_owned-1",
+      "candidate_source_digest": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2"
+    },
+    "previous_hash": "7df86dc3fec2b87d207de3f3eeb7ffdc00e7e4d5103a631b258cd7b45762fb4b",
+    "record_hash": "1cec7c9ca4b46915a6691269e214494a59b2f2f11cad1faf595898173af4385b"
+  },
+  {
+    "event_type": "producer_score",
+    "payload": {
+      "producer_score_id": "producer_owned-producer-score-1",
+      "delivery_id": "producer_owned-delivery-1",
+      "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "scorer_version": "unit-injected-scorer",
+      "status": "FAIL",
+      "label": 0,
+      "quality_score": 0.0,
+      "score_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "coverage_complete": true,
+      "decision_complete": true
+    },
+    "previous_hash": "1cec7c9ca4b46915a6691269e214494a59b2f2f11cad1faf595898173af4385b",
+    "record_hash": "d596ee09ed2a0ad3ac6a2ecfd3e762ac7208414b64e0fe5ced672b496d8bb780"
+  },
+  {
+    "event_type": "recipient_judgment",
+    "payload": {
+      "judgment_id": "producer_owned-judgment-1",
+      "delivery_id": "producer_owned-delivery-1",
+      "consumer_id": "peer-a",
+      "decision": "accept_with_rework",
+      "observed_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "terminal_outcome_available": false,
+      "repair_note": "pipe3-two-stage-composition-v1.3:producer_owned"
+    },
+    "previous_hash": "d596ee09ed2a0ad3ac6a2ecfd3e762ac7208414b64e0fe5ced672b496d8bb780",
+    "record_hash": "0c176c1fdd3248fd279cf2c4c610f7a0f47e4bddc4b8700af37fc18c3aec1ebd"
+  },
+  {
+    "event_type": "consumer_action",
+    "payload": {
+      "action_id": "producer_owned-action-1",
+      "delivery_id": "producer_owned-delivery-1",
+      "consumer_id": "peer-a",
+      "used_artifact": true,
+      "input_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "output_artifact_sha256": "819118801d4ccfab2801b36032d4f0808bdf938eedf9ee532d8ea798fd7ffa29",
+      "repair_cost": 0.0,
+      "action": "repair"
+    },
+    "previous_hash": "0c176c1fdd3248fd279cf2c4c610f7a0f47e4bddc4b8700af37fc18c3aec1ebd",
+    "record_hash": "803271c6be6f1780f58206222058553a8b93093ab1c07bf3ad66404d45740c99"
+  },
+  {
+    "event_type": "terminal_outcome",
+    "payload": {
+      "outcome_id": "producer_owned-outcome-1",
+      "delivery_id": "producer_owned-delivery-1",
+      "success": true,
+      "scorer_version": "pipe3-recipient-objective-v2",
+      "partial_score": 0.8,
+      "score_payload_sha256": "7d7827e95201b56c08965243902b313a6d12aef07610ad68c7a1d020a0f0ed70"
+    },
+    "previous_hash": "803271c6be6f1780f58206222058553a8b93093ab1c07bf3ad66404d45740c99",
+    "record_hash": "a7d149037b569d6e4ff1f4e929d2d86e84dee1ecf8f01f3135f1aa8003ff8fda"
+  },
+  {
+    "event_type": "role_evidence_update",
+    "payload": {
+      "evidence_id": "target-completion-evidence-producer_owned",
+      "judgment_id": "producer_owned-judgment-1",
+      "action_id": "producer_owned-action-1",
+      "outcome_id": "producer_owned-outcome-1",
+      "update_version": "target-completion-v1",
+      "arrived_at": 2.0
+    },
+    "previous_hash": "a7d149037b569d6e4ff1f4e929d2d86e84dee1ecf8f01f3135f1aa8003ff8fda",
+    "record_hash": "9211883b39df4959e488af104ad1679458135a619f138239cf7c5d8d0251d5b1"
+  }
+]
