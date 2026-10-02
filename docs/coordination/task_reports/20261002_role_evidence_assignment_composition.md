@@ -25,6 +25,15 @@ isolated read → `LaterAssignment` → exact selection commit。runner 版本�
 - 三个 control 的 `assignment_mode` 均为 `public_judgment`，runner/policy/source hash
   在 config 中封存；`real_api_calls=0`、`gpu_jobs=0`、`scientific_claim_allowed=false`。
 
+## 失败与修复
+
+第一次接入测试把 `read_cut` 同时放入通用 preview 参数和 public-judgment wrapper，
+导致 producer-owned case 在 assignment preview 阶段抛出
+`TypeError: ... got multiple values for keyword argument 'read_cut'`；该次运行没有被当作
+通过，随后将 read-cut 责任收回 wrapper 并重新执行。修复后的定向回归为 `19 passed`，
+版本递增后的 v3 回执才是当前可引用的 qualification。这个失败说明 wrapper 的参数边界
+需要独立测试，不能由最终 summary 的状态反推接口正确。
+
 ## 这条证据支持什么
 
 它证明公共 judgment comparator 可以进入现有 canonical runner，并保留 assignment-before-
