@@ -1,0 +1,92 @@
+{
+  "experiment_id": "n03_pipe3_real_smoke_v7",
+  "status": "DEVELOPMENT_ONLY_NOT_BENCHMARK",
+  "purpose": "zero-call contract qualification for a source-to-target PIPE3 responsibility chain",
+  "source_commit": "d185aef1916fd86a9ba554d581fd256319a973af",
+  "primary_track": "ArtifactRole",
+  "split": "development/qualification",
+  "task_id": "PIPE3_stream_processing",
+  "source_episode": 0,
+  "target_episode": 1,
+  "task_seed": 0,
+  "provider": "内部",
+  "model": "qwen3.8-max",
+  "temperature": 0,
+  "thinking": {"type": "disabled"},
+  "stream": true,
+  "max_tokens": {"producer": 2048, "judgment": 1024, "consumer": 2048},
+  "maximum_task_requests_per_episode": 3,
+  "maximum_episode_attempts": 2,
+  "maximum_retries": 0,
+  "request_timeout_seconds": 300,
+  "material_adapter": "pipe3-neutral-v1",
+  "responsibility_gate": {
+    "version": "pipe3-responsibility-label-v1",
+    "registered_defect_required": true,
+    "model_self_report_is_not_evidence": true,
+    "unknown_policy": "no-label-no-update"
+  },
+  "event_lineage": [
+    "source_selection",
+    "source_task_start",
+    "delivery",
+    "producer_score",
+    "recipient_judgment",
+    "consumer_action",
+    "source_outcome",
+    "source_gate",
+    "evidence_offer",
+    "read_cut",
+    "assignment",
+    "target_selection",
+    "target_task_start",
+    "target_delivery",
+    "later_use_outcome",
+    "delayed_credit"
+  ],
+  "lineage_keys": {
+    "source_to_offer": ["delivery_id", "producer_score_id", "judgment_id", "action_id", "outcome_id", "evidence_id", "offer_id"],
+    "offer_to_target": ["offer_id", "read_cut", "assignment_id", "selection_id", "task_start_id"],
+    "target_credit": ["assignment_id", "selection_id", "task_start_id", "target_delivery_id", "later_use_outcome_id"]
+  },
+  "ownership_registry": {
+    "producer_owned": ["producer.py"],
+    "recipient_owned": ["processor.py"],
+    "read_only": ["models.py", "sink.py"]
+  },
+  "responsibility_cases": {
+    "producer_owned_fail": {"status": "ELIGIBLE", "producer_label_allowed": true},
+    "recipient_only": {"status": "PENDING_ATTRIBUTION", "producer_label_allowed": false},
+    "mixed": {"status": "UNKNOWN", "producer_label_allowed": false},
+    "outside_contract": {"status": "UNKNOWN", "producer_label_allowed": false},
+    "producer_pass_without_registered_defect": {"status": "PENDING_ATTRIBUTION", "producer_label_allowed": false}
+  },
+  "candidate_registry": ["peer-a@v1", "peer-b@v1"],
+  "selection_contract": {
+    "minimum_menu_size": 2,
+    "requires_registry_digest": true,
+    "requires_menu_order": true,
+    "requires_propensity": true,
+    "requires_read_cut": true,
+    "exchangeable_peer_warning": true
+  },
+  "credit_contract": {
+    "publish_updates_policy": false,
+    "assignment_credit_once": true,
+    "target_outcome_required": true,
+    "source_adoption_is_later_use": false
+  },
+  "producer_scorer": {"version": "pipe3-producer-objective-v2", "controller_update_allowed": false},
+  "recipient_scorer": {"version": "pipe3-recipient-objective-v2"},
+  "adoption_scorer": {"version": "pipe3-recipient-objective-v2"},
+  "scientific_claim_allowed": false,
+  "real_api_runs_allowed": false,
+  "gpu_jobs_allowed": false,
+  "stop_rules": [
+    "missing lineage key: UNKNOWN and no update",
+    "no legal source evidence: write promotion_blocked and do not start target",
+    "ownership mismatch or model self-report only: UNKNOWN",
+    "malformed, truncated, timeout or incomplete usage: UNKNOWN",
+    "no retry or top-up"
+  ]
+}
