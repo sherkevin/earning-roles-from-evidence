@@ -24,14 +24,25 @@ role learning、online update 或跨任务质量/成本，因此没有完成 Goa
   定义、角色 ownership、prompt 或 hidden expected 语义。
 - 候选 recipe：
   `configs/aamas2027/pipe2_derived_root_candidate_v1.json`，root digest
-  `f984db3deb81cf66001864ab9fb013ceef91019c97d860159693c820fccf770e`，overlay 源码
-  digest `c42c2fed440329e26558361d5aaee0e8002c3858dfa772cda2fab280367658d5`。
+  `03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967`，overlay 源码
+  digest `3dd1b31d83d7ffb5f46ebb469d74fcd0a2eb759254c8eb3f8495caada07f2390`。
   recipe 是 hash-only；expected bytes 只在 parent 侧重建和校验，不进入 agent payload。
 - seeds 固定为 `0..9`。此前 shape audit 中 malformed 的 `1,4,6,9` 被修复；其余
-  seeds 的 derived bytes 与 pinned bytes 相同。recipe 中的 public/hidden 仅继承 shape
-  审计记录，并明确标为 `NOT_A_SCIENTIFIC_SPLIT`。
+  seeds 的 derived bytes 与 pinned bytes 相同。recipe 只记录 `valid_shape_seeds` 与
+  `malformed_history_seeds`，明确说明它们不是 public/hidden visibility，也不是科学 split。
+- 这 10 个 seed 实际只有 5 个材料等价类：employees `{0,5}`、products `{1,6}`、
+  transactions `{2,7}`、customers `{3,8}`、projects `{4,9}`。因此后续科学划分必须按
+  schema family 分组，不能把同一等价类拆到训练和确认两侧。
 
 ## 实际验证与原始证据
+
+### 0. recipe/source integrity correction
+
+独立复核发现第一次提交的 recipe 曾保留旧的 overlay 源码哈希；loader 按设计
+`fail-closed`，因此该状态不能被当作可加载实现。随后又修正了 recipe 中容易误解的
+“public/hidden”命名，并增加 authority、serialization、malformed-policy、API/GPU、
+材料等价类和逐 seed 完整记录校验。旧的 v1/v2 receipts 原样保留，归类为漂移审计，
+不用于当前资格结论；下面的 v3 receipts 是同步后的唯一有效证据。
 
 ### 1. 派生材料形状审计
 
@@ -39,7 +50,7 @@ role learning、online update 或跨任务质量/成本，因此没有完成 Goa
 
 ```bash
 python3 scripts/peerrolebench_pipe2_derived_shape_audit.py \
-  --output experiments/logs/n03_pipe2_derived_root_shape_audit_20261003_v2 \
+  --output experiments/logs/n03_pipe2_derived_root_shape_audit_20261003_v3 \
   --seeds 0 1 2 3 4 5 6 7 8 9
 ```
 
@@ -49,12 +60,12 @@ GPU、未执行 candidate code、`scientific_claim_allowed=false`。
 
 ### 2. 派生材料上的实际 sandbox qualification
 
-命令（v2 receipt 额外绑定 candidate recipe root digest；先前 v1 receipt 保留为历史
-运行，不删除也不覆盖）：
+命令（v3 receipt 绑定最终 candidate recipe root digest；此前 v1/v2 receipt 保留为
+源码/recipe 漂移审计，不删除也不覆盖）：
 
 ```bash
 python3 scripts/peerrolebench_pipe2_derived_runtime_qualification.py \
-  --output experiments/logs/n03_pipe2_derived_root_runtime_qualification_20261003_v2 \
+  --output experiments/logs/n03_pipe2_derived_root_runtime_qualification_20261003_v3 \
   --seeds 0 1 2 3 4 5 6 7 8 9
 ```
 

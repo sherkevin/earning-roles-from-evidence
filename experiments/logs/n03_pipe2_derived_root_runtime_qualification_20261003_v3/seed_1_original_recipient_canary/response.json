@@ -1,0 +1,58 @@
+{
+  "request": {
+    "op": "transform_load",
+    "artifact": {
+      "schema": "pipe2-extracted-rows-v1",
+      "columns": [
+        "product_id",
+        "product_name",
+        "category",
+        "description"
+      ],
+      "row_count": 2,
+      "rows": [
+        {
+          "product_id": "v-1-0-product_id",
+          "product_name": " canary-1-0 ",
+          "category": "v-1-0-category",
+          "description": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {
+          "product_id": "",
+          "product_name": "canary-1-1",
+          "category": "",
+          "description": ""
+        }
+      ],
+      "artifact_sha256": "afc205f2eb048842608a65ef33ccf9e086d927beaa62102ae98fcb7d22c92a9f"
+    }
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "output_csv": "product_id,category,product_name,description\nv-1-0-product_id,v-1-0-category,canary-1-0,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,,canary-1-1,\n",
+      "parsed_rows": [
+        {
+          "product_id": "v-1-0-product_id",
+          "category": "v-1-0-category",
+          "product_name": "canary-1-0",
+          "description": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {
+          "product_id": "",
+          "category": "",
+          "product_name": "canary-1-1",
+          "description": ""
+        }
+      ],
+      "source_paths": [
+        "pipeline/transform.py",
+        "pipeline/load.py"
+      ]
+    }
+  },
+  "transport": {
+    "status": "complete"
+  },
+  "response_digest": "23c811ff2b783d3704c9e11eec21c96467ed95677f965f8d0e5e01f802822f71"
+}

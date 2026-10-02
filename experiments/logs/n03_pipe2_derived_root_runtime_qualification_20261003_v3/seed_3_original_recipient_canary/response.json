@@ -1,0 +1,58 @@
+{
+  "request": {
+    "op": "transform_load",
+    "artifact": {
+      "schema": "pipe2-extracted-rows-v1",
+      "columns": [
+        "customer_id",
+        "contact_name",
+        "region",
+        "preferences"
+      ],
+      "row_count": 2,
+      "rows": [
+        {
+          "customer_id": "v-3-0-customer_id",
+          "contact_name": " canary-3-0 ",
+          "region": "v-3-0-region",
+          "preferences": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {
+          "customer_id": "",
+          "contact_name": "canary-3-1",
+          "region": "",
+          "preferences": ""
+        }
+      ],
+      "artifact_sha256": "feafe6e28188b6b2d119dc32f08c70d6ad3d9f1861bb2063657ca255d07a0925"
+    }
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "output_csv": "customer_id,region,contact_name,preferences\nv-3-0-customer_id,v-3-0-region,canary-3-0,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,,canary-3-1,\n",
+      "parsed_rows": [
+        {
+          "customer_id": "v-3-0-customer_id",
+          "region": "v-3-0-region",
+          "contact_name": "canary-3-0",
+          "preferences": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {
+          "customer_id": "",
+          "region": "",
+          "contact_name": "canary-3-1",
+          "preferences": ""
+        }
+      ],
+      "source_paths": [
+        "pipeline/transform.py",
+        "pipeline/load.py"
+      ]
+    }
+  },
+  "transport": {
+    "status": "complete"
+  },
+  "response_digest": "7d1f66d3782d721c80df20cb8aa63e88e8362cf7081e732ef76fecd45e795c4e"
+}

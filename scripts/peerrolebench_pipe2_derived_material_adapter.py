@@ -75,8 +75,11 @@ def _load_schema_pool() -> list[dict[str, Any]]:
     root = str(TEAMBENCH)
     if root not in sys.path:
         sys.path.insert(0, root)
-    from generators.gen_pipe2_data_pipeline import SCHEMAS  # type: ignore
-    return SCHEMAS
+    from generators import gen_pipe2_data_pipeline  # type: ignore
+    expected = TEAMBENCH / GENERATOR_RELATIVE_PATH
+    if Path(gen_pipe2_data_pipeline.__file__).resolve() != expected:
+        raise DerivedRootError("another package shadows the pinned PIPE2 schema module")
+    return gen_pipe2_data_pipeline.SCHEMAS
 
 
 def csv_text(rows: list[list[str]], columns: list[str]) -> str:
@@ -159,11 +162,17 @@ def _recipe_overlay_hash() -> str:
 
 
 def _recipe_body(records: list[dict[str, Any]], generator_sha256: str) -> dict[str, Any]:
-    public = [seed for seed in SEEDS if seed in (0, 2, 3, 5, 7, 8)]
-    hidden = [seed for seed in SEEDS if seed in (1, 4, 6, 9)]
+    valid_shape = [seed for seed in SEEDS if seed in (0, 2, 3, 5, 7, 8)]
+    malformed_history = [seed for seed in SEEDS if seed in (1, 4, 6, 9)]
     compact_records = [{key: value for key, value in record.items()
                         if key not in {"source_bytes", "expected_bytes"}}
                        for record in records]
+    equivalence_classes = []
+    for schema_name in dict.fromkeys(record["schema_name"] for record in records):
+        equivalence_classes.append({
+            "schema_name": schema_name,
+            "seeds": [record["seed"] for record in records if record["schema_name"] == schema_name],
+        })
     body: dict[str, Any] = {
         "schema_version": RECIPE_SCHEMA_VERSION,
         "candidate_id": CANDIDATE_ID,
@@ -183,11 +192,12 @@ def _recipe_body(records: list[dict[str, Any]], generator_sha256: str) -> dict[s
             "scope": "CSV serialization only; logical rows and pipeline code are unchanged",
         },
         "seeds": list(SEEDS),
-        "visibility": {
-            "public_shape_development": public,
-            "hidden_shape_development": hidden,
+        "equivalence_classes": equivalence_classes,
+        "fixture_history": {
+            "valid_shape_seeds": valid_shape,
+            "malformed_history_seeds": malformed_history,
             "status": "NOT_A_SCIENTIFIC_SPLIT",
-            "note": "Visibility bookkeeping inherited from the prior shape audit; no confirmatory split is frozen.",
+            "note": "These lists describe the prior pinned shape audit, not public/hidden visibility or a confirmatory split.",
         },
         "serialization": {
             "delimiter": ",", "quotechar": '"', "quoting": "QUOTE_MINIMAL",
@@ -230,6 +240,8 @@ def _load_recipe(path: Path = RECIPE_PATH) -> dict[str, Any]:
         raise DerivedRootError("derived recipe root_digest mismatch")
     if recipe.get("candidate_id") != CANDIDATE_ID or recipe.get("task_id") != TASK_ID:
         raise DerivedRootError("derived recipe identity mismatch")
+    if recipe.get("authority_kind") != "derived":
+        raise DerivedRootError("derived recipe authority_kind must be derived")
     if recipe.get("status") != "CANDIDATE_DERIVED_ROOT":
         raise DerivedRootError("derived recipe status cannot be promoted implicitly")
     if recipe.get("benchmark_qualified") is not False or recipe.get("scientific_claim_allowed") is not False:
@@ -241,10 +253,51 @@ def _load_recipe(path: Path = RECIPE_PATH) -> dict[str, Any]:
     if base.get("generator_sha256") != generator_sha:
         raise DerivedRootError("derived recipe generator hash mismatch")
     overlay = recipe.get("overlay", {})
-    if overlay.get("version") != OVERLAY_VERSION or overlay.get("sha256") != _recipe_overlay_hash():
+    if (
+        overlay.get("version") != OVERLAY_VERSION
+        or overlay.get("module") != "scripts/peerrolebench_pipe2_derived_material_adapter.py"
+        or overlay.get("scope") != "CSV serialization only; logical rows and pipeline code are unchanged"
+        or overlay.get("sha256") != _recipe_overlay_hash()
+    ):
         raise DerivedRootError("derived recipe overlay hash/version mismatch")
+    if recipe.get("serialization") != {
+        "delimiter": ",", "quotechar": '"', "quoting": "QUOTE_MINIMAL",
+        "doublequote": True, "escapechar": None, "lineterminator": "\\n",
+    }:
+        raise DerivedRootError("derived recipe serialization contract mismatch")
+    if recipe.get("malformed_policy") != {
+        "invalid_action": "reject_without_label",
+        "unknown_action": "unknown_without_label",
+        "emits_label": False,
+    }:
+        raise DerivedRootError("derived recipe malformed policy mismatch")
+    if recipe.get("llm_calls") != 0 or recipe.get("gpu_jobs") != 0:
+        raise DerivedRootError("derived recipe cannot claim API or GPU execution")
+    history = recipe.get("fixture_history")
+    if history != {
+        "valid_shape_seeds": [0, 2, 3, 5, 7, 8],
+        "malformed_history_seeds": [1, 4, 6, 9],
+        "status": "NOT_A_SCIENTIFIC_SPLIT",
+        "note": "These lists describe the prior pinned shape audit, not public/hidden visibility or a confirmatory split.",
+    }:
+        raise DerivedRootError("derived recipe fixture history mismatch")
     if tuple(recipe.get("seeds", ())) != SEEDS:
         raise DerivedRootError("derived recipe seed order mismatch")
+    if recipe.get("equivalence_classes") != [
+        {"schema_name": "employees", "seeds": [0, 5]},
+        {"schema_name": "products", "seeds": [1, 6]},
+        {"schema_name": "transactions", "seeds": [2, 7]},
+        {"schema_name": "customers", "seeds": [3, 8]},
+        {"schema_name": "projects", "seeds": [4, 9]},
+    ]:
+        raise DerivedRootError("derived recipe equivalence classes mismatch")
+    fixtures = recipe.get("fixtures")
+    if not isinstance(fixtures, list) or len(fixtures) != len(SEEDS):
+        raise DerivedRootError("derived recipe must enumerate all candidate seeds")
+    if not all(isinstance(item, dict) for item in fixtures):
+        raise DerivedRootError("derived recipe fixtures must be objects")
+    if {item.get("seed") for item in fixtures} != set(SEEDS):
+        raise DerivedRootError("derived recipe fixture seeds mismatch")
     return recipe
 
 
@@ -256,9 +309,12 @@ def load_derived_pipe2(seed: int, *, recipe_path: str | Path = RECIPE_PATH) -> A
     generated = _pinned_generated(seed)
     derived = derive_seed(seed, generated=generated)
     record = next(item for item in recipe["fixtures"] if item["seed"] == seed)
-    for key in ("source_sha256", "expected_sha256", "schema_name", "columns", "key_columns"):
-        if derived[key] != record[key]:
-            raise DerivedRootError(f"derived seed {seed} record mismatch for {key}")
+    compact_derived = {key: value for key, value in derived.items()
+                       if key not in {"source_bytes", "expected_bytes"}}
+    if compact_derived != record:
+        mismatches = [key for key in sorted(set(compact_derived) | set(record))
+                      if compact_derived.get(key) != record.get(key)]
+        raise DerivedRootError(f"derived seed {seed} record mismatch for {mismatches}")
     updated = copy.deepcopy(generated)
     updated.workspace_files["data/source.csv"] = derived["source_bytes"]
     updated.workspace_files["data/expected_output.csv"] = derived["expected_bytes"]

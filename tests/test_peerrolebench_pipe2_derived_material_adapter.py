@@ -77,6 +77,15 @@ def test_recipe_overlay_hash_mutation_fails_closed(tmp_path: Path):
         load_derived_pipe2(0, recipe_path=path)
 
 
+def test_recipe_seed_record_mutation_fails_closed_even_if_root_is_recomputed(tmp_path: Path):
+    recipe = json.loads(RECIPE_PATH.read_text(encoding="utf-8"))
+    recipe["fixtures"][0]["source_changed"] = True
+    path = tmp_path / "recipe.json"
+    path.write_text(json.dumps(_recipe_with_digest(recipe)), encoding="utf-8")
+    with pytest.raises(DerivedRootError, match="record mismatch"):
+        load_derived_pipe2(0, recipe_path=path)
+
+
 def test_seed_outside_candidate_is_rejected():
     with pytest.raises(DerivedRootError, match="not in the candidate recipe"):
         load_derived_pipe2(10)

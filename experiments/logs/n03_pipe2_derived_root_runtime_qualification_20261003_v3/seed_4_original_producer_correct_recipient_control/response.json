@@ -1,0 +1,70 @@
+{
+  "request": {
+    "op": "transform_load",
+    "artifact": {
+      "schema": "pipe2-extracted-rows-v1",
+      "columns": [
+        "project_id",
+        "project_name",
+        "owner",
+        "summary"
+      ],
+      "row_count": 3,
+      "rows": [
+        {
+          "project_id": "301",
+          "project_name": "Project Alpha",
+          "owner": "Engineering",
+          "summary": "Complete rewrite of the legacy authentication system using modern OAuth2 and OpenID Connect standards"
+        },
+        {
+          "project_id": "303",
+          "project_name": "Project Gamma",
+          "owner": "Engineering",
+          "summary": "Migration of all on-premises databases to cloud-managed instances with zero-downtime cutover strategy"
+        },
+        {
+          "project_id": "306",
+          "project_name": "Project Zeta",
+          "owner": "Operations",
+          "summary": "Infrastructure automation initiative covering provisioning, monitoring, alerting, and incident response workflows"
+        }
+      ],
+      "artifact_sha256": "1b953a19be5d979296bdd67d68dd64195308489440e3afe6cdd7428e0603a4f7"
+    }
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "output_csv": "project_id,project_name,owner,summary\n301,Project Alpha,Engineering,Complete rewrite of the legacy authentication system using modern OAuth2 and OpenID Connect standards\n303,Project Gamma,Engineering,Migration of all on-premises databases to cloud-managed instances with zero-downtime cutover strategy\n306,Project Zeta,Operations,\"Infrastructure automation initiative covering provisioning, monitoring, alerting, and incident response workflows\"\n",
+      "parsed_rows": [
+        {
+          "project_id": "301",
+          "project_name": "Project Alpha",
+          "owner": "Engineering",
+          "summary": "Complete rewrite of the legacy authentication system using modern OAuth2 and OpenID Connect standards"
+        },
+        {
+          "project_id": "303",
+          "project_name": "Project Gamma",
+          "owner": "Engineering",
+          "summary": "Migration of all on-premises databases to cloud-managed instances with zero-downtime cutover strategy"
+        },
+        {
+          "project_id": "306",
+          "project_name": "Project Zeta",
+          "owner": "Operations",
+          "summary": "Infrastructure automation initiative covering provisioning, monitoring, alerting, and incident response workflows"
+        }
+      ],
+      "source_paths": [
+        "pipeline/transform.py",
+        "pipeline/load.py"
+      ]
+    }
+  },
+  "transport": {
+    "status": "complete"
+  },
+  "response_digest": "e4ef90c25da61626c706ca047db3562ae2783dc7b029c2d677ca522f020e42cd"
+}

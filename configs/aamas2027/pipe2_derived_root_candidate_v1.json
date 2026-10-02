@@ -13,7 +13,7 @@
   "overlay": {
     "version": "pipe2-csv-writer-v1",
     "module": "scripts/peerrolebench_pipe2_derived_material_adapter.py",
-    "sha256": "c42c2fed440329e26558361d5aaee0e8002c3858dfa772cda2fab280367658d5",
+    "sha256": "3dd1b31d83d7ffb5f46ebb469d74fcd0a2eb759254c8eb3f8495caada07f2390",
     "scope": "CSV serialization only; logical rows and pipeline code are unchanged"
   },
   "seeds": [
@@ -28,8 +28,45 @@
     8,
     9
   ],
-  "visibility": {
-    "public_shape_development": [
+  "equivalence_classes": [
+    {
+      "schema_name": "employees",
+      "seeds": [
+        0,
+        5
+      ]
+    },
+    {
+      "schema_name": "products",
+      "seeds": [
+        1,
+        6
+      ]
+    },
+    {
+      "schema_name": "transactions",
+      "seeds": [
+        2,
+        7
+      ]
+    },
+    {
+      "schema_name": "customers",
+      "seeds": [
+        3,
+        8
+      ]
+    },
+    {
+      "schema_name": "projects",
+      "seeds": [
+        4,
+        9
+      ]
+    }
+  ],
+  "fixture_history": {
+    "valid_shape_seeds": [
       0,
       2,
       3,
@@ -37,14 +74,14 @@
       7,
       8
     ],
-    "hidden_shape_development": [
+    "malformed_history_seeds": [
       1,
       4,
       6,
       9
     ],
     "status": "NOT_A_SCIENTIFIC_SPLIT",
-    "note": "Visibility bookkeeping inherited from the prior shape audit; no confirmatory split is frozen."
+    "note": "These lists describe the prior pinned shape audit, not public/hidden visibility or a confirmatory split."
   },
   "serialization": {
     "delimiter": ",",
@@ -305,5 +342,5 @@
   "scientific_claim_allowed": false,
   "llm_calls": 0,
   "gpu_jobs": 0,
-  "root_digest": "f984db3deb81cf66001864ab9fb013ceef91019c97d860159693c820fccf770e"
+  "root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967"
 }

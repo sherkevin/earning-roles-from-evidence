@@ -1,0 +1,58 @@
+{
+  "request": {
+    "op": "transform_load",
+    "artifact": {
+      "schema": "pipe2-extracted-rows-v1",
+      "columns": [
+        "project_id",
+        "project_name",
+        "owner",
+        "summary"
+      ],
+      "row_count": 2,
+      "rows": [
+        {
+          "project_id": "v-4-0-project_id",
+          "project_name": " canary-4-0 ",
+          "owner": "v-4-0-owner",
+          "summary": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {
+          "project_id": "",
+          "project_name": "canary-4-1",
+          "owner": "",
+          "summary": ""
+        }
+      ],
+      "artifact_sha256": "592467a7049733729746a8636916ad50329d38b52bcf083bd630e7ee7fe1ff15"
+    }
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "output_csv": "project_id,project_name,owner,summary\nv-4-0-project_id,canary-4-0,v-4-0-owner,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n,canary-4-1,,\n",
+      "parsed_rows": [
+        {
+          "project_id": "v-4-0-project_id",
+          "project_name": "canary-4-0",
+          "owner": "v-4-0-owner",
+          "summary": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        },
+        {
+          "project_id": "",
+          "project_name": "canary-4-1",
+          "owner": "",
+          "summary": ""
+        }
+      ],
+      "source_paths": [
+        "pipeline/transform.py",
+        "pipeline/load.py"
+      ]
+    }
+  },
+  "transport": {
+    "status": "complete"
+  },
+  "response_digest": "ff046b74f8f5100bf66165bd5e21db848f99bb4c955b053baa34fb75c5c819f4"
+}
