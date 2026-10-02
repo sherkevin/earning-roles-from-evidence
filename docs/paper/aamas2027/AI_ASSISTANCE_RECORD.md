@@ -616,6 +616,16 @@ An independent parity review found a false-pass path: non-terminal arms could re
 
 The assistant added an opt-in `role-evidence-judgment-beta-v1` assignment comparator and connected it to the existing preview→assignment seam. It aggregates only read-cut-visible public recipient judgments with a frozen `accept=1`, `accept_with_rework=.5`, `reject_redo=0` mapping and a Beta(1,1) overlay; terminal quality, producer scores and later outcomes are excluded, and no persistent policy state is changed. The v2 targeted receipt has 10 passes, including judgment-versus-quality mutations and changed assignment probabilities. This is an assignment-side comparator seam, not a locked method, live baseline, or scientific result.
 
+### 2026-10-02 benchmark/baseline gate re-audit
+
+After the comparator was connected to the assignment preview seam, I re-audited the
+benchmark-selection, baseline-parity, experiment-matrix, and result-interpretation
+requirements. The audit records that the public-judgment assignment seam is qualified
+only in a zero-call fixture. The benchmark root is not frozen, the seven-arm canonical
+live runner has not consumed the comparator, independent histories and complete costs
+are missing, and no scientific result or A800 run is claimed. The report is
+`docs/coordination/task_reports/20261002_benchmark_baseline_gate_reaudit.md`.
+
 ### 2026-09-28 baseline bridge audit
 
 The frozen N02 v3 ledger was checked for lossless mapping into the new policy
