@@ -41,6 +41,8 @@ assignment 规则，映射、先验、scale 和无 evidence candidate 的探索�
 ## 验证
 
 `tests/test_peerrolebench_role_evidence_selection.py` 与 offer tests：`9 passed`。
+配置、源码 hash、命令、原始 pytest 输出和 summary 保存在
+[`n03_role_evidence_assignment_scorer_20261002`](../../../experiments/logs/n03_role_evidence_assignment_scorer_20261002/)。
 
 - 只修改同一 evidence 的 judgment，score 和 posterior 改变；
 - 只修改 `quality_score`，score 和 public-judgment input digest 不变；
