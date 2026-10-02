@@ -46,6 +46,16 @@ real situated judgment 仍开放。详见 [manifest hardening v2](../../../coord
 
 对照审查还保留 `MULTI3_polyglot` 作为 `CONDITIONAL-LOW` fallback，而不是 active root：其 JSON fixtures 可解析，但 native tests 使用 hardcoded `correct_wire/correct_envelope`，没有真实 producer→recipient artifact binding；sample generator、seed split、schema contract 和 prompt oracle 也未冻结。详见 [MULTI3 fallback audit](../../../coordination/task_reports/20261001_multi3_fallback_audit.md)。
 
+2026-10-02 baseline-parity amendment：v1.3 composition 已增加显式 policy factory/name seam，
+并修复“只提交 delayed credit 就算 arm 通过”的假通过条件；声明了 accepted feedback source
+的 arm 若没有对应 policy update 必须为 `UNKNOWN`。新增的
+`role-evidence-judgment-beta-v1` 只作为 assignment-side comparator，按 read-cut 前公开
+recipient judgment 生成 overlay，排除 terminal quality/Qp 和持久 state。它尚未接入七 arm
+live runner，且 evidence-content mutation 仍不能改变当前 hand-authored overlay 的选择；因此
+baseline matrix、independent live history、第二 root 与 scientific readiness 仍未冻结。
+详见 [feedback-channel gate](../../../coordination/task_reports/20261002_pipe3_feedback_channel_gate.md)
+和 [assignment scorer report](../../../coordination/task_reports/20261002_role_evidence_assignment_scorer.md)。
+
 副轨候选为 `graph-ipd@00ef417f60053569175b2b50d0f0e25ff8eb7007`（MIT，arXiv:2608.28977），用于机制 sanity check，不改变主轨的 artifact claim。
 
 冻结前必须有不可变 manifest：TeamBench commit、root/source/generator hash、seed 与 root split、角色可见文件、写权限、scorer/ledger schema、模型/API 配置、预算、主指标和停止规则。任何 root 的信息泄漏、责任归因、评分覆盖或 replay 失败都只能是 `UNKNOWN`/停止，不能靠改 label、减少检查或扩大 timeout 变成通过。
