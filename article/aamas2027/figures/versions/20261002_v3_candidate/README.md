@@ -2,4 +2,4 @@
 
 This directory preserves the third independent-review candidate. It is not the
 active paper configuration; the selected method-state semantics are recorded in
-`v6_update_to_future_read_cut_20261002`.
+`v7_future_target_semantics_20261002`.
