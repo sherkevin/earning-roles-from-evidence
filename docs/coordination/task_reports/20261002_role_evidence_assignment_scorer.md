@@ -40,9 +40,13 @@ assignment 规则，映射、先验、scale 和无 evidence candidate 的探索�
 
 ## 验证
 
-`tests/test_peerrolebench_role_evidence_selection.py` 与 offer tests：`9 passed`。
+`tests/test_peerrolebench_role_evidence_selection.py` 与 offer tests：初版回执 `9 passed`；
+接入 preview wrapper 后的 v2 回执为 `10 passed`。新增
+`preview_role_evidence_selection_with_public_judgment`，默认 hand-authored overlay 入口保持
+不变。
 配置、源码 hash、命令、原始 pytest 输出和 summary 保存在
-[`n03_role_evidence_assignment_scorer_20261002`](../../../experiments/logs/n03_role_evidence_assignment_scorer_20261002/)。
+[`n03_role_evidence_assignment_scorer_20261002`](../../../experiments/logs/n03_role_evidence_assignment_scorer_20261002/)
+和 [`n03_role_evidence_assignment_scorer_20261002_v2`](../../../experiments/logs/n03_role_evidence_assignment_scorer_20261002_v2/)。
 
 - 只修改同一 evidence 的 judgment，score 和 posterior 改变；
 - 只修改 `quality_score`，score 和 public-judgment input digest 不变；

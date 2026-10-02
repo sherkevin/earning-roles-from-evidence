@@ -614,7 +614,7 @@ An independent parity review found a false-pass path: non-terminal arms could re
 
 ### 2026-10-02 stateless role-evidence assignment scorer
 
-The assistant added an opt-in `role-evidence-judgment-beta-v1` assignment comparator. It aggregates only read-cut-visible public recipient judgments with a frozen `accept=1`, `accept_with_rework=.5`, `reject_redo=0` mapping and a Beta(1,1) overlay; terminal quality, producer scores and later outcomes are excluded, and no persistent policy state is changed. Nine targeted tests pass, including judgment-versus-quality mutations. This is an assignment-side comparator seam, not a locked method, live baseline, or scientific result.
+The assistant added an opt-in `role-evidence-judgment-beta-v1` assignment comparator and connected it to the existing preview→assignment seam. It aggregates only read-cut-visible public recipient judgments with a frozen `accept=1`, `accept_with_rework=.5`, `reject_redo=0` mapping and a Beta(1,1) overlay; terminal quality, producer scores and later outcomes are excluded, and no persistent policy state is changed. The v2 targeted receipt has 10 passes, including judgment-versus-quality mutations and changed assignment probabilities. This is an assignment-side comparator seam, not a locked method, live baseline, or scientific result.
 
 ### 2026-09-28 baseline bridge audit
 

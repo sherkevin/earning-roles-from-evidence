@@ -76,3 +76,6 @@ v1.3 的显式 policy factory 已经接入，但独立 parity review 发现两�
 一个无状态 `role-evidence-judgment-beta-v1` assignment comparator 已作为可复用的 public
 judgment 输入适配器实现，但只完成离线定向测试。它不改变持久状态，也没有接入七 arm live
 runner；因此不能关闭同信息 baseline、独立 live history 或 evidence-to-decision 因果门。
+该 comparator 已通过 opt-in preview→assignment wrapper 的双 candidate fixture，确认 judgment
+mutation 会改变 probabilities 而不会修改持久 state；它仍未接入 live runner，不能替代独立
+root、完整成本或统计证据。

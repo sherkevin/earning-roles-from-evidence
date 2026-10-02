@@ -21,6 +21,7 @@ from peerrolebench_role_evidence_offer import (  # noqa: E402
 )
 from peerrolebench_role_evidence_selection import (  # noqa: E402
     commit_role_evidence_selection, preview_role_evidence_selection,
+    preview_role_evidence_selection_with_public_judgment,
 )
 from peerrolebench_role_evidence_scorer import score_role_evidence  # noqa: E402
 
@@ -183,3 +184,56 @@ def test_judgment_score_changes_but_quality_score_is_not_read():
     assert changed.input_digest != original.input_digest
     assert unchanged.scores == original.scores
     assert unchanged.input_digest == original.input_digest
+
+
+def test_public_judgment_comparator_changes_assignment_probabilities():
+    """The opt-in scorer is now connected to preview without updating state."""
+    boundary = Pipe3SelectionBoundary(ContextualTrustPolicy(), registry())
+    feedback_offer = make_offer(
+        offer_id="feedback-both", task_id="task", task_index=1, role="producer",
+        context_key="PIPE3:1", candidate_keys=("peer-b@v1", "peer-c@v1"),
+        public_rows=(), evidence_version="role-v1", available_index=1,
+    )
+    rows = (
+        PublicRoleEvidence(
+            evidence_id="eb", candidate_key="peer-b@v1", role="producer", source_task_index=0,
+            delivery_id="db", judgment_id="jb", action_id="ab", outcome_id="ob",
+            artifact_sha256="b" * 64, judgment="accept", action="use",
+            outcome_status="PASS", quality_score=0.0, available_index=1,
+        ),
+        PublicRoleEvidence(
+            evidence_id="ec", candidate_key="peer-c@v1", role="producer", source_task_index=0,
+            delivery_id="dc", judgment_id="jc", action_id="ac", outcome_id="oc",
+            artifact_sha256="c" * 64, judgment="reject_redo", action="independent_redo",
+            outcome_status="FAIL", quality_score=1.0, available_index=1,
+        ),
+    )
+    role_offer = make_role_evidence_offer(
+        offer_id="role-offer-both", task_id="task", task_index=1, role="producer",
+        context_key="PIPE3:1", candidate_keys=("peer-b@v1", "peer-c@v1"),
+        evidence=rows, evidence_version="role-v1", available_index=1,
+    )
+    common = _common(base_scores=(0.0, 0.0))
+    common.pop("base_scores")
+    common.pop("read_cut")
+    first, first_score = preview_role_evidence_selection_with_public_judgment(
+        boundary, role_offer=role_offer, feedback_offer=feedback_offer,
+        base_scores=(0.0, 0.0), read_cut=1, assignment_id="as-both",
+        native_selection_id="s-both", **{**common, "rng": np.random.default_rng(7)},
+    )
+    changed_rows = (replace(rows[0], judgment="reject_redo"), rows[1])
+    changed_offer = make_role_evidence_offer(
+        offer_id=role_offer.offer_id, task_id=role_offer.task_id, task_index=role_offer.task_index,
+        role=role_offer.role, context_key=role_offer.context_key,
+        candidate_keys=role_offer.candidate_keys, evidence=changed_rows,
+        evidence_version=role_offer.evidence_version, available_index=role_offer.available_index,
+    )
+    second, second_score = preview_role_evidence_selection_with_public_judgment(
+        boundary, role_offer=changed_offer, feedback_offer=feedback_offer,
+        base_scores=(0.0, 0.0), read_cut=1, assignment_id="as-both",
+        native_selection_id="s-both", **{**common, "rng": np.random.default_rng(7)},
+    )
+    assert first_score.scores != second_score.scores
+    assert first.selection.probabilities != second.selection.probabilities
+    assert first.selection.chosen_index != second.selection.chosen_index or first.selection.probabilities != second.selection.probabilities
+    assert boundary.policy.snapshot()["updates"] == 0

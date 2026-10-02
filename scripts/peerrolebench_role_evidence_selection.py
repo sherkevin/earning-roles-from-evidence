@@ -21,6 +21,11 @@ from peer_role_protocol_20260925 import LaterAssignment
 from peerrolebench_assignment_attestation import AssignmentEvidenceOffer
 from peerrolebench_baseline_policies import Selection
 from peerrolebench_pipe3_runner_v1 import Pipe3SelectionBoundary, SelectionSeal, _digest
+from peerrolebench_role_evidence_scorer import (
+    RoleEvidenceScore,
+    RoleEvidenceScoreConfig,
+    score_role_evidence,
+)
 from peerrolebench_role_evidence_offer import RoleEvidenceOffer
 from peerrolebench_selection_preview import FixedChoiceRNG, preview_selection
 
@@ -194,6 +199,35 @@ def preview_role_evidence_selection(
     )
 
 
+def preview_role_evidence_selection_with_public_judgment(
+    boundary: Pipe3SelectionBoundary,
+    *,
+    role_offer: RoleEvidenceOffer,
+    feedback_offer: AssignmentEvidenceOffer,
+    base_scores: Sequence[float],
+    read_cut: int,
+    scorer_config: RoleEvidenceScoreConfig | None = None,
+    **kwargs: Any,
+) -> tuple[SelectionPlan, RoleEvidenceScore]:
+    """Preview a choice using the opt-in public-judgment comparator.
+
+    The scorer is stateless and produces the overlay before the existing
+    preview transaction.  The returned score receipt must be persisted by the
+    caller alongside the selection; this function does not mutate policy,
+    ledger, or RNG state beyond the existing preview contract.
+    """
+
+    score = score_role_evidence(
+        role_offer, base_scores=base_scores, read_cut=read_cut,
+        config=scorer_config,
+    )
+    plan = preview_role_evidence_selection(
+        boundary, role_offer=role_offer, feedback_offer=feedback_offer,
+        base_scores=score.scores, read_cut=read_cut, **kwargs,
+    )
+    return plan, score
+
+
 def commit_role_evidence_selection(
     boundary: Pipe3SelectionBoundary,
     *,
@@ -265,4 +299,7 @@ def commit_role_evidence_selection(
         raise
 
 
-__all__ = ["SelectionPlan", "VERSION", "commit_role_evidence_selection", "preview_role_evidence_selection"]
+__all__ = [
+    "SelectionPlan", "VERSION", "commit_role_evidence_selection",
+    "preview_role_evidence_selection", "preview_role_evidence_selection_with_public_judgment",
+]

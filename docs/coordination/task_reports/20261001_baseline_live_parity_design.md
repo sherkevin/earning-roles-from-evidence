@@ -113,3 +113,8 @@ evidence-consumption mutation test。
 Beta(1,1) 和 `accept=1 / accept_with_rework=.5 / reject_redo=0` 生成 overlay score。该
 comparator 目前只完成定向测试，尚未接入七 arm runner；它不能替代 raw-acceptance projection、
 terminal-only channel、独立 live history 或 B/C evidence decision-mutation gate。
+
+随后已用 opt-in `preview_role_evidence_selection_with_public_judgment` 接入现有
+preview→assignment seam。双 candidate public-evidence fixture 中，修改 B 的 judgment 会改变
+assignment probabilities，而 policy state/update count 保持不变；这仍只是可识别性资格，不是
+live baseline 或效果结果。
