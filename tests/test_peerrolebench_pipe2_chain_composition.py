@@ -11,23 +11,22 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from peerrolebench_pipe2_chain_composition import compose_pipe2_chain  # noqa: E402
 
 
-def test_eligible_chain_reaches_later_assignment_and_next_task_start():
+def test_unregistered_accept_chain_stops_before_role_evidence():
     result = compose_pipe2_chain(0, variant="eligible")
-    assert result["gate"]["feedback_status"] == "ELIGIBLE"
-    assert result["evidence_recorded"] is True
-    assert result["assignment_recorded"] is True
-    assert result["next_selection_recorded"] is True
+    assert result["gate"]["feedback_status"] == "PENDING_ATTRIBUTION"
+    assert result["evidence_recorded"] is False
+    assert result["assignment_recorded"] is False
+    assert result["next_selection_recorded"] is False
     assert result["ledger_event_types"] == [
         "peer_selection", "task_start", "producer_delivery", "producer_score",
         "recipient_judgment", "consumer_action", "terminal_outcome",
-        "role_evidence_update", "later_assignment", "peer_selection", "task_start",
     ]
-    assert len(result["ledger_event_hashes"]) == 11
+    assert len(result["ledger_event_hashes"]) == 7
     assert result["ledger_snapshot"] == {
-        "event_count": 11, "last_hash": result["ledger_snapshot"]["last_hash"],
+        "event_count": 7, "last_hash": result["ledger_snapshot"]["last_hash"],
         "delivery_count": 1, "producer_score_count": 1, "judgment_count": 1,
-        "action_count": 1, "outcome_count": 1, "evidence_count": 1,
-        "assignment_count": 1,
+        "action_count": 1, "outcome_count": 1, "evidence_count": 0,
+        "assignment_count": 0,
     }
     assert result["scientific_claim_allowed"] is False
 

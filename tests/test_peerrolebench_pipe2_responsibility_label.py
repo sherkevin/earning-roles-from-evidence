@@ -17,8 +17,16 @@ ARTIFACT = "a" * 64
 
 def _case(seed: int = 0, *, judgment: str = "accept", action: str = "use",
           changed: tuple[str, ...] = (), score_status: str = "PASS",
-          score_label: int | None = 1, complete: bool = True) -> dict:
+          score_label: int | None = 1, complete: bool = True,
+          producer_defect_registered: bool | None = None) -> dict:
     materials = build_derived_materials(seed)
+    judgment_payload = {
+        "decision": judgment, "target_role": "producer",
+        "observed_artifact_sha256": ARTIFACT,
+        "coverage_complete": complete, "decision_complete": complete,
+    }
+    if producer_defect_registered is not None:
+        judgment_payload["producer_defect_registered"] = producer_defect_registered
     return {
         "materials": materials,
         "artifact_sha256": ARTIFACT,
@@ -27,11 +35,7 @@ def _case(seed: int = 0, *, judgment: str = "accept", action: str = "use",
             "coverage_complete": complete, "decision_complete": complete,
             "artifact_sha256": ARTIFACT,
         },
-        "judgment": {
-            "decision": judgment, "target_role": "producer",
-            "observed_artifact_sha256": ARTIFACT,
-            "coverage_complete": complete, "decision_complete": complete,
-        },
+        "judgment": judgment_payload,
         "action": {
             "consumer_action": action, "changed_paths": list(changed),
             "delivery_sha256": ARTIFACT, "used_artifact": action != "independent_redo",
@@ -49,11 +53,19 @@ def _evaluate(**kwargs):
                                      if key != "materials"}, materials=case["materials"])
 
 
-def test_accepted_unrepaired_use_with_complete_outcome_is_eligible():
+def test_accepted_unrepaired_use_without_defect_is_not_eligible():
     result = _evaluate()
-    assert result["feedback_status"] == "ELIGIBLE"
-    assert result["label"] == 1
+    assert result["feedback_status"] == "PENDING_ATTRIBUTION"
+    assert result["label"] is None
     assert result["policy_update_allowed"] is False
+
+
+def test_explicit_registered_producer_defect_can_pass_source_gate():
+    result = _evaluate(score_status="FAIL", score_label=0,
+                       producer_defect_registered=True)
+    assert result["feedback_status"] == "ELIGIBLE"
+    assert result["label"] == 0
+    assert result["producer_defect_registered"] is True
 
 
 def test_recipient_repair_is_not_an_upstream_label():

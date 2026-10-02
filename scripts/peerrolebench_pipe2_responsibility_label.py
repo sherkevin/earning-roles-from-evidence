@@ -72,6 +72,18 @@ def evaluate_pipe2_feedback(
         and judgment.get("coverage_complete") is True
         and judgment.get("decision_complete") is True
     )
+    # A successful direct adoption is not, by itself, a producer role signal.
+    # The active method requires either an independently registered producer
+    # defect or a producer-owned contract change.  The explicit field is
+    # intentionally carried in the judgment sidecar so a future runner can
+    # bind it to the independent scorer/contract registry.
+    explicit_defect = "producer_defect_registered" in judgment
+    defect_registered = bool(judgment.get("producer_defect_registered") is True)
+    defect_observed = bool(producer_score.get("status") == "FAIL"
+                           and producer_score.get("label") == 0)
+    if not explicit_defect:
+        defect_registered = bool(producer_changed and judgment_complete)
+        defect_observed = bool(producer_changed)
     action_complete = bool(
         action.get("consumer_action") in ACTIONS
         and action.get("delivery_sha256") == artifact_sha256
@@ -82,8 +94,15 @@ def evaluate_pipe2_feedback(
         and action.get("consumer_action") == "use"
         and not changed
     )
+    attribution_basis = bool(
+        defect_registered and defect_observed
+        and not producer_changed and not recipient_changed
+    ) if explicit_defect else bool(
+        defect_registered and defect_observed
+        and producer_changed and not recipient_changed
+    )
     eligible = bool(score_complete and judgment_complete and action_complete
-                    and outcome_complete and direct_use)
+                    and outcome_complete and direct_use and attribution_basis)
 
     if eligible:
         status = "ELIGIBLE"
@@ -103,7 +122,7 @@ def evaluate_pipe2_feedback(
         label = None
     else:
         status = "PENDING_ATTRIBUTION"
-        reason = "strict accepted-and-used delivery gate did not pass"
+        reason = "direct adoption lacks an independently registered producer defect or contract change"
         label = None
 
     return {
@@ -116,6 +135,8 @@ def evaluate_pipe2_feedback(
         "action_complete": action_complete,
         "outcome_complete": outcome_complete,
         "direct_unrepaired_use": direct_use,
+        "producer_defect_registered": defect_registered,
+        "producer_defect_observed": defect_observed,
         "feedback_status": status,
         "feedback_eligible": eligible,
         "label": label,

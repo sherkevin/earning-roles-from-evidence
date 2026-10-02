@@ -2,6 +2,8 @@
 
 日期：2026-10-03  
 状态：`PARTIAL`；零调用链路组合通过，真实 recipient judgment、独立终局和同信息 baseline 仍未接入。
+独立方法审查后，当前组合被明确限定为 typed-ledger plumbing，不能作为 active method 的
+producer attribution 或 role-evidence 结果。
 
 ## 做了什么
 
@@ -15,9 +17,12 @@ selection → task_start → delivery → producer score → recipient judgment
 ```
 
 `eligible` 控制表示同一 artifact 被直接采用，producer score、recipient judgment
-和 terminal outcome 都完整且绑定同一 digest，因此允许写入 role evidence 并提供
-下一任务 assignment。`repair` 只修改 recipient-owned 文件，`mixed` 同时涉及两侧；
-两者都停止在 gate，不写 producer evidence，不改变后续 policy。
+和 terminal outcome 都完整且绑定同一 digest；但它没有 producer-owned contract change
+或 `producer_defect_registered`，因此按 active method v1.1 必须停止在
+`PENDING_ATTRIBUTION`。`repair` 只修改 recipient-owned 文件，`mixed` 同时涉及两侧；
+两者分别停止在 `PENDING_ATTRIBUTION`/`UNKNOWN`，不写 producer evidence，不改变后续
+policy。旧 v1--v5 中曾把无 defect 的 `accept/use` 记成 `ELIGIBLE` 的回执完整保留，
+但现在标为 legacy、不得当作方法证据。
 
 新增 `scripts/peerrolebench_pipe2_chain_qualification.py`，在 5 个材料等价类、3
 种责任控制上写出 config、append-only raw JSONL、summary、源码 SHA256、实际 argv、
@@ -44,10 +49,11 @@ manifest、shape/runtime qualification 的定向集合合计 37 项通过（具�
 
 ## 解释边界
 
-这一步只证明事件顺序、digest 绑定、责任 gate 的保守停止和 later-assignment
-plumbing 能够在同一 typed ledger 中闭合。`eligible` 是 authored control，不是
-模型判断、真实质量标签或学习收益；`scientific_claim_allowed=false`，
-`benchmark_qualified=false`。它没有解决：
+这一步只证明事件顺序、digest 绑定和责任 gate 的保守停止可以在同一 typed ledger
+中闭合；当前运行将 `active_method_compatible=false` 写入每个 case。它没有完成
+active method 要求的 `evaluate_source_gate`→`build_role_evidence_from_ledger`→
+`make_role_evidence_offer`→preview/commit assignment 链，也没有真实质量标签或学习
+收益；`scientific_claim_allowed=false`、`benchmark_qualified=false`。它没有解决：
 
 1. 真实 LLM recipient judgment 与结构化评分；
 2. producer correctness 的独立可观测 outcome；
@@ -59,13 +65,15 @@ plumbing 能够在同一 typed ledger 中闭合。`eligible` 是 authored contro
 | Goal 要求 | 本任务状态 |
 |---|---|
 | situated judgment 可归因到交付 | `OPEN`：当前 judgment 为 authored control |
-| evidence → future assignment → next decision | `OFFLINE COMPOSITION QUALIFIED`，真实 episode `OPEN` |
+| evidence → future assignment → next decision | `LEGACY PLUMBING ONLY`；active source gate/offer/preview 尚未接入 |
 | 至少两个 structural roots | `PARTIAL`：PIPE2 仍为 candidate derived root，未升格 |
 | benchmark/baseline 与科学结果 | `OPEN` |
 | 实时更新与 A800 | `BLOCKED BY EVIDENCE GATES`，没有提交实验 |
 
-下一小步应是把这个 composition 作为 live runner 的父侧 contract，先接入真实
-recipient judgment 和独立 outcome 的小链；在责任、信息 read-cut 和 baseline parity
-没有同时可审计之前，不启动 A800，也不把离线资格写成方法效果。
+下一小步不再扩展当前 authored chain，而是复用已有 PIPE3 的
+`evaluate_source_gate`、`build_role_evidence_from_ledger` 和 preview→commit seam，
+先把旧 PIPE2 真实 sandbox 回执只读 replay 成 `UNKNOWN/PENDING_ATTRIBUTION`，再接入
+真实 recipient judgment、action 和独立 outcome。责任、信息 read-cut 和 baseline
+parity 没有同时可审计之前，不启动 A800，也不把离线资格写成方法效果。
 
 `goal_change_requested=false`；Goal 未修改、未降级。

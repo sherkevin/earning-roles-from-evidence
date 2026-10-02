@@ -76,15 +76,14 @@ def run(out_dir: Path, seeds: list[int]) -> dict:
 
     expected = {
         "eligible": {
-            "feedback_status": "ELIGIBLE",
-            "evidence_recorded": True,
-            "assignment_recorded": True,
-            "next_selection_recorded": True,
-            "event_count": 11,
+            "feedback_status": "PENDING_ATTRIBUTION",
+            "evidence_recorded": False,
+            "assignment_recorded": False,
+            "next_selection_recorded": False,
+            "event_count": 7,
             "event_types": [
                 "peer_selection", "task_start", "producer_delivery", "producer_score",
                 "recipient_judgment", "consumer_action", "terminal_outcome",
-                "role_evidence_update", "later_assignment", "peer_selection", "task_start",
             ],
         },
         "repair": {
@@ -132,6 +131,7 @@ def run(out_dir: Path, seeds: list[int]) -> dict:
                 "material_root_digest": result["material_root_digest"],
                 "ledger_event_digest": result["ledger_event_digest"],
                 "ledger_event_hashes": result["ledger_event_hashes"],
+                "active_method_compatible": result["active_method_compatible"],
                 "passed": passed,
             }
             rows.append(row)

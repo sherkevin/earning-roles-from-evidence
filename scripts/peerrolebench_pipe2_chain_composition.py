@@ -122,6 +122,7 @@ def compose_pipe2_chain(seed: int = 0, *, variant: str = "eligible") -> dict[str
             "decision": decision, "target_role": "producer",
             "observed_artifact_sha256": artifact_sha256,
             "coverage_complete": True, "decision_complete": True,
+            "producer_defect_registered": False,
         },
         action={
             "consumer_action": action_name, "changed_paths": changed,
@@ -169,6 +170,7 @@ def compose_pipe2_chain(seed: int = 0, *, variant: str = "eligible") -> dict[str
         "ledger_event_digest": _digest(ledger.events),
         "ledger_event_types": [event["event_type"] for event in ledger.events],
         "ledger_event_hashes": [event["record_hash"] for event in ledger.events],
+        "active_method_compatible": False,
         "scientific_claim_allowed": False,
     }
 

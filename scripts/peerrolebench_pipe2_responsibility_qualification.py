@@ -33,7 +33,15 @@ def _digest(value: object) -> str:
 
 def _case(materials: dict, *, judgment: str, action: str, changed: tuple[str, ...],
           complete: bool = True, score_status: str = "PASS",
-          score_label: int | None = 1) -> dict:
+          score_label: int | None = 1,
+          producer_defect_registered: bool | None = None) -> dict:
+    judgment_payload = {
+        "decision": judgment, "target_role": "producer",
+        "observed_artifact_sha256": ARTIFACT,
+        "coverage_complete": complete, "decision_complete": complete,
+    }
+    if producer_defect_registered is not None:
+        judgment_payload["producer_defect_registered"] = producer_defect_registered
     return evaluate_pipe2_feedback(
         materials,
         artifact_sha256=ARTIFACT,
@@ -42,11 +50,7 @@ def _case(materials: dict, *, judgment: str, action: str, changed: tuple[str, ..
             "coverage_complete": complete, "decision_complete": complete,
             "artifact_sha256": ARTIFACT,
         },
-        judgment={
-            "decision": judgment, "target_role": "producer",
-            "observed_artifact_sha256": ARTIFACT,
-            "coverage_complete": complete, "decision_complete": complete,
-        },
+        judgment=judgment_payload,
         action={
             "consumer_action": action, "changed_paths": list(changed),
             "delivery_sha256": ARTIFACT,
@@ -85,7 +89,10 @@ def run(out_dir: Path, seeds: list[int]) -> dict:
 
     cases = []
     controls = (
-        ("accepted_direct_use", {"judgment": "accept", "action": "use", "changed": ()}, "ELIGIBLE"),
+        ("accepted_direct_use_without_defect", {"judgment": "accept", "action": "use", "changed": ()}, "PENDING_ATTRIBUTION"),
+        ("registered_defect_direct_use", {"judgment": "accept", "action": "use", "changed": (),
+                                            "score_status": "FAIL", "score_label": 0,
+                                            "producer_defect_registered": True}, "ELIGIBLE"),
         ("recipient_repair", {"judgment": "accept_with_rework", "action": "repair",
                                "changed": ("pipeline/transform.py",)}, "PENDING_ATTRIBUTION"),
         ("mixed_edit", {"judgment": "accept_with_rework", "action": "repair",
