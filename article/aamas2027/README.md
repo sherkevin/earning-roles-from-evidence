@@ -1,9 +1,9 @@
 # AAMAS 2027 internal revision
 
-## 当前题目摘要草稿（2026-09-29）
+## 当前题目摘要草稿（2026-10-02）
 
-当前确认的工作标题为：**Earning Roles: Self-Evolving Responsibility from Situated Peer Judgments**。
-它是对外的定位标题；“self-evolving”描述待验证的动态角色形成目标，不能替代实时更新、稳定性或角色学习效果证据。
+当前确认的工作标题为：**Know Who You Are: Earning Roles from Situated Peer Judgments**。
+“Know Who You Are”提供对外的想象空间；“earning roles”描述待验证的动态角色形成目标，不能替代实时更新、稳定性或角色学习效果证据。
 
 [research_proposal.tex](research_proposal.tex) 是围绕当前主线新写的英文题目与摘要，
 使用现有官方 AAMAS 2027 类文件。它明确标记 `INTERNAL PRE-RESULTS PROPOSAL`，
@@ -15,24 +15,22 @@ python3 scripts/build_aamas2027.py --proposal
 
 产物为 `article/aamas2027/build/research_proposal.pdf`；校验记录为
 `build/proposal_verification.json`。`--proposal --submission` 会直接拒绝。
-以下 `main.tex`/`supplement.tex` 仍是保留的历史内部稿，不与新摘要拼接成投稿稿。
+以下 `mainline_pre_results.tex` 与 `main_historical_allocation_20261002.tex` 保留历史/过渡稿；当前正式内部初稿为 `main.tex`，其结果表为空并受 submission guard 约束。`supplement.tex` 仍是内部证据补充稿。
 
-当前论文主线已单独落在 [`mainline_pre_results.tex`](mainline_pre_results.tex)。它
-围绕唯一问题“situated recipient judgment 是否能形成可归因的 producer role
-evidence，并改变未来责任”组织故事、候选机制 RARE、PeerRoleBench-TB 资格门和
-同信息 baseline。该文件明确标记为 internal pre-results；RARE、benchmark、实时
-训练和任何效果数字都没有被宣称已经成立。
+当前论文主线落在 [`main.tex`](main.tex)。它围绕唯一问题“situated recipient
+judgment 是否能形成可归因的 producer role evidence，并改变未来责任”组织故事、
+候选机制 RARE、ArtifactRole/PeerSelect 资格门和同信息 baseline；完整实验矩阵
+中的结果列保持为空。`mainline_pre_results.tex` 是此前过渡稿，保留用于审计，不再是
+当前主稿。
 
 本地编译：
 
 ```bash
-cd article/aamas2027
-latexmk -pdf -interaction=nonstopmode -halt-on-error -file-line-error \
-  -outdir=build mainline_pre_results.tex
+python3 scripts/build_aamas2027.py
 ```
 
-截至 2026-09-27，主线草稿已通过本地 AAMAS 模板编译：3 页、引用已解析、无
-overfull box。`build/mainline_pre_results.pdf` 只是内部审阅稿，不能通过投稿构建。
+截至 2026-10-02，当前主稿已通过本地 AAMAS 模板编译：5 页、引用已解析、无
+overfull box。`build/main.pdf` 是内部 pre-results 审阅稿，不能通过投稿构建。
 
 2026-09-26 本地已编译并目视检查：一页、匿名、无溢出和未解析引用；官方文件
 哈希一致。仍有官方类/元数据路径的 incomplete-ifx 兼容性警告，校验 JSON 已记录。
@@ -47,8 +45,8 @@ Build from the project root:
 python scripts/build_aamas2027.py
 ```
 
-- `main.tex`: rewritten research question, minimal proposed protocol, corrected analysis, verified historical results, and decisive prospective tests.
-- `supplement.tex`: complete component directions, logging limitations, actual failure trace, evaluation contract, and assistance disclosure.
+- `main.tex`: current pre-results paper draft with the situated-judgment role-evidence storyline, complete experiment matrix, empty result cells, and explicit claim boundaries.
+- `supplement.tex`: 过渡期内部证据补充稿；与当前主稿的实验结果表尚未合并。
 - `build/main.pdf`, `build/supplement.pdf`: compiled internal drafts.
 - `aamas.cls`, `ACM-Reference-Format.bst`, `by.pdf`: byte-identical copies from the official AAMAS 2027 template.
 - `aamas_metadata.tex`: official conference/copyright settings and an explicit internal submission-ID marker.
