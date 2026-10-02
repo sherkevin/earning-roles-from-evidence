@@ -6,6 +6,7 @@
 \usepackage{url}
 \input{aamas_metadata}
 \acmSubmissionID{INTERNAL PRE-RESULTS -- NOT FOR SUBMISSION}
+\submissionType{Research Paper Track}
 
 \title[Know Who You Are]{Know Who You Are: Earning Roles from Situated Peer Judgments}
 \author{Anonymous Authors}
@@ -53,6 +54,14 @@ The paper makes four concrete contributions as a testable design.
   \item We state the falsification boundary. If recipient evidence has no out-of-sample information, if a same-information trust baseline explains the effect, if attribution is unsafe, or if quality gains disappear at matched complete cost, the role-formation claim does not pass.
 \end{itemize}
 
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/overview.pdf}
+\caption{The proposed earning-roles loop. Orange marks situated observation, green marks responsibility-safe evidence, and blue marks the future decision and its independently scored consequence. The feedback edge is delayed: it can change a later read cut but cannot rewrite a sealed assignment. Each artifact shown in the diagram is a planned ledger field, not a reported result.}
+\Description{Six-stage loop from a versioned producer delivery to recipient judgment, public role evidence, future assignment, target outcome, and delayed selected-only credit.}
+\label{fig:overview}
+\end{figure*}
+
 The current draft does not report a positive efficacy result. Existing development traces qualify parts of the protocol and expose scorer and ownership failures; they do not establish role learning. This separation lets the final paper promote only claims supported by an independently frozen experiment.
 
 \section{Related Work and Positioning}
@@ -87,6 +96,14 @@ The policy may consume only public events whose arrival is at or before its read
 For a source episode, define $G_t=1$ only when all of the following hold: (i) the producer contract or a pre-registered source defect is uniquely bound to the producer; (ii) the recipient inspected $o_t$ and its action is traceable to $o_t$; (iii) recipient-owned integration paths are empty; (iv) $J_t$, $m_t$, $Q_t$, identifiers, versions, and digests are complete; and (v) the source event has not already been credited. Otherwise $G_t=0$ and the source cannot create producer evidence.
 
 This gate distinguishes four observations that are often collapsed: a producer-content defect, a recipient's own integration work, a sink or final-task failure, and an unresolved attribution. The public record stores the reason for $G_t=0$. This makes safety measurable: a method that refuses ambiguous evidence may have a higher \unknown{} rate while producing fewer false producer penalties.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/timeline.pdf}
+\caption{Event-time and responsibility boundary. The source judgment may be public before the next assignment, but the target outcome is unavailable when that assignment is sealed. A late, duplicate, or non-attributable event becomes \unknown{} or a no-op.}
+\Description{A six-step two-row timeline from source selection and recipient judgment through evidence publication, future assignment, target outcome, and delayed credit. A dashed arrow returns only to a later read cut.}
+\label{fig:timeline}
+\end{figure}
 
 \section{Candidate Mechanism: Earning Roles}
 \label{sec:method}
@@ -135,7 +152,7 @@ The claimed object is the closed loop in which situated judgment becomes attribu
 \label{sec:benchmark}
 
 \subsection{Two complementary tracks}
-The primary track is \textbf{ArtifactRole}, a TeamBench-derived \\texttt{PeerRoleBench-TB} candidate. It is designed to contain real producer artifacts, recipient dependencies, use/rework/rejection actions, responsibility checks, later assignments, downstream adoption, and complete cost. Its roots are not yet frozen: \\texttt{DIST1\_queue\_race} is a development/protocol diagnostic and \\texttt{PIPE3\_stream\_processing} is a conditional confirmation candidate. Renamed seeds are not independent roots. The benchmark becomes scientific only after material visibility, write permissions, scorer coverage, root independence, and clean replay qualify.
+The primary track, \textbf{ArtifactRole}, is a TeamBench-derived candidate benchmark. It contains producer artifacts, recipient dependencies, use/rework/rejection actions, responsibility checks, later assignments, downstream adoption, and complete cost. Candidate roots are DIST1 queue-race (development diagnostic) and PIPE3 stream-processing (conditional confirmation); renamed seeds are not independent roots. Promotion requires material visibility, write permissions, scorer coverage, root independence, and clean replay.
 
 The secondary \textbf{PeerSelect} track uses a pinned local graph interaction benchmark for selected-only payoff, local candidate sets, online updates, drift, and service cost. It can test the update mechanism efficiently, but it cannot establish situated artifact judgment or producer attribution. The two tracks share event and selector interfaces while keeping task, label, scorer, denominator, and claim separate.
 
@@ -200,6 +217,34 @@ RQ4-II & ArtifactRole / all qualified roots & leave-one-mechanism-out & Remove g
 \label{tab:matrix}
 \end{table*}
 
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/experiment_map.pdf}
+\caption{Experiment map. ArtifactRole measures the situated producer--recipient phenomenon; PeerSelect isolates local selection, drift, and service cost. All policy arms receive the same candidate menus, lawful feedback schedule, task opportunities, and complete-cost budget before the four research questions are scored.}
+\Description{A three-panel map from the ArtifactRole and PeerSelect tracks to matched policy arms and four research-question endpoints: information, assignment, latency and cost, and safety and drift.}
+\label{fig:experiment-map}
+\end{figure*}
+
+\begin{table}[t]
+\centering\small
+\caption{Reserved headline results table. Values will be filled only from the frozen confirmation manifest; intervals are stream-level 95\% intervals.}
+\label{tab:headline}
+\begin{tabular}{p{.28\columnwidth}p{.17\columnwidth}p{.17\columnwidth}p{.17\columnwidth}}
+\toprule
+Endpoint & RARE & Best same-information arm & Difference / interval\\
+\midrule
+Future quality & \blank & \blank & \blank\\
+Complete cost & \blank & \blank & \blank\\
+Quality--cost utility & \blank & \blank & \blank\\
+Assignment change & \blank & \blank & \blank\\
+Judgment Brier score & \blank & \blank & \blank\\
+Update p95 / state bytes & \blank & \blank & \blank\\
+Old-root forgetting & \blank & \blank & \blank\\
+UNKNOWN / false attribution & \blank & \blank & \blank\\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \subsection{Budget, statistics, and reporting}
 Every model request reserves attempted calls, prompt tokens, maximum completion tokens, tool time, and storage before dispatch; errors release only unused reservations and retain their observed cost. We charge producer execution, recipient integration, judgment service, communication, retries, replay, verification, and returned artifacts. Development/search cost is reported separately from deployment cost. A pooled controller receives the same total capacity, and arms that do not use a judgment still pay the declared comparison cost or use a shared judgment call whose output is masked.
 
@@ -209,6 +254,24 @@ For each stream we record configuration, model route and version metadata, code 
 The minimum ablation grid is: (A) no evidence/no update; (B) public evidence only, with persistent state unchanged; (C) delayed update only, without new public evidence; and (D) public evidence plus delayed update. Additional interventions remove responsibility filtering, selected-only restriction, delay, locality, correction/replay, or the assignment binding one at a time while holding information, model, candidate menu, and budget fixed. A content mutation that changes a visible judgment while holding terminal quality fixed must change the comparator score if the comparator actually consumes that judgment.
 
 The main claim is withdrawn if an evidence publication implicitly changes persistent policy; if a recipient repair is credited to a producer; if assignment or read-cut order is invalid; if unknown or duplicate events update state; if contextual trust explains the complete effect; or if gains disappear at matched complete cost. A null, a trade-off, or a qualified protocol result is scientifically valid, but it cannot be written as successful role formation.
+
+\begin{table*}[t]
+\centering\scriptsize
+\caption{Illustrative event trace used to make the protocol auditable. The entries define what a future confirmation run must record; they are not an empirical episode or a filled result.}
+\label{tab:trace}
+\begin{tabular}{p{.13\textwidth}p{.22\textwidth}p{.30\textwidth}p{.25\textwidth}}
+\toprule
+Stage & Responsible actor & Public record and legal effect & Information that remains unavailable\\
+\midrule
+Source selection & Local owner / producer & Candidate menu, selected version, propensity, task and artifact digest; only the selected producer executes & Unexecuted candidates and hidden final score\\
+Recipient use & Downstream consumer & Read receipt, judgment, action, changed paths, and consumer cost; binds the judgment to one delivery & Whether a later target will succeed\\
+Responsibility gate & Independent contract check & Producer-owned defect, recipient-owned integration, mixed ownership, or \unknown{} with reason and lineage & A label inferred only from a terminal team score\\
+Evidence publication & Public evidence service & Immutable evidence version and arrival watermark; eligible rows enter the next read cut & The future target's outcome\\
+Future assignment & Local selector & Candidate, read-cut digest, sealed assignment, menu, and selection probability before task start & Any outcome generated after the seal\\
+Delayed credit & Target evaluator / updater & Selected-only quality--cost outcome updates the matching future opportunity once; replay must reproduce the state digest & A correction without explicit supersession lineage\\
+\bottomrule
+\end{tabular}
+\end{table*}
 
 \section{Current Evidence and Expected Interpretation}
 \label{sec:current}

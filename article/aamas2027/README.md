@@ -29,8 +29,9 @@ judgment 是否能形成可归因的 producer role evidence，并改变未来责
 python3 scripts/build_aamas2027.py
 ```
 
-截至 2026-10-02，当前主稿已通过本地 AAMAS 模板编译：5 页、引用已解析、无
-overfull box。`build/main.pdf` 是内部 pre-results 审阅稿，不能通过投稿构建。
+截至 2026-10-02，当前主稿已通过本地 AAMAS 模板编译：7 页、引用已解析、无
+overfull box；主赛道官方上限为 8 页。主稿已预留闭环架构图、事件时序图、实验矩阵图、
+headline result 表和 trace 表的位置，结果单元仍为空。`build/main.pdf` 是内部 pre-results 审阅稿，不能通过投稿构建。
 
 2026-09-26 本地已编译并目视检查：一页、匿名、无溢出和未解析引用；官方文件
 哈希一致。仍有官方类/元数据路径的 incomplete-ifx 兼容性警告，校验 JSON 已记录。
@@ -45,7 +46,8 @@ Build from the project root:
 python scripts/build_aamas2027.py
 ```
 
-- `main.tex`: current pre-results paper draft with the situated-judgment role-evidence storyline, complete experiment matrix, empty result cells, and explicit claim boundaries.
+- `main.tex`: current pre-results paper draft with the situated-judgment role-evidence storyline, complete experiment matrix, empty result cells, explicit claim boundaries, and reserved figure/table slots.
+- `scripts/build_aamas_figures.py` and `figures/*.pdf`: deterministic external vector figures used by the current draft.
 - `supplement.tex`: 过渡期内部证据补充稿；与当前主稿的实验结果表尚未合并。
 - `build/main.pdf`, `build/supplement.pdf`: compiled internal drafts.
 - `aamas.cls`, `ACM-Reference-Format.bst`, `by.pdf`: byte-identical copies from the official AAMAS 2027 template.
