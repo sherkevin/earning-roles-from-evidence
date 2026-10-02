@@ -56,6 +56,7 @@ def run(out_dir: Path, seeds: list[int]) -> dict:
         "material_adapter": "peerrolebench_pipe2_derived_material_adapter",
         "source_sha256": {name: _sha256(path) for name, path in source_files.items()},
         "fixture_mode": "authored-chain-controls-only",
+        "argv": sys.argv,
         "python": sys.version,
         "platform": platform.platform(),
         "git_commit": subprocess.check_output(
@@ -80,6 +81,11 @@ def run(out_dir: Path, seeds: list[int]) -> dict:
             "assignment_recorded": True,
             "next_selection_recorded": True,
             "event_count": 11,
+            "event_types": [
+                "peer_selection", "task_start", "producer_delivery", "producer_score",
+                "recipient_judgment", "consumer_action", "terminal_outcome",
+                "role_evidence_update", "later_assignment", "selection", "task_start",
+            ],
         },
         "repair": {
             "feedback_status": "PENDING_ATTRIBUTION",
@@ -87,6 +93,10 @@ def run(out_dir: Path, seeds: list[int]) -> dict:
             "assignment_recorded": False,
             "next_selection_recorded": False,
             "event_count": 7,
+            "event_types": [
+                "peer_selection", "task_start", "producer_delivery", "producer_score",
+                "recipient_judgment", "consumer_action", "terminal_outcome",
+            ],
         },
         "mixed": {
             "feedback_status": "UNKNOWN",
@@ -107,6 +117,7 @@ def run(out_dir: Path, seeds: list[int]) -> dict:
                 "assignment_recorded": result["assignment_recorded"],
                 "next_selection_recorded": result["next_selection_recorded"],
                 "event_count": snapshot["event_count"],
+                "event_types": result["ledger_event_types"],
             }
             passed = observed == contract and result["material_root_digest"] == recipe["root_digest"]
             row = {

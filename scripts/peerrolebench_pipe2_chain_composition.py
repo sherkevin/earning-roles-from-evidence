@@ -98,6 +98,22 @@ def compose_pipe2_chain(seed: int = 0, *, variant: str = "eligible") -> dict[str
     )
     ledger.record_outcome(outcome_event)
 
+    # The gate and the typed ledger must describe the same sealed facts.  Keep
+    # this check in the composition itself so a future live runner cannot
+    # silently score a dict that differs from the event it records.
+    if producer_score_event.artifact_sha256 != producer_score["artifact_sha256"]:
+        raise ValueError("producer score digest differs between ledger and gate input")
+    if producer_score_event.status != producer_score["status"]:
+        raise ValueError("producer score status differs between ledger and gate input")
+    if judgment_event.decision != decision or judgment_event.observed_artifact_sha256 != artifact_sha256:
+        raise ValueError("recipient judgment differs between ledger and gate input")
+    if (action_event.action != action_name
+            or action_event.used_artifact != (action_name in {"use", "repair"})
+            or action_event.input_artifact_sha256 != artifact_sha256):
+        raise ValueError("consumer action differs between ledger and gate input")
+    if outcome_event.delivery_id != delivery.delivery_id or not outcome_event.success:
+        raise ValueError("terminal outcome differs between ledger and gate input")
+
     gate = evaluate_pipe2_feedback(
         materials,
         artifact_sha256=artifact_sha256,
@@ -151,9 +167,10 @@ def compose_pipe2_chain(seed: int = 0, *, variant: str = "eligible") -> dict[str
         "next_selection_recorded": next_selection_recorded,
         "ledger_snapshot": ledger.snapshot(),
         "ledger_event_digest": _digest(ledger.events),
+        "ledger_event_types": [event["event_type"] for event in ledger.events],
+        "ledger_event_hashes": [event["record_hash"] for event in ledger.events],
         "scientific_claim_allowed": False,
     }
 
 
 __all__ = ["CHAIN_VERSION", "compose_pipe2_chain"]
-

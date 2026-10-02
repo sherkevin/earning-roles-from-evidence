@@ -17,6 +17,12 @@ def test_eligible_chain_reaches_later_assignment_and_next_task_start():
     assert result["evidence_recorded"] is True
     assert result["assignment_recorded"] is True
     assert result["next_selection_recorded"] is True
+    assert result["ledger_event_types"] == [
+        "peer_selection", "task_start", "producer_delivery", "producer_score",
+        "recipient_judgment", "consumer_action", "terminal_outcome",
+        "role_evidence_update", "later_assignment", "peer_selection", "task_start",
+    ]
+    assert len(result["ledger_event_hashes"]) == 11
     assert result["ledger_snapshot"] == {
         "event_count": 11, "last_hash": result["ledger_snapshot"]["last_hash"],
         "delivery_count": 1, "producer_score_count": 1, "judgment_count": 1,
@@ -36,3 +42,7 @@ def test_non_eligible_controls_stop_before_evidence_and_assignment(variant: str,
     assert result["evidence_recorded"] is False
     assert result["assignment_recorded"] is False
     assert result["next_selection_recorded"] is False
+    assert result["ledger_event_types"] == [
+        "peer_selection", "task_start", "producer_delivery", "producer_score",
+        "recipient_judgment", "consumer_action", "terminal_outcome",
+    ]
