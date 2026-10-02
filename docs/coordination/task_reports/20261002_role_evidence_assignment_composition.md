@@ -9,15 +9,22 @@
 PIPE3 two-stage canonical composition。默认 `hand_authored` 路径保持不变；新路径在
 同一个 source-bound `RoleEvidenceOffer` 上先计算公共 judgment score，再执行既有的
 isolated read → `LaterAssignment` → exact selection commit。runner 版本从 v1.3 升到
-`pipe3-two-stage-composition-v1.4`，并把 scorer 源码 hash 与 score `input_digest`
+`pipe3-two-stage-composition-v1.5`，并把 scorer 源码 hash 与 score `input_digest`
 写入回执，避免新旧语义共用一个版本号。
+
+public-judgment 模式使用中性 base score；另有显式的 `public_judgment_fixture` sensitivity
+选项，用 `accept` 或 `reject_redo` 检查 judgment 是否真的造成非零 score delta。默认
+`native` fixture 的 `accept_with_rework→0.5` 会保持零增量，这个结果必须被记录为无效应，
+不能被手写 base preference 掩盖。
 
 ## 回执
 
 - v2 是版本递增前的历史回执，保留在
   [`n03_role_evidence_assignment_composition_20261002_v2`](../../../experiments/logs/n03_role_evidence_assignment_composition_20261002_v2/)，不能替代后续版本；
-- v3 是版本化后的主回执：
+- v3 是 v1.4 版本化后的历史回执：
   [`n03_role_evidence_assignment_composition_20261002_v3`](../../../experiments/logs/n03_role_evidence_assignment_composition_20261002_v3/)；
+- v4 是 v1.5 sensitivity fixture 的当前主回执，将记录非零 judgment→score delta：
+  [`n03_role_evidence_assignment_composition_20261002_v4`](../../../experiments/logs/n03_role_evidence_assignment_composition_20261002_v4/)；
 - `producer_owned`：`QUALIFIED_OFFLINE`，完成 source evidence、isolated public read、
   assignment-before-selection、target execution 和 delayed terminal update；
 - `recipient_owned` / `mixed`：`UNKNOWN`，责任门拒绝伪造 producer evidence、assignment
@@ -31,8 +38,13 @@ isolated read → `LaterAssignment` → exact selection commit。runner 版本�
 导致 producer-owned case 在 assignment preview 阶段抛出
 `TypeError: ... got multiple values for keyword argument 'read_cut'`；该次运行没有被当作
 通过，随后将 read-cut 责任收回 wrapper 并重新执行。修复后的定向回归为 `19 passed`，
-版本递增后的 v3 回执才是当前可引用的 qualification。这个失败说明 wrapper 的参数边界
+版本递增后的 v3 回执才是 v1.4 的可引用 qualification。这个失败说明 wrapper 的参数边界
 需要独立测试，不能由最终 summary 的状态反推接口正确。
+
+随后反审查发现 v1.4 的 native fixture 使用中性 judgment 且仍由手写 base preference 主导；
+v1.5 移除 public 模式的 base 偏置并加入显式 sensitivity fixture。另一个负向测试发现
+同一 delivery 的重复 evidence 没有 correction lineage 会被 scorer 双计；现在 scorer 直接
+拒绝这类 offer，等待带有明确 supersession 语义的后续 schema。
 
 ## 这条证据支持什么
 

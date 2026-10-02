@@ -1,0 +1,282 @@
+{
+  "version": "pipe3-two-stage-composition-v1.5",
+  "control": "mixed",
+  "task_id": "PIPE3_stream_processing",
+  "source_seed": 0,
+  "target_seed": 1,
+  "root": "PIPE3_stream_processing",
+  "same_root_qualification": true,
+  "independent_benchmark": false,
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "source_commit": "56bb7da257a5fab1e46a5bb2003ee89ef5aa7341",
+  "python": "3.9.6",
+  "python_executable": "/Library/Developer/CommandLineTools/usr/bin/python3",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "component_sha256": {
+    "scripts/peerrolebench_pipe3_two_stage_composition.py": "6edc690b6079a94cb963ce289e27eb11849fff629cd82aa46e61077004254ec0",
+    "scripts/peerrolebench_two_stage_gate.py": "82a8df555f83eb9f052a66f7234eb9fef12acb71d7ed7c70cac14fc4729584ef",
+    "scripts/peerrolebench_role_evidence_selection.py": "79d222438467108748ca614729cabc3ed9741fa4db37bb85fd1dcc3d287a4542",
+    "scripts/peerrolebench_role_evidence_offer.py": "ffeff6e46a461350d4e9913641ad2f0eb891e6b0b7ee6a200599e6725113bea5",
+    "scripts/peerrolebench_role_evidence_scorer.py": "7f4a26faa3488cb0b10b1a3f48332bc96e46152029c153a7fd23d10eb6109813"
+  },
+  "policy": "terminal_only",
+  "assignment_mode": "public_judgment",
+  "public_judgment_fixture": "accept",
+  "overlay_values": "qualification_control_only",
+  "authored_controls": {
+    "source_judgment": "parent-authored",
+    "action": "parent-authored",
+    "patched_actor": "parent-authored"
+  },
+  "status": "UNKNOWN",
+  "passed": false,
+  "contract_passed": true,
+  "stop_reason": "recipient-owned integration change cannot label producer",
+  "source": {
+    "delivery_id": "mixed-delivery-0",
+    "delivery_digest": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+    "candidate_key": "peer-b@v1",
+    "candidate_source_digest": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+    "producer_defect_registered": true,
+    "producer": {
+      "status": "FAIL",
+      "label": 0,
+      "quality_score": 0.0,
+      "coverage_complete": true,
+      "decision_complete": true,
+      "scorer_version": "unit-injected-scorer",
+      "response_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "scores_before": {
+      "producer": {
+        "status": "FAIL",
+        "label": 0,
+        "quality_score": 0.0,
+        "coverage_complete": true,
+        "decision_complete": true,
+        "scorer_version": "unit-injected-scorer",
+        "response_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "recipient": {
+        "status": "PASS",
+        "label": 1,
+        "quality_score": 0.8,
+        "coverage_complete": true,
+        "decision_complete": true,
+        "scorer_version": "unit-injected-scorer",
+        "response_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "adoption": {
+        "status": "PASS",
+        "label": 1,
+        "quality_score": 0.8,
+        "coverage_complete": true,
+        "decision_complete": true,
+        "scorer_version": "unit-injected-scorer",
+        "response_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    },
+    "scores_after": {
+      "producer": {
+        "status": "FAIL",
+        "label": 0,
+        "quality_score": 0.0,
+        "coverage_complete": true,
+        "decision_complete": true,
+        "scorer_version": "unit-injected-scorer",
+        "response_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "recipient": {
+        "status": "PASS",
+        "label": 1,
+        "quality_score": 0.8,
+        "coverage_complete": true,
+        "decision_complete": true,
+        "scorer_version": "unit-injected-scorer",
+        "response_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "adoption": {
+        "status": "PASS",
+        "label": 1,
+        "quality_score": 0.8,
+        "coverage_complete": true,
+        "decision_complete": true,
+        "scorer_version": "unit-injected-scorer",
+        "response_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    },
+    "action": {
+      "consumer_action": "repair",
+      "source_files": {
+        "producer.py": "\nimport json\nimport os\nfrom datetime import datetime\nfrom models import UserEvent\n\n\ndef serialize_event(event: UserEvent) -> str:\n    \n    data = {\n        \"event_id\": event.event_id,\n        \"timestamp\": event.timestamp,\n        \"user_name\": event.user_name,\n        \"action\": event.action,\n        \"page_url\": event.page_url,\n    }\n    \n    return json.dumps(data, default=str)\n\n\ndef produce_events(events: list[UserEvent], output_path: str) -> None:\n    \n    with open(output_path, \"w\", encoding=\"utf-8\") as f:\n        for event in events:\n            f.write(serialize_event(event) + \"\\n\")\n",
+        "models.py": "\nfrom __future__ import annotations\nfrom dataclasses import dataclass\nfrom datetime import datetime\n\n\nVALID_ACTIONS = [\"page_view\", \"click\", \"scroll\", \"purchase\"]\n\n\n@dataclass\nclass UserEvent:\n    \n    event_id: str\n    timestamp: datetime\n    user_name: str\n    action: str\n    page_url: str\n\n    def validate(self) -> bool:\n        \n        if not self.event_id:\n            raise ValueError(\"event_id is required\")\n        if self.action not in VALID_ACTIONS:\n            raise ValueError(f\"Invalid action: {self.action}\")\n        return True\n",
+        "sink.py": "\nimport json\nimport os\nfrom datetime import datetime\n\n\ndef load_processed_events(input_path: str) -> list[dict]:\n    \n    events = []\n    with open(input_path, \"r\", encoding=\"utf-8\") as f:\n        for line in f:\n            line = line.strip()\n            if not line:\n                continue\n            event = json.loads(line)\n            \n            _ = event[\"event_id\"]  \n            _ = event[\"timestamp\"]\n            events.append(event)\n    return events\n\n\ndef write_summary(events: list[dict], output_path: str) -> dict:\n    \n    summary = {\n        \"total_events\": len(events),\n        \"actions\": {},\n        \"users\": set(),\n    }\n    for evt in events:\n        action = evt[\"action\"]\n        summary[\"actions\"][action] = summary[\"actions\"].get(action, 0) + 1\n        summary[\"users\"].add(evt[\"user_name\"])\n\n    summary[\"unique_users\"] = len(summary[\"users\"])\n    summary[\"users\"] = sorted(summary[\"users\"])\n\n    with open(output_path, \"w\", encoding=\"utf-8\") as f:\n        json.dump(summary, f, indent=2, ensure_ascii=False)\n\n    return summary\n",
+        "processor.py": "\nimport json\nimport os\nfrom datetime import datetime\n\n\ndef parse_timestamp(ts_str: str) -> datetime:\n    \n    return datetime.fromisoformat(ts_str)\n\n\ndef transform_event(event_data: dict) -> dict:\n    \n    processed = dict(event_data)\n    \n    ts = parse_timestamp(event_data[\"timestamp\"])\n    processed[\"timestamp\"] = ts.isoformat()\n    processed[\"processed_at\"] = datetime.utcnow().isoformat()\n    processed[\"action\"] = event_data[\"action\"].upper()\n    return processed\n\n\ndef process_events(input_path: str, output_path: str) -> int:\n    \n    count = 0\n    \n    with open(input_path, \"r\", encoding=\"utf-8\") as fin,\\\n         open(output_path, \"w\", encoding=\"utf-8\") as fout:\n        for line in fin:\n            line = line.strip()\n            if not line:\n                continue\n            event_data = json.loads(line)\n            processed = transform_event(event_data)\n            \n            fout.write(json.dumps(processed, ensure_ascii=False) + \"\\n\")\n            count += 1\n    return count\n"
+      },
+      "input_source_sha256": "80cf4005e30cb467a784d06fda22567f52727df8f6af3f5fbf665c42d7eb8fcc",
+      "output_source_sha256": "819118801d4ccfab2801b36032d4f0808bdf938eedf9ee532d8ea798fd7ffa29",
+      "delivery_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "changed_paths": [
+        "processor.py"
+      ],
+      "action_initialization": "selected_delivery_copy_producer_read_only",
+      "prior_delivery_may_have_been_seen": true,
+      "independent_redo_is_blinded_control": false
+    },
+    "outcome": {
+      "status": "PASS",
+      "quality_score": 0.8,
+      "coverage_complete": true,
+      "decision_complete": true
+    },
+    "eligibility": {
+      "gate_version": "pipe3-responsibility-label-v1",
+      "producer_owned_paths_changed": [],
+      "recipient_owned_paths_changed": [
+        "processor.py"
+      ],
+      "q_complete": true,
+      "outcome_complete": true,
+      "judgment_target_role": "recipient",
+      "artifact_binding_present": true,
+      "later_use_valid": false,
+      "producer_feedback_status": "PENDING_ATTRIBUTION",
+      "producer_feedback_eligible": false,
+      "reason": "recipient-owned integration change cannot label producer",
+      "policy_update_allowed": false,
+      "scientific_claim_allowed": false
+    },
+    "index": 0,
+    "source_gate": {
+      "gate_version": "two-stage-role-evidence-v1",
+      "producer_paths_changed": [],
+      "recipient_paths_changed": [
+        "processor.py"
+      ],
+      "q_complete": true,
+      "y_complete": true,
+      "target_role": "recipient",
+      "artifact_binding_present": true,
+      "later_use_valid": false,
+      "attribution_eligible": false,
+      "evidence_publish_allowed": false,
+      "policy_update_allowed": false,
+      "status": "PENDING_ATTRIBUTION",
+      "reason": "recipient-owned integration change cannot label producer"
+    }
+  },
+  "target": {
+    "status": "NOT_RUN_UNKNOWN"
+  },
+  "policy_updates": 0,
+  "unknown_denominator": {
+    "source_rows": 1,
+    "unknown_rows": 1
+  },
+  "ledger": [
+    {
+      "event_type": "peer_selection",
+      "payload": {
+        "selection_id": "selection-mixed-0",
+        "task_id": "PIPE3_stream_processing",
+        "task_index": 0,
+        "selector_id": "peer-a",
+        "role": "producer",
+        "candidate_ids": [
+          "peer-b",
+          "peer-c"
+        ],
+        "chosen_peer_id": "peer-b",
+        "propensity": 1.0
+      },
+      "previous_hash": "GENESIS",
+      "record_hash": "8897e07af96dd972cdba9d962bc7258277e580cd138c6196f038796fddda8e12"
+    },
+    {
+      "event_type": "task_start",
+      "payload": {
+        "task_id": "PIPE3_stream_processing",
+        "task_index": 0
+      },
+      "previous_hash": "8897e07af96dd972cdba9d962bc7258277e580cd138c6196f038796fddda8e12",
+      "record_hash": "7996bfbffdba97d4243e09d8af8a0b4418c77d1c1038d27156c9a4c4789c604e"
+    },
+    {
+      "event_type": "producer_delivery",
+      "payload": {
+        "delivery_id": "mixed-delivery-0",
+        "task_id": "PIPE3_stream_processing",
+        "producer_id": "peer-b",
+        "recipient_id": "peer-a",
+        "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+        "source_event_id": "request-mixed-0",
+        "task_index": 0,
+        "selection_id": "selection-mixed-0",
+        "candidate_source_digest": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2"
+      },
+      "previous_hash": "7996bfbffdba97d4243e09d8af8a0b4418c77d1c1038d27156c9a4c4789c604e",
+      "record_hash": "f9375353dedc7a55ae734ef3f287635f7b76d28e44a0c3e76f7e89a6f91001c0"
+    },
+    {
+      "event_type": "producer_score",
+      "payload": {
+        "producer_score_id": "mixed-producer-score-0",
+        "delivery_id": "mixed-delivery-0",
+        "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+        "scorer_version": "unit-injected-scorer",
+        "status": "FAIL",
+        "label": 0,
+        "quality_score": 0.0,
+        "score_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "coverage_complete": true,
+        "decision_complete": true
+      },
+      "previous_hash": "f9375353dedc7a55ae734ef3f287635f7b76d28e44a0c3e76f7e89a6f91001c0",
+      "record_hash": "e9e0a4d880f84864e7fe8d000aee63e384c725f298208388f1b17eab88d2b132"
+    },
+    {
+      "event_type": "recipient_judgment",
+      "payload": {
+        "judgment_id": "mixed-judgment-0",
+        "delivery_id": "mixed-delivery-0",
+        "consumer_id": "peer-a",
+        "decision": "accept_with_rework",
+        "observed_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+        "terminal_outcome_available": false,
+        "repair_note": "pipe3-two-stage-composition-v1.5:mixed"
+      },
+      "previous_hash": "e9e0a4d880f84864e7fe8d000aee63e384c725f298208388f1b17eab88d2b132",
+      "record_hash": "7d7e37914d7596a1f2bfe111e11894b4860eb824fa73bc1d9e0a68ffd2303d85"
+    },
+    {
+      "event_type": "consumer_action",
+      "payload": {
+        "action_id": "mixed-action-0",
+        "delivery_id": "mixed-delivery-0",
+        "consumer_id": "peer-a",
+        "used_artifact": true,
+        "input_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+        "output_artifact_sha256": "819118801d4ccfab2801b36032d4f0808bdf938eedf9ee532d8ea798fd7ffa29",
+        "repair_cost": 0.0,
+        "action": "repair"
+      },
+      "previous_hash": "7d7e37914d7596a1f2bfe111e11894b4860eb824fa73bc1d9e0a68ffd2303d85",
+      "record_hash": "08ea82f2ba236ae260d2b066193d0bac3a2a1f3e048fd177bd05c23e1398fe9c"
+    },
+    {
+      "event_type": "terminal_outcome",
+      "payload": {
+        "outcome_id": "mixed-outcome-0",
+        "delivery_id": "mixed-delivery-0",
+        "success": true,
+        "scorer_version": "pipe3-recipient-objective-v2",
+        "partial_score": 0.8,
+        "score_payload_sha256": "7d7827e95201b56c08965243902b313a6d12aef07610ad68c7a1d020a0f0ed70"
+      },
+      "previous_hash": "08ea82f2ba236ae260d2b066193d0bac3a2a1f3e048fd177bd05c23e1398fe9c",
+      "record_hash": "e802ec45572a1b864ddd019477e322ef0b8d8f768c03b2d5ad347b096cf4f4a7"
+    }
+  ]
+}

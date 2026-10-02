@@ -107,6 +107,7 @@ def score_role_evidence(
     counts = {key: [0, 0.0] for key in offer.candidate_keys}
     visible_ids: list[str] = []
     visible_rows: list[Mapping[str, Any]] = []
+    seen_delivery_ids: set[tuple[str, str]] = set()
     for row in offer.public_evidence:
         if int(row["available_index"]) > read_cut:
             continue
@@ -116,6 +117,12 @@ def score_role_evidence(
         key = str(row["candidate_key"])
         if key not in counts:
             raise ValueError("evidence row references a candidate outside the offer menu")
+        delivery_identity = (key, str(row["delivery_id"]))
+        if delivery_identity in seen_delivery_ids:
+            raise ValueError(
+                "duplicate delivery evidence requires explicit correction lineage before scoring"
+            )
+        seen_delivery_ids.add(delivery_identity)
         counts[key][0] += 1
         counts[key][1] += JUDGMENT_LABELS[judgment]
         visible_ids.append(str(row["evidence_id"]))

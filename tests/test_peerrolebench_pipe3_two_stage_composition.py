@@ -114,7 +114,7 @@ def test_policy_factory_is_explicit_and_default_behavior_remains_terminal_only(t
     assert result["status"] == "QUALIFIED_OFFLINE"
     assert calls == ["terminal_only", "terminal_only", "terminal_only"]
     assert all(case["policy"] == "terminal_only" for case in result["cases"])
-    assert all(case["version"] == "pipe3-two-stage-composition-v1.4" for case in result["cases"])
+    assert all(case["version"] == "pipe3-two-stage-composition-v1.5" for case in result["cases"])
 
 
 def test_no_update_policy_is_explicitly_not_counted_as_terminal_update_success(tmp_path: Path):
@@ -158,7 +158,7 @@ def test_declared_nonterminal_feedback_arm_cannot_pass_on_terminal_event(tmp_pat
 def test_public_judgment_assignment_mode_reaches_canonical_composition(tmp_path: Path):
     result = run(
         tmp_path / "composition", scorer=_unit_scorer,
-        assignment_mode="public_judgment",
+        assignment_mode="public_judgment", public_judgment_fixture="accept",
     )
     assert result["status"] == "QUALIFIED_OFFLINE"
     producer = next(case for case in result["cases"] if case.get("control") == "producer_owned")
@@ -170,3 +170,8 @@ def test_public_judgment_assignment_mode_reaches_canonical_composition(tmp_path:
     assert payload["assignment_mode"] == "public_judgment"
     assert payload["assignment_score"]["version"] == "role-evidence-judgment-beta-v1"
     assert payload["assignment_score"]["input_digest"]
+    assert payload["base_scores"] == [0.0, 0.0]
+    assert payload["assignment_effect_observed"] is True
+    assert producer["assignment_effect_observed"] is True
+    assert abs(payload["assignment_score"]["scores"][0] - 1.0 / 3.0) < 1e-12
+    assert payload["assignment_score"]["scores"][1] == 0.0

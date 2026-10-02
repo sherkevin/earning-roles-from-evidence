@@ -636,6 +636,16 @@ gate. The v3 receipt records the runner/scorer hashes and assignment score
 digest. This used an injected zero-call scorer and makes no benchmark, online
 learning, or scientific efficacy claim.
 
+### 2026-10-02 public judgment effect and correction audit
+
+The v1.5 composition removes the hand-authored base preference from the
+public-judgment mode and adds an explicit `accept`/`reject_redo` sensitivity
+fixture. The receipt records whether a nonzero judgment-to-score delta was
+observed. The scorer now fails closed when the same delivery appears twice
+without correction lineage, rather than double-counting it. These are zero-call
+engineering qualifications; native judgment, live baseline parity, and
+scientific efficacy remain unclaimed.
+
 ### 2026-09-28 baseline bridge audit
 
 The frozen N02 v3 ledger was checked for lossless mapping into the new policy

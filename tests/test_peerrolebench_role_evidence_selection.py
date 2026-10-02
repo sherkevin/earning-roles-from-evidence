@@ -237,3 +237,23 @@ def test_public_judgment_comparator_changes_assignment_probabilities():
     assert first.selection.probabilities != second.selection.probabilities
     assert first.selection.chosen_index != second.selection.chosen_index or first.selection.probabilities != second.selection.probabilities
     assert boundary.policy.snapshot()["updates"] == 0
+
+
+def test_public_judgment_rejects_duplicate_delivery_without_correction_lineage():
+    boundary = Pipe3SelectionBoundary(ContextualTrustPolicy(), registry())
+    role_offer, _ = _source(boundary)
+    original = PublicRoleEvidence(**dict(role_offer.public_evidence[0]))
+    duplicate = replace(original, evidence_id="e0-correction", judgment="reject_redo")
+    duplicate_offer = make_role_evidence_offer(
+        offer_id="role-offer-duplicate", task_id=role_offer.task_id,
+        task_index=role_offer.task_index, role=role_offer.role,
+        context_key=role_offer.context_key, candidate_keys=role_offer.candidate_keys,
+        evidence=(original, duplicate), evidence_version=role_offer.evidence_version,
+        available_index=role_offer.available_index,
+    )
+    try:
+        score_role_evidence(duplicate_offer, base_scores=(0.0, 0.0), read_cut=1)
+    except ValueError as exc:
+        assert "correction lineage" in str(exc)
+    else:
+        raise AssertionError("duplicate delivery evidence must fail closed without correction lineage")

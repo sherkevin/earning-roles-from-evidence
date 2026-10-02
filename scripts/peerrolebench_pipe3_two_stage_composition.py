@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 from copy import deepcopy
+from dataclasses import replace
 from datetime import datetime, timezone
 import hashlib
 import json
@@ -55,7 +56,7 @@ from peerrolebench_two_stage_gate import (  # noqa: E402
 
 
 TASK_ID = "PIPE3_stream_processing"
-VERSION = "pipe3-two-stage-composition-v1.4"
+VERSION = "pipe3-two-stage-composition-v1.5"
 CONTROLS = ("producer_owned", "recipient_owned", "mixed")
 CandidateScorer = Callable[[str, Mapping[str, str], Mapping[str, str], Path, Path, int], dict[str, Any]]
 PolicyFactory = Callable[[str], BaselinePolicy]
@@ -345,7 +346,8 @@ def _record_episode(*, boundary: Pipe3SelectionBoundary, materials: dict[str, An
 
 
 def _source_offer(boundary: Pipe3SelectionBoundary, *, control: str, source: Mapping[str, Any],
-                  selection: Any, selected_peer: str, target_task_index: int) -> tuple[Any, Any]:
+                  selection: Any, selected_peer: str, target_task_index: int,
+                  judgment_override: str | None = None) -> tuple[Any, Any]:
     records = {name: _event_record(boundary, name, ident) for name, ident in (
         ("peer_selection", f"selection-{control}-0"), ("producer_delivery", source["delivery_id"]),
         ("recipient_judgment", f"{control}-judgment-0"), ("consumer_action", f"{control}-action-0"),
@@ -367,6 +369,10 @@ def _source_offer(boundary: Pipe3SelectionBoundary, *, control: str, source: Map
         ledger=boundary.ledger, evidence_id=evidence_id, candidate_key=f"{selected_peer}@v1", role="producer",
         target_task_index=target_task_index, evidence_version=VERSION, available_index=1,
     )
+    if judgment_override is not None:
+        if judgment_override not in {"accept", "accept_with_rework", "reject_redo"}:
+            raise ValueError("unsupported public judgment fixture")
+        evidence = replace(evidence, judgment=judgment_override)
     previous_aux_hash = auxiliary_manifest_root(boundary.auxiliary_manifest_rows)
     role_offer = make_role_evidence_offer(
         offer_id=f"role-offer-{control}", task_id=TASK_ID, task_index=target_task_index, role="producer",
@@ -389,9 +395,14 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
                  scorer: CandidateScorer | None = None,
                  policy_factory: PolicyFactory | None = None,
                  policy_name: str = "terminal_only",
-                 assignment_mode: str = "hand_authored") -> dict[str, Any]:
+                 assignment_mode: str = "hand_authored",
+                 public_judgment_fixture: str = "native") -> dict[str, Any]:
     if assignment_mode not in {"hand_authored", "public_judgment"}:
         raise ValueError("unsupported assignment_mode")
+    if public_judgment_fixture not in {"native", "accept", "accept_with_rework", "reject_redo"}:
+        raise ValueError("unsupported public_judgment_fixture")
+    if assignment_mode != "public_judgment" and public_judgment_fixture != "native":
+        raise ValueError("public judgment fixture requires public_judgment assignment mode")
     out.mkdir(parents=False, exist_ok=False)
     raw = out / "raw.jsonl"
     raw.write_text("", encoding="utf-8")
@@ -409,6 +420,7 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
             "scripts/peerrolebench_role_evidence_scorer.py",
         )},
         "policy": policy_name, "assignment_mode": assignment_mode,
+        "public_judgment_fixture": public_judgment_fixture,
         "overlay_values": "qualification_control_only",
         "authored_controls": {"source_judgment": "parent-authored", "action": "parent-authored", "patched_actor": "parent-authored"},
     }
@@ -477,7 +489,8 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
     if boundary.policy.updates != 0:
         raise AssertionError("source publication changed persistent policy")
     role_offer, meta = _source_offer(boundary, control=control, source=source, selection=seal0.decision_sidecar,
-                                     selected_peer=seal0.native_selection.chosen_peer_id, target_task_index=1)
+                                     selected_peer=seal0.native_selection.chosen_peer_id, target_task_index=1,
+                                     judgment_override=(None if public_judgment_fixture == "native" else public_judgment_fixture))
     if role_offer is None:
         raise AssertionError("eligible source must publish role evidence")
     feedback_offer = make_offer(
@@ -501,7 +514,14 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
     _log(raw, "isolated_role_evidence_read", {"offer_id": isolated_read.offer_id,
                                                "policy_input_digest": isolated_read.policy_input_digest,
                                                "read_cut": isolated_read.read_cut})
-    target_base_scores = (1.0, 0.0) if seal0.native_selection.chosen_peer_id == "peer-b" else (0.0, 1.0)
+    # The public-judgment comparator must not be masked by the qualification's
+    # hand-authored source-peer preference.  Keep the historical preference on
+    # the default path, but use a neutral prior when public judgment is the
+    # declared assignment input.
+    target_base_scores = (
+        (0.0, 0.0) if assignment_mode == "public_judgment"
+        else ((1.0, 0.0) if seal0.native_selection.chosen_peer_id == "peer-b" else (0.0, 1.0))
+    )
     target_kwargs = dict(
         boundary=boundary, role_offer=role_offer, feedback_offer=feedback_offer,
         assignment_id=f"assignment-{control}", native_selection_id=f"selection-{control}-1",
@@ -521,12 +541,20 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
         plan = preview_role_evidence_selection(
             **target_kwargs, base_scores=target_base_scores, read_cut=1,
         )
+    assignment_effect_observed = bool(
+        assignment_score is not None and any(
+            abs(float(score) - float(base)) > 1e-12
+            for score, base in zip(assignment_score.scores, target_base_scores)
+        )
+    )
     _log(raw, "target_selection_preview", {"assignment_id": plan.assignment_id,
                                              "selected_peer": plan.assigned_agent_id,
                                              "propensity": plan.selection.propensity,
                                              "read_cut": plan.read_cut,
                                              "persistent_state_digest": plan.persistent_state_digest,
                                              "assignment_mode": assignment_mode,
+                                             "base_scores": list(target_base_scores),
+                                             "assignment_effect_observed": assignment_effect_observed,
                                              "assignment_score": None if assignment_score is None else assignment_score.payload()})
     target_seal = commit_role_evidence_selection(boundary, plan=plan, role_offer=role_offer, feedback_offer=feedback_offer)
     _log(raw, "assignment_committed_before_selection", {"assignment_id": plan.assignment_id, "selection_id": target_seal.native_selection.selection_id})
@@ -622,6 +650,8 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
                "unknown_denominator": {"source_rows": 1, "unknown_rows": 0}, "ledger": boundary.ledger.events,
                "native_manifest_root": native_root, "auxiliary_manifest_root": auxiliary_root,
                "feedback_contract_ok": feedback_contract_ok,
+               "assignment_effect_observed": assignment_effect_observed,
+               "public_judgment_fixture": public_judgment_fixture,
                "scientific_claim_allowed": False, "interpretation": "engineering comparator; overlay controls are hand-authored qualification values"}
     (out / "ledger.json").write_text(json.dumps(boundary.ledger.events, indent=2, default=str) + "\n", encoding="utf-8")
     (out / "summary.json").write_text(json.dumps(summary, indent=2, ensure_ascii=False, default=str) + "\n", encoding="utf-8")
@@ -632,9 +662,14 @@ def run(out_dir: Path, *, source_seed: int = 0, target_seed: int = 1,
         scorer: CandidateScorer | None = None,
         policy_factory: PolicyFactory | None = None,
         policy_name: str = "terminal_only",
-        assignment_mode: str = "hand_authored") -> dict[str, Any]:
+        assignment_mode: str = "hand_authored",
+        public_judgment_fixture: str = "native") -> dict[str, Any]:
     if assignment_mode not in {"hand_authored", "public_judgment"}:
         raise ValueError("unsupported assignment_mode")
+    if public_judgment_fixture not in {"native", "accept", "accept_with_rework", "reject_redo"}:
+        raise ValueError("unsupported public_judgment_fixture")
+    if assignment_mode != "public_judgment" and public_judgment_fixture != "native":
+        raise ValueError("public judgment fixture requires public_judgment assignment mode")
     out_dir = out_dir.resolve()
     out_dir.mkdir(parents=False, exist_ok=False)
     started = datetime.now(timezone.utc).isoformat()
@@ -642,7 +677,8 @@ def run(out_dir: Path, *, source_seed: int = 0, target_seed: int = 1,
            "controls": list(CONTROLS), "real_api_calls": 0, "gpu_jobs": 0,
            "scientific_claim_allowed": False, "started_at_utc": started,
            "execution_injection": scorer is not None, "policy": policy_name,
-           "assignment_mode": assignment_mode}
+           "assignment_mode": assignment_mode,
+           "public_judgment_fixture": public_judgment_fixture}
     (out_dir / "config.json").write_text(json.dumps(top, indent=2) + "\n", encoding="utf-8")
     cases = []
     for control in CONTROLS:
@@ -650,7 +686,8 @@ def run(out_dir: Path, *, source_seed: int = 0, target_seed: int = 1,
             cases.append(_run_control(control, out=out_dir / control, source_seed=source_seed,
                                       target_seed=target_seed, scorer=scorer,
                                       policy_factory=policy_factory, policy_name=policy_name,
-                                      assignment_mode=assignment_mode))
+                                      assignment_mode=assignment_mode,
+                                      public_judgment_fixture=public_judgment_fixture))
         except Exception as exc:
             case_dir = out_dir / control
             if not case_dir.exists():
