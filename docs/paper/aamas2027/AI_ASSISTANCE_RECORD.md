@@ -610,7 +610,7 @@ cell, LLM/API call, GPU job or scientific claim has been enabled.
 
 ### 2026-10-02 PIPE3 feedback-channel gate
 
-An independent parity review found a false-pass path: non-terminal arms could receive the runner's fixed terminal-outcome event while the receipt checked only delayed-credit commitment. The v1.3 gate now requires an actual policy update whenever an arm declares an accepted feedback source; a contextual-trust arm receiving the terminal event is preserved as `UNKNOWN`. This is a zero-call contract repair, not a baseline or efficacy result. Evidence-consumption decision mutation, per-arm public feedback adapters, independent root and live histories remain open.
+An independent parity review found a false-pass path: non-terminal arms could receive the runner's fixed terminal-outcome event while the receipt checked only delayed-credit commitment. The v1.3 gate now requires an actual policy update whenever an arm declares an accepted feedback source; a contextual-trust arm receiving the terminal event is preserved as `UNKNOWN`. A zero-call evidence-content mutation audit further shows that the current hand-authored overlay leaves the selected candidate unchanged, so evidence consumption is not yet identifiable. This is a contract repair and negative audit, not a baseline or efficacy result. Per-arm public feedback adapters, independent root and live histories remain open.
 
 ### 2026-09-28 baseline bridge audit
 

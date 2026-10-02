@@ -45,13 +45,17 @@ consumption decision 尚未识别、live measured-cost gate 尚未接入 runner�
 - baseline root-contract 与 cost gate 定向回归：`11 passed`；
 - 新增负向测试明确验证 contextual arm 在收到 terminal event 时为 `UNKNOWN`，且
   `policy_update_expected=true`、`policy_update_applied=false`；
+- 新增 evidence-content mutation audit：将同一 candidate 的 published evidence
+  `quality_score` 从 `1.0` 改为 `0.0`，在相同 menu、base-score、RNG 和 state 下，选择的
+  candidate、probabilities 和 chosen index 均不变；只有 offer/overlay digest 改变。这把
+  当前 hand-authored overlay 的不可识别性固定成了测试，而不是把它误写成 evidence use；
 - JSON 语法与候选卡字段校验通过。
 
 所有验证均为本地零调用工程测试，不能作为 benchmark、baseline parity、角色学习或模型效果证据。
 
 ## 当前结论与下一步
 
-这一步关闭了一个会制造假通过的 P0，而不是完成七 arm runner。下一步只能先实现并逐一资格化
+这一步关闭了一个会制造假通过的 P0，并把 evidence-consumption 缺口固定成负向审计，而不是完成七 arm runner。下一步只能先实现并逐一资格化
 每个 arm 的合法 public feedback projection，并把 evidence consumption 变成可识别的
 decision-digest mutation test；在此之前不启动 live parity cell、不选择第二 root、不进入
 A800 或论文效果结论。

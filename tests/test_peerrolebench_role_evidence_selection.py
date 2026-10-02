@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import replace
 from pathlib import Path
 import sys
 
@@ -15,7 +16,9 @@ from peer_role_protocol_20260925 import (  # noqa: E402
 from peerrolebench_baseline_policies import ContextualTrustPolicy  # noqa: E402
 from peerrolebench_pipe3_full_chain_qualification import registry  # noqa: E402
 from peerrolebench_pipe3_runner_v1 import Pipe3SelectionBoundary, make_offer  # noqa: E402
-from peerrolebench_role_evidence_offer import build_role_evidence_from_ledger, make_role_evidence_offer  # noqa: E402
+from peerrolebench_role_evidence_offer import (  # noqa: E402
+    PublicRoleEvidence, build_role_evidence_from_ledger, make_role_evidence_offer,
+)
 from peerrolebench_role_evidence_selection import (  # noqa: E402
     commit_role_evidence_selection, preview_role_evidence_selection,
 )
@@ -114,3 +117,33 @@ def test_role_evidence_commit_rolls_back_if_plan_is_stale():
         raise AssertionError("stale preview must be rejected")
     assert not boundary.ledger.assignments
     assert not boundary.ledger.selections or list(boundary.ledger.selections) == ["s0"]
+
+
+def test_evidence_content_mutation_does_not_change_hand_authored_overlay_choice():
+    """The current seam must expose this gap instead of claiming evidence use."""
+    boundary = Pipe3SelectionBoundary(ContextualTrustPolicy(), registry())
+    role_offer, feedback_offer = _source(boundary)
+    common = _common()
+    first = preview_role_evidence_selection(
+        boundary, role_offer=role_offer, feedback_offer=feedback_offer,
+        assignment_id="as-evidence-0", native_selection_id="s-evidence-0", **common,
+    )
+    row = PublicRoleEvidence(**dict(role_offer.public_evidence[0]))
+    mutated_row = replace(row, quality_score=0.0)
+    mutated_offer = make_role_evidence_offer(
+        offer_id="role-offer-mutated", task_id=role_offer.task_id,
+        task_index=role_offer.task_index, role=role_offer.role,
+        context_key=role_offer.context_key, candidate_keys=role_offer.candidate_keys,
+        evidence=(mutated_row,), evidence_version=role_offer.evidence_version,
+        available_index=role_offer.available_index,
+        candidate_registry_digest=role_offer.candidate_registry_digest,
+    )
+    second = preview_role_evidence_selection(
+        boundary, role_offer=mutated_offer, feedback_offer=feedback_offer,
+        assignment_id="as-evidence-1", native_selection_id="s-evidence-1", **common,
+    )
+    assert first.assigned_agent_id == second.assigned_agent_id == "peer-b"
+    assert first.selection.chosen_index == second.selection.chosen_index
+    assert first.selection.probabilities == second.selection.probabilities
+    assert first.role_offer_digest != second.role_offer_digest
+    assert first.overlay_input_digest != second.overlay_input_digest
