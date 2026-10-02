@@ -24,9 +24,9 @@ selection、不更新 policy，且 state digest 不变。
 
 ## Receipt 与验证
 
-- 初始 qualification receipt：[n03_pipe3_live_contract_qualification_20261003_v2](../../../../experiments/logs/n03_pipe3_live_contract_qualification_20261003_v2/)；
+- 初始 qualification receipt：[n03_pipe3_live_contract_qualification_20261003_v2](../../../experiments/logs/n03_pipe3_live_contract_qualification_20261003_v2/)；
   共享工作区修复后保留不可变 v2，并重新执行得到最新
-  [v3 receipt](../../../../experiments/logs/n03_pipe3_live_contract_qualification_20261003_v3/)。
+  [v3 receipt](../../../experiments/logs/n03_pipe3_live_contract_qualification_20261003_v3/)。
   两个目录都包含配置、append-only raw、ledger、candidate registry 和 summary。
 - 5 个离线 case 全部通过：source→target/ledger binding、逆序拒绝、registry/menu/
   propensity、ownership table、UNKNOWN/no-update。
