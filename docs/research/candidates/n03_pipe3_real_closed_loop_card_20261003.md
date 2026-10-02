@@ -19,6 +19,29 @@ producer delivery → independent Qp/defect registration
 这张卡只解决“能否得到合法、可归因的反馈行”，不估计方法 superiority，也不选择
 backbone/updater，不启动 A800。
 
+## 资格边界与事件时序
+
+本卡的 `primary_track` 是 `ArtifactRole`，`split` 是
+`development/qualification`，`scientific_claim_allowed=false`。两个 episode 不是
+两个独立样本，而是一条有向的 source→target 接缝：
+
+```text
+episode-0 source selection
+→ delivery-0 → Qp-0 → recipient judgment/action-0 → Y0
+→ source gate → evidence_offer-0 (或 blocked)
+→ preview/read-cut-1 → assignment-1 (或 blocked)
+→ episode-1 target selection/task_start
+→ delivery-1 → later-use outcome Y1
+→ credit-1 (仅一次，且只评价 episode-1)
+```
+
+`evidence_id`、`offer_id`、`assignment_id`、`selection_id`、`task_start_id` 和
+`outcome_id` 必须在 ledger 中逐一绑定；episode-1 只有在 episode-0 产生合法
+`RoleEvidenceOffer` 后才允许启动。没有合法证据时，必须写入 `promotion_blocked`
+及原因并停止，不能用 episode-0 的 adoption outcome 伪装 later-use，也不能补写
+`LaterAssignment`。因此单 episode smoke 最多验证到 blocked/UNKNOWN；只有双 episode
+接缝完整，才可称为闭合的工程资格链。
+
 ## Root 与材料
 
 - root：`PIPE3_stream_processing`，使用现有 `pipe3-neutral-v1` material adapter；
@@ -48,6 +71,22 @@ artifact_sha256,response_digest,scorer_version)`；`status=UNKNOWN` 时禁止 la
 独立 scorer 必须能注册 `producer_defect_registered` 或 producer-owned contract
 change；recipient 的 repair 不能替代该字段。
 
+责任分类由父进程的预注册 ownership registry、source digest 和 writable-path diff
+决定，模型返回的 `target_role`、rationale 或 repair plan 只能作为可审计描述：
+
+| parent diff / registered defect | public status | producer label |
+|---|---|---|
+| producer-owned contract defect，且 Qp 为独立 FAIL/0 | `ELIGIBLE`（待 later-use） | 允许在 target outcome 后产生 |
+| 仅 recipient-owned 路径改变 | `PENDING_ATTRIBUTION` | 禁止 |
+| producer 与 recipient 同时改变，或缺 counterfactual | `UNKNOWN` | 禁止 |
+| outside-contract、digest 不一致、scorer 覆盖不足或资源失败 | `UNKNOWN` | 禁止 |
+| Qp PASS 且无预注册 producer defect | `PENDING_ATTRIBUTION` | 禁止 |
+
+`producer_defect_registered` 必须来自运行前封存的 mutation/control registry；不得由
+模型在 judgment 中自行声明。Qp 的 scorer version、worker digest、检查清单、覆盖/决策
+阈值、可见文件和命令写入 config；hidden expected、native grader 和终局 gold 不得进入
+actor payload。
+
 ### Recipient judgment
 
 API JSON 必须含 `decision`、`target_role`、`observed_artifact_sha256`、confidence、
@@ -65,6 +104,24 @@ producer-owned、recipient-only、mixed、out-of-contract 分别进入
 
 recipient/adoption scorer 在 action 后独立运行，结果绑定原始 delivery digest 和
 output digest，形成 `TerminalOutcome`；不得把 recipient outcome 当 producer Qp。
+episode-1 的 later-use outcome 还必须绑定 `assignment_id`、target `selection_id`、
+target `task_start_id` 和 target delivery digest；它是唯一允许触发 delayed credit 的
+终局结果。
+
+### Peer registry and selection receipt
+
+每个 episode 的候选菜单至少含两个 `peer_id@version`，并把
+`candidate_registry_digest`、菜单顺序、selector/policy version、state snapshot
+digest、read cut、chosen index 和真实 propensity 写入 selection receipt。peer 的
+合法持久状态必须单独列出；若本卡仍使用同模型、fresh calls、无个人 history 的
+exchangeable peers，则 receipt 只能证明选择接缝，不能解释为 peer suitability 或角色
+形成。不得把预置专家差异偷偷写进 prompt。
+
+模型与传输的完整输入契约也必须封存：exact model/route、endpoint alias、prompt
+template hash、temperature、per-stage max tokens、timeout、SSE parser version、
+action 是否可见 sealed judgment，以及 malformed/truncated/timeout/usage-incomplete
+的 UNKNOWN 映射。publish 不更新 policy；assignment 后同一 evidence 只允许 credit
+一次；summary 必须报告 state digest 前后、blocked/no-op 原因和完整成本。
 
 ## 通过与停止
 

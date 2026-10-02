@@ -33,3 +33,26 @@ replay，再决定是否消耗一个真实 API episode。
 | 论文科学结果 | `NOT_READY` |
 
 `goal_change_requested=false`。本任务不修改 active benchmark、method、故事线或 Goal。
+
+## 2026-10-03 独立卡审查后的收紧
+
+独立方法审查认为原卡可作为工程接缝设计，但不能直接进入科学 live chain，原因有三
+项：source 到 target 的 episode 绑定未封闭；责任标签的注册来源和 producer/recipient
+路径分类未冻结；candidate menu、propensity、peer/version registry 与持久状态未被
+记录，无法解释 peer 是否可识别。审查没有否定 PIPE3 root，也没有改变 Goal 或方法
+标准。
+
+本卡已补充：
+
+- 明确 episode-0 是 source、episode-1 是 target，并要求
+  `evidence_id→offer_id→assignment_id→selection_id→task_start_id→outcome_id` 的
+  ledger 绑定；没有合法 offer 时只写 `promotion_blocked`，不伪造 later assignment；
+- 固定 producer-owned、recipient-only、mixed、out-of-contract 与 Qp FAIL/0 的责任
+  分类表；`producer_defect_registered` 必须来自运行前 mutation/control registry，
+  模型自报的 target role 不具备标签权限；
+- 固定至少两个 `peer_id@version`、candidate registry、菜单、state/read-cut digest、
+  chosen index、真实 propensity 和 exchangeability 限制；并封存模型 route、prompt
+  hash、SSE parser、malformed/timeout/usage UNKNOWN 映射和一次性 credit 约束。
+
+因此下一步仍是 zero-call/replay qualification 与 runner 接缝测试；这次收紧不产生
+真实 API、GPU 或科学结果，`scientific_claim_allowed` 继续为 false。
