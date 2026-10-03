@@ -64,9 +64,10 @@ python3 scripts/peerrolebench_peer_history_binding_qualification.py \
 
 结果：`QUALIFIED_OFFLINE`，25 个 focused tests 通过（qualification receipt 固定其中
 10 项 binding/history tests）；v2 receipt 在增加 delayed-credit 和 native event-order
-约束后重跑，仍为 `QUALIFIED_OFFLINE`。两次原始 stdout/stderr、config、summary 均保存在
-`n03_peer_history_binding_qualification_20261003_v1/` 与 `_v2/`，0 LLM/API、0 GPU、0
-native grader。
+约束后重跑，仍为 `QUALIFIED_OFFLINE`。v3 在提交 `1742404` 后重新运行，用当前提交
+绑定配置与代码，结果仍为 `QUALIFIED_OFFLINE`。三次原始 stdout/stderr、config、summary
+均保存在 `n03_peer_history_binding_qualification_20261003_v1/`、`_v2/` 与 `_v3/`，
+0 LLM/API、0 GPU、0 native grader。
 
 ## 尚未完成
 
