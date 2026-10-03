@@ -16,7 +16,10 @@ import math
 from typing import Any, Callable, Mapping
 
 
-VERSION = "two-stage-role-evidence-v1"
+# v2 closes a reachability hole found by the PIPE2 derived-root audit: an
+# explicitly registered producer defect still requires direct, unrepaired
+# acceptance.  The v1 receipts remain historical and are never rewritten.
+VERSION = "two-stage-role-evidence-v2"
 
 
 def _digest(value: Any) -> str:
@@ -103,11 +106,18 @@ def evaluate_source_gate(
     later_valid = bool(later_use and later_use.get("valid") is True)
     # A later outcome validates a future assignment.  It is intentionally not
     # an alternative source of producer attribution.
+    direct_unrepaired_use = bool(
+        judgment.get("decision") == "accept"
+        and action.get("consumer_action") == "use"
+        and action.get("used_artifact") is True
+        and not changed
+    )
     attribution = bool(
         q_complete and y_complete and target_role == "producer" and binding
         and producer_defect_registered and producer_defect_observed
         and (producer_changed if not strict_attribution else not producer_changed)
         and not (producer_changed and recipient_changed)
+        and (direct_unrepaired_use if strict_attribution else True)
     )
     if attribution:
         status = "ELIGIBLE"

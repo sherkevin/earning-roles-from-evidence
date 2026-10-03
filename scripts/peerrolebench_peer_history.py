@@ -14,7 +14,10 @@ import re
 from typing import Any, Iterable, Mapping
 
 
-SCHEMA = "peer-history-v1"
+# v2 closes terminal-only masquerading: a determinate history row must carry
+# an actual recipient-judgment label as well as its later outcome.  v1
+# snapshots/receipts remain historical and are not rewritten.
+SCHEMA = "peer-history-v2"
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _FORBIDDEN_PUBLIC = frozenset({
     "artifact", "artifact_sha256", "delivery_digest", "task_id", "task", "gold",
@@ -114,8 +117,11 @@ class HistoryEntryV1:
                 raise ValueError(f"{name} must be in [0,1]")
         if self.status == "UNKNOWN" and (self.recipient_judgment_label is not None or self.later_outcome_label is not None):
             raise ValueError("UNKNOWN history entries cannot carry positive labels")
-        if self.status in {"PASS", "FAIL"} and self.later_outcome_label is None:
-            raise ValueError("determinate history entries require a later outcome label")
+        if self.status in {"PASS", "FAIL"}:
+            if self.recipient_judgment_label is None:
+                raise ValueError("determinate history entries require a recipient judgment label")
+            if self.later_outcome_label is None:
+                raise ValueError("determinate history entries require a later outcome label")
 
     def payload(self) -> dict[str, Any]:
         row = asdict(self)
@@ -250,6 +256,6 @@ class PeerHistoryV1:
         return history
 
 
-VERSION = "peer-history-v1"
+VERSION = "peer-history-v2"
 
 __all__ = ["AssignmentSealV1", "HistoryCostV1", "HistoryEntryV1", "PeerHistoryV1", "SCHEMA", "VERSION"]

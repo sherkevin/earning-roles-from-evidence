@@ -69,6 +69,24 @@ def test_recipient_only_and_mixed_changes_are_not_producer_evidence():
     assert not mixed.evidence_publish_allowed
 
 
+def test_registered_defect_still_requires_direct_unrepaired_use():
+    explicit = {**judgment(), "decision": "accept", "producer_defect_registered": True}
+    failed = {**score("FAIL"), "label": 0}
+    accepted = evaluate_source_gate(
+        materials(), failed, explicit,
+        {"consumer_action": "use", "used_artifact": True, "changed_paths": []},
+        outcome(),
+    )
+    assert accepted.attribution_eligible is True
+    repaired = evaluate_source_gate(
+        materials(), failed, explicit,
+        {"consumer_action": "repair", "used_artifact": True, "changed_paths": ["processor.py"]},
+        {**outcome(), "status": "PASS"},
+    )
+    assert repaired.status == "PENDING_ATTRIBUTION"
+    assert repaired.attribution_eligible is False
+
+
 def test_later_credit_requires_assignment_selection_and_complete_outcome():
     gate = evaluate_source_gate(materials(), score(), judgment(),
                                 {"changed_paths": ["producer.py"]}, outcome())

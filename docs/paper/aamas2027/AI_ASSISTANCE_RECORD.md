@@ -581,6 +581,18 @@ producer/action attribution, real PIPE3 ledger/scorer integration, propensity
 and label-mapping choices, RLS/RARE integration, benchmark freeze, and A800
 evidence remain open.
 
+### 2026-10-03 gate reachability and peer-history hardening
+
+The assistant ran an eight-case, zero-call reachability audit over the PIPE2 derived material
+using the canonical two-stage gate and the root-specific responsibility gate. The first receipt
+exposed a strict-defect branch that could label recipient repair as producer evidence; the gate
+was versioned to v2 and now requires independent FAIL/0, direct accept/use, and no changed paths.
+The corrected receipt has one eligible control and no gate disagreement. The assistant also
+versioned `PeerHistory` to v2 so determinate history rows require both a situated recipient
+judgment label and a later outcome label. Focused tests and offline qualifications passed; no
+LLM/API or GPU was used, and no benchmark label or efficacy claim was made. Source/target
+lineage, actual selector consumption, and scientific four-cell history controls remain open.
+
 ### 2026-10-01 PIPE3 P0 contract repair and sandbox gate
 
 The assistant tightened the PIPE3 composition so candidate source digests are bound to delivery

@@ -58,6 +58,13 @@ def test_unknown_is_counted_without_positive_support():
     assert scope["smoothed_rate"] is None
 
 
+def test_determinate_history_requires_situated_recipient_judgment():
+    with pytest.raises(ValueError, match="recipient judgment label"):
+        HistoryEntryV1("e0", "peer-a", "peer-a", _sha("role"), _sha("state"), _sha("delivery"),
+                       "judgment-0", None, "outcome-0", 1.0, _sha("metric"), HistoryCostV1(),
+                       4, "as0", "PASS")
+
+
 def test_snapshot_replay_and_digest_mismatch_fail_closed():
     history = PeerHistoryV1.empty("peer-a")
     history.seal_assignment(_seal())
