@@ -593,6 +593,17 @@ judgment label and a later outcome label. Focused tests and offline qualificatio
 LLM/API or GPU was used, and no benchmark label or efficacy claim was made. Source/target
 lineage, actual selector consumption, and scientific four-cell history controls remain open.
 
+### 2026-10-03 canonical source-to-target history binding
+
+The assistant reused the native ledger, `RoleEvidenceOffer`, `LaterAssignment`, target
+selection, and target outcome to add an append-only `HistoryBindingReceiptV1`. The receipt binds
+candidate version and registry digest, source availability/read-cut, source and target event IDs,
+target arrival ordering, delayed-credit digest, and native event order; mutation cases for
+identity, timing, and late history arrival are rejected. The focused zero-call qualification
+passed twice, including after the delayed-credit/event-order hardening. This is a lineage seam only: the live
+runner still does not append peer history after target credit, no selector effect or benchmark
+result is claimed, and no API/GPU was used.
+
 ### 2026-10-01 PIPE3 P0 contract repair and sandbox gate
 
 The assistant tightened the PIPE3 composition so candidate source digests are bound to delivery
