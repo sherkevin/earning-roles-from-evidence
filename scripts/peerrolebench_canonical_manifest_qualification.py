@@ -29,6 +29,9 @@ from peerrolebench_policy_matrix_runner_v1 import (  # noqa: E402
     _registry,
 )
 from tests.test_peerrolebench_canonical_manifest import _manifest  # noqa: E402
+from tests.test_peerrolebench_policy_matrix_runner import (  # noqa: E402
+    _runtime_bound_canonical_manifest,
+)
 
 
 def _sha(path: Path) -> str:
@@ -111,9 +114,11 @@ def run(out_dir: Path) -> dict[str, Any]:
     commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
     component_names = (
         "scripts/peerrolebench_canonical_manifest.py",
+        "scripts/peerrolebench_policy_matrix_runner_v1.py",
         "scripts/peerrolebench_baseline_contract.py",
         "scripts/peerrolebench_baseline_root_contract.py",
         "tests/test_peerrolebench_canonical_manifest.py",
+        "tests/test_peerrolebench_policy_matrix_runner.py",
     )
     config = {
         "experiment_id": out_dir.name,
@@ -137,11 +142,13 @@ def run(out_dir: Path) -> dict[str, Any]:
         records.append({"case": "valid", "status": "FAIL", "error": f"{type(exc).__name__}: {exc}"})
     try:
         offers, schedule, schedule_hash = fixture_case("recipient_only")
+        bound_manifest = _runtime_bound_canonical_manifest(offers, schedule_hash)
         result = PolicyMatrixRunner(
             registry=_registry(), require_canonical_manifest=True,
         ).run(
             offers, schedule, expected_schedule_digest=schedule_hash,
-            canonical_manifest=valid,
+            canonical_manifest=bound_manifest,
+            canonical_runtime_stream=bound_manifest["stream"],
         )
         records.append({
             "case": "synthetic_runner_preflight",
@@ -157,6 +164,35 @@ def run(out_dir: Path) -> dict[str, Any]:
             "case": "synthetic_runner_preflight",
             "status": "FAIL",
             "error": f"{type(exc).__name__}: {exc}",
+        })
+    try:
+        offers, schedule, schedule_hash = fixture_case("recipient_only")
+        bound_manifest = _runtime_bound_canonical_manifest(offers, schedule_hash)
+        changed_stream = dict(bound_manifest["stream"])
+        changed_stream["public_phi"] = {"future_outcome": True}
+        PolicyMatrixRunner(
+            registry=_registry(), require_canonical_manifest=True,
+        ).run(
+            offers, schedule, expected_schedule_digest=schedule_hash,
+            canonical_manifest=bound_manifest,
+            canonical_runtime_stream=changed_stream,
+        )
+    except Exception as exc:
+        records.append({
+            "case": "runtime_stream_digest_mutation",
+            "status": "UNKNOWN",
+            "false_accept": False,
+            "runner_started": False,
+            "policy_updates": 0,
+            "error": f"{type(exc).__name__}: {exc}",
+        })
+    else:
+        records.append({
+            "case": "runtime_stream_digest_mutation",
+            "status": "FAIL",
+            "false_accept": True,
+            "runner_started": None,
+            "policy_updates": None,
         })
     for name, mutate in _cases().items():
         candidate = deepcopy(valid)

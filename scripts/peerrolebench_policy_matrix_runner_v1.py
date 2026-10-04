@@ -41,7 +41,10 @@ from peerrolebench_baseline_root_contract import (  # noqa: E402
     RootRunnerManifest,
     validate_public_prefix,
 )
-from peerrolebench_canonical_manifest import validate_canonical_manifest  # noqa: E402
+from peerrolebench_canonical_manifest import (  # noqa: E402
+    validate_canonical_manifest,
+    validate_runtime_binding,
+)
 from peerrolebench_candidate_registry import (  # noqa: E402
     CandidateRegistryEntry,
     registry_digest,
@@ -253,6 +256,7 @@ class PolicyMatrixRunner:
         expected_registry_digest: str | None = None,
         manifest: RootRunnerManifest | None = None,
         canonical_manifest: Mapping[str, Any] | None = None,
+        canonical_runtime_stream: Mapping[str, Any] | None = None,
         root_seed: int | None = None,
     ) -> dict[str, Any]:
         started = time.perf_counter()
@@ -266,6 +270,7 @@ class PolicyMatrixRunner:
             canonical_manifest_payload = validate_canonical_manifest(canonical_manifest)
             if manifest is not None and canonical_manifest_payload["root_manifest_digest"] != manifest.digest():
                 raise ValueError("canonical/root manifest digest mismatch")
+        canonical_runtime_binding_payload = None
         baseline_contract = validate_contract()
         manifest_payload = None if manifest is None else manifest.validate()
         if self.require_manifest and manifest is None:
@@ -277,6 +282,19 @@ class PolicyMatrixRunner:
         schedule = validate_schedule(schedule_rows, expected_feedback_ids=set(feedback_ids))
         if schedule_digest(schedule) != expected_schedule_digest:
             raise ValueError("frozen arrival schedule digest mismatch")
+        if canonical_runtime_stream is not None:
+            if canonical_manifest_payload is None:
+                raise ValueError("canonical manifest is required for runtime stream binding")
+            current_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
+            canonical_runtime_binding_payload = validate_runtime_binding(
+                canonical_manifest,
+                root_commit=current_commit,
+                registry_digest=actual_registry_digest,
+                schedule_digest=expected_schedule_digest,
+                rng_schedule_digest=rng_schedule_digest(offers),
+                stream_values=canonical_runtime_stream,
+                arm_names=self.arm_names,
+            )
         if manifest is not None:
             if root_seed is None or isinstance(root_seed, bool) or not isinstance(root_seed, int):
                 raise ValueError("manifest run requires an explicit integer root seed")
@@ -481,6 +499,7 @@ class PolicyMatrixRunner:
             "baseline_contract": baseline_contract,
             "manifest": manifest_payload,
             "canonical_manifest": canonical_manifest_payload,
+            "canonical_runtime_binding": canonical_runtime_binding_payload,
             "scientific_claim_allowed": False,
         }
 

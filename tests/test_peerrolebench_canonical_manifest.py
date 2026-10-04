@@ -15,6 +15,7 @@ from peerrolebench_canonical_manifest import (  # noqa: E402
     EXPECTED_CHANNEL_IDS,
     ASSIGNMENT_SEMANTICS,
     digest,
+    validate_runtime_binding,
     validate_canonical_manifest,
 )
 
@@ -275,3 +276,41 @@ def test_cell_runner_expectations_follow_positive_case():
     manifest["cells"][1]["expected_updates"] = 1
     with pytest.raises(ValueError, match="expected_updates"):
         validate_canonical_manifest(manifest)
+
+
+def test_runtime_binding_accepts_exact_sealed_values():
+    manifest = _manifest()
+    result = validate_runtime_binding(
+        manifest,
+        root_commit=manifest["root"]["root_commit"],
+        registry_digest=manifest["root"]["registry_digest"],
+        schedule_digest=manifest["root"]["schedule_digest"],
+        rng_schedule_digest=manifest["root"]["rng_schedule_digest"],
+        stream_values=manifest["stream"],
+    )
+    assert result["bound"] is True
+
+
+def test_runtime_binding_rejects_root_or_stream_mutation():
+    manifest = _manifest()
+    with pytest.raises(ValueError, match="runtime registry_digest"):
+        validate_runtime_binding(
+            manifest,
+            root_commit=manifest["root"]["root_commit"],
+            registry_digest="0" * 64,
+            schedule_digest=manifest["root"]["schedule_digest"],
+            rng_schedule_digest=manifest["root"]["rng_schedule_digest"],
+            stream_values=manifest["stream"],
+        )
+    manifest = _manifest()
+    values = dict(manifest["stream"])
+    values["public_phi"] = {"future_outcome": True}
+    with pytest.raises(ValueError, match="runtime stream digest mismatch: public_phi"):
+        validate_runtime_binding(
+            manifest,
+            root_commit=manifest["root"]["root_commit"],
+            registry_digest=manifest["root"]["registry_digest"],
+            schedule_digest=manifest["root"]["schedule_digest"],
+            rng_schedule_digest=manifest["root"]["rng_schedule_digest"],
+            stream_values=values,
+        )

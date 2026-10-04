@@ -367,6 +367,52 @@ def validate_manifest(manifest: Mapping[str, Any]) -> dict[str, Any]:
     return validate_canonical_manifest(manifest)
 
 
+def validate_runtime_binding(
+    manifest: Mapping[str, Any],
+    *,
+    root_commit: str,
+    registry_digest: str,
+    schedule_digest: str,
+    rng_schedule_digest: str,
+    stream_values: Mapping[str, Any],
+    arm_names: Sequence[str] = EXPECTED_ARM_NAMES,
+) -> dict[str, Any]:
+    """Bind a validated envelope to one concrete offer/schedule stream.
+
+    The caller supplies the already materialized runtime values; this helper
+    only compares their canonical digests to the sealed manifest.  It is
+    intentionally side-effect free and must run before policy construction.
+    """
+
+    normalized = validate_canonical_manifest(manifest)
+    root = normalized["root"]
+    if root.get("root_commit") != root_commit:
+        raise ValueError("runtime root_commit differs from canonical manifest")
+    for name, actual in (
+        ("registry_digest", registry_digest),
+        ("schedule_digest", schedule_digest),
+        ("rng_schedule_digest", rng_schedule_digest),
+    ):
+        expected = _require_digest(f"runtime.{name}", actual)
+        if root.get(name) != expected:
+            raise ValueError(f"runtime {name} differs from canonical manifest")
+    if tuple(arm_names) != EXPECTED_ARM_NAMES:
+        raise ValueError("runtime arm order differs from canonical manifest")
+    if set(stream_values) != set(STREAM_DIGEST_KEYS):
+        raise ValueError("runtime stream keys differ from canonical stream")
+    for key in STREAM_DIGEST_KEYS:
+        expected = normalized["stream_digests"][key]
+        actual = digest(stream_values[key])
+        if actual != expected:
+            raise ValueError(f"runtime stream digest mismatch: {key}")
+    return {
+        "bound": True,
+        "manifest_digest": normalized["manifest_digest"],
+        "root_manifest_digest": normalized["root_manifest_digest"],
+        "stream_digests": dict(normalized["stream_digests"]),
+    }
+
+
 def manifest_digest(manifest: Mapping[str, Any]) -> str:
     """Compute the envelope digest without validating it."""
 
@@ -385,6 +431,7 @@ __all__ = [
     "STREAM_DIGEST_KEYS",
     "digest",
     "manifest_digest",
+    "validate_runtime_binding",
     "validate_canonical_manifest",
     "validate_manifest",
 ]

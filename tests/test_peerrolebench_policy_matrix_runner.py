@@ -22,6 +22,7 @@ from peerrolebench_event_time_schedule import schedule_digest  # noqa: E402
 from peerrolebench_event_time_schedule import ArrivalAssignment  # noqa: E402
 from peerrolebench_baseline_root_contract import RootRunnerManifest  # noqa: E402
 from peerrolebench_candidate_registry import registry_digest  # noqa: E402
+from peerrolebench_canonical_manifest import digest as canonical_digest  # noqa: E402
 
 
 def _canonical_manifest_fixture():
@@ -30,6 +31,33 @@ def _canonical_manifest_fixture():
     sys.path.insert(0, str(ROOT / "tests"))
     from test_peerrolebench_canonical_manifest import _manifest  # noqa: E402
     return _manifest()
+
+
+def _runtime_bound_canonical_manifest(offers, schedule_hash):
+    manifest = _canonical_manifest_fixture()
+    root = dict(manifest["root"])
+    root["root_commit"] = subprocess.check_output(
+        ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True,
+    ).strip()
+    root["registry_digest"] = registry_digest(_registry())
+    root["schedule_digest"] = schedule_hash
+    root["rng_schedule_digest"] = rng_schedule_digest(offers)
+    root_base_keys = (
+        "root_id", "root_commit", "source_digest", "generator_digest", "scorer_digest",
+        "schedule_digest", "rng_schedule_digest", "registry_digest", "seed_split",
+        "arm_names", "rng_algorithm", "visibility_rule", "max_episode_attempts",
+        "max_api_calls", "max_wall_seconds",
+    )
+    root_manifest_values = {key: root[key] for key in root_base_keys}
+    root_manifest_values["seed_split"] = tuple(root_manifest_values["seed_split"])
+    root_manifest_values["arm_names"] = tuple(root_manifest_values["arm_names"])
+    root_manifest = RootRunnerManifest(**root_manifest_values)
+    root.update(root_manifest.validate())
+    manifest["root"] = root
+    manifest["manifest_digest"] = canonical_digest(
+        {key: value for key, value in manifest.items() if key != "manifest_digest"}
+    )
+    return manifest
 
 
 def test_all_arms_pass_seven_offline_contract_cases(tmp_path):
@@ -124,6 +152,32 @@ def test_canonical_manifest_preflight_rejects_before_selection():
             offers, schedule, expected_schedule_digest=digest,
             canonical_manifest=manifest,
         )
+
+
+def test_canonical_runtime_stream_binding_rejects_digest_mismatch():
+    offers, schedule, digest = fixture_case("recipient_only")
+    manifest = _runtime_bound_canonical_manifest(offers, digest)
+    with pytest.raises(ValueError, match="runtime stream digest mismatch: public_phi"):
+        changed = dict(manifest["stream"])
+        changed["public_phi"] = {"future_outcome": True}
+        PolicyMatrixRunner(
+            registry=_registry(), require_canonical_manifest=True,
+        ).run(
+            offers, schedule, expected_schedule_digest=digest,
+            canonical_manifest=manifest, canonical_runtime_stream=changed,
+        )
+
+
+def test_canonical_runtime_stream_binding_accepts_sealed_runtime_values():
+    offers, schedule, digest = fixture_case("recipient_only")
+    manifest = _runtime_bound_canonical_manifest(offers, digest)
+    result = PolicyMatrixRunner(
+        registry=_registry(), require_canonical_manifest=True,
+    ).run(
+        offers, schedule, expected_schedule_digest=digest,
+        canonical_manifest=manifest, canonical_runtime_stream=manifest["stream"],
+    )
+    assert result["canonical_runtime_binding"]["bound"] is True
 
 
 def test_canonical_manifest_can_bind_legacy_root_manifest():
