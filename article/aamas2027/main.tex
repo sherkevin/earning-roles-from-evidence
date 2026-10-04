@@ -71,11 +71,27 @@ The present evidence boundary is deliberate. Development traces qualify parts of
 
 \section{Related Work and Positioning}
 
-Partner selection studies show that agents can learn whom to interact with under social or game-theoretic feedback \cite{leung2025partner,russell2026partner}. Reputation mechanisms for language-agent teams similarly address cooperation collapse through shared assessments \cite{ren2026reputation}. These works motivate adaptive partner choice, but the evidence object in our setting is narrower: a concrete versioned delivery is evaluated by the recipient that depended on it, and the resulting evidence must be attributable to a producer before it can affect a future responsibility opportunity.
+The nearest work differs from our question along three axes: what is observed, when state changes, and whose contribution receives credit. Table~\ref{tab:novelty} makes that boundary explicit. Partner-selection and reputation methods motivate adaptive choice, while graph and role systems motivate changing organization; neither, by itself, identifies whether a concrete producer delivery caused a recipient's action. A contextual-trust or delayed-bandit adapter supplies a strong same-information alternative, not a synonym for the proposed mechanism.
 
-Other multi-agent systems optimize graphs, debate roles, or workflow structure \cite{zhuge2024gptswarm,yang2025agentnet,zhang2026dynamic,li2026morse}. Such systems can change routing or role prompts, yet a changed route does not identify whether a producer's artifact caused a recipient's action. Our comparison therefore treats these systems as conceptual neighbors and requires an explicit adapter before using any one as a scientific baseline. A central controller, a raw acceptance rule, and a contextual bandit are stronger alternative explanations than a static role prompt because they can consume comparable histories under a matched budget.
+\begin{table*}[t]
+\centering\scriptsize
+\setlength{\tabcolsep}{3.2pt}
+\begin{tabular}{p{0.16\textwidth}p{0.22\textwidth}p{0.19\textwidth}p{0.17\textwidth}p{0.17\textwidth}}
+\toprule
+Representative method and problem & Observed signal and update & Responsibility / credit semantics & Experimental object & Difference / test here \\
+\midrule
+Curiosity-Driven Partner Selection; Defection at First Sight \cite{leung2025partner,russell2026partner} & Interaction outcomes; partner state changes after social-game feedback & Peer-level interaction payoff; the cited formulations do not expose a producer--recipient artifact gate & Convention or dilemma games & Versioned delivery use and producer attribution \\
+Reputation as a Solution to Cooperation Collapse \cite{ren2026reputation} & Shared assessments and cooperation history; pooled reputation update & Broad reputation/cooperation score; the cited formulation does not expose producer and recipient ownership fields & Language-agent social cooperation & Public responsibility-safe evidence and explicit \unknown{} \\
+AgentNet; GPTSwarm \cite{yang2025agentnet,zhuge2024gptswarm} & Agent traces, graph structure, or routing outcomes; organization changes over time & Route/role utility; the cited formulations do not define a producer-artifact credit label & Graph or workflow coordination & Recipient action bound to one delivery and future-owner assignment \\
+Dynamic Role Assignment; MoRSE \cite{zhang2026dynamic,li2026morse} & Task context and role/subtask performance; roles or experts are reassigned & Role/expert utility; the cited formulations do not expose producer-artifact attribution inside recipient integration & Debate or mixture-of-experts workflows & Responsibility gate, cross-owner propagation, and delayed correction \\
+Finite-time multi-armed bandit \cite{auer2002finite} & Selected-arm rewards; update after an observed arm payoff & Arm-level reward; no producer--recipient ownership contract & Pre-execution selection under observed payoff & Classical selected-reward control; contextual and delayed adapters require separate qualification \\
+\bottomrule
+\end{tabular}
+\caption{Novelty boundary used in the paper. The rows are comparison families, not claims that each source implements the same task. A faithful adapter must preserve the listed visible information, arrival order, selected-only denominator, and complete cost before entering the scientific matrix.}
+\label{tab:novelty}
+\end{table*}
 
-The distinction from ordinary online learning is temporal and semantic. A source judgment is available before a later assignment, but the later quality outcome is available only after that assignment has executed. Updating the source producer from the later outcome would leak future information and conflate source and target responsibility. Our protocol makes the two events explicit and reports the service cost of maintaining the separation. Bandit estimators provide useful update comparators \cite{auer2002finite}; they are not themselves the claimed contribution.
+The distinction from ordinary online learning is temporal and semantic. A source judgment is available before a later assignment, but the later quality outcome is available only after that assignment has executed. A target outcome may update later decisions once it arrives. Using it to reconstruct an earlier assignment would violate that assignment's information boundary; treating it as a label of the source artifact would also require a separate attribution argument. Our protocol makes the two events explicit and reports the service cost of maintaining the separation. Bandit estimators therefore provide useful update comparators; they are not themselves the claimed contribution.
 
 \section{Problem Formulation}
 \label{sec:problem}

@@ -66,3 +66,15 @@
 3. 将 RARE 明确为 evidence-semantic loop，而不是某个 implementation/updater。
 
 Reviewer 标出的 P0/P2 未在本轮伪装解决：独立 root、live history、later-use、完整成本、strong same-information baseline、novelty table，以及最终稿的 internal/release-gate/空结果标记仍需在证据完成后处理。`goal_change_requested=false`。
+
+## 第二轮：最近邻边界写作
+
+为回应 novelty table 硬门，`main.tex` 的 Related Work and Positioning 已改为“观察信号 → 更新时间 → credit 语义 → 实验对象 → 本文边界”的比较桥接，并加入 `Table~\ref{tab:novelty}`。表格覆盖五个近邻家族：partner selection、LLM-MAS reputation、graph/evolutionary coordination、dynamic role/subtask assignment、contextual trust/bandit。表格明确这些是 comparison families，不把名字本身当作复现结果；faithful adapter 仍需保留可见信息、arrival order、selected-only denominator 和 complete cost。
+
+第二轮排版验证：
+
+- `python3 scripts/build_aamas2027.py`
+- 主文档仍为 7 页；保守正文末页为 7；无未解析引用；无 overfull box。
+- 当前 PDF SHA-256：`54c92b1929a05758b0e3e91a82ab5715f2eb46543dcd615a4e03b99368357fc9`。
+- reviewer 指出 Auer (2002) 只能支撑经典非 contextual MAB。已修正为 `Finite-time multi-armed bandit`，并把 context/propensity/delay 留给同信息 adapter 的实验定义；同时将五个 family 改成具名代表方法，并把绝对措辞改为 cited formulation 的可核验边界。
+- 最终 reviewer 复核结论：表格组织通过；Related Work 支持 sharp gap `7.8/10`，novelty 边界表达 `7.4/10`，整体故事 `8.0/10`。最后指出的两处语义问题已修正：Auer 行改为经典 selected-reward control，且明确 contextual/delayed adapter 需单独资格化；时间段改为“到达后可更新后续决策，但不能重构已封存 assignment 或直接把 target outcome 当 source label”。

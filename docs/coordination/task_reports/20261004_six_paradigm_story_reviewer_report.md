@@ -252,3 +252,143 @@ objects/information boundary
 这条链符合六范式中的根因手术刀，并用反直觉的责任标签失效增强 hook。摘要五句功能完整，Introduction 已有贡献、范围和路线图，方法标题与机制对象也已收敛。
 
 但论文距离三份标准的 Proceedings-ready 仍有实质距离。当前可支持的是协议级/工程级叙述；信号级、闭环级和泛化级主张仍 OPEN。正式投稿前不能把空结果矩阵、单 root 工程资格或内部 diagnostic 变成方法效果。
+
+## 10. Related Work novelty table — second-round review
+
+### 10.1 Overall judgment
+
+The new `Table~\ref{tab:novelty}` is a substantial improvement. It is not a citation dump: the columns force every comparison family to answer the same five questions:
+
+```text
+what is observed and updated
+→ whose responsibility/credit is represented
+→ what experimental object is evaluated
+→ which boundary the present paper tests
+```
+
+The bridge paragraph before the table also states the organizing axes explicitly: observation, update timing, and credit. This directly supports the sharp gap rather than adding unrelated literature.
+
+The table is aligned with the current storyline: prior work can adapt partner choice, graph structure, reputation, role prompts, or candidate-level trust, while the present question is whether a versioned producer delivery can be evaluated by a recipient and legally propagated to a future owner. The paragraph after the table correctly preserves contextual trust/bandit as a strong alternative explanation rather than treating it as a synonym for RARE.
+
+### 10.2 Score change
+
+| Dimension | Before table | After table | Comment |
+|---|---:|---:|---|
+| Related-work support for sharp gap | 5.5 | 7.5 | Comparison is now organized by observation/update/credit rather than system names |
+| Novelty identifiability | 5.5 | 7.0 | The table exposes the intended boundary, but rows are still families rather than named nearest methods |
+| Root-cause story coherence | 8.0 | 8.2 | The bridge makes responsibility semantics the common axis |
+| Overall story design | 7.7 | 7.9 | Meaningful improvement, with citation/coverage corrections still required |
+| Formal投稿就绪度 | 4.2 | 4.2 | Scientific hard gates and absent results are unchanged |
+
+### 10.3 Must-fix issues
+
+#### P0 — bandit citation and description are too broad
+
+The row
+
+> `Contextual trust / bandit \cite{auer2002finite}`
+
+claims context, selected feedback, propensity and arrival delay, but `Auer et al. (2002)` is the classical finite-time multi-armed bandit analysis and does not by itself establish contextual features, propensity logging, or delayed feedback. This is a factual mismatch in the novelty table.
+
+Choose one of two repairs before submission:
+
+1. Rename the row `Classical bandit / selected-reward control`, restrict the observed signal to selected reward and online score update, and state that context, arrival order and responsibility semantics are introduced by the present adapter; or
+2. Keep `Contextual trust / bandit`, but add a primary contextual-bandit and, if delay is claimed, delayed-feedback source, and update the row to describe exactly what those papers implement.
+
+Do not use the Auer citation as evidence for all three properties.
+
+#### P1 — five families are not yet five named nearest neighbors
+
+The v1.3 hard gate requests at least five nearest neighbors with their problem, input, update rule, credit semantics, experimental object, and true difference. The current table has five *families*, with multiple papers grouped into several rows. This is a useful first pass, but a strict reviewer could say that no individual nearest method is actually compared end-to-end.
+
+Recommended repair:
+
+- either name one representative paper/system in each row and add an explicit `Problem/objective` column;
+- or add a short second table in supplementary material mapping every family row to one named method, its exact input, update, credit object, and limitation.
+
+The current `Boundary tested here` column is close to a difference column, but renaming it to `Difference / test in this paper` would make the contract explicit.
+
+#### P1 — qualify negative claims about prior systems
+
+Phrases such as:
+
+> `source and sink work are not separated`
+
+> `attribution to a producer artifact is unspecified`
+
+are plausible distinctions, but they read as definitive claims about cited systems. Unless the source papers explicitly document the absence, use narrower wording:
+
+> `the cited formulation does not expose a producer–recipient artifact ownership contract`
+
+or:
+
+> `the paper evaluates role/expert utility without an explicit producer-artifact attribution field in the reported protocol.`
+
+This keeps the comparison grounded in the papers' observable interfaces rather than claiming that an implementation cannot support the distinction.
+
+#### P2 — keep the bridge tied to the one gap
+
+The bridge paragraph is currently focused. Preserve its final sentence about delayed contextual learning as an alternative explanation. Do not add additional families merely for coverage; every added row must explain why it cannot identify producer responsibility under the same observation, timing and credit contract.
+
+### 10.4 What is already correct
+
+- The table has five comparison families, which is the right scale for a seven-page AAMAS paper.
+- The columns correspond to observation, update, credit semantics, experimental object and difference.
+- The caption explicitly says rows are comparison families rather than claims of task identity.
+- The adapter condition—same visible information, arrival order, selected-only denominator and complete cost—connects Related Work to the benchmark/baseline gate.
+- `PeerSelect` remains secondary; the table does not silently turn graph or bandit work into ArtifactRole evidence.
+- The table does not claim that RARE is superior; it only defines what would count as a fair comparison.
+
+### 10.5 Final round judgment
+
+**Conditional pass for narrative organization; correction required for factual precision.** The table now supports the root-cause story and is materially better than the previous prose-only Related Work. Before this section can satisfy the strict v1.3 novelty gate, correct the Auer/contextual-bandit mismatch, make at least five named neighbors auditable, and narrow definitive absence claims about prior systems. These are local Related Work corrections and do not require changing the central story or method.
+
+## 11. Related Work 最终文字复核：具名近邻与 bandit 修订
+
+**审查结论：表格组织通过；仍需两处文字修正。** 本轮没有修改正文、运行实验或重新核验近邻全文，因此这里的通过只涉及叙事结构和当前文字的一致性，不代表 novelty 的科学验收通过，也不重新认证七页排版。
+
+### 已关闭的问题
+
+- 表格现在给出具名论文/系统，并以 observation/update、credit、experimental object、difference/test 比较。相比只列家族，读者能追溯到实际近邻。
+- Auer 行已改为 `Finite-time multi-armed bandit`，不再把 contextual/delayed 设置写成其正向贡献。
+- 其他行使用 `the cited formulation(s)` 限定比较对象，避免声称整个研究方向不可能实现某种能力。
+- 表格与正文的责任混淆主线一致；没有通过新增文献引入另一个中心问题。
+
+### 仍须修改的两处
+
+**P1：Related Work 末段仍把 delayed feedback 等同于时间泄漏。**
+
+当前句子：
+
+> Updating the source producer from the later outcome would leak future information and conflate source and target responsibility.
+
+在 outcome 到达之后更新状态、仅供更晚的决策使用，是合法的在线学习。是否归因错误与是否时间泄漏是两个问题，不能一概而论。这一旧句也与 Introduction 已修正的时间语义不一致。
+
+建议替换为：
+
+> A target outcome may update later decisions once it arrives. Using it to reconstruct an earlier assignment would violate that assignment's information boundary; treating it as a label of the source artifact would also require a separate attribution argument.
+
+这保留本协议的严格责任语义，同时不把普通 delayed learning 错写成天然泄漏，也不以这条不正确的对比制造新颖性。
+
+**P1：Auer 行的最后一格仍把原生非上下文方法直接叫作 same-information comparator。**
+
+当前 `Difference / test here` 写：
+
+> Same-information comparator with matched budget and cost
+
+它与同一行声明的原生输入范围不完全一致。建议写：
+
+> Classical selected-reward control; contextual and delayed adapters require separate qualification.
+
+同时可将 credit 列精简为 `Arm-level reward; no producer–recipient ownership contract`，无需新增 `no propensity` 这一与中心差异无关、且容易因原论文具体策略定义引发争议的否定断言。
+
+### 评分与剩余范围
+
+| 维度 | 上轮 | 本轮 |
+|---|---:|---:|
+| Related Work 对 sharp gap 的支持 | 7.5 | 7.8 |
+| 新颖性边界的表达清晰度 | 7.0 | 7.4 |
+| 故事设计 | 7.9 | 8.0 |
+| 科学投稿就绪度 | 4.2 | 4.2 |
+
+“新颖性边界的表达清晰度”不是已证明创新的分数。具名表仍是压缩后的分组定位表；后续应由现有逐篇阅读记录支撑各行，尤其是共有表述是否同时适用于同一行的每篇论文。最强同信息 baseline、closest adapter、独立 root/live histories 和闭环结果仍未由文字修改补齐。
