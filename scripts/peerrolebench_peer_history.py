@@ -241,6 +241,8 @@ class PeerHistoryV1:
     def replay(cls, snapshot: Mapping[str, Any]) -> "PeerHistoryV1":
         if not isinstance(snapshot, Mapping) or snapshot.get("schema") != SCHEMA:
             raise ValueError("unsupported peer history snapshot")
+        if snapshot.get("version") != VERSION:
+            raise ValueError("unsupported peer history version")
         expected = snapshot.get("state_digest")
         payload = {key: snapshot[key] for key in ("schema", "version", "agent_key", "seals", "entries", "scopes") if key in snapshot}
         if expected != _digest(payload):

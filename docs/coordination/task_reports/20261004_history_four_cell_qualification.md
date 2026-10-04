@@ -22,11 +22,11 @@
 
 - `scripts/peerrolebench_history_selector.py` 是仅用于资格测试的确定性 comparator，不是论文提出的 learner。它只接受 `PeerHistoryV2.selector_projection()` 的白名单字段，检查 candidate identity、scope count、read cut 和 scope schema；隐藏字段或未来到达的记录直接拒绝。
 - `scripts/peerrolebench_history_four_cell_qualification.py` 复用 canonical PIPE3 native ledger、`RoleEvidenceOffer`、`LaterAssignment`、已提交 `DelayedCreditLedger` 和 history adapter。配置先写入 `config.json`，随后写四个 cell 的 `summary.json` 与 `raw.jsonl`；失败的 v1 也保留。
-- v1 在第一次运行时暴露 `LaterCredit.build` 调用未使用关键字参数，配置和失败目录完整保留；修正后 v2 通过。selector 增加 public-field fail-closed 检查后，正式回执使用 v3。
+- v1 在第一次运行时暴露 `LaterCredit.build` 调用未使用关键字参数，配置和失败目录完整保留；修正后 v2 通过。v3 加入 public-field fail-closed 检查；独立审查又发现多 scope 无目标过滤，因此 selector 增加 `target_scope_key`，正式回执使用 v4。
 
 ## 正式回执
 
-正式结果：`experiments/logs/n03_peer_history_four_cell_qualification_20261004_v3/`。
+正式结果：`experiments/logs/n03_peer_history_four_cell_qualification_20261004_v4/`。v1/v2/v3 均作为历史回执保留。
 
 - `QUALIFIED_OFFLINE`, `passed=true`；0 LLM/API、0 GPU、`scientific_claim_allowed=false`。
 - `history`：一条 entry，`history_input_digest=b9f17b40...`; scores `[0.3333333333, 0]`; probabilities `[0.5825702065, 0.4174297935]`; chosen `peer-a@v1`。
@@ -34,11 +34,14 @@
 - `reset-history` 与 `no-history` 的 input digest、scores、probabilities、choice、propensity 完全相等。
 - `shuffled-history` 返回 `UNKNOWN`，原因是 `history entry must arrive after assignment seal`，没有 selection、credit 或 policy update。
 - 四格 `update_count=0`；每格均记录 15 个 fixture ledger events 和 `cost={api_calls:0,gpu_jobs:0,input_tokens:0,output_tokens:0,tool_calls:0,replay_events:15,wall_ms:...,updates:0}`。
-- focused tests：selector/history/adapter/binding 共 `18 passed`；`py_compile` 通过。
+- selector 现在要求多 scope 时传入当前 `target_scope_key`，不匹配 scope 不进入 score；隐藏字段、候选 identity 和未来 read cut 仍 fail-closed。
+- focused tests：selector/history/adapter/binding 共 `19 passed`；`py_compile` 通过。
 
 ## 结论与边界
 
-这一步关闭了一个必要的工程前置：history projection 已被执行前 selector 消费，并且 reset/shuffle 的信息边界可审计。它没有证明 peer suitability、角色专业化、质量/成本收益、实时训练速度、遗忘控制，也没有证明当前 comparator 是最终方法。
+这一步关闭了一个必要的工程前置：history projection 已被执行前 selector 消费，目标 role/state scope 不会被其他 scope 的历史污染，并且 reset/arrival-order rejection 的信息边界可审计。它没有证明 peer suitability、角色专业化、质量/成本收益、实时训练速度、遗忘控制，也没有证明当前 comparator 是最终方法。
+
+审查边界必须保留：`shuffled-history` 当前是单条记录的非法 arrival-order 负例，不是至少两条合法记录的 permutation 或 candidate→projection 错配；`reset-history` 的正式四格仍是直接构造空 history，不是 snapshot→replay 后的跨进程恢复。下一张卡专门验证这两个缺口。
 
 仍未关闭的科学门：跨 episode 持久 history、selector 的真实 policy/update、独立 live histories、第二 benchmark structural root、七 arm same-information baseline parity、later-use precision、完整成本和真实 API 结果。A800 继续关闭；下一步只能先把四格接口接入独立 live histories，并保持同信息 baseline 与 UNKNOWN 语义。
 

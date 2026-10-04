@@ -71,3 +71,44 @@ def test_selector_rejects_future_history_at_read_cut():
             candidate_keys=tuple(projections), projections=projections,
             base_scores=(0.0, 0.0), read_cut=20, rng_seed=10,
         )
+
+
+def test_selector_uses_only_the_target_scope_and_rejects_ambiguous_default():
+    projections = _projections()
+    target = {
+        "scope_key": "role:state-a",
+        "role_signature_hash": "r",
+        "execution_state_fingerprint": "s-a",
+        "n_pass": 1, "n_fail": 0, "n_unknown": 0,
+        "last_arrival": 5, "smoothed_rate": 2 / 3,
+        "cost_mean_wall_ms": 0.0,
+    }
+    unrelated = {
+        "scope_key": "role:state-b",
+        "role_signature_hash": "r2",
+        "execution_state_fingerprint": "s-b",
+        "n_pass": 0, "n_fail": 1, "n_unknown": 0,
+        "last_arrival": 5, "smoothed_rate": 1 / 3,
+        "cost_mean_wall_ms": 0.0,
+    }
+    projections["peer-a@v1"]["scopes"] = [target, unrelated]
+    projections["peer-a@v1"]["scope_count"] = 2
+    with pytest.raises(ValueError, match="target scope"):
+        select_from_public_history(
+            candidate_keys=tuple(projections), projections=projections,
+            base_scores=(0.0, 0.0), read_cut=20, rng_seed=10,
+        )
+    first = select_from_public_history(
+        candidate_keys=tuple(projections), projections=projections,
+        base_scores=(0.0, 0.0), read_cut=20, rng_seed=10,
+        target_scope_key="role:state-a",
+    )
+    changed = deepcopy(projections)
+    changed["peer-a@v1"]["scopes"][1]["smoothed_rate"] = 1.0
+    second = select_from_public_history(
+        candidate_keys=tuple(changed), projections=changed,
+        base_scores=(0.0, 0.0), read_cut=20, rng_seed=10,
+        target_scope_key="role:state-a",
+    )
+    assert first["probabilities"] == second["probabilities"]
+    assert first["chosen_peer"] == second["chosen_peer"]

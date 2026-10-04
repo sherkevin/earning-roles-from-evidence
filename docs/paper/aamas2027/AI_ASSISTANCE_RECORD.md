@@ -769,3 +769,7 @@ The assistant added a thin `peer-history-canonical-adapter-v1` at the existing P
 ### 2026-10-04 history four-cell matched replay
 
 The assistant added a test-only public-projection selector and a zero-call matched replay over `history`, `no-history`, `shuffled-history`, and `reset-history`. The formal v3 receipt records component hashes, per-cell input/projection digests, probabilities, chosen peer, propensity, UNKNOWN reason, and full zero-call cost schema. A valid history changed the deterministic propensity, reset exactly matched the empty history, and an arrival-order violation failed closed. This is an engineering qualification only; it does not establish cross-episode persistence, peer suitability, policy efficacy, baseline parity, live API results, or GPU training.
+
+### 2026-10-04 history process-boundary recovery
+
+The assistant added a separate child-process replay worker and a five-cell zero-call qualification. A valid history snapshot and an empty snapshot reproduced parent state/projection/selection exactly after process restart; tampered, truncated, and unknown-version snapshots exited nonzero with structured UNKNOWN receipts and no selection/update. The run is engineering evidence only and does not establish cross-episode live learning, provenance authenticity, baseline parity, or GPU training.

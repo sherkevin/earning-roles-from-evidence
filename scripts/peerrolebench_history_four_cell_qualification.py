@@ -153,6 +153,8 @@ def run(out: Path) -> dict[str, Any]:
     }
     _json(out / "config.json", config)
     ledger, offer, assignment, valid_history, registry, fixture_digest = _fixture()
+    valid_projection = valid_history.selector_projection(candidate_key="peer-a@v1")
+    target_scope_key = valid_projection["scopes"][0]["scope_key"]
     results: dict[str, dict[str, Any]] = {}
     for cell in CELLS:
         cell_out = out / cell
@@ -184,6 +186,7 @@ def run(out: Path) -> dict[str, Any]:
             selection = select_from_public_history(
                 candidate_keys=CANDIDATES, projections=projections,
                 base_scores=(0.0, 0.0), read_cut=READ_CUT, rng_seed=RNG_SEED,
+                target_scope_key=target_scope_key,
             )
             row.update({
                 "status": "PASS", "history_input_digest": selection["input_digest"],

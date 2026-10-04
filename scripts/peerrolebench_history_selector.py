@@ -34,7 +34,7 @@ def _digest(value: Any) -> str:
 
 
 def _projection_score(projection: Mapping[str, Any], *, candidate_key: str,
-                      read_cut: int) -> float:
+                      read_cut: int, target_scope_key: str | None) -> float:
     if projection.get("schema") != "peer-history-v2":
         raise ValueError("unsupported history projection schema")
     if projection.get("candidate_key") != candidate_key:
@@ -50,8 +50,15 @@ def _projection_score(projection: Mapping[str, Any], *, candidate_key: str,
         raise ValueError("history projection scopes must be a list")
     if int(projection["scope_count"]) != len(scopes):
         raise ValueError("history projection scope count mismatch")
+    if target_scope_key is None:
+        if len(scopes) > 1:
+            raise ValueError("target scope is required for multi-scope history")
+        selected_scopes = scopes
+    else:
+        selected_scopes = [scope for scope in scopes
+                           if scope.get("scope_key") == target_scope_key]
     rates: list[float] = []
-    for scope in scopes:
+    for scope in selected_scopes:
         if not isinstance(scope, Mapping):
             raise ValueError("history scope must be an object")
         if set(scope) != _PUBLIC_SCOPE_KEYS:
@@ -73,6 +80,7 @@ def _projection_score(projection: Mapping[str, Any], *, candidate_key: str,
 def select_from_public_history(
     *, candidate_keys: Sequence[str], projections: Mapping[str, Mapping[str, Any]],
     base_scores: Sequence[float], read_cut: int, rng_seed: int,
+    target_scope_key: str | None = None,
 ) -> dict[str, Any]:
     """Return a reproducible choice from public projection inputs only."""
     keys = tuple(str(key) for key in candidate_keys)
@@ -81,7 +89,8 @@ def select_from_public_history(
     if set(projections) != set(keys):
         raise ValueError("projection keys must equal the candidate menu")
     scores = tuple(float(base) + _projection_score(
-                       projections[key], candidate_key=key, read_cut=read_cut
+                       projections[key], candidate_key=key, read_cut=read_cut,
+                       target_scope_key=target_scope_key,
                    )
                    for key, base in zip(keys, base_scores))
     if not all(math.isfinite(score) for score in scores):
@@ -102,6 +111,7 @@ def select_from_public_history(
         "candidate_keys": list(keys),
         "base_scores": list(map(float, base_scores)),
         "read_cut": int(read_cut),
+        "target_scope_key": target_scope_key,
         "projections": {key: projections[key] for key in keys},
     }
     return {

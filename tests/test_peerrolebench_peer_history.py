@@ -77,6 +77,16 @@ def test_snapshot_replay_and_digest_mismatch_fail_closed():
         PeerHistoryV1.replay(snapshot)
 
 
+def test_snapshot_replay_rejects_unknown_version():
+    history = PeerHistoryV1.empty("peer-a")
+    history.seal_assignment(_seal())
+    history.append(_entry())
+    snapshot = history.snapshot()
+    snapshot["version"] = "peer-history-v1"
+    with pytest.raises(ValueError, match="unsupported peer history version"):
+        PeerHistoryV1.replay(snapshot)
+
+
 def test_entry_scope_mismatch_is_rejected():
     history = PeerHistoryV1.empty("peer-a")
     history.seal_assignment(_seal())
