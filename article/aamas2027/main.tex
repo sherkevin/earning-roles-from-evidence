@@ -24,7 +24,7 @@
 \newcommand{\rare}{\textsc{rare}}
 
 \begin{abstract}
-Multi-agent systems routinely assign work before they know which collaborator is useful for the particular dependency at hand. Fixed roles, global reputation, and terminal rewards can rank agents, but they do not establish whether a concrete delivery helped the recipient who had to use it, whether a later repair belonged to the producer, or whether that evidence should change the next assignment. We formulate this gap as role formation from situated peer judgments. Our protocol binds a producer delivery to a recipient's observable use, revision, or rejection, filters the result through an explicit responsibility gate, publishes attributable evidence, and consumes that evidence in an assignment made before the next task executes. A delayed update then credits only the future responsibility opportunity and records complete collaboration cost. We call the resulting candidate mechanism responsibility-aware role evidence (RARE); its novelty claim is the identifiable closed loop, rather than a particular off-the-shelf updater. We specify a TeamBench-derived artifact track and a local-peer selection track, matched-information baselines, root-level splits, cost accounting, online-latency and forgetting measures, and falsification tests. The resulting protocol makes its claims testable: empirical result cells are reserved for independently frozen real-API runs.
+Multi-agent systems must assign responsibility before they know which collaborator will make a dependency usable, yet downstream failure entangles producer defects with recipient integration. Existing reputation, acceptance, and terminal-reward schemes collapse these sources: they can rank agents, but cannot tell whether a recipient's concrete use of a delivery is evidence about the producer or about the recipient. We introduce \emph{earning roles}, a responsibility-aware protocol that binds a versioned delivery to the recipient's observable use, filters it through an ownership gate, publishes the resulting evidence before the next assignment, and applies delayed selected-only credit only to that future opportunity. The protocol makes a falsifiable prediction: under matched information, candidate sets, and complete cost, situated evidence should improve the assignment of unseen responsibilities only when it adds producer-attributable information beyond acceptance and terminal outcomes. We formalize the event and read-cut boundaries and specify candidate ArtifactRole and PeerSelect evaluation tracks with same-information baselines, root-level splits, and latency, forgetting, attribution, and cost measures; general expertise, universal reputation, and unbounded workflow discovery remain outside the claimed scope.
 \end{abstract}
 
 \begin{document}
@@ -33,9 +33,9 @@ Multi-agent systems routinely assign work before they know which collaborator is
 
 \section{Introduction}
 
-How can collaborators earn future responsibilities from the judgments of agents who use their work? Consider two constructed queue-processing cases with the same rejection and failed team outcome. In one, a producer violates the priority-module contract; in the other, the module is correct but the recipient implements its consumer incorrectly. The same feedback calls for different responsibility assignments. Observing only rejection and terminal failure cannot distinguish the cases; the recipient's account of what it used and why it failed may provide the missing evidence.
+In dependency-bearing multi-agent workflows, a collaborator's value is observed through another agent's attempt to use its artifact. How can collaborators earn future responsibilities from the judgments of agents who use their work? Consider two constructed queue-processing cases with the same rejection and failed team outcome. In one, a producer violates the priority-module contract; in the other, the module is correct but the recipient implements its consumer incorrectly. The same feedback calls for different responsibility assignments. Observing only rejection and terminal failure cannot distinguish the cases; the recipient's account of what it used and why it failed may provide the missing evidence.
 
-This example isolates responsibility ambiguity: feedback about a collaboration need not identify the producer's contribution. The recipient has direct evidence of the delivery's use, but its judgment can also reflect its own integration difficulties. Learning from that judgment requires separating these sources and testing whether the resulting evidence predicts useful future assignments. A later outcome can inform subsequent decisions; it cannot retrospectively alter the information available to an already sealed assignment.
+This example isolates responsibility confounding: the same feedback can describe producer correctness, recipient integration, or neither. The recipient has direct evidence of the delivery's use, but its judgment can also reflect its own integration difficulties. Learning from that judgment requires separating these sources and testing whether the resulting evidence predicts useful future assignments. A later outcome can inform subsequent decisions; it cannot retrospectively alter the information available to an already sealed assignment.
 
 This paper studies a sharper question: \emph{when can the agent that actually receives and uses a delivery provide reliable evidence about the producer's future responsibility?} The question has a necessary sequence:
 \begin{equation}
@@ -49,13 +49,13 @@ A final score cannot by itself identify which producer caused a defect. An accep
 
 The central idea is to make the recipient's local observation a public, version-bound evidence object with a responsibility boundary. A producer is credited only when the delivery was observed, the recipient action is traceable to that delivery, and a contract check excludes recipient-owned work. Evidence is published without silently updating the policy. Before a later task starts, a legal owner reads the snapshot and the selector seals its assignment and propensity. Only after the later task has an independent outcome can a delayed credit update occur. This separates what a recipient saw from what the future responsibility actually produced, and makes the separation observable in the ledger.
 
-We name this protocol \emph{earning roles}. The name describes a measurable process: a candidate earns responsibility opportunities through attributable evidence that changes future assignment under a fixed information and cost contract. The candidate implementation is called responsibility-aware role evidence (RARE). RARE is a method candidate, not a claim that a particular representation, neural head, RLS update, or periodic refit is optimal. The scientific claim to test is that the complete judgment--attribution--assignment loop identifies useful role evidence beyond raw acceptance, terminal-only outcomes, and same-information contextual trust.
+We name this protocol \emph{earning roles}. The name describes a measurable process: a collaborator earns responsibility opportunities through attributable evidence that changes future assignment under a fixed information and cost contract. We call this responsibility-aware role evidence (RARE); the name refers to the loop's evidence semantics, not to a particular updater. RARE is defined by the judgment--attribution--assignment loop, not by a particular representation, neural head, RLS update, or periodic refit. The scientific claim to test is that this loop identifies useful role evidence beyond raw acceptance, terminal-only outcomes, and same-information contextual trust.
 
 The paper makes four concrete contributions as a testable design.
 \begin{itemize}
   \item We define an event and information contract that separates producer quality, recipient action, downstream adoption, final outcome, and \unknown{} while preserving the exact delivery, version, read cut, and propensity.
   \item We give a two-stage role-evidence protocol: publication is immutable and does not change the policy; a later assignment is sealed before execution; delayed selected-only credit can affect only the future opportunity it evaluates. These boundaries make noninterference and idempotent replay testable.
-  \item We predeclare a candidate ArtifactRole track for responsibility diagnosis, a secondary PeerSelect mechanism track, matched baselines, root-level splits, and complete resource accounting to distinguish information value from closed-loop team benefit.
+  \item We specify an ArtifactRole track for responsibility diagnosis and a secondary PeerSelect mechanism track, with matched baselines, root-level splits, and complete resource accounting to distinguish information value from closed-loop team benefit.
   \item We state the falsification boundary. If recipient evidence has no out-of-sample information, if a same-information trust baseline explains the effect, if attribution is unsafe, or if quality gains disappear at matched complete cost, the role-formation claim does not pass.
 \end{itemize}
 
@@ -67,7 +67,7 @@ The paper makes four concrete contributions as a testable design.
 \label{fig:overview}
 \end{figure*}
 
-The current draft does not report a positive efficacy result. Existing development traces qualify parts of the protocol and expose scorer and ownership failures; they do not establish role learning. This separation lets the final paper promote only claims supported by an independently frozen experiment.
+The present evidence boundary is deliberate. Development traces qualify parts of the protocol and expose scorer and ownership failures, but they do not establish role learning; the claims below therefore remain tied to the independently frozen experiment and its evidence level. The remainder of the paper positions the gap, defines the event and information contract, specifies the protocol and matched comparisons, and then gives the research questions, reserved result matrix, current evidence, and limits.
 
 \section{Related Work and Positioning}
 
@@ -110,11 +110,11 @@ This gate distinguishes four observations that are often collapsed: a producer-c
 \label{fig:method-state}
 \end{figure*}
 
-\section{Candidate Mechanism: Earning Roles}
+\section{Earning Roles: A Responsibility-Aware Protocol}
 \label{sec:method}
 
 \subsection{Two-stage evidence and update}
-The candidate mechanism has two independent interfaces:
+The protocol has two independent interfaces:
 \begin{align}
  \operatorname{publish}(e_t)&\rightarrow \{\text{RoleEvidence},\;\unknown{},\;\text{invalid}\},\\
  \operatorname{choose}(x_t,C_t,R_t)&\rightarrow (a_t,p_t,\delta_t),\\
@@ -146,7 +146,7 @@ where $n$ counts eligible evidence, $s$ accumulates responsibility-safe positive
  \operatorname{score}(v\mid x,r)=w^\top h(x,v,r)+\beta\frac{s(v,r)}{n(v,r)+\alpha}.
  \label{eq:score}
 \end{equation}
-The representation $h$, updater, and constants are open experimental conditions. The formula is a contract-level candidate, not a theorem or a final backbone choice. The selector uses a pre-registered exploration floor, records $p_t$, and uses preview--assignment--commit so that writing a future assignment cannot resample the selected candidate.
+The representation $h$, updater, and constants are replaceable implementation conditions rather than the scientific object. The score is a contract-level construction, not a theorem or a claim that one backbone is optimal. The selector uses a pre-registered exploration floor, records $p_t$, and uses preview--assignment--commit so that writing a future assignment cannot resample the selected candidate.
 
 The full mechanism is intended to have three properties. First, responsibility safety prevents a recipient's normal work from becoming producer credit or blame. Second, temporal validity ensures that a judgment may affect a later assignment without reading its future outcome. Third, bounded online service makes each legal feedback event incrementally usable while the experiment reports update latency, state size, and complete cost. These are properties to measure, not assumptions that the formula automatically satisfies.
 
