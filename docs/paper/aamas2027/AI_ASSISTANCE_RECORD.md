@@ -777,3 +777,7 @@ The assistant added a separate child-process replay worker and a five-cell zero-
 ### 2026-10-04 multi-entry history adversarial qualification
 
 The assistant added a zero-call five-cell qualification with two valid history entries. It rejected a legal-entry permutation, candidate-to-history mismatch, and aggregate-rate mutation with UNKNOWN/no update, while changing an unrelated role/state scope left the target decision fields unchanged. The first implementation failure and corrected clean-commit receipt are both retained; this remains protocol evidence rather than peer suitability, live learning, baseline, or GPU evidence.
+
+### 2026-10-04 canonical history provenance qualification
+
+The assistant added a native-ledger provenance qualification over one valid chain, one duplicate-credit replay, and eight source/target/candidate/registry/read-cut/arrival/selection/credit mutations. The valid chain rebuilt the binding receipt and history digest; duplicate credit returned `NOOP`; all mutations produced UNKNOWN with zero append/update. This is still zero-call engineering evidence and does not establish live histories, baseline parity, benchmark efficacy, or GPU training.

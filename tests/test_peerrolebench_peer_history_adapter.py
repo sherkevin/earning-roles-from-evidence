@@ -39,6 +39,32 @@ def test_adapter_appends_only_after_exact_later_credit():
     assert result["history_projection"]["entry_count"] == 1
 
 
+def test_adapter_duplicate_credit_is_exactly_once_noop():
+    ledger, offer, assignment, selection, _entry, registry = _ledger_and_offer()
+    credit = LaterCredit.build(
+        assignment_id="as1", source_evidence_id="e0",
+        later_outcome_id="o1", later_quality=1.0,
+    )
+    delayed = DelayedCreditLedger()
+    assert delayed.apply_once(credit, lambda _: None) is True
+    history = PeerHistoryV1.empty("peer-a")
+    kwargs = {
+        "history": history, "ledger": ledger, "offer": offer,
+        "target_assignment": assignment, "target_selection": selection,
+        "credit": credit, "delayed_ledger": delayed,
+        "assignment_read_cut": 5, "target_decision_index": 6,
+        "target_arrival_index": 12, "candidate_key": "peer-a@v1",
+        "candidate_registry_digest": registry,
+    }
+    first = append_history_after_credit(**kwargs)
+    second = append_history_after_credit(**kwargs)
+    assert first["status"] == "APPENDED"
+    assert second["status"] == "NOOP"
+    assert second["receipt"] is None
+    assert len(history.entries) == 1
+    assert len(history.seals) == 1
+
+
 def test_adapter_rejects_unrelated_credit_without_mutating_history():
     ledger, offer, assignment, selection, _entry, registry = _ledger_and_offer()
     credit = LaterCredit.build(

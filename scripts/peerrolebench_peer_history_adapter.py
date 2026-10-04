@@ -150,6 +150,23 @@ def append_history_after_credit(
     candidate_base = candidate_key.split("@", 1)[0]
     if candidate_base != target_assignment.agent_id:
         raise ValueError("candidate key does not match target assignment")
+    existing = [item for item in history.entries
+                if item.assignment_id == target_assignment.assignment_id]
+    if existing:
+        prior = existing[0]
+        if (prior.later_outcome_id != credit.later_outcome_id
+                or prior.subject_key != target_assignment.agent_id):
+            raise ValueError("assignment already has a different history lineage")
+        return {
+            "adapter_version": VERSION,
+            "status": "NOOP",
+            "entry": prior.payload(),
+            "seal": next((seal.payload() for seal in history.seals
+                           if seal.assignment_id == prior.assignment_id), None),
+            "receipt": None,
+            "history_projection": history.selector_projection(candidate_key=candidate_key),
+            "history_state_digest": history.state_digest(),
+        }
     entry = _build_entry(
         ledger=ledger, offer=offer, assignment=target_assignment,
         target_selection=target_selection, target_outcome_id=credit.later_outcome_id,
@@ -194,6 +211,7 @@ def append_history_after_credit(
         raise
     return {
         "adapter_version": VERSION,
+        "status": "APPENDED",
         "entry": entry.payload(),
         "seal": seal.payload(),
         "receipt": receipt.payload(),
