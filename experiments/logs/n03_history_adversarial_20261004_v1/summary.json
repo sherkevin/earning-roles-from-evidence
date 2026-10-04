@@ -1,0 +1,218 @@
+{
+  "qualification_version": "peer-history-adversarial-qualification-v1",
+  "git_commit": "ae55957bdb5eb5a38645cbb4b5d3e088881edec2",
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "cells": {
+    "valid-two-entry": {
+      "cell": "valid-two-entry",
+      "status": "PASS",
+      "update_count": 0,
+      "target_scope_key": "b26ee7845d5a6a03a44f06e30df4f6bb5699c15c3a3242c246093e046c1651e0:b66313d4a294df0715b5f72cefd89545c6d280afc645d0ed97ef62399bfbe6e9",
+      "scientific_claim_allowed": false,
+      "entry_count": 2,
+      "scope_count": 2,
+      "state_digest": "13b3e271a306ee1259ce0cf4c2cdf0ebe3b93e0fe2be3fef6f14f9a6cba6f2e8",
+      "snapshot_bytes": 3529,
+      "selection": {
+        "selector_version": "peer-history-selector-consumption-test-v1",
+        "input_digest": "f69b069e29c663a1bf07665f942161a898e4c26216539640f27553fda404a715",
+        "projection_digests": {
+          "peer-a@v1": "ee140d088b8e2eab246222158439bf33a019edf2a7c14c8f8de0ec05778a60f3",
+          "peer-b@v1": "da28e8fb451f09b5adaa01a39d06a2d4d8292f14cb23562fad541a70bce375d4"
+        },
+        "scores": [
+          0.33333333333333326,
+          0.0
+        ],
+        "probabilities": [
+          0.5825702064623147,
+          0.41742979353768533
+        ],
+        "rng_seed": 10,
+        "rng_draw": 0.5714025946899135,
+        "chosen_peer": "peer-a@v1",
+        "propensity": 0.5825702064623147
+      },
+      "projection_digest": "ee140d088b8e2eab246222158439bf33a019edf2a7c14c8f8de0ec05778a60f3",
+      "wall_ms": 1.200167,
+      "cost": {
+        "api_calls": 0,
+        "gpu_jobs": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "tool_calls": 0,
+        "replay_entries": 2,
+        "wall_ms": 1.200167,
+        "updates": 0
+      }
+    },
+    "permuted-two-entry": {
+      "cell": "permuted-two-entry",
+      "status": "UNKNOWN",
+      "update_count": 0,
+      "target_scope_key": "b26ee7845d5a6a03a44f06e30df4f6bb5699c15c3a3242c246093e046c1651e0:b66313d4a294df0715b5f72cefd89545c6d280afc645d0ed97ef62399bfbe6e9",
+      "scientific_claim_allowed": false,
+      "entry_count": 2,
+      "scope_count": 2,
+      "state_digest": "13b3e271a306ee1259ce0cf4c2cdf0ebe3b93e0fe2be3fef6f14f9a6cba6f2e8",
+      "snapshot_bytes": 3529,
+      "selection": null,
+      "unknown_reason": "ValueError: history entries must be append-only in arrival order",
+      "wall_ms": 0.525292,
+      "cost": {
+        "api_calls": 0,
+        "gpu_jobs": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "tool_calls": 0,
+        "replay_entries": 2,
+        "wall_ms": 0.525292,
+        "updates": 0
+      }
+    },
+    "candidate-mismatch": {
+      "cell": "candidate-mismatch",
+      "status": "UNKNOWN",
+      "update_count": 0,
+      "target_scope_key": "b26ee7845d5a6a03a44f06e30df4f6bb5699c15c3a3242c246093e046c1651e0:b66313d4a294df0715b5f72cefd89545c6d280afc645d0ed97ef62399bfbe6e9",
+      "scientific_claim_allowed": false,
+      "entry_count": 2,
+      "scope_count": 2,
+      "state_digest": "13b3e271a306ee1259ce0cf4c2cdf0ebe3b93e0fe2be3fef6f14f9a6cba6f2e8",
+      "snapshot_bytes": 3529,
+      "selection": null,
+      "unknown_reason": "ValueError: history projection candidate does not match history agent",
+      "wall_ms": 0.551042,
+      "cost": {
+        "api_calls": 0,
+        "gpu_jobs": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "tool_calls": 0,
+        "replay_entries": 2,
+        "wall_ms": 0.551042,
+        "updates": 0
+      }
+    },
+    "projection-rate-mutation": {
+      "cell": "projection-rate-mutation",
+      "status": "UNKNOWN",
+      "update_count": 0,
+      "target_scope_key": "b26ee7845d5a6a03a44f06e30df4f6bb5699c15c3a3242c246093e046c1651e0:b66313d4a294df0715b5f72cefd89545c6d280afc645d0ed97ef62399bfbe6e9",
+      "scientific_claim_allowed": false,
+      "entry_count": 2,
+      "scope_count": 2,
+      "state_digest": "13b3e271a306ee1259ce0cf4c2cdf0ebe3b93e0fe2be3fef6f14f9a6cba6f2e8",
+      "snapshot_bytes": 3529,
+      "attested_state_digest": "13b3e271a306ee1259ce0cf4c2cdf0ebe3b93e0fe2be3fef6f14f9a6cba6f2e8",
+      "selection": null,
+      "unknown_reason": "ValueError: peer history aggregate mismatch",
+      "wall_ms": 0.705959,
+      "cost": {
+        "api_calls": 0,
+        "gpu_jobs": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "tool_calls": 0,
+        "replay_entries": 2,
+        "wall_ms": 0.705959,
+        "updates": 0
+      }
+    },
+    "scope-isolation": {
+      "cell": "scope-isolation",
+      "status": "PASS",
+      "update_count": 0,
+      "target_scope_key": "b26ee7845d5a6a03a44f06e30df4f6bb5699c15c3a3242c246093e046c1651e0:b66313d4a294df0715b5f72cefd89545c6d280afc645d0ed97ef62399bfbe6e9",
+      "scientific_claim_allowed": false,
+      "entry_count": 2,
+      "scope_count": 2,
+      "state_digest": "13b3e271a306ee1259ce0cf4c2cdf0ebe3b93e0fe2be3fef6f14f9a6cba6f2e8",
+      "snapshot_bytes": 3529,
+      "selection": {
+        "selector_version": "peer-history-selector-consumption-test-v1",
+        "input_digest": "f682370f373d0905377717a9705e9b6c066f000dfd6758bd896b5ef7e4b1f8f5",
+        "projection_digests": {
+          "peer-a@v1": "82f5bbbe59e518f4ecf18deff46b0d12973ec656addb592e93c11c9d4cb9284b",
+          "peer-b@v1": "da28e8fb451f09b5adaa01a39d06a2d4d8292f14cb23562fad541a70bce375d4"
+        },
+        "scores": [
+          0.33333333333333326,
+          0.0
+        ],
+        "probabilities": [
+          0.5825702064623147,
+          0.41742979353768533
+        ],
+        "rng_seed": 10,
+        "rng_draw": 0.5714025946899135,
+        "chosen_peer": "peer-a@v1",
+        "propensity": 0.5825702064623147
+      },
+      "baseline_selection": {
+        "selector_version": "peer-history-selector-consumption-test-v1",
+        "input_digest": "f69b069e29c663a1bf07665f942161a898e4c26216539640f27553fda404a715",
+        "projection_digests": {
+          "peer-a@v1": "ee140d088b8e2eab246222158439bf33a019edf2a7c14c8f8de0ec05778a60f3",
+          "peer-b@v1": "da28e8fb451f09b5adaa01a39d06a2d4d8292f14cb23562fad541a70bce375d4"
+        },
+        "scores": [
+          0.33333333333333326,
+          0.0
+        ],
+        "probabilities": [
+          0.5825702064623147,
+          0.41742979353768533
+        ],
+        "rng_seed": 10,
+        "rng_draw": 0.5714025946899135,
+        "chosen_peer": "peer-a@v1",
+        "propensity": 0.5825702064623147
+      },
+      "decision_fields_equal": true,
+      "projection_digest": "82f5bbbe59e518f4ecf18deff46b0d12973ec656addb592e93c11c9d4cb9284b",
+      "wall_ms": 0.562083,
+      "cost": {
+        "api_calls": 0,
+        "gpu_jobs": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "tool_calls": 0,
+        "replay_entries": 2,
+        "wall_ms": 0.562083,
+        "updates": 0
+      }
+    }
+  },
+  "candidate_keys": [
+    "peer-a@v1",
+    "peer-b@v1"
+  ],
+  "read_cut": 20,
+  "rng_seed": 10,
+  "fixture": "two-entry-history-with-cross-scope-v1",
+  "component_sha256": {
+    "peerrolebench_peer_history.py": "2f6b1192d7c386feb6c51a3e44f74ea4aed18124db39c24141bf6083df4160d7",
+    "peerrolebench_history_selector.py": "5cf0ef91933f6ecf2bf73d47bde0faa20070f195169cda88444100cfc603d134",
+    "peerrolebench_history_adversarial_qualification.py": "59ebba2c2b7586a46103db457049e0b7f52964b44690935395f08aacffc7b745"
+  },
+  "git_worktree_status_before": " M article/aamas2027/main.tex\n",
+  "llm_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "started_at_utc": "2026-10-04T06:17:27.623780+00:00",
+  "status": "QUALIFIED_OFFLINE",
+  "passed": true,
+  "checks": {
+    "valid_two_entry": true,
+    "permutation_rejected": true,
+    "candidate_mismatch_rejected": true,
+    "projection_mutation_rejected": true,
+    "scope_isolated": true,
+    "all_updates_zero": true
+  },
+  "real_api_calls": 0,
+  "interpretation": "Multi-entry order, identity, projection integrity and scope isolation only.",
+  "ended_at_utc": "2026-10-04T06:17:27.635956+00:00"
+}

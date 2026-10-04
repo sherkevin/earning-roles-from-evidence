@@ -1,0 +1,136 @@
+{
+  "experiment_id": "n03_raw_acceptance_replay_20260929_v1",
+  "status": "QUALIFIED_OFFLINE",
+  "passed": true,
+  "case_count": 4,
+  "cases": [
+    {
+      "case": "canonical",
+      "result": {
+        "status": "PASS",
+        "ledger_status": "PASS",
+        "sidecar_status": "PASS",
+        "update_allowed": true,
+        "update_count": 1,
+        "unknown_count": 0,
+        "duplicate_count": 0,
+        "ignored_channel_count": 1,
+        "pending_count": 0,
+        "manifest_root": "fe29e3b08fc5475681604cb112eecab5ccd78648ea8f5bc5821904b736dcf72a",
+        "final_snapshot": {
+          "policy": "raw_acceptance",
+          "temperature": 1.0,
+          "exploration": 0.0,
+          "updates": 1,
+          "decision_count": 1,
+          "seen_feedback": [
+            "raw-feedback-0"
+          ],
+          "seen_source_channels": [
+            [
+              "policy-selection-0",
+              "raw_acceptance"
+            ]
+          ],
+          "feedback_lineage": {
+            "raw-feedback-0": [
+              "policy-selection-0",
+              "raw_acceptance"
+            ]
+          },
+          "decisions": {
+            "policy-selection-0": {
+              "context_key": "ctx",
+              "selector_id": "peer-a",
+              "candidate_keys": [
+                "peer-b@v1",
+                "peer-c@v1"
+              ],
+              "chosen_key": "peer-b@v1",
+              "base_scores": [
+                0.5,
+                0.5
+              ],
+              "probabilities": [
+                0.5,
+                0.5
+              ],
+              "propensity": 0.5,
+              "state_version": "state-0",
+              "encoder_version": "enc-0",
+              "feature_schema": "phi-0",
+              "selected_at": 10.0,
+              "captured_features": {}
+            }
+          },
+          "state": {
+            "prior": 1.0,
+            "counts": {
+              "ctx\u001fpeer-b@v1": [
+                2.0,
+                1.0
+              ]
+            }
+          }
+        }
+      },
+      "expectation_met": true
+    },
+    {
+      "case": "wrong_canonical_decision",
+      "result": {
+        "status": "INVALID",
+        "ledger_status": "PASS",
+        "sidecar_status": "INVALID",
+        "update_allowed": false,
+        "update_count": 0,
+        "unknown_count": 0,
+        "duplicate_count": 0,
+        "ignored_channel_count": 0,
+        "pending_count": 0,
+        "error": "raw acceptance does not match canonical judgment",
+        "manifest_root": "9a405889263a92f2daa8b05f48f8c3ae32628b5506e77d772405ce9bac01c42a",
+        "final_snapshot": null
+      },
+      "expectation_met": true
+    },
+    {
+      "case": "wrong_producer",
+      "result": {
+        "status": "INVALID",
+        "ledger_status": "PASS",
+        "sidecar_status": "INVALID",
+        "update_allowed": false,
+        "update_count": 0,
+        "unknown_count": 0,
+        "duplicate_count": 0,
+        "ignored_channel_count": 0,
+        "pending_count": 0,
+        "error": "raw acceptance producer was not the selected candidate",
+        "manifest_root": "e0ef32c5d42e6e0f0f084732b0e2a51d768e37895569a31f66ae37b7a6cd4a7b",
+        "final_snapshot": null
+      },
+      "expectation_met": true
+    },
+    {
+      "case": "duplicate_sidecar",
+      "result": {
+        "status": "INVALID",
+        "ledger_status": "PASS",
+        "sidecar_status": "INVALID",
+        "update_allowed": false,
+        "update_count": 0,
+        "unknown_count": 0,
+        "duplicate_count": 0,
+        "pending_count": 0,
+        "error": "duplicate sidecar protocol event",
+        "final_snapshot": null
+      },
+      "expectation_met": true
+    }
+  ],
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "ended_at_utc": "2026-10-04T06:17:27.603871+00:00"
+}
