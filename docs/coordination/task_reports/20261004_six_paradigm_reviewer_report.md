@@ -250,3 +250,46 @@ priority audit 应被写成最小反例：consumer scorer 4/4 PASS、独立 prod
 当前最关键的不是增加更多方法组件，而是压实根因、转化真实诊断反例、补齐可验证不变量、冻结 benchmark/strong baseline，再由真实结果决定是否使用 role learning、self-evolution 和 quality improvement 等强表述。
 
 在完成 P0 工作前，当前稿件适合作研究设计与内部 pre-results manuscript，尚不适合作为正式 AAMAS 投稿稿件。
+
+## 12. 第三轮 H.3/H.4/H.5 最终复核（2026-10-04）
+
+### 12.1 结论
+
+本轮修改**通过叙事方向审查，但不是无条件通过投稿门槛**。`Concrete instance` 把事件式定义和 score 定义落到 queue 例子上，三条 prediction 也已经被显式映射到 RQ2--RQ4；这使主范式仍然稳定地落在“根因手术刀”，并由“反直觉失效/基准暴露失效”和“可审计契约”辅助支撑。没有发现把工程资格结果写成角色学习效果的新句子。
+
+### 12.2 H.3：对象、实例和方法顺序
+
+**通过（8.4/10，带一处符号修复）。** `main.tex:107--116` 的实例逐项解释了 JSON task request、候选菜单、selected producer、versioned artifact/digest、recipient action、producer-only contract check、later outcome 和完整 cost；`main.tex:162--167` 又解释了 `r`, `h`, `n,s,u`。这些实例没有新增科学原始概念，且保持了 producer/recipient/UNKNOWN 的责任边界。
+
+需要修复的局部歧义是符号 `R`：`main.tex:102` 中 `R_t` 已经表示 read-cut 的 public evidence snapshot，`main.tex:114` 又用大写 `R` 表示 recipient。把 recipient 记为已有的 `j_t`（例如 queue instance 中令 `j_t=R`），或把证据快照改成 `\mathcal R_t`，即可避免读者把 recipient 和 state snapshot 当成同一对象。这不是故事线问题，但违反了“每个原始符号有单一语义”的方法写作硬门。
+
+`main.tex:164--167` 仍把 score 实例、可替换实现、探索下限和 preview--assignment--commit 放在同一段。正式稿建议拆成“score 实例”与“实现/信息边界”两段，使每段只有一个主要论证动作。`u` 的表述也宜从 “a recipient-only repair increases `u` or creates UNKNOWN” 收窄为 “is represented in `u` or an explicit UNKNOWN record”，避免把两种审计编码误写成同一必然实现。
+
+### 12.3 H.4：predictions、estimand 和停止规则
+
+**部分通过（7.0/10；这是当前最重要的剩余硬门）。** `main.tex:169` 已把三条机制性质改称 observable predictions 并映射到 RQ2--RQ4，方向正确；但 “prevents”“lets”“makes ... incrementally usable” 仍分别像协议保证、能力描述和未定量的服务目标，而不是可直接判定的预测。建议改成可观察事件/指标形式：
+
+1. recipient-only 或 mixed mutation 时，producer evidence 不增加，并产生明确的 UNKNOWN/false-attribution 记录；
+2. assignment seal 之后改变 target outcome 时，sealed assignment digest、chosen candidate 和 propensity 不变；
+3. 在预注册 arrival/concurrency/drift 条件下，update p95、backlog、state bytes 和 old-root forgetting 落在卡片规定的预算/精度界内。
+
+`main.tex:276` 只声明“experiment card fixes direction, MCID/precision, 95% interval and stopping rule”，正文的 RQ 和矩阵仍没有为 H1/H2/H3 各指定唯一 primary endpoint、方向、数值 MCID/precision target、控制臂和停止字段。若这些值只存在于未绑定编号的外部卡片，H.4 仍不能审计；应至少在正文表格中列出 H1（预测损失/增量信息）、H2（future quality--complete-cost utility）和 H3（update p95/backlog 或状态上界）的 primary endpoint，并给出对应卡片 ID/冻结版本。由于当前结果单元仍为空，这一缺口不能用“计划会补充”代替。
+
+### 12.4 H.5：段落和 caption
+
+**基本通过（8.0/10）。** overview、method-state、experiment-map 和 headline captions 已去掉“planned artifact/保留结果表”等作者内部元话语，改为直接描述对象、信息边界和测量作用；这更符合六范式中“图先服务于论证”的要求。残留的 `main.tex:239`（“Empty result cells... not a scientific result”）和 `main.tex:286`（“this table is not an empirical result”）仍是内部 pre-results 语气。它们可留在设计稿，但正式投稿应改成对读者有用的限定，例如“Results are reported only for rows with the stated manifest and scorer contract.”
+
+### 12.5 证据边界、排版和总分
+
+本轮没有把 queue 实例、prediction 或 caption 写成已经完成的闭环效果；`main.tex:302--306` 继续明确真实 traces 只支持工程边界，`main.tex:304` 也明确没有 role specialization、predictive judgment、future quality 或 real-time training 结果。这一点通过 claim--evidence 边界审查。
+
+当前 `article/aamas2027/build/verification.json` 的最近一次构建报告：正文 7 页、最后内容页 7、`overfull_boxes=0`、无 unresolved references；因此版面目标通过。它仍标记 `submission_ready=false`，并保留 `ifx` template compatibility warning；这与科学结果缺失、benchmark/baseline 尚未冻结相一致，不能被版面通过解释为投稿就绪。
+
+本轮评分：H.3 方法叙事 **8.4/10**；H.4 实验可证伪性 **7.0/10**；H.5 段落/caption **8.0/10**；六范式整体故事 **8.1/10**（较上一轮小幅提升）。正式投稿就绪度仍为 **4.2/10**，没有因排版或设计表述改动而提高：真实独立 root/live history、强同信息 baseline、完整成本和闭环正/负结果仍未完成。
+
+**必须修正（P0/P1）**：
+
+- P0：为 H1/H2/H3 在正文或可追溯的冻结实验卡中暴露唯一 primary endpoint、方向、MCID/precision、95% interval、control 和 stopping rule；不能只写“卡片会固定”。
+- P1：消除 `R` 与 `R_t` 的符号碰撞，并将三条 prediction 改成事件/指标可判定句。
+- P1：拆分 score 实例段；将 queue 例子标为 illustrative/candidate instance，避免读者把它当作确认结果。
+- P2：正式稿删除矩阵/trace caption 的内部空结果和“不是经验结果”元话语；保留当前内部稿中的证据边界说明即可。

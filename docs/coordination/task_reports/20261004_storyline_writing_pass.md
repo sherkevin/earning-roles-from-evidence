@@ -78,3 +78,17 @@ Reviewer 标出的 P0/P2 未在本轮伪装解决：独立 root、live history�
 - 当前 PDF SHA-256：`54c92b1929a05758b0e3e91a82ab5715f2eb46543dcd615a4e03b99368357fc9`。
 - reviewer 指出 Auer (2002) 只能支撑经典非 contextual MAB。已修正为 `Finite-time multi-armed bandit`，并把 context/propensity/delay 留给同信息 adapter 的实验定义；同时将五个 family 改成具名代表方法，并把绝对措辞改为 cited formulation 的可核验边界。
 - 最终 reviewer 复核结论：表格组织通过；Related Work 支持 sharp gap `7.8/10`，novelty 边界表达 `7.4/10`，整体故事 `8.0/10`。最后指出的两处语义问题已修正：Auer 行改为经典 selected-reward control，且明确 contextual/delayed adapter 需单独资格化；时间段改为“到达后可更新后续决策，但不能重构已封存 assignment 或直接把 target outcome 当 source label”。
+
+## 第三轮：六范式全量核查后的收紧
+
+参照 H.3/H.4/H.5 又做了最小修正：
+
+- 在 event 和 score 公式后补 queue 实例；recipient 使用 `k`，避免与 public snapshot `R_t` 冲突；
+- 将 protocol properties 改写成可观测指标，并补充 H1/H2/H3/H4 的 primary endpoint lock、方向、control、MCID/precision、95% interval 和 stopping rule 字段要求；
+- 将 score 实例拆成独立段落；将 trace 浮动表压缩成 phase-rule 段，避免空结果表占用正文页面；
+- 补齐所有 figure/table 的正文引用，静态检查未发现未引用的图或表；
+- PDF 重新验证仍为 7 页、无未解析引用、无 overfull box，SHA-256 为 `103d5b803e4465405a30842c6ec71cb3d5b23d210bec441ab6f18c90f74cb553`。
+
+六范式全量核查明细见 `docs/coordination/task_reports/20261004_six_paradigm_full_audit.md`。剩余投稿就绪度限制仍是科学证据门，不通过文字改写掩盖。`goal_change_requested=false`。
+
+独立 reviewer 最终评分：H.3 `8.8/10`、H.4 `8.4/10`、H.5 `8.8/10`、整体故事 `8.6/10`；正式投稿科学就绪度仍 `4.2/10`。根据其最后建议，新增 `docs/research/primary_endpoint_cards_v0.1_20261004.md` 作为 H1--H4 的可追溯设计清单，但保留 `DESIGN_ONLY / NOT_FROZEN`，没有把未确定的数值 MCID/precision 或 stopping rule 伪装成冻结协议。
