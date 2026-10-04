@@ -761,3 +761,7 @@ was `repair`. After correcting the fixture, the committed v4 matrix passed its c
 and rejected wrong delivery, artifact, action, and producer links. This is still offline
 engineering qualification; the PIPE3 live runner, benchmark freeze, online efficacy, and A800
 evidence remain open.
+
+### 2026-10-03 canonical peer-history append integration
+
+The assistant added a thin `peer-history-canonical-adapter-v1` at the existing PIPE3 target-credit boundary. It derives the registered recipient-judgment label from the canonical source judgment, requires the exact committed delayed-credit digest, seals the target assignment, and appends one `PeerHistoryV2` entry through `HistoryBindingReceiptV1`; a failure after sealing restores the history snapshot. A matched zero-call `off`/`append` qualification used the same deterministic fixture, seeds, candidate registry and policy: the producer-owned native ledger and selection trace were identical, while append added one PASS history row; recipient-owned and mixed controls remained UNKNOWN. The formal receipt is `experiments/logs/n03_peer_history_integration_qualification_20261003_v2/`, with 0 LLM/API calls and 0 GPU jobs; the pre-commit v1 receipt is retained separately. This closes an engineering seam only; selector consumption, independent history/no-history/shuffled/reset streams, real API evidence, baseline parity and scientific efficacy remain unestablished.

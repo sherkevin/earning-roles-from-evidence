@@ -50,13 +50,18 @@ from peerrolebench_role_evidence_selection import (  # noqa: E402
 )
 from peerrolebench_role_evidence_scorer import JUDGMENT_LABELS, RoleEvidenceScoreConfig  # noqa: E402
 from peerrolebench_isolated_policy_read import read_role_evidence_offer_isolated  # noqa: E402
+from peerrolebench_peer_history import HistoryCostV1, PeerHistoryV1  # noqa: E402
+from peerrolebench_peer_history_adapter import append_history_after_credit  # noqa: E402
 from peerrolebench_two_stage_gate import (  # noqa: E402
     DelayedCreditLedger, derive_later_credit_from_ledger, evaluate_source_gate,
 )
 
 
 TASK_ID = "PIPE3_stream_processing"
-VERSION = "pipe3-two-stage-composition-v1.6"
+# v1.7 makes the strict v2 source-gate reachability condition executable:
+# the producer-defect source episode is an explicit direct-use/no-edit case.
+# v1.6 receipts remain historical and are not rewritten.
+VERSION = "pipe3-two-stage-composition-v1.7"
 CONTROLS = ("producer_owned", "recipient_owned", "mixed")
 CandidateScorer = Callable[[str, Mapping[str, str], Mapping[str, str], Path, Path, int], dict[str, Any]]
 PolicyFactory = Callable[[str], BaselinePolicy]
@@ -292,18 +297,24 @@ def _record_episode(*, boundary: Pipe3SelectionBoundary, materials: dict[str, An
         producer.get("response_digest", _digest(producer)), producer.get("coverage_complete") is True,
         producer.get("decision_complete") is True,
     ))
-    judgment = "accept_with_rework"
+    # A strict producer-defect evidence row is only legal when the recipient
+    # accepts and uses the delivered artifact without an integration edit.
+    # Keep that direct-use source episode explicit; later target episodes may
+    # still exercise the normal repair path.
+    direct_use_source = control == "producer_owned" and index == 0
+    judgment = "accept" if direct_use_source else "accept_with_rework"
     boundary.ledger.record_judgment(RecipientJudgment(
         f"{control}-judgment-{index}", delivery_id, "peer-a", judgment, delivery_digest,
         repair_note=f"{VERSION}:{control}",
     ))
+    action_name = "use" if direct_use_source else "repair"
     action_payload = prepare_pipe3_action(
-        materials, delivery_sources, "repair", allow_producer_rewrite=False,
+        materials, delivery_sources, action_name, allow_producer_rewrite=False,
     )
     action_result = validate_pipe3_action_result(action_payload, final_sources)
     boundary.ledger.record_action(ConsumerAction(
         f"{control}-action-{index}", delivery_id, "peer-a", True, delivery_digest,
-        action_result["output_source_sha256"], 0.0, "repair",
+        action_result["output_source_sha256"], 0.0, action_name,
     ))
     _log(raw, "actor_action", {"changed_paths": action_result["changed_paths"], "output_source_sha256": action_result["output_source_sha256"]})
     scores_after = _score_triplet(final_sources, info, out / "after_action", raw, seed, scorer)
@@ -397,13 +408,16 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
                  policy_factory: PolicyFactory | None = None,
                  policy_name: str = "terminal_only",
                  assignment_mode: str = "hand_authored",
-                 public_judgment_fixture: str = "native") -> dict[str, Any]:
+                 public_judgment_fixture: str = "native",
+                 history_mode: str = "off") -> dict[str, Any]:
     if assignment_mode not in {"hand_authored", "public_judgment"}:
         raise ValueError("unsupported assignment_mode")
     if public_judgment_fixture not in {"native", "accept", "accept_with_rework", "reject_redo"}:
         raise ValueError("unsupported public_judgment_fixture")
     if assignment_mode != "public_judgment" and public_judgment_fixture != "native":
         raise ValueError("public judgment fixture requires public_judgment assignment mode")
+    if history_mode not in {"off", "append"}:
+        raise ValueError("unsupported history_mode")
     out.mkdir(parents=False, exist_ok=False)
     raw = out / "raw.jsonl"
     raw.write_text("", encoding="utf-8")
@@ -461,8 +475,9 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
     gate = evaluate_source_gate(
         source_case, source["producer"], {"target_role": "producer" if control == "producer_owned" else "recipient",
         "observed_artifact_sha256": source["delivery_digest"],
-        "producer_defect_registered": source.get("producer_defect_registered") is True},
-        source["action"], source["outcome"], None,
+        "producer_defect_registered": source.get("producer_defect_registered") is True,
+        "decision": source.get("judgment")},
+        {**source["action"], "used_artifact": True}, source["outcome"], None,
     )
     source["source_gate"] = gate.payload()
     # The source gate is the sole attribution authority.  The legacy helper
@@ -483,6 +498,7 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
                    "contract_passed": expected_rejection, "stop_reason": gate.reason,
                    "source": source, "target": {"status": "NOT_RUN_UNKNOWN"}, "policy_updates": boundary.policy.updates,
                    "unknown_denominator": {"source_rows": 1, "unknown_rows": 1}, "ledger": boundary.ledger.events,
+                   "history": {"status": "NOT_RUN_UNKNOWN", "reason": "source evidence was not publishable"},
                    "scientific_claim_allowed": False}
         (out / "ledger.json").write_text(json.dumps(boundary.ledger.events, indent=2, default=str) + "\n", encoding="utf-8")
         (out / "summary.json").write_text(json.dumps(summary, indent=2, ensure_ascii=False, default=str) + "\n", encoding="utf-8")
@@ -574,6 +590,7 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
                    "replay": {"status": "NOT_RUN_INCOMPLETE"}, "credit": None,
                    "policy_updates": boundary.policy.updates, "delayed_credit_count": 0,
                    "unknown_denominator": {"source_rows": 1, "unknown_rows": 1},
+                   "history": {"status": "NOT_RUN_UNKNOWN", "reason": "target outcome was UNKNOWN"},
                    "ledger": boundary.ledger.events, "scientific_claim_allowed": False}
         (out / "ledger.json").write_text(json.dumps(boundary.ledger.events, indent=2, default=str) + "\n", encoding="utf-8")
         (out / "summary.json").write_text(json.dumps(summary, indent=2, ensure_ascii=False, default=str) + "\n", encoding="utf-8")
@@ -636,12 +653,48 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
         )
         policy_update_applied = boundary.policy.updates > before_updates
         _log(raw, "delayed_update", {"credit_committed": credit_committed,
-                                      "policy_update_applied": policy_update_applied,
-                                      "policy_update_expected": policy_update_expected,
-                                      "credit": credit.__dict__, "source_event_id": selected.event_id,
-                                      "feedback_source": feedback_source,
-                                      "policy_updates": boundary.policy.updates, "before_state_digest": _digest(before),
-                                      "after_state_digest": _digest(boundary.policy.__dict__)})
+                                  "policy_update_applied": policy_update_applied,
+                                  "policy_update_expected": policy_update_expected,
+                                  "credit": credit.__dict__, "source_event_id": selected.event_id,
+                                  "feedback_source": feedback_source,
+                                  "policy_updates": boundary.policy.updates, "before_state_digest": _digest(before),
+                                  "after_state_digest": _digest(boundary.policy.__dict__)})
+    history_result: dict[str, Any] = {"status": "DISABLED", "adapter_version": None}
+    if history_mode == "append":
+        if credit is None or not credit_committed:
+            history_result = {
+                "status": "UNKNOWN",
+                "reason": "history append requires a committed delayed credit",
+                "credit_present": credit is not None,
+                "credit_committed": credit_committed,
+            }
+        else:
+            target_assignment = boundary.ledger.assignments.get(plan.assignment_id)
+            if target_assignment is None:
+                raise AssertionError("committed target assignment is missing from canonical ledger")
+            history = PeerHistoryV1.empty(target_assignment.agent_id)
+            history_result = append_history_after_credit(
+                history=history, ledger=boundary.ledger, offer=role_offer,
+                target_assignment=target_assignment, delayed_ledger=delayed,
+                target_selection=target_seal.native_selection, credit=credit,
+                assignment_read_cut=plan.read_cut,
+                target_decision_index=plan.decision_index,
+                target_arrival_index=2,
+                candidate_key=f"{target_assignment.agent_id}@v1",
+                candidate_registry_digest=boundary.registry_digest,
+                # CPU qualification does not measure model/provider cost.  A
+                # zero cost is explicit here and is never a scientific cost
+                # result; live cells must replace it with measured fields.
+                cost=HistoryCostV1(),
+            )
+            _log(raw, "peer_history_append", {
+                "adapter_version": history_result["adapter_version"],
+                "entry_id": history_result["entry"]["entry_id"],
+                "assignment_id": plan.assignment_id,
+                "candidate_key": f"{target_assignment.agent_id}@v1",
+                "history_state_digest": history_result["history_state_digest"],
+                "cost_measurement": "unmeasured_cpu_qualification_zero",
+            })
     native_root, auxiliary_root = boundary.validate_selection_manifests()
     _log(raw, "manifest_validation", {
         "native_root": native_root, "auxiliary_root": auxiliary_root,
@@ -671,6 +724,7 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
                "native_manifest_root": native_root, "auxiliary_manifest_root": auxiliary_root,
                "feedback_contract_ok": feedback_contract_ok,
                "assignment_effect_observed": assignment_effect_observed,
+               "history": history_result,
                "public_judgment_fixture": public_judgment_fixture,
                "scientific_claim_allowed": False, "interpretation": "engineering comparator; overlay controls are hand-authored qualification values"}
     (out / "ledger.json").write_text(json.dumps(boundary.ledger.events, indent=2, default=str) + "\n", encoding="utf-8")
@@ -683,13 +737,16 @@ def run(out_dir: Path, *, source_seed: int = 0, target_seed: int = 1,
         policy_factory: PolicyFactory | None = None,
         policy_name: str = "terminal_only",
         assignment_mode: str = "hand_authored",
-        public_judgment_fixture: str = "native") -> dict[str, Any]:
+        public_judgment_fixture: str = "native",
+        history_mode: str = "off") -> dict[str, Any]:
     if assignment_mode not in {"hand_authored", "public_judgment"}:
         raise ValueError("unsupported assignment_mode")
     if public_judgment_fixture not in {"native", "accept", "accept_with_rework", "reject_redo"}:
         raise ValueError("unsupported public_judgment_fixture")
     if assignment_mode != "public_judgment" and public_judgment_fixture != "native":
         raise ValueError("public judgment fixture requires public_judgment assignment mode")
+    if history_mode not in {"off", "append"}:
+        raise ValueError("unsupported history_mode")
     out_dir = out_dir.resolve()
     out_dir.mkdir(parents=False, exist_ok=False)
     started = datetime.now(timezone.utc).isoformat()
@@ -697,7 +754,7 @@ def run(out_dir: Path, *, source_seed: int = 0, target_seed: int = 1,
            "controls": list(CONTROLS), "real_api_calls": 0, "gpu_jobs": 0,
            "scientific_claim_allowed": False, "started_at_utc": started,
            "execution_injection": scorer is not None, "policy": policy_name,
-           "assignment_mode": assignment_mode,
+           "assignment_mode": assignment_mode, "history_mode": history_mode,
            "public_judgment_fixture": public_judgment_fixture}
     (out_dir / "config.json").write_text(json.dumps(top, indent=2) + "\n", encoding="utf-8")
     cases = []
@@ -707,7 +764,8 @@ def run(out_dir: Path, *, source_seed: int = 0, target_seed: int = 1,
                                       target_seed=target_seed, scorer=scorer,
                                       policy_factory=policy_factory, policy_name=policy_name,
                                       assignment_mode=assignment_mode,
-                                      public_judgment_fixture=public_judgment_fixture))
+                                      public_judgment_fixture=public_judgment_fixture,
+                                      history_mode=history_mode))
         except Exception as exc:
             case_dir = out_dir / control
             if not case_dir.exists():

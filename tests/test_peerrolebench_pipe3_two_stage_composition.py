@@ -114,7 +114,7 @@ def test_policy_factory_is_explicit_and_default_behavior_remains_terminal_only(t
     assert result["status"] == "QUALIFIED_OFFLINE"
     assert calls == ["terminal_only", "terminal_only", "terminal_only"]
     assert all(case["policy"] == "terminal_only" for case in result["cases"])
-    assert all(case["version"] == "pipe3-two-stage-composition-v1.6" for case in result["cases"])
+    assert all(case["version"] == "pipe3-two-stage-composition-v1.7" for case in result["cases"])
 
 
 def test_no_update_policy_is_explicitly_not_counted_as_terminal_update_success(tmp_path: Path):
@@ -191,3 +191,16 @@ def test_public_judgment_assignment_mode_reaches_canonical_composition(tmp_path:
     assert producer["assignment_effect_observed"] is True
     assert abs(payload["assignment_score"]["scores"][0] - 1.0 / 3.0) < 1e-12
     assert payload["assignment_score"]["scores"][1] == 0.0
+
+
+def test_history_mode_appends_after_committed_target_credit(tmp_path: Path):
+    result = run(tmp_path / "composition", scorer=_unit_scorer, history_mode="append")
+    assert result["status"] == "QUALIFIED_OFFLINE"
+    producer = next(case for case in result["cases"] if case.get("control") == "producer_owned")
+    assert producer["history"]["adapter_version"] == "peer-history-canonical-adapter-v1"
+    assert producer["history"]["entry"]["status"] == "PASS"
+    assert producer["history"]["receipt"]["later_credit_digest"] == producer["credit"]["credit_digest"]
+    assert producer["history"]["history_projection"]["entry_count"] == 1
+    for control in ("recipient_owned", "mixed"):
+        case = next(item for item in result["cases"] if item.get("control") == control)
+        assert case["history"]["status"] == "NOT_RUN_UNKNOWN"
