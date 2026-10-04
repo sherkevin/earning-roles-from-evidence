@@ -143,6 +143,19 @@ fail-closed（`experiments/logs/n03_canonical_manifest_validation_20261004_v6/`�
 offers/三类 source adapter 自动构造，不能写成 scientific same-information parity、
 baseline freeze 或 later-use 结果。
 
+2026-10-05 canonical runtime-stream-builder amendment：新增
+`build_runtime_stream_values(offers, schedule, registry)`，从实际 `MatrixOffer`、arrival
+schedule、candidate registry 与 captured features 生成十项 public stream，再由同一
+`canonical_digest` 封存并交给 runner preflight。clean commit `72fb6d2` 的 v8 receipt
+完成 valid、synthetic seven-arm preflight、runtime mutation 与14个 manifest mutation，
+共17/17 case 通过；负例均在 policy construction 前变为 `UNKNOWN`，0 API/0 GPU
+（`experiments/logs/n03_canonical_manifest_validation_20261004_v8/`）。这关闭了
+manifest-to-runtime 的公开输入投影工程子门，但仍只使用 hand-authored PIPE3 fixture；
+它不构成 benchmark authority、closest-published parity、第二 structural root、
+independent live history、later-use utility、measured cost 或 scientific result。下一步
+不再继续堆叠 manifest plumbing，而是审查 closest published adapter、第二 root 与
+same-information live parity 是否足够进入一条有界 live history。
+
 ## 7. 对照标准
 
 本文件按 [`benchmark_baseline_v1.2_20260929_eval.md`](../evaluation/benchmark-baseline/benchmark_baseline_v1.2_20260929_eval.md) 审查。故事与创新见 [`storyline_v1.1_20260928.md`](../storyline/storyline_v1.1_20260928.md)，方法合同见当前生效的 [`method_v1.1_20260930.md`](../method/method_v1.1_20260930.md)。轨道确认记录见 [`ADR 0042`](../../../user/decisions/0042-confirm-artifactrole-primary-peerselect-secondary.md)。
