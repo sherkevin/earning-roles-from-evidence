@@ -342,31 +342,35 @@ def _stream(fixture: Mapping[str, Any], *, late: bool = False) -> tuple[list[Mat
         row["arrival_index"] = 5
     first = _offer(
         offer_id="canonical-stream-0", task_index=0, candidate_keys=keys,
-        public_rows=(), available_index=0, native_selection_id="selection-0",
+        public_rows=(), available_index=0, native_selection_id="s0",
         read_cut=0, decision_index=0, selected_at=0.0, rng_seed=11,
-        context_key="PIPE3:0",
+        context_key="PIPE3:0", base_scores=(0.25, -0.25),
+        feature_schema=PHI_VERSION,
     )
     second = _offer(
         offer_id="canonical-stream-1", task_index=1, candidate_keys=keys,
-        public_rows=(row,), available_index=5, native_selection_id="selection-1",
+        public_rows=(row,), available_index=5, native_selection_id="s1",
         read_cut=0 if late else 5, decision_index=5, selected_at=5.0,
         rng_seed=12, context_key="PIPE3:1",
         protocol_event_ids={str(row["feedback_id"]): str(row["_protocol_event_id"])},
+        base_scores=(0.25, -0.25), feature_schema=PHI_VERSION,
     )
     third = _offer(
         offer_id="canonical-stream-2", task_index=2, candidate_keys=keys,
-        public_rows=(row,), available_index=5, native_selection_id="selection-2",
+        public_rows=(row,), available_index=5, native_selection_id="s2",
         read_cut=TARGET_READ_CUT, decision_index=TARGET_READ_CUT, selected_at=float(TARGET_READ_CUT),
         rng_seed=13, context_key="PIPE3:2",
         protocol_event_ids={str(row["feedback_id"]): str(row["_protocol_event_id"])},
+        base_scores=(0.25, -0.25), feature_schema=PHI_VERSION,
     )
     third = replace(third, captured_features=fixture["captured_features_by_read_cut"][TARGET_READ_CUT], selector_id="peer-selector")
     fourth = _offer(
         offer_id="canonical-stream-3", task_index=3, candidate_keys=keys,
-        public_rows=(row,), available_index=5, native_selection_id="selection-3",
+        public_rows=(row,), available_index=5, native_selection_id="s3",
         read_cut=TARGET_READ_CUT, decision_index=TARGET_READ_CUT + 1, selected_at=float(TARGET_READ_CUT + 1),
         rng_seed=14, context_key="PIPE3:3",
         protocol_event_ids={str(row["feedback_id"]): str(row["_protocol_event_id"])},
+        base_scores=(0.25, -0.25), feature_schema=PHI_VERSION,
     )
     offers = [
         replace(first, selector_id="peer-selector", captured_features=fixture["captured_features_by_read_cut"][0]),
@@ -403,9 +407,9 @@ def _common_input(fixture: Mapping[str, Any], offers: Sequence[MatrixOffer], sch
 
 
 def _validate_valid_result(result: Mapping[str, Any], fixture: Mapping[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
-    expected_cuts = {"policy-selection-0": 0, "policy-selection-1": 5,
-                     "policy-selection-2": TARGET_READ_CUT,
-                     "policy-selection-3": TARGET_READ_CUT}
+    expected_cuts = {"policy-s0": 0, "policy-s1": 5,
+                     "policy-s2": TARGET_READ_CUT,
+                     "policy-s3": TARGET_READ_CUT}
     expected_features = {
         str(event_id): {key: list(values)
                         for key, values in fixture["captured_features_by_read_cut"][cut].items()}
@@ -449,6 +453,9 @@ def _validate_valid_result(result: Mapping[str, Any], fixture: Mapping[str, Any]
         "public_trace_inputs_equal": len({item["public_trace_digest"] for item in observations.values()}) == 1,
         "canonical_phi_inputs_equal": len({item["captured_feature_digest"] for item in observations.values()}) == 1
         and all(item["captured_features_match_canonical"] for item in observations.values()),
+        "visible_input_digests_equal": len({
+            tuple(result["visible_input_digests"][name]) for name in ARM_NAMES
+        }) == 1,
     }
     return checks, observations
 
@@ -458,50 +465,89 @@ def _run_valid(fixture: Mapping[str, Any]) -> dict[str, Any]:
     runner = PolicyMatrixRunner(registry=fixture["registry"], arm_names=ARM_NAMES)
     result = runner.run(offers, schedule, expected_schedule_digest=digest)
     checks, observations = _validate_valid_result(result, fixture)
+    isolated_arm_checks: dict[str, bool] = {}
+    for name in ARM_NAMES:
+        solo = PolicyMatrixRunner(registry=fixture["registry"], arm_names=(name,)).run(
+            offers, schedule, expected_schedule_digest=digest,
+        )
+        isolated_arm_checks[name] = (
+            solo["final_policy_snapshots"][name] == result["final_policy_snapshots"][name]
+        )
+    checks["cross_arm_state_isolation"] = all(isolated_arm_checks.values())
     return {
         "status": "PASS" if all(checks.values()) else "FAIL",
         "checks": checks,
         "schedule_digest": digest,
         "common_input": _common_input(fixture, offers, schedule),
         "arm_public_input_observations": observations,
+        "cross_arm_state_isolation": isolated_arm_checks,
         "result": result,
     }
 
 
 def _run_unknown(fixture: Mapping[str, Any]) -> dict[str, Any]:
-    # A missing public offer is UNKNOWN at the assignment boundary; no label is
-    # synthesized from the native source record.
-    offers, schedule, digest = _stream(fixture)
-    empty_second = _offer(
-        offer_id="canonical-unknown-no-evidence", task_index=1,
-        context_key="PIPE3:1", candidate_keys=CANDIDATE_KEYS,
-        public_rows=(), available_index=0, native_selection_id="selection-1",
-        read_cut=5, decision_index=5, selected_at=5.0, rng_seed=12,
-    )
-    empty_fourth = _offer(
-        offer_id="canonical-unknown-no-evidence-replay", task_index=3,
-        context_key="PIPE3:3", candidate_keys=CANDIDATE_KEYS,
-        public_rows=(), available_index=0, native_selection_id="selection-3",
-        read_cut=TARGET_READ_CUT, decision_index=TARGET_READ_CUT + 1,
-        selected_at=float(TARGET_READ_CUT + 1), rng_seed=14,
-    )
-    empty_third = _offer(
-        offer_id="canonical-unknown-no-evidence-target", task_index=2,
-        context_key="PIPE3:2", candidate_keys=CANDIDATE_KEYS,
-        public_rows=(), available_index=0, native_selection_id="selection-2",
-        read_cut=TARGET_READ_CUT, decision_index=TARGET_READ_CUT,
-        selected_at=float(TARGET_READ_CUT), rng_seed=13,
-    )
-    offers = [offers[0], empty_second, empty_third, empty_fourth]
+    # An explicit UNKNOWN row is visible at the read cut, but carries no
+    # label.  Replaying that same row is a re-visible prefix, not a new
+    # update.  This tests no-update semantics without silently deleting the
+    # denominator.
+    row = dict(fixture["policy_row"])
+    row["disposition"] = "unknown"
+    row["provenance"] = "unknown"
+    row["unknown_reason"] = "source_gate_not_eligible"
+    row.pop("label", None)
+    common = {
+        "candidate_keys": CANDIDATE_KEYS,
+        "public_rows": (row,),
+        "available_index": 5,
+        "base_scores": (0.25, -0.25),
+        "feature_schema": PHI_VERSION,
+        "protocol_event_ids": {str(row["feedback_id"]): str(row["_protocol_event_id"])},
+    }
+    offers = [
+        replace(_offer(
+            offer_id="canonical-unknown-0", task_index=0, candidate_keys=CANDIDATE_KEYS,
+            public_rows=(), available_index=0, native_selection_id="s0",
+            read_cut=0, decision_index=0, selected_at=0.0, rng_seed=11,
+            context_key="PIPE3:0", base_scores=(0.25, -0.25), feature_schema=PHI_VERSION,
+        ), selector_id="peer-selector", captured_features=fixture["captured_features_by_read_cut"][0]),
+        replace(_offer(
+            offer_id="canonical-unknown-1", task_index=1, native_selection_id="s1",
+            read_cut=5, decision_index=5, selected_at=5.0, rng_seed=12,
+            context_key="PIPE3:1", **common,
+        ), selector_id="peer-selector", captured_features=fixture["captured_features_by_read_cut"][5]),
+        replace(_offer(
+            offer_id="canonical-unknown-2", task_index=2, native_selection_id="s2",
+            read_cut=TARGET_READ_CUT, decision_index=TARGET_READ_CUT,
+            selected_at=float(TARGET_READ_CUT), rng_seed=13,
+            context_key="PIPE3:2", **common,
+        ), selector_id="peer-selector", captured_features=fixture["captured_features_by_read_cut"][TARGET_READ_CUT]),
+        replace(_offer(
+            offer_id="canonical-unknown-3", task_index=3, native_selection_id="s3",
+            read_cut=TARGET_READ_CUT, decision_index=TARGET_READ_CUT + 1,
+            selected_at=float(TARGET_READ_CUT + 1), rng_seed=14,
+            context_key="PIPE3:3", **common,
+        ), selector_id="peer-selector", captured_features=fixture["captured_features_by_read_cut"][TARGET_READ_CUT]),
+    ]
+    schedule = (ArrivalAssignment(
+        feedback_id=str(row["feedback_id"]), protocol_event_type="recipient_judgment",
+        protocol_event_id=str(row["_protocol_event_id"]),
+        source_event_id=str(row["source_event_id"]), arrival_index=int(row["arrival_index"]),
+    ),)
     runner = PolicyMatrixRunner(registry=fixture["registry"], arm_names=ARM_NAMES)
-    result = runner.run(offers, (), expected_schedule_digest=schedule_digest(()))
+    digest = schedule_digest(schedule)
+    result = runner.run(offers, schedule, expected_schedule_digest=digest)
     checks = {
         "all_arms_selected_four_times": all(result["metrics"][name]["n_selected"] == 4 for name in ARM_NAMES),
         "all_arms_no_updates": all(result["metrics"][name]["updates"] == 0 for name in ARM_NAMES),
-        "no_feedback_rows": all(result["metrics"][name]["n_eligible"] == 0 for name in ARM_NAMES),
+        "explicit_unknown_recorded": all(
+            result["metrics"][name]["n_unknown"] == 1
+            and result["metrics"][name]["n_eligible"] == 0
+            and result["metrics"][name]["n_revisible_prefix_rows"] == 2
+            for name in ARM_NAMES
+        ),
     }
     return {"status": "PASS" if all(checks.values()) else "FAIL", "checks": checks,
-            "common_input": _common_input(fixture, offers, ()), "result": result}
+            "common_input": _common_input(fixture, offers, schedule), "result": result}
 
 
 def _run_rejected_cell(name: str, fn: Any) -> dict[str, Any]:
@@ -528,17 +574,54 @@ def _run_rejected_cell(name: str, fn: Any) -> dict[str, Any]:
 
 def _run_late(fixture: Mapping[str, Any]) -> dict[str, Any]:
     offers, schedule, digest = _stream(fixture, late=True)
-    return _run_rejected_cell("feedback-after-frozen-read-cut", lambda: PolicyMatrixRunner(
-        registry=fixture["registry"], arm_names=ARM_NAMES,
-    ).run(offers, schedule, expected_schedule_digest=digest))
+    def reject() -> None:
+        from peerrolebench_event_time_schedule import validate_schedule
+        validated = validate_schedule(
+            schedule,
+            expected_feedback_ids={
+                str(row["feedback_id"])
+                for item in offers for row in item.offer.public_rows
+            },
+        )
+        by_id = {row.feedback_id: row for row in validated}
+        runner = PolicyMatrixRunner(registry=fixture["registry"], arm_names=ARM_NAMES)
+        # Validate every offer before any policy object is allowed to select.
+        # A rejected late stream therefore has measured zero selections and
+        # zero updates rather than a hard-coded rollback claim.
+        for item in offers:
+            runner._validate_offer(item, by_id)
+            validate_public_prefix(
+                validated,
+                [str(row["feedback_id"]) for row in item.offer.public_rows],
+                read_cut=item.read_cut,
+            )
+    return _run_rejected_cell("feedback-after-frozen-read-cut", reject)
 
 
 def _run_mutation(fixture: Mapping[str, Any]) -> dict[str, Any]:
     def mutate() -> None:
         offer = fixture["role_offer"]
-        # Reconstructing a tampered digest must fail at the canonical offer
-        # boundary; this is the intended fail-closed behavior.
-        replace(offer, bundle_digest="b" * 64)
+        payload = offer.payload()
+        payload["bundle_digest"] = "b" * 64
+        # Dataclass replace alone does not re-run the digest contract.
+        # Reconstruct the public object so the canonical constructor rejects
+        # the mutation before any policy state exists.
+        RoleEvidenceOffer(
+            offer_id=str(payload["offer_id"]),
+            offer_record_hash=offer.offer_record_hash,
+            task_id=str(payload["task_id"]),
+            task_index=int(payload["task_index"]),
+            role=str(payload["role"]),
+            context_key=str(payload["context_key"]),
+            candidate_keys=tuple(payload["candidate_keys"]),
+            evidence_ids=tuple(payload["evidence_ids"]),
+            evidence_version=str(payload["evidence_version"]),
+            public_evidence=tuple(payload["public_evidence"]),
+            available_index=int(payload["available_index"]),
+            bundle_digest=str(payload["bundle_digest"]),
+            watermark_schema=str(payload["watermark_schema"]),
+            candidate_registry_digest=payload.get("candidate_registry_digest"),
+        )
     return _run_rejected_cell("mutated-role-offer-digest", mutate)
 
 
@@ -580,6 +663,7 @@ def run(out_dir: Path) -> dict[str, Any]:
         raw.write(json.dumps({"event_type": "canonical_fixture", "payload": {
             "ledger_digest": fixture["ledger_digest"],
             "role_offer": fixture["role_offer"].payload(),
+            "source_gate": fixture["source_gate"],
             "role_lineage": fixture["role_lineage"],
             "history_state_digest": fixture["history_state_digest"],
             "history_projections": fixture["history_projections"],
