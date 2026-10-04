@@ -24,6 +24,14 @@ from peerrolebench_baseline_root_contract import RootRunnerManifest  # noqa: E40
 from peerrolebench_candidate_registry import registry_digest  # noqa: E402
 
 
+def _canonical_manifest_fixture():
+    # The manifest builder is synthetic and only used to test the preflight
+    # seam; no live task, API or GPU is involved.
+    sys.path.insert(0, str(ROOT / "tests"))
+    from test_peerrolebench_canonical_manifest import _manifest  # noqa: E402
+    return _manifest()
+
+
 def test_all_arms_pass_seven_offline_contract_cases(tmp_path):
     result = run_fixture_suite(tmp_path / "matrix")
     assert result["status"] == "QUALIFIED_OFFLINE"
@@ -83,6 +91,59 @@ def test_manifest_required_runner_rejects_bypass():
     with pytest.raises(ValueError, match="manifest is required"):
         PolicyMatrixRunner(registry=_registry(), require_manifest=True).run(
             offers, schedule, expected_schedule_digest=digest,
+        )
+
+
+def test_canonical_manifest_preflight_runs_before_policy_construction():
+    offers, schedule, digest = fixture_case("recipient_only")
+    manifest = _canonical_manifest_fixture()
+    result = PolicyMatrixRunner(
+        registry=_registry(), require_canonical_manifest=True,
+    ).run(
+        offers, schedule, expected_schedule_digest=digest,
+        canonical_manifest=manifest,
+    )
+    assert result["canonical_manifest"]["valid"] is True
+    assert result["scientific_claim_allowed"] is False
+
+
+def test_canonical_manifest_preflight_rejects_before_selection():
+    offers, schedule, digest = fixture_case("recipient_only")
+    manifest = _canonical_manifest_fixture()
+    del manifest["channels"][1]
+    manifest["manifest_digest"] = hashlib.sha256(
+        __import__("json").dumps(
+            {key: value for key, value in manifest.items() if key != "manifest_digest"},
+            sort_keys=True, separators=(",", ":"), ensure_ascii=False,
+        ).encode("utf-8")
+    ).hexdigest()
+    with pytest.raises(ValueError, match="three channel adapters"):
+        PolicyMatrixRunner(
+            registry=_registry(), require_canonical_manifest=True,
+        ).run(
+            offers, schedule, expected_schedule_digest=digest,
+            canonical_manifest=manifest,
+        )
+
+
+def test_canonical_manifest_can_bind_legacy_root_manifest():
+    offers, schedule, digest = fixture_case("recipient_only")
+    canonical = _canonical_manifest_fixture()
+    root = RootRunnerManifest(**{
+        key: canonical["root"][key]
+        for key in (
+            "root_id", "root_commit", "source_digest", "generator_digest", "scorer_digest",
+            "schedule_digest", "rng_schedule_digest", "registry_digest", "seed_split",
+            "arm_names", "rng_algorithm", "visibility_rule", "max_episode_attempts",
+            "max_api_calls", "max_wall_seconds",
+        )
+    })
+    with pytest.raises(ValueError, match="canonical/root manifest digest mismatch"):
+        PolicyMatrixRunner(registry=_registry()).run(
+            offers, schedule, expected_schedule_digest=digest,
+            manifest=RootRunnerManifest(**{**root.__dict__, "root_commit": "e" * 40}),
+            canonical_manifest=canonical,
+            root_seed=0,
         )
 
 

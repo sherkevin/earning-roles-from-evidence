@@ -23,6 +23,11 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from peerrolebench_canonical_manifest import digest, validate_canonical_manifest  # noqa: E402
+from peerrolebench_policy_matrix_runner_v1 import (  # noqa: E402
+    PolicyMatrixRunner,
+    fixture_case,
+    _registry,
+)
 from tests.test_peerrolebench_canonical_manifest import _manifest  # noqa: E402
 
 
@@ -130,6 +135,29 @@ def run(out_dir: Path) -> dict[str, Any]:
         records.append({"case": "valid", "status": "PASS", "runner_started": False, "policy_updates": 0})
     except Exception as exc:  # pragma: no cover - receipt failure path
         records.append({"case": "valid", "status": "FAIL", "error": f"{type(exc).__name__}: {exc}"})
+    try:
+        offers, schedule, schedule_hash = fixture_case("recipient_only")
+        result = PolicyMatrixRunner(
+            registry=_registry(), require_canonical_manifest=True,
+        ).run(
+            offers, schedule, expected_schedule_digest=schedule_hash,
+            canonical_manifest=valid,
+        )
+        records.append({
+            "case": "synthetic_runner_preflight",
+            "status": "PASS",
+            "runner_started": True,
+            "policy_updates": sum(item["updates"] for item in result["metrics"].values()),
+            "selected_by_arm": {
+                name: result["metrics"][name]["n_selected"] for name in result["metrics"]
+            },
+        })
+    except Exception as exc:  # pragma: no cover - receipt failure path
+        records.append({
+            "case": "synthetic_runner_preflight",
+            "status": "FAIL",
+            "error": f"{type(exc).__name__}: {exc}",
+        })
     for name, mutate in _cases().items():
         candidate = deepcopy(valid)
         try:
@@ -155,13 +183,13 @@ def run(out_dir: Path) -> dict[str, Any]:
     with (out_dir / "raw.jsonl").open("w", encoding="utf-8") as raw:
         for record in records:
             raw.write(json.dumps(record, sort_keys=True) + "\n")
-    positive_ok = records[0]["status"] == "PASS"
+    positive_ok = all(record["status"] == "PASS" for record in records[:2])
     negative_ok = all(
         record["status"] == "UNKNOWN"
         and record.get("false_accept") is False
         and record.get("runner_started") is False
         and record.get("policy_updates") == 0
-        for record in records[1:]
+        for record in records[2:]
     )
     summary = {
         **config,

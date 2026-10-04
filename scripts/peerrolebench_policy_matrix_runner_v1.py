@@ -41,6 +41,7 @@ from peerrolebench_baseline_root_contract import (  # noqa: E402
     RootRunnerManifest,
     validate_public_prefix,
 )
+from peerrolebench_canonical_manifest import validate_canonical_manifest  # noqa: E402
 from peerrolebench_candidate_registry import (  # noqa: E402
     CandidateRegistryEntry,
     registry_digest,
@@ -189,11 +190,12 @@ class PolicyMatrixRunner:
 
     def __init__(
         self, *, registry: Sequence[CandidateRegistryEntry], arm_names: Sequence[str] = ARM_NAMES,
-        require_manifest: bool = False,
+        require_manifest: bool = False, require_canonical_manifest: bool = False,
     ):
         self.registry = validate_registry(registry)
         self.arm_names = tuple(arm_names)
         self.require_manifest = bool(require_manifest)
+        self.require_canonical_manifest = bool(require_canonical_manifest)
         unknown = set(self.arm_names) - set(ARM_NAMES)
         if unknown:
             raise ValueError(f"unsupported matrix arms={sorted(unknown)}")
@@ -250,9 +252,20 @@ class PolicyMatrixRunner:
         expected_schedule_digest: str,
         expected_registry_digest: str | None = None,
         manifest: RootRunnerManifest | None = None,
+        canonical_manifest: Mapping[str, Any] | None = None,
         root_seed: int | None = None,
     ) -> dict[str, Any]:
         started = time.perf_counter()
+        canonical_manifest_payload = None
+        if self.require_canonical_manifest and canonical_manifest is None:
+            raise ValueError("canonical manifest is required")
+        if canonical_manifest is not None:
+            # This is deliberately the first executable gate.  A malformed
+            # envelope must be rejected before any policy object can select or
+            # update, even when the legacy RootRunnerManifest is also supplied.
+            canonical_manifest_payload = validate_canonical_manifest(canonical_manifest)
+            if manifest is not None and canonical_manifest_payload["root_manifest_digest"] != manifest.digest():
+                raise ValueError("canonical/root manifest digest mismatch")
         baseline_contract = validate_contract()
         manifest_payload = None if manifest is None else manifest.validate()
         if self.require_manifest and manifest is None:
@@ -467,6 +480,7 @@ class PolicyMatrixRunner:
             "visible_input_digests": visible_input_digests,
             "baseline_contract": baseline_contract,
             "manifest": manifest_payload,
+            "canonical_manifest": canonical_manifest_payload,
             "scientific_claim_allowed": False,
         }
 
