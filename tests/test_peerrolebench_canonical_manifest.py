@@ -15,6 +15,7 @@ from peerrolebench_canonical_manifest import (  # noqa: E402
     EXPECTED_CHANNEL_IDS,
     ASSIGNMENT_SEMANTICS,
     digest,
+    build_runtime_stream_values,
     validate_runtime_binding,
     validate_canonical_manifest,
 )
@@ -170,6 +171,24 @@ def _manifest() -> dict:
     }
     result["manifest_digest"] = digest(result)
     return result
+
+
+def test_runtime_stream_builder_projects_public_runner_inputs_only():
+    sys.path.insert(0, str(ROOT / "tests"))
+    from test_peerrolebench_policy_matrix_runner import _registry  # noqa: E402
+    from peerrolebench_policy_matrix_runner_v1 import fixture_case  # noqa: E402
+
+    offers, schedule, _ = fixture_case("recipient_only")
+    stream = build_runtime_stream_values(offers, schedule, _registry())
+    assert set(stream) == {
+        "ordered_candidate_menu", "candidate_registry", "public_phi",
+        "offer_stream", "read_cut_decision", "arrival_schedule",
+        "rng_seed_schedule", "propensity", "state_schema", "state_init",
+    }
+    assert stream["candidate_registry"] == [entry.payload() for entry in _registry()]
+    assert any(row["public_rows"] for row in stream["offer_stream"])
+    assert "future_outcome" not in stream
+    assert all("scorer" not in str(value).lower() for value in stream.values())
 
 
 def test_valid_engineering_manifest_is_accepted():

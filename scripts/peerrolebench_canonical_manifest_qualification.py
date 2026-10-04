@@ -142,7 +142,7 @@ def run(out_dir: Path) -> dict[str, Any]:
         records.append({"case": "valid", "status": "FAIL", "error": f"{type(exc).__name__}: {exc}"})
     try:
         offers, schedule, schedule_hash = fixture_case("recipient_only")
-        bound_manifest = _runtime_bound_canonical_manifest(offers, schedule_hash)
+        bound_manifest = _runtime_bound_canonical_manifest(offers, schedule, schedule_hash)
         result = PolicyMatrixRunner(
             registry=_registry(), require_canonical_manifest=True,
         ).run(
@@ -167,7 +167,7 @@ def run(out_dir: Path) -> dict[str, Any]:
         })
     try:
         offers, schedule, schedule_hash = fixture_case("recipient_only")
-        bound_manifest = _runtime_bound_canonical_manifest(offers, schedule_hash)
+        bound_manifest = _runtime_bound_canonical_manifest(offers, schedule, schedule_hash)
         changed_stream = dict(bound_manifest["stream"])
         changed_stream["public_phi"] = {"future_outcome": True}
         PolicyMatrixRunner(

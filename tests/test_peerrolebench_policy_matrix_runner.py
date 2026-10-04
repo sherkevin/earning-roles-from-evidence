@@ -22,7 +22,10 @@ from peerrolebench_event_time_schedule import schedule_digest  # noqa: E402
 from peerrolebench_event_time_schedule import ArrivalAssignment  # noqa: E402
 from peerrolebench_baseline_root_contract import RootRunnerManifest  # noqa: E402
 from peerrolebench_candidate_registry import registry_digest  # noqa: E402
-from peerrolebench_canonical_manifest import digest as canonical_digest  # noqa: E402
+from peerrolebench_canonical_manifest import (  # noqa: E402
+    build_runtime_stream_values,
+    digest as canonical_digest,
+)
 
 
 def _canonical_manifest_fixture():
@@ -33,8 +36,15 @@ def _canonical_manifest_fixture():
     return _manifest()
 
 
-def _runtime_bound_canonical_manifest(offers, schedule_hash):
+def _runtime_bound_canonical_manifest(offers, schedule, schedule_hash):
     manifest = _canonical_manifest_fixture()
+    # Seal the stream that the runner actually consumes.  Keeping this
+    # projection beside the fixture makes the test exercise the same public
+    # offer/schedule/registry values that runtime binding will validate.
+    manifest["stream"] = build_runtime_stream_values(offers, schedule, _registry())
+    manifest["stream_digests"] = {
+        key: canonical_digest(value) for key, value in manifest["stream"].items()
+    }
     root = dict(manifest["root"])
     root["root_commit"] = subprocess.check_output(
         ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True,
@@ -156,7 +166,7 @@ def test_canonical_manifest_preflight_rejects_before_selection():
 
 def test_canonical_runtime_stream_binding_rejects_digest_mismatch():
     offers, schedule, digest = fixture_case("recipient_only")
-    manifest = _runtime_bound_canonical_manifest(offers, digest)
+    manifest = _runtime_bound_canonical_manifest(offers, schedule, digest)
     with pytest.raises(ValueError, match="runtime stream digest mismatch: public_phi"):
         changed = dict(manifest["stream"])
         changed["public_phi"] = {"future_outcome": True}
@@ -170,7 +180,7 @@ def test_canonical_runtime_stream_binding_rejects_digest_mismatch():
 
 def test_canonical_runtime_stream_binding_accepts_sealed_runtime_values():
     offers, schedule, digest = fixture_case("recipient_only")
-    manifest = _runtime_bound_canonical_manifest(offers, digest)
+    manifest = _runtime_bound_canonical_manifest(offers, schedule, digest)
     result = PolicyMatrixRunner(
         registry=_registry(), require_canonical_manifest=True,
     ).run(

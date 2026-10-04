@@ -413,6 +413,95 @@ def validate_runtime_binding(
     }
 
 
+def build_runtime_stream_values(
+    offers: Sequence[Any],
+    schedule: Sequence[Any],
+    registry: Sequence[Any],
+    *,
+    arm_names: Sequence[str] = EXPECTED_ARM_NAMES,
+    rng_algorithm: str = "numpy-pcg64",
+    temperature: float = 1.0,
+    exploration: float = 0.10,
+) -> dict[str, Any]:
+    """Project concrete runner inputs into the ten public stream objects.
+
+    ``offers`` are MatrixOffer-like objects.  Only candidate menus, public
+    feedback rows, read-cut/decision timing, feature captures and sampling
+    configuration are included; scorer-private fields and future outcomes are
+    intentionally absent.  The projection is deterministic and JSON-shaped so
+    its digest can be sealed in a manifest before policy construction.
+    """
+
+    def payload(value: Any) -> Any:
+        if hasattr(value, "payload") and callable(value.payload):
+            return value.payload()
+        if isinstance(value, Mapping):
+            return dict(value)
+        return value
+
+    offer_rows: list[dict[str, Any]] = []
+    menu_rows: list[dict[str, Any]] = []
+    phi_rows: list[dict[str, Any]] = []
+    read_rows: list[dict[str, Any]] = []
+    rng_rows: list[dict[str, Any]] = []
+    for item in offers:
+        offer = item.offer
+        public_rows = [dict(row) for row in offer.public_rows]
+        candidate_keys = [str(key) for key in offer.candidate_keys]
+        offer_id = str(offer.offer_id)
+        menu_rows.append({"offer_id": offer_id, "candidate_keys": candidate_keys})
+        offer_rows.append({
+            "offer_id": offer_id,
+            "task_id": str(offer.task_id),
+            "task_index": int(offer.task_index),
+            "context_key": str(offer.context_key),
+            "candidate_keys": candidate_keys,
+            "available_index": int(offer.available_index),
+            "public_rows": public_rows,
+        })
+        phi_rows.append({
+            "offer_id": offer_id,
+            "encoder_version": str(item.encoder_version),
+            "feature_schema": str(item.feature_schema),
+            "captured_features": {
+                str(key): list(values) for key, values in sorted(item.captured_features.items())
+            },
+        })
+        read_rows.append({
+            "offer_id": offer_id,
+            "read_cut": int(item.read_cut),
+            "decision_index": int(item.decision_index),
+            "selected_at": float(item.selected_at),
+        })
+        rng_rows.append({"offer_id": offer_id, "rng_seed": int(item.rng_seed)})
+    registry_rows = [payload(entry) for entry in registry]
+    schedule_rows = [payload(row) for row in schedule]
+    return {
+        "ordered_candidate_menu": menu_rows,
+        "candidate_registry": registry_rows,
+        "public_phi": phi_rows,
+        "offer_stream": offer_rows,
+        "read_cut_decision": read_rows,
+        "arrival_schedule": schedule_rows,
+        "rng_seed_schedule": {"algorithm": rng_algorithm, "rows": rng_rows},
+        "propensity": {
+            "arm_names": list(arm_names),
+            "sampling_rule": "softmax_then_epsilon_mix",
+            "temperature": float(temperature),
+            "exploration": float(exploration),
+        },
+        "state_schema": {
+            "encoder_versions": sorted({str(item.encoder_version) for item in offers}),
+            "feature_schemas": sorted({str(item.feature_schema) for item in offers}),
+            "state_schema_version": "policy-state-v1",
+        },
+        "state_init": {
+            "arm_names": list(arm_names),
+            "initialization": "registered-policy-factory-v1",
+        },
+    }
+
+
 def manifest_digest(manifest: Mapping[str, Any]) -> str:
     """Compute the envelope digest without validating it."""
 
@@ -431,6 +520,7 @@ __all__ = [
     "STREAM_DIGEST_KEYS",
     "digest",
     "manifest_digest",
+    "build_runtime_stream_values",
     "validate_runtime_binding",
     "validate_canonical_manifest",
     "validate_manifest",
