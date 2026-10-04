@@ -131,6 +131,8 @@ RLS、online logistic/SGD、periodic refit 和候选增量 updater 是训练更�
 
 2026-10-04 canonical raw-adapter amendment：native PIPE3 `s0/d0/j0` 经过 `DecisionSidecar → RawAcceptanceSidecar → project_raw_acceptance` 后接入七-arm canonical stream；raw arm 的一次 eligible/update、六 arm ignore/zero-update，以及错误决策、候选、ledger/registry digest、重复、UNKNOWN、迟到七格的 runner-before-start fail-closed 均通过（`experiments/logs/n03_canonical_raw_adapter_20261004_v4/`）。这只关闭 raw channel 的工程接缝，不打开 terminal-only、scientific same-information baseline、second root、独立 live history、later-use 或成本门。
 
+2026-10-04 canonical terminal-adapter amendment：新增独立 `TerminalOutcomeSidecar` 与 `terminal-success-v1` 映射，从 native outcome/delivery/selection/candidate/delivery-record hash 生成只含 public outcome provenance 的 terminal row；terminal-only positive update、六 arm ignore、错误 hash/delivery/selection/candidate/mapping/UNKNOWN/late/duplicate 八格的 preflight fail-closed 均通过（`experiments/logs/n03_canonical_terminal_adapter_20261004_v5/`）。这只关闭 terminal channel 的工程接缝，不能替代 scientific same-information baseline、benchmark authority、second root、独立 live history、later-use 或 measured cost。
+
 ## 7. 对照标准
 
 本文件按 [`benchmark_baseline_v1.2_20260929_eval.md`](../evaluation/benchmark-baseline/benchmark_baseline_v1.2_20260929_eval.md) 审查。故事与创新见 [`storyline_v1.1_20260928.md`](../storyline/storyline_v1.1_20260928.md)，方法合同见当前生效的 [`method_v1.1_20260930.md`](../method/method_v1.1_20260930.md)。轨道确认记录见 [`ADR 0042`](../../../user/decisions/0042-confirm-artifactrole-primary-peerselect-secondary.md)。

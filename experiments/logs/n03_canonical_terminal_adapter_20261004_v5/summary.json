@@ -1,0 +1,140 @@
+{
+  "qualification_version": "canonical-terminal-only-public-input-v1",
+  "kind": "zero_call_canonical_terminal_only_adapter",
+  "started_at_utc": "2026-10-04T07:29:52.719929+00:00",
+  "command": [
+    "scripts/peerrolebench_canonical_terminal_adapter_qualification.py",
+    "--out-dir",
+    "experiments/logs/n03_canonical_terminal_adapter_20261004_v5"
+  ],
+  "git_commit": "373e0e75c5224290574af255278dbffa57530fc4",
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "component_sha256": {
+    "peerrolebench_canonical_terminal_adapter_qualification.py": "0f7fff7938c66559e9167da2df593daf678925261b266337c323b1851120a937",
+    "peerrolebench_terminal_outcome_projection.py": "67a4115d677e6814cde327295a14f0f727d5377f9ca1a498740e1cceb72bfc1d",
+    "peerrolebench_canonical_pipe3_parity_qualification.py": "b094416c9a11a5bd8eb8cf9bb02f533ed3f185ec904cd5345077f91ae3f195e6",
+    "peerrolebench_policy_matrix_runner_v1.py": "4f850d91d26409cde238d93f09190c8b430383a6079f384d012a40d20c9a25f7"
+  },
+  "arms": [
+    "uniform",
+    "no_update",
+    "raw_acceptance",
+    "terminal_only",
+    "contextual_trust",
+    "pooled_controller",
+    "RARE"
+  ],
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "benchmark_qualified": false,
+  "baseline_parity_scientific": false,
+  "status": "QUALIFIED_OFFLINE",
+  "passed": true,
+  "positive": {
+    "status": "PASS",
+    "checks": {
+      "terminal_only_one_eligible": true,
+      "terminal_only_one_update": true,
+      "other_arms_ignore_terminal": true,
+      "seven_arm_public_input_digests_equal": true,
+      "snapshot_replay_equal": true,
+      "no_private_terminal_fields": true,
+      "runner_started_after_preflight": true
+    }
+  },
+  "negative": [
+    {
+      "case": "wrong_outcome_hash",
+      "status": "PASS",
+      "accepted": false,
+      "error_type": "ValueError",
+      "error": "sidecar is bound to a different ledger record",
+      "runner_started": false,
+      "selection_count": 0,
+      "policy_update_count": 0
+    },
+    {
+      "case": "wrong_delivery",
+      "status": "PASS",
+      "accepted": false,
+      "error_type": "ValueError",
+      "error": "terminal outcome delivery mismatch",
+      "runner_started": false,
+      "selection_count": 0,
+      "policy_update_count": 0
+    },
+    {
+      "case": "wrong_delivery_hash",
+      "status": "PASS",
+      "accepted": false,
+      "error_type": "ValueError",
+      "error": "terminal outcome delivery record hash mismatch",
+      "runner_started": false,
+      "selection_count": 0,
+      "policy_update_count": 0
+    },
+    {
+      "case": "wrong_selection",
+      "status": "PASS",
+      "accepted": false,
+      "error_type": "ValueError",
+      "error": "terminal outcome selection mismatch",
+      "runner_started": false,
+      "selection_count": 0,
+      "policy_update_count": 0
+    },
+    {
+      "case": "wrong_candidate",
+      "status": "PASS",
+      "accepted": false,
+      "error_type": "ValueError",
+      "error": "terminal outcome producer mismatch",
+      "runner_started": false,
+      "selection_count": 0,
+      "policy_update_count": 0
+    },
+    {
+      "case": "wrong_label_mapping",
+      "status": "PASS",
+      "accepted": false,
+      "error_type": "ValueError",
+      "error": "unsupported terminal label mapping",
+      "runner_started": false,
+      "selection_count": 0,
+      "policy_update_count": 0
+    },
+    {
+      "case": "unknown",
+      "status": "PASS",
+      "accepted": false,
+      "error_type": "ValueError",
+      "error": "terminal outcome is UNKNOWN/ineligible",
+      "runner_started": false,
+      "selection_count": 0,
+      "policy_update_count": 0
+    },
+    {
+      "case": "late",
+      "status": "PASS",
+      "accepted": false,
+      "error_type": "ValueError",
+      "error": "terminal outcome arrives after the frozen read cut",
+      "runner_started": false,
+      "selection_count": 0,
+      "policy_update_count": 0
+    },
+    {
+      "case": "duplicate",
+      "status": "PASS",
+      "accepted": false,
+      "error_type": "ValueError",
+      "error": "duplicate terminal feedback id",
+      "runner_started": false,
+      "selection_count": 0,
+      "policy_update_count": 0
+    }
+  ],
+  "ended_at_utc": "2026-10-04T07:29:52.927400+00:00"
+}
