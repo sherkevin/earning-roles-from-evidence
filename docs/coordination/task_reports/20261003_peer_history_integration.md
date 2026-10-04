@@ -32,8 +32,8 @@ python3 scripts/peerrolebench_peer_history_integration_qualification.py \
 
 结果为 `QUALIFIED_OFFLINE`：
 
-- producer-owned：两个模式的 native ledger digest 均为 `3bbedceb3dd2e9fb3566435b0ec78df02261b87a90fb0b72a7bc2514ed75aac9`，selection trace 相同；`append` 新增 1 条 `PASS` history entry，receipt 的 delayed-credit digest 与实际 credit 相同；
-- recipient-owned、mixed：两模式 ledger 相同，source attribution 均 `NOT_RUN_UNKNOWN`，history 没有被创建；
+- producer-owned：两个模式的 native ledger digest 均为 `2cba5e6013b46da927993ac022612c8261ac0271af05389186615ba29f0005f9`，selection trace 相同；`append` 新增 1 条 `PASS` history entry，receipt 的 delayed-credit digest 与实际 credit 相同；
+- recipient-owned、mixed：两模式 ledger 分别保持 `3a116e127e3abccc963c741609c6ba2503a2cb73e7970624ad3ac689d7dc235d` 与 `e8084686666cf03ce0b5a4f71a35d5fba93d9a3cdb26513869b5d448fb9dd2b5`，各自模式内相同，source attribution 均 `NOT_RUN_UNKNOWN`，history 没有被创建；
 - policy update count 在两个模式逐 control 相同；
 - focused tests：26 passed（composition 11、adapter 5、binding/history 10）；py_compile 与 `git diff --check` 通过。
 

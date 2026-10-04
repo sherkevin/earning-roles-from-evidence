@@ -1,0 +1,104 @@
+[
+  {
+    "event_type": "peer_selection",
+    "payload": {
+      "selection_id": "selection-mixed-0",
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 0,
+      "selector_id": "peer-a",
+      "role": "producer",
+      "candidate_ids": [
+        "peer-b",
+        "peer-c"
+      ],
+      "chosen_peer_id": "peer-b",
+      "propensity": 1.0
+    },
+    "previous_hash": "GENESIS",
+    "record_hash": "8897e07af96dd972cdba9d962bc7258277e580cd138c6196f038796fddda8e12"
+  },
+  {
+    "event_type": "task_start",
+    "payload": {
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 0
+    },
+    "previous_hash": "8897e07af96dd972cdba9d962bc7258277e580cd138c6196f038796fddda8e12",
+    "record_hash": "7996bfbffdba97d4243e09d8af8a0b4418c77d1c1038d27156c9a4c4789c604e"
+  },
+  {
+    "event_type": "producer_delivery",
+    "payload": {
+      "delivery_id": "mixed-delivery-0",
+      "task_id": "PIPE3_stream_processing",
+      "producer_id": "peer-b",
+      "recipient_id": "peer-a",
+      "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "source_event_id": "request-mixed-0",
+      "task_index": 0,
+      "selection_id": "selection-mixed-0",
+      "candidate_source_digest": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2"
+    },
+    "previous_hash": "7996bfbffdba97d4243e09d8af8a0b4418c77d1c1038d27156c9a4c4789c604e",
+    "record_hash": "f9375353dedc7a55ae734ef3f287635f7b76d28e44a0c3e76f7e89a6f91001c0"
+  },
+  {
+    "event_type": "producer_score",
+    "payload": {
+      "producer_score_id": "mixed-producer-score-0",
+      "delivery_id": "mixed-delivery-0",
+      "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "scorer_version": "peer-history-integration-fixture-v1",
+      "status": "FAIL",
+      "label": 0,
+      "quality_score": 0.0,
+      "score_payload_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "coverage_complete": true,
+      "decision_complete": true
+    },
+    "previous_hash": "f9375353dedc7a55ae734ef3f287635f7b76d28e44a0c3e76f7e89a6f91001c0",
+    "record_hash": "bfa46530c9d5d84df9a891f054d101a2d5ca9497daf0e8e01e562d5d09c5cff0"
+  },
+  {
+    "event_type": "recipient_judgment",
+    "payload": {
+      "judgment_id": "mixed-judgment-0",
+      "delivery_id": "mixed-delivery-0",
+      "consumer_id": "peer-a",
+      "decision": "accept_with_rework",
+      "observed_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "terminal_outcome_available": false,
+      "repair_note": "pipe3-two-stage-composition-v1.6:mixed"
+    },
+    "previous_hash": "bfa46530c9d5d84df9a891f054d101a2d5ca9497daf0e8e01e562d5d09c5cff0",
+    "record_hash": "4cb3e94b7958697d90ae1ef6b131fbacdfa9d5cc8e7a33c4a645e4704f2876e6"
+  },
+  {
+    "event_type": "consumer_action",
+    "payload": {
+      "action_id": "mixed-action-0",
+      "delivery_id": "mixed-delivery-0",
+      "consumer_id": "peer-a",
+      "used_artifact": true,
+      "input_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "output_artifact_sha256": "819118801d4ccfab2801b36032d4f0808bdf938eedf9ee532d8ea798fd7ffa29",
+      "repair_cost": 0.0,
+      "action": "repair"
+    },
+    "previous_hash": "4cb3e94b7958697d90ae1ef6b131fbacdfa9d5cc8e7a33c4a645e4704f2876e6",
+    "record_hash": "7e4e1868e2a907731dd388a1d68e2583e3eaae470273ef29d1a440e39c2758a1"
+  },
+  {
+    "event_type": "terminal_outcome",
+    "payload": {
+      "outcome_id": "mixed-outcome-0",
+      "delivery_id": "mixed-delivery-0",
+      "success": true,
+      "scorer_version": "pipe3-recipient-objective-v2",
+      "partial_score": 0.8,
+      "score_payload_sha256": "7d7827e95201b56c08965243902b313a6d12aef07610ad68c7a1d020a0f0ed70"
+    },
+    "previous_hash": "7e4e1868e2a907731dd388a1d68e2583e3eaae470273ef29d1a440e39c2758a1",
+    "record_hash": "25ecf884f5cf4cd5dd11aafd8c0acd3dabc22c2013479be477d5b42d67f7b5fe"
+  }
+]

@@ -1,0 +1,68 @@
+{
+  "qualification_version": "peer-history-integration-qualification-v1",
+  "git_commit": "206bd18b3614ba0b3d1434a0642e904a8344de69",
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "seed": {
+    "source": 0,
+    "target": 1
+  },
+  "modes": [
+    "off",
+    "append"
+  ],
+  "scorer": "peer-history-integration-fixture-v1",
+  "candidate_code_executed": false,
+  "llm_calls": 0,
+  "gpu_jobs": 0,
+  "native_grader_invoked": false,
+  "scientific_claim_allowed": false,
+  "started_at_utc": "2026-10-03T15:06:48.366591+00:00",
+  "components": [
+    "scripts/peerrolebench_pipe3_two_stage_composition.py",
+    "scripts/peerrolebench_peer_history_adapter.py",
+    "scripts/peerrolebench_peer_history_binding.py",
+    "scripts/peerrolebench_peer_history.py"
+  ],
+  "status": "QUALIFIED_OFFLINE",
+  "passed": true,
+  "matched_modes": [
+    {
+      "control": "producer_owned",
+      "ledger_equal": true,
+      "ledger_digest_off": "3bbedceb3dd2e9fb3566435b0ec78df02261b87a90fb0b72a7bc2514ed75aac9",
+      "ledger_digest_append": "3bbedceb3dd2e9fb3566435b0ec78df02261b87a90fb0b72a7bc2514ed75aac9",
+      "selection_trace_equal": true,
+      "off_history": "DISABLED",
+      "append_history": "APPENDED",
+      "policy_updates_equal": true
+    },
+    {
+      "control": "recipient_owned",
+      "ledger_equal": true,
+      "ledger_digest_off": "3a116e127e3abccc963c741609c6ba2503a2cb73e7970624ad3ac689d7dc235d",
+      "ledger_digest_append": "3a116e127e3abccc963c741609c6ba2503a2cb73e7970624ad3ac689d7dc235d",
+      "selection_trace_equal": true,
+      "off_history": "NOT_RUN_UNKNOWN",
+      "append_history": "NOT_RUN_UNKNOWN",
+      "policy_updates_equal": true
+    },
+    {
+      "control": "mixed",
+      "ledger_equal": true,
+      "ledger_digest_off": "16c670ad28486514491232a3f58eefdb9d2bf06c397c5dc941e0f973721b8e62",
+      "ledger_digest_append": "16c670ad28486514491232a3f58eefdb9d2bf06c397c5dc941e0f973721b8e62",
+      "selection_trace_equal": true,
+      "off_history": "NOT_RUN_UNKNOWN",
+      "append_history": "NOT_RUN_UNKNOWN",
+      "policy_updates_equal": true
+    }
+  ],
+  "mode_status": {
+    "off": "QUALIFIED_OFFLINE",
+    "append": "QUALIFIED_OFFLINE"
+  },
+  "real_api_calls": 0,
+  "interpretation": "The append mode adds one canonical history row only after delayed credit; selection/ledger traces remain matched. This does not establish peer suitability, role specialization, baseline parity, or online efficacy.",
+  "ended_at_utc": "2026-10-03T15:06:48.703124+00:00"
+}
