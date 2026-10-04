@@ -11,7 +11,7 @@
 
 ## 正式结果
 
-回执：`experiments/logs/n03_peer_history_provenance_qualification_20261004_v1/`。
+正式回执：`experiments/logs/n03_peer_history_provenance_qualification_20261004_v2/`（clean commit `257791f`，配置记录空 worktree）；v1 未提交工作树回执保留。
 
 - `QUALIFIED_OFFLINE`, `passed=true`；0 API、0 GPU，`scientific_claim_allowed=false`。
 - `valid-chain`：canonical source/target chain 重建 receipt，replay 后 state/projection digest 相等；1 entry、1 seal、1 append。
