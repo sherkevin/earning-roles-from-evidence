@@ -773,3 +773,7 @@ The assistant added a test-only public-projection selector and a zero-call match
 ### 2026-10-04 history process-boundary recovery
 
 The assistant added a separate child-process replay worker and a five-cell zero-call qualification. A valid history snapshot and an empty snapshot reproduced parent state/projection/selection exactly after process restart; tampered, truncated, and unknown-version snapshots exited nonzero with structured UNKNOWN receipts and no selection/update. The run is engineering evidence only and does not establish cross-episode live learning, provenance authenticity, baseline parity, or GPU training.
+
+### 2026-10-04 multi-entry history adversarial qualification
+
+The assistant added a zero-call five-cell qualification with two valid history entries. It rejected a legal-entry permutation, candidate-to-history mismatch, and aggregate-rate mutation with UNKNOWN/no update, while changing an unrelated role/state scope left the target decision fields unchanged. The first implementation failure and corrected clean-commit receipt are both retained; this remains protocol evidence rather than peer suitability, live learning, baseline, or GPU evidence.

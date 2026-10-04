@@ -11,7 +11,7 @@
 
 ## 结果
 
-正式回执：`experiments/logs/n03_peer_history_adversarial_qualification_20261004_v2/`。v1 首次运行失败回执保留在同名 `_v1/`。
+正式回执：`experiments/logs/n03_peer_history_adversarial_qualification_20261004_v3/`（clean commit `e7664a6`，配置记录 component hashes 与空 worktree）。v1 首次运行失败、v2 修复回执均保留在同名目录。
 
 | cell | 结果 | 证据 |
 |---|---|---|
@@ -23,7 +23,7 @@
 
 总结果 `QUALIFIED_OFFLINE`, `passed=true`, `scientific_claim_allowed=false`；五格 `update_count=0`。focused history/selector/adapter/binding tests：`21 passed`；`py_compile` 通过。
 
-v1 暴露两个实现错误并保留原始目录：scope isolation 误比较包含 digest 的完整 selection，且 snapshot `scopes` 实际为 dict。v2 修正为比较 decision fields，并按 dict values 修改 scope 后通过。该修复没有放宽 replay 或 selector 的拒绝条件。
+v1 暴露两个实现错误并保留原始目录：scope isolation 误比较包含 digest 的完整 selection，且 snapshot `scopes` 实际为 dict。v2 修正为比较 decision fields，并按 dict values 修改 scope 后通过；v3 在 clean commit 上复跑并作为正式回执。该修复没有放宽 replay 或 selector 的拒绝条件。
 
 ## 结论与边界
 
