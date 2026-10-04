@@ -134,6 +134,15 @@ assignment comparator 已完成零调用定向测试，但尚未接入 live runn
 可识别性仍未通过；这两个结果保持 benchmark/baseline `NOT_READY`，不允许启动正式效果流或
 A800。
 
+2026-10-05 current-state amendment：canonical runtime stream builder 已通过工程资格，
+但静态 parity audit 发现 RARE 使用 64-d `captured_features`，而现有 contextual/pooled
+controls 只消费 context/candidate Beta state，且 RARE 忽略 `base_scores`。这直接触犯
+本标准 B1/B2 的 strongest same-information 要求；因此不能把当前七臂 offline matrix
+称为 scientific baseline parity，也不能启动 bounded live efficacy。待确认的最小修复是
+实现同一 `φ` 的 feature-aware contextual control，并完成 mutation/replay、cost、arrival
+和 snapshot qualification；closest published 的 A0、第二 root authority 的 B0 仍应先做
+低成本 go/no-go 审查。三份 active 文档和 Goal 均不降级。
+
 ## 来源边界
 
 AAMAS 官方要求 relevance、validation、evidence、state-of-the-art comparison 和 reproducibility；root 数量、责任分离、parity table、统计精度、成本口径和 UNKNOWN 分母是本项目为了识别自身主张而制定的严格实验标准，不是 AAMAS 官方指定 benchmark 清单。来源见 [`docs/research/20260928_evaluation_criteria_provenance.md`](../../../20260928_evaluation_criteria_provenance.md)。

@@ -156,6 +156,16 @@ independent live history、later-use utility、measured cost 或 scientific resu
 不再继续堆叠 manifest plumbing，而是审查 closest published adapter、第二 root 与
 same-information live parity 是否足够进入一条有界 live history。
 
+2026-10-05 same-information parity amendment：静态代码审计发现当前 `RARE` 使用
+64-dimensional `captured_features`，而 `contextual_trust`/`pooled_controller` 只使用
+context/candidate Beta state；`RARE` 还显式丢弃 `base_scores`。因此现有七臂 matrix 只能
+作为 engineering matrix，不能作为 strongest same-information scientific baseline。active
+method 的 same-`φ` 要求和 B2 parity gate 保持不变；在确认前不修改历史 receipt、不启动
+live efficacy。候选修复是版本化 `contextual_trust_linear_v1`（同一 φ/menu/arrival/
+propensity/cost，普通 feature-aware linear/RLS updater），同时保留 Beta contextual 为
+辅助 diagnostic；该选择尚未写入 active method，需先完成零调用 mutation/replay
+qualification。
+
 ## 7. 对照标准
 
 本文件按 [`benchmark_baseline_v1.2_20260929_eval.md`](../evaluation/benchmark-baseline/benchmark_baseline_v1.2_20260929_eval.md) 审查。故事与创新见 [`storyline_v1.1_20260928.md`](../storyline/storyline_v1.1_20260928.md)，方法合同见当前生效的 [`method_v1.1_20260930.md`](../method/method_v1.1_20260930.md)。轨道确认记录见 [`ADR 0042`](../../../user/decisions/0042-confirm-artifactrole-primary-peerselect-secondary.md)。
