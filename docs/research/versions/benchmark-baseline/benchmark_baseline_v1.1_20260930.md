@@ -129,6 +129,8 @@ RLS、online logistic/SGD、periodic refit 和候选增量 updater 是训练更�
 
 2026-10-04 source-adapter amendment：七-arm fixture matrix 的 raw-acceptance 与 terminal-only 正向更新路径、typed raw sidecar 的 wrong-decision/wrong-producer/duplicate 拒绝，以及 two-entry peer-history 的 permutation/candidate/projection mutation 拒绝均在当前回执中通过（`experiments/logs/n03_policy_matrix_20261004_v1/`, `experiments/logs/n03_raw_acceptance_replay_20261004_v1/`, `experiments/logs/n03_history_adversarial_20261004_v1/`）。该 amendment 只证明可复用工程 adapter 的 reachability 与 fail-closed 行为；它不等于 canonical PIPE3 的 scientific same-information parity。terminal-specific public mapping、runner-level registry preflight、benchmark authority、second root、独立 live history、later-use outcome 和 measured cost 仍开放。
 
+2026-10-04 canonical raw-adapter amendment：native PIPE3 `s0/d0/j0` 经过 `DecisionSidecar → RawAcceptanceSidecar → project_raw_acceptance` 后接入七-arm canonical stream；raw arm 的一次 eligible/update、六 arm ignore/zero-update，以及错误决策、候选、ledger/registry digest、重复、UNKNOWN、迟到七格的 runner-before-start fail-closed 均通过（`experiments/logs/n03_canonical_raw_adapter_20261004_v4/`）。这只关闭 raw channel 的工程接缝，不打开 terminal-only、scientific same-information baseline、second root、独立 live history、later-use 或成本门。
+
 ## 7. 对照标准
 
 本文件按 [`benchmark_baseline_v1.2_20260929_eval.md`](../evaluation/benchmark-baseline/benchmark_baseline_v1.2_20260929_eval.md) 审查。故事与创新见 [`storyline_v1.1_20260928.md`](../storyline/storyline_v1.1_20260928.md)，方法合同见当前生效的 [`method_v1.1_20260930.md`](../method/method_v1.1_20260930.md)。轨道确认记录见 [`ADR 0042`](../../../user/decisions/0042-confirm-artifactrole-primary-peerselect-secondary.md)。
