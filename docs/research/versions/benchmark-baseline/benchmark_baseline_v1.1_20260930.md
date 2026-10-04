@@ -133,6 +133,8 @@ RLS、online logistic/SGD、periodic refit 和候选增量 updater 是训练更�
 
 2026-10-04 canonical terminal-adapter amendment：新增独立 `TerminalOutcomeSidecar` 与 `terminal-success-v1` 映射，从 native outcome/delivery/selection/candidate/delivery-record hash 生成只含 public outcome provenance 的 terminal row；terminal-only positive update、六 arm ignore、错误 hash/delivery/selection/candidate/mapping/UNKNOWN/late/duplicate 八格的 preflight fail-closed 均通过（`experiments/logs/n03_canonical_terminal_adapter_20261004_v5/`）。这只关闭 terminal channel 的工程接缝，不能替代 scientific same-information baseline、benchmark authority、second root、独立 live history、later-use 或 measured cost。
 
+2026-10-04 canonical manifest preflight amendment：nested canonical manifest validator 已接入 `PolicyMatrixRunner` 首道 gate；clean commit 上的 synthetic `recipient_only` stream 与14个 manifest mutation/rejection case 通过（`experiments/logs/n03_canonical_manifest_validation_20261004_v4/`）。该回执只证明 manifest 在 policy construction 前可 fail-closed；当前仍未完成 manifest-to-runtime 的 menu/registry/read-cut/arrival/φ digest binding，三类 source projection 也未在同一真实 stream 中执行，因此 baseline、scientific parity、第二 root、live history 和 API/A800 仍未冻结。
+
 ## 7. 对照标准
 
 本文件按 [`benchmark_baseline_v1.2_20260929_eval.md`](../evaluation/benchmark-baseline/benchmark_baseline_v1.2_20260929_eval.md) 审查。故事与创新见 [`storyline_v1.1_20260928.md`](../storyline/storyline_v1.1_20260928.md)，方法合同见当前生效的 [`method_v1.1_20260930.md`](../method/method_v1.1_20260930.md)。轨道确认记录见 [`ADR 0042`](../../../user/decisions/0042-confirm-artifactrole-primary-peerselect-secondary.md)。
