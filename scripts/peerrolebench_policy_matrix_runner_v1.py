@@ -91,6 +91,8 @@ class MatrixOffer:
     selected_at: float
     rng_seed: int
     protocol_event_ids: Mapping[str, str]
+    encoder_version: str = "hash64-v1"
+    feature_schema: str = "matrix-features-v1"
 
 
 def _registry() -> tuple[CandidateRegistryEntry, ...]:
@@ -146,6 +148,9 @@ def _offer(
     selected_at: float, rng_seed: int,
     protocol_event_ids: Mapping[str, str] | None = None,
     context_key: str | None = None,
+    base_scores: Sequence[float] | None = None,
+    encoder_version: str = "hash64-v1",
+    feature_schema: str = "matrix-features-v1",
 ) -> MatrixOffer:
     raw_rows = [dict(row) for row in public_rows]
     derived_event_ids = {
@@ -169,10 +174,13 @@ def _offer(
         raise ValueError("protocol event IDs must cover exactly the public feedback rows")
     return MatrixOffer(
         offer=offer, native_selection_id=native_selection_id, selector_id="agent-a",
-        role="producer", base_scores=(0.0,) * len(candidate_keys),
+        role="producer", base_scores=tuple(float(value) for value in (
+            base_scores if base_scores is not None else (0.0,) * len(candidate_keys)
+        )),
         captured_features=_features(candidate_keys), read_cut=read_cut,
         decision_index=decision_index, selected_at=selected_at, rng_seed=rng_seed,
-        protocol_event_ids=event_ids,
+        protocol_event_ids=event_ids, encoder_version=encoder_version,
+        feature_schema=feature_schema,
     )
 
 
@@ -396,7 +404,7 @@ class PolicyMatrixRunner:
                     context_key=item.offer.context_key, selector_id=item.selector_id,
                     candidates=refs, base_scores=item.base_scores,
                     rng=np.random.default_rng(item.rng_seed), state_version=f"state-{item.decision_index}",
-                    encoder_version="hash64-v1", feature_schema="matrix-features-v1",
+                    encoder_version=item.encoder_version, feature_schema=item.feature_schema,
                     selected_at=item.selected_at, captured_features=item.captured_features,
                 )
                 metrics[name]["n_selected"] += 1
@@ -409,6 +417,21 @@ class PolicyMatrixRunner:
                         "public_feedback_rows_at_read_cut", "visible_feedback_ids",
                     ],
                     "visible_feedback_ids": [str(row["feedback_id"]) for row in item.offer.public_rows],
+                    "visible_input_digest": _feedback_row_digest({
+                        "context_key": item.offer.context_key,
+                        "candidate_menu": [ref.key for ref in refs],
+                        "base_scores": list(item.base_scores),
+                        "read_cut": int(item.read_cut),
+                        "decision_index": int(item.decision_index),
+                        "selected_at": float(item.selected_at),
+                        "rng_seed": int(item.rng_seed),
+                        "encoder_version": item.encoder_version,
+                        "feature_schema": item.feature_schema,
+                        "captured_features": {
+                            str(key): list(values) for key, values in item.captured_features.items()
+                        },
+                        "public_rows": [dict(row) for row in item.offer.public_rows],
+                    }),
                     "chosen_key": selection.chosen.key,
                     "probabilities": list(selection.probabilities),
                     "propensity": selection.propensity,
@@ -417,10 +440,16 @@ class PolicyMatrixRunner:
                 metrics[name]["updates"] += policy.updates - before_updates
                 traces[name].append(trace)
         replay = {}
+        final_policy_snapshots = {}
+        final_state_digests = {}
+        visible_input_digests = {}
         for name, policy in policies.items():
             snapshot = policy.snapshot()
             restored = BaselinePolicy.restore(snapshot)
             replay[name] = {"snapshot_equal": restored.snapshot() == snapshot}
+            final_policy_snapshots[name] = snapshot
+            final_state_digests[name] = _feedback_row_digest(snapshot)
+            visible_input_digests[name] = [trace["visible_input_digest"] for trace in traces[name]]
         cost_ledger = {name: self._cost_ledger() for name in self.arm_names}
         validate_cost_ledger(cost_ledger, require_measured=False)
         if manifest is not None and time.perf_counter() - started > manifest.max_wall_seconds:
@@ -433,6 +462,9 @@ class PolicyMatrixRunner:
             "schedule_digest": expected_schedule_digest,
             "metrics": metrics, "traces": traces,
             "replay": replay, "cost_ledger": cost_ledger,
+            "final_policy_snapshots": final_policy_snapshots,
+            "final_state_digests": final_state_digests,
+            "visible_input_digests": visible_input_digests,
             "baseline_contract": baseline_contract,
             "manifest": manifest_payload,
             "scientific_claim_allowed": False,

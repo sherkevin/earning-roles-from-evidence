@@ -23,16 +23,32 @@
 
 provenance 通过只说明 history 不容易与 source/target 责任链错绑；v16 通过只说明七个 policy 的离线状态机能在同一 hand-authored stream 上运行。两者都不能证明 RARE 胜过 contextual trust、history 改善团队质量、实时更新满足 p95、或 benchmark 已具备 AAMAS confirmation 证据。
 
-## 下一张实验卡（只冻结，不启动）
+## v19 完成与下一张卡（只冻结，不启动）
 
-先实现一个 **canonical-PIPE3 same-information parity qualification**，再决定是否进入真实小流：
+上一张 **canonical-PIPE3 public-input parity qualification** 已由 v19 完成；
+下一张卡只做公开合同和对照资格收紧，再决定是否进入真实小流：
 
-1. 所有 arm 读取同一 canonical `RoleEvidenceOffer`/history projection、candidate registry/version、target scope、read cut、arrival schedule、菜单顺序和 `φ` digest；
-2. 每个 arm 独立 policy namespace，不共享 live memory；selected-only、UNKNOWN、duplicate、late correction 和 no-update 规则逐格相同；
-3. 每格记录 candidate/menu/`φ`/feedback/propensity/selection/assignment/state/cost digest，错误共享信息或预算即 `UNKNOWN`；
-4. 先用零调用 canonical ledger replay 验证 parity，再考虑独立 API streams；不得用 matched replay 代替 live effect；
-5. closest adapter、第二 root、confirmation、A800 仍在这张卡通过后按顺序处理。
+1. 增加正向 `raw_acceptance` 与 `terminal_only` source-adapter cells；
+2. 对 registry 与 history projection 做独立 mutation/replay qualification；
+3. 把 public φ exposure contract 与 per-arm state namespace 接入正式 baseline manifest；
+4. 再考虑独立 API streams；不得用 matched replay 代替 live effect；
+5. closest adapter、第二 root、confirmation、A800 仍在这些门通过后按顺序处理。
 
 预注册通过指标：所有 arm 的公共输入 digest、candidate menu、read cut、arrival schedule、探索预算和成本 schema 一致；每个 arm 的 policy state digest 独立；任何 mutation/late/unknown cell 的 false accept=0；无质量/效果结论。
 
 `goal_change_requested=false`。
+
+## v19 amendment
+
+`n03_canonical_pipe3_parity_20261004_v19` completed the next engineering card
+with status `QUALIFIED_OFFLINE_PUBLIC_INPUT_PARITY`.  The canonical ledger,
+`RoleEvidenceOffer`, delayed-credit history projection, menu, read cuts,
+arrival schedule, public φ and per-arm state namespaces now have an auditable
+zero-call path.  The v18 intermediate result is retained because its φ
+accidentally included terminal quality/status for RARE while contextual trust
+did not consume them; v19 excludes those fields.  This closes only the
+public-input/schema sub-gate.  It does not close scientific same-information
+parity: the valid cell contains one recipient-judgment row, so positive
+raw-acceptance and terminal-only adapters remain open, as do registry/history
+mutation qualification, benchmark authority, second root, independent live
+history and assignment-level outcome evidence.
