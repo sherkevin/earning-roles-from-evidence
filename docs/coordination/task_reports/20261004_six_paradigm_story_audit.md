@@ -78,17 +78,21 @@ ArtifactRole/PeerRoleBench-TB 的价值应首先是量出 raw acceptance、termi
 5. 只有确认没有改变科学含义，或经过用户/助手双重确认后，才把 substantive storyline/method 版本登记为 `ACTIVE`；
 6. 任何审查意见都不得把失败实验改写成成功，不得把参考文档中的未经核验事实当作本项目证据。
 
-## 已执行的一轮小修与复核
+## 已执行的两轮小修与复核
 
-在收到独立 Codex 报告后，仅修改 `article/aamas2027/main.tex` 的 Introduction：
+在收到独立 Codex 报告后，仅修改 `article/aamas2027/main.tex` 的 Introduction，并在第二轮复核后再次收紧：
 
-- 用明确标注的 constructed queue-processing counterexample 开场，避免把两条真实 trace 的 producer audit FAIL 写成 producer 正确；
-- 将单一根因压缩为 producer responsibility、recipient integration 与 downstream outcome 的 evidence confounding；
+- 用两个明确标注的 constructed queue-processing cases 开场：同样的 rejection/failed team outcome 可能来自 producer contract defect 或 recipient integration defect；
+- 将单一根因压缩为 producer responsibility、recipient integration 与 downstream outcome 的 evidence ambiguity；
 - 修正 sealed assignment 之后 target outcome 的时序语义，避免把“写回后再选择”写成矛盾时间线；
 - 将无引文的宽泛断言收窄为一个系统如何解释信号的问题；
 - 把 noninterference/idempotent replay 改写为待检验性质，而非已经证明的性质。
 
-独立 Codex 复核结果：`PASS`。问题切口从 6.5 提升为 7.8、根因定位从 5.5 提升为 7.5、反直觉 hook 从 5.0 提升为 7.0、故事设计潜力从 6.2 提升为 7.0；正式投稿就绪度仍为 3.8，因为 benchmark 未冻结且没有正向效能结果。`python3 scripts/build_aamas2027.py` 成功，`article/aamas2027/build/mainline_pre_results.pdf` 为 3 页；LaTeX 保留既有 underfull/balance 警告，不影响此次语义审查。`git diff --check` 通过。
+独立 Codex 复核结果：`PASS`。问题切口从 6.5 提升为 7.8、根因定位从 5.5 提升为 7.5、反直觉 hook 从 5.0 提升为 7.0、故事设计潜力从 6.2 提升为 7.0；正式投稿就绪度仍为 3.8，因为 benchmark 未冻结且没有正向效能结果。此前共享 build 目录出现并发/陈旧产物，因此不把其中的 3 页 PDF 当作本次验证；`git diff --check` 通过。
+
+第二次独立目录构建 `artifacts/aamas2027/narrative_20261004_isolated_v4/result.json` 收敛为 7 页，0 overfull boxes，0 undefined citations/references；保留模板已知 `ifx` compatibility warning 和 underfull/balance warnings。构建使用 0 API、0 GPU，`scientific_claim_allowed=false`。
+
+三条不变量的合同—证据映射另存于 [`20261004_invariant_mapping.md`](20261004_invariant_mapping.md)：I1 pre-selection noninterference、I2 recipient-only attribution safety、I3 idempotent replay 均有零调用工程回执，但正式 lemma、live stream 和质量/成本结果仍 OPEN。独立审查员对新 Introduction 与该映射再次 `PASS`。
 
 这轮修改没有改变 active storyline/method/benchmark，也没有启动 API/A800。它只改善论文的段落行为逻辑，不能替代 benchmark、baseline 或科学结果门。
 
@@ -96,5 +100,5 @@ ArtifactRole/PeerRoleBench-TB 的价值应首先是量出 raw acceptance、termi
 
 1. 将相同的根因—反例—机制—可测性质结构推广到摘要、Figure 1 caption、Related Work 和 Current Evidence，但每次只改一个段落簇并复审；
 2. 先完成已冻结的 canonical PIPE3 same-information parity qualification，确认主比较和公共 `φ` 后再写任何效果性句子；
-3. 将三个不变量（pre-selection noninterference、recipient-only safety、idempotent replay）写成方法合同/可检验 property，并与现有零调用回执建立逐条映射；
+3. 为 I1–I3 各写最小 lemma 或 machine-checkable property，明确假设、状态字段和反例；
 4. 叙事改稿不能替代 benchmark/baseline 科学门，任何结果仍必须遵守 claim–evidence 分级。
