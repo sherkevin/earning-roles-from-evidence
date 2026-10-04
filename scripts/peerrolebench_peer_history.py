@@ -207,6 +207,8 @@ class PeerHistoryV1:
         """Return only opaque scope statistics visible to a future selector."""
         candidate = candidate_key or self.agent_key
         _opaque(candidate, "candidate_key")
+        if candidate.split("@", 1)[0] != self.agent_key:
+            raise ValueError("history projection candidate does not match history agent")
         scopes = list(self._scopes().values())
         payload = {
             "schema": SCHEMA, "candidate_key": candidate, "entry_count": len(self._entries),

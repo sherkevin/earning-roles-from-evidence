@@ -98,3 +98,9 @@ def test_entry_scope_mismatch_is_rejected():
                            wrong.cost, wrong.arrival_index, wrong.assignment_id, wrong.status)
     with pytest.raises(ValueError, match="does not match assignment scope"):
         history.append(wrong)
+
+
+def test_projection_rejects_candidate_agent_mismatch():
+    history = PeerHistoryV1.empty("peer-a")
+    with pytest.raises(ValueError, match="candidate does not match"):
+        history.selector_projection(candidate_key="peer-b@v1")
