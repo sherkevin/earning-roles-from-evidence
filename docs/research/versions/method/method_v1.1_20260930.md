@@ -142,6 +142,12 @@ context-only diagnostic。零调用 qualification 见
 3. 通过 benchmark、baseline、independent live history 和确认 split 后，才选择一个 backbone/updater 开 A800 challenger。
 4. 所有真实 API、GPU、失败和 UNKNOWN 记录在 append-only raw/processed/summary 日志中；不回写历史 receipt。
 
+2026-10-05 implementation-status amendment：候选 `DelayedPolicyAdapter` 已在真实
+`FeatureContextualTrustPolicy` 上通过 7 格零调用资格。它把 `RoleEvidenceOffer` 的
+publication 与 later target feedback update 分开，并补充 assignment-level alternate-outcome
+拒绝、candidate/channel/namespace 绑定、容量与回滚；这只是方法接口的工程资格，不是
+最终 updater、live PIPE3 replay 或 scientific result，也不改变本节的实现顺序和未锁定项。
+
 ## 9. 对照标准
 
 方法审查使用 [`method_v1.2_20260930_eval.md`](../evaluation/method/method_v1.2_20260930_eval.md)。故事边界见 [`storyline_v1.1_20260928.md`](../storyline/storyline_v1.1_20260928.md)，可执行实验卡见 [`benchmark_baseline_v1.1_20260930.md`](../benchmark-baseline/benchmark_baseline_v1.1_20260930.md)。

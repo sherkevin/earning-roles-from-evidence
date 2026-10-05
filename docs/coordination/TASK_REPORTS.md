@@ -17,6 +17,13 @@ Goal 修改。
 
 ## Reports
 
+- [partial] 2026-10-05 delayed policy adapter qualification：复用真实
+  `FeatureContextualTrustPolicy` 与 `DelayedCreditLedger`，新增 publish/update 分离的
+  candidate adapter；公开 `RoleEvidenceOffer` 不改变策略 state，只有目标 selection 的
+  selected-only recipient channel 才能延迟更新，并补上 assignment-level alternate-outcome
+  拒绝、candidate/channel/namespace 绑定、容量与回滚。v3 为 7/7 `QUALIFIED_OFFLINE`，
+  12 项定向测试通过，0 API/0 GPU；这不是实时训练收益，也不冻结 baseline，见
+  [adapter report](task_reports/20261005_delayed_policy_adapter_qualification.md)。
 - [partial] 2026-10-05 C0 candidate parity hardening：独立复核后补上 arm namespace 唯一性、
   factory/config 绑定、1 MiB state cap、chosen-key/outcome/跨 arm feedback 错绑拒绝；v2
   schema mismatch 失败保留，v3 7/7 cases 通过，0 API/0 GPU，仍为 candidate-only，见
