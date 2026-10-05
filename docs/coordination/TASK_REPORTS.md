@@ -17,6 +17,11 @@ Goal 修改。
 
 ## Reports
 
+- [partial] 2026-10-05 C0 candidate parity preflight：在不改 active 七臂 manifest 的前提下，
+  对 `contextual_trust_linear`/RARE 复用 PIPE3 fixture 做 candidate-only preflight；两臂
+  public input digest 完全一致，独立 policy/outcome namespace 与 snapshot/restore 通过，
+  1/1 case、0 API/0 GPU，`baseline_frozen=false`。结果不是 live parity 或质量 label，下一步
+  必须让 chosen candidate 独立生成 delivery/action/adoption/later outcome，见 [C0 report](task_reports/20261005_c0_candidate_parity_preflight.md)。
 - [partial] 2026-10-05 A0/B0 closest adapter 与第二 root go/no-go：严格 ArtifactRole closest published
   判为 `NO-GO`，Meta-Team L2 只保留为需预注册信息边界的候选 adapter；PIPE3 保留 primary
   development candidate，PIPE2 因 seed fixture validity/authority/语义未闭合暂不作

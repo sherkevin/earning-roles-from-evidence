@@ -1,0 +1,131 @@
+{
+  "experiment_id": "n03_c0_candidate_parity_qualification_20261005_v1",
+  "qualification_status": "QUALIFIED_OFFLINE",
+  "cases": 1,
+  "passed": 1,
+  "failed": 0,
+  "input_digest_equal": true,
+  "independent_outcome_namespace": true,
+  "snapshot_restore_equal": true,
+  "policy_results": {
+    "contextual_trust_linear": {
+      "traces": [
+        {
+          "offer_id": "recipient_only-offer-0",
+          "input_digest": "5e99a1474718aad484d2d857668493453c0de52e4f335491a1501395964bed49",
+          "chosen_key": "agent-b@v1",
+          "probabilities": [
+            0.5,
+            0.5
+          ],
+          "propensity": 0.5,
+          "feedback": []
+        },
+        {
+          "offer_id": "recipient_only-offer-1",
+          "input_digest": "5451f9b368b3ad5e6931dc6d7892706c0a4c16941831becd16b27482fa51c77c",
+          "chosen_key": "agent-b@v1",
+          "probabilities": [
+            0.7310585786300049,
+            0.2689414213699951
+          ],
+          "propensity": 0.7310585786300049,
+          "feedback": [
+            {
+              "feedback_id": "f0",
+              "status": "eligible",
+              "changed": true
+            }
+          ]
+        }
+      ],
+      "outcomes": [
+        {
+          "policy_namespace": "contextual_trust_linear",
+          "offer_id": "recipient_only-offer-0",
+          "selected_key": "agent-b@v1",
+          "outcome_id": "contextual_trust_linear/recipient_only-offer-0/agent-b@v1",
+          "outcome_digest": "a940bb854143c31d7f4dc6d41db0331328c2706f0b02571bb77c84c67f25ee40"
+        },
+        {
+          "policy_namespace": "contextual_trust_linear",
+          "offer_id": "recipient_only-offer-1",
+          "selected_key": "agent-b@v1",
+          "outcome_id": "contextual_trust_linear/recipient_only-offer-1/agent-b@v1",
+          "outcome_digest": "c5df994f3c14dbd0398c4921c82e450174dab0b843d8915082ca503a77c41670"
+        }
+      ],
+      "updates": 1,
+      "state_digest": "a63d9607b1ace5a733f2df048ef4997d6704b3dd3b863c496876f64742d976ab",
+      "snapshot_equal": true
+    },
+    "RARE": {
+      "traces": [
+        {
+          "offer_id": "recipient_only-offer-0",
+          "input_digest": "5e99a1474718aad484d2d857668493453c0de52e4f335491a1501395964bed49",
+          "chosen_key": "agent-b@v1",
+          "probabilities": [
+            0.5,
+            0.5
+          ],
+          "propensity": 0.5,
+          "feedback": []
+        },
+        {
+          "offer_id": "recipient_only-offer-1",
+          "input_digest": "5451f9b368b3ad5e6931dc6d7892706c0a4c16941831becd16b27482fa51c77c",
+          "chosen_key": "agent-b@v1",
+          "probabilities": [
+            0.5305766310176361,
+            0.469423368982364
+          ],
+          "propensity": 0.5305766310176361,
+          "feedback": [
+            {
+              "feedback_id": "f0",
+              "status": "eligible",
+              "changed": true
+            }
+          ]
+        }
+      ],
+      "outcomes": [
+        {
+          "policy_namespace": "RARE",
+          "offer_id": "recipient_only-offer-0",
+          "selected_key": "agent-b@v1",
+          "outcome_id": "RARE/recipient_only-offer-0/agent-b@v1",
+          "outcome_digest": "c98ae21a52f4110388d8d3493767fbb6f124db86958794e51a56a0965506c5bf"
+        },
+        {
+          "policy_namespace": "RARE",
+          "offer_id": "recipient_only-offer-1",
+          "selected_key": "agent-b@v1",
+          "outcome_id": "RARE/recipient_only-offer-1/agent-b@v1",
+          "outcome_digest": "b21651cb5c155f2c54d0039bda9a7ca0504440b0b0e71f7601575cf71a72843f"
+        }
+      ],
+      "updates": 1,
+      "state_digest": "ab8ef10a2eb9b34ac1736cb9be2c77db6f290b7d01de30058dd28a64d28b7974",
+      "snapshot_equal": true
+    }
+  },
+  "stream_digests": {
+    "ordered_candidate_menu": "01e824699b18006f9c57ff318914e82ab47d1c615484b29aa0608b888e08d070",
+    "candidate_registry": "50e69a9bee6a9bf609568afe6f34413f2d10fcf5e19554a6072416be5e58ad87",
+    "public_phi": "47a55e45ff851d8d5f2c6f606e24f800b59ba6bb0c47108fec87b554ba63ec61",
+    "offer_stream": "2583ce89907e6807e090f307ae0672c076612a4b9ab4b948e13136c4b0e3c987",
+    "read_cut_decision": "a3c3f6f865d2ecbcf9f946a665ee4faa6ff6c1ee840258274131d7144d6c3d7d",
+    "arrival_schedule": "15fac83aaf0937511c794111815ba153dde426751ac306d190840aa9769d1877",
+    "rng_seed_schedule": "1c4bb1c929599e1d217f89d51a16c07d3d05ddc2e75908a747e0ce06d36366ad",
+    "propensity": "a731febe1d6304df913276b6613dc18d2dec31bfa679ae603e6606075bb40e0c",
+    "state_schema": "6dacb7a7c2ca8e6db8b5251e2d07a295d510be70ad06dd0673339cf1581f386c",
+    "state_init": "2aa38fe905762f6f93b4fe8ba1e39bb18e37166df6843a6eb8442502d44103f0"
+  },
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "baseline_frozen": false,
+  "finished_at_utc": "2026-10-05T03:36:15.945720+00:00"
+}
