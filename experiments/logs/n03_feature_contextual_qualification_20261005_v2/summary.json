@@ -1,0 +1,82 @@
+{
+  "experiment_id": "n03_feature_contextual_qualification_20261005_v2",
+  "qualification_status": "QUALIFIED_OFFLINE",
+  "cases": 6,
+  "passed": 6,
+  "failed": 0,
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "baseline_frozen": false,
+  "records": [
+    {
+      "case": "same_public_menu_features_and_base_scores",
+      "status": "PASS",
+      "candidate_menu_digest": "785e9060eda7c7fe791c2e85fa966c84916e8065832d9ad8f0c9a4c826947bef",
+      "base_scores_digest": "f29310de4c3ebf47f2b596ae85f92daedae7a426dd2e145ab2a1ebec019199e6",
+      "feature_digest": "263cbf000fba95ce1bd3f94c5d935355ccd96279c0571e88889aeb7db737e6e3",
+      "same_public_input": true
+    },
+    {
+      "case": "feature_mutation_changes_assignment_scores",
+      "status": "PASS",
+      "policies": {
+        "contextual_trust_linear": {
+          "learned_key": "agent-b@v1",
+          "original_feature_digest": "d17ecf2ea0bc746f324c07750a75dff51bd60ffd6c71dd1a5fd0e81c69f2efe9",
+          "swapped_feature_digest": "2b2cbf199ba6f8738b4c27709aaff69a7a169154f6bd0fb5c755554be3ffbc86",
+          "updates": 1
+        },
+        "RARE": {
+          "learned_key": "agent-b@v1",
+          "original_feature_digest": "d17ecf2ea0bc746f324c07750a75dff51bd60ffd6c71dd1a5fd0e81c69f2efe9",
+          "swapped_feature_digest": "2b2cbf199ba6f8738b4c27709aaff69a7a169154f6bd0fb5c755554be3ffbc86",
+          "updates": 1
+        }
+      }
+    },
+    {
+      "case": "context_only_control_ignores_feature_mutation",
+      "status": "PASS",
+      "feature_mutation_ignored_by_context_only": true
+    },
+    {
+      "case": "base_scores_are_consumed_by_both_policies",
+      "status": "PASS",
+      "policies": {
+        "contextual_trust_linear": {
+          "low_probability_b": 0.5,
+          "high_probability_b": 0.8807970779778823
+        },
+        "RARE": {
+          "low_probability_b": 0.5,
+          "high_probability_b": 0.8807970779778823
+        }
+      },
+      "shared_base_score_term": true
+    },
+    {
+      "case": "snapshot_restore_and_correction_boundary",
+      "status": "PASS",
+      "policies": {
+        "contextual_trust_linear": {
+          "updates": 1,
+          "restore_exact": true,
+          "correction_updates": false
+        },
+        "RARE": {
+          "updates": 2,
+          "restore_exact": true,
+          "correction_updates": true
+        }
+      },
+      "correction_behavior_is_explicit": true
+    },
+    {
+      "case": "bounded_feature_contract_fail_closed",
+      "status": "PASS",
+      "invalid_feature_status": "rejected"
+    }
+  ],
+  "finished_at_utc": "2026-10-05T03:17:26.327314+00:00"
+}

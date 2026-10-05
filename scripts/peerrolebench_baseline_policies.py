@@ -513,6 +513,172 @@ class ContextualTrustPolicy(_BetaTrustPolicy):
         return self._update_key(self._key(selection, selection.chosen), feedback.label)
 
 
+class FeatureContextualTrustPolicy(BaselinePolicy):
+    """Feature-aware contextual trust comparator using diagonal ridge RLS.
+
+    This is a deliberately ordinary feature-aware baseline.  It consumes the
+    same fixed candidate representation that RARE receives, but it has no
+    protected anchor, correction queue, reservoir, or event-time replay logic.
+    For an eligible selected-only recipient judgment ``y`` and selected
+    feature vector ``x``, it performs the diagonal ridge update
+
+    ``A_i <- A_i + x_i^2`` and ``b_i <- b_i + x_i y``;
+    ``theta_i = b_i / A_i``.
+
+    Candidate utilities are the supplied base score plus ``trust_scale`` times
+    ``x @ theta``.  The policy binds the encoder and feature-schema versions on
+    its first decision (or checks constructor-provided expected versions) and
+    requires one finite vector of a fixed dimension for every menu candidate.
+    Unknown, ineligible, duplicate, and correction feedback follows the common
+    boundary and does not update this comparator.
+    """
+
+    name = "contextual_trust_linear"
+    accepted_sources = frozenset({"recipient_judgment"})
+
+    def __init__(
+        self,
+        *,
+        temperature: float = 1.0,
+        exploration: float = 0.0,
+        dimension: int = 64,
+        ridge: float = 1.0,
+        trust_scale: float = 2.0,
+        encoder_version: str | None = None,
+        feature_schema: str | None = None,
+    ) -> None:
+        super().__init__(temperature=temperature, exploration=exploration)
+        if isinstance(dimension, bool) or not isinstance(dimension, int) or dimension <= 0:
+            raise ValueError("dimension must be a positive integer")
+        if not math.isfinite(ridge) or ridge <= 0.0:
+            raise ValueError("ridge must be positive and finite")
+        if not math.isfinite(trust_scale) or trust_scale <= 0.0:
+            raise ValueError("trust_scale must be positive and finite")
+        for name, value in (("encoder_version", encoder_version), ("feature_schema", feature_schema)):
+            if value is not None and not str(value):
+                raise ValueError(f"{name} must be non-empty when provided")
+        self.dimension = int(dimension)
+        self.ridge = float(ridge)
+        self.trust_scale = float(trust_scale)
+        self.encoder_version = None if encoder_version is None else str(encoder_version)
+        self.feature_schema = None if feature_schema is None else str(feature_schema)
+        self._a_diag = np.full(self.dimension, self.ridge, dtype=np.float64)
+        self._b = np.zeros(self.dimension, dtype=np.float64)
+        self._n_updates = 0
+
+    @staticmethod
+    def _feature_map(selection: Selection) -> dict[str, tuple[float, ...]]:
+        values = {
+            str(key): tuple(float(value) for value in vector)
+            for key, vector in selection.captured_features
+        }
+        if len(values) != len(selection.captured_features):
+            raise ValueError("captured features contain duplicate candidate keys")
+        return values
+
+    def _validate_features(self, selection: Selection) -> dict[str, tuple[float, ...]]:
+        if self.encoder_version is None:
+            self.encoder_version = selection.encoder_version
+        elif selection.encoder_version != self.encoder_version:
+            raise ValueError("feature encoder version does not match policy")
+        if self.feature_schema is None:
+            self.feature_schema = selection.feature_schema
+        elif selection.feature_schema != self.feature_schema:
+            raise ValueError("feature schema does not match policy")
+        if not selection.encoder_version or not selection.feature_schema:
+            raise ValueError("feature encoder and schema versions are required")
+        features = self._feature_map(selection)
+        expected = {candidate.key for candidate in selection.candidates}
+        if set(features) != expected or len(features) != len(expected):
+            raise ValueError("feature-aware policy requires one vector for every menu candidate")
+        for vector in features.values():
+            if len(vector) != self.dimension or not all(math.isfinite(value) for value in vector):
+                raise ValueError("feature vectors must be finite with the configured dimension")
+            # RARE's public representation contract bounds every candidate
+            # vector.  The strong comparator must consume exactly that same
+            # representation; otherwise a feature-norm difference can be
+            # mistaken for an update-rule difference.
+            if math.sqrt(sum(value * value for value in vector)) > 1.0 + 1e-9:
+                raise ValueError("feature vectors must have L2 norm <= 1")
+        return features
+
+    def ingest_selection(self, selection: Selection) -> None:
+        self._validate_features(selection)
+        super().ingest_selection(selection)
+
+    def _scores(self, selection: Selection, base_scores: np.ndarray) -> np.ndarray:
+        features = self._validate_features(selection)
+        theta = self._b / self._a_diag
+        return np.asarray(
+            [float(base) + self.trust_scale * float(np.dot(features[candidate.key], theta))
+             for candidate, base in zip(selection.candidates, base_scores)],
+            dtype=np.float64,
+        )
+
+    def _apply_feedback(self, selection: Selection, feedback: Feedback) -> bool:
+        features = self._validate_features(selection)
+        vector = np.asarray(features[selection.chosen.key], dtype=np.float64)
+        label = float(feedback.label)
+        self._a_diag += vector * vector
+        self._b += vector * label
+        self._n_updates += 1
+        return True
+
+    def _state_snapshot(self) -> dict[str, Any]:
+        return {
+            "dimension": self.dimension,
+            "ridge": self.ridge,
+            "trust_scale": self.trust_scale,
+            "encoder_version": self.encoder_version,
+            "feature_schema": self.feature_schema,
+            "a_diag": self._a_diag.tolist(),
+            "b": self._b.tolist(),
+            "n_updates": self._n_updates,
+        }
+
+    def _restore_state(self, state: Mapping[str, Any]) -> None:
+        if not isinstance(state, Mapping):
+            raise ValueError("feature contextual trust state must be a mapping")
+        dimension = state.get("dimension", self.dimension)
+        if isinstance(dimension, bool) or not isinstance(dimension, int) or dimension <= 0:
+            raise ValueError("feature contextual trust state dimension is invalid")
+        ridge = float(state.get("ridge", self.ridge))
+        trust_scale = float(state.get("trust_scale", self.trust_scale))
+        if not math.isfinite(ridge) or ridge <= 0.0:
+            raise ValueError("feature contextual trust state ridge is invalid")
+        if not math.isfinite(trust_scale) or trust_scale <= 0.0:
+            raise ValueError("feature contextual trust state trust_scale is invalid")
+        encoder = state.get("encoder_version")
+        schema = state.get("feature_schema")
+        if encoder is not None and not str(encoder):
+            raise ValueError("feature contextual trust state encoder version is invalid")
+        if schema is not None and not str(schema):
+            raise ValueError("feature contextual trust state schema is invalid")
+        a_diag = np.asarray(state.get("a_diag", []), dtype=np.float64)
+        b = np.asarray(state.get("b", []), dtype=np.float64)
+        if a_diag.shape != (dimension,) or b.shape != (dimension,):
+            raise ValueError("feature contextual trust state vectors have wrong dimension")
+        if not np.all(np.isfinite(a_diag)) or not np.all(a_diag > 0.0):
+            raise ValueError("feature contextual trust state diagonal is invalid")
+        if not np.all(np.isfinite(b)):
+            raise ValueError("feature contextual trust state target vector is invalid")
+        updates = state.get("n_updates", 0)
+        if isinstance(updates, bool) or not isinstance(updates, int) or updates < 0:
+            raise ValueError("feature contextual trust state update count is invalid")
+        if self.encoder_version is not None and encoder is not None and str(encoder) != self.encoder_version:
+            raise ValueError("restored encoder version does not match policy")
+        if self.feature_schema is not None and schema is not None and str(schema) != self.feature_schema:
+            raise ValueError("restored feature schema does not match policy")
+        self.dimension = int(dimension)
+        self.ridge = ridge
+        self.trust_scale = trust_scale
+        self.encoder_version = None if encoder is None else str(encoder)
+        self.feature_schema = None if schema is None else str(schema)
+        self._a_diag = a_diag.copy()
+        self._b = b.copy()
+        self._n_updates = int(updates)
+
+
 class PooledControllerPolicy(_BetaTrustPolicy):
     """Shared candidate history without context or selector partitioning."""
 
@@ -580,12 +746,11 @@ class RarePolicy(BaselinePolicy):
         super().ingest_selection(selection)
 
     def _scores(self, selection: Selection, base_scores: np.ndarray) -> np.ndarray:
-        del base_scores
         features = self._validate_rare_features(selection)
         values = []
         for candidate in selection.candidates:
             vector = features.get(candidate.key)
-            values.append(1.0 / (1.0 + math.exp(-max(-50.0, min(50.0,
+            values.append(float(base_scores[len(values)]) + 1.0 / (1.0 + math.exp(-max(-50.0, min(50.0,
                 sum(x * w for x, w in zip(vector, self.state.theta)))))))
         return np.asarray(values, dtype=np.float64)
 
@@ -628,6 +793,7 @@ def policy_from_name(name: str, *, temperature: float = 1.0,
         "raw_acceptance": RawAcceptancePolicy,
         "terminal_only": TerminalOnlyPolicy,
         "contextual_trust": ContextualTrustPolicy,
+        "contextual_trust_linear": FeatureContextualTrustPolicy,
         "pooled_controller": PooledControllerPolicy,
         "RARE": RarePolicy,
     }
@@ -644,6 +810,7 @@ __all__ = [
     "BaselinePolicy",
     "CandidateRef",
     "ContextualTrustPolicy",
+    "FeatureContextualTrustPolicy",
     "Feedback",
     "NoUpdatePolicy",
     "PooledControllerPolicy",

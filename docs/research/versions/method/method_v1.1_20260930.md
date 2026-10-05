@@ -115,6 +115,22 @@ snapshot()/restore() -> versioned state
 
 训练方式再正交比较 RLS、online logistic/SGD、periodic refit 与候选增量 updater。主结果必须报告 assignment-level future quality/regret、完整成本、UNKNOWN 分母和 95% interval；源 producer score 改善不能替代闭环结果。
 
+### 6.1 2026-10-05 same-information comparator amendment
+
+静态审计发现原有 `contextual_trust` 只使用 context×candidate 的 Beta 统计，而 RARE
+使用 64 维 `captured_features`，且 RARE 曾丢弃 `base_scores`。因此原有 contextual
+不能作为 strongest same-information control。现新增一个**候选** comparator
+`contextual_trust_linear`：固定使用 `hash64-v1`、64 维 bounded `phi`、同一 candidate
+menu、base-score 项、selected-only `recipient_judgment`、propensity、arrival 和成本
+合同，采用普通 diagonal ridge/RLS 更新；它不使用 RARE 的 protected anchor、fast
+window、correction queue 或 responsibility gate。原 Beta `contextual_trust` 保留为
+context-only diagnostic。零调用 qualification 见
+[`20261005_feature_contextual_baseline_qualification.md`](../../../coordination/task_reports/20261005_feature_contextual_baseline_qualification.md)。
+
+这只关闭输入合同的工程缺口，不锁定最终 updater，也不改变七臂 active manifest。只有
+`contextual_trust_linear` 通过 canonical manifest、独立 namespace 和真实 live parity
+后，才可把它写入正式 baseline matrix；在此之前 baseline 仍是 `NOT_FROZEN`。
+
 ## 7. 当前仍未锁定的实现项
 
 最终 backbone、表示维度、updater、遗忘保护阈值、漂移窗口、assignment policy、evidence capacity/淘汰和跨 context 泛化仍未锁定。它们必须由 benchmark qualification、离线数学检查和强 baseline 的真实瓶颈共同决定；本文件不把 Laya、AnyJev 或 Qwen 直接指定为最终答案。

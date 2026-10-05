@@ -10,9 +10,11 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from peerrolebench_baseline_policies import (  # noqa: E402
     CandidateRef,
     ContextualTrustPolicy,
+    FeatureContextualTrustPolicy,
     Feedback,
     NoUpdatePolicy,
     PooledControllerPolicy,
+    RarePolicy,
     RawAcceptancePolicy,
     TerminalOnlyPolicy,
     UniformPolicy,
@@ -28,6 +30,26 @@ def choose(policy, event_id="e0", context_key="ctx", seed=7, base=(0.2, 0.8)):
         candidates=(CandidateRef("a", "v1"), CandidateRef("b", "v1")),
         base_scores=base,
         rng=np.random.default_rng(seed),
+    )
+
+
+FEATURES_A = {
+    "a@v1": (1.0, 0.0),
+    "b@v1": (0.0, 1.0),
+}
+
+
+def choose_feature(policy, event_id="e0", features=None, seed=7, base=(0.0, 0.0)):
+    return policy.choose(
+        event_id=event_id,
+        context_key="ctx",
+        selector_id="selector-1",
+        candidates=(CandidateRef("a", "v1"), CandidateRef("b", "v1")),
+        base_scores=base,
+        rng=np.random.default_rng(seed),
+        encoder_version="hash64-v1",
+        feature_schema="hash64-v1-public",
+        captured_features=FEATURES_A if features is None else features,
     )
 
 
@@ -181,3 +203,75 @@ def test_non_rare_comparators_treat_corrections_as_unknown_no_update():
         "f0-correction", "e0", "recipient_judgment", 0.0, 2.0, supersedes="f0",
     )) is False
     assert policy.updates == 1
+
+
+def test_feature_contextual_uses_same_public_features_and_old_context_control_does_not():
+    linear = FeatureContextualTrustPolicy(dimension=2)
+    context_only = ContextualTrustPolicy()
+    first = choose_feature(linear)
+    choose_feature(context_only, features=FEATURES_A)
+    changed = linear.observe_feedback(Feedback("f0", first.event_id, "recipient_judgment", 1.0, 1.0))
+    assert changed is True
+    learned_key = first.chosen.key
+    other_key = next(candidate.key for candidate in first.candidates if candidate.key != learned_key)
+
+    after = choose_feature(linear, event_id="e1", features=FEATURES_A, seed=3)
+    swapped = choose_feature(linear, event_id="e2", features={
+        "a@v1": FEATURES_A[other_key], "b@v1": FEATURES_A[learned_key],
+    }, seed=3)
+    after_by_key = dict(zip((candidate.key for candidate in after.candidates), after.probabilities))
+    swapped_by_key = dict(zip((candidate.key for candidate in swapped.candidates), swapped.probabilities))
+    assert after_by_key[learned_key] > after_by_key[other_key]
+    assert swapped_by_key[learned_key] > swapped_by_key[other_key]
+
+    context_a = choose(ContextualTrustPolicy(), event_id="ctx-a", base=(0.3, 0.3), seed=3)
+    context_b = ContextualTrustPolicy().choose(
+        event_id="ctx-a", context_key="ctx", selector_id="selector-1",
+        candidates=context_a.candidates, base_scores=(0.3, 0.3), rng=np.random.default_rng(3),
+        encoder_version="hash64-v1", feature_schema="hash64-v1-public",
+        captured_features={"a@v1": (0.0, 1.0), "b@v1": (1.0, 0.0)},
+    )
+    assert context_a.probabilities == pytest.approx(context_b.probabilities)
+
+
+def test_feature_contextual_requires_exact_bounded_feature_contract():
+    policy = FeatureContextualTrustPolicy(dimension=2)
+    with pytest.raises(ValueError, match="L2 norm"):
+        choose_feature(policy, features={"a@v1": (1.0, 1.0), "b@v1": (0.0, 1.0)})
+    with pytest.raises(ValueError, match="configured dimension"):
+        choose_feature(policy, features={"a@v1": (1.0,), "b@v1": (0.0,)})
+
+
+def test_feature_contextual_unknown_duplicate_and_correction_do_not_update():
+    policy = FeatureContextualTrustPolicy(dimension=2)
+    first = choose_feature(policy)
+    assert policy.observe_feedback(Feedback("pending", first.event_id, "recipient_judgment", 1.0, 1.0,
+                                             disposition="pending")) is False
+    assert policy.observe_feedback(Feedback("f0", first.event_id, "recipient_judgment", 1.0, 2.0)) is True
+    assert policy.observe_feedback(Feedback("f0-correction", first.event_id, "recipient_judgment", 0.0, 3.0,
+                                             supersedes="f0")) is False
+    assert policy.observe_feedback(Feedback("f0-duplicate", first.event_id, "recipient_judgment", 0.0, 4.0)) is False
+    assert policy.updates == 1
+    assert policy.snapshot()["state"]["n_updates"] == 1
+
+
+def test_feature_contextual_snapshot_restore_preserves_next_decision():
+    policy = FeatureContextualTrustPolicy(dimension=2)
+    first = choose_feature(policy)
+    assert policy.observe_feedback(Feedback("f0", first.event_id, "recipient_judgment", 1.0, 1.0)) is True
+    restored = FeatureContextualTrustPolicy.restore(policy.snapshot())
+    left = choose_feature(policy, event_id="e1", seed=11)
+    right = choose_feature(restored, event_id="e1", seed=11)
+    assert left.probabilities == pytest.approx(right.probabilities)
+    assert restored.snapshot()["state"] == policy.snapshot()["state"]
+
+
+def test_rare_and_feature_contextual_share_base_score_input():
+    rare = RarePolicy(dimension=2, exploration=0.0)
+    linear = FeatureContextualTrustPolicy(dimension=2)
+    low = choose_feature(rare, base=(0.0, 0.0), seed=3)
+    high = choose_feature(rare, event_id="e1", base=(0.0, 2.0), seed=3)
+    assert high.probabilities[1] > low.probabilities[1]
+    linear_low = choose_feature(linear, base=(0.0, 0.0), seed=3)
+    linear_high = choose_feature(linear, event_id="e1", base=(0.0, 2.0), seed=3)
+    assert linear_high.probabilities[1] > linear_low.probabilities[1]

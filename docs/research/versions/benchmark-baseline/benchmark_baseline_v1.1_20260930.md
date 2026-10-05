@@ -101,6 +101,19 @@ delivery→recipient judgment/use/repair→arrival/correction 事件，profile s
 
 RLS、online logistic/SGD、periodic refit 和候选增量 updater 是训练更新比较，不能被重复计入选择 policy，也不能称成 RARE 创新。所有选择 policy 的反馈输入合同必须在实验卡中逐项写明：`raw_acceptance` 只能读合法 recipient accept/reject；`terminal_only` 只能读独立 final outcome；`contextual_trust` 与 RARE 读取相同的 eligible/UNKNOWN、selected-only、propensity、arrival order 和延迟字段，但使用自己的更新规则。任何 policy 都不能把 UNKNOWN 当负例或读取另一个 policy 的 state。
 
+### 2026-10-05 strongest-control qualification amendment
+
+代码审计发现原 `contextual_trust` 并未读取 RARE 使用的 64 维公共 `phi`，且 RARE 的
+utility 丢弃了 `base_scores`；所以它不能单独充当 B1 的 strongest same-information
+control。新增候选 `contextual_trust_linear` 以同一 `hash64-v1`、64 维 bounded feature、
+menu、read cut、arrival、selected-only judgment、base-score、propensity、state cap 和
+成本合同运行，使用普通 feature-aware diagonal RLS；原 Beta arm 仍保留为 context-only
+diagnostic。零调用 6-case qualification 通过，但 `baseline_frozen=false`，尚未进入七臂
+active manifest，也没有 live result。详见
+[`feature contextual qualification`](../../../coordination/task_reports/20261005_feature_contextual_baseline_qualification.md)
+及其 raw/summary receipt。下一门仍是 canonical manifest parity、独立 namespace/outcome
+生成和 A0/B0 go/no-go；不得把离线 qualification 解读为 RARE 优势。
+
 ## 4. 实验问题与指标
 
 - **RQ1（主轨信息价值）**：situated judgment 能否预测独立 producer contract/later-use 结果，超出 raw acceptance 与 terminal-only？

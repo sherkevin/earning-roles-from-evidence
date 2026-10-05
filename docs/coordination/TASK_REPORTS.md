@@ -17,6 +17,13 @@ Goal 修改。
 
 ## Reports
 
+- [partial] 2026-10-05 feature-aware contextual baseline qualification：修复 r5.66 暴露的
+  strongest same-information 缺口，新增 `contextual_trust_linear` 普通 diagonal RLS
+  comparator，并让 RARE 与其共享 64-d `hash64-v1` bounded feature、menu 和 base-score
+  输入；6/6 zero-call cases、80 项相关回归通过，0 API/0 GPU，`baseline_frozen=false`。
+  原 Beta `contextual_trust` 保留为 context-only diagnostic；canonical live parity、
+  closest/second root、independent histories 和 scientific efficacy 仍开放，见
+  [qualification report](task_reports/20261005_feature_contextual_baseline_qualification.md)。
 - [blocked_by_evidence] 2026-10-05 same-information baseline gap audit：静态复核确认 `RarePolicy` 使用 64-d `captured_features` 而 `ContextualTrustPolicy`/`PooledControllerPolicy` 只使用 context/candidate Beta，且 RARE 丢弃 `base_scores`；这违反 active method 与 benchmark 要求的 same-`φ` strongest control。尚未修改 active method/arm 名单，也未启动 API/GPU；建议先确认并实现版本化 `contextual_trust_linear_v1` 零调用 comparator，再进入 bounded PIPE3 live parity，见 [gap audit](task_reports/20261005_same_information_baseline_gap_audit.md)。
 - [partial] 2026-10-05 canonical runtime stream builder qualification：新增 `build_runtime_stream_values`，从实际 `MatrixOffer`/arrival schedule/registry 自动投影十项公开 stream，并在 runner preflight 前完成 digest binding；v8 receipt 17/17 通过，七臂 synthetic preflight 各选择2次、fixture updates=3，runtime mutation 与14个 manifest mutation 全部 fail-closed，32项定向回归通过，0 API/0 GPU。它仍只关闭 manifest-to-runtime 工程门，closest published、第二 root、independent live histories、same-information live parity 和 scientific readiness 仍开放，见 [builder report](task_reports/20261005_canonical_runtime_stream_builder_qualification.md)。
 - [partial] 2026-10-04 canonical manifest runtime-digest binding qualification：`validate_runtime_binding` 与 `PolicyMatrixRunner` preflight 绑定 root/registry/schedule/RNG/stream digest；clean v6 receipt 17/17（含 runtime mutation）通过，46 项回归通过，0 API/0 GPU。当前 `stream_values` 仍由 synthetic caller 提供，尚未从真实 offers/三类 adapter 自动构造，科学 baseline 继续未冻结，见 [runtime binding report](task_reports/20261004_canonical_manifest_runtime_binding_qualification.md)。

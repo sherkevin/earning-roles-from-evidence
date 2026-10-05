@@ -125,6 +125,15 @@ RLS、online logistic/SGD、periodic refit 和其他 updater 是训练更新 com
 - 任务泄漏、root 非独立、隔离失败、baseline 不公平、UNKNOWN 被当负例、没有独立 confirmation、没有失败分母、没有完整成本或结果看后改变标准时，不得写主结果。
 - `RARE` 未超过 strong contextual trust，或未达到质量—成本/实时性/稳定性门槛时，停止 A800 和更大规模 API，保留失败证据。
 
+### 2026-10-05 parity amendment
+
+本标准的 `strong same-information` 条件要求 comparator 与 RARE 读取同一公共表示。原
+`contextual_trust` 只使用 context×candidate Beta，不能满足这一条件；新增的
+`contextual_trust_linear` 仅通过 CPU zero-call feature/base-score qualification，尚未
+通过 canonical live parity，因此 B1 仍为 `OPEN`，baseline 仍为 `NOT_FROZEN`。在它进入
+active manifest、独立 history/outcome 和成本合同之前，不得启动正式 efficacy API/A800，
+也不得以原 Beta arm 的结果代替 strongest control。
+
 **本次审计结论（2026-09-30）**：benchmark 选型、baseline root-runner parity、实验 cell freeze、closest published adapter、数值精度门和科学结果仍为 `NOT_READY`/`OPEN`。七个 arm 已通过 v9 零调用 matrix qualification，RARE、raw channel 和 Meta-Team-L2-public profile schema/fixture-builder/source-replay boundary 也已通过零调用子门；offer/attestation 及 next-selection binding 已接入一个 hand-authored `selection→task_start` fixture runner，并验证 native `PeerRoleLedger.task_start` 写入；新增的严格 versioned/native selection-view adapter 还验证了 candidate version、菜单顺序、chosen index、task index 和 selected-at 时间的显式保留及未知版本/菜单重排拒绝。typed projection→public feedback row→`AssignmentEvidenceOffer` 的严格序列化与 UNKNOWN event-time 保留也已通过零调用子门；source-bound adapter 还把 canonical ledger binding、v4 responsibility lineage 和 frozen arrival schedule 放在 offer sealing 之前，但这些仍只验证状态机、ledger 接缝、身份映射、公开信息投影与拒绝边界。新增的 generator seam 只资格化 deterministic public-only fixture、digest/成本 receipt 和 UNKNOWN/private 输入拒绝，不是真实 profile generator。随后一个 root-specific 的两控制 CPU composition 已把实际 v2 scorer/action/outcome 输出接到 eligibility、source-bound offer、profile/UNKNOWN、isolated read、selection 和 native task_start；它仍是单 structural root、deterministic profile 和零调用工程资格。它没有关闭统一 live history、真实 profile 生成质量、assignment/next-episode 的科学效果、可公平执行的 closest adapter、独立 root/stream、完整成本或 policy effect；离线 offer/attestation 与该 composition 不能替代这些门。冻结 v6 真实 ledger 的 source-bound 回放还证明 recipient-owned repair 会保持 UNKNOWN，不会被转成 producer label；已有的真实链只证明责任 gate 能阻止不合格更新。Goal 不降级，下一步先资格化真实 public-only profile generator，再决定是否进入一条新的有界真实 episode，随后才考虑完整 cell manifest 和 A800。
 
 2026-10-02 update：parity gate 进一步要求每个 arm 的 accepted feedback source 与实际 update
