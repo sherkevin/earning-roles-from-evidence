@@ -55,4 +55,5 @@ utility(c) = prior(c) + support(c) - cost/risk + exploration(c)
 这条问题必须进入方法和 benchmark 验收标准。当前工程资格只证明了延迟更新接缝和
 固定特征合同可运行，不能证明 few-shot 泛化、任务相似度有效或选择收益。未完成上述
 离线设计和匹配 baseline 之前，不启动新的 API/A800 科学实验，也不把 RLS 或固定
-hash 特征写成最终创新。
+hash 特征写成最终创新。一个可执行但尚未接受的候选实现已记录在
+[`few_shot_delayed_role_selector_v0.1`](../../research/candidates/few_shot_delayed_role_selector_v0.1_20261005.md)。
