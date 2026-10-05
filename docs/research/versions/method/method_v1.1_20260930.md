@@ -188,6 +188,18 @@ zero-call composition 通过。它只关闭 canonical composition 缺少 feature
 不是 learned representation、独立 live history、质量或实时成本证据；详见
 [`feature composition report`](../../../coordination/task_reports/20261005_pipe3_feature_composition_qualification.md)。
 
+### 6.2 2026-10-05 profile/evidence fusion self-audit
+
+对候选“文字 profile + episodic evidence + delayed residual head”的方法审查没有通过
+当前有效性/创新性门：v0.1 可能重复计算同一批 `y^J`、没有完全固定 `y^L` 的输入快照，
+也没有证明 embedding 相似度等价于下游效用。修订候选 v0.2 将 profile snapshot、其后
+的 evidence delta 和 later-outcome residual head 分成不重叠的时间区间，并要求
+profile permutation、task-only、identity-prior、topic-matched 和 component-isolation
+controls；详见 [`fusion self-audit`](../../../coordination/task_reports/20261005_fusion_method_self_audit.md)
+和 [`candidate v0.2`](../../candidates/few_shot_delayed_role_selector_v0.2_20261005.md)。
+这只是候选修正，不锁定最终方法、backbone 或创新 claim；在 CPU temporal gate 通过前
+不启动新的 API/A800 efficacy 流。
+
 ## 7. 当前仍未锁定的实现项
 
 最终 backbone、表示维度、任务检索器、updater、遗忘保护阈值、漂移窗口、assignment policy、

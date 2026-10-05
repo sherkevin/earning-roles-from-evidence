@@ -17,6 +17,14 @@ Goal 修改。
 
 ## Reports
 
+- [blocked_by_evidence] 2026-10-05 fusion method self-audit：对“profile prior + episodic
+  evidence + delayed residual”按 ER-G2、方法评价和 AAMAS 反驳门复核；可实现性 7.0/10，
+  标签有效性 4.0、任务泛化 4.5、可识别性 3.5、创新性 3.5，当前方法门不通过。主要问题
+  是同一 evidence 重复进入 profile/prototype、`y^J`/`y^L` 快照未隔离、选择偏差和融合
+  权重未冻结。修订候选 v0.2 分开 profile snapshot、post-cut evidence delta 和 later
+  residual head，并新增 provenance、permutation、topic/identity controls；Goal 不变，
+  未通过 CPU temporal gate 前不启动 API/A800，见 [self-audit](task_reports/20261005_fusion_method_self_audit.md)。
+
 - [partial] 2026-10-05 embedding profile debate：用户提出将 peer judgment 聚合成 Agent
   画像并用 task/profile embedding 匹配；经 primary-source 复核，FlyRoute 已有 success-store/
   profile distillation/routing，AgentNet 已有 capability-vector similarity，DyTopo 已有

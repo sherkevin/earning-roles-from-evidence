@@ -115,6 +115,14 @@ query 产生后的 judgment、later outcome、terminal score 或其他 policy st
 表示或候选检索。没有跨 root/时间外推证据时，结果只能标成 in-distribution online
 adaptation，不能写成任务泛化。
 
+### D4. 融合组件的可识别性
+
+profile、episodic memory 和 delayed head 不能使用同一时间范围的同一标签后再任意相加。
+实验 manifest 必须封存各自的 cutoff、输入 digest、标签类型和更新事件，并运行
+profile-only、memory-only、head-only、full fusion、RLS/SGD、permutation 和 identity/topic
+controls。若 full fusion 只在随机切分、未来证据泄漏或调参后结果上占优，不能声称融合
+机制改善了任务泛化。
+
 ### D2. 数值门和结果 truth table
 
 执行前必须冻结 `delta_information`、`delta_quality`、`delta_cost`、`tau_update_p95`、`rho_unknown`、允许的 forgetting/recovery window 以及 power/precision 计算。没有数值门时只能报告 exploratory，不能用聚合或换指标提高结论等级。

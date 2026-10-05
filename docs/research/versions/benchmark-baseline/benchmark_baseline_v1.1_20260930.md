@@ -155,6 +155,15 @@ API/A800；完整理由与证据见
 检索器/相似度/`K`/时间衰减必须在实验卡中预注册；later outcome 不得出现在 query 的
 表示或检索候选中。该实验门尚未通过，不能用当前固定特征 RLS 的零调用资格替代。
 
+### 4.2 2026-10-05 融合组件可识别性门
+
+若 active candidate 同时包含 profile embedding、evidence prototype 和 delayed head，
+每个 cell 必须写明 profile cut、delta cut、later-outcome cut、state digest 和 provenance
+ledger。主矩阵至少包含 profile-only、prototype-only、head-only、full fusion、no-memory、
+strong RLS/SGD，以及 profile/prototype permutation、task-only 和 identity-prior controls。
+组件必须使用不重叠的信息或明确标注重复；否则不能解释融合收益，也不能把组合本身写成
+创新。所有权重和刷新/容量规则在 development split 封存。
+
 主结果按独立 stream 汇总，不把同一 stream 的多个 episode 当独立样本。稳定性报告旧 root holdout 的峰值/平均下降和恢复窗口；时效性报告 drift 后响应窗口；成本包括 producer、recipient、judge、通信、重试、返工、scorer 和 replay。
 
 ## 5. 实验顺序与停止规则

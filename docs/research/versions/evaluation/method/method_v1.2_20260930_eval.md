@@ -55,6 +55,16 @@ Role evidence offer 必须与 policy feedback offer 分离；native `evidence_id
 单独通过该门。没有这些结果时，最多声称“在线候选分数更新”，不能声称 few-shot
 任务泛化或跨任务角色学习。
 
+### F.2 融合方法的可识别性硬门
+
+若方法同时使用 profile、episodic memory 和 online head，必须为每条输入记录 information
+cut、source event、profile version、memory delta version 和 head state digest。profile
+不得和当前 delta 重复包含同一 evidence；`y^J` 与 `y^L` 必须分别进入预注册的更新路径。
+必须有 profile-only、memory-only、head-only、full fusion、no-memory、RLS/SGD 以及
+profile/prototype permutation 对照。融合权重、刷新周期、Top-K、更新步长和 reservoir
+规则只能在 development split 冻结，不能按 confirmation 结果回调。否则无法把收益归因
+到方法机制，方法门不通过。
+
 ## G. 反驳与停止
 
 以下任一情况时方法主张不通过：
