@@ -17,6 +17,8 @@ Goal 修改。
 
 ## Reports
 
+- [blocked_by_evidence] 2026-10-05 few-shot task generalization gap：确认当前在线 RLS 只更新固定特征，尚未执行历史任务相似度检索；将任务记忆、相似任务支持度、严格 read-cut、few-shot/任务族切分、泛化与遗忘指标列为方法和 benchmark 的必需科学门。延迟 policy adapter 可作为记忆写入/回放接缝，但尚无 few-shot 泛化证据，见 [gap report](task_reports/20261005_few_shot_task_generalization_gap.md)。
+
 - [partial] 2026-10-05 六份研究主文档质量审计：核对唯一 active registry，逐项评价故事线/方法/benchmark+baseline 与对应三份评价标准的结构、可实现性、证据边界和完备性；确认文档治理约 8/10，但科学 readiness 仍未通过。补齐方法符号到 PIPE3 case 的最小实例表，收敛 `contextual_trust_linear` 与 context-only diagnostic 的 baseline 名称歧义，并记录 novelty table、machine-checkable gate matrix、冻结 benchmark 与 live evidence 的开放项，见 [audit report](task_reports/20261005_six_research_documents_quality_audit.md)。
 - [partial] 2026-10-05 PIPE3 feature-aware two-stage composition qualification：将
   `contextual_trust_linear` 接入既有 canonical `preview→assignment→commit`，source/target

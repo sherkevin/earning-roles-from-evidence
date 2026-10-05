@@ -39,6 +39,22 @@ Role evidence offer 必须与 policy feedback offer 分离；native `evidence_id
 
 主 estimand 是 assignment-level future quality/regret 或 team quality–complete-cost utility，而不是 source producer score 自身。使用独立 streams/root split、selected-only propensity、missing-label/UNKNOWN 分母、judge reliability/calibration 和 95% interval。四格中的公开证据与持久更新必须能分开估计，confirmation split 的 updater、阈值、词表和停止规则必须在看到结果前封存。
 
+## F.1 Few-shot 任务泛化硬门
+
+如果论文声称系统能把历史交接经验迁移到新任务，必须显式证明“相似任务支持”而不是
+仅仅证明候选累计次数增加。合格实现需要：
+
+- 在 query read cut 前封存可复现的任务/角色表示和相似度版本；
+- 只从过去可见的 edge-local evidence 检索 support，禁止当前或 later outcome 泄漏；
+- 报告 0/1/K-shot、leave-one-root-out、时间切分、角色/候选版本漂移和组合漂移；
+- 与 no-memory、uniform、strong same-information linear/RLS、最近邻/加权检索和主候选
+  在同一菜单、propensity、成本和 history visibility 下比较；
+- 报告检索延迟、记忆容量、跨 root 质量/regret、校准、旧任务遗忘和 UNKNOWN 分母。
+
+固定哈希特征上的在线 RLS、随机行切分、或只在同一任务的后续 episode 上变好，都不能
+单独通过该门。没有这些结果时，最多声称“在线候选分数更新”，不能声称 few-shot
+任务泛化或跨任务角色学习。
+
 ## G. 反驳与停止
 
 以下任一情况时方法主张不通过：
@@ -50,6 +66,7 @@ Role evidence offer 必须与 policy feedback offer 分离；native `evidence_id
 5. UNKNOWN、重复、乱序或 correction 没有 no-op/幂等语义；
 6. contextual trust/bandit 在同信息和成本下解释全部收益；
 7. 只有 zero-call fixture 或单次 API 链，没有独立 live histories 和 confirmation split。
+8. 检索使用了 query 之后的 evidence，或跨 root 的相似任务泛化只由随机行切分支持。
 
 ## H. 两档交付门
 

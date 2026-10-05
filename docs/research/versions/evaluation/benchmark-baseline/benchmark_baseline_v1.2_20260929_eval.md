@@ -99,6 +99,22 @@ RLS、online logistic/SGD、periodic refit 和其他 updater 是训练更新 com
 
 逐 root/stream 报告原始结果、ITT 与 per-protocol 分母、均值/中位数、95% interval、effect size、失败/UNKNOWN/未启动数、异质性、quality-cost Pareto、selection propensity、judge reliability/calibration、OOD/cross-root transfer。stream/episode/root 的聚类单位、层级 bootstrap 或配对随机化、缺失上界和多重比较校正必须预注册。
 
+### D3. Few-shot 泛化与任务相似度
+
+只要主张涉及“从经验库找到相似任务并把经验迁移给新任务”，benchmark 必须提供真正的
+support/query 结构，而不能把同一 root 的随机行拆分当作新任务。至少要有：
+
+- structural-root holdout 或 temporal query split；
+- 0-shot、1-shot、K-shot 的 support 数量和可见时间界限；
+- 任务/角色表示、相似度、Top-K、衰减和 memory cap 的预注册版本；
+- 新 candidate version、role shift、compositional task shift 的独立 cell；
+- assignment-level future quality/regret、later adoption/terminal quality、检索与更新
+  p50/p95、memory bytes、完整成本、UNKNOWN 和 forgetting。
+
+query 产生后的 judgment、later outcome、terminal score 或其他 policy state 不能进入 query
+表示或候选检索。没有跨 root/时间外推证据时，结果只能标成 in-distribution online
+adaptation，不能写成任务泛化。
+
 ### D2. 数值门和结果 truth table
 
 执行前必须冻结 `delta_information`、`delta_quality`、`delta_cost`、`tau_update_p95`、`rho_unknown`、允许的 forgetting/recovery window 以及 power/precision 计算。没有数值门时只能报告 exploratory，不能用聚合或换指标提高结论等级。
@@ -123,6 +139,7 @@ RLS、online logistic/SGD、periodic refit 和其他 updater 是训练更新 com
 - **Findings-ready**：一个可复现、范围有限的 benchmark/方法/负结果，至少一个独立确认或严格受控诊断，明确不推广到未测范围。
 - **Proceedings-ready**：至少三个结构独立 root，或双 root 的预注册精度理由；每个主条件多条独立 live streams；完成同信息强 baseline、未见 root、完整成本、统计和 clean replay。
 - 任务泄漏、root 非独立、隔离失败、baseline 不公平、UNKNOWN 被当负例、没有独立 confirmation、没有失败分母、没有完整成本或结果看后改变标准时，不得写主结果。
+- few-shot 结果依赖随机行切分、未来 evidence 泄漏或没有同信息检索 baseline 时，不得写任务泛化主结果。
 - `RARE` 未超过 strong contextual trust，或未达到质量—成本/实时性/稳定性门槛时，停止 A800 和更大规模 API，保留失败证据。
 
 ### 2026-10-05 parity amendment

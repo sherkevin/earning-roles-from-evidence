@@ -138,6 +138,23 @@ API/A800；完整理由与证据见
 - **RQ3（副轨机制）**：局部候选、selected-only 更新和漂移后恢复是否在相同预算下改善 payoff/regret，同时满足在线服务预算？
 - **RQ4（共同边界）**：责任不清、consumer 自有错误、版本替换、漂移、延迟/乱序反馈时，UNKNOWN 与保护写入是否比错误惩罚更稳健？
 
+### 4.1 2026-10-05 few-shot 泛化实验门
+
+主轨的历史经验不是只按 candidate 累计的计数。每个确认 stream 必须把任务 root、角色
+条件、候选版本、edge-local judgment、later outcome、时间和成本作为可检索的历史记录，
+并在每个 query 的 sealed read cut 中明确可见集合。实验至少包含：
+
+- `0-shot/1-shot/K-shot` support 曲线，support 只来自 query 之前的任务；
+- leave-one-structural-root-out 与 temporal split，禁止随机行切分和近重复泄漏；
+- 新候选版本、角色漂移和任务组合漂移；
+- no-memory、uniform、普通 `contextual_trust_linear`、最近邻/加权检索、pooled history
+  与 RARE candidate 的同信息比较；
+- assignment-level future utility/regret、later adoption/terminal quality、选择延迟、
+  memory bytes、完整成本、UNKNOWN 分母、旧任务遗忘和 95% interval。
+
+检索器/相似度/`K`/时间衰减必须在实验卡中预注册；later outcome 不得出现在 query 的
+表示或检索候选中。该实验门尚未通过，不能用当前固定特征 RLS 的零调用资格替代。
+
 主结果按独立 stream 汇总，不把同一 stream 的多个 episode 当独立样本。稳定性报告旧 root holdout 的峰值/平均下降和恢复窗口；时效性报告 drift 后响应窗口；成本包括 producer、recipient、judge、通信、重试、返工、scorer 和 replay。
 
 ## 5. 实验顺序与停止规则

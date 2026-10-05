@@ -131,6 +131,29 @@ snapshot()/restore() -> versioned state
 - **时效性**：预注册 drift 后，发布证据对未来 assignment 的 propensity/quality 变化和 later-use 增量在窗口 `W` 内出现；later outcome 不得泄漏到早期 read cut。
 - **稳定性**：旧 root/task holdout 的峰值与平均遗忘、恢复窗口、UNKNOWN 率、correction/replay 一致性独立报告。
 
+### 5.1 2026-10-05 few-shot 任务泛化合同
+
+新任务通常不会与历史任务完全相同，因此“从历史反馈更新一个候选分数”不能替代任务
+泛化。未来选择器必须在严格的历史 read cut `M_{<t}` 内，先形成当前任务/角色条件的
+表示，再检索相似的历史交接证据，并把相似证据对候选 Agent 的支持度与全局先验、风险、
+成本和探索项合成为选择分数。候选抽象为：
+
+$$
+z_t=f(x_t, r_t),\qquad
+N_t=\operatorname{TopK}_{e\in M_{<t}}\operatorname{sim}(z_t,z_e),\qquad
+U_t(c)=b_t(c)+\beta\,\widehat q(c\mid N_t)-\lambda\,\operatorname{cost}_t(c)+\xi_t(c).
+$$
+
+其中 `f`、相似度、`K`、时间衰减和跨角色匹配均为待验证组件；`M_{<t}` 只能包含在
+该决策前已经发布的 edge-local judgment/later outcome，不能读到当前或未来结果。
+当前 `contextual_trust_linear` 只有固定 64 维特征上的在线 RLS，尚未实现这个显式
+检索器，不能把它当作 few-shot 泛化结果或最终方法。
+
+方法验收必须增加：0/1/K 条 support 的泛化曲线、leave-one-root-out 与时间切分、候选
+版本/角色/任务组合漂移、旧任务遗忘、检索延迟与记忆容量；随机行切分和 later outcome
+泄漏均不合格。延迟反馈中心负责把通过责任门的交接证据原子地追加到记忆，并在 future
+assignment/use 完成后进行一次 selected-only 更新；它不自动解决相似任务检索本身。
+
 ## 6. 必须比较的 baseline 与消融
 
 在相同 `φ`、信息、propensity、预算和历史可见性下比较 uniform、no-update、raw acceptance、terminal-only、候选 `contextual_trust_linear`、诊断 `contextual_trust`、pooled controller 和 RARE。方案 A 至少做正交四格：
@@ -167,7 +190,10 @@ zero-call composition 通过。它只关闭 canonical composition 缺少 feature
 
 ## 7. 当前仍未锁定的实现项
 
-最终 backbone、表示维度、updater、遗忘保护阈值、漂移窗口、assignment policy、evidence capacity/淘汰和跨 context 泛化仍未锁定。它们必须由 benchmark qualification、离线数学检查和强 baseline 的真实瓶颈共同决定；本文件不把 Laya、AnyJev 或 Qwen 直接指定为最终答案。
+最终 backbone、表示维度、任务检索器、updater、遗忘保护阈值、漂移窗口、assignment policy、
+evidence capacity/淘汰和跨 context 泛化仍未锁定。它们必须由 benchmark qualification、
+离线数学检查和强 baseline 的真实瓶颈共同决定；本文件不把 Laya、AnyJev 或 Qwen 直接
+指定为最终答案。
 
 ## 8. 实现顺序
 
