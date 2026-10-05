@@ -47,7 +47,7 @@ python scripts/build_aamas2027.py
 ```
 
 - `main.tex`: current pre-results paper draft with the situated-judgment role-evidence storyline, complete experiment matrix, empty result cells, explicit claim boundaries, and reserved figure/table slots.
-- `scripts/build_aamas_figures.py` and `figures/*.pdf`: paper figures. `overview.pdf` is the active, independently audited protocol figure promoted on 2026-10-05; it is a cropped high-resolution raster candidate generated through the retained AI-edit history. `method_state.pdf` and `experiment_map.pdf` remain deterministic vector figures, and `figures/versions/` preserves prior candidates.
+- `scripts/build_aamas_figures.py` and `figures/*.pdf`: paper figures. `overview.pdf` is the active, independently audited icon-first protocol figure promoted on 2026-10-05; it uses short semantic anchors and a retained AI-edit history rather than explanatory text cards. `method_state.pdf` and `experiment_map.pdf` remain deterministic vector figures, and `figures/versions/` preserves prior candidates.
 - `supplement.tex`: 过渡期内部证据补充稿；与当前主稿的实验结果表尚未合并。
 - `build/main.pdf`, `build/supplement.pdf`: compiled internal drafts.
 - `aamas.cls`, `ACM-Reference-Format.bst`, `by.pdf`: byte-identical copies from the official AAMAS 2027 template.

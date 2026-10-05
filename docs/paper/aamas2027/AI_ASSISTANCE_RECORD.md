@@ -793,3 +793,16 @@ audit-only UNKNOWN branch, and caption alignment. The cropped v12 PDF candidate 
 promoted to active `article/aamas2027/figures/overview.pdf` after passing a 7-page,
 zero-overfull, zero-unresolved-reference build. This is a paper-figure artifact
 validation; it is not experimental evidence for role-learning efficacy.
+### 2026-10-05 Figure 1 icon-first revision
+
+The assistant responded to a visual review that the prior figure framed too much
+explanatory prose inside rounded boxes. It retained v12, generated v13 as an
+icon-first semantic simplification, and generated v14 with only the short
+anchors `EXPLORE`, `SEAL`, `ASSIGN`, `QUALITY`, `COST`, `FUTURE`, `NEXT READ`,
+and `DELAYED`. A clean-HEAD worktree build on commit `ed2011a` produced 7
+pages, zero overfull boxes, and zero unresolved references; the double-column
+Figure 1 page was inspected. The current working tree contains a separate
+uncommitted method-section edit, so its page count was not attributed to v14.
+The v14 asset was promoted to active and v12 remains preserved. The image tool
+was the Codex built-in generator with undisclosed model identity; this remains
+figure validation, not role-learning efficacy evidence.

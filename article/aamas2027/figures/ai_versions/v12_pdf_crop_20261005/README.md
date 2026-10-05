@@ -1,4 +1,4 @@
-# v12 — crop-only publication candidate
+# v12 — superseded crop-only publication candidate
 
 v11 is scientifically complete but its raster canvas contains large white top
 and bottom margins. At full text width this adds enough vertical height to push a
@@ -16,6 +16,7 @@ Temporary AAMAS layout validation passed with 7 pages, zero overfull boxes, and
 no unresolved references. The independent audit then found no P0 semantic
 defects and two low-risk P1 presentation notes (the explore relation can be
 made more explicit in the caption, and small labels should be checked at final
-print scale). The candidate was promoted to the active
-`article/aamas2027/figures/overview.pdf`; its SHA-256 is
+print scale). The candidate was previously promoted to active, then superseded
+by the icon-first v14 figure. It remains available at `overview_v12.pdf`; its
+SHA-256 is
 `666940c307a94a1694a3bfd585a72fead69e23923d3ab9ef9b466985fa59dca9`.

@@ -153,3 +153,23 @@ Figure 1 的高分辨率栅格资源挤压或截断；Figure 3 的 ArtifactRole/
 matched policies 和 RQ1--RQ4 映射也保持完整。结果页没有新增 overfull box 或
 引用问题。该检查只证明图文排版与语义连接没有回归，不构成 benchmark 或方法
 效果证据。
+
+## v13/v14 图标化迭代
+
+用户复核指出 v12 的小模块仍主要是“文字被框起来”，因此本轮不再增加
+解释性文案，而是把模块内部改成图标、分支、箭头和少量语义锚点。v13 删除
+嵌套说明文字，保留 speech/check、ownership split、ledger、read slider、
+explore、seal、quality/cost 等视觉对象；v14 只补回 `EXPLORE`、`SEAL`、
+`ASSIGN`、`QUALITY`、`COST`、`FUTURE`、`NEXT READ`、`DELAYED` 八个必要短标签。
+两个版本和提示词均已保留在 `figures/ai_versions/`。
+
+v14 候选 PDF：
+`article/aamas2027/figures/ai_versions/v14_minimal_labels_20261005/overview_v14.pdf`
+，SHA-256 为
+`5c1abccf79899739df0359879f3329772a755def13b536145dd6ca18085ce6da`。
+
+为隔离正文并发修改，使用 clean HEAD `ed2011a` 的 worktree 进行实际编译：
+主稿 7 页、0 个 overfull box、0 个未解析引用；渲染页检查确认双栏尺寸下
+短标签仍可读。候选图因此晋升为 active `figures/overview.pdf`。当前工作区
+另有未提交的方法小节改动，它会改变正文页数，但没有被回滚，也没有被归因给
+图稿。一次早期临时替换因 TeX 进程超时而中断，已记录为 UNKNOWN，不计入通过。
