@@ -1,0 +1,181 @@
+{
+  "experiment_id": "n03_c0_candidate_parity_qualification_20261005_v3",
+  "qualification_status": "QUALIFIED_OFFLINE",
+  "cases": 7,
+  "passed": 7,
+  "failed": 0,
+  "input_digest_equal": true,
+  "independent_outcome_namespace": true,
+  "snapshot_restore_equal": true,
+  "policy_results": {
+    "contextual_trust_linear": {
+      "traces": [
+        {
+          "offer_id": "recipient_only-offer-0",
+          "input_digest": "5e99a1474718aad484d2d857668493453c0de52e4f335491a1501395964bed49",
+          "chosen_key": "agent-b@v1",
+          "probabilities": [
+            0.5,
+            0.5
+          ],
+          "propensity": 0.5,
+          "feedback": []
+        },
+        {
+          "offer_id": "recipient_only-offer-1",
+          "input_digest": "5451f9b368b3ad5e6931dc6d7892706c0a4c16941831becd16b27482fa51c77c",
+          "chosen_key": "agent-b@v1",
+          "probabilities": [
+            0.7310585786300049,
+            0.2689414213699951
+          ],
+          "propensity": 0.7310585786300049,
+          "feedback": [
+            {
+              "feedback_id": "f0",
+              "status": "eligible",
+              "changed": true
+            }
+          ]
+        }
+      ],
+      "outcomes": [
+        {
+          "policy_namespace": "contextual_trust_linear",
+          "namespace_digest": "b3fb0abbfafc88948fed99bbd4e75a9677385568e2e9a8f80b6f38823e9dfb35",
+          "offer_id": "recipient_only-offer-0",
+          "selected_key": "agent-b@v1",
+          "outcome_id": "af5e6dea1ad046b1b76c75d2c810d254cf7dac9b9b771a3ddf58949155272e5c",
+          "outcome_digest": "e6cb2932cc8650ea35e4375e652d23fcea1c147af615307f7387b4eb18241b8d"
+        },
+        {
+          "policy_namespace": "contextual_trust_linear",
+          "namespace_digest": "b3fb0abbfafc88948fed99bbd4e75a9677385568e2e9a8f80b6f38823e9dfb35",
+          "offer_id": "recipient_only-offer-1",
+          "selected_key": "agent-b@v1",
+          "outcome_id": "3a640de7b04905d07aeefba681d4169944716896edad1e2eda73397003305160",
+          "outcome_digest": "c70ed076aa231b593215c2543d5740c2513cda0eba133b018eb9a7dc359ebc2a"
+        }
+      ],
+      "updates": 1,
+      "state_digest": "a63d9607b1ace5a733f2df048ef4997d6704b3dd3b863c496876f64742d976ab",
+      "state_bytes": 3236,
+      "snapshot_equal": true
+    },
+    "RARE": {
+      "traces": [
+        {
+          "offer_id": "recipient_only-offer-0",
+          "input_digest": "5e99a1474718aad484d2d857668493453c0de52e4f335491a1501395964bed49",
+          "chosen_key": "agent-b@v1",
+          "probabilities": [
+            0.5,
+            0.5
+          ],
+          "propensity": 0.5,
+          "feedback": []
+        },
+        {
+          "offer_id": "recipient_only-offer-1",
+          "input_digest": "5451f9b368b3ad5e6931dc6d7892706c0a4c16941831becd16b27482fa51c77c",
+          "chosen_key": "agent-b@v1",
+          "probabilities": [
+            0.5305766310176361,
+            0.469423368982364
+          ],
+          "propensity": 0.5305766310176361,
+          "feedback": [
+            {
+              "feedback_id": "f0",
+              "status": "eligible",
+              "changed": true
+            }
+          ]
+        }
+      ],
+      "outcomes": [
+        {
+          "policy_namespace": "RARE",
+          "namespace_digest": "e2cfa0aed292f1ba9b40a15cd1c67096172b513794a54247cc2f45b83e02cbed",
+          "offer_id": "recipient_only-offer-0",
+          "selected_key": "agent-b@v1",
+          "outcome_id": "2408c1f371a248e3d6d09c94091d5884127507d5d5a195e7cb542ce8ed95461e",
+          "outcome_digest": "f889963eca2a8a979c525c11c8077636e75fa76f5244de787d7102bd8e98c2de"
+        },
+        {
+          "policy_namespace": "RARE",
+          "namespace_digest": "e2cfa0aed292f1ba9b40a15cd1c67096172b513794a54247cc2f45b83e02cbed",
+          "offer_id": "recipient_only-offer-1",
+          "selected_key": "agent-b@v1",
+          "outcome_id": "47bb669589671362cad1fc64f6a933c5feae68b73e60fa82208961ecbbcb7f24",
+          "outcome_digest": "6ae409aff24c2246d1d64745f89e6343a51f523f9656046c8d0b0c2aef61b4cf"
+        }
+      ],
+      "updates": 1,
+      "state_digest": "ab8ef10a2eb9b34ac1736cb9be2c77db6f290b7d01de30058dd28a64d28b7974",
+      "state_bytes": 4559,
+      "snapshot_equal": true
+    }
+  },
+  "mutation_records": [
+    {
+      "case": "public_input_digest_mutation",
+      "status": "UNKNOWN",
+      "runner_started": false,
+      "policy_updates": 0,
+      "error": "candidate card public input digest mismatch"
+    },
+    {
+      "case": "duplicate_namespace",
+      "status": "UNKNOWN",
+      "runner_started": false,
+      "policy_updates": 0,
+      "error": "candidate namespaces must be unique digests"
+    },
+    {
+      "case": "factory_mutation",
+      "status": "UNKNOWN",
+      "runner_started": false,
+      "policy_updates": 0,
+      "error": "candidate config differs for contextual_trust_linear"
+    },
+    {
+      "case": "state_cap_mutation",
+      "status": "UNKNOWN",
+      "runner_started": false,
+      "policy_updates": 0,
+      "error": "state cap is not frozen"
+    },
+    {
+      "case": "chosen_key_mutation",
+      "status": "UNKNOWN",
+      "runner_started": false,
+      "policy_updates": 0,
+      "error": "outcome chosen candidate binding mismatch"
+    },
+    {
+      "case": "cross_arm_feedback",
+      "status": "UNKNOWN",
+      "runner_started": false,
+      "policy_updates": 0,
+      "error": "feedback crosses policy namespace"
+    }
+  ],
+  "stream_digests": {
+    "ordered_candidate_menu": "01e824699b18006f9c57ff318914e82ab47d1c615484b29aa0608b888e08d070",
+    "candidate_registry": "50e69a9bee6a9bf609568afe6f34413f2d10fcf5e19554a6072416be5e58ad87",
+    "public_phi": "47a55e45ff851d8d5f2c6f606e24f800b59ba6bb0c47108fec87b554ba63ec61",
+    "offer_stream": "2583ce89907e6807e090f307ae0672c076612a4b9ab4b948e13136c4b0e3c987",
+    "read_cut_decision": "a3c3f6f865d2ecbcf9f946a665ee4faa6ff6c1ee840258274131d7144d6c3d7d",
+    "arrival_schedule": "15fac83aaf0937511c794111815ba153dde426751ac306d190840aa9769d1877",
+    "rng_seed_schedule": "1c4bb1c929599e1d217f89d51a16c07d3d05ddc2e75908a747e0ce06d36366ad",
+    "propensity": "a731febe1d6304df913276b6613dc18d2dec31bfa679ae603e6606075bb40e0c",
+    "state_schema": "6dacb7a7c2ca8e6db8b5251e2d07a295d510be70ad06dd0673339cf1581f386c",
+    "state_init": "2aa38fe905762f6f93b4fe8ba1e39bb18e37166df6843a6eb8442502d44103f0"
+  },
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "baseline_frozen": false,
+  "finished_at_utc": "2026-10-05T03:45:10.946183+00:00"
+}

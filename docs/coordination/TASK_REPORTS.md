@@ -17,6 +17,10 @@ Goal 修改。
 
 ## Reports
 
+- [partial] 2026-10-05 C0 candidate parity hardening：独立复核后补上 arm namespace 唯一性、
+  factory/config 绑定、1 MiB state cap、chosen-key/outcome/跨 arm feedback 错绑拒绝；v2
+  schema mismatch 失败保留，v3 7/7 cases 通过，0 API/0 GPU，仍为 candidate-only，见
+  [hardening report](task_reports/20261005_c0_candidate_parity_hardening.md)。
 - [partial] 2026-10-05 C0 candidate parity preflight：在不改 active 七臂 manifest 的前提下，
   对 `contextual_trust_linear`/RARE 复用 PIPE3 fixture 做 candidate-only preflight；两臂
   public input digest 完全一致，独立 policy/outcome namespace 与 snapshot/restore 通过，

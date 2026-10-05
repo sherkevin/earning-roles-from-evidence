@@ -1,0 +1,61 @@
+{
+  "experiment_id": "n03_c0_candidate_parity_qualification_20261005_v2",
+  "kind": "zero_call_c0_candidate_parity_preflight",
+  "started_at_utc": "2026-10-05T03:44:24.254861+00:00",
+  "git_commit": "1222d0a3ca8ffb4f4dc95e6af950ae0cf085c8e5",
+  "python": "3.9.6",
+  "component_sha256": {
+    "scripts/peerrolebench_baseline_policies.py": "cabc35ebcb47c2faee8fd860ec3cff42822805710906641e8c3011863d7abff8",
+    "scripts/peerrolebench_canonical_manifest.py": "e35928c89e157a144264675057aca0430629d6de8b0c946673d174b4bbd6b388",
+    "scripts/peerrolebench_policy_matrix_runner_v1.py": "d32683a48af93b87784ab05efbfd23f4c987e45b05cc27b9bb55a99855c90e5a",
+    "scripts/peerrolebench_c0_candidate_parity_qualification.py": "a95ec825b53e6ab5c792c83a21fc9b74fcddce8ed00f2c81e7eac740dc893ef2"
+  },
+  "candidate_arms": [
+    "contextual_trust_linear",
+    "RARE"
+  ],
+  "candidate_card": {
+    "card_version": "c0-candidate-card-v2",
+    "public_input_digest": "b8ce76d578418c313630692054d1146ad2ec159d8a85343f3bbef7c8cf463bd6",
+    "state_cap_bytes": 1048576,
+    "arms": [
+      {
+        "name": "contextual_trust_linear",
+        "policy_version": "linear-ridge-v1",
+        "factory": "FeatureContextualTrustPolicy",
+        "dimension": 64,
+        "ridge": 1.0,
+        "trust_scale": 2.0,
+        "encoder_version": "hash64-v1",
+        "feature_schema": "hash64-v1-public",
+        "temperature": 1.0,
+        "exploration": 0.0,
+        "namespace_digest": "8ea14302feafbbf90e391c7c23d7a4b0b772b9bf3c6e555c158b8871ac999760"
+      },
+      {
+        "name": "RARE",
+        "policy_version": "rare-anchor-v1",
+        "factory": "RarePolicy",
+        "dimension": 64,
+        "window_size": 256,
+        "reservoir_size": 128,
+        "pending_size": 128,
+        "encoder_version": "hash64-v1",
+        "feature_schema": "hash64-v1-public",
+        "temperature": 1.0,
+        "exploration": 0.0,
+        "namespace_digest": "0c5a0f7825473c6fec07ccb2babb5e9892ceba68912fd494c81612a5ef04f555"
+      }
+    ]
+  },
+  "root": "PIPE3_stream_processing_development_fixture",
+  "registry_digest": "50e69a9bee6a9bf609568afe6f34413f2d10fcf5e19554a6072416be5e58ad87",
+  "schedule_digest": "15fac83aaf0937511c794111815ba153dde426751ac306d190840aa9769d1877",
+  "rng_schedule_digest": "59296409aff48dc12dd751f088e131e76399a8c11d656adb9c6b3587f4379b3d",
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "public_encoder": "hash64-v1",
+  "public_schema": "hash64-v1-public",
+  "scientific_claim_allowed": false,
+  "baseline_frozen": false
+}
