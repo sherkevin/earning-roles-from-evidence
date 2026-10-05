@@ -47,14 +47,15 @@ selected-only delayed credit 才能更新策略。此前的 two-stage qualificat
 
 qualification runner 为 [`delayed-policy-adapter-qualification-v1`](../../../scripts/peerrolebench_delayed_policy_qualification.py)，
 配置和原始事件位于：
-[`experiments/logs/n03_delayed_policy_adapter_qualification_20261005_v8/`](../../../experiments/logs/n03_delayed_policy_adapter_qualification_20261005_v8/)。
+[`experiments/logs/n03_delayed_policy_adapter_qualification_20261005_v9/`](../../../experiments/logs/n03_delayed_policy_adapter_qualification_20261005_v9/)。
 
 结果为 `8/8 QUALIFIED_OFFLINE`：valid publish/update、duplicate no-op、alternate
 outcome rejection、wrong candidate、wrong channel、closed source gate 和
 snapshot/restore idempotency，以及由真实 canonical ledger fixture 驱动的 replay、
 source evidence/artifact lineage、target assignment/selection/outcome binding 和 label
 mutation rejection 全部通过。此前实现修订前的 v1、v2、v3 回执保留，没有覆盖历史
-证据；v4/v5 的导入失败没有生成运行目录，v6/v7 也保留。snapshot digest mutation
+证据；v4/v5 的导入失败没有生成运行目录，v6/v7/v8 也保留。v9 在 clean commit
+`3c269cc` 上重跑。snapshot digest mutation
 拒绝新增后，adapter、two-stage gate、history binding/adapter 定向测试为 `26 passed`；没有
 LLM/API/GPU 调用。
 

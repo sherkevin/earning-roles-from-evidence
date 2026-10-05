@@ -1,0 +1,30 @@
+{
+  "config_version": "delayed-policy-adapter-qualification-v1",
+  "adapter_version": "delayed-policy-adapter-v1",
+  "policy": "contextual_trust_linear",
+  "namespace": "qualification-ns",
+  "state_cap_bytes": 1048576,
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "source_commit": "3c269ccb94ede301827193883750a39c49762dfc",
+  "python": "3.9.6",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "component_sha256": {
+    "scripts/peerrolebench_delayed_policy_adapter.py": "879e041faa32f598cbd3601d8b6112bfd35ea09f611ffb6b82da41fbc6935215",
+    "scripts/peerrolebench_two_stage_gate.py": "638b3cddfcc63059f560724996936d635c8f042165a5c4de9e30704572c4c9b9",
+    "scripts/peerrolebench_ledger_replay.py": "d2cd8c0bba3045697b2a3e8939e815a51930c4bff4d70e45f8eaa1e22a2412f1",
+    "scripts/peerrolebench_peer_history_binding.py": "0a9dfc768cd23153ffb54b9cfac4da3276f63c37ce0ca803a00d7a0681c10f25"
+  },
+  "cases": [
+    "valid_publish_then_delayed_update",
+    "duplicate_assignment_noop",
+    "alternate_outcome_rejected",
+    "wrong_candidate_rejected",
+    "wrong_channel_rejected",
+    "closed_source_gate_rejected",
+    "snapshot_restore_idempotency",
+    "canonical_replay_and_lineage"
+  ],
+  "canonical_replay_required": true
+}
