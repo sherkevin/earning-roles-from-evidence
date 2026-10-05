@@ -29,7 +29,9 @@ from peer_role_protocol_20260925 import (  # noqa: E402
     ConsumerAction, Delivery, LaterAssignment, ProducerScore,
     RecipientJudgment, RoleEvidenceUpdate, TerminalOutcome,
 )
-from peerrolebench_baseline_policies import BaselinePolicy, Feedback, TerminalOnlyPolicy  # noqa: E402
+from peerrolebench_baseline_policies import (  # noqa: E402
+    BaselinePolicy, FeatureContextualTrustPolicy, Feedback, TerminalOnlyPolicy,
+)
 from peerrolebench_ledger_replay import replay_ledger_events  # noqa: E402
 from peerrolebench_pipe3_full_chain_qualification import registry  # noqa: E402
 from peerrolebench_candidate_registry import CandidateRegistryEntry  # noqa: E402
@@ -58,11 +60,22 @@ from peerrolebench_two_stage_gate import (  # noqa: E402
 
 
 TASK_ID = "PIPE3_stream_processing"
-# v1.7 makes the strict v2 source-gate reachability condition executable:
+# v1.8 binds the canonical two-stage composition to the public feature
+# contract used by the strongest same-information comparator.  Historical
+# v1.7 receipts remain immutable; this version is the first feature-aware
+# composition qualification.
+# v1.7 made the strict v2 source-gate reachability condition executable:
 # the producer-defect source episode is an explicit direct-use/no-edit case.
 # v1.6 receipts remain historical and are not rewritten.
-VERSION = "pipe3-two-stage-composition-v1.7"
+VERSION = "pipe3-two-stage-composition-v1.8"
 CONTROLS = ("producer_owned", "recipient_owned", "mixed")
+PUBLIC_ENCODER_VERSION = "hash64-v1"
+PUBLIC_FEATURE_SCHEMA = "matrix-features-v1"
+PUBLIC_FEATURE_DIMENSION = 64
+POLICY_VERSION_BY_NAME = {
+    "contextual_trust_linear": "linear-ridge-v1",
+    "RARE": "rare-anchor-v1",
+}
 CandidateScorer = Callable[[str, Mapping[str, str], Mapping[str, str], Path, Path, int], dict[str, Any]]
 PolicyFactory = Callable[[str], BaselinePolicy]
 
@@ -96,6 +109,66 @@ def _candidate_registry(materials: Mapping[str, Any]) -> list[CandidateRegistryE
 
 def _digest(value: Any) -> str:
     return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(",", ":"), default=str).encode()).hexdigest()
+
+
+def _public_features(candidate_keys: tuple[str, ...]) -> dict[str, tuple[float, ...]]:
+    """Return the sealed bounded public feature map for one candidate menu.
+
+    The one-hot map is a qualification representation, not a learned feature
+    claim.  It is deliberately identical for every policy arm, versioned in
+    the selection receipt, and bounded to unit L2 norm so the feature-aware
+    comparator cannot receive a richer input than RARE.
+    """
+    values: dict[str, tuple[float, ...]] = {}
+    for index, key in enumerate(candidate_keys):
+        vector = [0.0] * PUBLIC_FEATURE_DIMENSION
+        vector[index % PUBLIC_FEATURE_DIMENSION] = 1.0
+        values[str(key)] = tuple(vector)
+    return values
+
+
+def _policy_contract(policy_name: str) -> dict[str, Any]:
+    """Return the small frozen configuration surface used by this seam."""
+    contract: dict[str, Any] = {
+        "policy_name": str(policy_name),
+        "policy_version": POLICY_VERSION_BY_NAME.get(str(policy_name), f"{policy_name}-v1"),
+        "temperature": 1.0,
+        "exploration": 0.0,
+    }
+    if policy_name == "contextual_trust_linear":
+        contract.update({
+            "factory": "FeatureContextualTrustPolicy",
+            "dimension": PUBLIC_FEATURE_DIMENSION,
+            "ridge": 1.0,
+            "trust_scale": 2.0,
+            "encoder_version": PUBLIC_ENCODER_VERSION,
+            "feature_schema": PUBLIC_FEATURE_SCHEMA,
+        })
+    return contract
+
+
+def _assert_policy_contract(policy_name: str, policy: BaselinePolicy) -> dict[str, Any]:
+    """Reject a mislabeled feature-aware policy before any selection mutates state."""
+    contract = _policy_contract(policy_name)
+    if policy_name != "contextual_trust_linear":
+        return contract
+    if not isinstance(policy, FeatureContextualTrustPolicy):
+        raise TypeError("contextual_trust_linear requires FeatureContextualTrustPolicy")
+    actual = {
+        "policy_name": policy.name,
+        "policy_version": contract["policy_version"],
+        "temperature": policy.temperature,
+        "exploration": policy.exploration,
+        "factory": type(policy).__name__,
+        "dimension": policy.dimension,
+        "ridge": policy.ridge,
+        "trust_scale": policy.trust_scale,
+        "encoder_version": policy.encoder_version,
+        "feature_schema": policy.feature_schema,
+    }
+    if actual != contract:
+        raise ValueError(f"policy configuration does not match frozen contract: {actual!r}")
+    return contract
 
 
 def _sha_file(path: Path) -> str:
@@ -435,7 +508,14 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
             "scripts/peerrolebench_role_evidence_scorer.py",
         )},
         "policy": policy_name, "assignment_mode": assignment_mode,
+        "policy_contract": _policy_contract(policy_name),
         "public_judgment_fixture": public_judgment_fixture,
+        "public_feature_contract": {
+            "encoder_version": PUBLIC_ENCODER_VERSION,
+            "feature_schema": PUBLIC_FEATURE_SCHEMA,
+            "dimension": PUBLIC_FEATURE_DIMENSION,
+            "representation": "bounded_one_hot_qualification_only",
+        },
         "overlay_values": "qualification_control_only",
         "authored_controls": {"source_judgment": "parent-authored", "action": "parent-authored", "patched_actor": "parent-authored"},
     }
@@ -457,17 +537,38 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
     policy = make_policy(policy_name)
     if not isinstance(policy, BaselinePolicy):
         raise TypeError("policy factory must return a BaselinePolicy")
+    policy_contract = _assert_policy_contract(policy_name, policy)
+    _log(raw, "policy_contract", {**policy_contract, "config_digest": _digest(policy_contract)})
     boundary = Pipe3SelectionBoundary(policy, candidate_registry)
+    candidate_keys = ("peer-b@v1", "peer-c@v1")
+    captured_features = _public_features(candidate_keys)
+    _log(raw, "selection_feature_contract", {
+        "selection_scope": "source_and_target",
+        "candidate_keys": list(candidate_keys),
+        "encoder_version": PUBLIC_ENCODER_VERSION,
+        "feature_schema": PUBLIC_FEATURE_SCHEMA,
+        "dimension": PUBLIC_FEATURE_DIMENSION,
+        "captured_features": {key: list(values) for key, values in captured_features.items()},
+        "feature_digest": _digest(captured_features),
+    })
     offer0 = make_offer(offer_id=f"offer-{control}-0", task_id=TASK_ID, task_index=0, role="producer",
-                        context_key="PIPE3:0", candidate_keys=("peer-b@v1", "peer-c@v1"), public_rows=(),
+                        context_key="PIPE3:0", candidate_keys=candidate_keys, public_rows=(),
                         evidence_version=VERSION, available_index=0)
     seal0 = boundary.choose_and_seal(
         offer=offer0, native_selection_id=f"selection-{control}-0", selector_id="peer-a", role="producer",
         base_scores=(100.0, -100.0), rng=__import__("numpy").random.default_rng(source_seed),
-        state_version="source-state-v1", encoder_version="pipe3-v1", feature_schema="pipe3",
-        policy_version="contextual-v1", base_score_version="qualification-overlay-v1", rng_algorithm="numpy-pcg64",
+        state_version="source-state-v1", encoder_version=PUBLIC_ENCODER_VERSION,
+        feature_schema=PUBLIC_FEATURE_SCHEMA, policy_version=policy_contract["policy_version"],
+        base_score_version="qualification-overlay-v1", rng_algorithm="numpy-pcg64",
         rng_draw=0, selected_at=0.0, read_cut=0, decision_index=0, consume_evidence=False,
+        captured_features=captured_features,
     )
+    source_sidecar_payload = seal0.decision_sidecar.payload()
+    _log(raw, "source_selection_sidecar", {
+        "sidecar_digest": seal0.decision_sidecar.sidecar_digest,
+        "feature_digest": _digest(source_sidecar_payload["captured_features"]),
+        "payload": source_sidecar_payload,
+    })
     source = _record_episode(boundary=boundary, materials=source_case, control=control,
                              selection_id=f"selection-{control}-0", selected_peer=seal0.native_selection.chosen_peer_id,
                              delivery_sources=source_delivery, final_sources=source_final,
@@ -512,7 +613,7 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
         raise AssertionError("eligible source must publish role evidence")
     feedback_offer = make_offer(
         offer_id=f"feedback-offer-{control}", task_id=TASK_ID, task_index=1,
-        role="producer", context_key="PIPE3:1", candidate_keys=("peer-b@v1", "peer-c@v1"),
+        role="producer", context_key="PIPE3:1", candidate_keys=candidate_keys,
         public_rows=(), evidence_version=VERSION, available_index=1,
         previous_aux_hash=auxiliary_manifest_root(boundary.auxiliary_manifest_rows),
     )
@@ -543,10 +644,11 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
         boundary=boundary, role_offer=role_offer, feedback_offer=feedback_offer,
         assignment_id=f"assignment-{control}", native_selection_id=f"selection-{control}-1",
         selector_id="peer-a", rng=__import__("numpy").random.default_rng(target_seed),
-        state_version="target-state-v1", encoder_version="pipe3-v1", feature_schema="pipe3",
-        policy_version="contextual-v1", base_score_version="qualification-overlay-v1",
+        state_version="target-state-v1", encoder_version=PUBLIC_ENCODER_VERSION,
+        feature_schema=PUBLIC_FEATURE_SCHEMA, policy_version=policy_contract["policy_version"],
+        base_score_version="qualification-overlay-v1",
         rng_algorithm="numpy-pcg64", rng_draw=1, selected_at=1.0,
-        decision_index=1,
+        decision_index=1, captured_features=captured_features,
     )
     assignment_score = None
     if assignment_mode == "public_judgment":
@@ -574,6 +676,12 @@ def _run_control(control: str, *, out: Path, source_seed: int, target_seed: int,
                                              "assignment_effect_observed": assignment_effect_observed,
                                              "assignment_score": None if assignment_score is None else assignment_score.payload()})
     target_seal = commit_role_evidence_selection(boundary, plan=plan, role_offer=role_offer, feedback_offer=feedback_offer)
+    target_sidecar_payload = target_seal.decision_sidecar.payload()
+    _log(raw, "target_selection_sidecar", {
+        "sidecar_digest": target_seal.decision_sidecar.sidecar_digest,
+        "feature_digest": _digest(target_sidecar_payload["captured_features"]),
+        "payload": target_sidecar_payload,
+    })
     _log(raw, "assignment_committed_before_selection", {"assignment_id": plan.assignment_id, "selection_id": target_seal.native_selection.selection_id})
     target = _record_episode(boundary=boundary, materials=target_case, control=control,
                              selection_id=f"selection-{control}-1", selected_peer=target_seal.native_selection.chosen_peer_id,

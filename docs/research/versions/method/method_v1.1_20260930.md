@@ -20,6 +20,33 @@ $$
 
 其中 `E_{≤w_t}` 是该决策 read cut 前已发布且通过公开责任门的 evidence。隐藏 gold、未来 later outcome、private scorer 和其他 policy 的 realized memory 不能进入本轮决策。
 
+### 1.1 符号、来源和最小实例
+
+下面的表把公式中的原始量绑定到一次具体的 PIPE3 episode；它是语义实例，不把当前
+qualification fixture 当作科学结果。没有出现在表中的量是由这些原始量计算出的状态或
+操作，而不是额外的环境输入。
+
+| 符号 | 来源与权限 | 最小实例 |
+|---|---|---|
+| `x_t` | 执行前公开的任务上下文 | `task_id=PIPE3_stream_processing, task_index=1, role=producer` |
+| `C_t` | 执行前冻结的候选菜单 | `("peer-b@v1", "peer-c@v1")`，由 candidate registry 解析版本 |
+| `a_t` | selector 在执行前抽样的候选 | `peer-b@v1`，同时保存完整 probability 与 propensity |
+| `o_t` | producer 交付及其 artifact digest | `producer.py` 的 sealed source snapshot 与 `delivery_record_hash` |
+| `m_t` | recipient 对该交付的实际动作 | `use`、`repair`、`reject` 或 `redo`，绑定 changed paths |
+| `Q_p,J,A,Y` | 分别来自 producer contract、recipient judgment、recipient action、terminal outcome 的独立事件 | `Q_p=FAIL`、`J=accept_with_rework`、`A=repair`、`Y=PASS/FAIL/UNKNOWN` |
+| `E` | 已通过责任门、可公开读取的不可变 evidence 事件集合 | `evidence_id` 绑定 delivery/judgment/action/outcome/artifact/version |
+| `w_t` | assignment 读取 evidence 的事件时间 read cut | 目标 selection 前的 `read_cut=1`；更晚到达的 correction 不可见 |
+| `R_t` | policy 读取的 evidence snapshot | `Snapshot(E_{≤1})`，不含 target outcome 或 private scorer 字段 |
+| `g_t` | 在 arrival index `τ_t` 到达的 public evidence 记录 | `g_0` 为 source role evidence，`τ_0=1` |
+| `B_k` | 同一 arrival index 的 evidence batch | `B_1={g_0}`；没有合格 evidence 时为空并保持 no-op |
+| `L_j` | target assignment `j` 完成后的 delayed credit | `assignment_id`、chosen candidate、later outcome 与合法 feedback channel 的绑定记录 |
+| `\theta` | policy 的持久可更新状态 | feature-aware arm 的 `a_diag,b` 数组，或其他预注册 updater 的状态；publish 前后 digest 必须相同 |
+
+因此一次合法最小路径是：`x_1,C_1` 冻结菜单，`R_1=Snapshot(E_{≤1})`，先记录
+`LaterAssignment`，再封存 `a_1`；target 完成后才构造 `L_1` 并调用 `U_delay`。若
+`m_t` 修改的是 recipient 自有路径、某一字段缺失或资源执行失败，则对应结果为
+`UNKNOWN`，而不是 producer 的负标签。
+
 episode index `t` 与 feedback-arrival index `k` 分开。每个 arrival batch 为 `B_k={g_t:τ_t=k}`，但更新不再直接由源 episode 触发：
 
 $$
@@ -106,7 +133,7 @@ snapshot()/restore() -> versioned state
 
 ## 6. 必须比较的 baseline 与消融
 
-在相同 `φ`、信息、propensity、预算和历史可见性下比较 uniform、no-update、raw acceptance、terminal-only、contextual trust/bandit、pooled controller 和 RARE。方案 A 至少做正交四格：
+在相同 `φ`、信息、propensity、预算和历史可见性下比较 uniform、no-update、raw acceptance、terminal-only、候选 `contextual_trust_linear`、诊断 `contextual_trust`、pooled controller 和 RARE。方案 A 至少做正交四格：
 
 1. no evidence / no update；
 2. public evidence only（assignment 输入变化，持久 `θ` 不变）；
@@ -130,6 +157,13 @@ context-only diagnostic。零调用 qualification 见
 这只关闭输入合同的工程缺口，不锁定最终 updater，也不改变七臂 active manifest。只有
 `contextual_trust_linear` 通过 canonical manifest、独立 namespace 和真实 live parity
 后，才可把它写入正式 baseline matrix；在此之前 baseline 仍是 `NOT_FROZEN`。
+
+2026-10-05 composition-status amendment：`pipe3-two-stage-composition-v1.8` 已将相同的
+`hash64-v1` / `matrix-features-v1` 64 维 bounded qualification feature map 传入 source
+selection 和 target `preview→assignment→commit`，`contextual_trust_linear` 的 3-control
+zero-call composition 通过。它只关闭 canonical composition 缺少 feature 输入的工程门，
+不是 learned representation、独立 live history、质量或实时成本证据；详见
+[`feature composition report`](../../../coordination/task_reports/20261005_pipe3_feature_composition_qualification.md)。
 
 ## 7. 当前仍未锁定的实现项
 

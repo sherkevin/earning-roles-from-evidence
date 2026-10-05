@@ -76,7 +76,8 @@ baseline matrix、independent live history、第二 root 与 scientific readines
 | `no_update` | 初始先验与当前上下文；不因反馈更新 | 判断单纯执行是否已足够 |
 | `raw_acceptance` | 合法 accept/reject | 检验责任过滤的增量 |
 | `terminal_only` | 独立 final outcome | 检验 situated judgment 的额外信息 |
-| `contextual_trust` | 与主方法相同的 context/judgment/propensity/延迟 | 最强同信息信任/ bandit 对照 |
+| `contextual_trust_linear` | 与 RARE 相同的 `hash64-v1`/`matrix-features-v1`、menu、base score、judgment、propensity 和延迟；普通 diagonal RLS | 当前 strongest same-information comparator 候选；必须通过 live parity 后才可冻结 |
+| `contextual_trust` | 只读取 context×candidate 的 Beta/judgment 状态 | context-only diagnostic，不能替代 strongest same-information 对照 |
 | `pooled_controller` | 允许的公共历史；不读 private scorer | 集中控制上界 |
 | `RARE` | responsibility-aware judgment/action/contract | 主轨候选机制 |
 
@@ -113,6 +114,12 @@ active manifest，也没有 live result。详见
 [`feature contextual qualification`](../../../coordination/task_reports/20261005_feature_contextual_baseline_qualification.md)
 及其 raw/summary receipt。下一门仍是 canonical manifest parity、独立 namespace/outcome
 生成和 A0/B0 go/no-go；不得把离线 qualification 解读为 RARE 优势。
+
+随后 `pipe3-two-stage-composition-v1.8` 将这个公共 feature contract 接入 source/target
+selection 与 canonical preview→assignment→commit；`contextual_trust_linear` 的 3-control
+zero-call composition 与 feature receipt 通过（[report](../../../coordination/task_reports/20261005_pipe3_feature_composition_qualification.md)）。
+它仍使用 hand-authored controls 和 unit scorer，不能当作独立 chosen-candidate outcome、
+live parity、质量或成本结果；active 七臂与 `baseline_frozen=false` 不变。
 
 ### 2026-10-05 A0/B0 decision amendment
 

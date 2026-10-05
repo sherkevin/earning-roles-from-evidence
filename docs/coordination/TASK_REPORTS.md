@@ -17,6 +17,14 @@ Goal 修改。
 
 ## Reports
 
+- [partial] 2026-10-05 六份研究主文档质量审计：核对唯一 active registry，逐项评价故事线/方法/benchmark+baseline 与对应三份评价标准的结构、可实现性、证据边界和完备性；确认文档治理约 8/10，但科学 readiness 仍未通过。补齐方法符号到 PIPE3 case 的最小实例表，收敛 `contextual_trust_linear` 与 context-only diagnostic 的 baseline 名称歧义，并记录 novelty table、machine-checkable gate matrix、冻结 benchmark 与 live evidence 的开放项，见 [audit report](task_reports/20261005_six_research_documents_quality_audit.md)。
+- [partial] 2026-10-05 PIPE3 feature-aware two-stage composition qualification：将
+  `contextual_trust_linear` 接入既有 canonical `preview→assignment→commit`，source/target
+  selection 统一传入 `hash64-v1`、`matrix-features-v1`、64 维 bounded feature map；source/
+  target sidecar、feature digest、policy factory/config/version 和 assignment chosen-key
+  binding 均落盘；3 个 control 的 zero-call composition 通过，feature contract receipt 1/1，
+  定向回归 110 项、0 API/0 GPU。它仍不是 chosen-candidate 独立 delivery/action/adoption/
+  later outcome 或 scientific baseline，见 [qualification report](task_reports/20261005_pipe3_feature_composition_qualification.md)。
 - [partial] 2026-10-05 delayed policy adapter qualification：复用真实
   `FeatureContextualTrustPolicy` 与 `DelayedCreditLedger`，新增 publish/update 分离的
   candidate adapter；公开 `RoleEvidenceOffer` 不改变策略 state，只有目标 selection 的

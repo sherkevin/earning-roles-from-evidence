@@ -17,7 +17,9 @@ sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT / "references/aamas"))
 
 from peerrolebench_pipe3_two_stage_composition import _patch_producer, _prepare_case, run  # noqa: E402
-from peerrolebench_baseline_policies import NoUpdatePolicy, TerminalOnlyPolicy, policy_from_name  # noqa: E402
+from peerrolebench_baseline_policies import (  # noqa: E402
+    FeatureContextualTrustPolicy, NoUpdatePolicy, TerminalOnlyPolicy, policy_from_name,
+)
 from peerrolebench_pipe3_task_qualification import load_pipe3  # noqa: E402
 from peerrolebench_pipe3_material_adapter import build_materials  # noqa: E402
 
@@ -31,6 +33,14 @@ def _unit_scorer(kind, sources, info, out, log, seed):
         "coverage_complete": True, "decision_complete": True,
         "scorer_version": "unit-injected-scorer", "response_digest": "a" * 64,
     }
+
+
+def _feature_policy_factory(name):
+    assert name == "contextual_trust_linear"
+    return FeatureContextualTrustPolicy(
+        dimension=64, ridge=1.0, trust_scale=2.0, temperature=1.0, exploration=0.0,
+        encoder_version="hash64-v1", feature_schema="matrix-features-v1",
+    )
 
 
 def test_producer_source_publication_is_separate_from_later_update(tmp_path: Path):
@@ -114,7 +124,7 @@ def test_policy_factory_is_explicit_and_default_behavior_remains_terminal_only(t
     assert result["status"] == "QUALIFIED_OFFLINE"
     assert calls == ["terminal_only", "terminal_only", "terminal_only"]
     assert all(case["policy"] == "terminal_only" for case in result["cases"])
-    assert all(case["version"] == "pipe3-two-stage-composition-v1.7" for case in result["cases"])
+    assert all(case["version"] == "pipe3-two-stage-composition-v1.8" for case in result["cases"])
 
 
 def test_no_update_policy_is_explicitly_not_counted_as_terminal_update_success(tmp_path: Path):
@@ -156,6 +166,47 @@ def test_recipient_judgment_arm_uses_its_declared_feedback_channel(tmp_path: Pat
     rows = [json.loads(line) for line in (tmp_path / "composition" / "producer_owned" / "raw.jsonl").read_text().splitlines()]
     delayed = next(row["payload"] for row in rows if row["event"] == "delayed_update")
     assert delayed["feedback_source"] == "recipient_judgment"
+
+
+def test_feature_contextual_trust_uses_canonical_feature_contract(tmp_path: Path):
+    result = run(
+        tmp_path / "composition", scorer=_unit_scorer,
+        policy_factory=_feature_policy_factory,
+        policy_name="contextual_trust_linear",
+    )
+    assert result["status"] == "QUALIFIED_OFFLINE"
+    assert result["contract_passed"] is True
+    producer = next(case for case in result["cases"] if case.get("control") == "producer_owned")
+    assert producer["policy"] == "contextual_trust_linear"
+    assert producer["policy_update_applied"] is True
+    assert producer["feedback_contract_ok"] is True
+    # The source and target policy selections consume the same canonical
+    # versioned feature map.  The native ledger intentionally stores only the
+    # protocol selection, so the richer policy input is preserved in raw.jsonl
+    # as the sidecar contract receipt.
+    rows = [json.loads(line) for line in (tmp_path / "composition" / "producer_owned" / "raw.jsonl").read_text().splitlines()]
+    feature_rows = [row["payload"] for row in rows if row["event"] == "selection_feature_contract"]
+    sidecar_rows = [row["payload"] for row in rows
+                    if row["event"] in {"source_selection_sidecar", "target_selection_sidecar"}]
+    assert len(feature_rows) == 1
+    assert len(sidecar_rows) == 2
+    feature = feature_rows[0]
+    assert feature["encoder_version"] == "hash64-v1"
+    assert feature["feature_schema"] == "matrix-features-v1"
+    assert set(feature["captured_features"]) == {"peer-b@v1", "peer-c@v1"}
+    assert all(len(values) == 64 for values in feature["captured_features"].values())
+    for sidecar in sidecar_rows:
+        payload = sidecar["payload"]
+        assert sidecar["sidecar_digest"]
+        assert sidecar["feature_digest"] == feature["feature_digest"]
+        assert payload["policy_name"] == "contextual_trust_linear"
+        assert payload["policy_version"] == "linear-ridge-v1"
+        assert payload["captured_features"] == feature["captured_features"]
+    assignments = [row["payload"] for row in producer["ledger"] if row["event_type"] == "later_assignment"]
+    target_selection = next(row["payload"] for row in producer["ledger"]
+                            if row["event_type"] == "peer_selection" and row["payload"]["task_index"] == 1)
+    assert assignments[0]["agent_id"] == target_selection["chosen_peer_id"]
+    assert producer["scientific_claim_allowed"] is False
 
 
 def test_raw_acceptance_arm_stays_unknown_without_raw_projection(tmp_path: Path):
