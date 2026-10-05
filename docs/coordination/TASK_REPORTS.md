@@ -17,6 +17,14 @@ Goal 修改。
 
 ## Reports
 
+- [partial] 2026-10-05 embedding profile debate：用户提出将 peer judgment 聚合成 Agent
+  画像并用 task/profile embedding 匹配；经 primary-source 复核，FlyRoute 已有 success-store/
+  profile distillation/routing，AgentNet 已有 capability-vector similarity，DyTopo 已有
+  semantic topology matching，因此该组合不能单独作为创新。保留 A 作为 profile baseline，
+  优先验证 B 条件化 edge-evidence retrieval，再视跨 root 瓶颈决定是否训练 C compatibility
+  head；标签、selected-only、propensity、read-cut 和 delayed outcome 边界已记录，见
+  [debate report](../research/debates/20261005_embedding_profile_debate.md)。
+
 - [blocked_by_evidence] 2026-10-05 few-shot task generalization gap：确认当前在线 RLS 只更新固定特征，尚未执行历史任务相似度检索；将任务记忆、相似任务支持度、严格 read-cut、few-shot/任务族切分、泛化与遗忘指标列为方法和 benchmark 的必需科学门。延迟 policy adapter 可作为记忆写入/回放接缝，但尚无 few-shot 泛化证据，见 [gap report](task_reports/20261005_few_shot_task_generalization_gap.md)。
 
 - [partial] 2026-10-05 六份研究主文档质量审计：核对唯一 active registry，逐项评价故事线/方法/benchmark+baseline 与对应三份评价标准的结构、可实现性、证据边界和完备性；确认文档治理约 8/10，但科学 readiness 仍未通过。补齐方法符号到 PIPE3 case 的最小实例表，收敛 `contextual_trust_linear` 与 context-only diagnostic 的 baseline 名称歧义，并记录 novelty table、machine-checkable gate matrix、冻结 benchmark 与 live evidence 的开放项，见 [audit report](task_reports/20261005_six_research_documents_quality_audit.md)。

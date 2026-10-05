@@ -168,6 +168,15 @@ parametric online update only
 episodic + parametric + delayed responsibility update
 ```
 
+### 6.1 profile embedding 的定位
+
+把多条评价蒸馏成 Agent 的文字画像，再用任务画像与 Agent 画像的 embedding 相似度选人
+是可实现的 baseline，但不能直接作为本候选的创新声明。已有 profile-routing 工作已经
+采用 success store、画像蒸馏和语义/词法检索；本项目必须保留 edge-local judgment、
+judge/role/version 条件、read cut 和 later outcome 的独立字段。文字画像最多是可读的
+压缩视图，不能成为唯一的训练标签或责任凭证。具体先例和 A/B/C 方案见
+[`embedding profile debate`](../debates/20261005_embedding_profile_debate.md)。
+
 ## 7. 实现顺序和停止条件
 
 1. 先实现纯 CPU、零 API 的 experience-card schema、read-cut、Top-K 和 no-leakage replay；
