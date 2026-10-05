@@ -1,0 +1,11 @@
+# Image-edit prompt v15 — gallery-grounded flat paper figure
+
+Edit the supplied Figure 1 diagram while preserving its exact information flow and all semantic anchors. This is a scientific machine-learning conference paper figure, not a product dashboard, poster, cartoon, or marketing infographic.
+
+Use the local top-conference figure gallery as the style target: sober flat vector drawing on a white page, one clear left-to-right mechanism, compact typography, thin consistent strokes, restrained color coding, and generous white space. Remove the current pastel-gradient/card-heavy/clip-art appearance. Replace every gradient, glow, bevel, shadow, glossy cylinder, emoji-like symbol, and generic stock icon with flat geometric marks or very small line symbols. Use dark navy/charcoal for the main ink, muted blue for peer/selection, muted orange for the artifact path, muted green for recipient/outcome, and a single restrained violet accent for the protocol spine. Keep the background white.
+
+Recompose the figure as one clean visual spine rather than many nested UI cards. Keep the five semantic regions and their reading order, but make PEER CONTEXT, SITUATED EPISODE, EARNING ROLES PROTOCOL, PEER SELECTOR, and OUTCOME lightweight headings or thin boundaries. Within the central protocol, use a horizontal sequence of compact operation labels and small symbols: JUDGE (speech/check), OWN/UNK gate, LEDGER with v_t, READ, then selector actions EXPLORE, SEAL, ASSIGN. Put the delayed FUTURE/next-read loop as one thin dashed return arrow underneath. Use short labels only; do not add explanatory sentences or repeated boxed text.
+
+Preserve these exact tokens and relationships: A, B, C, task; P -> artifact -> R; R emits a recipient signal and path evidence; JUDGE -> OWN/UNK -> LEDGER v_t -> READ; READ feeds the peer selector; selector can EXPLORE or SEAL and then ASSIGN; assignment produces QUALITY and COST; delayed outcome returns to FUTURE/next READ. Keep arrows unambiguous, orthogonal or gently curved, with no crossings through labels. Keep the figure wide and suitable for a two-column paper.
+
+The final result must look like a restrained, publication-ready vector schematic from a top ML/MAS paper: no 3-D rendering, no ornamental decoration, no dense prose, no glossy UI, no childish icons, no extra concepts, and no altered semantics.

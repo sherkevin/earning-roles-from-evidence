@@ -806,3 +806,24 @@ uncommitted method-section edit, so its page count was not attributed to v14.
 The v14 asset was promoted to active and v12 remains preserved. The image tool
 was the Codex built-in generator with undisclosed model identity; this remains
 figure validation, not role-learning efficacy evidence.
+
+### 2026-10-05 Figure 1 gallery-grounded open-spine correction
+
+The assistant inspected representative architecture, pipeline, and multi-agent
+framework figures in the local `topconf-paper-figure-gallery`. The resulting
+style audit was recorded before editing: white background, a single mechanism
+spine, flat vector marks, restrained accents, thin consistent rules, and short
+semantic labels. This was used to diagnose v14's pastel/card-heavy, product-
+infographic appearance rather than treating the critique as a cosmetic
+preference.
+
+The assistant generated and preserved v15 as a flattening candidate, then v16 as
+a stricter open-spine edit. v16 removes the remaining action cards, section
+dividers, large outcome table, and generic hand/map illustrations while keeping
+the protocol semantics. The Codex built-in image-generation tool was used; its
+model identifier was not disclosed and the output is not labelled image2.5.
+The clean-HEAD layout receipt is
+`experiments/logs/figure_pdf_layout_v16_open_spine_20261005/`: main 7 pages,
+supplement 2 pages, zero overfull boxes, and zero unresolved references. v16
+was promoted to the active Figure 1. This is a figure-presentation check, not
+evidence for role-learning efficacy.

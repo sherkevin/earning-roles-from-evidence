@@ -173,3 +173,34 @@ v14 候选 PDF：
 短标签仍可读。候选图因此晋升为 active `figures/overview.pdf`。当前工作区
 另有未提交的方法小节改动，它会改变正文页数，但没有被回滚，也没有被归因给
 图稿。一次早期临时替换因 TeX 进程超时而中断，已记录为 UNKNOWN，不计入通过。
+
+## v15/v16 gallery-grounded style correction
+
+The user then identified a remaining visual problem: the icon-first figure still
+looked like a pastel product infographic, with too many rounded containers and
+generic pictograms. I inspected the local `topconf-paper-figure-gallery` rather
+than relying on an abstract style preference. Representative AAAI/NeurIPS
+architecture, pipeline, and multi-agent framework figures consistently used a
+white page, one strong mechanism spine, flat fills, thin consistent rules,
+restrained accents, and short labels; they did not make every noun a UI card.
+The evidence and acceptance checks are recorded in
+`article/aamas2027/figures/ai_versions/v15_gallery_style_20261005/gallery_style_notes.md`.
+
+v15 was a real Codex built-in image edit that flattened the gradients and made
+the causal spine stronger, but still retained boxed selector actions and
+generic hand/map symbols. It remains preserved as a candidate. v16 used a
+second, stricter prompt to open the composition: one light protocol enclosure,
+no vertical section dividers, no action/outcome card table, and minimal
+abstract evidence marks. The source prompt and candidate are preserved in
+`article/aamas2027/figures/ai_versions/v16_open_spine_20261005/`.
+
+The v16 candidate passed the semantic review (all required tokens and arrows
+remain, and the delayed loop still returns to FUTURE/NEXT READ) and a clean
+HEAD layout check at `ed91856`: main paper 7 pages, supplement 2 pages, zero
+overfull boxes, zero unresolved references. The Figure 1 page was inspected at
+two-column scale. v16 was promoted to `article/aamas2027/figures/overview.pdf`
+with SHA-256
+`54f2a9933987bd35baa9fc9d07afd211f0aca8d610fed91ed61f9ed81115ffde`.
+The receipt is `experiments/logs/figure_pdf_layout_v16_open_spine_20261005/`.
+This is presentation/layout validation only and does not change the scientific
+submission gate or constitute role-learning evidence.

@@ -1,4 +1,6 @@
-# v14 — promoted icon-first protocol figure
+# v14 — superseded icon-first protocol figure
+
+Status: **Superseded by v16** on 2026-10-05.
 
 This directory records the v14 asset promoted to
 `article/aamas2027/figures/overview.pdf`. It replaces the v12 cropped figure

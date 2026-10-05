@@ -1,6 +1,6 @@
 # AAMAS 2027 internal revision
 
-## 当前题目摘要草稿（2026-10-02）
+## 当前题目摘要草稿（2026-10-05）
 
 当前确认的工作标题为：**Know Who You Are: Earning Roles from Situated Peer Judgments**。
 “Know Who You Are”提供对外的想象空间；“earning roles”描述待验证的动态角色形成目标，不能替代实时更新、稳定性或角色学习效果证据。
@@ -29,9 +29,7 @@ judgment 是否能形成可归因的 producer role evidence，并改变未来责
 python3 scripts/build_aamas2027.py
 ```
 
-截至 2026-10-02，当前主稿已通过本地 AAMAS 模板编译：7 页、引用已解析、无
-overfull box；主赛道官方上限为 8 页。主稿已预留闭环架构图、Evidence-to-role state 方法图、实验矩阵图、
-headline result 表和 trace 表的位置，结果单元仍为空；独立事件时序图保留在图稿版本目录中。`build/main.pdf` 是内部 pre-results 审阅稿，不能通过投稿构建。
+截至 2026-10-05，当前主稿已通过本地 AAMAS 模板编译：**正文 8 页，参考文献从第 9 页开始**，引用已解析且无 overfull box。AAMAS 2027 主赛道的官方上限是正文 8 页，参考文献可另加页；页数核验记录在 `build/verification.json`，当前 reviewed artifact 的 SHA-256 为 `431be9e9deb5995a06f55156c3e74d6f2b75bc2d4af0e74fab7450e5a4157486`。主稿已包含闭环架构图、Evidence-to-role state 方法图、实验矩阵图、方法状态合同、结果填充合同和 headline result 表；所有经验结果单元仍为空。`build/main.pdf` 是内部 pre-results 审阅稿，不能通过投稿构建。
 
 2026-09-26 本地已编译并目视检查：一页、匿名、无溢出和未解析引用；官方文件
 哈希一致。仍有官方类/元数据路径的 incomplete-ifx 兼容性警告，校验 JSON 已记录。
@@ -47,9 +45,9 @@ python scripts/build_aamas2027.py
 ```
 
 - `main.tex`: current pre-results paper draft with the situated-judgment role-evidence storyline, complete experiment matrix, empty result cells, explicit claim boundaries, and reserved figure/table slots.
-- `scripts/build_aamas_figures.py` and `figures/*.pdf`: paper figures. `overview.pdf` is the active, independently audited icon-first protocol figure promoted on 2026-10-05; it uses short semantic anchors and a retained AI-edit history rather than explanatory text cards. `method_state.pdf` and `experiment_map.pdf` remain deterministic vector figures, and `figures/versions/` preserves prior candidates.
+- `scripts/build_aamas_figures.py` and `figures/*.pdf`: paper figures. `overview.pdf` is the active, independently audited open-spine protocol figure promoted on 2026-10-05; it uses one left-to-right mechanism spine, short semantic anchors, restrained flat-vector marks, and a retained AI-edit history rather than explanatory text cards. `method_state.pdf` and `experiment_map.pdf` remain deterministic vector figures, and `figures/versions/` preserves prior candidates.
 - `supplement.tex`: 过渡期内部证据补充稿；与当前主稿的实验结果表尚未合并。
-- `build/main.pdf`, `build/supplement.pdf`: compiled internal drafts.
+- `build/main.pdf`, `build/supplement.pdf`: compiled internal drafts. The reviewed eight-page main artifact is also preserved at `build/paper_framework_20261005_final/main.pdf`; use `python3 scripts/build_aamas2027.py --build-dir build/paper_framework_20261005_final --main-only --require-content-pages 8` for an isolated rebuild.
 - `aamas.cls`, `ACM-Reference-Format.bst`, `by.pdf`: byte-identical copies from the official AAMAS 2027 template.
 - `aamas_metadata.tex`: official conference/copyright settings and an explicit internal submission-ID marker.
 
