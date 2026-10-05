@@ -64,8 +64,8 @@ The paper makes four concrete contributions as a testable design.
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/overview.pdf}
-\caption{The earning-roles loop. Orange marks situated observation, green marks responsibility-safe evidence, and blue marks the future decision and its independently scored consequence. The feedback edge is delayed: it can change a later read cut but cannot rewrite a sealed assignment. Each symbol corresponds to a typed ledger field in the protocol.}
-\Description{Six-stage loop from a versioned producer delivery to recipient judgment, public role evidence, future assignment, target outcome, and delayed selected-only credit.}
+\caption{The earning-roles protocol. Orange marks situated observation; green marks producer-attributable evidence, while the \textsc{unknown} branch remains audit-only; blue marks the sealed assignment and scored outcome. Gray dashed feedback is delayed and selected-only, entering a future state and next read cut without changing historical evidence or a sealed assignment. Peer-context links are descriptive, not causal.}
+\Description{A protocol figure shows peer context, a producer delivery used by a recipient, recipient signal and path evidence, attribution into producer-owned evidence or an audit-only unknown branch, a versioned role ledger, a read cut, exploration followed by a sealed assignment, an independently scored outcome, and delayed selected-only feedback into a future state and next read.}
 \label{fig:overview}
 \end{figure*}
 

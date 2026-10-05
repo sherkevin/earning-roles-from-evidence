@@ -781,3 +781,15 @@ The assistant added a zero-call five-cell qualification with two valid history e
 ### 2026-10-04 canonical history provenance qualification
 
 The assistant added a native-ledger provenance qualification over one valid chain, one duplicate-credit replay, and eight source/target/candidate/registry/read-cut/arrival/selection/credit mutations. The valid chain rebuilt the binding receipt and history digest; duplicate credit returned `NOOP`; all mutations produced UNKNOWN with zero append/update. This is still zero-call engineering evidence and does not establish live histories, baseline parity, benchmark efficacy, or GPU training.
+
+### 2026-10-05 Figure 1 AI-edit iterations and audit
+
+The assistant used the Codex built-in image-generation tool to edit a user-supplied
+architecture image through retained v10 and v11 prompts. The tool did not disclose
+its model identifier, so the outputs are not labelled image2.5 results. The edits
+were inspected at full resolution and in the AAMAS two-column PDF. An independent
+Codex audit checked delayed-credit routing, exploration/sealing semantics, the
+audit-only UNKNOWN branch, and caption alignment. The cropped v12 PDF candidate was
+promoted to active `article/aamas2027/figures/overview.pdf` after passing a 7-page,
+zero-overfull, zero-unresolved-reference build. This is a paper-figure artifact
+validation; it is not experimental evidence for role-learning efficacy.
