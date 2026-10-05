@@ -29,9 +29,14 @@ selected-only delayed credit 才能更新策略。此前的 two-stage qualificat
 
 - `publish(offer, source_gate)` 只保存 typed `RoleEvidenceOffer` 的公开字段和 subject
   digest，不把 role evidence 转成 `Feedback`；状态容量上限为 1 MiB；
-- `apply_later_credit(LaterChannelPayload)` 是唯一可触发真实策略更新的入口。它检查
-  namespace、source evidence、assignment candidate、target selection、accepted channel、
-  outcome id 和 selected-only flags，然后复用 `DelayedCreditLedger.apply_once`；
+- `validate_later(...)` 先运行 canonical ledger replay，再调用
+  `derive_later_credit_from_ledger` 和 `build_history_binding_receipt`，并把真实 target
+  judgment/terminal label 与 feedback channel 对齐；
+- `apply_validated_later_credit(...)` 是严格路径的唯一更新入口。它检查 replay/binding
+  digest、namespace、source evidence、assignment candidate、target policy selection、
+  accepted channel 和 outcome id，然后复用 `DelayedCreditLedger.apply_once`；
+- `apply_later_credit(LaterChannelPayload)` 保留为 policy-side unit seam，不能单独称作
+  canonical validation；
 - adapter 自己维护 assignment-level applied map，堵住 ledger 仅按
   `assignment_id + later_outcome_id` 造成的 alternate-outcome 二次更新；
 - policy updater 失败或容量检查失败时恢复 policy、credit ledger 和 assignment map；
@@ -42,23 +47,27 @@ selected-only delayed credit 才能更新策略。此前的 two-stage qualificat
 
 qualification runner 为 [`delayed-policy-adapter-qualification-v1`](../../../scripts/peerrolebench_delayed_policy_qualification.py)，
 配置和原始事件位于：
-[`experiments/logs/n03_delayed_policy_adapter_qualification_20261005_v3/`](../../../experiments/logs/n03_delayed_policy_adapter_qualification_20261005_v3/)。
+[`experiments/logs/n03_delayed_policy_adapter_qualification_20261005_v8/`](../../../experiments/logs/n03_delayed_policy_adapter_qualification_20261005_v8/)。
 
-结果为 `7/7 QUALIFIED_OFFLINE`：valid publish/update、duplicate no-op、alternate
+结果为 `8/8 QUALIFIED_OFFLINE`：valid publish/update、duplicate no-op、alternate
 outcome rejection、wrong candidate、wrong channel、closed source gate 和
-snapshot/restore idempotency 全部通过。此前实现修订前的 v1 回执保留在
-`..._v1/`，中间版本 v2 也保留，没有覆盖历史证据。定向测试为 `12 passed`（adapter + existing two-stage
-gate）；没有 LLM/API/GPU 调用。
+snapshot/restore idempotency，以及由真实 canonical ledger fixture 驱动的 replay、
+source evidence/artifact lineage、target assignment/selection/outcome binding 和 label
+mutation rejection 全部通过。此前实现修订前的 v1、v2、v3 回执保留，没有覆盖历史
+证据；v4/v5 的导入失败没有生成运行目录，v6/v7 也保留。snapshot digest mutation
+拒绝新增后，adapter、two-stage gate、history binding/adapter 定向测试为 `26 passed`；没有
+LLM/API/GPU 调用。
 
 ## 三份审核标准对照
 
 | 标准 | 本任务关闭的部分 | 仍未满足 |
 |---|---|---|
 | 故事线与创新点 | 使“situated evidence → future assignment → delayed credit”具备真实 policy 状态转移的工程载体 | 不能证明角色专业化、闭环收益或论文创新优于现有方法 |
-| 方法论 | 真实策略上的 publish/update 分离、assignment 级幂等、channel/subject 绑定、回滚与恢复 | canonical ledger replay、preview→assignment→commit 的 live composition、独立 later histories 仍未接入该 adapter |
+| 方法论 | 真实策略上的 publish/update 分离、canonical replay、source/target history binding、assignment 级幂等、channel/subject 绑定、回滚与恢复 | adapter 尚未拥有 preview→assignment→commit；它仍需与已有 `role_evidence_selection` composition 合并，并在独立 later histories 上验证 |
 | benchmark+baseline | 为后续四格 `public evidence only / delayed update only / both` 提供可执行 adapter seam | 七臂 manifest、closest published、第二 root、独立 live parity、完整成本和 scientific baseline 仍未冻结 |
 
-这次结果只把“接口不存在/用字典假更新”的阻塞降为“候选 adapter 已有零调用资格”；
+这次结果把“接口不存在/用字典假更新/不验证 later lineage”的阻塞降为“候选 adapter
+已有 canonical CPU qualification”；
 不允许把 `QUALIFIED_OFFLINE` 写成实时训练收益，也不允许把
 `contextual_trust_linear` 写入 active baseline matrix。`goal_change_requested=false`。
 

@@ -190,8 +190,9 @@ propensity/cost，普通 feature-aware linear/RLS updater），同时保留 Beta
 qualification。
 
 2026-10-05 delayed-update seam amendment：候选 `DelayedPolicyAdapter` 在
-`FeatureContextualTrustPolicy` 上通过 7 格零调用资格，补齐 public evidence 不更新、
-later target channel 更新和 assignment-level alternate-outcome 拒绝。该 adapter 仍未
+`FeatureContextualTrustPolicy` 上通过 8 格零调用资格，并在严格路径复用 canonical
+replay/history binding，补齐 public evidence 不更新、later target channel 更新和
+assignment-level alternate-outcome 拒绝。该 adapter 仍未
 进入 active 七臂 manifest；canonical ledger replay、独立 target histories、四格信息价值
 和完整成本未完成，因此 `baseline_frozen=false` 保持不变。
 

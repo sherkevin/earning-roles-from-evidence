@@ -55,10 +55,11 @@ Role evidence offer 必须与 policy feedback offer 分离；native `evidence_id
 
 `Findings-ready` 至少需要可复现的 two-stage CPU/live 机制、四格消融和负结果解释；`Proceedings-ready` 还需要独立 confirmation、closest-method 对照、future assignment 效果、负迁移/遗忘分析和 clean-environment replay。两档都要求原始事件、失败、成本和 digest 可追溯。
 
-2026-10-05 qualification note：candidate `DelayedPolicyAdapter` 的 7/7 zero-call
-receipt 只证明真实策略上的 publish/update 接缝、assignment-level 幂等和 fail-closed
-lineage。它不能满足 `Findings-ready` 的 live two-stage、四格消融、future assignment
-effect 或 independent history 门；这些门仍保持未通过。
+2026-10-05 qualification note：candidate `DelayedPolicyAdapter` 的 8/8 zero-call
+receipt 已覆盖真实策略上的 publish/update 接缝、canonical replay/history binding、
+assignment-level 幂等和 fail-closed lineage。它仍不能满足 `Findings-ready` 的 live
+two-stage、四格消融、future assignment effect 或 independent history 门；这些门仍保持
+未通过。
 
 ## 来源边界
 

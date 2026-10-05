@@ -9,14 +9,19 @@ from __future__ import annotations
 
 import argparse
 from datetime import datetime, timezone
+import hashlib
 import json
 from pathlib import Path
+import platform
+import subprocess
 import sys
 
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
+sys.path.insert(0, str(ROOT / "tests"))
+sys.path.insert(0, str(ROOT / "references" / "aamas"))
 
 from peerrolebench_baseline_policies import CandidateRef, FeatureContextualTrustPolicy, Feedback  # noqa: E402
 from peerrolebench_delayed_policy_adapter import (  # noqa: E402
@@ -24,9 +29,15 @@ from peerrolebench_delayed_policy_adapter import (  # noqa: E402
 )
 from peerrolebench_role_evidence_offer import PublicRoleEvidence, make_role_evidence_offer  # noqa: E402
 from peerrolebench_two_stage_gate import LaterCredit, SourceGate  # noqa: E402
+from peer_role_protocol_20260925 import RoleEvidenceUpdate  # noqa: E402
+from test_peerrolebench_peer_history_binding import _ledger_and_offer  # noqa: E402
 
 
 CONFIG_VERSION = "delayed-policy-adapter-qualification-v1"
+
+
+def _sha_file(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def gate(allowed: bool = True) -> SourceGate:
@@ -100,10 +111,21 @@ def run(output_dir: Path) -> dict:
         "policy": "contextual_trust_linear", "namespace": "qualification-ns",
         "state_cap_bytes": 1 << 20, "real_api_calls": 0, "gpu_jobs": 0,
         "scientific_claim_allowed": False,
+        "source_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
+        "python": platform.python_version(), "platform": platform.platform(),
+        "component_sha256": {
+            name: _sha_file(ROOT / name) for name in (
+                "scripts/peerrolebench_delayed_policy_adapter.py",
+                "scripts/peerrolebench_two_stage_gate.py",
+                "scripts/peerrolebench_ledger_replay.py",
+                "scripts/peerrolebench_peer_history_binding.py",
+            )
+        },
         "cases": ["valid_publish_then_delayed_update", "duplicate_assignment_noop",
                    "alternate_outcome_rejected", "wrong_candidate_rejected",
                    "wrong_channel_rejected", "closed_source_gate_rejected",
-                   "snapshot_restore_idempotency"],
+                   "snapshot_restore_idempotency", "canonical_replay_and_lineage"],
+        "canonical_replay_required": True,
     }
     (output_dir / "config.json").write_text(json.dumps(config, indent=2) + "\n", encoding="utf-8")
     raw = output_dir / "raw.jsonl"
@@ -178,10 +200,46 @@ def run(output_dir: Path) -> dict:
         assert result == "NOOP_DUPLICATE" and restored._state_digest() == adapter._state_digest()
         return {"result": result, "state_restored": True}
 
+    def canonical():
+        ledger, role_offer, assignment, target_selection, entry, registry = _ledger_and_offer()
+        ledger.record_evidence_update(RoleEvidenceUpdate(
+            "e1", "j1", "c1", "o1", "role-evidence-v1", 13.0,
+        ))
+        adapter = DelayedPolicyAdapter(
+            FeatureContextualTrustPolicy(
+                dimension=2, ridge=1.0, trust_scale=1.0,
+                encoder_version="hash64-v1", feature_schema="matrix-features-v1",
+            ), namespace="qualification-ns",
+        )
+        adapter.publish_from_ledger(role_offer, ledger=ledger, source_gate=gate())
+        adapter.policy.choose(
+            event_id="policy-s1", context_key="ctx", selector_id="selector",
+            candidates=(CandidateRef("peer-a", "v1"), CandidateRef("peer-b", "v1")),
+            base_scores=(100.0, 0.0), rng=np.random.default_rng(0), state_version="target",
+            encoder_version="hash64-v1", feature_schema="matrix-features-v1",
+            captured_features={"peer-a@v1": (1.0, 0.0), "peer-b@v1": (0.0, 1.0)},
+        )
+        validated = adapter.validate_later(
+            ledger=ledger, source_gate=gate(), role_offer=role_offer,
+            target_assignment=assignment, target_selection=target_selection,
+            evidence_candidate_id="peer-a@v1", later_outcome_id="o1",
+            history_entry=entry, assignment_read_cut=5, target_decision_index=6,
+            target_arrival_index=12, candidate_registry_digest=registry,
+            target_policy_event_id="policy-s1",
+            feedback=Feedback(
+                "target-feedback", "policy-s1", "recipient_judgment", 1.0, 12.0,
+                delay=6.0, action="accept", disposition="eligible", provenance="public",
+            ),
+        )
+        update = adapter.apply_validated_later_credit(validated)
+        assert validated.replay_status == "PASS" and update == "UPDATED_ONCE"
+        return {"replay_status": validated.replay_status, "binding_status": validated.binding_receipt.history_status,
+                "update_result": update, "policy_updates": adapter.policy.updates}
+
     for case, fn in (("valid_publish_then_delayed_update", valid), ("duplicate_assignment_noop", duplicate),
                       ("alternate_outcome_rejected", alternate), ("wrong_candidate_rejected", wrong_candidate),
                       ("wrong_channel_rejected", wrong_channel), ("closed_source_gate_rejected", closed_gate),
-                      ("snapshot_restore_idempotency", restore)):
+                      ("snapshot_restore_idempotency", restore), ("canonical_replay_and_lineage", canonical)):
         execute(case, fn)
     passed = sum(row["status"] == "PASS" for row in rows)
     summary = {**config, "status": "QUALIFIED_OFFLINE" if passed == len(rows) else "FAILED_OFFLINE",

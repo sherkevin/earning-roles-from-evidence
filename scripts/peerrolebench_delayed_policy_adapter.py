@@ -2,8 +2,10 @@
 
 The adapter is intentionally policy-agnostic at the evidence boundary.  A
 published :class:`RoleEvidenceOffer` is an immutable public input and never
-becomes a ``Feedback`` row.  Only a later, replay-validated target channel
-(``recipient_judgment`` or ``terminal_outcome``) can reach the wrapped policy.
+becomes a ``Feedback`` row.  Only a later target channel that passes the
+strict ``validate_later`` replay/binding path (``recipient_judgment`` or
+``terminal_outcome``) can reach the wrapped policy.  The lower-level
+``apply_later_credit`` method remains a policy-side seam for unit tests.
 
 This is a CPU qualification seam, not a live runner or a scientific result.
 It adds the assignment-level idempotency that ``DelayedCreditLedger`` alone
@@ -18,8 +20,16 @@ import json
 from typing import Any, Mapping
 
 from peerrolebench_baseline_policies import BaselinePolicy, Feedback
-from peerrolebench_role_evidence_offer import RoleEvidenceOffer
-from peerrolebench_two_stage_gate import DelayedCreditLedger, LaterCredit, SourceGate
+from peerrolebench_ledger_replay import replay_ledger_events
+from peerrolebench_peer_history import HistoryEntryV1
+from peerrolebench_peer_history_binding import HistoryBindingReceiptV1, build_history_binding_receipt
+from peerrolebench_role_evidence_offer import (
+    RoleEvidenceOffer, build_role_evidence_from_ledger,
+)
+from peerrolebench_role_evidence_scorer import JUDGMENT_LABELS
+from peerrolebench_two_stage_gate import (
+    DelayedCreditLedger, LaterCredit, SourceGate, derive_later_credit_from_ledger,
+)
 
 
 VERSION = "delayed-policy-adapter-v1"
@@ -57,6 +67,21 @@ class LaterChannelPayload:
     namespace: str
     assignment_consumed: bool = True
     selection_matches_assignment: bool = True
+
+
+@dataclass(frozen=True)
+class ValidatedLaterCredit:
+    """Canonical replay receipt accepted by the strict update entry point."""
+
+    channel: LaterChannelPayload
+    binding_receipt: HistoryBindingReceiptV1
+    replay_status: str
+    replay_digest: str
+    target_selection_id: str
+
+
+def _ledger_digest(events: Any) -> str:
+    return _digest(list(events))
 
 
 class DelayedPolicyAdapter:
@@ -132,7 +157,7 @@ class DelayedPolicyAdapter:
             raise ValueError("evidence id is already published")
         self._offers[offer.offer_id] = {
             "offer_digest": digest,
-            "offer": offer.payload(),
+            "offer": offer.operator_binding_payload(),
             "state_digest": before,
             "policy_updates": updates_before,
         }
@@ -158,6 +183,122 @@ class DelayedPolicyAdapter:
             updates_before, updates_after, self.namespace,
         )
 
+    def publish_from_ledger(self, offer: RoleEvidenceOffer, *, ledger: Any,
+                            source_gate: SourceGate) -> PublishReceipt:
+        """Validate public evidence against a complete canonical source ledger.
+
+        Responsibility eligibility is still supplied by the versioned
+        ``SourceGate`` produced by the scorer/action layer; this method adds
+        the independent replay and evidence-row/artifact lineage checks before
+        the policy-side publication store is touched.
+        """
+        replay = replay_ledger_events(getattr(ledger, "events", ()))
+        if replay.status != "PASS" or not replay.complete:
+            raise ValueError("source ledger replay is not complete")
+        for row in offer.public_evidence:
+            canonical = build_role_evidence_from_ledger(
+                ledger=replay.ledger, evidence_id=str(row["evidence_id"]),
+                candidate_key=str(row["candidate_key"]), role=offer.role,
+                target_task_index=int(offer.task_index),
+                evidence_version=offer.evidence_version,
+                available_index=int(row["available_index"]),
+            )
+            if canonical.payload() != dict(row):
+                raise ValueError("public evidence row does not match canonical source ledger")
+        return self.publish(offer, source_gate=source_gate)
+
+    def validate_later(
+        self, *, ledger: Any, source_gate: SourceGate, role_offer: RoleEvidenceOffer,
+        target_assignment: Any, target_selection: Any, evidence_candidate_id: str,
+        later_outcome_id: str, history_entry: HistoryEntryV1,
+        assignment_read_cut: int, target_decision_index: int,
+        target_arrival_index: int, candidate_registry_digest: str,
+        target_policy_event_id: str, feedback: Feedback,
+    ) -> ValidatedLaterCredit:
+        """Derive a later credit only from a replayed, bound canonical ledger."""
+        if not source_gate.evidence_publish_allowed or source_gate.policy_update_allowed:
+            raise ValueError("source gate is not eligible for later credit")
+        if role_offer.candidate_registry_digest != candidate_registry_digest:
+            raise ValueError("role offer and later binding registry differ")
+        replay = replay_ledger_events(getattr(ledger, "events", ()))
+        if replay.status != "PASS" or not replay.complete:
+            raise ValueError("later ledger replay is not complete")
+        credit = derive_later_credit_from_ledger(
+            ledger=replay.ledger, source_gate=source_gate,
+            assignment_id=str(target_assignment.assignment_id),
+            source_evidence_id=str(role_offer.evidence_ids[0]),
+            evidence_candidate_id=str(evidence_candidate_id),
+            later_outcome_id=str(later_outcome_id),
+        )
+        if credit is None:
+            raise ValueError("canonical later credit lineage is invalid")
+        binding = build_history_binding_receipt(
+            entry=history_entry, ledger=replay.ledger, offer=role_offer,
+            target_assignment=target_assignment, target_selection=target_selection,
+            target_outcome_id=str(later_outcome_id),
+            assignment_read_cut=int(assignment_read_cut),
+            target_decision_index=int(target_decision_index),
+            target_arrival_index=int(target_arrival_index),
+            candidate_key=str(evidence_candidate_id),
+            candidate_registry_digest=str(candidate_registry_digest),
+            later_credit_digest=credit.credit_digest,
+        )
+        if binding.history_status not in {"PASS", "FAIL"}:
+            raise ValueError("later history binding is UNKNOWN")
+        if binding.later_credit_digest != credit.credit_digest:
+            raise ValueError("history binding does not contain the derived credit digest")
+        decisions = getattr(self.policy, "_decisions", {})
+        selected = decisions.get(str(target_policy_event_id))
+        if selected is None:
+            raise ValueError("target policy selection is missing")
+        if selected.chosen.key != str(evidence_candidate_id):
+            raise ValueError("target policy selection chose a different candidate")
+        if feedback.source_event_id != str(target_policy_event_id):
+            raise ValueError("feedback must reference the target policy selection")
+        target_outcome = replay.ledger.outcomes.get(str(later_outcome_id))
+        if target_outcome is None:
+            raise ValueError("target outcome is missing after replay")
+        target_delivery = replay.ledger.deliveries.get(target_outcome.delivery_id)
+        if target_delivery is None:
+            raise ValueError("target delivery is missing after replay")
+        target_judgment = next(
+            (item for item in replay.ledger.judgments.values() if item.delivery_id == target_delivery.delivery_id),
+            None,
+        )
+        if feedback.source == "recipient_judgment":
+            if target_judgment is None or target_judgment.decision not in JUDGMENT_LABELS:
+                raise ValueError("target recipient judgment has no registered label")
+            if feedback.label is None or abs(float(feedback.label) - JUDGMENT_LABELS[target_judgment.decision]) > 1e-12:
+                raise ValueError("feedback label does not match target recipient judgment")
+        elif feedback.source == "terminal_outcome":
+            expected = target_outcome.partial_score
+            if expected is None:
+                expected = 1.0 if target_outcome.success else 0.0
+            if feedback.label is None or abs(float(feedback.label) - float(expected)) > 1e-12:
+                raise ValueError("feedback label does not match target terminal outcome")
+        else:
+            raise ValueError("later feedback source is not a canonical target channel")
+        channel = LaterChannelPayload(
+            credit=credit, feedback=feedback, target_outcome_id=str(later_outcome_id),
+            assignment_candidate_key=str(evidence_candidate_id), namespace=self.namespace,
+            assignment_consumed=True, selection_matches_assignment=True,
+        )
+        return ValidatedLaterCredit(
+            channel=channel, binding_receipt=binding, replay_status=replay.status,
+            replay_digest=_ledger_digest(replay.ledger.events),
+            target_selection_id=str(target_selection.selection_id),
+        )
+
+    def apply_validated_later_credit(self, validated: ValidatedLaterCredit) -> str:
+        """Apply only a receipt produced by :meth:`validate_later`."""
+        if not isinstance(validated, ValidatedLaterCredit):
+            raise TypeError("validated must be a ValidatedLaterCredit")
+        if validated.replay_status != "PASS" or not validated.binding_receipt.later_credit_digest:
+            raise ValueError("validated later credit lacks complete replay/binding")
+        if validated.binding_receipt.later_credit_digest != validated.channel.credit.credit_digest:
+            raise ValueError("validated binding and credit digest differ")
+        return self.apply_later_credit(validated.channel)
+
     def apply_later_credit(self, payload: LaterChannelPayload) -> str:
         """Apply one validated target channel, at most once per assignment."""
 
@@ -177,7 +318,7 @@ class DelayedPolicyAdapter:
         if subject != payload.assignment_candidate_key:
             raise ValueError("assignment candidate does not match evidence subject")
         previous = self._applied_assignments.get(credit.assignment_id)
-        credit_digest = _digest(asdict(credit))
+        credit_digest = credit.credit_digest
         feedback_digest = _digest(asdict(feedback))
         if previous is not None:
             if (previous["credit_digest"] == credit_digest
@@ -236,28 +377,80 @@ class DelayedPolicyAdapter:
     def snapshot(self) -> dict[str, Any]:
         payload = self._snapshot_payload()
         self._check_capacity()
-        return payload
+        return {**payload, "snapshot_digest": _digest(payload)}
 
     @classmethod
     def restore(cls, payload: Mapping[str, Any]) -> "DelayedPolicyAdapter":
         if payload.get("version") != VERSION:
             raise ValueError("unsupported delayed adapter snapshot version")
+        raw = dict(payload)
+        snapshot_digest = raw.pop("snapshot_digest", None)
+        if not isinstance(snapshot_digest, str) or snapshot_digest != _digest(raw):
+            raise ValueError("delayed adapter snapshot digest is invalid")
         policy = BaselinePolicy.restore(payload["policy"])
         adapter = cls(
             policy,
             namespace=str(payload["namespace"]),
             state_cap_bytes=int(payload["state_cap_bytes"]),
         )
-        adapter._offers = {str(key): dict(value) for key, value in dict(payload.get("offers", {})).items()}
-        adapter._evidence_subjects = {str(key): str(value) for key, value in dict(payload.get("evidence_subjects", {})).items()}
+        offers: dict[str, dict[str, Any]] = {}
+        derived_subjects: dict[str, str] = {}
+        for key, value in dict(payload.get("offers", {})).items():
+            raw_value = dict(value)
+            raw_offer = dict(raw_value.get("offer", {}))
+            bundle_payload = dict(raw_offer)
+            bundle_payload.pop("offer_record_hash", None)
+            bundle_digest = _digest(bundle_payload)
+            raw_offer.pop("schema", None)
+            raw_offer["bundle_digest"] = bundle_digest
+            try:
+                offer = RoleEvidenceOffer(**raw_offer)
+            except Exception as exc:
+                raise ValueError("delayed adapter snapshot contains an invalid role offer") from exc
+            if _digest(offer.operator_binding_payload()) != raw_value.get("offer_digest"):
+                raise ValueError("delayed adapter offer digest is invalid")
+            state_digest = raw_value.get("state_digest")
+            if (not isinstance(state_digest, str) or len(state_digest) != 64
+                    or any(char not in "0123456789abcdef" for char in state_digest)
+                    or int(raw_value.get("policy_updates", -1)) < 0):
+                raise ValueError("delayed adapter offer state receipt is invalid")
+            for row in offer.public_evidence:
+                evidence_id = str(row["evidence_id"])
+                if evidence_id in derived_subjects:
+                    raise ValueError("delayed adapter snapshot contains duplicate evidence")
+                derived_subjects[evidence_id] = str(row["candidate_key"])
+            offers[str(key)] = raw_value
+        if derived_subjects != {str(key): str(value) for key, value in dict(payload.get("evidence_subjects", {})).items()}:
+            raise ValueError("delayed adapter evidence subject index is inconsistent")
+        adapter._offers = offers
+        adapter._evidence_subjects = derived_subjects
         adapter._applied_assignments = {
             str(key): {str(k): str(v) for k, v in dict(value).items()}
             for key, value in dict(payload.get("applied_assignments", {})).items()
         }
-        for key, raw in dict(payload.get("credit_ledger", {}).get("credits", {})).items():
-            adapter._credit_ledger.credits[str(key)] = LaterCredit(**dict(raw))
+        for key, raw_credit in dict(payload.get("credit_ledger", {}).get("credits", {})).items():
+            credit = LaterCredit(**dict(raw_credit))
+            expected_key = f"{credit.assignment_id}\x1f{credit.later_outcome_id}"
+            rebuilt = LaterCredit.build(
+                assignment_id=credit.assignment_id,
+                source_evidence_id=credit.source_evidence_id,
+                later_outcome_id=credit.later_outcome_id,
+                later_quality=credit.later_quality,
+            )
+            if str(key) != expected_key or rebuilt.credit_digest != credit.credit_digest:
+                raise ValueError("delayed adapter credit ledger integrity is invalid")
+            adapter._credit_ledger.credits[expected_key] = credit
+        for assignment_id, record in adapter._applied_assignments.items():
+            matching = [credit for credit in adapter._credit_ledger.credits.values()
+                        if credit.assignment_id == assignment_id]
+            if len(matching) != 1 or record.get("credit_digest") != matching[0].credit_digest:
+                raise ValueError("delayed adapter assignment index is inconsistent")
+            if not record.get("feedback_id") or not record.get("feedback_digest"):
+                raise ValueError("delayed adapter assignment receipt is incomplete")
         adapter._check_capacity()
         return adapter
 
 
-__all__ = ["DelayedPolicyAdapter", "LaterChannelPayload", "PublishReceipt", "VERSION"]
+__all__ = [
+    "DelayedPolicyAdapter", "LaterChannelPayload", "PublishReceipt", "ValidatedLaterCredit", "VERSION",
+]

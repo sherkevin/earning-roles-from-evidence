@@ -8,8 +8,13 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from peerrolebench_baseline_policies import CandidateRef, FeatureContextualTrustPolicy, Feedback
 from peerrolebench_delayed_policy_adapter import DelayedPolicyAdapter, LaterChannelPayload
+from peerrolebench_delayed_policy_adapter import ValidatedLaterCredit
+from peerrolebench_peer_history import HistoryEntryV1
 from peerrolebench_role_evidence_offer import PublicRoleEvidence, make_role_evidence_offer
 from peerrolebench_two_stage_gate import SourceGate, LaterCredit
+from peer_role_protocol_20260925 import RoleEvidenceUpdate
+
+from test_peerrolebench_peer_history_binding import _ledger_and_offer
 
 
 def gate() -> SourceGate:
@@ -160,3 +165,84 @@ def test_snapshot_restore_preserves_public_store_and_idempotency():
     restored = DelayedPolicyAdapter.restore(adapter.snapshot())
     assert restored._state_digest() == adapter._state_digest()
     assert restored.apply_later_credit(channel(selection)) == "NOOP_DUPLICATE"
+
+
+def test_canonical_replay_validation_binds_real_ledger_lineage_before_update():
+    ledger, role_offer, assignment, target_selection, entry, registry = _ledger_and_offer()
+    ledger.record_evidence_update(RoleEvidenceUpdate("e1", "j1", "c1", "o1", "role-evidence-v1", 13.0))
+    adapter = DelayedPolicyAdapter(
+        FeatureContextualTrustPolicy(
+            dimension=2, ridge=1.0, trust_scale=1.0,
+            encoder_version="hash64-v1", feature_schema="matrix-features-v1",
+        ), namespace="ns-1",
+    )
+    adapter.publish_from_ledger(role_offer, ledger=ledger, source_gate=gate())
+    adapter.policy.choose(
+        event_id="policy-s1", context_key="ctx", selector_id="selector",
+        candidates=(CandidateRef("peer-a", "v1"), CandidateRef("peer-b", "v1")),
+        base_scores=(100.0, 0.0), rng=__import__("numpy").random.default_rng(0),
+        state_version="target", encoder_version="hash64-v1", feature_schema="matrix-features-v1",
+        captured_features={"peer-a@v1": (1.0, 0.0), "peer-b@v1": (0.0, 1.0)},
+    )
+    validated = adapter.validate_later(
+        ledger=ledger, source_gate=gate(), role_offer=role_offer,
+        target_assignment=assignment, target_selection=target_selection,
+        evidence_candidate_id="peer-a@v1", later_outcome_id="o1",
+        history_entry=entry, assignment_read_cut=5, target_decision_index=6,
+        target_arrival_index=12, candidate_registry_digest=registry,
+        target_policy_event_id="policy-s1",
+        feedback=Feedback("target-feedback", "policy-s1", "recipient_judgment", 1.0, 12.0,
+                          delay=6.0, action="accept", disposition="eligible", provenance="public"),
+    )
+    assert isinstance(validated, ValidatedLaterCredit)
+    assert validated.replay_status == "PASS"
+    assert adapter.apply_validated_later_credit(validated) == "UPDATED_ONCE"
+    assert adapter.policy.updates == 1
+
+
+def test_canonical_validation_rejects_label_mutation_before_policy_update():
+    ledger, role_offer, assignment, target_selection, entry, registry = _ledger_and_offer()
+    ledger.record_evidence_update(RoleEvidenceUpdate("e1", "j1", "c1", "o1", "role-evidence-v1", 13.0))
+    adapter = DelayedPolicyAdapter(
+        FeatureContextualTrustPolicy(
+            dimension=2, ridge=1.0, trust_scale=1.0,
+            encoder_version="hash64-v1", feature_schema="matrix-features-v1",
+        ), namespace="ns-1",
+    )
+    adapter.publish_from_ledger(role_offer, ledger=ledger, source_gate=gate())
+    adapter.policy.choose(
+        event_id="policy-s1", context_key="ctx", selector_id="selector",
+        candidates=(CandidateRef("peer-a", "v1"), CandidateRef("peer-b", "v1")),
+        base_scores=(100.0, 0.0), rng=__import__("numpy").random.default_rng(0),
+        state_version="target", encoder_version="hash64-v1", feature_schema="matrix-features-v1",
+        captured_features={"peer-a@v1": (1.0, 0.0), "peer-b@v1": (0.0, 1.0)},
+    )
+    try:
+        adapter.validate_later(
+            ledger=ledger, source_gate=gate(), role_offer=role_offer,
+            target_assignment=assignment, target_selection=target_selection,
+            evidence_candidate_id="peer-a@v1", later_outcome_id="o1",
+            history_entry=entry, assignment_read_cut=5, target_decision_index=6,
+            target_arrival_index=12, candidate_registry_digest=registry,
+            target_policy_event_id="policy-s1",
+            feedback=Feedback("target-feedback", "policy-s1", "recipient_judgment", 0.0, 12.0,
+                              delay=6.0, action="reject", disposition="eligible", provenance="public"),
+        )
+    except ValueError as exc:
+        assert "does not match target recipient judgment" in str(exc)
+    else:
+        raise AssertionError("mutated target label must be rejected")
+    assert adapter.policy.updates == 0
+
+
+def test_snapshot_mutation_is_rejected_before_restore():
+    adapter = DelayedPolicyAdapter(policy(), namespace="ns-1")
+    adapter.publish(offer(), source_gate=gate())
+    snapshot = adapter.snapshot()
+    snapshot["evidence_subjects"]["e-source"] = "peer-c@v1"
+    try:
+        DelayedPolicyAdapter.restore(snapshot)
+    except ValueError as exc:
+        assert "snapshot digest" in str(exc)
+    else:
+        raise AssertionError("mutated snapshot must not restore")

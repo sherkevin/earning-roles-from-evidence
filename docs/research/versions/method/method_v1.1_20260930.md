@@ -143,10 +143,12 @@ context-only diagnostic。零调用 qualification 见
 4. 所有真实 API、GPU、失败和 UNKNOWN 记录在 append-only raw/processed/summary 日志中；不回写历史 receipt。
 
 2026-10-05 implementation-status amendment：候选 `DelayedPolicyAdapter` 已在真实
-`FeatureContextualTrustPolicy` 上通过 7 格零调用资格。它把 `RoleEvidenceOffer` 的
-publication 与 later target feedback update 分开，并补充 assignment-level alternate-outcome
-拒绝、candidate/channel/namespace 绑定、容量与回滚；这只是方法接口的工程资格，不是
-最终 updater、live PIPE3 replay 或 scientific result，也不改变本节的实现顺序和未锁定项。
+`FeatureContextualTrustPolicy` 上通过 8 格零调用资格；严格路径复用 canonical replay、
+`derive_later_credit_from_ledger` 和 history binding，把 `RoleEvidenceOffer` publication
+与 later target feedback update 分开，并补充 assignment-level alternate-outcome 拒绝、
+candidate/channel/namespace 绑定、容量与回滚。这只是方法接口的工程资格，adapter 自身
+尚未接 preview→assignment→commit、independent histories 或 live PIPE3，不能当作最终
+updater、实时训练收益或 scientific result，也不改变本节的实现顺序和未锁定项。
 
 ## 9. 对照标准
 
