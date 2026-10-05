@@ -145,3 +145,11 @@ assignment-level future utility/regret、later adoption/terminal quality、完�
 历史先验和 direct-feature controls；并按 task family 与 agent 做 group split。若 profile
 匹配只在同分布随机切分有效，或 profile permutation 仍然有效，则只能报告描述性关联，
 不能声称学到了 Agent 的任务能力。
+
+## 7. 融合是否值得做
+
+可以融合，但必须是“先验—局部证据—延迟残差”的分工：文字画像提供冷启动语义先验，
+edge evidence/prototype 提供 few-shot 局部修正，小型 head 学习跨任务共享的长期残差。
+三者不能对同一标签独立训练后再任意加权，否则会重复计数、扩大 judge bias，并且难以
+证明每一部分的作用。融合版本至少要与三种单独版本做正交消融，并报告画像过期、原型
+支持量不足、delayed outcome 缺失和 profile permutation 等反例。

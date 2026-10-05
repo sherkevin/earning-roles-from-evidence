@@ -177,6 +177,37 @@ judge/role/version 条件、read cut 和 later outcome 的独立字段。文字�
 压缩视图，不能成为唯一的训练标签或责任凭证。具体先例和 A/B/C 方案见
 [`embedding profile debate`](../debates/20261005_embedding_profile_debate.md)。
 
+### 6.2 融合候选：profile prior + episodic evidence + delayed residual
+
+用户提出的文字画像不应被删除，而应放在三层结构的第一层：
+
+1. **Profile prior**：把通过责任门的历史 evidence 异步压缩成带版本的文字画像，得到
+   `s_profile(c)=cos(task_embedding, profile_embedding_c)`。它负责冷启动和语义概括，
+   不直接承担最终标签。
+2. **Episodic evidence**：保留带 task/role/judge/version/lineage 的正负原型或 Top-K
+   经验卡，得到 `s_memory(c)`。它负责 few-shot 的快速、局部修正，接收新的 `y^J` 后
+   可立即进入下一次 public read cut。
+3. **Delayed residual head**：小型 online head 只学习 profile+memory 尚未解释的残差，
+   主要使用完成 future assignment/use 后的 `y^L` 更新。它负责跨任务共享和长期校准，
+   以中性 ridge prior 锚定，避免覆盖旧能力。
+
+ 一个可实现的融合形式是：
+
+$$
+u_t(c)=b_t(c)+s_{\mathrm{profile}}(c)
+       +g_t(c)s_{\mathrm{memory}}(c)
+       +r_\theta(\phi_t(c))
+       -\lambda\,\operatorname{cost}_t(c)+\xi_t(c),
+$$
+
+其中 `g_t(c)=n_eff/(n_eff+κ)` 由有效相似证据量决定。没有相似证据时，系统保留画像
+先验；证据增多时，局部原型逐渐接管；延迟 head 只补充残差。`s_profile`、`s_memory`
+和 `r_θ` 的权重必须在开发 split 预注册，不能看 confirmation 结果后调权重。
+
+三层不能重复计算同一标签：`y^J` 更新 public profile/evidence memory，`y^L` 更新
+delayed residual/calibration；文字画像只是 evidence 的压缩视图，更新时必须保留原始
+证据 id 和版本。画像生成失败或过期时回退到上一版本和原型记忆。
+
 ## 7. 实现顺序和停止条件
 
 1. 先实现纯 CPU、零 API 的 experience-card schema、read-cut、Top-K 和 no-leakage replay；

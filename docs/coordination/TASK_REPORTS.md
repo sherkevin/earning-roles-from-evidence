@@ -22,7 +22,8 @@ Goal 修改。
   profile distillation/routing，AgentNet 已有 capability-vector similarity，DyTopo 已有
   semantic topology matching，因此该组合不能单独作为创新。保留 A 作为 profile baseline，
   优先验证 B 条件化 edge-evidence retrieval，再视跨 root 瓶颈决定是否训练 C compatibility
-  head；标签、selected-only、propensity、read-cut 和 delayed outcome 边界已记录，见
+  head；随后补充融合候选“profile prior + episodic evidence + delayed residual”，三层分工
+  和标签归属已记录，见
   [debate report](../research/debates/20261005_embedding_profile_debate.md)。
 
 - [blocked_by_evidence] 2026-10-05 few-shot task generalization gap：确认当前在线 RLS 只更新固定特征，尚未执行历史任务相似度检索；将任务记忆、相似任务支持度、严格 read-cut、few-shot/任务族切分、泛化与遗忘指标列为方法和 benchmark 的必需科学门。延迟 policy adapter 可作为记忆写入/回放接缝，但尚无 few-shot 泛化证据，见 [gap report](task_reports/20261005_few_shot_task_generalization_gap.md)。
