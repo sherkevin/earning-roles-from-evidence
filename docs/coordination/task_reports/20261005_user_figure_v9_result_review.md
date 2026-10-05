@@ -143,3 +143,13 @@ active 文件与 v12 `overview_v12.pdf` 的 SHA-256 均为：
 
 因此，当前 active 图、图注和正文的时间语义已经同步；投稿 gate 仍保持关闭，
 因为这是内部 pre-results 稿，科学结果尚未回填。
+
+## 全图主稿视觉检查
+
+为避免只验证 Figure 1 而破坏整篇排版，另行渲染了主稿第 4--6 页的实际双栏
+PDF。Figure 2 的 episode/public-evidence/local-decision 三泳道仍能在正文尺寸下
+辨认，`read-cut`、`sealed assignment` 和 selected-only update 的箭头没有被
+Figure 1 的高分辨率栅格资源挤压或截断；Figure 3 的 ArtifactRole/PeerSelect、
+matched policies 和 RQ1--RQ4 映射也保持完整。结果页没有新增 overfull box 或
+引用问题。该检查只证明图文排版与语义连接没有回归，不构成 benchmark 或方法
+效果证据。
