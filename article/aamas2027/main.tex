@@ -49,7 +49,7 @@ A final score cannot by itself identify which producer caused a defect. An accep
 
 The central idea is to make the recipient's local observation a public, version-bound evidence object with a responsibility boundary. A producer is credited only when the delivery was observed, the recipient action is traceable to that delivery, and a contract check excludes recipient-owned work. Evidence is published without silently updating the policy. Before a later task starts, a legal owner reads the snapshot and the selector seals its assignment and propensity. Only after the later task has an independent outcome can a delayed credit update occur. This separates what a recipient saw from what the future responsibility actually produced, and makes the separation observable in the ledger.
 
-Figure~\ref{fig:overview} summarizes this sequence as one responsibility-evidence loop; the colored paths distinguish situated observation, public evidence, and the later decision.
+Figure~\ref{fig:overview} shows the loop; its colors separate situated observation, public evidence, and the later decision.
 
 We name this protocol \emph{earning roles}. The name describes a measurable process: a collaborator earns responsibility opportunities through attributable evidence that changes future assignment under a fixed information and cost contract. We call this responsibility-aware role evidence (RARE); the name refers to the loop's evidence semantics, not to a particular updater. RARE is defined by the judgment--attribution--assignment loop, not by a particular representation, neural head, RLS update, or periodic refit. The scientific claim to test is that this loop identifies useful role evidence beyond raw acceptance, terminal-only outcomes, and same-information contextual trust.
 
@@ -176,6 +176,46 @@ The representation $h$, updater, and constants are replaceable implementation co
 
 The same protocol yields three observable predictions. First, responsibility safety is measured by false producer-attribution and \unknown{} rates under recipient-only interventions. Second, temporal validity is measured by read-cut and assignment-order invariants and by the absence of target-outcome fields at selection. Third, bounded online service is measured by per-event update latency, backlog, state bytes, and complete cost. These predictions map to the RQ2--RQ4 endpoints; they are not assumptions that the score automatically satisfies.
 
+\subsection{Executable selector and update contract}
+The protocol becomes runnable with a small stateful selector whose interfaces are fixed before confirmation data are read. We use a frozen text encoder only to place a task, a candidate's public description, and its eligible evidence in a common space; the encoder is not updated by a feedback event. To prevent a profile from silently reusing the label that trains the decision head, each candidate has a timestamped profile snapshot and a post-snapshot evidence delta:
+\begin{align}
+ P_{v,k}&=\operatorname{summarize}\{e_i:G_i=1,\;t_i<\kappa_k\},\\
+ D_{v,k,t}&=\operatorname{summarize}\{e_i:G_i=1,\;\kappa_k\leq t_i\leq w_t\},\\
+ z_t(v)&=[\phi(x_t)\,\|\,\phi(P_{v,k})\,\|\,\phi(D_{v,k,t})\,\|\,b(v)] .
+ \label{eq:selector-state}
+\end{align}
+Here $\kappa_k$ is the last profile cut, $w_t$ is the legal read cut, $\phi$ is frozen, and $b(v)$ contains version and uncertainty features that are already public at $w_t$. An empty profile or delta is represented explicitly; it is not replaced by a future label. The split is a provenance rule, not a tuning convention: an event can enter exactly one of $P$, $D$, or a later target outcome.
+
+The candidate distribution is
+\begin{equation}
+ q_t(v)=\operatorname{softmax}_{v\in C_t}\left(g_\psi(z_t(v))+\theta_v^\top\phi(x_t)\right),
+ \qquad a_t\sim q_t,
+ \label{eq:selector}
+\end{equation}
+where $g_\psi$ is a fixed small head and $\theta_v$ is a per-candidate residual that is allowed to change only after an independent outcome for a previously selected assignment arrives. The head, temperature, exploration floor, clipping rule, and learning rate are configuration fields, not values selected after seeing confirmation results. The experiment compares the full state against profile-only, delta-only, residual-only, and no-history versions, so a gain cannot be attributed to the word ``fusion'' alone.
+
+At runtime the selector executes five auditable operations. (1) It appends a source judgment to an immutable ledger and applies the ownership gate; rejected or incomplete records become \unknown{}. (2) It advances a read watermark and materializes a state snapshot, recording the feature-schema and state digest. (3) It scores only the legal candidate menu and writes the candidate set, probabilities, sampled action, and assignment digest before the target starts. (4) When the target outcome arrives, it verifies the matching assignment, selected-only eligibility, version, and idempotency key. (5) It applies one bounded residual update and emits a new state digest; profile and delta materialization wait for the next declared read cut. This sequence permits a crashed service to replay events without changing a sealed choice.
+
+\begin{table}[t]
+\centering\scriptsize
+\setlength{\tabcolsep}{2pt}
+\caption{State fields and their legal update event. A field is read only after its listed cut and never retroactively edits a sealed assignment.}
+\label{tab:state-contract}
+\begin{tabular}{p{.25\columnwidth}p{.25\columnwidth}p{.38\columnwidth}}
+\toprule
+Field & Source & Update boundary \\
+\midrule
+Profile $P_{v,k}$ & Gate-passed evidence before $\kappa_k$ & Next profile cut; immutable thereafter \\
+Delta $D_{v,k,t}$ & New gate-passed evidence after $\kappa_k$ & Read watermark $w_t$ \\
+Residual $\theta_v$ & Selected target outcome $Y_t$ & Matching delayed update only \\
+Uncertainty $u(v)$ & Unknown, duplicate, or correction records & Monotone audit update \\
+Assignment $a_t,p_t$ & Candidate menu and snapshot & Sealed before target execution \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+This implementation contract gives the method a measurable online meaning without claiming that one encoder or head is universally best. It also makes the difficult cases executable: a late judgment changes a future snapshot, a recipient-owned repair cannot train the producer residual, and a missing target outcome produces no update. The confirmation experiment fills in latency, state size, and predictive utility from the same ledger used to audit attribution. If a simpler calibrated comparator matches the full selector under the same read cuts and complete cost, the paper reports the protocol boundary and does not attribute the gain to the fusion architecture.
+
 \subsection{What counts as innovation}
 The claimed object is the closed loop in which situated judgment becomes attributable evidence, evidence changes a legal future assignment, and that assignment has an unseen quality--cost consequence. Existing representations, frozen encoders, RLS, online logistic regression, periodic refitting, caches, and prompt templates are implementation or comparison choices. The required tests are matched composition, leave-one-mechanism-out ablations, evidence-content mutation, and a same-information contextual controller. If these controls reproduce the complete result, the closed-loop mechanism has no identifiable advantage.
 
@@ -297,14 +337,38 @@ The main claim is withdrawn if an evidence publication implicitly changes persis
 
 \paragraph{Phase rule.} Before selection, the policy sees only the candidate menu, public-row watermark, read-cut digest, and sealed propensity; hidden gold, unexecuted-candidate outcomes, and future target outcomes remain unavailable. During responsibility assessment, the record contains the judgment, action, owner, changed paths, ownership gate, and explicit \unknown{} reason. After the assignment seal, only the matching target quality/cost event can produce one selected-only update; a late or duplicate event without correction lineage is not a new label.
 
-\section{Current Evidence and Expected Interpretation}
+\subsection{Execution and result-filling contract}
+The remaining empirical work is organized as a sequence of frozen experiment cards rather than as an open-ended search. Each card names one matrix row, one structural root or PeerSelect stream, one policy configuration, and one seed set. Before dispatch, the card records the candidate menu, read-cut rule, feedback delay, model and encoder versions, prompt or feature schema, exploration floor, update rule, token and wall-clock budget, stopping rule, and primary estimand. These fields are immutable after the first confirmation call. A failed call remains an attempted call with its observed cost; it does not create a new seed or silently move a row to a cheaper condition.
+
+The result-filling process has four checkpoints. First, a raw ledger checker verifies hashes, event order, selected-only eligibility, and the absence of future fields at selection. Second, a scorer produces per-episode labels, \unknown{} reasons, costs, and stream identifiers without applying policy-specific postprocessing. Third, an analysis script computes the predeclared estimands and stream-level uncertainty from the same manifest; it writes a machine-readable result object and a human-readable audit. Fourth, the paper integrator maps only verified fields to the corresponding table cell and interpretation sentence. A cell remains \textsc{tbd} when a card is incomplete, a root fails qualification, or the endpoint is undefined. The integrator never replaces a missing value with zero and never edits a raw result to match a predicted direction.
+
+\begin{table}[t]
+\centering\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\caption{Result-entry rules used by the confirmation cards. The table is a writing contract, not an observed result.}
+\label{tab:result-contract}
+\begin{tabular}{p{.18\columnwidth}p{.34\columnwidth}p{.32\columnwidth}}
+\toprule
+Checkpoint & Required artifact & Permitted paper entry \\
+\midrule
+Qualification & Root, material, scorer, visibility, and replay checks & Qualified, exploratory, or \unknown{} \\
+Execution & Immutable event ledger and raw API/tool trace & Attempted count, failures, and cost \\
+Analysis & Per-stream estimand, interval, and denominator & Number only if the card is complete \\
+Integration & Hash-linked result object and reviewer audit & Table cell plus evidence-matched prose \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+This contract also fixes how negative evidence is written. A null contrast is reported as a null contrast; a safety improvement without utility gain is reported as a safety result; and a useful predictor that fails to change a future assignment is not called role formation. The final paper therefore needs no retrospective choice between a success story and a debugging report: the matrix, denominators, and falsification rules determine which claim survives.
+
+\section{Results and Evidence Boundary}
 \label{sec:current}
 
-Current real traces qualify engineering boundaries only. Two limited real-API chains logged source selection, recipient judgment, consumer execution, source snapshots, and a later assignment. Both consumers changed their own integration file, while the producer priority artifacts failed a separate import/constructor audit. The original four-check consumer score therefore did not cover the producer contract. The feedback mapping equaled its prior, so selection probabilities did not change. These observations motivated the responsibility gate, the separate producer audit, and the evidence-content mutation test.
+\textbf{RQ1--RQ2 (information and assignment).} The confirmation card will fill the held-out Brier score, matched-information comparison, assignment-change rate, and future quality--cost utility in Tables~\ref{tab:headline} and~\ref{tab:matrix}: \textsc{tbd}. Prediction without a sealed future assignment supports an information claim only; assignment without an independent target outcome does not establish responsibility transfer.
 
-The traces do not establish role specialization, predictive judgment, future quality improvement, or real-time training. The agents in those chains shared a fresh model and prompt without persistent individual experience, so identity labels cannot be interpreted as learned expertise. The benchmark and baseline matrix remain candidates until a second structural root, independent live histories, complete costs, and fair adapters qualify. No result cell in this manuscript is filled from those engineering receipts.
+\textbf{RQ3--RQ4 (service and safety).} The latency, backlog, state-size, forgetting, \unknown{}, and false-attribution cells remain \textsc{tbd}. We will interpret a safe null, a quality--cost trade-off, and a qualified positive result as different claims rather than as interchangeable evidence.
 
-When confirmation evidence arrives, the interpretation follows a fixed truth table. Information gain without assignment or quality gain supports a predictive-signal claim only. Assignment gain without independent information leaves causal attribution unresolved. Quality gain with excess cost or unacceptable \unknown{} rate is a trade-off, not a quality--cost win. A result at insufficient root or stream coverage remains exploratory. This prevents a posterior change or a single successful trajectory from being promoted to the paper's central claim.
+Current real traces qualify engineering boundaries only. Two limited real-API chains logged source selection, recipient judgment, consumer execution, source snapshots, and a later assignment. Both consumers changed their own integration file, while a separate producer audit found priority-artifact failures; the original consumer score therefore did not measure producer correctness. The feedback mapping equaled its prior, so probabilities did not change. These traces motivate the gate and audit, but do not establish specialization, prediction, future quality, or real-time training. The agents shared a fresh prompt without persistent individual experience, and no result cell is filled from these receipts. A result without the qualified root, independent stream, complete cost, and fair adapter remains exploratory.
 
 \section{Discussion and Limitations}
 
@@ -313,6 +377,10 @@ The mechanism is intentionally narrower than a claim that agents acquire general
 The main threats are judge error, selective exposure, root dependence, incomplete responsibility coverage, and cost inflation from recipient observation. The design measures judge reliability and selection propensity, preserves \unknown{} records, and uses independent roots and streams. It cannot infer a universal role semantics from a single workflow family. If the public evidence is too sparse, the correct outcome may be a well-calibrated null or a narrower task-conditioned result.
 
 The final backbone and updater remain open. They will be chosen only after the qualified tracks and strong same-information baselines expose a bottleneck. A frozen representation with a small incremental head, RLS or online logistic regression, periodic refitting, and a bounded candidate updater are comparison conditions. A large GPU run is justified only when a real update or representation bottleneck is measured and the experiment card fixes the challenger, budget, and confirmation split.
+
+The deployment boundary is equally explicit. A selector may refuse to learn from an ambiguous handoff, but it must still expose that refusal to the operator and preserve the event for later audit. A selector may use a local candidate graph, but locality must be part of the card rather than an unreported source of advantage. A selector may compress old evidence, but compression must retain the source identifiers, validity interval, and state digest needed to reconstruct a decision. These requirements make the method compatible with a tool-selection service and a peer-selection service while keeping their labels separate: a tool result can be checked by an execution oracle, whereas a peer judgment must pass the producer--recipient ownership gate. The shared implementation is therefore an event and replay layer, not a shared ground truth. This distinction matters for the final claim. If the implementation provides low-latency updates but the qualified benchmark cannot identify producer responsibility, we report an executable infrastructure result and withdraw the role-learning claim. If attribution is safe but the selector does not improve future assignments, we report a calibrated evidence protocol rather than self-evolution. Both outcomes are pre-specified and remain useful to later systems.
+
+The artifact release follows the same separation. Code, task roots, prompts, scorer versions, and environment locks are released with a manifest that points from each aggregate to its raw event file. The manifest records excluded attempts and their reasons, so a reader can distinguish a missing root from a zero-valued outcome. A replay command reconstructs read cuts and assignment seals without contacting the model provider; a separate live command is required to reproduce API latency and token cost. We will also release the exact table-generation script and the card-level decision log. These details are part of the scientific object because an online role claim is inseparable from the order in which evidence becomes visible. They let a reviewer test both positive and negative interpretations of the same stream.
 
 \section{Conclusion}
 

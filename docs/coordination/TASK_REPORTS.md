@@ -17,6 +17,13 @@ Goal 修改。
 
 ## Reports
 
+- [partial] 2026-10-05 AAMAS paper framework and exact body-page build：按官方 AAMAS 2027
+  instructions 将主稿补齐为可执行的 pre-results 论文框架，加入 selector/state contract、
+  result-filling contract、RQ1--RQ4 结果占位和 artifact/replay 说明；隔离构建核验正文
+  正好 8 页、参考文献从第 9 页开始、0 overfull、引用解析、官方模板文件未改。科学
+  readiness 仍为 false，结果、最终 benchmark/backbone/update 和 submission gate 均未被
+  伪造完成，见 [paper framework report](task_reports/20261005_paper_framework_eight_pages.md)。
+
 - [blocked_by_evidence] 2026-10-05 fusion method self-audit：对“profile prior + episodic
   evidence + delayed residual”按 ER-G2、方法评价和 AAMAS 反驳门复核；可实现性 7.0/10，
   标签有效性 4.0、任务泛化 4.5、可识别性 3.5、创新性 3.5，当前方法门不通过。主要问题

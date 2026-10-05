@@ -48,6 +48,7 @@ python scripts/build_aamas2027.py
 - `scripts/build_aamas_figures.py` and `figures/*.pdf`: paper figures. `overview.pdf` is the active, independently audited open-spine protocol figure promoted on 2026-10-05; it uses one left-to-right mechanism spine, short semantic anchors, restrained flat-vector marks, and a retained AI-edit history rather than explanatory text cards. `method_state.pdf` and `experiment_map.pdf` remain deterministic vector figures, and `figures/versions/` preserves prior candidates.
 - `supplement.tex`: 过渡期内部证据补充稿；与当前主稿的实验结果表尚未合并。
 - `build/main.pdf`, `build/supplement.pdf`: compiled internal drafts. The reviewed eight-page main artifact is also preserved at `build/paper_framework_20261005_final/main.pdf`; use `python3 scripts/build_aamas2027.py --build-dir build/paper_framework_20261005_final --main-only --require-content-pages 8` for an isolated rebuild.
+- Versioned copy: [`artifacts/aamas2027/paper_framework_20261005/`](../../artifacts/aamas2027/paper_framework_20261005/).
 - `aamas.cls`, `ACM-Reference-Format.bst`, `by.pdf`: byte-identical copies from the official AAMAS 2027 template.
 - `aamas_metadata.tex`: official conference/copyright settings and an explicit internal submission-ID marker.
 
