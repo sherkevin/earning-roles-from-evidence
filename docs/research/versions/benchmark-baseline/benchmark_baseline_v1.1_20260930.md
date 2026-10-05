@@ -114,6 +114,16 @@ active manifest，也没有 live result。详见
 及其 raw/summary receipt。下一门仍是 canonical manifest parity、独立 namespace/outcome
 生成和 A0/B0 go/no-go；不得把离线 qualification 解读为 RARE 优势。
 
+### 2026-10-05 A0/B0 decision amendment
+
+低成本决策门已完成：严格 ArtifactRole closest published baseline 判为 `NO-GO`；
+Meta-Team L2-style 只保留为需独立预注册信息边界的 `public adapter candidate`，不能写成
+upstream reproduction。PIPE3 保留 primary development candidate；PIPE2 由于 seeds
+`1,4,6,9` 的 fixture validity、derived overlay authority 和任务语义尚未闭合，仍不能作为
+confirmation root；MULTI3 保留为低条件 fallback。该决定不冻结 benchmark，也不启动正式
+API/A800；完整理由与证据见
+[`20261005_a0_b0_go_no_go.md`](../../../coordination/task_reports/20261005_a0_b0_go_no_go.md)。
+
 ## 4. 实验问题与指标
 
 - **RQ1（主轨信息价值）**：situated judgment 能否预测独立 producer contract/later-use 结果，超出 raw acceptance 与 terminal-only？

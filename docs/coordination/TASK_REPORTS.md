@@ -17,6 +17,11 @@ Goal 修改。
 
 ## Reports
 
+- [partial] 2026-10-05 A0/B0 closest adapter 与第二 root go/no-go：严格 ArtifactRole closest published
+  判为 `NO-GO`，Meta-Team L2 只保留为需预注册信息边界的候选 adapter；PIPE3 保留 primary
+  development candidate，PIPE2 因 seed fixture validity/authority/语义未闭合暂不作
+  confirmation root，MULTI3 不进入主矩阵。该决策整合已有零调用回执，0 API/0 GPU，Goal 不
+  降级，下一步是 C0 canonical parity preflight，见 [go/no-go report](task_reports/20261005_a0_b0_go_no_go.md)。
 - [partial] 2026-10-05 feature-aware contextual baseline qualification：修复 r5.66 暴露的
   strongest same-information 缺口，新增 `contextual_trust_linear` 普通 diagonal RLS
   comparator，并让 RARE 与其共享 64-d `hash64-v1` bounded feature、menu 和 base-score
