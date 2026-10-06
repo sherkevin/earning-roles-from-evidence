@@ -28,10 +28,12 @@ recipient judgment 到 target outcome 是灰色虚线的 **after seal** 时间�
 
 - 一句话测试：只看图和 caption，能说出“recipient judgment → responsibility gate → public evidence → later assignment → unseen outcome → delayed credit”。
 - 30 秒测试：能区分 observed episode、public state、future decision 和 delayed feedback。
-- 版式测试：全宽图约 7in，嵌入 TrueType，灰度仍可读，正文标签不小于约 7pt；不出现越界、交叉穿框或未经验证数字。
+- 版式测试：全宽图约 7in，嵌入 TrueType，灰度仍可读，正文标签不小于约 7pt；不出现越界、交叉穿框或未经验证数字。当前 AI 图组仅通过版心/溢出检查，因其仍是单张 JPEG 栅格图，**尚未通过 TrueType/矢量生产门**。
 - 版本测试：v0、v1、v2、v3、v4、v5、v6、v7 的 PDF、脚本和评审记录全部保留，不能覆盖历史版本。
 
 本轮及前轮 AI 版本和提示词保存在 `article/aamas2027/figures/ai_versions/` 下的 v18–v27 目录。当前正文晋升的是 v27、v22、v24；v19、v20、v21、v23、v25、v26 保留为可回退的中间候选。样例库风格审查见 `GALLERY_FIGURE_STYLE_AUDIT_20261006.md`。AI 工具的模型标识未披露，不能把这些资产标注为 image2.5 结果。
+
+当前图组质量审查见 [`20261006_figure_quality_audit_v27_v22_v24.md`](../../coordination/task_reports/20261006_figure_quality_audit_v27_v22_v24.md)。在矢量/字体门关闭前，三张图是内部候选，不是最终投稿图。
 
 ## 结果图预留
 

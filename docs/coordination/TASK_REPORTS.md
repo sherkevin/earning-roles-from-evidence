@@ -25,6 +25,8 @@ Goal 修改。
 
 ## Reports
 
+- [blocked_by_evidence] 2026-10-06 figure quality audit v27/v22/v24：语义和版心检查通过，但与 best/oral 样例的定制化视觉质感仍有差距；`pdfimages` 确认三张 PDF 都是单张 JPEG 栅格图，未通过 TrueType/矢量生产门。保留当前候选，不降级 Goal，最终投稿前必须解决矢量字体和统一图形系统，见 [quality audit](task_reports/20261006_figure_quality_audit_v27_v22_v24.md)。
+
 - [partial] 2026-10-06 gallery-audited Figure 1 round v25–v27：读取 CollabLLM、DPO、VideoPoet 样例并把共同视觉规律落成审查文档；Figure 1 经过对象化叙事、开放主轴和大字号三轮定点编辑，当前晋升 v27。v27/v22/v24 构建为正文 8 页、引用解析、0 overfull；caption 已同步配色，见 [gallery/style report](task_reports/20261006_ai_figure_gallery_round_v25_v27.md)。
 
 - [partial] 2026-10-06 AI figure round v22–v24：Figure 2 改为开放三泳道，Figure 3 改为开放三列并移除 policy label 卡片；当前正文图组为 v19/v22/v24。实际版心构建正文 8 页、引用解析、0 overfull；图形工作不替代 benchmark/baseline 或科学效果证据，见 [figure report](task_reports/20261006_ai_figure_round_v22_v24.md)。
