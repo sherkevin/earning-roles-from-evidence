@@ -45,6 +45,7 @@ python scripts/build_aamas2027.py
 ```
 
 - `main.tex`: current pre-results paper draft with the situated-judgment role-evidence storyline, complete experiment matrix, empty result cells, explicit claim boundaries, and reserved figure/table slots.
+- `docs/paper/aamas2027/FORMAL_PAPER_ZH.md`: 与当前 `main.tex` 逐节对应的正式论文中文版，用于故事线、方法、benchmark/baseline 和实验设计的中文审阅；不替代英文投稿源文件。
 - `scripts/build_aamas_figures.py` and `figures/*.pdf`: paper figures. `overview.pdf` is the active, independently audited open-spine protocol figure promoted on 2026-10-05; it uses one left-to-right mechanism spine, short semantic anchors, restrained flat-vector marks, and a retained AI-edit history rather than explanatory text cards. `method_state.pdf` and `experiment_map.pdf` remain deterministic vector figures, and `figures/versions/` preserves prior candidates.
 - `supplement.tex`: 过渡期内部证据补充稿；与当前主稿的实验结果表尚未合并。
 - `build/main.pdf`, `build/supplement.pdf`: compiled internal drafts. The reviewed eight-page main artifact is also preserved at `build/paper_framework_20261005_final/main.pdf`; use `python3 scripts/build_aamas2027.py --build-dir build/paper_framework_20261005_final --main-only --require-content-pages 8` for an isolated rebuild.
