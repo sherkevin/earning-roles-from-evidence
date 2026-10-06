@@ -64,6 +64,12 @@ revision as [`paper_figure_refresh_20261006/main.pdf`](../../artifacts/aamas2027
 10 total pages, 8 body pages and references from page 9. Prompts and candidates remain versioned;
 the refresh is a presentation change and does not alter the scientific gate.
 
+A later visual pass promotes v22 for Figure 2 and v24 for Figure 3 (with v23 retained as an
+intermediate). The current internal revision is
+[`paper_figure_refresh_v2_20261006/main.pdf`](../../artifacts/aamas2027/paper_figure_refresh_v2_20261006/main.pdf),
+still 8 body pages with references from page 9. The follow-up only fixes figure-version drift;
+it does not change any scientific claim.
+
 ## Current checkpoint — 2026-09-26
 
 N00 is reconciled. Strict N01 benchmark qualification remains open. N02 has used
