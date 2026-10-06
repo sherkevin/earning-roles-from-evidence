@@ -69,4 +69,4 @@
 
 ## 7. 对照标准
 
-审查本文件使用当前生效的 [`storyline_v1.3_20260928_eval.md`](../evaluation/storyline/storyline_v1.3_20260928_eval.md)。方法细节只见当前生效的 [`method_v1.1_20260930.md`](../method/method_v1.1_20260930.md)，实验对象只见 [`benchmark_baseline_v1.1_20260930.md`](../benchmark-baseline/benchmark_baseline_v1.1_20260930.md)。
+审查本文件使用当前生效的 [`storyline_v1.3_20260928_eval.md`](../evaluation/storyline/storyline_v1.3_20260928_eval.md)。方法细节只见当前生效的 [`method_v1.2_20261006.md`](../method/method_v1.2_20261006.md)，实验对象只见 [`benchmark_baseline_v1.1_20260930.md`](../benchmark-baseline/benchmark_baseline_v1.1_20260930.md)。

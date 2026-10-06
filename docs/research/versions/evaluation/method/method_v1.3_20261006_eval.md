@@ -1,10 +1,10 @@
-# 方法论评价标准 v1.2
+# 方法论评价标准 v1.3
 
-- **状态**：`SUPERSEDED by method_v1.3_20261006_eval`
+- **状态**：`ACTIVE`
 - **类别**：evaluation/method
-- **评价对象**：[`method_v1.1_20260930.md`](../../method/method_v1.1_20260930.md)
-- **生效日期**：2026-09-30
-- **前一版本**：[`method_v1.1_20260928_eval.md`](method_v1.1_20260928_eval.md)
+- **评价对象**：[`method_v1.2_20261006.md`](../../method/method_v1.2_20261006.md)
+- **生效日期**：2026-10-06
+- **前一版本**：[`method_v1.2_20260930_eval.md`](method_v1.2_20260930_eval.md)
 - **用途**：审查两阶段 role-evidence 方法是否真正新、可运行、可验证、实时且稳定；不保证录用。
 
 ## A. 三层状态硬门
@@ -18,6 +18,8 @@
 Role evidence offer 必须与 policy feedback offer 分离；native `evidence_id`、producer/version、delivery/artifact lineage 和 target assignment subject 必须可从 canonical ledger 重放。必须有 preview→assignment→selection 的 exact chosen/propensity 检查，禁止把 source selection id 当 evidence id，或用错误 peer 消费别人的 evidence。
 
 任何把 diagnostic ELIGIBLE 直接当训练标签、把 later outcome 回填成旧 producer 标签、或在早期 selection 读取未来结果的实现均不通过。
+
+结构化 owner 与 judged role 必须分开验收：`structural_owner_role` 只能由冻结 contract/registry、changed paths、独立 producer check 和预注册 defect/quality 事件推导；模型生成的 `target_role`/`target_paths` 只能作为带噪声的 calibration observation。producer owner 与 judged recipient 的 disagreement 应保留并计入 judge calibration，不能单独 censor 合法 producer evidence；recipient-only、mixed、unknown、资源失败和 contract mutation 必须 fail closed。
 
 ## B. 形式完整性与事件顺序
 
@@ -82,6 +84,8 @@ profile/prototype permutation 对照。融合权重、刷新周期、Top-K、更
 
 `Findings-ready` 至少需要可复现的 two-stage CPU/live 机制、四格消融和负结果解释；`Proceedings-ready` 还需要独立 confirmation、closest-method 对照、future assignment 效果、负迁移/遗忘分析和 clean-environment replay。两档都要求原始事件、失败、成本和 digest 可追溯。
 
+2026-10-06 structural-owner amendment：A1--A8 zero-call mutation/replay qualification 已通过，覆盖 producer owner/judged-role disagreement、recipient-only、mixed ownership、缺少注册、重复回放与 contract mutation；这只证明责任门的工程行为，不构成 live efficacy 或 scientific result。
+
 2026-10-05 qualification note：candidate `DelayedPolicyAdapter` 的 8/8 zero-call
 receipt 已覆盖真实策略上的 publish/update 接缝、canonical replay/history binding、
 assignment-level 幂等和 fail-closed lineage。它仍不能满足 `Findings-ready` 的 live
@@ -90,4 +94,4 @@ two-stage、四格消融、future assignment effect 或 independent history 门�
 
 ## 来源边界
 
-本标准延续方法评价 v1.1 的 soundness、reproducibility、成本和统计要求，并将 ADR 0043 确认的三层状态和 assignment-level estimand 设为本项目实时 role-evidence 主张的硬门。
+本标准延续方法评价 v1.2 的 soundness、reproducibility、成本和统计要求，并将 ADR 0043 确认的三层状态和 assignment-level estimand 设为本项目实时 role-evidence 主张的硬门。

@@ -21,6 +21,8 @@ Goal 修改。
 
 - [partial] 2026-10-06 structural-owner paper PDF：将 v1.2 责任门同步到主稿，重新构建并视觉核验正文 8 页、参考文献第 9 页起、0 overfull；结果表仍为空，科学投稿门保持关闭，见 [PDF report](task_reports/20261006_structural_owner_paper_pdf.md)。
 
+- [partial] 2026-10-06 active-document version reconciliation：将 active storyline、benchmark/baseline 与方法评价标准同步到方法 v1.2 / 评价 v1.3，修复六份研究主文档的版本闭环；未改变 Goal，科学 benchmark、baseline parity 和 efficacy 仍开放，见 [reconciliation report](task_reports/20261006_active_document_version_reconciliation.md)。
+
 - [blocked_by_evidence] 2026-10-06 post-rewrite paper gate review：独立 Codex 复核确认纸面结构、8 页排版和引用覆盖已有明显改善，但 ArtifactRole benchmark、same-information baseline parity、确认 manifest、候选方法锁定和真实结果仍未过科学门；同时用 ADR 0046 修复主稿标题漂移，见 [gate review](task_reports/20261006_updated_paper_gate_review.md)。
 
 - [partial] 2026-10-06 credit-assignment and interactive-agent reference pass：补入 AgentBench、$\tau$-bench、COMA 与 QMIX，并将共享回报的 credit-assignment 先行工作与本论文的 artifact ownership 边界写成可检验对照；v2 仍保持正文 8 页，见 [reference pass](task_reports/20261006_credit_assignment_reference_pass.md)。

@@ -231,4 +231,4 @@ assignment-level alternate-outcome 拒绝。该 adapter 仍未
 
 ## 7. 对照标准
 
-本文件按 [`benchmark_baseline_v1.2_20260929_eval.md`](../evaluation/benchmark-baseline/benchmark_baseline_v1.2_20260929_eval.md) 审查。故事与创新见 [`storyline_v1.1_20260928.md`](../storyline/storyline_v1.1_20260928.md)，方法合同见当前生效的 [`method_v1.1_20260930.md`](../method/method_v1.1_20260930.md)。轨道确认记录见 [`ADR 0042`](../../../user/decisions/0042-confirm-artifactrole-primary-peerselect-secondary.md)。
+本文件按 [`benchmark_baseline_v1.2_20260929_eval.md`](../evaluation/benchmark-baseline/benchmark_baseline_v1.2_20260929_eval.md) 审查。故事与创新见 [`storyline_v1.1_20260928.md`](../storyline/storyline_v1.1_20260928.md)，方法合同见当前生效的 [`method_v1.2_20261006.md`](../method/method_v1.2_20261006.md)。轨道确认记录见 [`ADR 0042`](../../../user/decisions/0042-confirm-artifactrole-primary-peerselect-secondary.md)。
