@@ -1,5 +1,17 @@
 # Task reports
 
+- [partial] 2026-10-06 typed signal-inventory qualification: a zero-call,
+  6-test read-only adapter preserves Qp/J/A/D/Y/L, reuses the registered
+  seven-arm baseline registry, marks every row non-eligible, and makes the
+  current derived-Y dependency explicit; native sidecar/offer lineage,
+  independent Y emission and live parity remain open, see [signal-inventory report](task_reports/20261006_signal_contract_qualification.md).
+
+- [blocked_by_evidence] 2026-10-06 signal-channel and baseline-parity audit: the
+  first parent-source smoke separates recipient judgment from producer quality,
+  recipient action, downstream adoption, terminal outcome and assignment credit;
+  only three of seven named arms have live same-information evidence, so the
+  signal contract and baseline freeze remain open, see [signal audit](task_reports/20261006_signal_channel_parity_audit.md).
+
 - [partial] 2026-10-06 parent-source release hardening: typed parent summaries, pre-API budget validation, and cost-ledger fail-closed completion are covered by 19 offline tests; independent seal and exact scientific pin remain open, see [release-hardening report](task_reports/20261006_release_hardening.md).
 
 - [partial] 2026-10-06 parent-owned live-source smoke: the frozen eight-request real-API development card completed with complete raw/cost/ledger evidence and no transport failures; it validates the shared-source execution seam but exposes recipient-judgment versus objective-outcome disagreement, so no efficacy claim is allowed, see [live smoke report](task_reports/20261006_parent_source_live_smoke.md).

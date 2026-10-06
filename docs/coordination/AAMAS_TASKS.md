@@ -17,6 +17,31 @@ paper artifact is
 10 total pages, exactly 8 body pages, references from page 9. The scientific
 submission gate remains closed; no historical result is reclassified.
 
+**Signal-channel parity amendment — 2026-10-06:** the first parent-source smoke
+confirms that recipient judgment (`J`), producer contract quality (`Q_p`),
+recipient action/use (`A`), downstream adoption (`D`), terminal/later outcome
+(`Y`), and assignment credit (`L`) are distinct observables. The live arms used
+`J=1` while the independent producer/adoption path returned failure and final
+quality `.5`; therefore `J` cannot silently be used as a proxy for `Q_p`, `D`, or
+`Y`. Only `no_update`, `contextual_trust_linear`, and `RARE` have live
+same-information evidence; the other named baselines remain offline-only. Before
+the next root, a native sidecar/offer signal contract and mutation qualification
+must bind each arm's accepted channels, label mapping, visibility/read cut,
+native selection, and UNKNOWN/duplicate/late rules. No baseline freeze, efficacy
+ranking, or A800 job is authorized by this amendment. See
+[`20261006_signal_channel_parity_audit.md`](task_reports/20261006_signal_channel_parity_audit.md).
+
+**Typed signal-inventory qualification — 2026-10-06:** a zero-call 6-test
+read-only adapter now reuses the registered `BASELINE_ARM_SPECS` and existing
+label mapping constants. It emits separate Qp/J/A/D/Y/L rows, always marks them
+non-eligible, and records `Y_current` as derived from D and recipient
+completeness. It does not validate native lineage, read cuts, assignment offers,
+duplicate/late/correction order, or policy updates; the native sidecar/offer
+bridge remains the only gate. The live runner still needs independent A/D/Y
+receipts and the native projection mutation matrix before a second root or
+baseline-parity run. See
+[`20261006_signal_contract_qualification.md`](task_reports/20261006_signal_contract_qualification.md).
+
 **Parent-source integration amendment — 2026-10-06:** the C1 runner now executes a
 single `parent_source` phase before the arm loop, seals its source digest and native
 selection binding, and imports the immutable ledger prefix into three isolated arm
