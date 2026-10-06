@@ -22,7 +22,7 @@ prompt、输入参考路径、原始生成输出路径、项目内副本和 SHA-
 |---|---|---|---|
 | Figure 1 | v28 | 去除巨型标题和卡片，改成单一水平叙事主轴；使用 peer/artifact/judgment/evidence/read-cut/seal/outcome glyph | 三图中最接近样例库的开放叙事，但 peer token 仍带轻微头像化；保留候选 |
 | Figure 2 | v23 | 保留三泳道和 BEFORE SELECTION/AFTER SEAL，统一为 document/speech/gate/ledger/read-cut/seal glyph | 语义最清楚，仍需纸面小尺寸检查；保留候选 |
-| Figure 3 | v26 | 保留 tracks/policies/endpoints，去掉 award/gear/clock，改用 ledger/seal/pulse/gate glyph | 与前两图更统一，但左侧 peer token 仍有人形倾向；保留候选 |
+| Figure 3 | v26（v25 保留为中间版） | 保留 tracks/policies/endpoints，去掉 award/gear/clock，改用 ledger/seal/pulse/gate glyph | 与前两图更统一，但左侧 peer token 仍有人形倾向；保留候选 |
 
 ## 已满足、部分满足、未满足
 
