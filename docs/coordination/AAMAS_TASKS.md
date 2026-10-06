@@ -1,12 +1,16 @@
 # AAMAS 2027 task ledger
 
-Updated: 2026-10-01 (persistent goal active; N02 attempted budget exhausted; PIPE2 runtime qualification exposed seed-1 invalid fixture). The project-level goal authority is [GOAL v1.0](GOAL.md); task-by-task reconciliation is indexed in [TASK_REPORTS](TASK_REPORTS.md). Owner: scientist; one engineer owns execution. Authority: [REQUIREMENTS.md](../paper/aamas2027/REQUIREMENTS.md), version 1.5.8. This is the sole active AAMAS gap/status/execution ledger. Role TODOs are historical pointers. Bounded read-only critiques inform the current direction; they did not execute experiments.
+Updated: 2026-10-06 (C1 bounded live development v3 completed with 10 real API requests; scientific gate remains open). The project-level goal authority is [GOAL v1.0](GOAL.md); task-by-task reconciliation is indexed in [TASK_REPORTS](TASK_REPORTS.md). Owner: scientist; one engineer owns execution. Authority: [REQUIREMENTS.md](../paper/aamas2027/REQUIREMENTS.md), version 1.5.8. This is the sole active AAMAS gap/status/execution ledger. Role TODOs are historical pointers. Bounded read-only critiques inform the current direction; they did not execute experiments.
 
 **Current scientific checkpoint — 2026-10-06:** C0 candidate parity and the C1 zero-call
-contract qualification are complete as engineering evidence. C1 is now the single frozen
-next live-development card: one PIPE3 root, three arms, real recipient API calls, independent
-arm namespaces, and a third pre-execution choice after delayed credit. It is not benchmark
-confirmation and does not authorize an efficacy claim. See
+contract qualification are complete as engineering evidence. C1 v3 then made 10 real
+recipient API requests: `no_update` and RARE are complete development-only chains with strict
+ledger replay; `contextual_trust_linear` stopped at a responsibility gate after the model
+returned a recipient target for the source episode. RARE produced one delayed selected-only
+update and a post-update preview. The run is still one PIPE3 root with static candidate
+snapshots, so it is not benchmark confirmation and does not authorize an efficacy claim. The
+next scientific design issue is separating structural ownership from stochastic model
+target-role text before attempting another live comparison. See
 [`20261006_c1_bounded_live_card.md`](task_reports/20261006_c1_bounded_live_card.md).
 
 ## Current checkpoint — 2026-09-26

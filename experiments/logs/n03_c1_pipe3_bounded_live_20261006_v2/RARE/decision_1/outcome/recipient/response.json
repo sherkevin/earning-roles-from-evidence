@@ -1,0 +1,82 @@
+{
+  "transport": {
+    "status": "complete"
+  },
+  "request": {
+    "op": "score_recipient",
+    "schema_version": "pipe3-recipient-score-request-v2",
+    "task_id": "PIPE3_stream_processing",
+    "seed": 1,
+    "artifact_sha256": "db7e668c55ef841ca132f8f2a3556ef5e4fc6f34adab20255d82bb980c41ff8f",
+    "scorer_version": "pipe3-recipient-objective-v2",
+    "mode": "recipient",
+    "event_class": "UserEvent",
+    "timestamp_field": "timestamp",
+    "id_field": "event_id"
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "schema_version": "pipe3-recipient-score-response-v2",
+      "scorer_version": "pipe3-recipient-objective-v2",
+      "task_id": "PIPE3_stream_processing",
+      "seed": 1,
+      "mode": "recipient",
+      "artifact_sha256": "db7e668c55ef841ca132f8f2a3556ef5e4fc6f34adab20255d82bb980c41ff8f",
+      "status": "PASS",
+      "label": 1,
+      "quality_score": 1.0,
+      "decision_complete": true,
+      "coverage_complete": true,
+      "checks": [
+        {
+          "id": "R1_process",
+          "status": "PASS",
+          "reason": ""
+        },
+        {
+          "id": "R2_shape",
+          "status": "PASS"
+        },
+        {
+          "id": "R3_utf8_semantics",
+          "status": "PASS"
+        }
+      ],
+      "failed_check_ids": [],
+      "observed_check_count": 3,
+      "required_check_ids": [
+        "R1_process",
+        "R2_shape",
+        "R3_utf8_semantics"
+      ]
+    }
+  },
+  "response_digest": "4aa31bc2ca388cd1afb390d71084cb553649568eca208981620469ce50f0055f",
+  "result": {
+    "status": "PASS",
+    "label": 1,
+    "quality_score": 1.0,
+    "scorer_version": "pipe3-recipient-objective-v2",
+    "mode": "recipient",
+    "decision_complete": true,
+    "coverage_complete": true,
+    "checks": [
+      {
+        "id": "R1_process",
+        "status": "PASS",
+        "reason": ""
+      },
+      {
+        "id": "R2_shape",
+        "status": "PASS"
+      },
+      {
+        "id": "R3_utf8_semantics",
+        "status": "PASS"
+      }
+    ],
+    "failed_check_ids": []
+  },
+  "candidate_received_hidden_assertions": false
+}

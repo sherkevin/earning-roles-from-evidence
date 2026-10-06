@@ -17,9 +17,15 @@ Goal 修改。
 
 ## Reports
 
-- [partial] 2026-10-06 C1 bounded PIPE3 live development card：冻结单 root、三臂、真实
-  recipient API、独立 state/namespace、delayed credit 与第三次选择；零调用合同资格已通过，
-  真实 API 尚未运行，见 [C1 card](task_reports/20261006_c1_bounded_live_card.md)。
+- [complete] 2026-10-06 AAMAS body-page budget recheck：隔离构建正文正好 8 页、参考文献从第
+  9 页开始、0 overfull，PDF 与 verification receipt 已保留；科学 submission gate 仍关闭，见
+  [page recheck](task_reports/20261006_paper_page_budget_recheck.md)。
+
+- [partial] 2026-10-06 C1 bounded PIPE3 live development card：真实 API v3 完成 10 个请求；
+  `no_update` 与 RARE 的严格 ledger replay 通过，RARE 发生 1 次 delayed update，
+  `contextual_trust_linear` 因模型责任字段触发严格 gate 而 UNKNOWN。v1 启动错误和 v2
+  ledger 缺陷均保留并修复；这仍只是单 root development seam，未打开 scientific gate，见
+  [C1 card](task_reports/20261006_c1_bounded_live_card.md)。
 
 - [partial] 2026-10-05 AAMAS paper framework and exact body-page build：按官方 AAMAS 2027
   instructions 将主稿补齐为可执行的 pre-results 论文框架，加入 selector/state contract、
