@@ -1,7 +1,7 @@
 # ADR 0041 — 选择 Earning Roles 工作标题
 
 日期：2026-09-29
-状态：Accepted
+状态：Superseded by ADR 0046
 范围：earning-roles 当前 AAMAS pre-results/proposal 稿件的标题与对外定位
 
 ## Context

@@ -15,6 +15,15 @@ separating structural ownership from stochastic model target-role text before at
 live comparison. See
 [`20261006_c1_bounded_live_card.md`](task_reports/20261006_c1_bounded_live_card.md).
 
+The paper-writing checkpoint on the same date now has an eight-page body after a structural
+prose rewrite and reference expansion; the isolated receipt is
+[`20261006_paper_structure_rewrite.md`](task_reports/20261006_paper_structure_rewrite.md).
+Three AI figure composition drafts and all prompts are versioned under
+`article/aamas2027/figures/ai_versions/v17_ai_draft_20261006/`; they are not yet active paper
+assets. These are writing/visual deliverables only and do not change the scientific gate.
+The active title is synchronized by ADR 0046, and the RQ table is explicitly marked as a
+pre-specified design scaffold until a confirmation manifest is frozen.
+
 ## Current checkpoint — 2026-09-26
 
 N00 is reconciled. Strict N01 benchmark qualification remains open. N02 has used
@@ -56,7 +65,7 @@ that RARE, PeerRoleBench-TB, real-time training and A800 performance are unestab
 This closes the writing/claim contract only; N01 qualification, N03 signal design and
 all scientific result gates remain open.
 
-- [done] 2026-09-29 title framing and confirmation: user selected `Earning Roles: Self-Evolving Responsibility from Situated Peer Judgments`; proposal/pre-results sources and keywords are synchronized, while historical drafts remain unchanged. See [title candidates](../research/candidates/title_candidates_v0.1_20260929.md) and [task report](task_reports/20260929_title_confirmation.md).
+- [done] 2026-10-06 title governance: ADR 0046 supersedes ADR 0041 and synchronizes the active title to `Know Who You Are: Earning Roles from Situated Peer Judgments`; the title change does not alter the Goal or scientific evidence boundary.
 
 The 2026-09-27 PIPE3 check is now deliberately narrowed by [ADR 0024](../user/decisions/0024-narrow-pipe3-preflight-conclusion.md):
 the versioned v2 run passes only a static contract fixture, a placeholder ledger fixture,

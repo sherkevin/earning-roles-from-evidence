@@ -2,7 +2,7 @@
 
 ## 当前题目摘要草稿（2026-10-05）
 
-当前确认的工作标题为：**Know Who You Are: Earning Roles from Situated Peer Judgments**。
+当前确认的工作标题为：**Know Who You Are: Earning Roles from Situated Peer Judgments**（见 [ADR 0046](../../docs/user/decisions/0046-set-know-who-you-are-paper-title.md)）。
 “Know Who You Are”提供对外的想象空间；“earning roles”描述待验证的动态角色形成目标，不能替代实时更新、稳定性或角色学习效果证据。
 
 [research_proposal.tex](research_proposal.tex) 是围绕当前主线新写的英文题目与摘要，

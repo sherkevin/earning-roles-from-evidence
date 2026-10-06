@@ -17,6 +17,22 @@ Goal 修改。
 
 ## Reports
 
+- [blocked_by_evidence] 2026-10-06 post-rewrite paper gate review：独立 Codex 复核确认纸面结构、8 页排版和引用覆盖已有明显改善，但 ArtifactRole benchmark、same-information baseline parity、确认 manifest、候选方法锁定和真实结果仍未过科学门；同时用 ADR 0046 修复主稿标题漂移，见 [gate review](task_reports/20261006_updated_paper_gate_review.md)。
+
+- [partial] 2026-10-06 credit-assignment and interactive-agent reference pass：补入 AgentBench、$\tau$-bench、COMA 与 QMIX，并将共享回报的 credit-assignment 先行工作与本论文的 artifact ownership 边界写成可检验对照；v2 仍保持正文 8 页，见 [reference pass](task_reports/20261006_credit_assignment_reference_pass.md)。
+
+- [partial] 2026-10-06 candidate realization boundary：在方法公式前明确 profile/delta/residual 只是用于资格验证的候选实现，最终 backbone/updater 仍待 same-information controls 后锁定；v3 仍保持正文 8 页，见 [method boundary report](task_reports/20261006_candidate_realization_label.md)。
+
+- [partial] 2026-10-06 experiment-matrix design boundary：在正文明确 RQ 矩阵是 pre-specified design scaffold，只有 root/stream/seed/budget/scorer/cost/stopping/manifest 全部预冻结的 cell 才能进入 confirmation analysis；v4 仍保持正文 8 页，见 [matrix report](task_reports/20261006_matrix_design_boundary.md)。
+
+- [blocked_by_evidence] 2026-10-06 ownership-gate candidate design：在等待 A/B 选择期间，准备结构化 owner + judged-role calibration 的非生效候选设计和 8 个 zero-call mutation/replay cells；不改 active method、不启动 live/API/GPU，见 [candidate design report](task_reports/20261006_ownership_gate_candidate_design.md)。
+
+- [partial] 2026-10-06 AI figure drafts v17：按用户要求改用 AI 出图并保留全部版本与提示词；Figure 2 v2 修复了 v1 的语义箭头错误，三张图仍等待专业平台重绘后才替换正文资产，见 [figure report](task_reports/20261006_ai_figure_drafts_v17.md)。
+
+- [partial] 2026-10-06 AAMAS reference expansion and citation audit：将当前主稿参考文献扩展到 24 条、正文实际引用 18 条，补齐 benchmark、协调、信任/声誉、上下文选择、延迟反馈与团队研究的原始来源；引用覆盖改善但科学门仍未打开，见 [reference report](task_reports/20261006_reference_expansion_audit.md)。
+
+- [partial] 2026-10-06 AAMAS paper structure and prose rewrite：按六范式审计与 AAMAS best-paper 写作规律重写摘要、引言、相关工作、benchmark 定位与贡献链，隔离构建正文正好 8 页；benchmark 资格、强基线和真实效果仍开放，见 [structure report](task_reports/20261006_paper_structure_rewrite.md)。
+
 - [blocked_by_evidence] 2026-10-06 ownership gate design review：C1 v3 显示同一结构化 source
   在不同 arm 得到不同 `target_role` 文本，导致 contextual arm 被随机 censor。报告区分
   contract-defined structural owner 与模型 judged role，给出保守 gate 与校准字段的两种
