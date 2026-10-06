@@ -62,6 +62,16 @@ ledger/cost/replay checks. This does not create an independent terminal scorer,
 live baseline parity, a second root, or an efficacy claim. See
 [`20261007_runner_signal_channels.md`](task_reports/20261007_runner_signal_channels.md).
 
+**Independent Y design audit — 2026-10-07:** a candidate specification now
+separates immediate downstream adoption D from later target-task terminal quality
+Y. It rejects reusing D or recipient self-report as scientific Y and proposes a
+private terminal scorer invoked only after a bound assignment/target selection.
+The four-test zero-call provenance validator passes, but the hidden worker,
+pre-generated holdout and D-purity scorer remain open. This is a candidate
+implementation design, not an active method change, live result, or authorization
+for an A800 job. See
+[`20261007_independent_y_design_audit.md`](task_reports/20261007_independent_y_design_audit.md).
+
 **Parent-source integration amendment — 2026-10-06:** the C1 runner now executes a
 single `parent_source` phase before the arm loop, seals its source digest and native
 selection binding, and imports the immutable ledger prefix into three isolated arm
