@@ -32,6 +32,7 @@ Goal 修改。
 - [blocked_by_evidence] 2026-10-06 C1 v4 independent review：独立 Codex 审查确认 gate 正确、complete-case 比较无效，并要求区分结构性 PENDING 与 transport UNKNOWN、ITT 分母、selection lineage 和完整成本；形成 shared-source/independent-target 候选卡，不自动提升为科学比较，见 [review](task_reports/20261006_c1_v4_independent_review.md)。
 - [partial] 2026-10-06 shared-source projection qualification：六个零调用 case 验证不可变 source evidence 在隔离 policy namespace 间投影，拒绝 delivery/gate/action/outcome/cost mutation，并保留 pending attribution 为 ITT-only。focused structural/C1/shared-source tests 19/19 通过；这只是工程前置门，scientific readiness 仍为 false，Goal 未降级，见 [report](task_reports/20261006_shared_source_qualification.md)。
 - [partial] 2026-10-06 shared-source v2 hardening：独立复核发现 v1 可被 coordinated nested/delivery mutation 绕过，且缺外部 seal、成本分摊、typed episode denominator、source provenance 与 native-selection binding；v2 增加这些 fail-closed 合同，10/10 zero-call cases 与 v1/v2 focused tests 通过。synthetic seal 不是 live evidence，scientific readiness 仍为 false，见 [report](task_reports/20261006_shared_source_v2_hardening.md)。
+- [partial] 2026-10-06 AI figure refresh and PDF rebuild：选定 v19/v20/v21 的 Figure 1–3 资产，保留全部 prompt/候选版本；隔离编译得到 10 页 PDF、正文正好 8 页、参考文献从第 9 页开始、引用解析通过且无 overfull，见 [report](task_reports/20261006_paper_figure_refresh.md)。图稿只改善表达，不打开科学门。
 
 - [blocked_by_evidence] 2026-10-06 post-rewrite paper gate review：独立 Codex 复核确认纸面结构、8 页排版和引用覆盖已有明显改善，但 ArtifactRole benchmark、same-information baseline parity、确认 manifest、候选方法锁定和真实结果仍未过科学门；同时用 ADR 0046 修复主稿标题漂移，见 [gate review](task_reports/20261006_updated_paper_gate_review.md)。
 

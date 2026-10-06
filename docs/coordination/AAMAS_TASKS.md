@@ -53,6 +53,11 @@ assets. These are writing/visual deliverables only and do not change the scienti
 The active title is synchronized by ADR 0046, and the RQ table is explicitly marked as a
 pre-specified design scaffold until a confirmation manifest is frozen.
 
+The figure refresh now selects the v19/v20/v21 assets for Figures 1–3 and rebuilds the internal
+revision as [`paper_figure_refresh_20261006/main.pdf`](../../artifacts/aamas2027/paper_figure_refresh_20261006/main.pdf):
+10 total pages, 8 body pages and references from page 9. Prompts and candidates remain versioned;
+the refresh is a presentation change and does not alter the scientific gate.
+
 ## Current checkpoint — 2026-09-26
 
 N00 is reconciled. Strict N01 benchmark qualification remains open. N02 has used
