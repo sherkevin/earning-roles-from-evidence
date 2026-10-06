@@ -35,6 +35,12 @@ recipient judgment 到 target outcome 是灰色虚线的 **after seal** 时间�
 
 当前图组质量审查见 [`20261006_figure_quality_audit_v27_v22_v24.md`](../../coordination/task_reports/20261006_figure_quality_audit_v27_v22_v24.md)。在矢量/字体门关闭前，三张图是内部候选，不是最终投稿图。
 
+长期 AI 重绘目标的最新候选为 Figure 1 v28、Figure 2 v23、Figure 3 v26；它们目前只存在于
+`article/aamas2027/figures/ai_versions/` 的版本目录中，没有替换正文资产。候选生成、完整 prompt、
+输入参考和 SHA-256 见 [`20261006_ai_figure_long_goal_round_v28_v23_v26.md`](../../coordination/task_reports/20261006_ai_figure_long_goal_round_v28_v23_v26.md)
+及对应的 `experiments/logs/figure_ai_long_goal_round_20261006/receipt.json`。必须先完成统一的纸面
+审查和生产格式核验，才可晋升。
+
 ## 结果图预留
 
 真实实验通过 benchmark、baseline parity、独立 histories 和 complete-cost 资格门后，才绘制 Figure 4：quality--cost utility 与 online latency/forgetting 的结果图。结果图必须绑定 root、seed、policy、完整成本和 stream-level interval；如果结果是 null 或 trade-off，就按事实绘制。

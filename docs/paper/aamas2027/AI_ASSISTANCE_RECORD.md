@@ -876,3 +876,14 @@ v27 收紧空白并放大中央 situated episode 与阶段标签。当前 Figure
 v27 使用 Codex 内置 image-generation tool，模型标识未披露，不标注为 image2.5。以当前
 v27/v22/v24 图组构建并目视核验：正文 8 页、参考文献从第 9 页起、引用解析、0 overfull。
 该轮仍只验证图形叙事和排版，不产生 benchmark、baseline、方法效果或角色学习证据。
+
+### 2026-10-06 Long-goal AI figure round v28/v23/v26
+
+用户要求把三张正文图作为长期目标持续打磨，并在每轮保留完整 prompt、原图和回退版本。本轮
+重新参考本地 topconf-paper-figure-gallery，分别为 Figure 1/2/3 重写完整 prompt 并使用 Codex
+内置 image-generation tool 生成 v28/v23/v26。Figure 1 改为无巨型标题的单一对象化主轴，Figure 2
+统一三泳道 glyph，Figure 3 去掉 award/gear/clock 等通用图标并采用 ledger/seal/pulse/gate
+系统。候选未晋升正文；它们仍是栅格图，TrueType/矢量生产门、纸面版心、灰度与打印核验尚未完成。
+模型标识由服务端隐藏，因此不称为 image2.5。完整 receipt 和 SHA-256 在
+`experiments/logs/figure_ai_long_goal_round_20261006/receipt.json`，任务报告在
+`docs/coordination/task_reports/20261006_ai_figure_long_goal_round_v28_v23_v26.md`。

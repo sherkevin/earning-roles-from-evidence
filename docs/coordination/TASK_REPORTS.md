@@ -27,6 +27,8 @@ Goal 修改。
 
 ## Reports
 
+- [partial] 2026-10-06 AI figure long-goal round v28/v23/v26：围绕样例库重写完整 prompt，重新生成 Figure 1/2/3，统一开放式主轴、泳道、对象化 glyph 和颜色；历史版本与 receipt 保留。候选尚未晋升正文，栅格/TrueType/矢量生产门和最终纸面核验仍开放，见 [long-goal figure report](task_reports/20261006_ai_figure_long_goal_round_v28_v23_v26.md)。
+
 - [blocked_by_evidence] 2026-10-06 figure quality audit v27/v22/v24：语义和版心检查通过，但与 best/oral 样例的定制化视觉质感仍有差距；`pdfimages` 确认三张 PDF 都是单张 JPEG 栅格图，未通过 TrueType/矢量生产门。保留当前候选，不降级 Goal，最终投稿前必须解决矢量字体和统一图形系统，见 [quality audit](task_reports/20261006_figure_quality_audit_v27_v22_v24.md)。
 
 - [partial] 2026-10-06 gallery-audited Figure 1 round v25–v27：读取 CollabLLM、DPO、VideoPoet 样例并把共同视觉规律落成审查文档；Figure 1 经过对象化叙事、开放主轴和大字号三轮定点编辑，当前晋升 v27。v27/v22/v24 构建为正文 8 页、引用解析、0 overfull；caption 已同步配色，见 [gallery/style report](task_reports/20261006_ai_figure_gallery_round_v25_v27.md)。
