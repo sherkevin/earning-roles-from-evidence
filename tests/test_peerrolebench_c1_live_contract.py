@@ -52,3 +52,6 @@ def test_c1_zero_api_contract_qualifies_all_arms(tmp_path, monkeypatch):
     for row in by_arm.values():
         replay = replay_ledger_events(row["ledger"])
         assert replay.status == "PASS" and replay.complete is True
+        assert row["cost"]["scorer_seconds"] >= 0.0
+        assert row["cost"]["update_seconds"] >= 0.0
+        assert row["cost"]["state_bytes"] > 0

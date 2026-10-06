@@ -15,8 +15,12 @@ separate contract-derived structural ownership from stochastic model target-role
 disagreement is retained for calibration rather than used as a random eligibility censor. The
 zero-call A1--A8 receipt is
 [`n03_structural_owner_gate_qualification_20261006_v2`](../../experiments/logs/n03_structural_owner_gate_qualification_20261006_v2/summary.json).
-Before another live comparison, a new card must carry explicit owner registration and report
-disagreement. See
+The v2 card then made 10 real API requests: `no_update` and RARE completed development-only chains;
+`contextual_trust_linear` correctly stopped as recipient-owned after `processor.py` changed, so no
+common three-arm scientific cell formed. The receipt is
+[`n03_c1_pipe3_bounded_live_20261006_v4`](../../experiments/logs/n03_c1_pipe3_bounded_live_20261006_v4/summary.json).
+Before another live comparison, the source completion/action contract and cost aggregation must be
+made common across arms. See
 [`20261006_c1_bounded_live_card.md`](task_reports/20261006_c1_bounded_live_card.md).
 
 The paper-writing checkpoint on the same date now has an eight-page body after a structural

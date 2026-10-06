@@ -205,16 +205,20 @@ def _call_actor(*, arm_dir: Path, decision_dir: Path, stage: str, prompt: str,
 def _score_producer(materials: Mapping[str, Any], source: Mapping[str, str], info: Mapping[str, Any],
                     task_seed: int, out: Path, raw: Path) -> dict[str, Any]:
     out.parent.mkdir(parents=True, exist_ok=True)
-    return run_producer_scorer(
+    started = time.perf_counter()
+    result = run_producer_scorer(
         {"producer.py": source["producer.py"], "models.py": materials["agent_payloads"]["producer"]["source_files"]["models.py"]},
         info, TASK_ID, task_seed, out,
         lambda event, payload: _log(raw, event, payload),
     )
+    result["scorer_wall_seconds"] = time.perf_counter() - started
+    return result
 
 
 def _score_outcome(materials: Mapping[str, Any], final_sources: Mapping[str, str], info: Mapping[str, Any],
                    task_seed: int, out: Path, raw: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
     out.mkdir(parents=False, exist_ok=False)
+    started = time.perf_counter()
     recipient = run_scorer(
         recipient_scorer_sources(final_sources), info, "recipient", TASK_ID, task_seed, out / "recipient",
         lambda event, payload: _log(raw, event, payload),
@@ -235,6 +239,7 @@ def _score_outcome(materials: Mapping[str, Any], final_sources: Mapping[str, str
         "quality_score": adoption.get("quality_score") if complete else None,
         "coverage_complete": complete,
         "decision_complete": complete,
+        "scorer_wall_seconds": time.perf_counter() - started,
     }
     return recipient, adoption, outcome
 
@@ -595,6 +600,27 @@ def _run_arm(arm: str, out_dir: Path, card: Mapping[str, Any]) -> dict[str, Any]
         },
         "policy_updates": boundary.policy.updates,
         "ledger_event_count": len(boundary.ledger.events),
+        "cost": {
+            "scorer_seconds": sum(
+                float(value.get("scorer_wall_seconds", 0.0))
+                for value in (
+                    source["producer_score"], source["outcome"],
+                    target["producer_score"], target["outcome"],
+                )
+            ),
+            "update_seconds": float(update.get("latency_seconds", 0.0) or 0.0),
+            "action_wall_seconds": (
+                float(source["action"].get("action_wall_seconds", 0.0))
+                + float(target["action"].get("action_wall_seconds", 0.0))
+            ),
+            "repair_cost": (
+                float(source["action"].get("repair_cost", 0.0))
+                + float(target["action"].get("repair_cost", 0.0))
+            ),
+            "state_bytes": len(json.dumps(
+                boundary.policy.snapshot(), sort_keys=True, default=str
+            ).encode("utf-8")),
+        },
         "scientific_claim_allowed": False,
         "interpretation": "single-root live development evidence only; no benchmark, efficacy, or specialization claim",
         "ledger": boundary.ledger.events,

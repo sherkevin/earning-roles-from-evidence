@@ -1,0 +1,1770 @@
+{
+  "version": "c1-pipe3-bounded-live-v2-structural-owner",
+  "card": "configs/aamas2027/n03_c1_pipe3_bounded_live_dev_v2.json",
+  "card_sha256": "64e32957521dca32cfafc117567b67214068e5d39b22f29edd07331eb5582a3b",
+  "source_commit": "cabe2375e1b16e6e4aa4f4d23357aee024587797",
+  "task_id": "PIPE3_stream_processing",
+  "arms": [
+    "no_update",
+    "contextual_trust_linear",
+    "RARE"
+  ],
+  "decisions_per_arm": 3,
+  "real_api_calls": 10,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "started_at_utc": "2026-10-06T06:41:50.674382+00:00",
+  "runtime": {
+    "python": "3.9.6",
+    "platform": "macOS-26.3.2-arm64-arm-64bit"
+  },
+  "no_retries": true,
+  "results": [
+    {
+      "arm": "no_update",
+      "status": "COMPLETE_DEVELOPMENT_ONLY",
+      "passed": true,
+      "source": {
+        "decision_index": 0,
+        "selection_id": "selection-no_update-0",
+        "selected_key": "peer-b@v1",
+        "delivery_id": "no_update-delivery-0",
+        "artifact_digest": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+        "producer_score": {
+          "status": "FAIL",
+          "label": 0,
+          "quality_score": 0.6666666666666666,
+          "scorer_version": "pipe3-producer-objective-v2",
+          "decision_complete": true,
+          "coverage_complete": true,
+          "checks": [
+            {
+              "id": "P1_import",
+              "status": "PASS"
+            },
+            {
+              "id": "P2_iso_serialization",
+              "status": "FAIL",
+              "reason": ""
+            },
+            {
+              "id": "P3_batch_output",
+              "status": "PASS"
+            }
+          ],
+          "failed_check_ids": [
+            "P2_iso_serialization"
+          ],
+          "response_digest": "470d153773afa0d97e10cf0aa37355cdacc97168692d801b486f991b6489038c",
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2"
+        },
+        "judgment": {
+          "decision": "accept",
+          "confidence": 0.92,
+          "target_role": "recipient",
+          "target_paths": [],
+          "defect_type": "unknown",
+          "evidence_refs": [
+            "producer.py:serialize_event",
+            "producer.py:produce_events",
+            "producer.py:json.dumps(data, default=str)",
+            "producer.py:encoding=\"utf-8\""
+          ],
+          "observed_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+          "repair_plan": "No repairs needed for producer.py. The recipient will implement processor.py to read the JSONL output from produce_events, parse each line with json.loads, handle non-ASCII user_name values via UTF-8 decoding, and forward records to the sink.",
+          "rationale": "The delivered producer.py correctly serializes UserEvent objects to JSON lines with UTF-8 encoding, includes all required event fields (event_id, timestamp, user_name, action, page_url), and uses default=str for datetime handling. The public function signatures (serialize_event, produce_events) are preserved. As the recipient role responsible for processor.py, I find no defects in the producer artifact that would block integration."
+        },
+        "judgment_api": {
+          "elapsed_seconds": 6.375117166,
+          "http_status": "200",
+          "exit_code": 0,
+          "stderr": "",
+          "stage": "judgment",
+          "directory": "judgment",
+          "usage": {
+            "input_tokens": 666,
+            "output_tokens": 268,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "usage_complete": true,
+          "transport_metrics": {
+            "time_namelookup": 0.035487,
+            "time_connect": 0.086662,
+            "time_appconnect": 0.150821,
+            "time_starttransfer": 0.864883,
+            "time_total": 6.334716,
+            "size_download": 14108
+          },
+          "returned_model": "qwen3.8-max",
+          "stop_reason": "end_turn",
+          "thinking_delta_count": 0
+        },
+        "action": {
+          "consumer_action": "use",
+          "source_files": {
+            "processor.py": "\nimport json\nimport os\nfrom datetime import datetime\n\n\ndef parse_timestamp(ts_str: str) -> datetime:\n    \n    return datetime.fromisoformat(ts_str)\n\n\ndef transform_event(event_data: dict) -> dict:\n    \n    processed = dict(event_data)\n    \n    ts = parse_timestamp(event_data[\"timestamp\"])\n    processed[\"timestamp\"] = ts.isoformat()\n    processed[\"processed_at\"] = datetime.utcnow().isoformat()\n    processed[\"action\"] = event_data[\"action\"].upper()\n    return processed\n\n\ndef process_events(input_path: str, output_path: str) -> int:\n    \n    count = 0\n    \n    with open(input_path, \"r\", encoding=\"utf-8\") as fin,\\\n         open(output_path, \"w\", encoding=\"utf-8\") as fout:\n        for line in fin:\n            line = line.strip()\n            if not line:\n                continue\n            event_data = json.loads(line)\n            processed = transform_event(event_data)\n            \n            fout.write(json.dumps(processed, ensure_ascii=False) + \"\\n\")\n            count += 1\n    return count\n",
+            "models.py": "\nfrom __future__ import annotations\nfrom dataclasses import dataclass\nfrom datetime import datetime\n\n\nVALID_ACTIONS = [\"page_view\", \"click\", \"scroll\", \"purchase\"]\n\n\n@dataclass\nclass UserEvent:\n    \n    event_id: str\n    timestamp: datetime\n    user_name: str\n    action: str\n    page_url: str\n\n    def validate(self) -> bool:\n        \n        if not self.event_id:\n            raise ValueError(\"event_id is required\")\n        if self.action not in VALID_ACTIONS:\n            raise ValueError(f\"Invalid action: {self.action}\")\n        return True\n",
+            "sink.py": "\nimport json\nimport os\nfrom datetime import datetime\n\n\ndef load_processed_events(input_path: str) -> list[dict]:\n    \n    events = []\n    with open(input_path, \"r\", encoding=\"utf-8\") as f:\n        for line in f:\n            line = line.strip()\n            if not line:\n                continue\n            event = json.loads(line)\n            \n            _ = event[\"event_id\"]  \n            _ = event[\"timestamp\"]\n            events.append(event)\n    return events\n\n\ndef write_summary(events: list[dict], output_path: str) -> dict:\n    \n    summary = {\n        \"total_events\": len(events),\n        \"actions\": {},\n        \"users\": set(),\n    }\n    for evt in events:\n        action = evt[\"action\"]\n        summary[\"actions\"][action] = summary[\"actions\"].get(action, 0) + 1\n        summary[\"users\"].add(evt[\"user_name\"])\n\n    summary[\"unique_users\"] = len(summary[\"users\"])\n    summary[\"users\"] = sorted(summary[\"users\"])\n\n    with open(output_path, \"w\", encoding=\"utf-8\") as f:\n        json.dump(summary, f, indent=2, ensure_ascii=False)\n\n    return summary\n",
+            "producer.py": "\nimport json\nimport os\nfrom datetime import datetime\nfrom models import UserEvent\n\n\ndef serialize_event(event: UserEvent) -> str:\n    \n    data = {\n        \"event_id\": event.event_id,\n        \"timestamp\": event.timestamp,\n        \"user_name\": event.user_name,\n        \"action\": event.action,\n        \"page_url\": event.page_url,\n    }\n    \n    return json.dumps(data, default=str)\n\n\ndef produce_events(events: list[UserEvent], output_path: str) -> None:\n    \n    with open(output_path, \"w\", encoding=\"utf-8\") as f:\n        for event in events:\n            f.write(serialize_event(event) + \"\\n\")\n"
+          },
+          "input_source_sha256": "819118801d4ccfab2801b36032d4f0808bdf938eedf9ee532d8ea798fd7ffa29",
+          "output_source_sha256": "819118801d4ccfab2801b36032d4f0808bdf938eedf9ee532d8ea798fd7ffa29",
+          "delivery_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+          "changed_paths": [],
+          "action_initialization": "selected_delivery_copy",
+          "prior_delivery_may_have_been_seen": true,
+          "independent_redo_is_blinded_control": false,
+          "action_wall_seconds": 15.455718291000002,
+          "repair_cost": 0.0,
+          "repair_cost_unit": "full action call seconds when repair/redo; zero for use"
+        },
+        "action_api": {
+          "elapsed_seconds": 15.455718291000002,
+          "http_status": "200",
+          "exit_code": 0,
+          "stderr": "",
+          "stage": "action",
+          "directory": "action",
+          "usage": {
+            "input_tokens": 1735,
+            "output_tokens": 918,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "usage_complete": true,
+          "transport_metrics": {
+            "time_namelookup": 0.002856,
+            "time_connect": 0.071482,
+            "time_appconnect": 0.173122,
+            "time_starttransfer": 1.365504,
+            "time_total": 15.406049,
+            "size_download": 48480
+          },
+          "returned_model": "qwen3.8-max",
+          "stop_reason": "end_turn",
+          "thinking_delta_count": 0
+        },
+        "recipient_score": {
+          "status": "PASS",
+          "label": 1,
+          "quality_score": 1.0,
+          "scorer_version": "pipe3-recipient-objective-v2",
+          "mode": "recipient",
+          "decision_complete": true,
+          "coverage_complete": true,
+          "checks": [
+            {
+              "id": "R1_process",
+              "status": "PASS",
+              "reason": ""
+            },
+            {
+              "id": "R2_shape",
+              "status": "PASS"
+            },
+            {
+              "id": "R3_utf8_semantics",
+              "status": "PASS"
+            }
+          ],
+          "failed_check_ids": [],
+          "response_digest": "be69c76f6d4abaf11351058bb225247889ee77069dc75d9696998b9f9b573620",
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "4c43f79c95e650d5cf945d14b39e062202ae5f59e9094d9c0d5202952257cd0a"
+        },
+        "adoption_score": {
+          "status": "FAIL",
+          "label": 0,
+          "quality_score": 0.5,
+          "scorer_version": "pipe3-recipient-objective-v2",
+          "mode": "adoption",
+          "decision_complete": true,
+          "coverage_complete": true,
+          "checks": [
+            {
+              "id": "A1_producer_boundary",
+              "status": "FAIL"
+            },
+            {
+              "id": "A2_sink_adoption",
+              "status": "PASS"
+            }
+          ],
+          "failed_check_ids": [
+            "A1_producer_boundary"
+          ],
+          "response_digest": "04d50c9ffaaa8b8ab57b1c4ec5b4073373261ebad63edcf6f0317d5272f99fc3",
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "f4b436fc8f759216c5656b12c0cc7de5bde509fc169c070c6e45875361575192"
+        },
+        "outcome": {
+          "status": "FAIL",
+          "quality_score": 0.5,
+          "coverage_complete": true,
+          "decision_complete": true,
+          "outcome_id": "no_update-outcome-0"
+        },
+        "source_gate": {
+          "gate_version": "two-stage-role-evidence-v3-structural-owner",
+          "producer_paths_changed": [],
+          "recipient_paths_changed": [],
+          "q_complete": true,
+          "y_complete": true,
+          "target_role": "recipient",
+          "artifact_binding_present": true,
+          "later_use_valid": false,
+          "attribution_eligible": true,
+          "evidence_publish_allowed": true,
+          "policy_update_allowed": false,
+          "status": "ELIGIBLE",
+          "reason": "structural producer ownership; judged target role disagreement retained for calibration",
+          "structural_owner_role": "producer",
+          "judged_role_agrees": false,
+          "judged_target_paths": []
+        },
+        "final_sources": {
+          "processor.py": "\nimport json\nimport os\nfrom datetime import datetime\n\n\ndef parse_timestamp(ts_str: str) -> datetime:\n    \n    return datetime.fromisoformat(ts_str)\n\n\ndef transform_event(event_data: dict) -> dict:\n    \n    processed = dict(event_data)\n    \n    ts = parse_timestamp(event_data[\"timestamp\"])\n    processed[\"timestamp\"] = ts.isoformat()\n    processed[\"processed_at\"] = datetime.utcnow().isoformat()\n    processed[\"action\"] = event_data[\"action\"].upper()\n    return processed\n\n\ndef process_events(input_path: str, output_path: str) -> int:\n    \n    count = 0\n    \n    with open(input_path, \"r\", encoding=\"utf-8\") as fin,\\\n         open(output_path, \"w\", encoding=\"utf-8\") as fout:\n        for line in fin:\n            line = line.strip()\n            if not line:\n                continue\n            event_data = json.loads(line)\n            processed = transform_event(event_data)\n            \n            fout.write(json.dumps(processed, ensure_ascii=False) + \"\\n\")\n            count += 1\n    return count\n",
+          "models.py": "\nfrom __future__ import annotations\nfrom dataclasses import dataclass\nfrom datetime import datetime\n\n\nVALID_ACTIONS = [\"page_view\", \"click\", \"scroll\", \"purchase\"]\n\n\n@dataclass\nclass UserEvent:\n    \n    event_id: str\n    timestamp: datetime\n    user_name: str\n    action: str\n    page_url: str\n\n    def validate(self) -> bool:\n        \n        if not self.event_id:\n            raise ValueError(\"event_id is required\")\n        if self.action not in VALID_ACTIONS:\n            raise ValueError(f\"Invalid action: {self.action}\")\n        return True\n",
+          "sink.py": "\nimport json\nimport os\nfrom datetime import datetime\n\n\ndef load_processed_events(input_path: str) -> list[dict]:\n    \n    events = []\n    with open(input_path, \"r\", encoding=\"utf-8\") as f:\n        for line in f:\n            line = line.strip()\n            if not line:\n                continue\n            event = json.loads(line)\n            \n            _ = event[\"event_id\"]  \n            _ = event[\"timestamp\"]\n            events.append(event)\n    return events\n\n\ndef write_summary(events: list[dict], output_path: str) -> dict:\n    \n    summary = {\n        \"total_events\": len(events),\n        \"actions\": {},\n        \"users\": set(),\n    }\n    for evt in events:\n        action = evt[\"action\"]\n        summary[\"actions\"][action] = summary[\"actions\"].get(action, 0) + 1\n        summary[\"users\"].add(evt[\"user_name\"])\n\n    summary[\"unique_users\"] = len(summary[\"users\"])\n    summary[\"users\"] = sorted(summary[\"users\"])\n\n    with open(output_path, \"w\", encoding=\"utf-8\") as f:\n        json.dump(summary, f, indent=2, ensure_ascii=False)\n\n    return summary\n",
+          "producer.py": "\nimport json\nimport os\nfrom datetime import datetime\nfrom models import UserEvent\n\n\ndef serialize_event(event: UserEvent) -> str:\n    \n    data = {\n        \"event_id\": event.event_id,\n        \"timestamp\": event.timestamp,\n        \"user_name\": event.user_name,\n        \"action\": event.action,\n        \"page_url\": event.page_url,\n    }\n    \n    return json.dumps(data, default=str)\n\n\ndef produce_events(events: list[UserEvent], output_path: str) -> None:\n    \n    with open(output_path, \"w\", encoding=\"utf-8\") as f:\n        for event in events:\n            f.write(serialize_event(event) + \"\\n\")\n"
+        }
+      },
+      "target": {
+        "decision_index": 1,
+        "selection_id": "selection-no_update-1",
+        "selected_key": "peer-b@v1",
+        "delivery_id": "no_update-delivery-1",
+        "artifact_digest": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+        "producer_score": {
+          "status": "FAIL",
+          "label": 0,
+          "quality_score": 0.6666666666666666,
+          "scorer_version": "pipe3-producer-objective-v2",
+          "decision_complete": true,
+          "coverage_complete": true,
+          "checks": [
+            {
+              "id": "P1_import",
+              "status": "PASS"
+            },
+            {
+              "id": "P2_iso_serialization",
+              "status": "FAIL",
+              "reason": ""
+            },
+            {
+              "id": "P3_batch_output",
+              "status": "PASS"
+            }
+          ],
+          "failed_check_ids": [
+            "P2_iso_serialization"
+          ],
+          "response_digest": "c2c07d03f5736646828657de511d0898050a2d1e29cda490b2a1468fb40797e9",
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2"
+        },
+        "judgment": {
+          "decision": "accept",
+          "confidence": 0.92,
+          "target_role": "producer",
+          "target_paths": [
+            "producer.py"
+          ],
+          "defect_type": "unknown",
+          "evidence_refs": [
+            "serialize_event signature and field mapping",
+            "produce_events utf-8 encoding and newline delimiter",
+            "json.dumps default=str for timestamp serialization"
+          ],
+          "observed_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+          "repair_plan": "No repairs required. The producer artifact is correct and preserves its public interface as specified.",
+          "rationale": "The delivered producer.py correctly implements serialize_event and produce_events with the expected public signatures. It serializes all required UserEvent fields (event_id, timestamp, user_name, action, page_url) into JSON using default=str for datetime handling, and writes newline-delimited UTF-8 encoded records. This matches the PIPE3 spec requirements for non-ASCII support and sink consumption. No changes are needed to the producer artifact."
+        },
+        "judgment_api": {
+          "elapsed_seconds": 6.553763249999999,
+          "http_status": "200",
+          "exit_code": 0,
+          "stderr": "",
+          "stage": "judgment",
+          "directory": "judgment",
+          "usage": {
+            "input_tokens": 666,
+            "output_tokens": 232,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "usage_complete": true,
+          "transport_metrics": {
+            "time_namelookup": 0.002228,
+            "time_connect": 0.103696,
+            "time_appconnect": 0.294436,
+            "time_starttransfer": 1.180279,
+            "time_total": 6.52496,
+            "size_download": 13125
+          },
+          "returned_model": "qwen3.8-max",
+          "stop_reason": "end_turn",
+          "thinking_delta_count": 0
+        },
+        "action": {
+          "consumer_action": "use",
+          "source_files": {
+            "processor.py": "\nimport json\nimport os\nfrom datetime import datetime\n\n\ndef parse_timestamp(ts_str: str) -> datetime:\n    \n    return datetime.fromisoformat(ts_str)\n\n\ndef transform_event(event_data: dict) -> dict:\n    \n    processed = dict(event_data)\n    \n    ts = parse_timestamp(event_data[\"timestamp\"])\n    processed[\"timestamp\"] = ts.isoformat()\n    processed[\"processed_at\"] = datetime.utcnow().isoformat()\n    processed[\"action\"] = event_data[\"action\"].upper()\n    return processed\n\n\ndef process_events(input_path: str, output_path: str) -> int:\n    \n    count = 0\n    \n    with open(input_path, \"r\", encoding=\"utf-8\") as fin,\\\n         open(output_path, \"w\", encoding=\"utf-8\") as fout:\n        for line in fin:\n            line = line.strip()\n            if not line:\n                continue\n            event_data = json.loads(line)\n            processed = transform_event(event_data)\n            \n            fout.write(json.dumps(processed, ensure_ascii=False) + \"\\n\")\n            count += 1\n    return count\n",
+            "models.py": "\nfrom __future__ import annotations\nfrom dataclasses import dataclass\nfrom datetime import datetime\n\n\nVALID_ACTIONS = [\"page_view\", \"click\", \"scroll\", \"purchase\"]\n\n\n@dataclass\nclass UserEvent:\n    \n    event_id: str\n    timestamp: datetime\n    user_name: str\n    action: str\n    page_url: str\n\n    def validate(self) -> bool:\n        \n        if not self.event_id:\n            raise ValueError(\"event_id is required\")\n        if self.action not in VALID_ACTIONS:\n            raise ValueError(f\"Invalid action: {self.action}\")\n        return True\n",
+            "sink.py": "\nimport json\nimport os\nfrom datetime import datetime\n\n\ndef load_processed_events(input_path: str) -> list[dict]:\n    \n    events = []\n    with open(input_path, \"r\", encoding=\"utf-8\") as f:\n        for line in f:\n            line = line.strip()\n            if not line:\n                continue\n            event = json.loads(line)\n            \n            _ = event[\"event_id\"]  \n            _ = event[\"timestamp\"]\n            events.append(event)\n    return events\n\n\ndef write_summary(events: list[dict], output_path: str) -> dict:\n    \n    summary = {\n        \"total_events\": len(events),\n        \"actions\": {},\n        \"users\": set(),\n    }\n    for evt in events:\n        action = evt[\"action\"]\n        summary[\"actions\"][action] = summary[\"actions\"].get(action, 0) + 1\n        summary[\"users\"].add(evt[\"user_name\"])\n\n    summary[\"unique_users\"] = len(summary[\"users\"])\n    summary[\"users\"] = sorted(summary[\"users\"])\n\n    with open(output_path, \"w\", encoding=\"utf-8\") as f:\n        json.dump(summary, f, indent=2, ensure_ascii=False)\n\n    return summary\n",
+            "producer.py": "\nimport json\nimport os\nfrom datetime import datetime\nfrom models import UserEvent\n\n\ndef serialize_event(event: UserEvent) -> str:\n    \n    data = {\n        \"event_id\": event.event_id,\n        \"timestamp\": event.timestamp,\n        \"user_name\": event.user_name,\n        \"action\": event.action,\n        \"page_url\": event.page_url,\n    }\n    \n    return json.dumps(data, default=str)\n\n\ndef produce_events(events: list[UserEvent], output_path: str) -> None:\n    \n    with open(output_path, \"w\", encoding=\"utf-8\") as f:\n        for event in events:\n            f.write(serialize_event(event) + \"\\n\")\n"
+          },
+          "input_source_sha256": "819118801d4ccfab2801b36032d4f0808bdf938eedf9ee532d8ea798fd7ffa29",
+          "output_source_sha256": "819118801d4ccfab2801b36032d4f0808bdf938eedf9ee532d8ea798fd7ffa29",
+          "delivery_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+          "changed_paths": [],
+          "action_initialization": "selected_delivery_copy",
+          "prior_delivery_may_have_been_seen": true,
+          "independent_redo_is_blinded_control": false,
+          "action_wall_seconds": 15.945716417000003,
+          "repair_cost": 0.0,
+          "repair_cost_unit": "full action call seconds when repair/redo; zero for use"
+        },
+        "action_api": {
+          "elapsed_seconds": 15.945716417000003,
+          "http_status": "200",
+          "exit_code": 0,
+          "stderr": "",
+          "stage": "action",
+          "directory": "action",
+          "usage": {
+            "input_tokens": 1699,
+            "output_tokens": 918,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "usage_complete": true,
+          "transport_metrics": {
+            "time_namelookup": 0.003064,
+            "time_connect": 0.126975,
+            "time_appconnect": 0.214327,
+            "time_starttransfer": 0.800469,
+            "time_total": 15.8938,
+            "size_download": 48924
+          },
+          "returned_model": "qwen3.8-max",
+          "stop_reason": "end_turn",
+          "thinking_delta_count": 0
+        },
+        "recipient_score": {
+          "status": "PASS",
+          "label": 1,
+          "quality_score": 1.0,
+          "scorer_version": "pipe3-recipient-objective-v2",
+          "mode": "recipient",
+          "decision_complete": true,
+          "coverage_complete": true,
+          "checks": [
+            {
+              "id": "R1_process",
+              "status": "PASS",
+              "reason": ""
+            },
+            {
+              "id": "R2_shape",
+              "status": "PASS"
+            },
+            {
+              "id": "R3_utf8_semantics",
+              "status": "PASS"
+            }
+          ],
+          "failed_check_ids": [],
+          "response_digest": "d1a948917553a27d84df423e9a2796dd94efe6d388ac57967a299ceb4951cc89",
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "4c43f79c95e650d5cf945d14b39e062202ae5f59e9094d9c0d5202952257cd0a"
+        },
+        "adoption_score": {
+          "status": "FAIL",
+          "label": 0,
+          "quality_score": 0.5,
+          "scorer_version": "pipe3-recipient-objective-v2",
+          "mode": "adoption",
+          "decision_complete": true,
+          "coverage_complete": true,
+          "checks": [
+            {
+              "id": "A1_producer_boundary",
+              "status": "FAIL"
+            },
+            {
+              "id": "A2_sink_adoption",
+              "status": "PASS"
+            }
+          ],
+          "failed_check_ids": [
+            "A1_producer_boundary"
+          ],
+          "response_digest": "7f9dd554c9aff543f2c76cfa4a99caf5c3d5b9256028ef19d58df6120dfa46f3",
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "f4b436fc8f759216c5656b12c0cc7de5bde509fc169c070c6e45875361575192"
+        },
+        "outcome": {
+          "status": "FAIL",
+          "quality_score": 0.5,
+          "coverage_complete": true,
+          "decision_complete": true,
+          "outcome_id": "no_update-outcome-1"
+        },
+        "source_gate": {
+          "gate_version": "two-stage-role-evidence-v3-structural-owner",
+          "producer_paths_changed": [],
+          "recipient_paths_changed": [],
+          "q_complete": true,
+          "y_complete": true,
+          "target_role": "producer",
+          "artifact_binding_present": true,
+          "later_use_valid": false,
+          "attribution_eligible": true,
+          "evidence_publish_allowed": true,
+          "policy_update_allowed": false,
+          "status": "ELIGIBLE",
+          "reason": "complete source Qp/Y with independently registered producer defect",
+          "structural_owner_role": "producer",
+          "judged_role_agrees": true,
+          "judged_target_paths": [
+            "producer.py"
+          ]
+        },
+        "final_sources": {
+          "processor.py": "\nimport json\nimport os\nfrom datetime import datetime\n\n\ndef parse_timestamp(ts_str: str) -> datetime:\n    \n    return datetime.fromisoformat(ts_str)\n\n\ndef transform_event(event_data: dict) -> dict:\n    \n    processed = dict(event_data)\n    \n    ts = parse_timestamp(event_data[\"timestamp\"])\n    processed[\"timestamp\"] = ts.isoformat()\n    processed[\"processed_at\"] = datetime.utcnow().isoformat()\n    processed[\"action\"] = event_data[\"action\"].upper()\n    return processed\n\n\ndef process_events(input_path: str, output_path: str) -> int:\n    \n    count = 0\n    \n    with open(input_path, \"r\", encoding=\"utf-8\") as fin,\\\n         open(output_path, \"w\", encoding=\"utf-8\") as fout:\n        for line in fin:\n            line = line.strip()\n            if not line:\n                continue\n            event_data = json.loads(line)\n            processed = transform_event(event_data)\n            \n            fout.write(json.dumps(processed, ensure_ascii=False) + \"\\n\")\n            count += 1\n    return count\n",
+          "models.py": "\nfrom __future__ import annotations\nfrom dataclasses import dataclass\nfrom datetime import datetime\n\n\nVALID_ACTIONS = [\"page_view\", \"click\", \"scroll\", \"purchase\"]\n\n\n@dataclass\nclass UserEvent:\n    \n    event_id: str\n    timestamp: datetime\n    user_name: str\n    action: str\n    page_url: str\n\n    def validate(self) -> bool:\n        \n        if not self.event_id:\n            raise ValueError(\"event_id is required\")\n        if self.action not in VALID_ACTIONS:\n            raise ValueError(f\"Invalid action: {self.action}\")\n        return True\n",
+          "sink.py": "\nimport json\nimport os\nfrom datetime import datetime\n\n\ndef load_processed_events(input_path: str) -> list[dict]:\n    \n    events = []\n    with open(input_path, \"r\", encoding=\"utf-8\") as f:\n        for line in f:\n            line = line.strip()\n            if not line:\n                continue\n            event = json.loads(line)\n            \n            _ = event[\"event_id\"]  \n            _ = event[\"timestamp\"]\n            events.append(event)\n    return events\n\n\ndef write_summary(events: list[dict], output_path: str) -> dict:\n    \n    summary = {\n        \"total_events\": len(events),\n        \"actions\": {},\n        \"users\": set(),\n    }\n    for evt in events:\n        action = evt[\"action\"]\n        summary[\"actions\"][action] = summary[\"actions\"].get(action, 0) + 1\n        summary[\"users\"].add(evt[\"user_name\"])\n\n    summary[\"unique_users\"] = len(summary[\"users\"])\n    summary[\"users\"] = sorted(summary[\"users\"])\n\n    with open(output_path, \"w\", encoding=\"utf-8\") as f:\n        json.dump(summary, f, indent=2, ensure_ascii=False)\n\n    return summary\n",
+          "producer.py": "\nimport json\nimport os\nfrom datetime import datetime\nfrom models import UserEvent\n\n\ndef serialize_event(event: UserEvent) -> str:\n    \n    data = {\n        \"event_id\": event.event_id,\n        \"timestamp\": event.timestamp,\n        \"user_name\": event.user_name,\n        \"action\": event.action,\n        \"page_url\": event.page_url,\n    }\n    \n    return json.dumps(data, default=str)\n\n\ndef produce_events(events: list[UserEvent], output_path: str) -> None:\n    \n    with open(output_path, \"w\", encoding=\"utf-8\") as f:\n        for event in events:\n            f.write(serialize_event(event) + \"\\n\")\n"
+        }
+      },
+      "source_eligible": true,
+      "update": {
+        "status": "NOT_RUN",
+        "updates": 0
+      },
+      "post_update_selection": {
+        "selected_key": "peer-c@v1",
+        "propensity": 0.5,
+        "probabilities": [
+          0.5,
+          0.5
+        ]
+      },
+      "policy_updates": 0,
+      "ledger_event_count": 16,
+      "scientific_claim_allowed": false,
+      "interpretation": "single-root live development evidence only; no benchmark, efficacy, or specialization claim",
+      "ledger": [
+        {
+          "event_type": "peer_selection",
+          "payload": {
+            "selection_id": "selection-no_update-0",
+            "task_id": "PIPE3_stream_processing",
+            "task_index": 0,
+            "selector_id": "peer-a",
+            "role": "producer",
+            "candidate_ids": [
+              "peer-b",
+              "peer-c"
+            ],
+            "chosen_peer_id": "peer-b",
+            "propensity": 0.5
+          },
+          "previous_hash": "GENESIS",
+          "record_hash": "31e23291f19f04b2b4d2c53441aacc9d96af6e01d69c613ecfeb33c6bd1a2a46"
+        },
+        {
+          "event_type": "task_start",
+          "payload": {
+            "task_id": "PIPE3_stream_processing",
+            "task_index": 0
+          },
+          "previous_hash": "31e23291f19f04b2b4d2c53441aacc9d96af6e01d69c613ecfeb33c6bd1a2a46",
+          "record_hash": "e60dfa1de20e2cb83516a1dfcda848c4aaf39fde59eeb5830114346e323d2c9f"
+        },
+        {
+          "event_type": "producer_delivery",
+          "payload": {
+            "delivery_id": "no_update-delivery-0",
+            "task_id": "PIPE3_stream_processing",
+            "producer_id": "peer-b",
+            "recipient_id": "peer-a",
+            "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+            "source_event_id": "request-no_update-0",
+            "task_index": 0,
+            "selection_id": "selection-no_update-0",
+            "candidate_source_digest": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2"
+          },
+          "previous_hash": "e60dfa1de20e2cb83516a1dfcda848c4aaf39fde59eeb5830114346e323d2c9f",
+          "record_hash": "8f48b44003937c69b349f4db0116234300b020b0d3edf338aad11c7679fb32d6"
+        },
+        {
+          "event_type": "producer_score",
+          "payload": {
+            "producer_score_id": "no_update-producer-score-0",
+            "delivery_id": "no_update-delivery-0",
+            "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+            "scorer_version": "pipe3-producer-objective-v2",
+            "status": "FAIL",
+            "label": 0,
+            "quality_score": 0.6666666666666666,
+            "score_payload_sha256": "470d153773afa0d97e10cf0aa37355cdacc97168692d801b486f991b6489038c",
+            "coverage_complete": true,
+            "decision_complete": true
+          },
+          "previous_hash": "8f48b44003937c69b349f4db0116234300b020b0d3edf338aad11c7679fb32d6",
+          "record_hash": "cf39f48860d17617a1f0c02221a7645f6428be693060d9bfc21810b261c89e77"
+        },
+        {
+          "event_type": "recipient_judgment",
+          "payload": {
+            "judgment_id": "no_update-judgment-0",
+            "delivery_id": "no_update-delivery-0",
+            "consumer_id": "peer-a",
+            "decision": "accept",
+            "observed_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+            "terminal_outcome_available": false,
+            "repair_note": "No repairs needed for producer.py. The recipient will implement processor.py to read the JSONL output from produce_events, parse each line with json.loads, handle non-ASCII user_name values via UTF-8 decoding, and forward records to the sink."
+          },
+          "previous_hash": "cf39f48860d17617a1f0c02221a7645f6428be693060d9bfc21810b261c89e77",
+          "record_hash": "a31508d26bdde2c1f7c0c3a764a8a48a4df32765e153bab298531538fc295b26"
+        },
+        {
+          "event_type": "consumer_action",
+          "payload": {
+            "action_id": "no_update-action-0",
+            "delivery_id": "no_update-delivery-0",
+            "consumer_id": "peer-a",
+            "used_artifact": true,
+            "input_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+            "output_artifact_sha256": "819118801d4ccfab2801b36032d4f0808bdf938eedf9ee532d8ea798fd7ffa29",
+            "repair_cost": 0.0,
+            "action": "use"
+          },
+          "previous_hash": "a31508d26bdde2c1f7c0c3a764a8a48a4df32765e153bab298531538fc295b26",
+          "record_hash": "9dd5ba722dba11aebd1567456b6b27450b9ef74e49254fa2c155c3afd73bbf15"
+        },
+        {
+          "event_type": "terminal_outcome",
+          "payload": {
+            "outcome_id": "no_update-outcome-0",
+            "delivery_id": "no_update-delivery-0",
+            "success": false,
+            "scorer_version": "pipe3-adoption-v1",
+            "partial_score": 0.5,
+            "score_payload_sha256": "5156306652e31b40755e8ca94c09b327f0c648986625d9cf251e3383e15cc354"
+          },
+          "previous_hash": "9dd5ba722dba11aebd1567456b6b27450b9ef74e49254fa2c155c3afd73bbf15",
+          "record_hash": "ca475d5db0341cc8a384acf02b900678b7d67c4b4c4ede8f42ba504128fe536b"
+        },
+        {
+          "event_type": "role_evidence_update",
+          "payload": {
+            "evidence_id": "no_update-source-observation",
+            "judgment_id": "no_update-judgment-0",
+            "action_id": "no_update-action-0",
+            "outcome_id": "no_update-outcome-0",
+            "update_version": "c1-control-observation-v1",
+            "arrived_at": 1.0
+          },
+          "previous_hash": "ca475d5db0341cc8a384acf02b900678b7d67c4b4c4ede8f42ba504128fe536b",
+          "record_hash": "676ac5f1ff94f53c394b7671400a41e0e26399484b689514ffce825a58cb5e02"
+        },
+        {
+          "event_type": "peer_selection",
+          "payload": {
+            "selection_id": "selection-no_update-1",
+            "task_id": "PIPE3_stream_processing",
+            "task_index": 1,
+            "selector_id": "peer-a",
+            "role": "producer",
+            "candidate_ids": [
+              "peer-b",
+              "peer-c"
+            ],
+            "chosen_peer_id": "peer-b",
+            "propensity": 0.5
+          },
+          "previous_hash": "676ac5f1ff94f53c394b7671400a41e0e26399484b689514ffce825a58cb5e02",
+          "record_hash": "7440dfa779170fe562eb213fe2cacd2b531e1ec05bc9618b44f371130bd8e5b1"
+        },
+        {
+          "event_type": "task_start",
+          "payload": {
+            "task_id": "PIPE3_stream_processing",
+            "task_index": 1
+          },
+          "previous_hash": "7440dfa779170fe562eb213fe2cacd2b531e1ec05bc9618b44f371130bd8e5b1",
+          "record_hash": "842267c2b9ecec6ae0c57236397d46ed3f5b572066489e4e4e54a23751ccde51"
+        },
+        {
+          "event_type": "producer_delivery",
+          "payload": {
+            "delivery_id": "no_update-delivery-1",
+            "task_id": "PIPE3_stream_processing",
+            "producer_id": "peer-b",
+            "recipient_id": "peer-a",
+            "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+            "source_event_id": "request-no_update-1",
+            "task_index": 1,
+            "selection_id": "selection-no_update-1",
+            "candidate_source_digest": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2"
+          },
+          "previous_hash": "842267c2b9ecec6ae0c57236397d46ed3f5b572066489e4e4e54a23751ccde51",
+          "record_hash": "62f91c15e241744328c58c30ad6454b50aede0621faef786dcb4a157dff15407"
+        },
+        {
+          "event_type": "producer_score",
+          "payload": {
+            "producer_score_id": "no_update-producer-score-1",
+            "delivery_id": "no_update-delivery-1",
+            "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+            "scorer_version": "pipe3-producer-objective-v2",
+            "status": "FAIL",
+            "label": 0,
+            "quality_score": 0.6666666666666666,
+            "score_payload_sha256": "c2c07d03f5736646828657de511d0898050a2d1e29cda490b2a1468fb40797e9",
+            "coverage_complete": true,
+            "decision_complete": true
+          },
+          "previous_hash": "62f91c15e241744328c58c30ad6454b50aede0621faef786dcb4a157dff15407",
+          "record_hash": "258b4904cb24329018754eaf779c6992d825db94ac40d5b0366575b2033ba22c"
+        },
+        {
+          "event_type": "recipient_judgment",
+          "payload": {
+            "judgment_id": "no_update-judgment-1",
+            "delivery_id": "no_update-delivery-1",
+            "consumer_id": "peer-a",
+            "decision": "accept",
+            "observed_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+            "terminal_outcome_available": false,
+            "repair_note": "No repairs required. The producer artifact is correct and preserves its public interface as specified."
+          },
+          "previous_hash": "258b4904cb24329018754eaf779c6992d825db94ac40d5b0366575b2033ba22c",
+          "record_hash": "e60e169992fbe431abb090169df964c46a3bb0f05bb96bcbc9457daef30095b3"
+        },
+        {
+          "event_type": "consumer_action",
+          "payload": {
+            "action_id": "no_update-action-1",
+            "delivery_id": "no_update-delivery-1",
+            "consumer_id": "peer-a",
+            "used_artifact": true,
+            "input_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+            "output_artifact_sha256": "819118801d4ccfab2801b36032d4f0808bdf938eedf9ee532d8ea798fd7ffa29",
+            "repair_cost": 0.0,
+            "action": "use"
+          },
+          "previous_hash": "e60e169992fbe431abb090169df964c46a3bb0f05bb96bcbc9457daef30095b3",
+          "record_hash": "9c9917d463fdeace68ac7cb66899a0d904c825bfce3e8c09e921398c5812e7d4"
+        },
+        {
+          "event_type": "terminal_outcome",
+          "payload": {
+            "outcome_id": "no_update-outcome-1",
+            "delivery_id": "no_update-delivery-1",
+            "success": false,
+            "scorer_version": "pipe3-adoption-v1",
+            "partial_score": 0.5,
+            "score_payload_sha256": "6099a0595b7d6157510546ee63b33ff3d2f1f83f22a9bfd8472cb8b4834a0345"
+          },
+          "previous_hash": "9c9917d463fdeace68ac7cb66899a0d904c825bfce3e8c09e921398c5812e7d4",
+          "record_hash": "cdc9942104a7f3fd9c7c76d0c53183adee4db1b81b48a9542bb1598944f3f46e"
+        },
+        {
+          "event_type": "role_evidence_update",
+          "payload": {
+            "evidence_id": "no_update-target-completion-evidence",
+            "judgment_id": "no_update-judgment-1",
+            "action_id": "no_update-action-1",
+            "outcome_id": "no_update-outcome-1",
+            "update_version": "c1-control-observation-v1",
+            "arrived_at": 2.0
+          },
+          "previous_hash": "cdc9942104a7f3fd9c7c76d0c53183adee4db1b81b48a9542bb1598944f3f46e",
+          "record_hash": "eae8b9949d3e8abccce52116ea94bba7121344a49741ad3f97a1908ae8a1b46d"
+        }
+      ]
+    },
+    {
+      "arm": "contextual_trust_linear",
+      "status": "UNKNOWN",
+      "passed": false,
+      "stop_reason": "source evidence was not eligible; learning-arm target not started",
+      "source": {
+        "decision_index": 0,
+        "selection_id": "selection-contextual_trust_linear-0",
+        "selected_key": "peer-b@v1",
+        "delivery_id": "contextual_trust_linear-delivery-0",
+        "artifact_digest": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+        "producer_score": {
+          "status": "FAIL",
+          "label": 0,
+          "quality_score": 0.6666666666666666,
+          "scorer_version": "pipe3-producer-objective-v2",
+          "decision_complete": true,
+          "coverage_complete": true,
+          "checks": [
+            {
+              "id": "P1_import",
+              "status": "PASS"
+            },
+            {
+              "id": "P2_iso_serialization",
+              "status": "FAIL",
+              "reason": ""
+            },
+            {
+              "id": "P3_batch_output",
+              "status": "PASS"
+            }
+          ],
+          "failed_check_ids": [
+            "P2_iso_serialization"
+          ],
+          "response_digest": "470d153773afa0d97e10cf0aa37355cdacc97168692d801b486f991b6489038c",
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2"
+        },
+        "judgment": {
+          "decision": "accept",
+          "confidence": 0.92,
+          "target_role": "recipient",
+          "target_paths": [],
+          "defect_type": "unknown",
+          "evidence_refs": [
+            "producer.py:serialize_event signature and field mapping",
+            "producer.py:produce_events utf-8 file writing loop",
+            "task spec: producer owns producer.py and must preserve public names and signatures",
+            "task spec: recipient owns processor.py"
+          ],
+          "observed_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+          "repair_plan": "No changes required to producer.py. As recipient I will implement processor.py to read the newline-delimited JSON output from produce_events, parse each line back into dicts or UserEvent objects, handle non-ASCII user_name values via UTF-8 decoding, and forward processed records to the sink interface defined in sink.py.",
+          "rationale": "The delivered producer.py correctly implements serialize_event and produce_events with the expected public names and signatures. It serializes all required UserEvent fields (event_id, timestamp, user_name, action, page_url) into JSON using default=str for datetime handling, and writes newline-delimited UTF-8 encoded records. No modifications to the producer are needed; integration work belongs in processor.py which is my responsibility as recipient."
+        },
+        "judgment_api": {
+          "elapsed_seconds": 7.610329541999995,
+          "http_status": "200",
+          "exit_code": 0,
+          "stderr": "",
+          "stage": "judgment",
+          "directory": "judgment",
+          "usage": {
+            "input_tokens": 666,
+            "output_tokens": 294,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "usage_complete": true,
+          "transport_metrics": {
+            "time_namelookup": 0.00233,
+            "time_connect": 0.209432,
+            "time_appconnect": 0.50176,
+            "time_starttransfer": 1.545704,
+            "time_total": 7.581696,
+            "size_download": 16066
+          },
+          "returned_model": "qwen3.8-max",
+          "stop_reason": "end_turn",
+          "thinking_delta_count": 0
+        },
+        "action": {
+          "consumer_action": "use",
+          "source_files": {
+            "processor.py": "\nimport json\nimport os\nfrom datetime import datetime, timezone\n\nfrom models import UserEvent\n\n\ndef parse_timestamp(ts_str: str) -> datetime:\n    \"\"\"Parse an ISO-8601 timestamp string into a timezone-aware datetime.\"\"\"\n    dt = datetime.fromisoformat(ts_str)\n    if dt.tzinfo is None:\n        dt = dt.replace(tzinfo=timezone.utc)\n    return dt\n\n\ndef transform_event(event_data: dict) -> dict:\n    \"\"\"Transform a raw event dict into the processed format expected by the sink.\"\"\"\n    processed = dict(event_data)\n\n    # Parse and re-serialize the timestamp to ensure consistent ISO format\n    ts = parse_timestamp(event_data[\"timestamp\"])\n    processed[\"timestamp\"] = ts.isoformat()\n\n    # Record when this event was processed (UTC)\n    processed[\"processed_at\"] = datetime.now(timezone.utc).isoformat()\n\n    # Normalize action to uppercase as required by downstream consumers\n    processed[\"action\"] = event_data[\"action\"].upper()\n\n    return processed\n\n\ndef process_events(input_path: str, output_path: str) -> int:\n    \"\"\"Read newline-delimited JSON events from input_path, transform them,\n    and write the results to output_path. Returns the number of events processed.\"\"\"\n    count = 0\n\n    with open(input_path, \"r\", encoding=\"utf-8\") as fin, \\\n         open(output_path, \"w\", encoding=\"utf-8\") as fout:\n        for line in fin:\n            line = line.strip()\n            if not line:\n                continue\n            event_data = json.loads(line)\n            processed = transform_event(event_data)\n\n            fout.write(json.dumps(processed, ensure_ascii=False) + \"\\n\")\n            count += 1\n\n    return count\n",
+            "models.py": "\nfrom __future__ import annotations\nfrom dataclasses import dataclass\nfrom datetime import datetime\n\n\nVALID_ACTIONS = [\"page_view\", \"click\", \"scroll\", \"purchase\"]\n\n\n@dataclass\nclass UserEvent:\n    \n    event_id: str\n    timestamp: datetime\n    user_name: str\n    action: str\n    page_url: str\n\n    def validate(self) -> bool:\n        \n        if not self.event_id:\n            raise ValueError(\"event_id is required\")\n        if self.action not in VALID_ACTIONS:\n            raise ValueError(f\"Invalid action: {self.action}\")\n        return True\n",
+            "sink.py": "\nimport json\nimport os\nfrom datetime import datetime\n\n\ndef load_processed_events(input_path: str) -> list[dict]:\n    \n    events = []\n    with open(input_path, \"r\", encoding=\"utf-8\") as f:\n        for line in f:\n            line = line.strip()\n            if not line:\n                continue\n            event = json.loads(line)\n            \n            _ = event[\"event_id\"]  \n            _ = event[\"timestamp\"]\n            events.append(event)\n    return events\n\n\ndef write_summary(events: list[dict], output_path: str) -> dict:\n    \n    summary = {\n        \"total_events\": len(events),\n        \"actions\": {},\n        \"users\": set(),\n    }\n    for evt in events:\n        action = evt[\"action\"]\n        summary[\"actions\"][action] = summary[\"actions\"].get(action, 0) + 1\n        summary[\"users\"].add(evt[\"user_name\"])\n\n    summary[\"unique_users\"] = len(summary[\"users\"])\n    summary[\"users\"] = sorted(summary[\"users\"])\n\n    with open(output_path, \"w\", encoding=\"utf-8\") as f:\n        json.dump(summary, f, indent=2, ensure_ascii=False)\n\n    return summary\n",
+            "producer.py": "\nimport json\nimport os\nfrom datetime import datetime\nfrom models import UserEvent\n\n\ndef serialize_event(event: UserEvent) -> str:\n    \n    data = {\n        \"event_id\": event.event_id,\n        \"timestamp\": event.timestamp,\n        \"user_name\": event.user_name,\n        \"action\": event.action,\n        \"page_url\": event.page_url,\n    }\n    \n    return json.dumps(data, default=str)\n\n\ndef produce_events(events: list[UserEvent], output_path: str) -> None:\n    \n    with open(output_path, \"w\", encoding=\"utf-8\") as f:\n        for event in events:\n            f.write(serialize_event(event) + \"\\n\")\n"
+          },
+          "input_source_sha256": "819118801d4ccfab2801b36032d4f0808bdf938eedf9ee532d8ea798fd7ffa29",
+          "output_source_sha256": "eb76f92e528fc6aced1117c817abccd9254913cce0ef73ff889ff65644d48dfe",
+          "delivery_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+          "changed_paths": [
+            "processor.py"
+          ],
+          "action_initialization": "selected_delivery_copy",
+          "prior_delivery_may_have_been_seen": true,
+          "independent_redo_is_blinded_control": false,
+          "action_wall_seconds": 20.462177750000002,
+          "repair_cost": 0.0,
+          "repair_cost_unit": "full action call seconds when repair/redo; zero for use"
+        },
+        "action_api": {
+          "elapsed_seconds": 20.462177750000002,
+          "http_status": "200",
+          "exit_code": 0,
+          "stderr": "",
+          "stage": "action",
+          "directory": "action",
+          "usage": {
+            "input_tokens": 1761,
+            "output_tokens": 1068,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "usage_complete": true,
+          "transport_metrics": {
+            "time_namelookup": 0.002881,
+            "time_connect": 0.208589,
+            "time_appconnect": 0.412969,
+            "time_starttransfer": 1.435886,
+            "time_total": 20.401269,
+            "size_download": 54953
+          },
+          "returned_model": "qwen3.8-max",
+          "stop_reason": "end_turn",
+          "thinking_delta_count": 0
+        },
+        "recipient_score": {
+          "status": "PASS",
+          "label": 1,
+          "quality_score": 1.0,
+          "scorer_version": "pipe3-recipient-objective-v2",
+          "mode": "recipient",
+          "decision_complete": true,
+          "coverage_complete": true,
+          "checks": [
+            {
+              "id": "R1_process",
+              "status": "PASS",
+              "reason": ""
+            },
+            {
+              "id": "R2_shape",
+              "status": "PASS"
+            },
+            {
+              "id": "R3_utf8_semantics",
+              "status": "PASS"
+            }
+          ],
+          "failed_check_ids": [],
+          "response_digest": "96a69374e08540336caee10b4c4dd2da36baf537a0b2d7415ac224ac4544a309",
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "05b544d0a44a722677a35ddd3bd525665c484672a8ee1e89d11c4b10a2db1049"
+        },
+        "adoption_score": {
+          "status": "FAIL",
+          "label": 0,
+          "quality_score": 0.5,
+          "scorer_version": "pipe3-recipient-objective-v2",
+          "mode": "adoption",
+          "decision_complete": true,
+          "coverage_complete": true,
+          "checks": [
+            {
+              "id": "A1_producer_boundary",
+              "status": "FAIL"
+            },
+            {
+              "id": "A2_sink_adoption",
+              "status": "PASS"
+            }
+          ],
+          "failed_check_ids": [
+            "A1_producer_boundary"
+          ],
+          "response_digest": "9f359a82ef4b02718b50e45dd7a2c7b38579f10b0860687580efef89963d4fd1",
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "ea6f991287eef505b75971cfec0783e0ed7587accecbe59f36e6862dc3e64619"
+        },
+        "outcome": {
+          "status": "FAIL",
+          "quality_score": 0.5,
+          "coverage_complete": true,
+          "decision_complete": true,
+          "outcome_id": "contextual_trust_linear-outcome-0"
+        },
+        "source_gate": {
+          "gate_version": "two-stage-role-evidence-v3-structural-owner",
+          "producer_paths_changed": [],
+          "recipient_paths_changed": [
+            "processor.py"
+          ],
+          "q_complete": true,
+          "y_complete": true,
+          "target_role": "recipient",
+          "artifact_binding_present": true,
+          "later_use_valid": false,
+          "attribution_eligible": false,
+          "evidence_publish_allowed": false,
+          "policy_update_allowed": false,
+          "status": "PENDING_ATTRIBUTION",
+          "reason": "recipient-owned integration change cannot label producer",
+          "structural_owner_role": "recipient",
+          "judged_role_agrees": true,
+          "judged_target_paths": []
+        },
+        "final_sources": {
+          "processor.py": "\nimport json\nimport os\nfrom datetime import datetime, timezone\n\nfrom models import UserEvent\n\n\ndef parse_timestamp(ts_str: str) -> datetime:\n    \"\"\"Parse an ISO-8601 timestamp string into a timezone-aware datetime.\"\"\"\n    dt = datetime.fromisoformat(ts_str)\n    if dt.tzinfo is None:\n        dt = dt.replace(tzinfo=timezone.utc)\n    return dt\n\n\ndef transform_event(event_data: dict) -> dict:\n    \"\"\"Transform a raw event dict into the processed format expected by the sink.\"\"\"\n    processed = dict(event_data)\n\n    # Parse and re-serialize the timestamp to ensure consistent ISO format\n    ts = parse_timestamp(event_data[\"timestamp\"])\n    processed[\"timestamp\"] = ts.isoformat()\n\n    # Record when this event was processed (UTC)\n    processed[\"processed_at\"] = datetime.now(timezone.utc).isoformat()\n\n    # Normalize action to uppercase as required by downstream consumers\n    processed[\"action\"] = event_data[\"action\"].upper()\n\n    return processed\n\n\ndef process_events(input_path: str, output_path: str) -> int:\n    \"\"\"Read newline-delimited JSON events from input_path, transform them,\n    and write the results to output_path. Returns the number of events processed.\"\"\"\n    count = 0\n\n    with open(input_path, \"r\", encoding=\"utf-8\") as fin, \\\n         open(output_path, \"w\", encoding=\"utf-8\") as fout:\n        for line in fin:\n            line = line.strip()\n            if not line:\n                continue\n            event_data = json.loads(line)\n            processed = transform_event(event_data)\n\n            fout.write(json.dumps(processed, ensure_ascii=False) + \"\\n\")\n            count += 1\n\n    return count\n",
+          "models.py": "\nfrom __future__ import annotations\nfrom dataclasses import dataclass\nfrom datetime import datetime\n\n\nVALID_ACTIONS = [\"page_view\", \"click\", \"scroll\", \"purchase\"]\n\n\n@dataclass\nclass UserEvent:\n    \n    event_id: str\n    timestamp: datetime\n    user_name: str\n    action: str\n    page_url: str\n\n    def validate(self) -> bool:\n        \n        if not self.event_id:\n            raise ValueError(\"event_id is required\")\n        if self.action not in VALID_ACTIONS:\n            raise ValueError(f\"Invalid action: {self.action}\")\n        return True\n",
+          "sink.py": "\nimport json\nimport os\nfrom datetime import datetime\n\n\ndef load_processed_events(input_path: str) -> list[dict]:\n    \n    events = []\n    with open(input_path, \"r\", encoding=\"utf-8\") as f:\n        for line in f:\n            line = line.strip()\n            if not line:\n                continue\n            event = json.loads(line)\n            \n            _ = event[\"event_id\"]  \n            _ = event[\"timestamp\"]\n            events.append(event)\n    return events\n\n\ndef write_summary(events: list[dict], output_path: str) -> dict:\n    \n    summary = {\n        \"total_events\": len(events),\n        \"actions\": {},\n        \"users\": set(),\n    }\n    for evt in events:\n        action = evt[\"action\"]\n        summary[\"actions\"][action] = summary[\"actions\"].get(action, 0) + 1\n        summary[\"users\"].add(evt[\"user_name\"])\n\n    summary[\"unique_users\"] = len(summary[\"users\"])\n    summary[\"users\"] = sorted(summary[\"users\"])\n\n    with open(output_path, \"w\", encoding=\"utf-8\") as f:\n        json.dump(summary, f, indent=2, ensure_ascii=False)\n\n    return summary\n",
+          "producer.py": "\nimport json\nimport os\nfrom datetime import datetime\nfrom models import UserEvent\n\n\ndef serialize_event(event: UserEvent) -> str:\n    \n    data = {\n        \"event_id\": event.event_id,\n        \"timestamp\": event.timestamp,\n        \"user_name\": event.user_name,\n        \"action\": event.action,\n        \"page_url\": event.page_url,\n    }\n    \n    return json.dumps(data, default=str)\n\n\ndef produce_events(events: list[UserEvent], output_path: str) -> None:\n    \n    with open(output_path, \"w\", encoding=\"utf-8\") as f:\n        for event in events:\n            f.write(serialize_event(event) + \"\\n\")\n"
+        }
+      },
+      "source_eligible": false,
+      "policy_updates": 0,
+      "scientific_claim_allowed": false,
+      "ledger": [
+        {
+          "event_type": "peer_selection",
+          "payload": {
+            "selection_id": "selection-contextual_trust_linear-0",
+            "task_id": "PIPE3_stream_processing",
+            "task_index": 0,
+            "selector_id": "peer-a",
+            "role": "producer",
+            "candidate_ids": [
+              "peer-b",
+              "peer-c"
+            ],
+            "chosen_peer_id": "peer-b",
+            "propensity": 0.5
+          },
+          "previous_hash": "GENESIS",
+          "record_hash": "a6e5766bfc4cdfaa5cd123aaedf8970ef361cfc1c8a242613757906bf7a571e5"
+        },
+        {
+          "event_type": "task_start",
+          "payload": {
+            "task_id": "PIPE3_stream_processing",
+            "task_index": 0
+          },
+          "previous_hash": "a6e5766bfc4cdfaa5cd123aaedf8970ef361cfc1c8a242613757906bf7a571e5",
+          "record_hash": "8292ea894a8a1136933149425723333a4011b613b34e74c2b56655b508d3f4d8"
+        },
+        {
+          "event_type": "producer_delivery",
+          "payload": {
+            "delivery_id": "contextual_trust_linear-delivery-0",
+            "task_id": "PIPE3_stream_processing",
+            "producer_id": "peer-b",
+            "recipient_id": "peer-a",
+            "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+            "source_event_id": "request-contextual_trust_linear-0",
+            "task_index": 0,
+            "selection_id": "selection-contextual_trust_linear-0",
+            "candidate_source_digest": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2"
+          },
+          "previous_hash": "8292ea894a8a1136933149425723333a4011b613b34e74c2b56655b508d3f4d8",
+          "record_hash": "1866d0836bec9fe86e2636b26aac2f321eeabfe502037ea11494ef6685e5aecf"
+        },
+        {
+          "event_type": "producer_score",
+          "payload": {
+            "producer_score_id": "contextual_trust_linear-producer-score-0",
+            "delivery_id": "contextual_trust_linear-delivery-0",
+            "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+            "scorer_version": "pipe3-producer-objective-v2",
+            "status": "FAIL",
+            "label": 0,
+            "quality_score": 0.6666666666666666,
+            "score_payload_sha256": "470d153773afa0d97e10cf0aa37355cdacc97168692d801b486f991b6489038c",
+            "coverage_complete": true,
+            "decision_complete": true
+          },
+          "previous_hash": "1866d0836bec9fe86e2636b26aac2f321eeabfe502037ea11494ef6685e5aecf",
+          "record_hash": "7dccbb1337a1990093b49a1e910f5626aae7ce4b27be1d63f8e91d29aa9706ad"
+        },
+        {
+          "event_type": "recipient_judgment",
+          "payload": {
+            "judgment_id": "contextual_trust_linear-judgment-0",
+            "delivery_id": "contextual_trust_linear-delivery-0",
+            "consumer_id": "peer-a",
+            "decision": "accept",
+            "observed_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+            "terminal_outcome_available": false,
+            "repair_note": "No changes required to producer.py. As recipient I will implement processor.py to read the newline-delimited JSON output from produce_events, parse each line back into dicts or UserEvent objects, handle non-ASCII user_name values via UTF-8 decoding, and forward processed records to the sink interface defined in sink.py."
+          },
+          "previous_hash": "7dccbb1337a1990093b49a1e910f5626aae7ce4b27be1d63f8e91d29aa9706ad",
+          "record_hash": "fde31a9309bc483cb5e43928cc4602f51b7ed4f9dcff9950cbda7b43601ed373"
+        },
+        {
+          "event_type": "consumer_action",
+          "payload": {
+            "action_id": "contextual_trust_linear-action-0",
+            "delivery_id": "contextual_trust_linear-delivery-0",
+            "consumer_id": "peer-a",
+            "used_artifact": true,
+            "input_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+            "output_artifact_sha256": "eb76f92e528fc6aced1117c817abccd9254913cce0ef73ff889ff65644d48dfe",
+            "repair_cost": 0.0,
+            "action": "use"
+          },
+          "previous_hash": "fde31a9309bc483cb5e43928cc4602f51b7ed4f9dcff9950cbda7b43601ed373",
+          "record_hash": "2df8b090a7c1b84371835889d30ddc8b20469ee13364476473d47f949790c331"
+        },
+        {
+          "event_type": "terminal_outcome",
+          "payload": {
+            "outcome_id": "contextual_trust_linear-outcome-0",
+            "delivery_id": "contextual_trust_linear-delivery-0",
+            "success": false,
+            "scorer_version": "pipe3-adoption-v1",
+            "partial_score": 0.5,
+            "score_payload_sha256": "4b50c75717618738d8128247a035bb1a96df997b008d13883b91ca2ecd3f22b2"
+          },
+          "previous_hash": "2df8b090a7c1b84371835889d30ddc8b20469ee13364476473d47f949790c331",
+          "record_hash": "a541e07c02dc06e7146730fa230a126302b209aaeb0c3a057e932d6b0c8014bf"
+        }
+      ]
+    },
+    {
+      "arm": "RARE",
+      "status": "COMPLETE_DEVELOPMENT_ONLY",
+      "passed": true,
+      "source": {
+        "decision_index": 0,
+        "selection_id": "selection-RARE-0",
+        "selected_key": "peer-b@v1",
+        "delivery_id": "RARE-delivery-0",
+        "artifact_digest": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+        "producer_score": {
+          "status": "FAIL",
+          "label": 0,
+          "quality_score": 0.6666666666666666,
+          "scorer_version": "pipe3-producer-objective-v2",
+          "decision_complete": true,
+          "coverage_complete": true,
+          "checks": [
+            {
+              "id": "P1_import",
+              "status": "PASS"
+            },
+            {
+              "id": "P2_iso_serialization",
+              "status": "FAIL",
+              "reason": ""
+            },
+            {
+              "id": "P3_batch_output",
+              "status": "PASS"
+            }
+          ],
+          "failed_check_ids": [
+            "P2_iso_serialization"
+          ],
+          "response_digest": "470d153773afa0d97e10cf0aa37355cdacc97168692d801b486f991b6489038c",
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2"
+        },
+        "judgment": {
+          "decision": "accept",
+          "confidence": 0.95,
+          "target_role": "producer",
+          "target_paths": [
+            "producer.py"
+          ],
+          "defect_type": "unknown",
+          "evidence_refs": [
+            "serialize_event function signature and body",
+            "produce_events function signature and body",
+            "json.dumps(data, default=str) call",
+            "open(output_path, 'w', encoding='utf-8') call"
+          ],
+          "observed_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+          "repair_plan": "No repairs required. The producer artifact is correct and preserves its public names and signatures as specified.",
+          "rationale": "The delivered producer.py artifact matches the source provided in the task specification exactly. It correctly imports UserEvent from models, serializes all required event fields (event_id, timestamp, user_name, action, page_url) using json.dumps with default=str for datetime handling, and writes newline-delimited JSON to the output path with utf-8 encoding. No changes are needed to the producer."
+        },
+        "judgment_api": {
+          "elapsed_seconds": 18.042020584,
+          "http_status": "200",
+          "exit_code": 0,
+          "stderr": "",
+          "stage": "judgment",
+          "directory": "judgment",
+          "usage": {
+            "input_tokens": 666,
+            "output_tokens": 260,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "usage_complete": true,
+          "transport_metrics": {
+            "time_namelookup": 0.010021,
+            "time_connect": 7.258253,
+            "time_appconnect": 10.226844,
+            "time_starttransfer": 11.599105,
+            "time_total": 18.006836,
+            "size_download": 14307
+          },
+          "returned_model": "qwen3.8-max",
+          "stop_reason": "end_turn",
+          "thinking_delta_count": 0
+        },
+        "action": {
+          "consumer_action": "use",
+          "source_files": {
+            "processor.py": "\nimport json\nimport os\nfrom datetime import datetime\n\n\ndef parse_timestamp(ts_str: str) -> datetime:\n    \n    return datetime.fromisoformat(ts_str)\n\n\ndef transform_event(event_data: dict) -> dict:\n    \n    processed = dict(event_data)\n    \n    ts = parse_timestamp(event_data[\"timestamp\"])\n    processed[\"timestamp\"] = ts.isoformat()\n    processed[\"processed_at\"] = datetime.utcnow().isoformat()\n    processed[\"action\"] = event_data[\"action\"].upper()\n    return processed\n\n\ndef process_events(input_path: str, output_path: str) -> int:\n    \n    count = 0\n    \n    with open(input_path, \"r\", encoding=\"utf-8\") as fin,\\\n         open(output_path, \"w\", encoding=\"utf-8\") as fout:\n        for line in fin:\n            line = line.strip()\n            if not line:\n                continue\n            event_data = json.loads(line)\n            processed = transform_event(event_data)\n            \n            fout.write(json.dumps(processed, ensure_ascii=False) + \"\\n\")\n            count += 1\n    return count\n",
+            "models.py": "\nfrom __future__ import annotations\nfrom dataclasses import dataclass\nfrom datetime import datetime\n\n\nVALID_ACTIONS = [\"page_view\", \"click\", \"scroll\", \"purchase\"]\n\n\n@dataclass\nclass UserEvent:\n    \n    event_id: str\n    timestamp: datetime\n    user_name: str\n    action: str\n    page_url: str\n\n    def validate(self) -> bool:\n        \n        if not self.event_id:\n            raise ValueError(\"event_id is required\")\n        if self.action not in VALID_ACTIONS:\n            raise ValueError(f\"Invalid action: {self.action}\")\n        return True\n",
+            "sink.py": "\nimport json\nimport os\nfrom datetime import datetime\n\n\ndef load_processed_events(input_path: str) -> list[dict]:\n    \n    events = []\n    with open(input_path, \"r\", encoding=\"utf-8\") as f:\n        for line in f:\n            line = line.strip()\n            if not line:\n                continue\n            event = json.loads(line)\n            \n            _ = event[\"event_id\"]  \n            _ = event[\"timestamp\"]\n            events.append(event)\n    return events\n\n\ndef write_summary(events: list[dict], output_path: str) -> dict:\n    \n    summary = {\n        \"total_events\": len(events),\n        \"actions\": {},\n        \"users\": set(),\n    }\n    for evt in events:\n        action = evt[\"action\"]\n        summary[\"actions\"][action] = summary[\"actions\"].get(action, 0) + 1\n        summary[\"users\"].add(evt[\"user_name\"])\n\n    summary[\"unique_users\"] = len(summary[\"users\"])\n    summary[\"users\"] = sorted(summary[\"users\"])\n\n    with open(output_path, \"w\", encoding=\"utf-8\") as f:\n        json.dump(summary, f, indent=2, ensure_ascii=False)\n\n    return summary\n",
+            "producer.py": "\nimport json\nimport os\nfrom datetime import datetime\nfrom models import UserEvent\n\n\ndef serialize_event(event: UserEvent) -> str:\n    \n    data = {\n        \"event_id\": event.event_id,\n        \"timestamp\": event.timestamp,\n        \"user_name\": event.user_name,\n        \"action\": event.action,\n        \"page_url\": event.page_url,\n    }\n    \n    return json.dumps(data, default=str)\n\n\ndef produce_events(events: list[UserEvent], output_path: str) -> None:\n    \n    with open(output_path, \"w\", encoding=\"utf-8\") as f:\n        for event in events:\n            f.write(serialize_event(event) + \"\\n\")\n"
+          },
+          "input_source_sha256": "819118801d4ccfab2801b36032d4f0808bdf938eedf9ee532d8ea798fd7ffa29",
+          "output_source_sha256": "819118801d4ccfab2801b36032d4f0808bdf938eedf9ee532d8ea798fd7ffa29",
+          "delivery_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+          "changed_paths": [],
+          "action_initialization": "selected_delivery_copy",
+          "prior_delivery_may_have_been_seen": true,
+          "independent_redo_is_blinded_control": false,
+          "action_wall_seconds": 15.963897416999998,
+          "repair_cost": 0.0,
+          "repair_cost_unit": "full action call seconds when repair/redo; zero for use"
+        },
+        "action_api": {
+          "elapsed_seconds": 15.963897416999998,
+          "http_status": "200",
+          "exit_code": 0,
+          "stderr": "",
+          "stage": "action",
+          "directory": "action",
+          "usage": {
+            "input_tokens": 1708,
+            "output_tokens": 918,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "usage_complete": true,
+          "transport_metrics": {
+            "time_namelookup": 0.008549,
+            "time_connect": 0.188061,
+            "time_appconnect": 0.262839,
+            "time_starttransfer": 0.947583,
+            "time_total": 15.91463,
+            "size_download": 49072
+          },
+          "returned_model": "qwen3.8-max",
+          "stop_reason": "end_turn",
+          "thinking_delta_count": 0
+        },
+        "recipient_score": {
+          "status": "PASS",
+          "label": 1,
+          "quality_score": 1.0,
+          "scorer_version": "pipe3-recipient-objective-v2",
+          "mode": "recipient",
+          "decision_complete": true,
+          "coverage_complete": true,
+          "checks": [
+            {
+              "id": "R1_process",
+              "status": "PASS",
+              "reason": ""
+            },
+            {
+              "id": "R2_shape",
+              "status": "PASS"
+            },
+            {
+              "id": "R3_utf8_semantics",
+              "status": "PASS"
+            }
+          ],
+          "failed_check_ids": [],
+          "response_digest": "be69c76f6d4abaf11351058bb225247889ee77069dc75d9696998b9f9b573620",
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "4c43f79c95e650d5cf945d14b39e062202ae5f59e9094d9c0d5202952257cd0a"
+        },
+        "adoption_score": {
+          "status": "FAIL",
+          "label": 0,
+          "quality_score": 0.5,
+          "scorer_version": "pipe3-recipient-objective-v2",
+          "mode": "adoption",
+          "decision_complete": true,
+          "coverage_complete": true,
+          "checks": [
+            {
+              "id": "A1_producer_boundary",
+              "status": "FAIL"
+            },
+            {
+              "id": "A2_sink_adoption",
+              "status": "PASS"
+            }
+          ],
+          "failed_check_ids": [
+            "A1_producer_boundary"
+          ],
+          "response_digest": "04d50c9ffaaa8b8ab57b1c4ec5b4073373261ebad63edcf6f0317d5272f99fc3",
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "f4b436fc8f759216c5656b12c0cc7de5bde509fc169c070c6e45875361575192"
+        },
+        "outcome": {
+          "status": "FAIL",
+          "quality_score": 0.5,
+          "coverage_complete": true,
+          "decision_complete": true,
+          "outcome_id": "RARE-outcome-0"
+        },
+        "source_gate": {
+          "gate_version": "two-stage-role-evidence-v3-structural-owner",
+          "producer_paths_changed": [],
+          "recipient_paths_changed": [],
+          "q_complete": true,
+          "y_complete": true,
+          "target_role": "producer",
+          "artifact_binding_present": true,
+          "later_use_valid": false,
+          "attribution_eligible": true,
+          "evidence_publish_allowed": true,
+          "policy_update_allowed": false,
+          "status": "ELIGIBLE",
+          "reason": "complete source Qp/Y with independently registered producer defect",
+          "structural_owner_role": "producer",
+          "judged_role_agrees": true,
+          "judged_target_paths": [
+            "producer.py"
+          ]
+        },
+        "final_sources": {
+          "processor.py": "\nimport json\nimport os\nfrom datetime import datetime\n\n\ndef parse_timestamp(ts_str: str) -> datetime:\n    \n    return datetime.fromisoformat(ts_str)\n\n\ndef transform_event(event_data: dict) -> dict:\n    \n    processed = dict(event_data)\n    \n    ts = parse_timestamp(event_data[\"timestamp\"])\n    processed[\"timestamp\"] = ts.isoformat()\n    processed[\"processed_at\"] = datetime.utcnow().isoformat()\n    processed[\"action\"] = event_data[\"action\"].upper()\n    return processed\n\n\ndef process_events(input_path: str, output_path: str) -> int:\n    \n    count = 0\n    \n    with open(input_path, \"r\", encoding=\"utf-8\") as fin,\\\n         open(output_path, \"w\", encoding=\"utf-8\") as fout:\n        for line in fin:\n            line = line.strip()\n            if not line:\n                continue\n            event_data = json.loads(line)\n            processed = transform_event(event_data)\n            \n            fout.write(json.dumps(processed, ensure_ascii=False) + \"\\n\")\n            count += 1\n    return count\n",
+          "models.py": "\nfrom __future__ import annotations\nfrom dataclasses import dataclass\nfrom datetime import datetime\n\n\nVALID_ACTIONS = [\"page_view\", \"click\", \"scroll\", \"purchase\"]\n\n\n@dataclass\nclass UserEvent:\n    \n    event_id: str\n    timestamp: datetime\n    user_name: str\n    action: str\n    page_url: str\n\n    def validate(self) -> bool:\n        \n        if not self.event_id:\n            raise ValueError(\"event_id is required\")\n        if self.action not in VALID_ACTIONS:\n            raise ValueError(f\"Invalid action: {self.action}\")\n        return True\n",
+          "sink.py": "\nimport json\nimport os\nfrom datetime import datetime\n\n\ndef load_processed_events(input_path: str) -> list[dict]:\n    \n    events = []\n    with open(input_path, \"r\", encoding=\"utf-8\") as f:\n        for line in f:\n            line = line.strip()\n            if not line:\n                continue\n            event = json.loads(line)\n            \n            _ = event[\"event_id\"]  \n            _ = event[\"timestamp\"]\n            events.append(event)\n    return events\n\n\ndef write_summary(events: list[dict], output_path: str) -> dict:\n    \n    summary = {\n        \"total_events\": len(events),\n        \"actions\": {},\n        \"users\": set(),\n    }\n    for evt in events:\n        action = evt[\"action\"]\n        summary[\"actions\"][action] = summary[\"actions\"].get(action, 0) + 1\n        summary[\"users\"].add(evt[\"user_name\"])\n\n    summary[\"unique_users\"] = len(summary[\"users\"])\n    summary[\"users\"] = sorted(summary[\"users\"])\n\n    with open(output_path, \"w\", encoding=\"utf-8\") as f:\n        json.dump(summary, f, indent=2, ensure_ascii=False)\n\n    return summary\n",
+          "producer.py": "\nimport json\nimport os\nfrom datetime import datetime\nfrom models import UserEvent\n\n\ndef serialize_event(event: UserEvent) -> str:\n    \n    data = {\n        \"event_id\": event.event_id,\n        \"timestamp\": event.timestamp,\n        \"user_name\": event.user_name,\n        \"action\": event.action,\n        \"page_url\": event.page_url,\n    }\n    \n    return json.dumps(data, default=str)\n\n\ndef produce_events(events: list[UserEvent], output_path: str) -> None:\n    \n    with open(output_path, \"w\", encoding=\"utf-8\") as f:\n        for event in events:\n            f.write(serialize_event(event) + \"\\n\")\n"
+        }
+      },
+      "target": {
+        "decision_index": 1,
+        "selection_id": "selection-RARE-1",
+        "selected_key": "peer-b@v1",
+        "delivery_id": "RARE-delivery-1",
+        "artifact_digest": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+        "producer_score": {
+          "status": "FAIL",
+          "label": 0,
+          "quality_score": 0.6666666666666666,
+          "scorer_version": "pipe3-producer-objective-v2",
+          "decision_complete": true,
+          "coverage_complete": true,
+          "checks": [
+            {
+              "id": "P1_import",
+              "status": "PASS"
+            },
+            {
+              "id": "P2_iso_serialization",
+              "status": "FAIL",
+              "reason": ""
+            },
+            {
+              "id": "P3_batch_output",
+              "status": "PASS"
+            }
+          ],
+          "failed_check_ids": [
+            "P2_iso_serialization"
+          ],
+          "response_digest": "c2c07d03f5736646828657de511d0898050a2d1e29cda490b2a1468fb40797e9",
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2"
+        },
+        "judgment": {
+          "decision": "accept",
+          "confidence": 0.9,
+          "target_role": "producer",
+          "target_paths": [
+            "producer.py"
+          ],
+          "defect_type": "unknown",
+          "evidence_refs": [
+            "serialize_event signature matches spec",
+            "produce_events signature matches spec",
+            "all five UserEvent fields serialized",
+            "json.dumps default=str handles datetime",
+            "UTF-8 encoding specified in open()",
+            "newline-delimited output format correct"
+          ],
+          "observed_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+          "repair_plan": "No repairs required. The producer artifact is complete and conforms to the PIPE3 specification.",
+          "rationale": "The delivered producer.py correctly implements the required public interface: serialize_event and produce_events with matching signatures. It serializes all declared UserEvent fields (event_id, timestamp, user_name, action, page_url) into JSON, uses default=str for datetime handling, writes UTF-8 encoded newline-delimited JSON, and imports UserEvent from models. No modifications are needed to the producer artifact."
+        },
+        "judgment_api": {
+          "elapsed_seconds": 8.755313999999998,
+          "http_status": "200",
+          "exit_code": 0,
+          "stderr": "",
+          "stage": "judgment",
+          "directory": "judgment",
+          "usage": {
+            "input_tokens": 666,
+            "output_tokens": 263,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "usage_complete": true,
+          "transport_metrics": {
+            "time_namelookup": 0.010319,
+            "time_connect": 0.255928,
+            "time_appconnect": 0.760496,
+            "time_starttransfer": 3.157513,
+            "time_total": 8.724302,
+            "size_download": 14231
+          },
+          "returned_model": "qwen3.8-max",
+          "stop_reason": "end_turn",
+          "thinking_delta_count": 0
+        },
+        "action": {
+          "consumer_action": "use",
+          "source_files": {
+            "processor.py": "\nimport json\nimport os\nfrom datetime import datetime\n\n\ndef parse_timestamp(ts_str: str) -> datetime:\n    \n    return datetime.fromisoformat(ts_str)\n\n\ndef transform_event(event_data: dict) -> dict:\n    \n    processed = dict(event_data)\n    \n    ts = parse_timestamp(event_data[\"timestamp\"])\n    processed[\"timestamp\"] = ts.isoformat()\n    processed[\"processed_at\"] = datetime.utcnow().isoformat()\n    processed[\"action\"] = event_data[\"action\"].upper()\n    return processed\n\n\ndef process_events(input_path: str, output_path: str) -> int:\n    \n    count = 0\n    \n    with open(input_path, \"r\", encoding=\"utf-8\") as fin,\\\n         open(output_path, \"w\", encoding=\"utf-8\") as fout:\n        for line in fin:\n            line = line.strip()\n            if not line:\n                continue\n            event_data = json.loads(line)\n            processed = transform_event(event_data)\n            \n            fout.write(json.dumps(processed, ensure_ascii=False) + \"\\n\")\n            count += 1\n    return count\n",
+            "models.py": "\nfrom __future__ import annotations\nfrom dataclasses import dataclass\nfrom datetime import datetime\n\n\nVALID_ACTIONS = [\"page_view\", \"click\", \"scroll\", \"purchase\"]\n\n\n@dataclass\nclass UserEvent:\n    \n    event_id: str\n    timestamp: datetime\n    user_name: str\n    action: str\n    page_url: str\n\n    def validate(self) -> bool:\n        \n        if not self.event_id:\n            raise ValueError(\"event_id is required\")\n        if self.action not in VALID_ACTIONS:\n            raise ValueError(f\"Invalid action: {self.action}\")\n        return True\n",
+            "sink.py": "\nimport json\nimport os\nfrom datetime import datetime\n\n\ndef load_processed_events(input_path: str) -> list[dict]:\n    \n    events = []\n    with open(input_path, \"r\", encoding=\"utf-8\") as f:\n        for line in f:\n            line = line.strip()\n            if not line:\n                continue\n            event = json.loads(line)\n            \n            _ = event[\"event_id\"]  \n            _ = event[\"timestamp\"]\n            events.append(event)\n    return events\n\n\ndef write_summary(events: list[dict], output_path: str) -> dict:\n    \n    summary = {\n        \"total_events\": len(events),\n        \"actions\": {},\n        \"users\": set(),\n    }\n    for evt in events:\n        action = evt[\"action\"]\n        summary[\"actions\"][action] = summary[\"actions\"].get(action, 0) + 1\n        summary[\"users\"].add(evt[\"user_name\"])\n\n    summary[\"unique_users\"] = len(summary[\"users\"])\n    summary[\"users\"] = sorted(summary[\"users\"])\n\n    with open(output_path, \"w\", encoding=\"utf-8\") as f:\n        json.dump(summary, f, indent=2, ensure_ascii=False)\n\n    return summary\n",
+            "producer.py": "\nimport json\nimport os\nfrom datetime import datetime\nfrom models import UserEvent\n\n\ndef serialize_event(event: UserEvent) -> str:\n    \n    data = {\n        \"event_id\": event.event_id,\n        \"timestamp\": event.timestamp,\n        \"user_name\": event.user_name,\n        \"action\": event.action,\n        \"page_url\": event.page_url,\n    }\n    \n    return json.dumps(data, default=str)\n\n\ndef produce_events(events: list[UserEvent], output_path: str) -> None:\n    \n    with open(output_path, \"w\", encoding=\"utf-8\") as f:\n        for event in events:\n            f.write(serialize_event(event) + \"\\n\")\n"
+          },
+          "input_source_sha256": "819118801d4ccfab2801b36032d4f0808bdf938eedf9ee532d8ea798fd7ffa29",
+          "output_source_sha256": "819118801d4ccfab2801b36032d4f0808bdf938eedf9ee532d8ea798fd7ffa29",
+          "delivery_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+          "changed_paths": [],
+          "action_initialization": "selected_delivery_copy",
+          "prior_delivery_may_have_been_seen": true,
+          "independent_redo_is_blinded_control": false,
+          "action_wall_seconds": 14.139085250000008,
+          "repair_cost": 0.0,
+          "repair_cost_unit": "full action call seconds when repair/redo; zero for use"
+        },
+        "action_api": {
+          "elapsed_seconds": 14.139085250000008,
+          "http_status": "200",
+          "exit_code": 0,
+          "stderr": "",
+          "stage": "action",
+          "directory": "action",
+          "usage": {
+            "input_tokens": 1711,
+            "output_tokens": 918,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 0
+          },
+          "usage_complete": true,
+          "transport_metrics": {
+            "time_namelookup": 0.003937,
+            "time_connect": 0.119774,
+            "time_appconnect": 0.266094,
+            "time_starttransfer": 0.913525,
+            "time_total": 14.079263,
+            "size_download": 47888
+          },
+          "returned_model": "qwen3.8-max",
+          "stop_reason": "end_turn",
+          "thinking_delta_count": 0
+        },
+        "recipient_score": {
+          "status": "PASS",
+          "label": 1,
+          "quality_score": 1.0,
+          "scorer_version": "pipe3-recipient-objective-v2",
+          "mode": "recipient",
+          "decision_complete": true,
+          "coverage_complete": true,
+          "checks": [
+            {
+              "id": "R1_process",
+              "status": "PASS",
+              "reason": ""
+            },
+            {
+              "id": "R2_shape",
+              "status": "PASS"
+            },
+            {
+              "id": "R3_utf8_semantics",
+              "status": "PASS"
+            }
+          ],
+          "failed_check_ids": [],
+          "response_digest": "d1a948917553a27d84df423e9a2796dd94efe6d388ac57967a299ceb4951cc89",
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "4c43f79c95e650d5cf945d14b39e062202ae5f59e9094d9c0d5202952257cd0a"
+        },
+        "adoption_score": {
+          "status": "FAIL",
+          "label": 0,
+          "quality_score": 0.5,
+          "scorer_version": "pipe3-recipient-objective-v2",
+          "mode": "adoption",
+          "decision_complete": true,
+          "coverage_complete": true,
+          "checks": [
+            {
+              "id": "A1_producer_boundary",
+              "status": "FAIL"
+            },
+            {
+              "id": "A2_sink_adoption",
+              "status": "PASS"
+            }
+          ],
+          "failed_check_ids": [
+            "A1_producer_boundary"
+          ],
+          "response_digest": "7f9dd554c9aff543f2c76cfa4a99caf5c3d5b9256028ef19d58df6120dfa46f3",
+          "transport": {
+            "status": "complete"
+          },
+          "artifact_sha256": "f4b436fc8f759216c5656b12c0cc7de5bde509fc169c070c6e45875361575192"
+        },
+        "outcome": {
+          "status": "FAIL",
+          "quality_score": 0.5,
+          "coverage_complete": true,
+          "decision_complete": true,
+          "outcome_id": "RARE-outcome-1"
+        },
+        "source_gate": {
+          "gate_version": "two-stage-role-evidence-v3-structural-owner",
+          "producer_paths_changed": [],
+          "recipient_paths_changed": [],
+          "q_complete": true,
+          "y_complete": true,
+          "target_role": "producer",
+          "artifact_binding_present": true,
+          "later_use_valid": false,
+          "attribution_eligible": true,
+          "evidence_publish_allowed": true,
+          "policy_update_allowed": false,
+          "status": "ELIGIBLE",
+          "reason": "complete source Qp/Y with independently registered producer defect",
+          "structural_owner_role": "producer",
+          "judged_role_agrees": true,
+          "judged_target_paths": [
+            "producer.py"
+          ]
+        },
+        "final_sources": {
+          "processor.py": "\nimport json\nimport os\nfrom datetime import datetime\n\n\ndef parse_timestamp(ts_str: str) -> datetime:\n    \n    return datetime.fromisoformat(ts_str)\n\n\ndef transform_event(event_data: dict) -> dict:\n    \n    processed = dict(event_data)\n    \n    ts = parse_timestamp(event_data[\"timestamp\"])\n    processed[\"timestamp\"] = ts.isoformat()\n    processed[\"processed_at\"] = datetime.utcnow().isoformat()\n    processed[\"action\"] = event_data[\"action\"].upper()\n    return processed\n\n\ndef process_events(input_path: str, output_path: str) -> int:\n    \n    count = 0\n    \n    with open(input_path, \"r\", encoding=\"utf-8\") as fin,\\\n         open(output_path, \"w\", encoding=\"utf-8\") as fout:\n        for line in fin:\n            line = line.strip()\n            if not line:\n                continue\n            event_data = json.loads(line)\n            processed = transform_event(event_data)\n            \n            fout.write(json.dumps(processed, ensure_ascii=False) + \"\\n\")\n            count += 1\n    return count\n",
+          "models.py": "\nfrom __future__ import annotations\nfrom dataclasses import dataclass\nfrom datetime import datetime\n\n\nVALID_ACTIONS = [\"page_view\", \"click\", \"scroll\", \"purchase\"]\n\n\n@dataclass\nclass UserEvent:\n    \n    event_id: str\n    timestamp: datetime\n    user_name: str\n    action: str\n    page_url: str\n\n    def validate(self) -> bool:\n        \n        if not self.event_id:\n            raise ValueError(\"event_id is required\")\n        if self.action not in VALID_ACTIONS:\n            raise ValueError(f\"Invalid action: {self.action}\")\n        return True\n",
+          "sink.py": "\nimport json\nimport os\nfrom datetime import datetime\n\n\ndef load_processed_events(input_path: str) -> list[dict]:\n    \n    events = []\n    with open(input_path, \"r\", encoding=\"utf-8\") as f:\n        for line in f:\n            line = line.strip()\n            if not line:\n                continue\n            event = json.loads(line)\n            \n            _ = event[\"event_id\"]  \n            _ = event[\"timestamp\"]\n            events.append(event)\n    return events\n\n\ndef write_summary(events: list[dict], output_path: str) -> dict:\n    \n    summary = {\n        \"total_events\": len(events),\n        \"actions\": {},\n        \"users\": set(),\n    }\n    for evt in events:\n        action = evt[\"action\"]\n        summary[\"actions\"][action] = summary[\"actions\"].get(action, 0) + 1\n        summary[\"users\"].add(evt[\"user_name\"])\n\n    summary[\"unique_users\"] = len(summary[\"users\"])\n    summary[\"users\"] = sorted(summary[\"users\"])\n\n    with open(output_path, \"w\", encoding=\"utf-8\") as f:\n        json.dump(summary, f, indent=2, ensure_ascii=False)\n\n    return summary\n",
+          "producer.py": "\nimport json\nimport os\nfrom datetime import datetime\nfrom models import UserEvent\n\n\ndef serialize_event(event: UserEvent) -> str:\n    \n    data = {\n        \"event_id\": event.event_id,\n        \"timestamp\": event.timestamp,\n        \"user_name\": event.user_name,\n        \"action\": event.action,\n        \"page_url\": event.page_url,\n    }\n    \n    return json.dumps(data, default=str)\n\n\ndef produce_events(events: list[UserEvent], output_path: str) -> None:\n    \n    with open(output_path, \"w\", encoding=\"utf-8\") as f:\n        for event in events:\n            f.write(serialize_event(event) + \"\\n\")\n"
+        }
+      },
+      "source_eligible": true,
+      "update": {
+        "status": "UPDATED",
+        "updates": 1,
+        "credit": {
+          "assignment_id": "assignment-RARE",
+          "source_evidence_id": "evidence-RARE-source",
+          "later_outcome_id": "RARE-outcome-1",
+          "later_quality": 0.5,
+          "credit_digest": "8b50285961599f47c4ab184018187ade1e29068ec57fe70a2b8e3cd4ef56d101"
+        },
+        "feedback": {
+          "feedback_id": "RARE-later-feedback",
+          "source_event_id": "policy-selection-RARE-1",
+          "source": "recipient_judgment",
+          "label": 1.0,
+          "arrived_at": 2.0,
+          "delay": 1.0,
+          "action": "use",
+          "disposition": "eligible",
+          "provenance": "public",
+          "arrival_index": 2,
+          "supersedes": null
+        },
+        "latency_seconds": 0.00023100000001363696,
+        "state_before_digest": "e50f829087e148162f21bd0aa07f47ebc426dfe584bedd551be630a3fa2bf503",
+        "state_after_digest": "8751f05e7f13ae6e49ecf4b4275fec6f51c2e970a0c33270673645a7b43374e8"
+      },
+      "post_update_selection": {
+        "selected_key": "peer-c@v1",
+        "propensity": 0.469423368982364,
+        "probabilities": [
+          0.5305766310176361,
+          0.469423368982364
+        ]
+      },
+      "policy_updates": 1,
+      "ledger_event_count": 17,
+      "scientific_claim_allowed": false,
+      "interpretation": "single-root live development evidence only; no benchmark, efficacy, or specialization claim",
+      "ledger": [
+        {
+          "event_type": "peer_selection",
+          "payload": {
+            "selection_id": "selection-RARE-0",
+            "task_id": "PIPE3_stream_processing",
+            "task_index": 0,
+            "selector_id": "peer-a",
+            "role": "producer",
+            "candidate_ids": [
+              "peer-b",
+              "peer-c"
+            ],
+            "chosen_peer_id": "peer-b",
+            "propensity": 0.5
+          },
+          "previous_hash": "GENESIS",
+          "record_hash": "ead5caba478e2ad5de4b78d7027b0996b349135af499daae929696413fbdd38e"
+        },
+        {
+          "event_type": "task_start",
+          "payload": {
+            "task_id": "PIPE3_stream_processing",
+            "task_index": 0
+          },
+          "previous_hash": "ead5caba478e2ad5de4b78d7027b0996b349135af499daae929696413fbdd38e",
+          "record_hash": "40b46cceaa8ea3c217a33ff7fecb2496bb07405f37965d6126c2925aacdf9fac"
+        },
+        {
+          "event_type": "producer_delivery",
+          "payload": {
+            "delivery_id": "RARE-delivery-0",
+            "task_id": "PIPE3_stream_processing",
+            "producer_id": "peer-b",
+            "recipient_id": "peer-a",
+            "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+            "source_event_id": "request-RARE-0",
+            "task_index": 0,
+            "selection_id": "selection-RARE-0",
+            "candidate_source_digest": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2"
+          },
+          "previous_hash": "40b46cceaa8ea3c217a33ff7fecb2496bb07405f37965d6126c2925aacdf9fac",
+          "record_hash": "033b6edbbb15a000cf6522f549b1d9a759d4a8b0c882bc0dd9ea0213c5515e94"
+        },
+        {
+          "event_type": "producer_score",
+          "payload": {
+            "producer_score_id": "RARE-producer-score-0",
+            "delivery_id": "RARE-delivery-0",
+            "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+            "scorer_version": "pipe3-producer-objective-v2",
+            "status": "FAIL",
+            "label": 0,
+            "quality_score": 0.6666666666666666,
+            "score_payload_sha256": "470d153773afa0d97e10cf0aa37355cdacc97168692d801b486f991b6489038c",
+            "coverage_complete": true,
+            "decision_complete": true
+          },
+          "previous_hash": "033b6edbbb15a000cf6522f549b1d9a759d4a8b0c882bc0dd9ea0213c5515e94",
+          "record_hash": "7f53b61cb204d52911bc372ffd17da311d35a1b5cb63f22341cabcf126010bc7"
+        },
+        {
+          "event_type": "recipient_judgment",
+          "payload": {
+            "judgment_id": "RARE-judgment-0",
+            "delivery_id": "RARE-delivery-0",
+            "consumer_id": "peer-a",
+            "decision": "accept",
+            "observed_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+            "terminal_outcome_available": false,
+            "repair_note": "No repairs required. The producer artifact is correct and preserves its public names and signatures as specified."
+          },
+          "previous_hash": "7f53b61cb204d52911bc372ffd17da311d35a1b5cb63f22341cabcf126010bc7",
+          "record_hash": "4f1eac657d352242557692f03a868a586fe191b37dd9da3559c5fb20dd594773"
+        },
+        {
+          "event_type": "consumer_action",
+          "payload": {
+            "action_id": "RARE-action-0",
+            "delivery_id": "RARE-delivery-0",
+            "consumer_id": "peer-a",
+            "used_artifact": true,
+            "input_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+            "output_artifact_sha256": "819118801d4ccfab2801b36032d4f0808bdf938eedf9ee532d8ea798fd7ffa29",
+            "repair_cost": 0.0,
+            "action": "use"
+          },
+          "previous_hash": "4f1eac657d352242557692f03a868a586fe191b37dd9da3559c5fb20dd594773",
+          "record_hash": "71ca70672935bc40427280f6205f96a1fd0bfbc5b79c88b434ea66033a2ee76d"
+        },
+        {
+          "event_type": "terminal_outcome",
+          "payload": {
+            "outcome_id": "RARE-outcome-0",
+            "delivery_id": "RARE-delivery-0",
+            "success": false,
+            "scorer_version": "pipe3-adoption-v1",
+            "partial_score": 0.5,
+            "score_payload_sha256": "f3c4486f84bf2b8467d17d340db005e5235342727fd211d8382bfd775281d6c7"
+          },
+          "previous_hash": "71ca70672935bc40427280f6205f96a1fd0bfbc5b79c88b434ea66033a2ee76d",
+          "record_hash": "3675a619b2c8cc22574a52f2a86737a0ad06b70c2b7fdf38bee70833de05bcec"
+        },
+        {
+          "event_type": "role_evidence_update",
+          "payload": {
+            "evidence_id": "evidence-RARE-source",
+            "judgment_id": "RARE-judgment-0",
+            "action_id": "RARE-action-0",
+            "outcome_id": "RARE-outcome-0",
+            "update_version": "pipe3-two-stage-composition-v1.8",
+            "arrived_at": 1.0
+          },
+          "previous_hash": "3675a619b2c8cc22574a52f2a86737a0ad06b70c2b7fdf38bee70833de05bcec",
+          "record_hash": "97698e14f78e1949c62868525bf9001233abcf598613a8d329e879a7b5806d42"
+        },
+        {
+          "event_type": "later_assignment",
+          "payload": {
+            "assignment_id": "assignment-RARE",
+            "task_id": "PIPE3_stream_processing",
+            "task_index": 1,
+            "agent_id": "peer-b",
+            "role": "producer",
+            "evidence_ids": [
+              "evidence-RARE-source"
+            ],
+            "decision_propensity": 0.5825702064623147
+          },
+          "previous_hash": "97698e14f78e1949c62868525bf9001233abcf598613a8d329e879a7b5806d42",
+          "record_hash": "24f7895a4ef9d3c4ea1b18198bdba53818de2137aad13b9b9e346ca44e301fd3"
+        },
+        {
+          "event_type": "peer_selection",
+          "payload": {
+            "selection_id": "selection-RARE-1",
+            "task_id": "PIPE3_stream_processing",
+            "task_index": 1,
+            "selector_id": "peer-a",
+            "role": "producer",
+            "candidate_ids": [
+              "peer-b",
+              "peer-c"
+            ],
+            "chosen_peer_id": "peer-b",
+            "propensity": 0.5825702064623147
+          },
+          "previous_hash": "24f7895a4ef9d3c4ea1b18198bdba53818de2137aad13b9b9e346ca44e301fd3",
+          "record_hash": "4b4b815dccffc011e130ea68dc68c6e2a5ec02499bed6d3ba9f09a63aba4c61b"
+        },
+        {
+          "event_type": "task_start",
+          "payload": {
+            "task_id": "PIPE3_stream_processing",
+            "task_index": 1
+          },
+          "previous_hash": "4b4b815dccffc011e130ea68dc68c6e2a5ec02499bed6d3ba9f09a63aba4c61b",
+          "record_hash": "a027945383db454465b12258ca23f9ec84e065eddbf301a0c57facb0f3b34709"
+        },
+        {
+          "event_type": "producer_delivery",
+          "payload": {
+            "delivery_id": "RARE-delivery-1",
+            "task_id": "PIPE3_stream_processing",
+            "producer_id": "peer-b",
+            "recipient_id": "peer-a",
+            "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+            "source_event_id": "request-RARE-1",
+            "task_index": 1,
+            "selection_id": "selection-RARE-1",
+            "candidate_source_digest": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2"
+          },
+          "previous_hash": "a027945383db454465b12258ca23f9ec84e065eddbf301a0c57facb0f3b34709",
+          "record_hash": "756ef7e231a353e487826ba286a13c7d9166854ef9b950de358ce49106e0ccb6"
+        },
+        {
+          "event_type": "producer_score",
+          "payload": {
+            "producer_score_id": "RARE-producer-score-1",
+            "delivery_id": "RARE-delivery-1",
+            "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+            "scorer_version": "pipe3-producer-objective-v2",
+            "status": "FAIL",
+            "label": 0,
+            "quality_score": 0.6666666666666666,
+            "score_payload_sha256": "c2c07d03f5736646828657de511d0898050a2d1e29cda490b2a1468fb40797e9",
+            "coverage_complete": true,
+            "decision_complete": true
+          },
+          "previous_hash": "756ef7e231a353e487826ba286a13c7d9166854ef9b950de358ce49106e0ccb6",
+          "record_hash": "32a51cfac5d05a6600a1c8065a3e8ba7c32da00db3ec9d02f60d6525f87d27aa"
+        },
+        {
+          "event_type": "recipient_judgment",
+          "payload": {
+            "judgment_id": "RARE-judgment-1",
+            "delivery_id": "RARE-delivery-1",
+            "consumer_id": "peer-a",
+            "decision": "accept",
+            "observed_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+            "terminal_outcome_available": false,
+            "repair_note": "No repairs required. The producer artifact is complete and conforms to the PIPE3 specification."
+          },
+          "previous_hash": "32a51cfac5d05a6600a1c8065a3e8ba7c32da00db3ec9d02f60d6525f87d27aa",
+          "record_hash": "b0aca98dfd5157a269ffd7c831aef4783a6bd2c59133a9615ece3231743ff06b"
+        },
+        {
+          "event_type": "consumer_action",
+          "payload": {
+            "action_id": "RARE-action-1",
+            "delivery_id": "RARE-delivery-1",
+            "consumer_id": "peer-a",
+            "used_artifact": true,
+            "input_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+            "output_artifact_sha256": "819118801d4ccfab2801b36032d4f0808bdf938eedf9ee532d8ea798fd7ffa29",
+            "repair_cost": 0.0,
+            "action": "use"
+          },
+          "previous_hash": "b0aca98dfd5157a269ffd7c831aef4783a6bd2c59133a9615ece3231743ff06b",
+          "record_hash": "fd63e197edc0970635675912343914e60ca745e650b262ce14055387fc29e5ad"
+        },
+        {
+          "event_type": "terminal_outcome",
+          "payload": {
+            "outcome_id": "RARE-outcome-1",
+            "delivery_id": "RARE-delivery-1",
+            "success": false,
+            "scorer_version": "pipe3-adoption-v1",
+            "partial_score": 0.5,
+            "score_payload_sha256": "11b16ab0081681d1d3bde10087c15d028b0b85411715d389918e32e6d517ecfd"
+          },
+          "previous_hash": "fd63e197edc0970635675912343914e60ca745e650b262ce14055387fc29e5ad",
+          "record_hash": "efe9dcf1dd60cdfb414c352c1d75f12bf6f3a5f45b59a0298aeb1530384ddf75"
+        },
+        {
+          "event_type": "role_evidence_update",
+          "payload": {
+            "evidence_id": "RARE-target-completion-evidence",
+            "judgment_id": "RARE-judgment-1",
+            "action_id": "RARE-action-1",
+            "outcome_id": "RARE-outcome-1",
+            "update_version": "c1-target-completion-v1",
+            "arrived_at": 2.0
+          },
+          "previous_hash": "efe9dcf1dd60cdfb414c352c1d75f12bf6f3a5f45b59a0298aeb1530384ddf75",
+          "record_hash": "daf63fe80fed636a66af280dc6187cbd5cdb068cd0b383767e1fb3eeb349aa1d"
+        }
+      ]
+    }
+  ],
+  "ended_at_utc": "2026-10-06T06:44:06.264727+00:00",
+  "status": "UNKNOWN",
+  "passed": false,
+  "interpretation": "C1 is a bounded single-root live development card; scientific confirmation remains closed"
+}
