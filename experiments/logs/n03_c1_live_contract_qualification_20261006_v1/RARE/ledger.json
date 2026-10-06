@@ -1,0 +1,266 @@
+[
+  {
+    "event_type": "peer_selection",
+    "payload": {
+      "selection_id": "selection-RARE-0",
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 0,
+      "selector_id": "peer-a",
+      "role": "producer",
+      "candidate_ids": [
+        "peer-b",
+        "peer-c"
+      ],
+      "chosen_peer_id": "peer-b",
+      "propensity": 0.5
+    },
+    "previous_hash": "GENESIS",
+    "record_hash": "ead5caba478e2ad5de4b78d7027b0996b349135af499daae929696413fbdd38e"
+  },
+  {
+    "event_type": "task_start",
+    "payload": {
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 0
+    },
+    "previous_hash": "ead5caba478e2ad5de4b78d7027b0996b349135af499daae929696413fbdd38e",
+    "record_hash": "40b46cceaa8ea3c217a33ff7fecb2496bb07405f37965d6126c2925aacdf9fac"
+  },
+  {
+    "event_type": "producer_delivery",
+    "payload": {
+      "delivery_id": "RARE-delivery-0",
+      "task_id": "PIPE3_stream_processing",
+      "producer_id": "peer-b",
+      "recipient_id": "peer-a",
+      "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "source_event_id": "request-RARE-0",
+      "task_index": 0,
+      "selection_id": "selection-RARE-0",
+      "candidate_source_digest": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2"
+    },
+    "previous_hash": "40b46cceaa8ea3c217a33ff7fecb2496bb07405f37965d6126c2925aacdf9fac",
+    "record_hash": "033b6edbbb15a000cf6522f549b1d9a759d4a8b0c882bc0dd9ea0213c5515e94"
+  },
+  {
+    "event_type": "producer_score",
+    "payload": {
+      "producer_score_id": "RARE-producer-score-0",
+      "delivery_id": "RARE-delivery-0",
+      "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "scorer_version": "pipe3-producer-objective-v2",
+      "status": "FAIL",
+      "label": 0,
+      "quality_score": 0.6666666666666666,
+      "score_payload_sha256": "470d153773afa0d97e10cf0aa37355cdacc97168692d801b486f991b6489038c",
+      "coverage_complete": true,
+      "decision_complete": true
+    },
+    "previous_hash": "033b6edbbb15a000cf6522f549b1d9a759d4a8b0c882bc0dd9ea0213c5515e94",
+    "record_hash": "7f53b61cb204d52911bc372ffd17da311d35a1b5cb63f22341cabcf126010bc7"
+  },
+  {
+    "event_type": "recipient_judgment",
+    "payload": {
+      "judgment_id": "RARE-judgment-0",
+      "delivery_id": "RARE-delivery-0",
+      "consumer_id": "peer-a",
+      "decision": "accept",
+      "observed_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "terminal_outcome_available": false,
+      "repair_note": ""
+    },
+    "previous_hash": "7f53b61cb204d52911bc372ffd17da311d35a1b5cb63f22341cabcf126010bc7",
+    "record_hash": "19a158af3787ffac32ed33f864c4a031ecc04f26ae8648a1512982ac88a7a948"
+  },
+  {
+    "event_type": "consumer_action",
+    "payload": {
+      "action_id": "RARE-action-0",
+      "delivery_id": "RARE-delivery-0",
+      "consumer_id": "peer-a",
+      "used_artifact": true,
+      "input_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "output_artifact_sha256": "819118801d4ccfab2801b36032d4f0808bdf938eedf9ee532d8ea798fd7ffa29",
+      "repair_cost": 0.001,
+      "action": "use"
+    },
+    "previous_hash": "19a158af3787ffac32ed33f864c4a031ecc04f26ae8648a1512982ac88a7a948",
+    "record_hash": "9dcddf029ddb31a9845155beb579268b67f84f295c5b00a1ef769218b7f4cab4"
+  },
+  {
+    "event_type": "terminal_outcome",
+    "payload": {
+      "outcome_id": "RARE-outcome-0",
+      "delivery_id": "RARE-delivery-0",
+      "success": false,
+      "scorer_version": "pipe3-adoption-v1",
+      "partial_score": 0.5,
+      "score_payload_sha256": "f3c4486f84bf2b8467d17d340db005e5235342727fd211d8382bfd775281d6c7"
+    },
+    "previous_hash": "9dcddf029ddb31a9845155beb579268b67f84f295c5b00a1ef769218b7f4cab4",
+    "record_hash": "5f2ed2982b4c653faa53c56ac6d5b7f78e924289d04dce966e33c1dd22b8f1be"
+  },
+  {
+    "event_type": "role_evidence_update",
+    "payload": {
+      "evidence_id": "evidence-RARE-source",
+      "judgment_id": "RARE-judgment-0",
+      "action_id": "RARE-action-0",
+      "outcome_id": "RARE-outcome-0",
+      "update_version": "pipe3-two-stage-composition-v1.8",
+      "arrived_at": 1.0
+    },
+    "previous_hash": "5f2ed2982b4c653faa53c56ac6d5b7f78e924289d04dce966e33c1dd22b8f1be",
+    "record_hash": "136f6abd2eb69f6276b678854fffe84c8ed60d80b12814476a07ca34788f65cd"
+  },
+  {
+    "event_type": "later_assignment",
+    "payload": {
+      "assignment_id": "assignment-RARE",
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 1,
+      "agent_id": "peer-b",
+      "role": "producer",
+      "evidence_ids": [
+        "evidence-RARE-source"
+      ],
+      "decision_propensity": 0.5825702064623147
+    },
+    "previous_hash": "136f6abd2eb69f6276b678854fffe84c8ed60d80b12814476a07ca34788f65cd",
+    "record_hash": "e5ba5c5caa16c799a5e629b17cf2601c2182ab46333220b6b6112e8a0bc70ed9"
+  },
+  {
+    "event_type": "peer_selection",
+    "payload": {
+      "selection_id": "selection-RARE-1",
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 1,
+      "selector_id": "peer-a",
+      "role": "producer",
+      "candidate_ids": [
+        "peer-b",
+        "peer-c"
+      ],
+      "chosen_peer_id": "peer-b",
+      "propensity": 0.5825702064623147
+    },
+    "previous_hash": "e5ba5c5caa16c799a5e629b17cf2601c2182ab46333220b6b6112e8a0bc70ed9",
+    "record_hash": "75db67267015eaf43d4c7b23c9103fdedaf1b6b5201ff8d0ff20021772e9f3dc"
+  },
+  {
+    "event_type": "task_start",
+    "payload": {
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 1
+    },
+    "previous_hash": "75db67267015eaf43d4c7b23c9103fdedaf1b6b5201ff8d0ff20021772e9f3dc",
+    "record_hash": "b25f4a47dbf5d61e337c7b754d6ed8baf2fd5ee0502bac0a26bc08e6b45a9574"
+  },
+  {
+    "event_type": "producer_delivery",
+    "payload": {
+      "delivery_id": "RARE-delivery-1",
+      "task_id": "PIPE3_stream_processing",
+      "producer_id": "peer-b",
+      "recipient_id": "peer-a",
+      "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "source_event_id": "request-RARE-1",
+      "task_index": 1,
+      "selection_id": "selection-RARE-1",
+      "candidate_source_digest": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2"
+    },
+    "previous_hash": "b25f4a47dbf5d61e337c7b754d6ed8baf2fd5ee0502bac0a26bc08e6b45a9574",
+    "record_hash": "5a3385e61980465fa4860b38edc5851ea11b92108bb9c9917bc46bce3cc0255b"
+  },
+  {
+    "event_type": "producer_score",
+    "payload": {
+      "producer_score_id": "RARE-producer-score-1",
+      "delivery_id": "RARE-delivery-1",
+      "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "scorer_version": "pipe3-producer-objective-v2",
+      "status": "FAIL",
+      "label": 0,
+      "quality_score": 0.6666666666666666,
+      "score_payload_sha256": "c2c07d03f5736646828657de511d0898050a2d1e29cda490b2a1468fb40797e9",
+      "coverage_complete": true,
+      "decision_complete": true
+    },
+    "previous_hash": "5a3385e61980465fa4860b38edc5851ea11b92108bb9c9917bc46bce3cc0255b",
+    "record_hash": "1556fd0bc3e46e46c7e3d493aa2c1b9f04208d4f236225af01c17aed65206696"
+  },
+  {
+    "event_type": "recipient_judgment",
+    "payload": {
+      "judgment_id": "RARE-judgment-1",
+      "delivery_id": "RARE-delivery-1",
+      "consumer_id": "peer-a",
+      "decision": "accept",
+      "observed_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "terminal_outcome_available": false,
+      "repair_note": ""
+    },
+    "previous_hash": "1556fd0bc3e46e46c7e3d493aa2c1b9f04208d4f236225af01c17aed65206696",
+    "record_hash": "2e8d9bce071857fcd64e0fc115cfb5ff8fc4fc1668ef0f626eabdfe2d322bd55"
+  },
+  {
+    "event_type": "consumer_action",
+    "payload": {
+      "action_id": "RARE-action-1",
+      "delivery_id": "RARE-delivery-1",
+      "consumer_id": "peer-a",
+      "used_artifact": true,
+      "input_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "output_artifact_sha256": "819118801d4ccfab2801b36032d4f0808bdf938eedf9ee532d8ea798fd7ffa29",
+      "repair_cost": 0.001,
+      "action": "use"
+    },
+    "previous_hash": "2e8d9bce071857fcd64e0fc115cfb5ff8fc4fc1668ef0f626eabdfe2d322bd55",
+    "record_hash": "b9dcb037409728dc09629ea5e37a3011dae375c22925b6fe328c661ad4aae9e1"
+  },
+  {
+    "event_type": "terminal_outcome",
+    "payload": {
+      "outcome_id": "RARE-outcome-1",
+      "delivery_id": "RARE-delivery-1",
+      "success": false,
+      "scorer_version": "pipe3-adoption-v1",
+      "partial_score": 0.5,
+      "score_payload_sha256": "11b16ab0081681d1d3bde10087c15d028b0b85411715d389918e32e6d517ecfd"
+    },
+    "previous_hash": "b9dcb037409728dc09629ea5e37a3011dae375c22925b6fe328c661ad4aae9e1",
+    "record_hash": "2008c84eec37e4a9b676424d9fe39fde9051e0525e30c7dc9c8ea36036f0d6ce"
+  },
+  {
+    "event_type": "role_evidence_update",
+    "payload": {
+      "evidence_id": "RARE-target-completion-evidence",
+      "judgment_id": "RARE-judgment-1",
+      "action_id": "RARE-action-1",
+      "outcome_id": "RARE-outcome-1",
+      "update_version": "c1-target-completion-v1",
+      "arrived_at": 2.0
+    },
+    "previous_hash": "2008c84eec37e4a9b676424d9fe39fde9051e0525e30c7dc9c8ea36036f0d6ce",
+    "record_hash": "d20a905ff87c312713c10b5386ed5ced568c740e0e10e3dd29507b93ff42498c"
+  },
+  {
+    "event_type": "peer_selection",
+    "payload": {
+      "selection_id": "selection-RARE-2",
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 2,
+      "selector_id": "peer-a",
+      "role": "producer",
+      "candidate_ids": [
+        "peer-b",
+        "peer-c"
+      ],
+      "chosen_peer_id": "peer-c",
+      "propensity": 0.469423368982364
+    },
+    "previous_hash": "d20a905ff87c312713c10b5386ed5ced568c740e0e10e3dd29507b93ff42498c",
+    "record_hash": "dc514e109e3d96b8a8c077b4d0936cd421156fcbd36d9eabab5720a1c712fe08"
+  }
+]

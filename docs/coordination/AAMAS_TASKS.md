@@ -2,6 +2,13 @@
 
 Updated: 2026-10-01 (persistent goal active; N02 attempted budget exhausted; PIPE2 runtime qualification exposed seed-1 invalid fixture). The project-level goal authority is [GOAL v1.0](GOAL.md); task-by-task reconciliation is indexed in [TASK_REPORTS](TASK_REPORTS.md). Owner: scientist; one engineer owns execution. Authority: [REQUIREMENTS.md](../paper/aamas2027/REQUIREMENTS.md), version 1.5.8. This is the sole active AAMAS gap/status/execution ledger. Role TODOs are historical pointers. Bounded read-only critiques inform the current direction; they did not execute experiments.
 
+**Current scientific checkpoint — 2026-10-06:** C0 candidate parity and the C1 zero-call
+contract qualification are complete as engineering evidence. C1 is now the single frozen
+next live-development card: one PIPE3 root, three arms, real recipient API calls, independent
+arm namespaces, and a third pre-execution choice after delayed credit. It is not benchmark
+confirmation and does not authorize an efficacy claim. See
+[`20261006_c1_bounded_live_card.md`](task_reports/20261006_c1_bounded_live_card.md).
+
 ## Current checkpoint — 2026-09-26
 
 N00 is reconciled. Strict N01 benchmark qualification remains open. N02 has used

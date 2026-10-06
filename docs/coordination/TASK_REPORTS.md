@@ -17,6 +17,10 @@ Goal 修改。
 
 ## Reports
 
+- [partial] 2026-10-06 C1 bounded PIPE3 live development card：冻结单 root、三臂、真实
+  recipient API、独立 state/namespace、delayed credit 与第三次选择；零调用合同资格已通过，
+  真实 API 尚未运行，见 [C1 card](task_reports/20261006_c1_bounded_live_card.md)。
+
 - [partial] 2026-10-05 AAMAS paper framework and exact body-page build：按官方 AAMAS 2027
   instructions 将主稿补齐为可执行的 pre-results 论文框架，加入 selector/state contract、
   result-filling contract、RQ1--RQ4 结果占位和 artifact/replay 说明；隔离构建核验正文
