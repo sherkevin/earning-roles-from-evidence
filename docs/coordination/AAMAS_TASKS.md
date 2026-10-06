@@ -53,6 +53,14 @@ raw evidence and reconciliation are in
 [`20261006_parent_source_live_smoke`](task_reports/20261006_parent_source_live_smoke.md);
 the scientific gate remains closed.
 
+**Release hardening continuation — 2026-10-06:** parent-source summaries now derive
+their status from the typed gate; the declared API budget is checked before context
+preparation or actor calls; and root completion requires a valid canonical cost
+ledger. The default runner card is the parent-source card. The committed offline
+regression receipt reports 19 passed tests, 0 real API calls and 0 GPU jobs. This
+does not change the live smoke or open any scientific gate; an independently supplied
+source seal and exact runner pin remain required before a confirmatory card.
+
 **Current scientific checkpoint — 2026-10-06:** C0 candidate parity and the C1 zero-call
 contract qualification are complete as engineering evidence. C1 v3 then made 10 real
 recipient API requests: `no_update` and RARE are complete development-only chains with strict

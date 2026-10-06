@@ -182,6 +182,7 @@ def validate_cost_ledger(rows: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
         raise ValueError("shared source cost must be identical across arm projections")
     target_units = sum(cost["target_cost_units"] for cost in costs)
     return {
+        "valid": True,
         "source_cost_id": next(iter(source_ids)),
         "source_cost_units_counted_once": next(iter(source_units)),
         "source_cost_status": next(iter(source_statuses)),

@@ -77,7 +77,7 @@ from peerrolebench_shared_source_preflight import prepare_shared_source  # noqa:
 
 VERSION = "c1-pipe3-bounded-live-v2-structural-owner"
 TASK_ID = "PIPE3_stream_processing"
-CARD = ROOT / "configs/aamas2027/n03_c1_pipe3_bounded_live_dev_v2.json"
+CARD = ROOT / "configs/aamas2027/n03_c1_parent_source_live_v1.json"
 CANDIDATE_KEYS = ("peer-b@v1", "peer-c@v1")
 ARMS = ("no_update", "contextual_trust_linear", "RARE")
 PUBLIC_ENCODER = "hash64-v1"
@@ -543,7 +543,16 @@ def _run_parent_source(out_dir: Path, card: Mapping[str, Any], context: Mapping[
     _save(parent_dir / "selection_bindings.json", [selection_binding])
     native_root, auxiliary_root = boundary.validate_selection_manifests()
     _save(parent_dir / "manifest_roots.json", {"native": native_root, "auxiliary": auxiliary_root})
-    source_summary = {"arm": "parent_source", "status": "COMPLETE_SOURCE_ONLY", "passed": True,
+    source_gate = source.get("source_gate", {})
+    source_summary_status = (
+        "COMPLETE_SOURCE_ONLY"
+        if source_gate.get("evidence_publish_allowed") is True
+        else "PENDING_ATTRIBUTION"
+        if source_gate.get("q_complete") is True and source_gate.get("y_complete") is True
+        else "UNKNOWN"
+    )
+    source_summary = {"arm": "parent_source", "status": source_summary_status,
+                      "passed": source_summary_status == "COMPLETE_SOURCE_ONLY",
                       "source": source, "selection_bindings": [selection_binding],
                       "manifest_roots": {"native": native_root, "auxiliary": auxiliary_root},
                       "scientific_claim_allowed": False, "ledger": boundary.ledger.events}
@@ -814,6 +823,28 @@ def run(out_dir: Path, *, card_path: Path = CARD) -> dict[str, Any]:
         raise RuntimeError(
             f"card runner_version {card.get('runner_version')!r} does not match runner {VERSION!r}"
         )
+    maximum_api_requests = card.get("maximum_api_requests")
+    source_phase_requests = card.get("source_phase_requests")
+    target_requests_per_arm = card.get("target_requests_per_arm")
+    expected_api_requests = (
+        source_phase_requests + len(ARMS) * target_requests_per_arm
+        if isinstance(source_phase_requests, int)
+        and isinstance(target_requests_per_arm, int)
+        else None
+    )
+    if (
+        not isinstance(maximum_api_requests, int)
+        or maximum_api_requests <= 0
+        or maximum_api_requests != expected_api_requests
+        or not isinstance(source_phase_requests, int)
+        or source_phase_requests <= 0
+        or not isinstance(target_requests_per_arm, int)
+        or target_requests_per_arm <= 0
+    ):
+        raise RuntimeError(
+            "card API budget must be a positive integer equal to source_phase_requests "
+            "plus one target budget per arm"
+        )
     commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
     declared_commit = card.get("source_commit")
     if not isinstance(declared_commit, str) or len(declared_commit) < 7:
@@ -835,8 +866,9 @@ def run(out_dir: Path, *, card_path: Path = CARD) -> dict[str, Any]:
         "version": card.get("runner_version", VERSION), "card": card_label,
         "card_sha256": _sha_file(card_path), "source_commit": commit,
         "task_id": TASK_ID, "arms": list(ARMS), "decisions_per_arm": 2,
-        "source_phase_requests": 2, "target_requests_per_arm": 2,
-        "expected_api_requests": 8,
+        "source_phase_requests": source_phase_requests,
+        "target_requests_per_arm": target_requests_per_arm,
+        "expected_api_requests": expected_api_requests,
         "real_api_calls": "counted_from_raw_request_start", "gpu_jobs": 0,
         "scientific_claim_allowed": False, "started_at_utc": datetime.now(timezone.utc).isoformat(),
         "runtime": {"python": platform.python_version(), "platform": platform.platform()},
@@ -944,14 +976,14 @@ def run(out_dir: Path, *, card_path: Path = CARD) -> dict[str, Any]:
             results.append(failure)
     request_count = 0
     request_count = _request_count(out_dir)
-    maximum_api_requests = card.get("maximum_api_requests")
-    if not isinstance(maximum_api_requests, int) or maximum_api_requests <= 0:
-        raise RuntimeError("card.maximum_api_requests must be a positive integer")
     budget_ok = request_count <= maximum_api_requests
     cost_rows = [row["cost_ledger_row"] for row in results if isinstance(row.get("cost_ledger_row"), Mapping)]
-    cost_ledger = validate_cost_ledger(cost_rows) if len(cost_rows) == len(results) and cost_rows else {
-        "valid": False, "reason": "one or more arm cost rows are missing",
-    }
+    try:
+        cost_ledger = validate_cost_ledger(cost_rows) if len(cost_rows) == len(results) and cost_rows else {
+            "valid": False, "reason": "one or more arm cost rows are missing",
+        }
+    except (KeyError, TypeError, ValueError) as exc:
+        cost_ledger = {"valid": False, "reason": f"cost ledger validation failed: {exc}"}
     cost_ledger["target_cost_statuses"] = {
         str(row["arm"]): row["cost_ledger_row"]["cost"].get("target_cost_status")
         for row in results if isinstance(row.get("cost_ledger_row"), Mapping)
@@ -966,9 +998,11 @@ def run(out_dir: Path, *, card_path: Path = CARD) -> dict[str, Any]:
               "arm_loop_started": True,
               "budget_ok": budget_ok,
               "status": "COMPLETE_DEVELOPMENT_ONLY" if (
-                  results and budget_ok and all(r.get("passed") is True for r in results)
+                  results and budget_ok and cost_ledger.get("valid") is True
+                  and all(r.get("passed") is True for r in results)
               ) else "UNKNOWN",
-              "passed": bool(results) and budget_ok and all(r.get("passed") is True for r in results),
+              "passed": bool(results) and budget_ok and cost_ledger.get("valid") is True
+              and all(r.get("passed") is True for r in results),
               "interpretation": "C1 is a bounded single-root live development card; scientific confirmation remains closed"}
     _save(out_dir / "summary.json", result)
     return result

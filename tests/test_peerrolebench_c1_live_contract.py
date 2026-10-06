@@ -2,6 +2,8 @@ import json
 import re
 import subprocess
 
+import pytest
+
 import scripts.peerrolebench_c1_pipe3_bounded_live as c1
 from scripts.peerrolebench_ledger_replay import replay_ledger_events
 
@@ -94,3 +96,19 @@ def test_target_cost_survives_failure_after_target_episode(tmp_path, monkeypatch
     assert rare["cost_ledger_row"]["cost"]["target_cost_units"] > 0.0
     assert "arm_failure_after_target" in rare["cost_ledger_row"]["cost"]["target_unknown_fields"]
     assert (tmp_path / "c1" / "RARE" / "target_cost_receipt.json").is_file()
+
+
+def test_invalid_api_budget_is_rejected_before_actor_call(tmp_path, monkeypatch):
+    def fail_actor(*_args, **_kwargs):
+        raise AssertionError("invalid budget must fail before API")
+
+    monkeypatch.setattr(c1.api, "call_api", fail_actor)
+    card = json.loads(c1.CARD.read_text(encoding="utf-8"))
+    card["source_commit"] = subprocess.check_output(
+        ["git", "rev-parse", "HEAD"], cwd=c1.ROOT, text=True
+    ).strip()
+    card["maximum_api_requests"] = 7
+    card_copy = tmp_path / "card.json"
+    card_copy.write_text(json.dumps(card), encoding="utf-8")
+    with pytest.raises(RuntimeError, match="API budget"):
+        c1.run(tmp_path / "invalid-budget", card_path=card_copy)
