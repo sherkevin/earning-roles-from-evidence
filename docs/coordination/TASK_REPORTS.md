@@ -17,6 +17,8 @@ Goal 修改。
 
 ## Reports
 
+- [partial] 2026-10-06 AI figure round v22–v24：Figure 2 改为开放三泳道，Figure 3 改为开放三列并移除 policy label 卡片；当前正文图组为 v19/v22/v24。实际版心构建正文 8 页、引用解析、0 overfull；图形工作不替代 benchmark/baseline 或科学效果证据，见 [figure report](task_reports/20261006_ai_figure_round_v22_v24.md)。
+
 - [partial] 2026-10-06 AI figure round v19–v21：将 Figure 1 收敛为带 `TASK` 标签的开放主轴，Figure 2 收敛为三条方法泳道，Figure 3 收敛为 tracks/policies/endpoints 实验图；保留提示词、候选图和 PDF 哈希。正文版心构建为 8 页、引用解析、0 overfull；图形工作不替代 benchmark/baseline 或科学效果证据，见 [figure report](task_reports/20261006_ai_figure_round_v19_v21.md)。
 
 - [partial] 2026-10-06 structural-owner gate activation：按用户确认将 contract/registry/scorer 推导的 structural owner 升格为 active method v1.2，保留 judged-role disagreement 做校准；A1--A8 zero-call mutation/replay qualification 8/8 通过，43 项定向回归通过，科学效能门仍开放，见 [activation report](task_reports/20261006_structural_owner_gate_activation.md)。

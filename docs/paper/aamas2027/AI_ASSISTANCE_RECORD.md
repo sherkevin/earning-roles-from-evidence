@@ -846,3 +846,16 @@ image-generation tool；服务端未披露模型标识，因此不把结果标�
 晋升为正文图组，v18 保留为 Figure 1 回退候选。以 AAMAS 版心构建并目视核验：正文
 8 页、参考文献从第 9 页开始、引用已解析、overfull boxes 为 0。该工作只验证图形
 表达和排版，不产生 benchmark、baseline 或角色学习效果证据。
+
+### 2026-10-06 Figure 2–3 open-composition refinement
+
+继续针对“把文字框起来”的问题做了两次有边界的 AI 编辑。v22 以 v20 为输入，移除
+Figure 2 左侧大色块和泳道外框，改为彩色竖线、开放水平规则和留白；三条泳道、三条
+跨泳道箭头以及 `BEFORE SELECTION`/`AFTER SEAL` 语义保持不变。v23 以 v21 为输入，
+将 Figure 3 改为开放三列并移除厚重面板；v24 只进一步移除四个 policy label 背后的
+填充卡片，保留 RARE 的颜色高亮和相同的候选/结果圆点结构。
+
+v22、v23、v24 的提示词、PNG、PDF 和哈希均保留；当前正文晋升 v19/v22/v24，v20/v21/v23
+作为回退版本。纸面版心构建为正文 8 页、参考文献第 9 页起、引用解析且无 overfull box。
+使用 Codex 内置 image-generation tool，模型标识未披露，不标注为 image2.5。该轮仍只
+验证图形呈现，不产生 benchmark、baseline、方法效果或角色学习证据。
