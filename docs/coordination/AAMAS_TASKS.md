@@ -42,6 +42,17 @@ receipts and the native projection mutation matrix before a second root or
 baseline-parity run. See
 [`20261006_signal_contract_qualification.md`](task_reports/20261006_signal_contract_qualification.md).
 
+**Native projection mutation qualification — 2026-10-07:** the existing raw
+acceptance and canonical terminal sidecars now have fresh zero-call receipts at
+commit `528c8b6`. The terminal adapter passes its positive seven-arm replay and
+nine fail-closed mutations; raw acceptance passes six public projection cells.
+These receipts qualify protocol boundaries only. The current C1 `Y_current`
+remains derived from adoption and recipient completeness, so no independent Y,
+terminal-only scientific baseline, second root, or live parity claim is opened.
+The runner still needs first-class A/D/independent-Y receipts before the next
+root. See
+[`20261007_projection_mutation_qualification.md`](task_reports/20261007_projection_mutation_qualification.md).
+
 **Parent-source integration amendment — 2026-10-06:** the C1 runner now executes a
 single `parent_source` phase before the arm loop, seals its source digest and native
 selection binding, and imports the immutable ledger prefix into three isolated arm

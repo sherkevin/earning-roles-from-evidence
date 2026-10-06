@@ -1,5 +1,11 @@
 # Task reports
 
+- [partial] 2026-10-07 native projection mutation qualification: existing raw
+  acceptance and canonical terminal sidecars pass positive/negative zero-call
+  cells with fail-closed selection, mapping, UNKNOWN, late and duplicate
+  behavior; this still does not create an independent terminal Y or open live
+  seven-arm parity, see [projection report](task_reports/20261007_projection_mutation_qualification.md).
+
 - [partial] 2026-10-06 typed signal-inventory qualification: a zero-call,
   6-test read-only adapter preserves Qp/J/A/D/Y/L, reuses the registered
   seven-arm baseline registry, marks every row non-eligible, and makes the
