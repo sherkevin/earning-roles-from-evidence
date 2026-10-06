@@ -1,5 +1,7 @@
 # Task reports
 
+- [partial] 2026-10-06 shared-source parent preflight and lineage binding (`task_reports/20261006_shared_source_parent_preflight.md`): one sealed source now carries selection/delivery lineage and is projected into three unique arm namespaces with source-once cost accounting. The qualification is zero-call historical preparation; fresh source acquisition, native replay, live parity and second-root evidence remain open.
+
 - [partial] 2026-10-06 v3 paper text refinement and rebuild (`task_reports/20261006_paper_text_refinement_v3.md`): baseline NO-GO handling, field-level judgment/terminal feature manifest, and positivity requirements were added; the verified internal PDF still has exactly 8 body pages. No empirical claim was added and the scientific gate remains closed.
 
 - [partial] 2026-10-06 parent-owned external source manifest preparation (`task_reports/20261006_external_source_manifest.md`): a zero-call utility converts one completed source episode into a v2-validated parent-owned receipt with artifact/contract/registry/scorer/prompt/raw provenance and source-cost accounting. It is historical artifact preparation only; a fresh source phase, independent arm projections, second root and live baseline parity remain open.
@@ -22,6 +24,8 @@
 Goal 修改。
 
 ## Reports
+
+- [partial] 2026-10-06 gallery-audited Figure 1 round v25–v27：读取 CollabLLM、DPO、VideoPoet 样例并把共同视觉规律落成审查文档；Figure 1 经过对象化叙事、开放主轴和大字号三轮定点编辑，当前晋升 v27。v27/v22/v24 构建为正文 8 页、引用解析、0 overfull；caption 已同步配色，见 [gallery/style report](task_reports/20261006_ai_figure_gallery_round_v25_v27.md)。
 
 - [partial] 2026-10-06 AI figure round v22–v24：Figure 2 改为开放三泳道，Figure 3 改为开放三列并移除 policy label 卡片；当前正文图组为 v19/v22/v24。实际版心构建正文 8 页、引用解析、0 overfull；图形工作不替代 benchmark/baseline 或科学效果证据，见 [figure report](task_reports/20261006_ai_figure_round_v22_v24.md)。
 

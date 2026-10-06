@@ -1,12 +1,12 @@
 # AAMAS Figure Plan v2 — active
 
-更新时间：2026-10-06（v19、v22、v24 AI 图组晋升）
+更新时间：2026-10-06（v27、v22、v24 AI 图组晋升）
 
 本版本吸收了故事线审查和视觉审查。v1 保留为历史计划；本文件是当前有效的正文图配置。
 
 ## 当前正文配置
 
-1. **Figure 1 — Earning-roles loop**：全宽开放主轴，当前资产为 `article/aamas2027/figures/overview.pdf`，对应 AI 版本 v19。短标签保留机制读法，`TASK` 补足 peer-context 的任务节点。
+1. **Figure 1 — Earning-roles loop**：全宽连续叙事主轴，当前资产为 `article/aamas2027/figures/overview.pdf`，对应 AI 版本 v27。它以对象化的 producer、artifact、recipient use、judgment 和 role ledger 讲清闭环，阶段标签和正文配色已同步。
 2. **Figure 2 — Evidence-to-role state**：全宽开放三泳道方法图，当前资产为 `article/aamas2027/figures/method_state.pdf`，对应 AI 版本 v22。彩色竖线和水平规则取代大色块，三条泳道分别显示 episode、public evidence、local decision 的边界。
 3. **Figure 3 — Benchmark/baseline experiment map**：全宽开放实验结构图，当前资产为 `article/aamas2027/figures/experiment_map.pdf`，对应 AI 版本 v24。三个开放列区分 ArtifactRole/PeerSelect 轨道、政策臂和 RQ1–RQ4 终点；policy label 不再包在卡片中。
 
@@ -31,7 +31,7 @@ recipient judgment 到 target outcome 是灰色虚线的 **after seal** 时间�
 - 版式测试：全宽图约 7in，嵌入 TrueType，灰度仍可读，正文标签不小于约 7pt；不出现越界、交叉穿框或未经验证数字。
 - 版本测试：v0、v1、v2、v3、v4、v5、v6、v7 的 PDF、脚本和评审记录全部保留，不能覆盖历史版本。
 
-本轮及前轮 AI 版本和提示词保存在 `article/aamas2027/figures/ai_versions/` 下的 v18–v24 目录。当前正文晋升的是 v19、v22、v24；v20、v21、v23 保留为可回退的中间候选。AI 工具的模型标识未披露，不能把这些资产标注为 image2.5 结果。
+本轮及前轮 AI 版本和提示词保存在 `article/aamas2027/figures/ai_versions/` 下的 v18–v27 目录。当前正文晋升的是 v27、v22、v24；v19、v20、v21、v23、v25、v26 保留为可回退的中间候选。样例库风格审查见 `GALLERY_FIGURE_STYLE_AUDIT_20261006.md`。AI 工具的模型标识未披露，不能把这些资产标注为 image2.5 结果。
 
 ## 结果图预留
 

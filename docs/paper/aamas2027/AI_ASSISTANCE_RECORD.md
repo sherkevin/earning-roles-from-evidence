@@ -859,3 +859,20 @@ v22、v23、v24 的提示词、PNG、PDF 和哈希均保留；当前正文晋升
 作为回退版本。纸面版心构建为正文 8 页、参考文献第 9 页起、引用解析且无 overfull box。
 使用 Codex 内置 image-generation tool，模型标识未披露，不标注为 image2.5。该轮仍只
 验证图形呈现，不产生 benchmark、baseline、方法效果或角色学习证据。
+
+### 2026-10-06 Figure 1 gallery-audited editorial refinement
+
+用户指出当前图组的质感仍低于样例库。本轮重新读取本地画廊，并直接查看 ICML 2025
+oral/best 的 CollabLLM、NeurIPS 2023 honorable 的 DPO、ICML 2024 oral/best 的
+VideoPoet。审查将差距具体化为：当前图缺少对象化叙事、中心事件视觉重量不足、分组背景
+仍像通用流程卡片、版心小字号层级不够明确。审查结论和样例路径保存在
+`docs/paper/aamas2027/GALLERY_FIGURE_STYLE_AUDIT_20261006.md`。
+
+随后以 v19 为输入生成 v25，以 v25 为输入生成 v26，再以 v26 为输入生成 v27。v25
+加入 producer/artifact/recipient/ledger/outcome 对象；v26 移除背景卡片形成连续主轴；
+v27 收紧空白并放大中央 situated episode 与阶段标签。当前 Figure 1 晋升 v27，v25/v26
+保留回退。正文 caption 同步修正为当前蓝/橙/绿/紫配色，避免图文语义漂移。
+
+v27 使用 Codex 内置 image-generation tool，模型标识未披露，不标注为 image2.5。以当前
+v27/v22/v24 图组构建并目视核验：正文 8 页、参考文献从第 9 页起、引用解析、0 overfull。
+该轮仍只验证图形叙事和排版，不产生 benchmark、baseline、方法效果或角色学习证据。
