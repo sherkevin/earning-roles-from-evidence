@@ -66,8 +66,10 @@ live baseline parity, a second root, or an efficacy claim. See
 separates immediate downstream adoption D from later target-task terminal quality
 Y. It rejects reusing D or recipient self-report as scientific Y and proposes a
 private terminal scorer invoked only after a bound assignment/target selection.
-The four-test zero-call provenance validator passes, but the hidden worker,
-pre-generated holdout and D-purity scorer remain open. This is a candidate
+The four-test zero-call provenance validator passes, but the pre-generated
+holdout and D-purity scorer remain open. A bounded private worker now
+distinguishes corrected, original and partial source snapshots and rejects an
+artifact-digest mutation, but remains promotion-blocked. This is a candidate
 implementation design, not an active method change, live result, or authorization
 for an A800 job. See
 [`20261007_independent_y_design_audit.md`](task_reports/20261007_independent_y_design_audit.md).

@@ -1,0 +1,81 @@
+{
+  "transport": {
+    "status": "complete"
+  },
+  "request": {
+    "op": "score_terminal",
+    "schema_version": "pipe3-terminal-holdout-request-v1",
+    "task_id": "PIPE3_stream_processing",
+    "seed": 0,
+    "artifact_sha256": "4d949e54cf2cce4927230a4c0ee5c41025f0d27cb8fc3eeb7993c7c465fe1569",
+    "holdout_digest": "9368ac0b2e4cabc2f3380998e7c00ec9f15cdad96ddfc2fbd8d25a670308683d",
+    "reference_projection_digest": "f7ff72f94bd75c1320fb6ce7a6f6d23aed64145b34778d0977fe41849938147c",
+    "scorer_version": "pipe3-terminal-holdout-v1",
+    "event_class": "UserEvent",
+    "timestamp_field": "timestamp",
+    "id_field": "event_id",
+    "user_field": "user_name",
+    "action_field": "action",
+    "value_field": "page_url",
+    "action_value": "page_view",
+    "user_value": "Müller",
+    "value_value": "Price: €99.99"
+  },
+  "response": {
+    "ok": true,
+    "schema_version": "pipe3-terminal-holdout-response-v1",
+    "scorer_version": "pipe3-terminal-holdout-v1",
+    "task_id": "PIPE3_stream_processing",
+    "seed": 0,
+    "artifact_sha256": "4d949e54cf2cce4927230a4c0ee5c41025f0d27cb8fc3eeb7993c7c465fe1569",
+    "holdout_digest": "9368ac0b2e4cabc2f3380998e7c00ec9f15cdad96ddfc2fbd8d25a670308683d",
+    "status": "PASS",
+    "label": 1,
+    "quality_score": 1.0,
+    "coverage_complete": true,
+    "checks": [
+      {
+        "id": "T1_holdout_projection",
+        "status": "PASS",
+        "observed_projection_digest": "f7ff72f94bd75c1320fb6ce7a6f6d23aed64145b34778d0977fe41849938147c"
+      },
+      {
+        "id": "T2_batch_cardinality",
+        "status": "PASS"
+      },
+      {
+        "id": "T3_utf8_holdout",
+        "status": "PASS"
+      }
+    ],
+    "required_check_ids": [
+      "T1_holdout_projection",
+      "T2_batch_cardinality",
+      "T3_utf8_holdout"
+    ]
+  },
+  "response_digest": "8ef984af917dab7ccc90112b04ab095b33fc475e76ac9516636e445b1cde0ee0",
+  "result": {
+    "status": "PASS",
+    "label": 1,
+    "quality_score": 1.0,
+    "scorer_version": "pipe3-terminal-holdout-v1",
+    "coverage_complete": true,
+    "checks": [
+      {
+        "id": "T1_holdout_projection",
+        "status": "PASS",
+        "observed_projection_digest": "f7ff72f94bd75c1320fb6ce7a6f6d23aed64145b34778d0977fe41849938147c"
+      },
+      {
+        "id": "T2_batch_cardinality",
+        "status": "PASS"
+      },
+      {
+        "id": "T3_utf8_holdout",
+        "status": "PASS"
+      }
+    ]
+  },
+  "candidate_received_hidden_assertions": false
+}

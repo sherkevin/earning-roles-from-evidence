@@ -115,6 +115,17 @@ terminal worker and its reference holdout are not implemented yet. The first
 test invocation happened before config creation and is explicitly recorded as a
 process deviation; it is not used as evidence.
 
+The minimal private worker and parent adapter are now implemented in
+[`peerrolebench_pipe3_terminal_scorer_worker_v1.py`](../../../scripts/peerrolebench_pipe3_terminal_scorer_worker_v1.py)
+and [`peerrolebench_pipe3_terminal_scorer_v1.py`](../../../scripts/peerrolebench_pipe3_terminal_scorer_v1.py).
+The bounded qualification at
+[`n03_terminal_scorer_qualification_20261007_v1`](../../../experiments/logs/n03_terminal_scorer_qualification_20261007_v1/summary.json)
+ran the worker in the pinned sandbox on three source snapshots: the corrected
+producer+processor passed, the original snapshot failed, and the producer-only
+repair failed; an artifact-digest mutation was UNKNOWN. It used 0 LLM calls and
+0 GPU jobs. The worker remains `worker_is_qualified=false` until its D-purity,
+holdout provenance, mutation matrix, and live-runner integration are reviewed.
+
 ## What this would and would not establish
 
 Passing the contract would establish that the runner can observe an independent

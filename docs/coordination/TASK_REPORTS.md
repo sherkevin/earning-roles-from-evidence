@@ -2,8 +2,9 @@
 
 - [candidate design] 2026-10-07 independent terminal outcome design audit:
   separates immediate D from later target Y and specifies a private terminal
-  scorer contract; a four-test zero-call provenance validator now passes, with
-  the hidden worker still open; no active method or scientific claim changed, see
+  scorer contract; the provenance validator and a bounded private-worker smoke
+  now pass, while promotion and D purity remain open; no active method or
+  scientific claim changed, see
   [design audit](task_reports/20261007_independent_y_design_audit.md).
 
 - [partial] 2026-10-07 versioned runner signal channels: a zero-call v3 fixture

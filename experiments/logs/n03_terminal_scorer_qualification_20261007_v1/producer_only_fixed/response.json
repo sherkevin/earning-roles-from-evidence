@@ -1,0 +1,103 @@
+{
+  "transport": {
+    "status": "complete"
+  },
+  "request": {
+    "op": "score_terminal",
+    "schema_version": "pipe3-terminal-holdout-request-v1",
+    "task_id": "PIPE3_stream_processing",
+    "seed": 0,
+    "artifact_sha256": "0146ad5a64365d12d8f684623128e8f4048d33b940155147b7dbdaee747f92b7",
+    "holdout_digest": "9368ac0b2e4cabc2f3380998e7c00ec9f15cdad96ddfc2fbd8d25a670308683d",
+    "reference_projection_digest": "f7ff72f94bd75c1320fb6ce7a6f6d23aed64145b34778d0977fe41849938147c",
+    "scorer_version": "pipe3-terminal-holdout-v1",
+    "event_class": "UserEvent",
+    "timestamp_field": "timestamp",
+    "id_field": "event_id",
+    "user_field": "user_name",
+    "action_field": "action",
+    "value_field": "page_url",
+    "action_value": "page_view",
+    "user_value": "Müller",
+    "value_value": "Price: €99.99"
+  },
+  "response": {
+    "ok": true,
+    "schema_version": "pipe3-terminal-holdout-response-v1",
+    "scorer_version": "pipe3-terminal-holdout-v1",
+    "task_id": "PIPE3_stream_processing",
+    "seed": 0,
+    "artifact_sha256": "0146ad5a64365d12d8f684623128e8f4048d33b940155147b7dbdaee747f92b7",
+    "holdout_digest": "9368ac0b2e4cabc2f3380998e7c00ec9f15cdad96ddfc2fbd8d25a670308683d",
+    "status": "FAIL",
+    "label": 0,
+    "quality_score": 0.0,
+    "coverage_complete": true,
+    "checks": [
+      {
+        "id": "T1_holdout_projection",
+        "status": "FAIL",
+        "failure_origin": "candidate",
+        "source_path": "processor.py",
+        "exception_class": "UnicodeEncodeError",
+        "reason": "'latin-1' codec can't encode character '\\u20ac' in position 140: ordinal not in range(256)"
+      },
+      {
+        "id": "T2_batch_cardinality",
+        "status": "FAIL",
+        "failure_origin": "candidate",
+        "source_path": "processor.py",
+        "exception_class": "UnicodeEncodeError",
+        "reason": "'latin-1' codec can't encode character '\\u20ac' in position 140: ordinal not in range(256)"
+      },
+      {
+        "id": "T3_utf8_holdout",
+        "status": "FAIL",
+        "failure_origin": "candidate",
+        "source_path": "processor.py",
+        "exception_class": "UnicodeEncodeError",
+        "reason": "'latin-1' codec can't encode character '\\u20ac' in position 140: ordinal not in range(256)"
+      }
+    ],
+    "required_check_ids": [
+      "T1_holdout_projection",
+      "T2_batch_cardinality",
+      "T3_utf8_holdout"
+    ]
+  },
+  "response_digest": "5e7539c96a8b6e6be2902974d4e2a6d85b832d2dd02724ebe2e1c444d3921d9c",
+  "result": {
+    "status": "FAIL",
+    "label": 0,
+    "quality_score": 0.0,
+    "scorer_version": "pipe3-terminal-holdout-v1",
+    "coverage_complete": true,
+    "checks": [
+      {
+        "id": "T1_holdout_projection",
+        "status": "FAIL",
+        "failure_origin": "candidate",
+        "source_path": "processor.py",
+        "exception_class": "UnicodeEncodeError",
+        "reason": "'latin-1' codec can't encode character '\\u20ac' in position 140: ordinal not in range(256)"
+      },
+      {
+        "id": "T2_batch_cardinality",
+        "status": "FAIL",
+        "failure_origin": "candidate",
+        "source_path": "processor.py",
+        "exception_class": "UnicodeEncodeError",
+        "reason": "'latin-1' codec can't encode character '\\u20ac' in position 140: ordinal not in range(256)"
+      },
+      {
+        "id": "T3_utf8_holdout",
+        "status": "FAIL",
+        "failure_origin": "candidate",
+        "source_path": "processor.py",
+        "exception_class": "UnicodeEncodeError",
+        "reason": "'latin-1' codec can't encode character '\\u20ac' in position 140: ordinal not in range(256)"
+      }
+    ]
+  },
+  "candidate_received_hidden_assertions": false
+}
