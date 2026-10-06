@@ -1,5 +1,6 @@
 import json
 import re
+import subprocess
 
 import scripts.peerrolebench_c1_pipe3_bounded_live as c1
 
@@ -27,7 +28,13 @@ def _fake_actor(_out, _stage_dir, stage, prompt, _card):
 
 def test_c1_zero_api_contract_qualifies_all_arms(tmp_path, monkeypatch):
     monkeypatch.setattr(c1.api, "call_api", _fake_actor)
-    result = c1.run(tmp_path / "c1")
+    card = json.loads(c1.CARD.read_text(encoding="utf-8"))
+    card["source_commit"] = subprocess.check_output(
+        ["git", "rev-parse", "HEAD"], cwd=c1.ROOT, text=True
+    ).strip()
+    card_copy = tmp_path / "card.json"
+    card_copy.write_text(json.dumps(card), encoding="utf-8")
+    result = c1.run(tmp_path / "c1", card_path=card_copy)
     assert result["status"] == "COMPLETE_DEVELOPMENT_ONLY"
     assert result["passed"] is True
     assert result["real_api_calls"] == 0

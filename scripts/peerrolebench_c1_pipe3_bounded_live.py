@@ -551,11 +551,22 @@ def _run_arm(arm: str, out_dir: Path, card: Mapping[str, Any]) -> dict[str, Any]
 
 def run(out_dir: Path, *, card_path: Path = CARD) -> dict[str, Any]:
     out_dir = out_dir.resolve()
+    card_path = card_path.resolve()
     out_dir.mkdir(parents=False, exist_ok=False)
     card = json.loads(card_path.read_text(encoding="utf-8"))
     commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
+    declared_commit = card.get("source_commit")
+    if declared_commit != commit:
+        raise RuntimeError(
+            f"card source_commit {declared_commit!r} does not match current HEAD {commit!r}; "
+            "seal the card before running"
+        )
+    try:
+        card_label = str(card_path.relative_to(ROOT))
+    except ValueError:
+        card_label = str(card_path)
     top = {
-        "version": VERSION, "card": str(card_path.relative_to(ROOT)),
+        "version": VERSION, "card": card_label,
         "card_sha256": _sha_file(card_path), "source_commit": commit,
         "task_id": TASK_ID, "arms": list(ARMS), "decisions_per_arm": 3,
         "real_api_calls": "counted_from_raw_request_start", "gpu_jobs": 0,
