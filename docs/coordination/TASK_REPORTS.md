@@ -1,5 +1,7 @@
 # Task reports
 
+- [partial] 2026-10-06 v3 paper text refinement and rebuild (`task_reports/20261006_paper_text_refinement_v3.md`): baseline NO-GO handling, field-level judgment/terminal feature manifest, and positivity requirements were added; the verified internal PDF still has exactly 8 body pages. No empirical claim was added and the scientific gate remains closed.
+
 - [partial] 2026-10-06 parent-owned external source manifest preparation (`task_reports/20261006_external_source_manifest.md`): a zero-call utility converts one completed source episode into a v2-validated parent-owned receipt with artifact/contract/registry/scorer/prompt/raw provenance and source-cost accounting. It is historical artifact preparation only; a fresh source phase, independent arm projections, second root and live baseline parity remain open.
 
 - [partial] 2026-10-06 paper and three-document gate reconciliation (`task_reports/20261006_paper_gate_reconciliation.md`): current manuscript has the selected story, RQ-driven matrix, blank result cells and a verified 8-page body; storyline, method and benchmark/baseline scientific gates remain open. The next smallest gate is a real external shared-source manifest plus independent arm projection and complete cost receipt; no A800 or efficacy claim is authorized.

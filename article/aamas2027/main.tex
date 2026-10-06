@@ -246,13 +246,18 @@ Raw acceptance & Recipient accept/reject only & Responsibility filtering adds no
 Terminal only & Independent final outcome only & Situated judgment adds no information\\
 Contextual trust/bandit & Same context, judgment, propensity, delay, and budget as RARE & The effect is ordinary contextual trust or bandit learning\\
 Pooled controller & Permitted public history under the same total capacity & A shared controller explains the gain\\
-Closest published adapter & Faithful public-information adapter, if it passes qualification & Existing role/organization method is sufficient\\
+Closest published adapter & Faithful public-information adapter, if it passes qualification; otherwise an explicit \textsc{no-go} cell & Existing role/organization method is sufficient\\
 RARE & Responsibility-safe evidence plus delayed selected-only credit & Candidate closed-loop mechanism\\
 \bottomrule
 \end{tabular}
 \caption{Primary comparison boundary. A named arm enters the scientific matrix only after an executable adapter, information declaration, cost contract, and independent qualification pass.}
 \label{tab:baselines}
 \end{table*}
+
+If the closest published method cannot preserve the same public fields, candidate menu,
+arrival order, selected-only rule, and complete-cost contract, the confirmation card records
+an explicit \textsc{no-go}; it does not replace that missing adapter with a self-authored
+weak control.
 
 RLS, online logistic/SGD, periodic refitting, and any candidate incremental updater are training comparators. They are not counted as separate selection policies and are not presented as the innovation merely because they are fast. The contextual-trust arm follows the same information contract as classical contextual bandits \cite{li2010contextual}; its delay handling is compared with the general delayed-feedback setting \cite{joulani2013delayed}. Agent ranking and human--LLM teaming provide additional positioning points, but neither substitutes for the producer--recipient label contract \cite{lanctot2025soft,yurrita2026guidelines}.
 
@@ -265,7 +270,7 @@ stopping rule, and manifest digest are frozen before the corresponding calls; ot
 remains planned or \unknown{}.
 
 \subsection{Research questions and estimands}
-\textbf{RQ1 (information value).} Does an eligible situated judgment predict an independent producer-contract or later-use result beyond raw acceptance and terminal-only feedback? The primary estimands are out-of-sample log loss, Brier score, AUC when defined, calibration, and incremental predictive value on an independent root.
+\textbf{RQ1 (information value).} Does an eligible situated judgment predict an independent producer-contract or later-use result beyond raw acceptance and terminal-only feedback? The primary estimands are out-of-sample log loss, Brier score, AUC when defined, calibration, and incremental predictive value on an independent root. The confirmation card also freezes a field-level feature manifest: a judgment-only view, a producer-check/terminal-only view, and their declared fusion. Artifact, structural owner, Qp, Y, read cut, arrival schedule, and cost remain fixed while legal recipient-judgment mutations test whether the assignment or score actually responds to J.
 
 \textbf{RQ2 (assignment causality).} Does public evidence change an assignment made before target execution, including when the future owner did not produce the source judgment? We measure assignment-change probability, propensity-weighted future quality, adoption, rework, and complete cost. Evidence from producer $B$ cannot be consumed as if it belonged to producer $C$.
 
@@ -275,7 +280,7 @@ remains planned or \unknown{}.
 
 The primary unit of uncertainty is an independently reset stream. Episodes inside one stream are dependent. We use paired stream-level estimates, bootstrap or randomization intervals over streams, and pre-registered multiplicity control for the primary contrasts. Missing, invalid, or unknown events remain in the denominator and are never silently recoded as failures or successes.
 
-\paragraph{Primary endpoint design.} The design reserves four card identifiers: \texttt{H1} uses independent-target Brier score (lower is better) for incremental situated signal; \texttt{H2} uses future assignment quality--complete-cost utility (higher is better) against the same-information control; \texttt{H3} uses selected-feedback update p95 latency and backlog under the fixed arrival budget (lower is better); and \texttt{H4} uses false producer-attribution rate under ownership mutations (lower is better). Each card is required to fix its control, minimum practically important difference or precision target, stream-level 95\% interval, and stopping rule before outcomes are observed; the current design-only manifest records which fields remain unfrozen.
+\paragraph{Primary endpoint design.} The design reserves four card identifiers: \texttt{H1} uses independent-target Brier score (lower is better) for incremental situated signal; \texttt{H2} uses future assignment quality--complete-cost utility (higher is better) against the same-information control; \texttt{H3} uses selected-feedback update p95 latency and backlog under the fixed arrival budget (lower is better); and \texttt{H4} uses false producer-attribution rate under ownership mutations (lower is better). Each card is required to fix its control, minimum practically important difference or precision target, exploration floor/positivity condition, stream-level 95\% interval, and stopping rule before outcomes are observed; the current design-only manifest records which fields remain unfrozen.
 
 Only these H1--H4 endpoints are primary for the headline interpretation. The remaining measures in the matrix are secondary or exploratory and cannot be promoted after outcomes are observed.
 

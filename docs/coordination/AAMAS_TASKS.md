@@ -70,6 +70,13 @@ historical conversion is recorded at
 and is explicitly artifact preparation (`0` API, `0` GPU), not a scientific result. A fresh
 source phase is still required before a new live card.
 
+The paper text refinement v3 adds the field-level judgment/terminal feature manifest, an
+explicit closest-adapter `NO-GO` rule, and a positivity/exploration requirement. Its rebuilt
+internal artifact is
+[`paper_figure_refresh_v3_20261006/main.pdf`](../../artifacts/aamas2027/paper_figure_refresh_v3_20261006/main.pdf):
+10 total pages with exactly 8 body pages, references from page 9, no unresolved citations and
+no overfull boxes. This is a design clarification only; the scientific gate remains closed.
+
 The paper-writing checkpoint on the same date now has an eight-page body after a structural
 prose rewrite, reference expansion, and structural-owner gate synchronization; the latest
 isolated receipt is
