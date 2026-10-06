@@ -29,6 +29,18 @@ frozen at the committed runner, use the external digest file, verify cost comple
 and still satisfy the second-root and same-information baseline gates before any A800
 job.
 
+**Cost-accounting continuation — 2026-10-06:** the parent-source seam now has an
+explicit canonical cost ledger. `episode_cost()` deduplicates action API and action
+result timing, preserves absent token/timing fields as `UNKNOWN`, and chooses one
+scorer-timing route. A target receipt is persisted immediately after execution so a
+later update or manifest failure cannot erase already incurred target cost. The fresh
+zero-call fixture
+[`n03_c1_zero_call_parent_fixture_20261006_v3`](../../experiments/logs/n03_c1_zero_call_parent_fixture_20261006_v3/summary.json)
+passes with 0 real API calls and 0 GPU jobs; the focused post-fix suites pass 18 tests.
+This remains an engineering qualification only. The scientific gate is unchanged:
+one structural root, no unseen stream, no qualified same-information comparison, and
+no efficacy or self-evolution claim.
+
 **Current scientific checkpoint — 2026-10-06:** C0 candidate parity and the C1 zero-call
 contract qualification are complete as engineering evidence. C1 v3 then made 10 real
 recipient API requests: `no_update` and RARE are complete development-only chains with strict

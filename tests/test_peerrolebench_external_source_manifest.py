@@ -101,3 +101,24 @@ def test_parent_preflight_rejects_source_binding_mutation(tmp_path, zero_call_ru
         assert "source payload" in str(exc) or "binding" in str(exc)
     else:
         raise AssertionError("mutated source selection binding was accepted")
+
+
+def test_parent_source_failure_writes_root_unknown_receipt(tmp_path, monkeypatch):
+    def fail_actor(*_args, **_kwargs):
+        raise RuntimeError("synthetic transport failure")
+    monkeypatch.setattr(c1.api, "call_api", fail_actor)
+    card = json.loads(c1.CARD.read_text(encoding="utf-8"))
+    card["source_commit"] = subprocess.check_output(
+        ["git", "rev-parse", "HEAD"], cwd=c1.ROOT, text=True
+    ).strip()
+    card_copy = tmp_path / "card.json"
+    card_copy.write_text(json.dumps(card), encoding="utf-8")
+    run_dir = tmp_path / "failed-parent"
+    result = c1.run(run_dir, card_path=card_copy)
+    assert result["status"] == "UNKNOWN"
+    assert result["arm_loop_started"] is False
+    assert result["real_api_calls"] == 0
+    assert (run_dir / "summary.json").is_file()
+    failure = json.loads((run_dir / "parent_source" / "failure.json").read_text())
+    assert failure["error_type"] == "RuntimeError"
+    assert not (run_dir / "no_update").exists()

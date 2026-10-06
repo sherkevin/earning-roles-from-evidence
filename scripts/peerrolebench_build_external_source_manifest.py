@@ -68,26 +68,155 @@ def _response_digest(decision_dir: Path, patterns: tuple[str, ...]) -> str:
 
 
 def _api_cost(api: Mapping[str, Any] | None) -> dict[str, Any]:
-    api = api if isinstance(api, Mapping) else {}
-    usage = api.get("usage") if isinstance(api.get("usage"), Mapping) else {}
+    """Normalize one API receipt without turning absent measurements into zero."""
+    payload = api if isinstance(api, Mapping) else {}
+    unknown: list[str] = []
+    usage = payload.get("usage")
+    if not isinstance(usage, Mapping):
+        usage = {}
+        unknown.extend(("input_tokens", "output_tokens"))
+
+    tokens: dict[str, int | None] = {}
+    for name in ("input_tokens", "output_tokens"):
+        value = usage.get(name)
+        if isinstance(value, int) and not isinstance(value, bool) and value >= 0:
+            tokens[name] = value
+        else:
+            tokens[name] = None
+            if name not in unknown:
+                unknown.append(name)
+
+    usage_complete = payload.get("usage_complete") is True
+    if not usage_complete:
+        unknown.append("usage_complete")
+    token_complete = usage_complete and all(value is not None for value in tokens.values())
+
+    wall = payload.get("elapsed_seconds")
+    if isinstance(wall, (int, float)) and not isinstance(wall, bool) and math.isfinite(float(wall)) and float(wall) >= 0:
+        wall_seconds: float | None = float(wall)
+        wall_complete = True
+    else:
+        wall_seconds = None
+        wall_complete = False
+        unknown.append("wall_seconds")
+
     return {
-        "input_tokens": int(usage.get("input_tokens", 0) or 0),
-        "output_tokens": int(usage.get("output_tokens", 0) or 0),
-        "wall_seconds": float(api.get("elapsed_seconds", 0.0) or 0.0),
-        "usage_complete": bool(api.get("usage_complete", False)),
-        "http_status": api.get("http_status"),
+        "input_tokens": tokens["input_tokens"],
+        "output_tokens": tokens["output_tokens"],
+        "wall_seconds": wall_seconds,
+        "usage_complete": usage_complete,
+        "token_complete": token_complete,
+        "wall_complete": wall_complete,
+        "http_status": payload.get("http_status"),
+        "unknown_fields": sorted(set(unknown)),
     }
 
 
-def _measured_api(meta: Mapping[str, Any]) -> bool:
-    """Whether one API receipt has enough metadata to count as observed cost."""
-    return (
-        bool(meta.get("usage_complete"))
-        and isinstance(meta.get("http_status"), (int, str))
-        and str(meta.get("http_status")) == "200"
-        and math.isfinite(float(meta.get("wall_seconds", 0.0)))
-        and float(meta.get("wall_seconds", 0.0)) >= 0.0
+def _seconds(value: Any) -> float | None:
+    if isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(float(value)) and float(value) >= 0:
+        return float(value)
+    return None
+
+
+def episode_cost(source: Mapping[str, Any]) -> dict[str, Any]:
+    """Return one source/target episode cost receipt.
+
+    Timing and token completeness are tracked independently.  Missing values
+    remain ``None`` and are named in ``unknown_fields``.  The action API
+    elapsed time and action result wall time describe the same call, so only
+    one is included.  Scorer timing uses either the producer plus outcome
+    total or the producer plus independent recipient/adoption timings.
+    """
+    judgment_api = _api_cost(source.get("judgment_api"))
+    action_api = _api_cost(source.get("action_api"))
+    unknown = [f"{name}.{field}" for name, meta in (("judgment_api", judgment_api), ("action_api", action_api)) for field in meta["unknown_fields"]]
+
+    action = source.get("action") if isinstance(source.get("action"), Mapping) else {}
+    action_result_seconds = _seconds(action.get("action_wall_seconds"))
+    action_api_seconds = action_api["wall_seconds"]
+    if action_result_seconds is not None:
+        action_seconds = action_result_seconds
+        action_timing_source = "action_wall_seconds"
+        if action_api_seconds is not None and action_api_seconds != action_result_seconds:
+            unknown.append("action_timing_disagreement")
+    elif action_api_seconds is not None:
+        action_seconds = action_api_seconds
+        action_timing_source = "action_api.elapsed_seconds"
+    else:
+        action_seconds = None
+        action_timing_source = None
+        unknown.append("action_wall_seconds")
+    if action_seconds is not None:
+        unknown = [field for field in unknown if field != "action_api.wall_seconds"]
+
+    producer_score = source.get("producer_score") if isinstance(source.get("producer_score"), Mapping) else {}
+    recipient_score = source.get("recipient_score") if isinstance(source.get("recipient_score"), Mapping) else {}
+    adoption_score = source.get("adoption_score") if isinstance(source.get("adoption_score"), Mapping) else {}
+    outcome = source.get("outcome") if isinstance(source.get("outcome"), Mapping) else {}
+    producer_seconds = _seconds(producer_score.get("scorer_wall_seconds"))
+    outcome_seconds = _seconds(outcome.get("scorer_wall_seconds"))
+    recipient_seconds = _seconds(recipient_score.get("scorer_wall_seconds"))
+    adoption_seconds = _seconds(adoption_score.get("scorer_wall_seconds"))
+    if producer_seconds is None:
+        unknown.append("producer_scorer_seconds")
+
+    if outcome_seconds is not None:
+        scorer_mode = "producer_plus_outcome_total"
+        scorer_seconds = (producer_seconds + outcome_seconds) if producer_seconds is not None else outcome_seconds
+    elif recipient_seconds is not None and adoption_seconds is not None:
+        scorer_mode = "producer_plus_recipient_adoption"
+        scorer_seconds = (producer_seconds + recipient_seconds + adoption_seconds) if producer_seconds is not None else recipient_seconds + adoption_seconds
+    else:
+        scorer_mode = None
+        scorer_seconds = producer_seconds
+        if outcome_seconds is None:
+            unknown.append("outcome_scorer_seconds")
+        if recipient_seconds is None:
+            unknown.append("recipient_scorer_seconds")
+        if adoption_seconds is None:
+            unknown.append("adoption_scorer_seconds")
+
+    wall_complete = (
+        judgment_api["wall_complete"]
+        and action_seconds is not None
+        and producer_seconds is not None
+        and scorer_mode is not None
+        and not any(field == "action_timing_disagreement" for field in unknown)
     )
+    token_complete = bool(judgment_api["token_complete"] and action_api["token_complete"])
+    source_cost_units = sum(
+        value for value in (
+            judgment_api["wall_seconds"], action_seconds, scorer_seconds,
+        ) if value is not None
+    )
+    unknown = sorted(set(unknown))
+    cost_status = "COMPLETE" if wall_complete and token_complete else "UNKNOWN"
+    return {
+        "source_cost_units": source_cost_units,
+        "target_cost_units": 0.0,
+        "unit": "wall_seconds_sum_source_only_with_explicit_measurement_status",
+        "api": {"judgment": judgment_api, "action": action_api},
+        "scorer_wall_seconds": {
+            "producer": producer_seconds,
+            "recipient": recipient_seconds,
+            "adoption": adoption_seconds,
+            "outcome_total": outcome_seconds,
+            "selected_total": scorer_seconds,
+        },
+        "scorer_timing_mode": scorer_mode,
+        "action_wall_seconds": action_seconds,
+        "action_timing_source": action_timing_source,
+        "wall_complete": wall_complete,
+        "token_complete": token_complete,
+        "unknown_fields": unknown,
+        "cost_status": cost_status,
+        "source_cost_units_observed": cost_status == "COMPLETE",
+        "source_cost_units_semantics": (
+            "measured_wall_seconds_sum_for_source_only_receipt"
+            if cost_status == "COMPLETE"
+            else "lower_bound_wall_seconds_sum_missing_token_or_timing_receipt"
+        ),
+    }
 
 
 def build_source_receipt(run_dir: Path, arm: str, decision_index: int, manifest_id: str) -> dict[str, Any]:
@@ -147,87 +276,30 @@ def build_source_receipt(run_dir: Path, arm: str, decision_index: int, manifest_
         "provenance_scope": "source-only decision directory and immutable parent material manifest",
     }
 
-    judgment_api = _api_cost(source.get("judgment_api"))
-    action_api = _api_cost(source.get("action_api"))
-    producer_scorer_seconds = float(producer_score.get("scorer_wall_seconds", 0.0) or 0.0)
-    recipient_scorer_seconds = float(recipient_score.get("scorer_wall_seconds", 0.0) or 0.0)
-    adoption_scorer_seconds = float(adoption_score.get("scorer_wall_seconds", 0.0) or 0.0)
-    outcome_scorer_seconds = float(source.get("outcome", {}).get("scorer_wall_seconds", 0.0) or 0.0)
-    action_seconds = float(source.get("action", {}).get("action_wall_seconds", 0.0) or 0.0)
-    source_cost_units = (
-        judgment_api["wall_seconds"] + action_api["wall_seconds"] + action_seconds
-        + producer_scorer_seconds + (
-            outcome_scorer_seconds
-            if outcome_scorer_seconds > 0.0 or "scorer_wall_seconds" in source.get("outcome", {})
-            else recipient_scorer_seconds + adoption_scorer_seconds
-        )
-    )
-    producer_wall_complete = (
-        isinstance(producer_score, Mapping)
-        and isinstance(producer_score.get("scorer_wall_seconds"), (int, float))
-        and math.isfinite(float(producer_score.get("scorer_wall_seconds")))
-        and float(producer_score.get("scorer_wall_seconds")) >= 0.0
-    )
-    outcome_total_complete = (
-        isinstance(source.get("outcome"), Mapping)
-        and isinstance(source["outcome"].get("scorer_wall_seconds"), (int, float))
-        and math.isfinite(float(source["outcome"].get("scorer_wall_seconds")))
-        and float(source["outcome"].get("scorer_wall_seconds")) >= 0.0
-    )
-    independent_outcome_complete = all(
-        isinstance(score, Mapping)
-        and isinstance(score.get("scorer_wall_seconds"), (int, float))
-        and math.isfinite(float(score.get("scorer_wall_seconds")))
-        and float(score.get("scorer_wall_seconds")) >= 0.0
-        for score in (recipient_score, adoption_score)
-    )
-    score_labels_complete = all(
-        isinstance(score, Mapping) and score.get("status") in {"PASS", "FAIL"}
-        for score in (producer_score, recipient_score, adoption_score)
-    )
-    scorer_complete = score_labels_complete and producer_wall_complete and (
-        outcome_total_complete or independent_outcome_complete
-    )
-    action_complete = (
-        isinstance(source.get("action"), Mapping)
-        and isinstance(source["action"].get("action_wall_seconds"), (int, float))
-        and math.isfinite(float(source["action"].get("action_wall_seconds")))
-        and float(source["action"].get("action_wall_seconds")) >= 0.0
-    )
-    cost_status = "COMPLETE" if (
-        _measured_api(judgment_api) and _measured_api(action_api)
-        and scorer_complete and action_complete
-    ) else "UNKNOWN"
+    episode_cost_receipt = episode_cost(source)
     source_event_id = f"{source['selection_id']}:source"
     cost = {
         "source_cost_id": source_event_id,
-        "source_cost_units": source_cost_units,
-        "target_cost_units": 0.0,
-        "unit": "wall_seconds_sum_source_only_with_explicit_measurement_status",
-        "api": {"judgment": judgment_api, "action": action_api},
-        "scorer_wall_seconds": {
-            "producer": producer_scorer_seconds,
-            "recipient": recipient_scorer_seconds,
-            "adoption": adoption_scorer_seconds,
-            "outcome_total": outcome_scorer_seconds,
-        },
-        "action_wall_seconds": action_seconds,
-        "cost_status": cost_status,
-        "source_cost_units_observed": cost_status == "COMPLETE",
-        "source_cost_units_semantics": (
-            "measured_wall_seconds_sum_for_source_only_receipt"
-            if cost_status == "COMPLETE"
-            else "lower_bound_wall_seconds_sum_missing_usage_or_stage_receipt"
-        ),
+        **episode_cost_receipt,
     }
 
     raw_gate_status = source["source_gate"].get("status")
+    q_complete = source["source_gate"].get("q_complete") is True
+    y_complete = source["source_gate"].get("y_complete") is True
     if raw_gate_status == "ELIGIBLE":
         gate_status = "ELIGIBLE"
         episode_status = "SOURCE_COMPLETE"
         source_complete = True
         estimand_inclusion = "ITT_AND_ELIGIBLE"
     elif raw_gate_status == "PENDING_ATTRIBUTION":
+        gate_status = "PENDING_ATTRIBUTION"
+        episode_status = "STOPPED_PRE_TARGET"
+        source_complete = True
+        estimand_inclusion = "ITT_ONLY"
+    elif raw_gate_status == "UNKNOWN" and q_complete and y_complete:
+        # The source episode is complete, but responsibility attribution is
+        # unresolved. Preserve the raw gate payload while keeping the typed
+        # denominator state explicit for the shared-source contract.
         gate_status = "PENDING_ATTRIBUTION"
         episode_status = "STOPPED_PRE_TARGET"
         source_complete = True

@@ -65,6 +65,34 @@ Result: `11 passed`. The independent v2 zero-call qualification was also
 rerun at `experiments/logs/n03_shared_source_qualification_20261006_v3/` with
 10 fail-closed cases and no API/GPU calls.
 
+## Cost and failure-path hardening
+
+The first implementation still had two accounting hazards. It could count the
+action API elapsed time together with the action result wall time, and an arm
+failure after a completed target episode could replace the incurred target cost
+with `0.0`. Both paths are now explicit:
+
+- `episode_cost()` chooses one action timing source and records a timing
+  disagreement as `UNKNOWN`; scorer timing chooses either the producer plus
+  outcome aggregate or the independent recipient/adoption route.
+- The runner writes `target_cost_receipt.json` immediately after the target
+  episode. The outer failure handler recovers that receipt and marks later
+  update/manifest failures as `UNKNOWN` while retaining the measured lower
+  bound and any recorded update latency.
+- The canonical arm ledger is `cost_ledger_row` plus
+  `validate_cost_ledger()`: the shared source cost is counted once and target
+  costs are summed once per arm. The legacy diagnostic `result["cost"]` is not
+  part of this aggregate.
+
+The focused post-fix checks are 18 passed across the source-cost, external
+manifest, C1 runner, shared-source, and baseline-contract suites. The fresh
+zero-call receipt is
+[`n03_c1_zero_call_parent_fixture_20261006_v3`](../../../experiments/logs/n03_c1_zero_call_parent_fixture_20261006_v3/summary.json).
+It reports 0 real API calls and 0 GPU jobs, one source cost of `1.293608125`
+wall-second units, and three target cost rows totalling `3.721094624` units.
+Those values validate the fixture's declared metadata only; they are not a
+model or quality result. The fixture remains `scientific_claim_allowed=false`.
+
 ## Goal reconciliation
 
 This advances ER-G3/ER-G4 engineering prerequisites: source reuse, native

@@ -20,6 +20,7 @@ from copy import deepcopy
 from datetime import datetime, timezone
 import hashlib
 import json
+import math
 from pathlib import Path
 import platform
 import subprocess
@@ -69,12 +70,12 @@ from peerrolebench_two_stage_gate import (  # noqa: E402
     DelayedCreditLedger, derive_later_credit_from_ledger, evaluate_source_gate,
 )
 from peerrolebench_selection_preview import FixedChoiceRNG  # noqa: E402
-from peerrolebench_shared_source_v2 import validate_selection_binding  # noqa: E402
-from peerrolebench_build_external_source_manifest import build_source_receipt  # noqa: E402
+from peerrolebench_shared_source_v2 import validate_selection_binding, validate_cost_ledger  # noqa: E402
+from peerrolebench_build_external_source_manifest import build_source_receipt, episode_cost  # noqa: E402
 from peerrolebench_shared_source_preflight import prepare_shared_source  # noqa: E402
 
 
-VERSION = "c1-pipe3-bounded-live-v1"
+VERSION = "c1-pipe3-bounded-live-v2-structural-owner"
 TASK_ID = "PIPE3_stream_processing"
 CARD = ROOT / "configs/aamas2027/n03_c1_pipe3_bounded_live_dev_v2.json"
 CANDIDATE_KEYS = ("peer-b@v1", "peer-c@v1")
@@ -123,6 +124,18 @@ def _log(raw: Path, event_type: str, payload: Any) -> None:
             "payload": payload,
         }, ensure_ascii=False, sort_keys=True, default=str) + "\n")
         handle.flush()
+
+
+def _request_count(out_dir: Path) -> int:
+    total = 0
+    for path in out_dir.glob("*/raw.jsonl"):
+        for line in path.read_text(encoding="utf-8").splitlines():
+            try:
+                if json.loads(line).get("event_type") == "request_start":
+                    total += 1
+            except json.JSONDecodeError:
+                continue
+    return total
 
 
 def _policy(name: str):
@@ -589,6 +602,28 @@ def _run_arm(arm: str, out_dir: Path, card: Mapping[str, Any], parent: Mapping[s
     })
     _log(raw, "source_episode_complete", {"selected_key": selected0, "gate": source["source_gate"], "shared_parent": True})
     source_eligible = source["source_gate"]["evidence_publish_allowed"] is True
+    if not source_eligible:
+        source_cost = source_projection["cost"]
+        return {
+            "arm": arm, "status": "UNKNOWN", "passed": False,
+            "stop_reason": "source evidence was not eligible; all arms stop before target",
+            "source": source, "source_eligible": False, "policy_updates": boundary.policy.updates,
+            "scientific_claim_allowed": False, "selection_bindings": selection_bindings,
+            "source_projection": source_projection,
+            "cost_ledger_row": {"cost": {
+                "source_cost_id": source_cost["source_cost_id"],
+                "source_cost_units": source_cost["source_cost_units"],
+                "target_cost_units": 0.0,
+                "cost_status": source_cost["cost_status"],
+                "source_cost_units_observed": source_cost["source_cost_units_observed"],
+                "target_cost_status": "NOT_STARTED",
+            }},
+            "manifest_roots": {
+                "native": boundary.validate_selection_manifests()[0],
+                "auxiliary": boundary.validate_selection_manifests()[1],
+            },
+            "ledger": boundary.ledger.events,
+        }
     role_offer = None
     offer_meta = None
     if source_eligible:
@@ -636,19 +671,6 @@ def _run_arm(arm: str, out_dir: Path, card: Mapping[str, Any], parent: Mapping[s
         )
         seal1 = commit_role_evidence_selection(boundary, plan=plan, role_offer=role_offer, feedback_offer=feedback_offer)
         _save(arm_dir / "assignment_overlay.json", overlay.payload())
-    else:
-        return {
-            "arm": arm, "status": "UNKNOWN", "passed": False,
-            "stop_reason": "source evidence was not eligible; learning-arm target not started",
-            "source": source, "source_eligible": False, "policy_updates": boundary.policy.updates,
-            "scientific_claim_allowed": False, "selection_bindings": selection_bindings,
-            "source_projection": source_projection,
-            "manifest_roots": {
-                "native": boundary.validate_selection_manifests()[0],
-                "auxiliary": boundary.validate_selection_manifests()[1],
-            },
-            "ledger": boundary.ledger.events,
-        }
     if arm == "no_update":
         # no_update deliberately has no evidence assignment; it is the frozen
         # execution control and still uses the same menu/read-cut/cost envelope.
@@ -660,6 +682,11 @@ def _run_arm(arm: str, out_dir: Path, card: Mapping[str, Any], parent: Mapping[s
         boundary=boundary, materials=materials, candidates=candidates, selected_key=target_key,
         card=card, raw=raw, task_seed=1,
     )
+    # Persist the target episode cost before policy update/post-selection work.
+    # If a later arm step fails, the outer failure receipt can still preserve
+    # the API/scorer cost already incurred by this completed target episode.
+    target_cost = episode_cost(target)
+    _save(arm_dir / "target_cost_receipt.json", target_cost)
     if target["outcome"]["status"] in {"PASS", "FAIL"}:
         boundary.ledger.record_evidence_update(RoleEvidenceUpdate(
             f"{arm}-target-completion-evidence", f"{arm}-judgment-1", f"{arm}-action-1",
@@ -710,10 +737,29 @@ def _run_arm(arm: str, out_dir: Path, card: Mapping[str, Any], parent: Mapping[s
         "ledger_included": False,
     })
     _log(raw, "post_update_selection", {"selected_key": post.native_selection.chosen_peer_id + "@v1", "updates": boundary.policy.updates})
+    update_seconds = float(update.get("latency_seconds", 0.0) or 0.0)
+    target_cost_units = float(target_cost["source_cost_units"]) + update_seconds
+    source_cost = source_projection["cost"]
+    cost_ledger_row = {"cost": {
+        "source_cost_id": source_cost["source_cost_id"],
+        "source_cost_units": source_cost["source_cost_units"],
+        "target_cost_units": target_cost_units,
+        "cost_status": source_cost["cost_status"],
+        "source_cost_units_observed": source_cost["source_cost_units_observed"],
+        "target_cost_status": target_cost["cost_status"],
+        "target_unknown_fields": target_cost["unknown_fields"],
+    }}
     result = {
         "arm": arm, "status": "COMPLETE_DEVELOPMENT_ONLY", "passed": True,
         "source": source, "target": target, "source_eligible": source_eligible,
         "source_projection": source_projection,
+        "target_cost": {
+            **target_cost,
+            "target_cost_units": target_cost_units,
+            "update_seconds": update_seconds,
+            "state_bytes": len(json.dumps(boundary.policy.snapshot(), sort_keys=True, default=str).encode("utf-8")),
+        },
+        "cost_ledger_row": cost_ledger_row,
         "update": update, "post_update_selection": {
             "selected_key": post.native_selection.chosen_peer_id + "@v1",
             "propensity": post.native_selection.propensity,
@@ -731,7 +777,7 @@ def _run_arm(arm: str, out_dir: Path, card: Mapping[str, Any], parent: Mapping[s
                     target["producer_score"], target["outcome"],
                 )
             ),
-            "update_seconds": float(update.get("latency_seconds", 0.0) or 0.0),
+            "update_seconds": update_seconds,
             "action_wall_seconds": (
                 float(source["action"].get("action_wall_seconds", 0.0))
                 + float(target["action"].get("action_wall_seconds", 0.0))
@@ -764,6 +810,10 @@ def run(out_dir: Path, *, card_path: Path = CARD) -> dict[str, Any]:
     out_dir.mkdir(parents=False, exist_ok=False)
     card = json.loads(card_path.read_text(encoding="utf-8"))
     _validate_responsibility_card(card)
+    if card.get("runner_version") != VERSION:
+        raise RuntimeError(
+            f"card runner_version {card.get('runner_version')!r} does not match runner {VERSION!r}"
+        )
     commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
     declared_commit = card.get("source_commit")
     if not isinstance(declared_commit, str) or len(declared_commit) < 7:
@@ -793,27 +843,56 @@ def run(out_dir: Path, *, card_path: Path = CARD) -> dict[str, Any]:
         "no_retries": True,
     }
     _save(out_dir / "config.json", top)
-    context = _prepare_context()
-    parent = _run_parent_source(out_dir, card, context)
-    manifest_id = f"live-parent-source-{top['card_sha256'][:16]}"
-    source_receipt = build_source_receipt(out_dir, "parent_source", 0, manifest_id)
-    source_manifest = {
-        "manifest_version": "peerrolebench-external-source-manifest-v1",
-        "manifest_id": manifest_id,
-        "expected_source_digest": source_receipt["source_receipt_digest"],
-        "source_receipt": source_receipt,
-        "scientific_claim_allowed": False,
-        "historical_conversion": False,
-        "parent_owned_live_source": True,
-    }
-    _save(out_dir / "source_manifest.json", source_manifest)
-    (out_dir / "source_digest.txt").write_text(source_receipt["source_receipt_digest"] + "\n", encoding="utf-8")
-    expected_source_digest = (out_dir / "source_digest.txt").read_text(encoding="utf-8").strip()
-    prepared = prepare_shared_source(
-        out_dir / "source_manifest.json", expected_source_digest
-    )
-    _save(out_dir / "shared_source_preflight.json", prepared)
-    projection_by_arm = {row["policy_arm"]: row for row in prepared["projections"]}
+    _save(out_dir / "card.json", card)
+    try:
+        context = _prepare_context()
+        parent = _run_parent_source(out_dir, card, context)
+        manifest_id = f"live-parent-source-{top['card_sha256'][:16]}"
+        source_receipt = build_source_receipt(out_dir, "parent_source", 0, manifest_id)
+        source_manifest = {
+            "manifest_version": "peerrolebench-external-source-manifest-v1",
+            "manifest_id": manifest_id,
+            "expected_source_digest": source_receipt["source_receipt_digest"],
+            "source_receipt": source_receipt,
+            "scientific_claim_allowed": False,
+            "historical_conversion": False,
+            "parent_owned_live_source": True,
+        }
+        _save(out_dir / "source_manifest.json", source_manifest)
+        (out_dir / "source_digest.txt").write_text(source_receipt["source_receipt_digest"] + "\n", encoding="utf-8")
+        expected_source_digest = (out_dir / "source_digest.txt").read_text(encoding="utf-8").strip()
+        prepared = prepare_shared_source(
+            out_dir / "source_manifest.json", expected_source_digest
+        )
+        _save(out_dir / "shared_source_preflight.json", prepared)
+        projection_by_arm = {row["policy_arm"]: row for row in prepared["projections"]}
+    except Exception as exc:
+        parent_dir = out_dir / "parent_source"
+        parent_dir.mkdir(parents=True, exist_ok=True)
+        raw = parent_dir / "raw.jsonl"
+        if not raw.exists():
+            raw.write_text("", encoding="utf-8")
+        _log(raw, "parent_source_failure", {
+            "error_type": type(exc).__name__, "error": str(exc),
+            "arm_loop_started": False,
+        })
+        failure = {
+            "status": "UNKNOWN", "passed": False,
+            "error_type": type(exc).__name__, "error": str(exc),
+            "arm_loop_started": False, "scientific_claim_allowed": False,
+            "failure_preserved": True,
+        }
+        _save(parent_dir / "failure.json", failure)
+        summary = {
+            **top, "status": "UNKNOWN", "passed": False,
+            "real_api_calls": _request_count(out_dir),
+            "arm_loop_started": False,
+            "source_failure": failure,
+            "scientific_claim_allowed": False,
+            "ended_at_utc": datetime.now(timezone.utc).isoformat(),
+        }
+        _save(out_dir / "summary.json", summary)
+        return summary
     results: list[dict[str, Any]] = []
     for arm in ARMS:
         try:
@@ -825,25 +904,66 @@ def run(out_dir: Path, *, card_path: Path = CARD) -> dict[str, Any]:
             if not raw.exists():
                 raw.write_text("", encoding="utf-8")
             _log(raw, "arm_failure", {"error_type": type(exc).__name__, "error": str(exc)})
+            source_cost = projection_by_arm[arm]["cost"]
+            target_units = 0.0
+            target_status = "UNKNOWN"
+            target_unknown_fields = ["target_episode_or_update"]
+            target_cost_path = arm_dir / "target_cost_receipt.json"
+            if target_cost_path.exists():
+                try:
+                    target_cost = json.loads(target_cost_path.read_text(encoding="utf-8"))
+                    target_units = float(target_cost.get("source_cost_units", 0.0) or 0.0)
+                    target_unknown_fields = list(target_cost.get("unknown_fields", ()))
+                    update_path = arm_dir / "delayed_update.json"
+                    if update_path.exists():
+                        update_payload = json.loads(update_path.read_text(encoding="utf-8"))
+                        update_seconds = update_payload.get("latency_seconds")
+                        if isinstance(update_seconds, (int, float)) and math.isfinite(float(update_seconds)) and float(update_seconds) >= 0:
+                            target_units += float(update_seconds)
+                        else:
+                            target_unknown_fields.append("policy_update_seconds")
+                    else:
+                        target_unknown_fields.append("policy_update_seconds")
+                    target_unknown_fields.append("arm_failure_after_target")
+                except (OSError, TypeError, ValueError, json.JSONDecodeError):
+                    target_units = 0.0
+                    target_unknown_fields = ["target_cost_receipt_unreadable"]
             failure = {"arm": arm, "status": "UNKNOWN", "passed": False,
                        "error_type": type(exc).__name__, "error": str(exc),
-                       "scientific_claim_allowed": False, "failure_preserved": True}
+                       "scientific_claim_allowed": False, "failure_preserved": True,
+                       "cost_ledger_row": {"cost": {
+                           "source_cost_id": source_cost["source_cost_id"],
+                           "source_cost_units": source_cost["source_cost_units"],
+                           "target_cost_units": target_units,
+                           "cost_status": source_cost["cost_status"],
+                           "source_cost_units_observed": source_cost["source_cost_units_observed"],
+                           "target_cost_status": target_status,
+                           "target_unknown_fields": sorted(set(target_unknown_fields)),
+                       }}}
             _save(arm_dir / "failure.json", failure)
             results.append(failure)
     request_count = 0
-    for path in out_dir.glob("*/raw.jsonl"):
-        request_count += sum(1 for line in path.read_text(encoding="utf-8").splitlines()
-                             if json.loads(line).get("event_type") == "request_start")
+    request_count = _request_count(out_dir)
     maximum_api_requests = card.get("maximum_api_requests")
     if not isinstance(maximum_api_requests, int) or maximum_api_requests <= 0:
         raise RuntimeError("card.maximum_api_requests must be a positive integer")
     budget_ok = request_count <= maximum_api_requests
+    cost_rows = [row["cost_ledger_row"] for row in results if isinstance(row.get("cost_ledger_row"), Mapping)]
+    cost_ledger = validate_cost_ledger(cost_rows) if len(cost_rows) == len(results) and cost_rows else {
+        "valid": False, "reason": "one or more arm cost rows are missing",
+    }
+    cost_ledger["target_cost_statuses"] = {
+        str(row["arm"]): row["cost_ledger_row"]["cost"].get("target_cost_status")
+        for row in results if isinstance(row.get("cost_ledger_row"), Mapping)
+    }
     result = {**top, "results": results, "real_api_calls": request_count,
               "source_receipt_digest": source_receipt["source_receipt_digest"],
               "source_cost_status": prepared["cost_ledger"].get("source_cost_status"),
               "source_projection_digest": _digest(prepared["projections"]),
+              "cost_ledger": cost_ledger,
               "ended_at_utc": datetime.now(timezone.utc).isoformat(),
               "maximum_api_requests": maximum_api_requests,
+              "arm_loop_started": True,
               "budget_ok": budget_ok,
               "status": "COMPLETE_DEVELOPMENT_ONLY" if (
                   results and budget_ok and all(r.get("passed") is True for r in results)
