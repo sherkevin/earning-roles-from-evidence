@@ -68,6 +68,18 @@ judgment，延迟 1 个 decision，到达后执行 1 次更新。更新前概率
 证明 peer specialization 或 benchmark 效果。v3 原始 response、ledger、scorer 输出和摘要均在
 [`n03_c1_pipe3_bounded_live_20261006_v3/`](../../../experiments/logs/n03_c1_pipe3_bounded_live_20261006_v3/)。
 
+独立复核确认 v3 的 10 个 `request_start/request_result` 一一对应，token 总数与报告一致；
+`no_update` 的 16-event ledger 和 RARE 的 17-event ledger 均可独立严格 replay。context arm
+在 source gate 前停止，没有独立的 completed `summary.json/ledger.json`，其 7-event 部分链和
+停止原因保存在 root summary/raw 中，不能计入完成 episode 分母。
+
+这里的 delayed update 有一个必须保留的信号边界：`RARE` 的更新 label 是后续 recipient
+judgment 的 `accept=1.0`，而同一 later outcome 的 adoption quality 是 `0.5`。本卡验证的是
+selected-only judgment channel 的一次状态更新，不是 terminal-quality 学习，也没有证明更新
+带来质量改善。成本字段也尚未闭合：当前 `ConsumerAction.repair_cost` 对 `use` action 仍记录
+action 调用耗时，汇总层缺少完整的 wall/scorer/update/state-byte 聚合；这些必须在后续正式
+benchmark card 中修正或明确命名，不能直接作为 repair-cost 结论。
+
 ## 真实运行暴露的科学问题
 
 `contextual_trust_linear` 在 source judgment 中被模型标成 `target_role=recipient`，因此严格

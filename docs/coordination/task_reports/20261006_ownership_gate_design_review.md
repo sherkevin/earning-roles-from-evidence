@@ -17,6 +17,11 @@ The result is a measurement problem, not an efficacy comparison: arm completion 
 free-text/model-selected responsibility field even though the runner already has a disjoint
 ownership contract and an independently registered producer defect.
 
+The generic `UNKNOWN` reason emitted by the current gate says “incomplete source scorer/outcome,
+target, or artifact binding” even when `q_complete` and `y_complete` are true; the actual failing
+condition in this case is the judged-role mismatch. A future gate version should expose a separate
+`judged_role_mismatch` reason so censoring can be measured rather than hidden inside a catch-all.
+
 ## First-principles distinction
 
 There are two different variables:

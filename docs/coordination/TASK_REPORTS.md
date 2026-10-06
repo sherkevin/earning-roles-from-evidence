@@ -29,7 +29,8 @@ Goal 修改。
 
 - [partial] 2026-10-06 C1 bounded PIPE3 live development card：真实 API v3 完成 10 个请求；
   `no_update` 与 RARE 的严格 ledger replay 通过，RARE 发生 1 次 delayed update，
-  `contextual_trust_linear` 因模型责任字段触发严格 gate 而 UNKNOWN。v1 启动错误和 v2
+  `contextual_trust_linear` 因模型责任字段触发严格 gate 而 UNKNOWN；复核还发现 judgment
+  label 与 terminal quality、repair-cost 命名和汇总成本字段需要分开。v1 启动错误和 v2
   ledger 缺陷均保留并修复；这仍只是单 root development seam，未打开 scientific gate，见
   [C1 card](task_reports/20261006_c1_bounded_live_card.md)。
 
