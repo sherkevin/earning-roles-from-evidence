@@ -73,12 +73,34 @@ from peerrolebench_selection_preview import FixedChoiceRNG  # noqa: E402
 
 VERSION = "c1-pipe3-bounded-live-v1"
 TASK_ID = "PIPE3_stream_processing"
-CARD = ROOT / "configs/aamas2027/n03_c1_pipe3_bounded_live_dev_v1.json"
+CARD = ROOT / "configs/aamas2027/n03_c1_pipe3_bounded_live_dev_v2.json"
 CANDIDATE_KEYS = ("peer-b@v1", "peer-c@v1")
 ARMS = ("no_update", "contextual_trust_linear", "RARE")
 PUBLIC_ENCODER = "hash64-v1"
 PUBLIC_SCHEMA = "matrix-features-v1"
 PUBLIC_DIMENSION = 64
+
+
+def _validate_responsibility_card(card: Mapping[str, Any]) -> None:
+    """Require the active structural-owner contract before a v2 run."""
+    if not str(card.get("manifest_version", "")).startswith(
+            "peerrolebench-c1-pipe3-bounded-live-development-v2"):
+        return  # historical v1 cards remain replayable but are never promoted
+    gate = card.get("responsibility_gate")
+    if not isinstance(gate, Mapping):
+        raise ValueError("v2 card requires responsibility_gate")
+    required = {
+        "version": "two-stage-role-evidence-v3-structural-owner",
+        "eligibility_owner_source": "contract_registry_scorer",
+        "judged_role_policy": "calibration_only",
+        "disagreement_field": "judged_role_agrees",
+    }
+    for key, expected in required.items():
+        if gate.get(key) != expected:
+            raise ValueError(f"responsibility_gate.{key} must equal {expected!r}")
+    registered = gate.get("registered_producer_candidates")
+    if registered != ["peer-b@v1"]:
+        raise ValueError("v2 card must register only peer-b@v1 as the producer-defect source")
 
 
 def _sha_file(path: Path) -> str:
@@ -323,7 +345,8 @@ def _run_episode(*, arm: str, decision_index: int, arm_dir: Path, decision_dir: 
         _log(raw, "unknown_outcome", outcome)
     # The defect registration is operator-side and comes from the immutable
     # candidate registry; it is never accepted from the model's self-report.
-    gate_judgment = {**judged, "producer_defect_registered": selected_key == "peer-b@v1"}
+    registered = card.get("responsibility_gate", {}).get("registered_producer_candidates", ["peer-b@v1"])
+    gate_judgment = {**judged, "producer_defect_registered": selected_key in registered}
     gate = evaluate_source_gate(
         materials, qp, gate_judgment,
         {**action_result, "used_artifact": action_name == "use"}, outcome, None,
@@ -524,7 +547,7 @@ def _run_arm(arm: str, out_dir: Path, card: Mapping[str, Any]) -> dict[str, Any]
             credit = derive_later_credit_from_ledger(
                 ledger=boundary.ledger, source_gate=evaluate_source_gate(
                     materials, source["producer_score"],
-                    {**source["judgment"], "producer_defect_registered": True},
+                    {**source["judgment"], "producer_defect_registered": source["selected_key"] in card.get("responsibility_gate", {}).get("registered_producer_candidates", ["peer-b@v1"])},
                     {**source["action"], "used_artifact": source["action"]["consumer_action"] == "use"}, source["outcome"], None,
                 ), assignment_id=f"assignment-{arm}", source_evidence_id=offer_meta["evidence_id"],
                 evidence_candidate_id=selected0, later_outcome_id=f"{arm}-outcome-1",
@@ -586,6 +609,7 @@ def run(out_dir: Path, *, card_path: Path = CARD) -> dict[str, Any]:
     card_path = card_path.resolve()
     out_dir.mkdir(parents=False, exist_ok=False)
     card = json.loads(card_path.read_text(encoding="utf-8"))
+    _validate_responsibility_card(card)
     commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
     declared_commit = card.get("source_commit")
     if not isinstance(declared_commit, str) or len(declared_commit) < 7:
@@ -604,7 +628,7 @@ def run(out_dir: Path, *, card_path: Path = CARD) -> dict[str, Any]:
     except ValueError:
         card_label = str(card_path)
     top = {
-        "version": VERSION, "card": card_label,
+        "version": card.get("runner_version", VERSION), "card": card_label,
         "card_sha256": _sha_file(card_path), "source_commit": commit,
         "task_id": TASK_ID, "arms": list(ARMS), "decisions_per_arm": 3,
         "real_api_calls": "counted_from_raw_request_start", "gpu_jobs": 0,
