@@ -3,6 +3,7 @@ import re
 import subprocess
 
 import scripts.peerrolebench_c1_pipe3_bounded_live as c1
+from scripts.peerrolebench_ledger_replay import replay_ledger_events
 
 
 def _fake_actor(_out, _stage_dir, stage, prompt, _card):
@@ -45,3 +46,6 @@ def test_c1_zero_api_contract_qualifies_all_arms(tmp_path, monkeypatch):
     assert by_arm["no_update"]["update"]["status"] == "NOT_RUN"
     assert by_arm["contextual_trust_linear"]["update"]["status"] == "UPDATED"
     assert by_arm["RARE"]["update"]["status"] == "UPDATED"
+    for row in by_arm.values():
+        replay = replay_ledger_events(row["ledger"])
+        assert replay.status == "PASS" and replay.complete is True

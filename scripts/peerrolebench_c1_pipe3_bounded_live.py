@@ -392,7 +392,13 @@ def _select_no_update(boundary: Pipe3SelectionBoundary, arm: str, index: int,
 
 
 def _select_post_update(boundary: Pipe3SelectionBoundary, arm: str, features: Mapping[str, Any], seed: int) -> Any:
-    return _select_no_update(boundary, arm, 2, features, seed)
+    # This is a pre-execution policy preview.  It must not enter the causal
+    # execution ledger until a task is actually started and a delivery is
+    # recorded; otherwise the replay checker correctly reports an orphan
+    # selection.  Clone the post-update policy state so the preview observes
+    # the learned state without mutating the completed execution history.
+    preview = Pipe3SelectionBoundary(deepcopy(boundary.policy), boundary.registry)
+    return _select_no_update(preview, arm, 2, features, seed)
 
 
 def _run_arm(arm: str, out_dir: Path, card: Mapping[str, Any]) -> dict[str, Any]:
@@ -437,8 +443,19 @@ def _run_arm(arm: str, out_dir: Path, card: Mapping[str, Any]) -> dict[str, Any]
     role_offer = None
     offer_meta = None
     if source_eligible:
-        role_offer, offer_meta = _source_state_offer(boundary, source, seal0, arm)
-        _log(raw, "source_evidence_published", {"offer_id": role_offer.offer_id, "bundle_digest": role_offer.bundle_digest})
+        if arm == "no_update":
+            # The frozen control does not consume evidence, but its complete
+            # execution still needs an immutable provenance record so the
+            # strict ledger replay can distinguish a finished control from a
+            # truncated one.  This bookkeeping event never touches policy.
+            boundary.ledger.record_evidence_update(RoleEvidenceUpdate(
+                "no_update-source-observation", "no_update-judgment-0",
+                "no_update-action-0", "no_update-outcome-0", "c1-control-observation-v1", 1.0,
+            ))
+            _log(raw, "control_evidence_recorded", {"evidence_id": "no_update-source-observation"})
+        else:
+            role_offer, offer_meta = _source_state_offer(boundary, source, seal0, arm)
+            _log(raw, "source_evidence_published", {"offer_id": role_offer.offer_id, "bundle_digest": role_offer.bundle_digest})
     else:
         _log(raw, "promotion_blocked", {"reason": source["source_gate"]["reason"]})
 
@@ -487,21 +504,26 @@ def _run_arm(arm: str, out_dir: Path, card: Mapping[str, Any]) -> dict[str, Any]
         boundary=boundary, materials=materials, candidates=candidates, selected_key=target_key,
         card=card, raw=raw, task_seed=1,
     )
-    if arm != "no_update" and target["outcome"]["status"] in {"PASS", "FAIL"}:
+    if target["outcome"]["status"] in {"PASS", "FAIL"}:
         boundary.ledger.record_evidence_update(RoleEvidenceUpdate(
             f"{arm}-target-completion-evidence", f"{arm}-judgment-1", f"{arm}-action-1",
-            f"{arm}-outcome-1", "c1-target-completion-v1", 2.0,
+            f"{arm}-outcome-1", "c1-control-observation-v1" if arm == "no_update" else "c1-target-completion-v1", 2.0,
         ))
         replay = replay_ledger_events(boundary.ledger.events)
-        credit = derive_later_credit_from_ledger(
-            ledger=boundary.ledger, source_gate=evaluate_source_gate(
-                materials, source["producer_score"],
-                {**source["judgment"], "producer_defect_registered": True},
-                {**source["action"], "used_artifact": source["action"]["consumer_action"] == "use"}, source["outcome"], None,
-            ), assignment_id=f"assignment-{arm}", source_evidence_id=offer_meta["evidence_id"],
-            evidence_candidate_id=selected0, later_outcome_id=f"{arm}-outcome-1",
-        ) if replay.status == "PASS" and replay.complete else None
-        if credit is not None:
+        if arm == "no_update":
+            _log(raw, "control_evidence_recorded", {"evidence_id": f"{arm}-target-completion-evidence"})
+        if arm != "no_update":
+            credit = derive_later_credit_from_ledger(
+                ledger=boundary.ledger, source_gate=evaluate_source_gate(
+                    materials, source["producer_score"],
+                    {**source["judgment"], "producer_defect_registered": True},
+                    {**source["action"], "used_artifact": source["action"]["consumer_action"] == "use"}, source["outcome"], None,
+                ), assignment_id=f"assignment-{arm}", source_evidence_id=offer_meta["evidence_id"],
+                evidence_candidate_id=selected0, later_outcome_id=f"{arm}-outcome-1",
+            ) if replay.status == "PASS" and replay.complete else None
+        else:
+            credit = None
+        if arm != "no_update" and credit is not None:
             feedback = Feedback(
                 feedback_id=f"{arm}-later-feedback", source_event_id=f"policy-selection-{arm}-1",
                 source="recipient_judgment", label=JUDGMENT_LABELS[target["judgment"]["decision"]],
@@ -528,6 +550,8 @@ def _run_arm(arm: str, out_dir: Path, card: Mapping[str, Any]) -> dict[str, Any]
         "propensity": post.native_selection.propensity,
         "probabilities": list(post.policy_selection.probabilities),
         "policy_updates": boundary.policy.updates,
+        "preview_only": True,
+        "ledger_included": False,
     })
     _log(raw, "post_update_selection", {"selected_key": post.native_selection.chosen_peer_id + "@v1", "updates": boundary.policy.updates})
     result = {
