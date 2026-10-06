@@ -1,14 +1,14 @@
 # AAMAS Figure Plan v2 — active
 
-更新时间：2026-10-02（v7 语义修订）
+更新时间：2026-10-06（v19–v21 AI 图组晋升）
 
 本版本吸收了故事线审查和视觉审查。v1 保留为历史计划；本文件是当前有效的正文图配置。
 
 ## 当前正文配置
 
-1. **Figure 1 — Earning-roles loop**：全宽 teaser，保留六阶段闭环。
-2. **Figure 2 — Evidence-to-role state**：全宽方法图，新增三条泳道，显示 episode、public evidence、local decision 的边界。
-3. **Figure 3 — Benchmark/baseline experiment map**：全宽实验结构图，区分 ArtifactRole 主轨与 PeerSelect 副轨。
+1. **Figure 1 — Earning-roles loop**：全宽开放主轴，当前资产为 `article/aamas2027/figures/overview.pdf`，对应 AI 版本 v19。短标签保留机制读法，`TASK` 补足 peer-context 的任务节点。
+2. **Figure 2 — Evidence-to-role state**：全宽三泳道方法图，当前资产为 `article/aamas2027/figures/method_state.pdf`，对应 AI 版本 v20。三条泳道分别显示 episode、public evidence、local decision 的边界。
+3. **Figure 3 — Benchmark/baseline experiment map**：全宽实验结构图，当前资产为 `article/aamas2027/figures/experiment_map.pdf`，对应 AI 版本 v21。三个面板区分 ArtifactRole/PeerSelect 轨道、政策臂和 RQ1–RQ4 终点。
 
 独立事件时间线仍保存在 `figures/timeline.pdf` 及版本目录中，作为协议图候选；在当前 8 页正文预算下不单独占用主文图位，因为 Figure 2 已经显式标出 read cut、sealed assignment、after-seal outcome 和 delayed update。若正文页数或审稿反馈允许，timeline 可作为 Figure 2 的 panel 或 supplementary 图恢复。
 
@@ -30,6 +30,8 @@ recipient judgment 到 target outcome 是灰色虚线的 **after seal** 时间�
 - 30 秒测试：能区分 observed episode、public state、future decision 和 delayed feedback。
 - 版式测试：全宽图约 7in，嵌入 TrueType，灰度仍可读，正文标签不小于约 7pt；不出现越界、交叉穿框或未经验证数字。
 - 版本测试：v0、v1、v2、v3、v4、v5、v6、v7 的 PDF、脚本和评审记录全部保留，不能覆盖历史版本。
+
+本轮 AI 版本和提示词保存在 `article/aamas2027/figures/ai_versions/v18_open_spine_short_labels_20261006/`、`v19_task_label_patch_20261006/`、`v20_method_lanes_short_labels_20261006/` 和 `v21_evaluation_map_short_labels_20261006/`。v18 是 Figure 1 的回退候选；正文晋升的是 v19–v21。AI 工具的模型标识未披露，不能把这些资产标注为 image2.5 结果。
 
 ## 结果图预留
 

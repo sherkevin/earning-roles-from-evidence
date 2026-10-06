@@ -831,3 +831,18 @@ evidence for role-learning efficacy.
 ### 2026-10-06 正式论文中文 Markdown 阅读稿
 
 根据用户要求，将当前 `article/aamas2027/main.tex` 逐节翻译为可直接阅读的中文 Markdown。唯一生效文件为 `docs/paper/aamas2027/FORMAL_PAPER_ZH.md`；`article/aamas2027/main_zh.md` 仅作指针。翻译保留 RARE、ArtifactRole、PeerSelect、责任门、读取截点、仅选中项更新、RQ/H 假设、空结果单元、图表和正文引用，不新增实验数字或科学结论。结构核查记录在 `experiments/logs/chinese_paper_translation_20261006/translation_checks.json`；本次没有 LLM API 调用、GPU 作业或实验运行。英文 `main.tex` 仍是内容和科学状态的唯一权威来源。
+
+### 2026-10-06 Figure 1–3 AI refinement and paper-width review
+
+根据用户对“卡片包文字过多、缺少顶会架构图质感”的反馈，重新以本地
+`topconf-paper-figure-gallery` 的开放主轴、泳道边界和克制面板规律约束 AI 出图。
+v18/v19 针对 Figure 1：v18 将 Figure 1 改为单一开放因果主轴，v19 只补上最左侧
+灰色任务节点的 `TASK` 标签。v20 将 Figure 2 改成 episode/public-evidence/local-
+decision 三条泳道；v21 将 Figure 3 改成 tracks/policies/endpoints 三面板，并显式
+保留同信息同成本合同。
+
+每一版均保留了精确提示词、输入/输出图像和 PDF 哈希。使用的是 Codex 内置
+image-generation tool；服务端未披露模型标识，因此不把结果标注为 image2.5。v19–v21
+晋升为正文图组，v18 保留为 Figure 1 回退候选。以 AAMAS 版心构建并目视核验：正文
+8 页、参考文献从第 9 页开始、引用已解析、overfull boxes 为 0。该工作只验证图形
+表达和排版，不产生 benchmark、baseline 或角色学习效果证据。
