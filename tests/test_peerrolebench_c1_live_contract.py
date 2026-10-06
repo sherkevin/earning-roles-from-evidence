@@ -47,5 +47,8 @@ def test_c1_zero_api_contract_qualifies_all_arms(tmp_path, monkeypatch):
     assert by_arm["contextual_trust_linear"]["update"]["status"] == "UPDATED"
     assert by_arm["RARE"]["update"]["status"] == "UPDATED"
     for row in by_arm.values():
+        assert row["source"]["action"]["repair_cost"] == 0.0
+        assert row["target"]["action"]["repair_cost"] == 0.0
+    for row in by_arm.values():
         replay = replay_ledger_events(row["ledger"])
         assert replay.status == "PASS" and replay.complete is True

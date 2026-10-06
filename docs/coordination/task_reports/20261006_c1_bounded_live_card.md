@@ -78,7 +78,16 @@ judgment 的 `accept=1.0`，而同一 later outcome 的 adoption quality 是 `0.
 selected-only judgment channel 的一次状态更新，不是 terminal-quality 学习，也没有证明更新
 带来质量改善。成本字段也尚未闭合：当前 `ConsumerAction.repair_cost` 对 `use` action 仍记录
 action 调用耗时，汇总层缺少完整的 wall/scorer/update/state-byte 聚合；这些必须在后续正式
-benchmark card 中修正或明确命名，不能直接作为 repair-cost 结论。
+benchmark card 中修正或明确命名，不能直接作为 repair-cost 结论。随后已在 runner 中修正
+`use` 的未来记录为 `repair_cost=0` 并保留 `action_wall_seconds`；v3 历史日志不改写，新的
+成本汇总仍需在下一张版本化 card 中补齐。
+
+还有一条 lineage 限制：`Feedback.source_event_id` 使用 policy-side
+`policy-selection-RARE-1`，native ledger 中对应的是 `selection-RARE-1`；当前 replay 通过
+assignment/task index 和候选一致性验证，但没有把这两个 event ID 做成同一条加密绑定。因此
+v3 只能证明有一次可审计的 delayed update seam，不能声称已完成强 selected-only feedback
+lineage。正式 benchmark card 必须加入 policy-selection ↔ native-selection sidecar 绑定及其
+mutation rejection。
 
 ## 真实运行暴露的科学问题
 
@@ -92,7 +101,7 @@ benchmark card 中修正或明确命名，不能直接作为 repair-cost 结论�
 ## 与 Goal 的对照
 
 - 满足（工程子门）：真实 API 接通；每臂独立 namespace/state；source→delivery→judgment→action→
-  outcome 可落盘；`RARE` 完成一次 selected-only delayed update；v3 的已完成 ledger 可独立严格重放。
+  outcome 可落盘；`RARE` 完成一次 delayed update seam；v3 的已完成 protocol ledger 可独立严格重放。
 - 部分满足（G2/G3/G5）：单 root 的 live seam 已可运行，但 `contextual_trust_linear` 被 gate 阻断，
   没有三臂同一完成集，也没有跨 root、later-use 泛化或 peer specialization 证据。
 - 未满足（G1/G4/G6/G7）：benchmark 冻结、强 baseline parity、独立结构 root/confirmation、

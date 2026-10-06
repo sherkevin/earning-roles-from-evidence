@@ -295,10 +295,18 @@ def _run_episode(*, arm: str, decision_index: int, arm_dir: Path, decision_dir: 
     )
     final_sources = extract_consumer_sources(consumed, sorted(action_payload["source_files"]))
     action_result = validate_pipe3_action_result(action_payload, final_sources)
+    action_wall_seconds = float(action_meta.get("elapsed_seconds", 0.0))
+    repair_cost = action_wall_seconds if action_name != "use" else 0.0
+    action_result = {
+        **action_result,
+        "action_wall_seconds": action_wall_seconds,
+        "repair_cost": repair_cost,
+        "repair_cost_unit": "full action call seconds when repair/redo; zero for use",
+    }
     _save(decision_dir / "action.json", action_result)
     boundary.ledger.record_action(ConsumerAction(
         action_id, delivery_id, "peer-a", action_name != "independent_redo", artifact_digest,
-        action_result["output_source_sha256"], float(action_meta.get("elapsed_seconds", 0.0)), action_name,
+        action_result["output_source_sha256"], repair_cost, action_name,
     ))
     qr, adoption, outcome = _score_outcome(
         materials, final_sources, interfaces(materials), task_seed, decision_dir / "outcome", raw,
