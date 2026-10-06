@@ -111,9 +111,10 @@ binding and digest mutations, and UNKNOWN/partial/duplicate/late rows. The
 qualified rerun is recorded at
 [`n03_independent_y_contract_qualification_20261007_v1`](../../../experiments/logs/n03_independent_y_contract_qualification_20261007_v1/summary.json):
 4/4 passed, 0 API calls, 0 GPU jobs. This is a provenance gate only; the hidden
-terminal worker and its reference holdout are not implemented yet. The first
-test invocation happened before config creation and is explicitly recorded as a
-process deviation; it is not used as evidence.
+ validator is a provenance gate only; the private terminal worker and parent
+ adapter are implemented and separately smoke-qualified below. The first test
+ invocation happened before config creation and is explicitly recorded as a
+ process deviation; it is not used as evidence.
 
 The minimal private worker and parent adapter are now implemented in
 [`peerrolebench_pipe3_terminal_scorer_worker_v1.py`](../../../scripts/peerrolebench_pipe3_terminal_scorer_worker_v1.py)
