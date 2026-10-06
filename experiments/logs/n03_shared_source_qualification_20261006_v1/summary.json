@@ -1,0 +1,71 @@
+{
+  "qualification_version": "shared-source-projection-qualification-v1",
+  "projection_version": "shared-source-projection-v1",
+  "llm_calls": 0,
+  "gpu_jobs": 0,
+  "native_grader_invoked": false,
+  "scientific_claim_allowed": false,
+  "python": "3.9.6",
+  "created_at_utc": "2026-10-06T07:18:09.438932+00:00",
+  "status": "QUALIFIED_OFFLINE",
+  "passed": true,
+  "case_count": 6,
+  "results": [
+    {
+      "case": "S1_valid_shared_source",
+      "result": {
+        "projection_version": "shared-source-projection-v1",
+        "source_receipt_digest": "b0b3cfebe1b363ba154b351b256c8dee1938b251729e929c88567f71c6c79824",
+        "arms": [
+          "no_update",
+          "contextual_trust_linear",
+          "RARE"
+        ],
+        "gate_status": "ELIGIBLE",
+        "estimand_inclusion": "ITT_AND_ELIGIBLE",
+        "valid": true
+      },
+      "passed": true
+    },
+    {
+      "case": "S2_delivery_digest_mutation",
+      "status": "REJECTED",
+      "error": "shared source mutation in delivery_digest",
+      "passed": true
+    },
+    {
+      "case": "S3_gate_mutation",
+      "status": "REJECTED",
+      "error": "shared source mutation in gate",
+      "passed": true
+    },
+    {
+      "case": "S4_action_mutation",
+      "status": "REJECTED",
+      "error": "shared source mutation in action",
+      "passed": true
+    },
+    {
+      "case": "S5_cost_mutation",
+      "status": "REJECTED",
+      "error": "shared source mutation in cost",
+      "passed": true
+    },
+    {
+      "case": "S6_pending_attribution_is_itt_only",
+      "result": {
+        "projection_version": "shared-source-projection-v1",
+        "source_receipt_digest": "f517c5ce11bcb78f9f5c4ac49ff87ba4ede98e3450235196e41cd2e7607ee6ce",
+        "arms": [
+          "no_update",
+          "contextual_trust_linear",
+          "RARE"
+        ],
+        "gate_status": "PENDING_ATTRIBUTION",
+        "estimand_inclusion": "ITT_ONLY",
+        "valid": true
+      },
+      "passed": true
+    }
+  ]
+}

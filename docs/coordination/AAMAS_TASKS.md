@@ -23,6 +23,15 @@ Before another live comparison, the source completion/action contract and cost a
 made common across arms. See
 [`20261006_c1_bounded_live_card.md`](task_reports/20261006_c1_bounded_live_card.md).
 
+The first zero-call qualification for the follow-up shared-source projection now passes six
+mutation and accounting cases. It preserves one immutable source receipt while assigning each
+policy a distinct namespace, and keeps `PENDING_ATTRIBUTION`/`UNKNOWN` in the ITT-only denominator.
+This is an engineering prerequisite only: shared acquisition cost, policy-to-native-selection
+binding, independent target assignments, and independent histories remain open. The receipt is
+[`n03_shared_source_qualification_20261006_v1`](../../experiments/logs/n03_shared_source_qualification_20261006_v1/summary.json),
+and the task report is
+[`20261006_shared_source_qualification.md`](task_reports/20261006_shared_source_qualification.md).
+
 The paper-writing checkpoint on the same date now has an eight-page body after a structural
 prose rewrite, reference expansion, and structural-owner gate synchronization; the latest
 isolated receipt is
