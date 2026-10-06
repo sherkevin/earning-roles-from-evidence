@@ -42,6 +42,12 @@ native ledger. See
 and
 [`c1_shared_source_card_v0.2_20261006.md`](../research/candidates/c1_shared_source_card_v0.2_20261006.md).
 
+The C1 zero-call runner now closes the previously missing `role_evidence_read` row and records a
+validated v2 binding for every committed `SelectionSeal`, plus native/auxiliary manifest roots.
+The post-update policy preview remains explicitly outside the ledger. This is a runner accounting
+qualification only; the next live card must be re-frozen at the new commit and provide a real
+external source manifest.
+
 The paper-writing checkpoint on the same date now has an eight-page body after a structural
 prose rewrite, reference expansion, and structural-owner gate synchronization; the latest
 isolated receipt is

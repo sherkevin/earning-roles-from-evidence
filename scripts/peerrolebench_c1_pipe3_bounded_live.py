@@ -69,6 +69,7 @@ from peerrolebench_two_stage_gate import (  # noqa: E402
     DelayedCreditLedger, derive_later_credit_from_ledger, evaluate_source_gate,
 )
 from peerrolebench_selection_preview import FixedChoiceRNG  # noqa: E402
+from peerrolebench_shared_source_v2 import validate_selection_binding  # noqa: E402
 
 
 VERSION = "c1-pipe3-bounded-live-v1"
@@ -437,6 +438,41 @@ def _select_post_update(boundary: Pipe3SelectionBoundary, arm: str, features: Ma
     return _select_no_update(preview, arm, 2, features, seed)
 
 
+def _selection_binding(seal: Any, boundary: Pipe3SelectionBoundary) -> dict[str, Any]:
+    """Bind a committed policy decision to its native ledger selection.
+
+    The preview returned by ``_select_post_update`` never enters this helper:
+    only a committed ``SelectionSeal`` with a native ledger record is eligible.
+    """
+    if seal.decision_sidecar.ledger_record_hash != boundary.ledger.events[-1]["record_hash"]:
+        raise ValueError("selection sidecar is not bound to the latest native ledger record")
+    native = seal.native_selection
+    policy = seal.policy_selection
+    if native.chosen_peer_id != policy.chosen.candidate_id:
+        raise ValueError("policy and native chosen candidates disagree")
+    native_menu = tuple(native.candidate_ids)
+    policy_menu = tuple(candidate.candidate_id for candidate in policy.candidates)
+    if native_menu != policy_menu:
+        raise ValueError("policy and native candidate menus disagree")
+    if not np.isclose(float(native.propensity), float(policy.propensity), atol=1e-12):
+        raise ValueError("policy and native propensities disagree")
+    binding = {
+        "policy_decision_id": policy.event_id,
+        "native_selection_id": native.selection_id,
+        "decision_digest": seal.decision_sidecar.sidecar_digest,
+        "native_record_digest": seal.decision_sidecar.ledger_record_hash,
+        "candidate_registry_digest": seal.decision_sidecar.candidate_registry_digest,
+        "policy_input_digest": seal.attestation.policy_input_digest,
+        "state_before_digest": seal.attestation.policy_state_digest_before,
+        "chosen_candidate": policy.chosen.key,
+        "candidate_menu": [candidate.key for candidate in policy.candidates],
+        "propensity": float(policy.propensity),
+    }
+    binding["binding_digest"] = _digest({key: value for key, value in binding.items()})
+    validate_selection_binding(binding)
+    return binding
+
+
 def _run_arm(arm: str, out_dir: Path, card: Mapping[str, Any]) -> dict[str, Any]:
     arm_dir = out_dir / arm
     arm_dir.mkdir(parents=False, exist_ok=False)
@@ -466,6 +502,7 @@ def _run_arm(arm: str, out_dir: Path, card: Mapping[str, Any]) -> dict[str, Any]
         "scientific_claim_allowed": False,
     })
     seal0 = _select_source(boundary, arm, features, 0)
+    selection_bindings = [_selection_binding(seal0, boundary)]
     selected0 = seal0.native_selection.chosen_peer_id + "@v1"
     if selected0 != "peer-b@v1":
         raise AssertionError("fixed source bootstrap did not select peer-b@v1")
@@ -528,13 +565,19 @@ def _run_arm(arm: str, out_dir: Path, card: Mapping[str, Any]) -> dict[str, Any]
             "arm": arm, "status": "UNKNOWN", "passed": False,
             "stop_reason": "source evidence was not eligible; learning-arm target not started",
             "source": source, "source_eligible": False, "policy_updates": boundary.policy.updates,
-            "scientific_claim_allowed": False, "ledger": boundary.ledger.events,
+            "scientific_claim_allowed": False, "selection_bindings": selection_bindings,
+            "manifest_roots": {
+                "native": boundary.validate_selection_manifests()[0],
+                "auxiliary": boundary.validate_selection_manifests()[1],
+            },
+            "ledger": boundary.ledger.events,
         }
     if arm == "no_update":
         # no_update deliberately has no evidence assignment; it is the frozen
         # execution control and still uses the same menu/read-cut/cost envelope.
         pass
     target_key = seal1.native_selection.chosen_peer_id + "@v1"
+    selection_bindings.append(_selection_binding(seal1, boundary))
     target = _run_episode(
         arm=arm, decision_index=1, arm_dir=arm_dir, decision_dir=arm_dir / "decision_1",
         boundary=boundary, materials=materials, candidates=candidates, selected_key=target_key,
@@ -597,6 +640,8 @@ def _run_arm(arm: str, out_dir: Path, card: Mapping[str, Any]) -> dict[str, Any]
             "selected_key": post.native_selection.chosen_peer_id + "@v1",
             "propensity": post.native_selection.propensity,
             "probabilities": list(post.policy_selection.probabilities),
+            "preview_only": True,
+            "ledger_included": False,
         },
         "policy_updates": boundary.policy.updates,
         "ledger_event_count": len(boundary.ledger.events),
@@ -626,6 +671,11 @@ def _run_arm(arm: str, out_dir: Path, card: Mapping[str, Any]) -> dict[str, Any]
         "ledger": boundary.ledger.events,
     }
     _save(arm_dir / "ledger.json", boundary.ledger.events)
+    native_root, auxiliary_root = boundary.validate_selection_manifests()
+    _save(arm_dir / "selection_bindings.json", selection_bindings)
+    _save(arm_dir / "manifest_roots.json", {"native": native_root, "auxiliary": auxiliary_root})
+    result["selection_bindings"] = selection_bindings
+    result["manifest_roots"] = {"native": native_root, "auxiliary": auxiliary_root}
     _save(arm_dir / "summary.json", result)
     return result
 

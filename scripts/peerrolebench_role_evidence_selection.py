@@ -286,6 +286,23 @@ def commit_role_evidence_selection(
             raise AssertionError("commit changed the reserved candidate")
         if not math.isclose(seal.native_selection.propensity, plan.selection.propensity, abs_tol=1e-12):
             raise AssertionError("commit changed the reserved propensity")
+        # The role-evidence offer is a public read input distinct from the
+        # feedback offer consumed by ``choose_and_seal``.  Record that read on
+        # the auxiliary chain so the manifest has exactly one consumption row
+        # for every role offer as well as every assignment offer.
+        boundary.auxiliary_manifest_rows.append({
+            "event_type": "role_evidence_read",
+            "event_id": seal.native_selection.selection_id,
+            "offer_id": role_offer.offer_id,
+            "decision_event_id": seal.native_selection.selection_id,
+            "record_hash": role_offer.offer_record_hash,
+            "attestation_digest": _digest({
+                "role_offer_digest": role_offer.bundle_digest,
+                "decision_sidecar_digest": seal.decision_sidecar.sidecar_digest,
+                "native_selection_id": seal.native_selection.selection_id,
+                "assignment_id": plan.assignment_id,
+            }),
+        })
         return seal
     except Exception:
         boundary.policy.__dict__.clear()

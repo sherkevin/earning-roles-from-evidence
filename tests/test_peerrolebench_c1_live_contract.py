@@ -55,3 +55,8 @@ def test_c1_zero_api_contract_qualifies_all_arms(tmp_path, monkeypatch):
         assert row["cost"]["scorer_seconds"] >= 0.0
         assert row["cost"]["update_seconds"] >= 0.0
         assert row["cost"]["state_bytes"] > 0
+        assert len(row["selection_bindings"]) == 2
+        assert row["manifest_roots"]["native"] != "GENESIS"
+        assert row["manifest_roots"]["auxiliary"] != "GENESIS"
+        assert row["post_update_selection"]["preview_only"] is True
+        assert row["post_update_selection"]["ledger_included"] is False
