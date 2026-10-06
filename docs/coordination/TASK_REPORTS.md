@@ -27,6 +27,8 @@ Goal 修改。
 
 - [blocked_by_evidence] 2026-10-06 C1 v2 live rerun：10 个真实 API 请求验证 structural owner 与 judged-role disagreement；no-update 与 RARE 完成开发链，contextual arm 因真实 recipient-owned `processor.py` 修改正确停为 UNKNOWN。发现共同完成样本与成本聚合仍不足，已修复 runner 记录缺口，不重复运行同一识别不足的卡，见 [live result](task_reports/20261006_c1_v2_live_result.md)。
 
+- [blocked_by_evidence] 2026-10-06 C1 v4 independent review：独立 Codex 审查确认 gate 正确、complete-case 比较无效，并要求区分结构性 PENDING 与 transport UNKNOWN、ITT 分母、selection lineage 和完整成本；形成 shared-source/independent-target 候选卡，不自动提升为科学比较，见 [review](task_reports/20261006_c1_v4_independent_review.md)。
+
 - [blocked_by_evidence] 2026-10-06 post-rewrite paper gate review：独立 Codex 复核确认纸面结构、8 页排版和引用覆盖已有明显改善，但 ArtifactRole benchmark、same-information baseline parity、确认 manifest、候选方法锁定和真实结果仍未过科学门；同时用 ADR 0046 修复主稿标题漂移，见 [gate review](task_reports/20261006_updated_paper_gate_review.md)。
 
 - [partial] 2026-10-06 credit-assignment and interactive-agent reference pass：补入 AgentBench、$\tau$-bench、COMA 与 QMIX，并将共享回报的 credit-assignment 先行工作与本论文的 artifact ownership 边界写成可检验对照；v2 仍保持正文 8 页，见 [reference pass](task_reports/20261006_credit_assignment_reference_pass.md)。
