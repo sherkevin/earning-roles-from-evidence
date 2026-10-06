@@ -29,8 +29,8 @@ card; they are not approximated here.
   invocation cannot silently use the older arm-local development card.
 
 The pre-run configuration and raw test output are in
-[`n03_release_hardening_regression_20261006_v1`](../../../experiments/logs/n03_release_hardening_regression_20261006_v1/summary.json).
-It used commit `e0f8077`, 0 real API calls and 0 GPU jobs; all 19 focused
+[`n03_release_hardening_regression_20261006_v2`](../../../experiments/logs/n03_release_hardening_regression_20261006_v2/summary.json).
+It used committed runner `8fc63e4`, 0 real API calls and 0 GPU jobs; all 19 focused
 tests passed. No historical live output was modified or reclassified.
 
 ## Goal reconciliation
