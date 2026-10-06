@@ -1,5 +1,9 @@
 # Task reports
 
+- [partial] 2026-10-06 parent-owned external source manifest preparation (`task_reports/20261006_external_source_manifest.md`): a zero-call utility converts one completed source episode into a v2-validated parent-owned receipt with artifact/contract/registry/scorer/prompt/raw provenance and source-cost accounting. It is historical artifact preparation only; a fresh source phase, independent arm projections, second root and live baseline parity remain open.
+
+- [partial] 2026-10-06 paper and three-document gate reconciliation (`task_reports/20261006_paper_gate_reconciliation.md`): current manuscript has the selected story, RQ-driven matrix, blank result cells and a verified 8-page body; storyline, method and benchmark/baseline scientific gates remain open. The next smallest gate is a real external shared-source manifest plus independent arm projection and complete cost receipt; no A800 or efficacy claim is authorized.
+
 每个小任务完成后必须在 `docs/coordination/task_reports/` 写一份报告，并与
 [`GOAL.md`](GOAL.md) 对照。报告不能只写“做了什么”，必须回答：
 

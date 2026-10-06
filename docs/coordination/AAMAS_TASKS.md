@@ -2,6 +2,21 @@
 
 Updated: 2026-10-06 (structural-owner gate v1.2 activated and zero-call A1--A8 qualification passed; scientific gate remains open). The project-level goal authority is [GOAL v1.0](GOAL.md); task-by-task reconciliation is indexed in [TASK_REPORTS](TASK_REPORTS.md). Owner: scientist; one engineer owns execution. Authority: [REQUIREMENTS.md](../paper/aamas2027/REQUIREMENTS.md), version 1.5.8. This is the sole active AAMAS gap/status/execution ledger. Role TODOs are historical pointers. Bounded read-only critiques inform the current direction; they did not execute experiments.
 
+**Latest continuation amendment — 2026-10-06:** the earlier paragraphs below preserve
+historical checkpoints, but their “open” wording predates the latest zero-call repair.
+The current runner qualification now records a validated v2 policy-to-native selection
+binding for every committed `SelectionSeal`, closes the auxiliary
+`role_evidence_read` row, and stores native/auxiliary manifest roots; the post-update
+choice remains preview-only. Shared-source v2 now rejects coordinated projection
+mutations, requires an externally supplied digest and provenance fingerprints, and
+reports shared source cost once. These are engineering prerequisites only. The next
+live card still needs a real external source manifest, shared acquisition before arm
+execution, independent target assignments, and complete measured costs. The current
+paper artifact is
+[`paper_figure_refresh_v2_20261006/main.pdf`](../../artifacts/aamas2027/paper_figure_refresh_v2_20261006/main.pdf):
+10 total pages, exactly 8 body pages, references from page 9. The scientific
+submission gate remains closed; no historical result is reclassified.
+
 **Current scientific checkpoint — 2026-10-06:** C0 candidate parity and the C1 zero-call
 contract qualification are complete as engineering evidence. C1 v3 then made 10 real
 recipient API requests: `no_update` and RARE are complete development-only chains with strict
@@ -48,11 +63,19 @@ The post-update policy preview remains explicitly outside the ledger. This is a 
 qualification only; the next live card must be re-frozen at the new commit and provide a real
 external source manifest.
 
+The parent-owned source-manifest preparation utility now converts one completed source episode
+into a v2-validated receipt with policy-invariant provenance and source-cost accounting. The
+historical conversion is recorded at
+[`n03_external_source_manifest_20261006_v1`](../../experiments/logs/n03_external_source_manifest_20261006_v1/summary.json)
+and is explicitly artifact preparation (`0` API, `0` GPU), not a scientific result. A fresh
+source phase is still required before a new live card.
+
 The paper-writing checkpoint on the same date now has an eight-page body after a structural
 prose rewrite, reference expansion, and structural-owner gate synchronization; the latest
 isolated receipt is
 [`20261006_paper_structure_rewrite.md`](task_reports/20261006_paper_structure_rewrite.md).
-The current PDF is [`paper_structural_owner_20261006/main.pdf`](../../artifacts/aamas2027/paper_structural_owner_20261006/main.pdf).
+The earlier structural-owner PDF is retained as history at
+[`paper_structural_owner_20261006/main.pdf`](../../artifacts/aamas2027/paper_structural_owner_20261006/main.pdf).
 Three AI figure composition drafts and all prompts are versioned under
 `article/aamas2027/figures/ai_versions/v17_ai_draft_20261006/`; they are not yet active paper
 assets. These are writing/visual deliverables only and do not change the scientific gate.
