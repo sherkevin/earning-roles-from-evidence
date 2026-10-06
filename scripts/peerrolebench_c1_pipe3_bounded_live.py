@@ -556,10 +556,16 @@ def run(out_dir: Path, *, card_path: Path = CARD) -> dict[str, Any]:
     card = json.loads(card_path.read_text(encoding="utf-8"))
     commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
     declared_commit = card.get("source_commit")
-    if declared_commit != commit:
+    if not isinstance(declared_commit, str) or len(declared_commit) < 7:
+        raise RuntimeError("card source_commit must be a non-empty git revision")
+    ancestor_check = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", declared_commit, commit],
+        cwd=ROOT, check=False,
+    )
+    if ancestor_check.returncode != 0:
         raise RuntimeError(
-            f"card source_commit {declared_commit!r} does not match current HEAD {commit!r}; "
-            "seal the card before running"
+            f"card source_commit {declared_commit!r} is not an ancestor of running HEAD {commit!r}; "
+            "re-freeze the card before running"
         )
     try:
         card_label = str(card_path.relative_to(ROOT))
