@@ -35,7 +35,7 @@ result timing, preserves absent token/timing fields as `UNKNOWN`, and chooses on
 scorer-timing route. A target receipt is persisted immediately after execution so a
 later update or manifest failure cannot erase already incurred target cost. The fresh
 zero-call fixture
-[`n03_c1_zero_call_parent_fixture_20261006_v3`](../../experiments/logs/n03_c1_zero_call_parent_fixture_20261006_v3/summary.json)
+[`n03_c1_zero_call_parent_fixture_20261006_v4`](../../experiments/logs/n03_c1_zero_call_parent_fixture_20261006_v4/summary.json)
 passes with 0 real API calls and 0 GPU jobs; the focused post-fix suites pass 18 tests.
 This remains an engineering qualification only. The scientific gate is unchanged:
 one structural root, no unseen stream, no qualified same-information comparison, and

@@ -87,9 +87,9 @@ with `0.0`. Both paths are now explicit:
 The focused post-fix checks are 18 passed across the source-cost, external
 manifest, C1 runner, shared-source, and baseline-contract suites. The fresh
 zero-call receipt is
-[`n03_c1_zero_call_parent_fixture_20261006_v3`](../../../experiments/logs/n03_c1_zero_call_parent_fixture_20261006_v3/summary.json).
-It reports 0 real API calls and 0 GPU jobs, one source cost of `1.293608125`
-wall-second units, and three target cost rows totalling `3.721094624` units.
+[`n03_c1_zero_call_parent_fixture_20261006_v4`](../../../experiments/logs/n03_c1_zero_call_parent_fixture_20261006_v4/summary.json).
+It reports 0 real API calls and 0 GPU jobs, one source cost of `1.425304167`
+wall-second units, and three target cost rows totalling `3.897623791` units.
 Those values validate the fixture's declared metadata only; they are not a
 model or quality result. The fixture remains `scientific_claim_allowed=false`.
 
