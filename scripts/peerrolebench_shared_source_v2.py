@@ -135,6 +135,13 @@ def freeze_source_receipt(source: Mapping[str, Any], expected_source_digest: str
     cost = source["cost"]
     if not isinstance(cost, Mapping) or cost.get("source_cost_id") != source["source_event_id"]:
         raise ValueError("source cost must have a stable source_cost_id")
+    if cost.get("cost_status") not in {"COMPLETE", "UNKNOWN"}:
+        raise ValueError("cost.cost_status must be COMPLETE or UNKNOWN")
+    if (
+        not isinstance(cost.get("source_cost_units_observed"), bool)
+        or cost["source_cost_units_observed"] != (cost.get("cost_status") == "COMPLETE")
+    ):
+        raise ValueError("cost measurement flag disagrees with cost_status")
     for field in ("source_cost_units", "target_cost_units"):
         value = cost.get(field)
         if not isinstance(value, (int, float)) or not math.isfinite(value) or value < 0:
@@ -169,12 +176,16 @@ def validate_cost_ledger(rows: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
     costs = [row["cost"] for row in rows]
     source_ids = {cost["source_cost_id"] for cost in costs}
     source_units = {cost["source_cost_units"] for cost in costs}
-    if len(source_ids) != 1 or len(source_units) != 1:
+    source_statuses = {cost.get("cost_status") for cost in costs}
+    source_observed = {cost.get("source_cost_units_observed") for cost in costs}
+    if len(source_ids) != 1 or len(source_units) != 1 or len(source_statuses) != 1 or len(source_observed) != 1:
         raise ValueError("shared source cost must be identical across arm projections")
     target_units = sum(cost["target_cost_units"] for cost in costs)
     return {
         "source_cost_id": next(iter(source_ids)),
         "source_cost_units_counted_once": next(iter(source_units)),
+        "source_cost_status": next(iter(source_statuses)),
+        "source_cost_units_observed": next(iter(source_observed)),
         "target_cost_units_sum": target_units,
         "arm_count": len(rows),
         "double_count_rejected": True,
@@ -235,7 +246,17 @@ def validate_selection_binding(binding: Mapping[str, Any]) -> dict[str, Any]:
     for field in ("decision_digest", "native_record_digest", "candidate_registry_digest", "policy_input_digest", "state_before_digest"):
         if not _is_digest(binding[field]):
             raise ValueError(f"invalid selection binding digest: {field}")
-    if binding["chosen_candidate"] not in binding["candidate_menu"]:
+    menu = binding["candidate_menu"]
+    if (
+        not isinstance(menu, (list, tuple))
+        or not menu
+        or any(not isinstance(value, str) or not value for value in menu)
+        or len(set(menu)) != len(menu)
+    ):
+        raise ValueError("candidate_menu must be a non-empty list of unique strings")
+    if not isinstance(binding["chosen_candidate"], str) or not binding["chosen_candidate"]:
+        raise ValueError("chosen candidate must be a non-empty string")
+    if binding["chosen_candidate"] not in menu:
         raise ValueError("chosen candidate is absent from candidate menu")
     propensity = binding["propensity"]
     if not isinstance(propensity, (int, float)) or not math.isfinite(propensity) or not 0 < propensity <= 1:

@@ -18,9 +18,9 @@ from peerrolebench_shared_source_v2 import (  # noqa: E402
 
 
 SEALED_DIGESTS = {
-    "ELIGIBLE": "89ddb97995926257c4585702484af9b86439def1ed0849f221cb936a192ce741",
-    "PENDING_ATTRIBUTION": "cd966ad06dbb27e0e5d8c52d6ae6c133ebe7ca9cfded8861e76fff32cb007f28",
-    "UNKNOWN": "099fa2b9843cc26d965a0a5335d89a229d189c4d2b9daf97685a58cce8da4e77",
+    "ELIGIBLE": "e704176f1c1e72595245c72a00ced823d78fef22b4db11df4316ca7b84e2826d",
+    "PENDING_ATTRIBUTION": "c9653f6b975b3846ac28f7fa70fdd11d2fe25251e5da9b296855f5ae667dcbde",
+    "UNKNOWN": "885b870038980efdd84692dd2153a5f3a6b455ec308524e94af56550195a218f",
 }
 
 
@@ -36,7 +36,11 @@ def _source(status: str = "ELIGIBLE") -> dict:
         "producer_score": {"status": "FAIL", "label": 0},
         "outcome": {"status": "PASS", "quality_score": 1.0},
         "gate": {"status": status, "structural_owner_role": "producer"},
-        "cost": {"source_cost_id": "pipe3-source-0", "source_cost_units": 15.0, "target_cost_units": 0.0},
+        "cost": {
+            "source_cost_id": "pipe3-source-0", "source_cost_units": 15.0,
+            "target_cost_units": 0.0, "cost_status": "COMPLETE",
+            "source_cost_units_observed": True,
+        },
         "episode_status": episode, "gate_status": status, "estimand_inclusion": inclusion,
         "source_complete": complete, "target_started": False, "target_status": "NOT_STARTED",
         "provenance": {

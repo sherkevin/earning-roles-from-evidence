@@ -1,6 +1,6 @@
 # Task reports
 
-- [partial] 2026-10-06 shared-source parent preflight and lineage binding (`task_reports/20261006_shared_source_parent_preflight.md`): one sealed source now carries selection/delivery lineage and is projected into three unique arm namespaces with source-once cost accounting. The qualification is zero-call historical preparation; fresh source acquisition, native replay, live parity and second-root evidence remain open.
+- [partial] 2026-10-06 parent-owned live source and arm projection (`task_reports/20261006_shared_source_parent_preflight.md`): the C1 runner now acquires one parent source before the arm loop, imports its immutable ledger prefix into three isolated policy namespaces, and binds an external digest/selection lineage. A zero-call fixture and 11 focused tests pass; real API efficacy, second-root authority, independent histories and scientific parity remain open.
 
 - [partial] 2026-10-06 v3 paper text refinement and rebuild (`task_reports/20261006_paper_text_refinement_v3.md`): baseline NO-GO handling, field-level judgment/terminal feature manifest, and positivity requirements were added; the verified internal PDF still has exactly 8 body pages. No empirical claim was added and the scientific gate remains closed.
 

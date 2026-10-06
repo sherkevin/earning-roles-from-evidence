@@ -17,6 +17,18 @@ paper artifact is
 10 total pages, exactly 8 body pages, references from page 9. The scientific
 submission gate remains closed; no historical result is reclassified.
 
+**Parent-source integration amendment — 2026-10-06:** the C1 runner now executes a
+single `parent_source` phase before the arm loop, seals its source digest and native
+selection binding, and imports the immutable ledger prefix into three isolated arm
+policies. The zero-call fixture
+[`n03_c1_zero_call_parent_fixture_20261006_v2`](../../experiments/logs/n03_c1_zero_call_parent_fixture_20261006_v2/summary.json)
+passes with 0 real API calls and 0 GPU jobs; the focused source/C1 regression is 11
+passed. This closes a runner prerequisite, not a scientific cell: the fixture is
+non-adversarial, single-root, and has no efficacy estimate. A new live card must be
+frozen at the committed runner, use the external digest file, verify cost completeness,
+and still satisfy the second-root and same-information baseline gates before any A800
+job.
+
 **Current scientific checkpoint — 2026-10-06:** C0 candidate parity and the C1 zero-call
 contract qualification are complete as engineering evidence. C1 v3 then made 10 real
 recipient API requests: `no_update` and RARE are complete development-only chains with strict
@@ -24,8 +36,10 @@ ledger replay; `contextual_trust_linear` stopped at a responsibility gate after 
 returned a recipient target for the source episode. RARE produced one delayed selected-only
 update and a post-update preview. The run is still one PIPE3 root with static candidate
 snapshots, so it is not benchmark confirmation and does not authorize an efficacy claim. The
-recorded delayed update uses the recipient-judgment channel; policy-selection to native-ledger
-sidecar binding and complete cost aggregation remain open. ADR 0047 and active method v1.2 now
+recorded delayed update uses the recipient-judgment channel; that historical v4 run remains
+immutable and its source was arm-local. The newly qualified parent-source runner closes the
+selection-binding/arm-prefix engineering seam only in a zero-call fixture; complete live cost
+aggregation remains open. ADR 0047 and active method v1.2 now
 separate contract-derived structural ownership from stochastic model target-role text; judged-role
 disagreement is retained for calibration rather than used as a random eligibility censor. The
 zero-call A1--A8 receipt is
@@ -76,6 +90,12 @@ internal artifact is
 [`paper_figure_refresh_v3_20261006/main.pdf`](../../artifacts/aamas2027/paper_figure_refresh_v3_20261006/main.pdf):
 10 total pages with exactly 8 body pages, references from page 9, no unresolved citations and
 no overfull boxes. This is a design clarification only; the scientific gate remains closed.
+
+The shared-source parent preflight now binds source selection/delivery lineage and projects one
+sealed source into three unique arm namespaces with source-once cost accounting. The historical
+zero-call receipt is recorded in
+[`n03_shared_source_preflight_20261006_v1`](../../experiments/logs/n03_shared_source_preflight_20261006_v1/summary.json).
+It is a preparation qualification, not live parity or efficacy evidence.
 
 The paper-writing checkpoint on the same date now has an eight-page body after a structural
 prose rewrite, reference expansion, and structural-owner gate synchronization; the latest

@@ -70,6 +70,8 @@ from peerrolebench_two_stage_gate import (  # noqa: E402
 )
 from peerrolebench_selection_preview import FixedChoiceRNG  # noqa: E402
 from peerrolebench_shared_source_v2 import validate_selection_binding  # noqa: E402
+from peerrolebench_build_external_source_manifest import build_source_receipt  # noqa: E402
+from peerrolebench_shared_source_preflight import prepare_shared_source  # noqa: E402
 
 
 VERSION = "c1-pipe3-bounded-live-v1"
@@ -165,6 +167,19 @@ def _candidate_materials(materials: Mapping[str, Any]) -> dict[str, dict[str, st
     )
     return {"peer-b@v1": {"producer.py": producer["producer.py"]},
             "peer-c@v1": {"producer.py": fixed["producer.py"]}}
+
+
+def _prepare_context() -> dict[str, Any]:
+    """Build one immutable material/registry context for the parent source."""
+    generated = load_pipe3(0)
+    materials = deepcopy(build_materials(generated))
+    merged = dict(materials["agent_payloads"]["producer"]["source_files"])
+    merged.update(materials["agent_payloads"]["recipient"]["source_files"])
+    fixed_recipient = _patch_recipient(merged)
+    materials["agent_payloads"]["recipient"]["source_files"]["processor.py"] = fixed_recipient["processor.py"]
+    candidates = _candidate_materials(materials)
+    registry = _registry(materials, candidates)
+    return {"materials": materials, "candidates": candidates, "registry": registry, "features": _features()}
 
 
 def _registry(materials: Mapping[str, Any], candidates: Mapping[str, Mapping[str, str]]) -> list[CandidateRegistryEntry]:
@@ -276,12 +291,14 @@ def _action_prompt(action_payload: Mapping[str, Any], judgment: Mapping[str, Any
 def _run_episode(*, arm: str, decision_index: int, arm_dir: Path, decision_dir: Path,
                  boundary: Pipe3SelectionBoundary, materials: Mapping[str, Any],
                  candidates: Mapping[str, Mapping[str, str]], selected_key: str,
-                 card: Mapping[str, Any], raw: Path, task_seed: int) -> dict[str, Any]:
-    delivery_id = f"{arm}-delivery-{decision_index}"
-    judgment_id = f"{arm}-judgment-{decision_index}"
-    action_id = f"{arm}-action-{decision_index}"
-    outcome_id = f"{arm}-outcome-{decision_index}"
-    selection_id = f"selection-{arm}-{decision_index}"
+                 card: Mapping[str, Any], raw: Path, task_seed: int,
+                 id_prefix: str | None = None) -> dict[str, Any]:
+    prefix = str(id_prefix or arm)
+    delivery_id = f"{prefix}-delivery-{decision_index}"
+    judgment_id = f"{prefix}-judgment-{decision_index}"
+    action_id = f"{prefix}-action-{decision_index}"
+    outcome_id = f"{prefix}-outcome-{decision_index}"
+    selection_id = f"selection-{prefix}-{decision_index}"
     source = candidates[selected_key]
     artifact_digest = digest_files(source)
     entry = next(item for item in boundary.registry if item.key == selected_key)
@@ -361,6 +378,7 @@ def _run_episode(*, arm: str, decision_index: int, arm_dir: Path, decision_dir: 
     return {
         "decision_index": decision_index, "selection_id": selection_id,
         "selected_key": selected_key, "delivery_id": delivery_id,
+        "judgment_id": judgment_id, "action_id": action_id, "outcome_id": outcome_id,
         "artifact_digest": artifact_digest, "producer_score": qp,
         "judgment": judged, "judgment_api": judgment_meta,
         "action": action_result, "action_api": action_meta,
@@ -373,7 +391,11 @@ def _source_state_offer(boundary: Pipe3SelectionBoundary, source: Mapping[str, A
                         seal: Any, arm: str) -> tuple[Any, dict[str, Any]]:
     return _source_offer(
         boundary, control=arm, source={
+            "selection_id": source["selection_id"],
             "delivery_id": source["delivery_id"],
+            "judgment_id": source["judgment_id"],
+            "action_id": source["action_id"],
+            "outcome_id": source["outcome_id"],
             "delivery_digest": source["artifact_digest"],
             "eligibility": {"producer_feedback_eligible": source["source_gate"]["evidence_publish_allowed"]},
             "producer": source["producer_score"], "action": source["action"],
@@ -383,14 +405,16 @@ def _source_state_offer(boundary: Pipe3SelectionBoundary, source: Mapping[str, A
     )
 
 
-def _select_source(boundary: Pipe3SelectionBoundary, arm: str, features: Mapping[str, Any], seed: int) -> Any:
+def _select_source(boundary: Pipe3SelectionBoundary, arm: str, features: Mapping[str, Any], seed: int,
+                   namespace: str | None = None) -> Any:
+    name = str(namespace or arm)
     offer = make_offer(
-        offer_id=f"offer-{arm}-0", task_id=TASK_ID, task_index=0, role="producer",
+        offer_id=f"offer-{name}-0", task_id=TASK_ID, task_index=0, role="producer",
         context_key="PIPE3:0", candidate_keys=CANDIDATE_KEYS, public_rows=(),
         evidence_version=VERSION, available_index=0,
     )
     return boundary.choose_and_seal(
-        offer=offer, native_selection_id=f"selection-{arm}-0", selector_id="peer-a", role="producer",
+        offer=offer, native_selection_id=f"selection-{name}-0", selector_id="peer-a", role="producer",
         base_scores=(0.0, 0.0), rng=FixedIndexRNG(0), state_version="source-state-v1",
         encoder_version=PUBLIC_ENCODER, feature_schema=PUBLIC_SCHEMA,
         policy_version=_policy_contract(arm)["version"], base_score_version="c1-base-v1",
@@ -473,26 +497,77 @@ def _selection_binding(seal: Any, boundary: Pipe3SelectionBoundary) -> dict[str,
     return binding
 
 
-def _run_arm(arm: str, out_dir: Path, card: Mapping[str, Any]) -> dict[str, Any]:
+def _run_parent_source(out_dir: Path, card: Mapping[str, Any], context: Mapping[str, Any]) -> dict[str, Any]:
+    """Execute the source episode once, before any policy arm exists."""
+    parent_dir = out_dir / "parent_source"
+    parent_dir.mkdir(parents=False, exist_ok=False)
+    raw = parent_dir / "raw.jsonl"
+    raw.write_text("", encoding="utf-8")
+    materials = context["materials"]
+    candidates = context["candidates"]
+    registry = context["registry"]
+    features = context["features"]
+    boundary = Pipe3SelectionBoundary(_policy("no_update"), registry)
+    _save(parent_dir / "material_manifest.json", materials["manifest"])
+    _save(parent_dir / "candidate_registry.json", {
+        "digest": registry_digest(registry), "entries": [x.payload() for x in registry],
+    })
+    _log(raw, "parent_source_config", {
+        "version": VERSION, "namespace": "parent_source", "task_id": TASK_ID,
+        "seed": 0, "candidate_registry_digest": registry_digest(registry),
+        "feature_digest": _digest(features), "real_api_calls": 0, "gpu_jobs": 0,
+        "scientific_claim_allowed": False,
+    })
+    seal0 = _select_source(boundary, "no_update", features, 0, namespace="parent")
+    selection_binding = _selection_binding(seal0, boundary)
+    source = _run_episode(
+        arm="parent_source", decision_index=0, arm_dir=parent_dir,
+        decision_dir=parent_dir / "decision_0", boundary=boundary,
+        materials=materials, candidates=candidates, selected_key="peer-b@v1",
+        card=card, raw=raw, task_seed=0, id_prefix="parent",
+    )
+    _save(parent_dir / "ledger.json", boundary.ledger.events)
+    _save(parent_dir / "selection_bindings.json", [selection_binding])
+    native_root, auxiliary_root = boundary.validate_selection_manifests()
+    _save(parent_dir / "manifest_roots.json", {"native": native_root, "auxiliary": auxiliary_root})
+    source_summary = {"arm": "parent_source", "status": "COMPLETE_SOURCE_ONLY", "passed": True,
+                      "source": source, "selection_bindings": [selection_binding],
+                      "manifest_roots": {"native": native_root, "auxiliary": auxiliary_root},
+                      "scientific_claim_allowed": False, "ledger": boundary.ledger.events}
+    _save(parent_dir / "summary.json", source_summary)
+    return {
+        "dir": parent_dir, "boundary": boundary, "seal": seal0, "source": source,
+        "selection_binding": selection_binding, "materials": materials,
+        "candidates": candidates, "registry": registry, "features": features,
+    }
+
+
+def _clone_parent_boundary(parent: Mapping[str, Any], arm: str) -> Pipe3SelectionBoundary:
+    """Project the immutable parent prefix into a fresh arm namespace."""
+    boundary = Pipe3SelectionBoundary(_policy(arm), parent["registry"])
+    source_boundary = parent["boundary"]
+    boundary.ledger.__dict__.clear()
+    boundary.ledger.__dict__.update(deepcopy(source_boundary.ledger.__dict__))
+    boundary.native_manifest_rows[:] = deepcopy(source_boundary.native_manifest_rows)
+    boundary.auxiliary_manifest_rows[:] = deepcopy(source_boundary.auxiliary_manifest_rows)
+    boundary.selections.clear()
+    boundary.selections.update(deepcopy(source_boundary.selections))
+    for selection in source_boundary.selections.values():
+        boundary.policy.ingest_selection(deepcopy(selection))
+    return boundary
+
+
+def _run_arm(arm: str, out_dir: Path, card: Mapping[str, Any], parent: Mapping[str, Any],
+             source_projection: Mapping[str, Any]) -> dict[str, Any]:
     arm_dir = out_dir / arm
     arm_dir.mkdir(parents=False, exist_ok=False)
     raw = arm_dir / "raw.jsonl"
     raw.write_text("", encoding="utf-8")
-    generated = load_pipe3(0)
-    materials = build_materials(generated)
-    # Keep the recipient's own integration baseline fixed while varying only
-    # the immutable producer snapshot selected by the policy.
-    materials = deepcopy(materials)
-    merged = dict(materials["agent_payloads"]["producer"]["source_files"])
-    merged.update(materials["agent_payloads"]["recipient"]["source_files"])
-    fixed_recipient = _patch_recipient(merged)
-    for name in ("processor.py",):
-        materials["agent_payloads"]["recipient"]["source_files"][name] = fixed_recipient[name]
-    candidates = _candidate_materials(materials)
-    registry = _registry(materials, candidates)
-    features = _features()
-    policy = _policy(arm)
-    boundary = Pipe3SelectionBoundary(policy, registry)
+    materials = deepcopy(parent["materials"])
+    candidates = parent["candidates"]
+    registry = parent["registry"]
+    features = parent["features"]
+    boundary = _clone_parent_boundary(parent, arm)
     _save(arm_dir / "material_manifest.json", materials["manifest"])
     _save(arm_dir / "candidate_registry.json", {"digest": registry_digest(registry), "entries": [x.payload() for x in registry]})
     _log(raw, "arm_config", {
@@ -500,18 +575,19 @@ def _run_arm(arm: str, out_dir: Path, card: Mapping[str, Any]) -> dict[str, Any]
         "policy": _policy_contract(arm), "candidate_registry_digest": registry_digest(registry),
         "feature_digest": _digest(features), "real_api_calls": 0, "gpu_jobs": 0,
         "scientific_claim_allowed": False,
+        "source_receipt_digest": source_projection.get("source_receipt_digest"),
     })
-    seal0 = _select_source(boundary, arm, features, 0)
-    selection_bindings = [_selection_binding(seal0, boundary)]
-    selected0 = seal0.native_selection.chosen_peer_id + "@v1"
-    if selected0 != "peer-b@v1":
-        raise AssertionError("fixed source bootstrap did not select peer-b@v1")
-    source = _run_episode(
-        arm=arm, decision_index=0, arm_dir=arm_dir, decision_dir=arm_dir / "decision_0",
-        boundary=boundary, materials=materials, candidates=candidates, selected_key=selected0,
-        card=card, raw=raw, task_seed=0,
-    )
-    _log(raw, "source_episode_complete", {"selected_key": selected0, "gate": source["source_gate"]})
+    seal0 = parent["seal"]
+    source = deepcopy(parent["source"])
+    selection_bindings = [deepcopy(parent["selection_binding"])]
+    selected0 = source["selected_key"]
+    _save(arm_dir / "source_projection.json", source_projection)
+    _log(raw, "source_projection_imported", {
+        "source_receipt_digest": source_projection.get("source_receipt_digest"),
+        "source_event_id": source_projection.get("source_event_id"),
+        "parent_event_count": len(parent["boundary"].ledger.events),
+    })
+    _log(raw, "source_episode_complete", {"selected_key": selected0, "gate": source["source_gate"], "shared_parent": True})
     source_eligible = source["source_gate"]["evidence_publish_allowed"] is True
     role_offer = None
     offer_meta = None
@@ -522,8 +598,8 @@ def _run_arm(arm: str, out_dir: Path, card: Mapping[str, Any]) -> dict[str, Any]
             # strict ledger replay can distinguish a finished control from a
             # truncated one.  This bookkeeping event never touches policy.
             boundary.ledger.record_evidence_update(RoleEvidenceUpdate(
-                "no_update-source-observation", "no_update-judgment-0",
-                "no_update-action-0", "no_update-outcome-0", "c1-control-observation-v1", 1.0,
+                "no_update-source-observation", source["judgment_id"],
+                source["action_id"], source["outcome_id"], "c1-control-observation-v1", 1.0,
             ))
             _log(raw, "control_evidence_recorded", {"evidence_id": "no_update-source-observation"})
         else:
@@ -566,6 +642,7 @@ def _run_arm(arm: str, out_dir: Path, card: Mapping[str, Any]) -> dict[str, Any]
             "stop_reason": "source evidence was not eligible; learning-arm target not started",
             "source": source, "source_eligible": False, "policy_updates": boundary.policy.updates,
             "scientific_claim_allowed": False, "selection_bindings": selection_bindings,
+            "source_projection": source_projection,
             "manifest_roots": {
                 "native": boundary.validate_selection_manifests()[0],
                 "auxiliary": boundary.validate_selection_manifests()[1],
@@ -636,6 +713,7 @@ def _run_arm(arm: str, out_dir: Path, card: Mapping[str, Any]) -> dict[str, Any]
     result = {
         "arm": arm, "status": "COMPLETE_DEVELOPMENT_ONLY", "passed": True,
         "source": source, "target": target, "source_eligible": source_eligible,
+        "source_projection": source_projection,
         "update": update, "post_update_selection": {
             "selected_key": post.native_selection.chosen_peer_id + "@v1",
             "propensity": post.native_selection.propensity,
@@ -706,17 +784,40 @@ def run(out_dir: Path, *, card_path: Path = CARD) -> dict[str, Any]:
     top = {
         "version": card.get("runner_version", VERSION), "card": card_label,
         "card_sha256": _sha_file(card_path), "source_commit": commit,
-        "task_id": TASK_ID, "arms": list(ARMS), "decisions_per_arm": 3,
+        "task_id": TASK_ID, "arms": list(ARMS), "decisions_per_arm": 2,
+        "source_phase_requests": 2, "target_requests_per_arm": 2,
+        "expected_api_requests": 8,
         "real_api_calls": "counted_from_raw_request_start", "gpu_jobs": 0,
         "scientific_claim_allowed": False, "started_at_utc": datetime.now(timezone.utc).isoformat(),
         "runtime": {"python": platform.python_version(), "platform": platform.platform()},
         "no_retries": True,
     }
     _save(out_dir / "config.json", top)
+    context = _prepare_context()
+    parent = _run_parent_source(out_dir, card, context)
+    manifest_id = f"live-parent-source-{top['card_sha256'][:16]}"
+    source_receipt = build_source_receipt(out_dir, "parent_source", 0, manifest_id)
+    source_manifest = {
+        "manifest_version": "peerrolebench-external-source-manifest-v1",
+        "manifest_id": manifest_id,
+        "expected_source_digest": source_receipt["source_receipt_digest"],
+        "source_receipt": source_receipt,
+        "scientific_claim_allowed": False,
+        "historical_conversion": False,
+        "parent_owned_live_source": True,
+    }
+    _save(out_dir / "source_manifest.json", source_manifest)
+    (out_dir / "source_digest.txt").write_text(source_receipt["source_receipt_digest"] + "\n", encoding="utf-8")
+    expected_source_digest = (out_dir / "source_digest.txt").read_text(encoding="utf-8").strip()
+    prepared = prepare_shared_source(
+        out_dir / "source_manifest.json", expected_source_digest
+    )
+    _save(out_dir / "shared_source_preflight.json", prepared)
+    projection_by_arm = {row["policy_arm"]: row for row in prepared["projections"]}
     results: list[dict[str, Any]] = []
     for arm in ARMS:
         try:
-            results.append(_run_arm(arm, out_dir, card))
+            results.append(_run_arm(arm, out_dir, card, parent, projection_by_arm[arm]))
         except Exception as exc:
             arm_dir = out_dir / arm
             arm_dir.mkdir(parents=True, exist_ok=True)
@@ -734,6 +835,9 @@ def run(out_dir: Path, *, card_path: Path = CARD) -> dict[str, Any]:
         request_count += sum(1 for line in path.read_text(encoding="utf-8").splitlines()
                              if json.loads(line).get("event_type") == "request_start")
     result = {**top, "results": results, "real_api_calls": request_count,
+              "source_receipt_digest": source_receipt["source_receipt_digest"],
+              "source_cost_status": prepared["cost_ledger"].get("source_cost_status"),
+              "source_projection_digest": _digest(prepared["projections"]),
               "ended_at_utc": datetime.now(timezone.utc).isoformat(),
               "status": "COMPLETE_DEVELOPMENT_ONLY" if results and all(r.get("passed") is True for r in results) else "UNKNOWN",
               "passed": bool(results) and all(r.get("passed") is True for r in results),

@@ -433,14 +433,18 @@ def _record_episode(*, boundary: Pipe3SelectionBoundary, materials: dict[str, An
 def _source_offer(boundary: Pipe3SelectionBoundary, *, control: str, source: Mapping[str, Any],
                   selection: Any, selected_peer: str, target_task_index: int,
                   judgment_override: str | None = None) -> tuple[Any, Any]:
+    selection_id = str(source.get("selection_id", f"selection-{control}-0"))
+    judgment_id = str(source.get("judgment_id", f"{control}-judgment-0"))
+    action_id = str(source.get("action_id", f"{control}-action-0"))
+    outcome_id = str(source.get("outcome_id", f"{control}-outcome-0"))
     records = {name: _event_record(boundary, name, ident) for name, ident in (
-        ("peer_selection", f"selection-{control}-0"), ("producer_delivery", source["delivery_id"]),
-        ("recipient_judgment", f"{control}-judgment-0"), ("consumer_action", f"{control}-action-0"),
+        ("peer_selection", selection_id), ("producer_delivery", source["delivery_id"]),
+        ("recipient_judgment", judgment_id), ("consumer_action", action_id),
     )}
     eligible = bool(source["eligibility"].get("producer_feedback_eligible"))
     sidecar_payload = {
         "feedback_id": f"feedback-{control}", "source_event_id": selection.event_id,
-        "selection_event_id": f"selection-{control}-0", "delivery_id": source["delivery_id"],
+        "selection_event_id": selection_id, "delivery_id": source["delivery_id"],
         "producer_id": selected_peer, "eligible": eligible,
     }
     evidence_id = f"evidence-{control}-source"
@@ -448,7 +452,7 @@ def _source_offer(boundary: Pipe3SelectionBoundary, *, control: str, source: Map
         return None, {"records": records, "evidence_id": evidence_id, "eligible": False, "sidecar": sidecar_payload}
     # Native publication is immutable and does not touch policy state.
     boundary.ledger.record_evidence_update(RoleEvidenceUpdate(
-        evidence_id, f"{control}-judgment-0", f"{control}-action-0", f"{control}-outcome-0", VERSION, 1.0,
+        evidence_id, judgment_id, action_id, outcome_id, VERSION, 1.0,
     ))
     evidence = build_role_evidence_from_ledger(
         ledger=boundary.ledger, evidence_id=evidence_id, candidate_key=f"{selected_peer}@v1", role="producer",
