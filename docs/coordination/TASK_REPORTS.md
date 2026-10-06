@@ -17,6 +17,12 @@ Goal 修改。
 
 ## Reports
 
+- [blocked_by_evidence] 2026-10-06 ownership gate design review：C1 v3 显示同一结构化 source
+  在不同 arm 得到不同 `target_role` 文本，导致 contextual arm 被随机 censor。报告区分
+  contract-defined structural owner 与模型 judged role，给出保守 gate 与校准字段的两种
+  版本；未修改 active method，下一次 live comparison 前必须显式选定，见
+  [ownership review](task_reports/20261006_ownership_gate_design_review.md)。
+
 - [complete] 2026-10-06 AAMAS body-page budget recheck：隔离构建正文正好 8 页、参考文献从第
   9 页开始、0 overfull，PDF 与 verification receipt 已保留；科学 submission gate 仍关闭，见
   [page recheck](task_reports/20261006_paper_page_budget_recheck.md)。
