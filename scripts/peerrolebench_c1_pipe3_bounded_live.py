@@ -75,9 +75,10 @@ from peerrolebench_build_external_source_manifest import build_source_receipt, e
 from peerrolebench_shared_source_preflight import prepare_shared_source  # noqa: E402
 
 
-VERSION = "c1-pipe3-bounded-live-v2-structural-owner"
+VERSION = "c1-pipe3-bounded-live-v3-signal-channels"
+SIGNAL_SCHEMA_VERSION = "c1-signal-channels-v1"
 TASK_ID = "PIPE3_stream_processing"
-CARD = ROOT / "configs/aamas2027/n03_c1_parent_source_live_v1.json"
+CARD = ROOT / "configs/aamas2027/n03_c1_parent_source_live_v2_signal_channels.json"
 CANDIDATE_KEYS = ("peer-b@v1", "peer-c@v1")
 ARMS = ("no_update", "contextual_trust_linear", "RARE")
 PUBLIC_ENCODER = "hash64-v1"
@@ -379,6 +380,62 @@ def _run_episode(*, arm: str, decision_index: int, arm_dir: Path, decision_dir: 
         ))
     else:
         _log(raw, "unknown_outcome", outcome)
+    action_event = next(
+        (event for event in reversed(boundary.ledger.events)
+         if event["event_type"] == "consumer_action"
+         and event["payload"].get("action_id") == action_id),
+        None,
+    )
+    outcome_event = next(
+        (event for event in reversed(boundary.ledger.events)
+         if event["event_type"] == "terminal_outcome"
+         and event["payload"].get("outcome_id") == outcome_id),
+        None,
+    )
+    signal_channels = {
+        "schema_version": SIGNAL_SCHEMA_VERSION,
+        "Qp": {"source": "producer_score", "recorded": True,
+               "delivery_id": delivery_id, "artifact_sha256": artifact_digest,
+               "status": qp.get("status"), "label": qp.get("label"),
+               "scorer_version": qp.get("scorer_version"),
+               "response_digest": qp.get("response_digest")},
+        "J": {"source": "recipient_judgment", "recorded": True,
+              "delivery_id": delivery_id, "mapping_version": "judgment-v1",
+              "decision": judged.get("decision"),
+              "mapped_label": JUDGMENT_LABELS.get(judged.get("decision")),
+              "judgment_id": judgment_id},
+        "A": {"source": "consumer_action", "recorded": action_event is not None,
+              "delivery_id": delivery_id, "consumer_id": "peer-a",
+              "action_id": action_id, "action": action_name,
+              "used_artifact": action_name != "independent_redo",
+              "input_source_sha256": action_result.get("input_source_sha256"),
+              "output_source_sha256": action_result.get("output_source_sha256"),
+              "status": "RECORDED" if action_event is not None else "UNKNOWN",
+              "repair_cost": action_result.get("repair_cost"),
+              "action_record_hash": action_event.get("record_hash") if action_event else None,
+              "changed_paths": action_result.get("changed_paths", [])},
+        "D": {"source": "downstream_adoption", "recorded": True,
+              "delivery_id": delivery_id,
+              "artifact_sha256": action_result.get("output_source_sha256"),
+              "policy_visible": False, "accepted_channel": False,
+              "status": adoption.get("status"), "label": adoption.get("label"),
+              "quality_score": adoption.get("quality_score"),
+              "scorer_version": adoption.get("scorer_version"),
+              "response_digest": adoption.get("response_digest")},
+        "Y": {"source": "terminal_outcome", "recorded": outcome_event is not None,
+              "status": "UNKNOWN", "quality_score": None,
+              "policy_visible": False, "accepted_channel": False,
+              "derived_status": outcome.get("status"),
+              "derived_quality_score": outcome.get("quality_score"),
+              "derivation_version": "c1-recipient-adoption-conjunction-v1",
+              "outcome_id": outcome_id,
+              "outcome_record_hash": outcome_event.get("record_hash") if outcome_event else None,
+              "derived_from": ["D", "recipient"],
+              "independent_terminal_measurement": False},
+        "L": {"source": "assignment_credit", "recorded": False,
+              "status": "UNKNOWN", "reason": "no later assignment/peer-history credit in this card"},
+    }
+    _save(decision_dir / "signal_channels.json", signal_channels)
     # The defect registration is operator-side and comes from the immutable
     # candidate registry; it is never accepted from the model's self-report.
     registered = card.get("responsibility_gate", {}).get("registered_producer_candidates", ["peer-b@v1"])
@@ -396,6 +453,7 @@ def _run_episode(*, arm: str, decision_index: int, arm_dir: Path, decision_dir: 
         "judgment": judged, "judgment_api": judgment_meta,
         "action": action_result, "action_api": action_meta,
         "recipient_score": qr, "adoption_score": adoption, "outcome": outcome,
+        "signal_channels": signal_channels,
         "source_gate": gate.payload(), "final_sources": final_sources,
     }
 

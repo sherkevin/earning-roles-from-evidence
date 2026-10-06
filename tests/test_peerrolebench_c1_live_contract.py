@@ -56,6 +56,23 @@ def test_c1_zero_api_contract_qualifies_all_arms(tmp_path, monkeypatch):
         assert row["source"]["action"]["repair_cost"] == 0.0
         assert row["target"]["action"]["repair_cost"] == 0.0
     for row in by_arm.values():
+        channels = row["target"]["signal_channels"]
+        assert set(channels) == {"schema_version", "Qp", "J", "A", "D", "Y", "L"}
+        assert channels["Qp"]["delivery_id"] == row["target"]["delivery_id"]
+        assert channels["J"]["delivery_id"] == row["target"]["delivery_id"]
+        assert channels["A"]["recorded"] is True
+        assert channels["A"]["delivery_id"] == row["target"]["delivery_id"]
+        assert channels["A"]["consumer_id"] == "peer-a"
+        assert channels["A"]["output_source_sha256"] == row["target"]["action"]["output_source_sha256"]
+        assert channels["D"]["recorded"] is True
+        assert channels["D"]["policy_visible"] is False
+        assert channels["D"]["accepted_channel"] is False
+        assert channels["Y"]["status"] == "UNKNOWN"
+        assert channels["Y"]["policy_visible"] is False
+        assert channels["Y"]["accepted_channel"] is False
+        assert channels["Y"]["independent_terminal_measurement"] is False
+        assert channels["Y"]["derived_from"] == ["D", "recipient"]
+        assert channels["L"]["recorded"] is False
         replay = replay_ledger_events(row["ledger"])
         assert replay.status == "PASS" and replay.complete is True
         assert row["cost"]["scorer_seconds"] >= 0.0

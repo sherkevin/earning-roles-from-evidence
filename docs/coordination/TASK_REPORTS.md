@@ -1,5 +1,10 @@
 # Task reports
 
+- [partial] 2026-10-07 versioned runner signal channels: a zero-call v3 fixture
+  emits Qp/J/A/D/Y/L receipts, keeps legacy Y only as derived diagnostics and
+  leaves scientific Y/L UNKNOWN; historical runner/cards remain untouched, see
+  [runner channel report](task_reports/20261007_runner_signal_channels.md).
+
 - [partial] 2026-10-07 native projection mutation qualification: existing raw
   acceptance and canonical terminal sidecars pass positive/negative zero-call
   cells with fail-closed selection, mapping, UNKNOWN, late and duplicate

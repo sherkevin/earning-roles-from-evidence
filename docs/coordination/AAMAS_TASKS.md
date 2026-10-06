@@ -53,6 +53,15 @@ The runner still needs first-class A/D/independent-Y receipts before the next
 root. See
 [`20261007_projection_mutation_qualification.md`](task_reports/20261007_projection_mutation_qualification.md).
 
+**Versioned runner signal channels — 2026-10-07:** runner v3 and a design-only
+card now persist Qp/J/A/D/Y/L receipts without adding a new protocol event. A is
+the native consumer-action record, D is an adoption scorer receipt, Y is an
+explicit UNKNOWN scientific channel with legacy derived status/quality retained
+for replay, and L is UNKNOWN. A zero-call 3-test fixture passes existing
+ledger/cost/replay checks. This does not create an independent terminal scorer,
+live baseline parity, a second root, or an efficacy claim. See
+[`20261007_runner_signal_channels.md`](task_reports/20261007_runner_signal_channels.md).
+
 **Parent-source integration amendment — 2026-10-06:** the C1 runner now executes a
 single `parent_source` phase before the arm loop, seals its source digest and native
 selection binding, and imports the immutable ledger prefix into three isolated arm
