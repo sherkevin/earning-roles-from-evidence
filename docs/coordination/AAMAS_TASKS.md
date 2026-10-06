@@ -32,6 +32,16 @@ binding, independent target assignments, and independent histories remain open. 
 and the task report is
 [`20261006_shared_source_qualification.md`](task_reports/20261006_shared_source_qualification.md).
 
+An independent audit then found that v1 accepted coordinated row mutations and did not provide
+an external seal, source-level cost allocation, complete typed denominator states or native
+selection binding. The v2 hardening qualification passes ten zero-call cases covering those
+fail-closed checks; its synthetic seal is only a contract fixture. The next live card must create
+the real artifact/contract/scorer manifest before policy execution and connect the binding to the
+native ledger. See
+[`20261006_shared_source_v2_hardening.md`](task_reports/20261006_shared_source_v2_hardening.md)
+and
+[`c1_shared_source_card_v0.2_20261006.md`](../research/candidates/c1_shared_source_card_v0.2_20261006.md).
+
 The paper-writing checkpoint on the same date now has an eight-page body after a structural
 prose rewrite, reference expansion, and structural-owner gate synchronization; the latest
 isolated receipt is
