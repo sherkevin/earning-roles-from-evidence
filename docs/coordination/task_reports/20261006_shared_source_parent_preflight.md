@@ -79,4 +79,6 @@ The remaining blocker is evidence, not a reason to lower the Goal. Before a
 real run, freeze a new card at the committed runner, verify the second-root
 authority and same-information baseline matrix, then execute the bounded live
 card with real API logs. A800 remains deferred until that live signal and its
-cost/UNKNOWN accounting are valid.
+cost/UNKNOWN accounting are valid. The parent-source choice is recorded here as
+an implementation candidate, not as a user-confirmed decision; no ADR was added
+without the required dual confirmation.

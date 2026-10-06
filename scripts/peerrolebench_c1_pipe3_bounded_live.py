@@ -834,13 +834,21 @@ def run(out_dir: Path, *, card_path: Path = CARD) -> dict[str, Any]:
     for path in out_dir.glob("*/raw.jsonl"):
         request_count += sum(1 for line in path.read_text(encoding="utf-8").splitlines()
                              if json.loads(line).get("event_type") == "request_start")
+    maximum_api_requests = card.get("maximum_api_requests")
+    if not isinstance(maximum_api_requests, int) or maximum_api_requests <= 0:
+        raise RuntimeError("card.maximum_api_requests must be a positive integer")
+    budget_ok = request_count <= maximum_api_requests
     result = {**top, "results": results, "real_api_calls": request_count,
               "source_receipt_digest": source_receipt["source_receipt_digest"],
               "source_cost_status": prepared["cost_ledger"].get("source_cost_status"),
               "source_projection_digest": _digest(prepared["projections"]),
               "ended_at_utc": datetime.now(timezone.utc).isoformat(),
-              "status": "COMPLETE_DEVELOPMENT_ONLY" if results and all(r.get("passed") is True for r in results) else "UNKNOWN",
-              "passed": bool(results) and all(r.get("passed") is True for r in results),
+              "maximum_api_requests": maximum_api_requests,
+              "budget_ok": budget_ok,
+              "status": "COMPLETE_DEVELOPMENT_ONLY" if (
+                  results and budget_ok and all(r.get("passed") is True for r in results)
+              ) else "UNKNOWN",
+              "passed": bool(results) and budget_ok and all(r.get("passed") is True for r in results),
               "interpretation": "C1 is a bounded single-root live development card; scientific confirmation remains closed"}
     _save(out_dir / "summary.json", result)
     return result
