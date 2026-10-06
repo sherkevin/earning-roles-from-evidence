@@ -1,14 +1,14 @@
 # AAMAS Figure Plan v2 — active
 
-更新时间：2026-10-06（v27、v22、v24 AI 图组晋升）
+更新时间：2026-10-06（v28、v23、v26 AI 图组晋升为正文候选）
 
 本版本吸收了故事线审查和视觉审查。v1 保留为历史计划；本文件是当前有效的正文图配置。
 
 ## 当前正文配置
 
-1. **Figure 1 — Earning-roles loop**：全宽连续叙事主轴，当前资产为 `article/aamas2027/figures/overview.pdf`，对应 AI 版本 v27。它以对象化的 producer、artifact、recipient use、judgment 和 role ledger 讲清闭环，阶段标签和正文配色已同步。
-2. **Figure 2 — Evidence-to-role state**：全宽开放三泳道方法图，当前资产为 `article/aamas2027/figures/method_state.pdf`，对应 AI 版本 v22。彩色竖线和水平规则取代大色块，三条泳道分别显示 episode、public evidence、local decision 的边界。
-3. **Figure 3 — Benchmark/baseline experiment map**：全宽开放实验结构图，当前资产为 `article/aamas2027/figures/experiment_map.pdf`，对应 AI 版本 v24。三个开放列区分 ArtifactRole/PeerSelect 轨道、政策臂和 RQ1–RQ4 终点；policy label 不再包在卡片中。
+1. **Figure 1 — Earning-roles loop**：全宽连续叙事主轴，当前资产为 `article/aamas2027/figures/overview.pdf`，对应 AI 版本 v28。它以对象化的 peer context、artifact、recipient use、judgment、role evidence、read cut、sealed assignment 和 later outcome 讲清闭环，阶段标签和正文配色已同步。
+2. **Figure 2 — Evidence-to-role state**：全宽开放三泳道方法图，当前资产为 `article/aamas2027/figures/method_state.pdf`，对应 AI 版本 v23。彩色竖线和水平规则取代大色块，三条泳道分别显示 episode、public evidence、local decision 的边界，并统一使用 v28 的对象化 glyph。
+3. **Figure 3 — Benchmark/baseline experiment map**：全宽开放实验结构图，当前资产为 `article/aamas2027/figures/experiment_map.pdf`，对应 AI 版本 v26。三个开放列区分 ArtifactRole/PeerSelect 轨道、政策臂和 RQ1–RQ4 终点；endpoint glyph 与前两图统一。
 
 独立事件时间线仍保存在 `figures/timeline.pdf` 及版本目录中，作为协议图候选；在当前 8 页正文预算下不单独占用主文图位，因为 Figure 2 已经显式标出 read cut、sealed assignment、after-seal outcome 和 delayed update。若正文页数或审稿反馈允许，timeline 可作为 Figure 2 的 panel 或 supplementary 图恢复。
 
@@ -31,15 +31,15 @@ recipient judgment 到 target outcome 是灰色虚线的 **after seal** 时间�
 - 版式测试：全宽图约 7in，嵌入 TrueType，灰度仍可读，正文标签不小于约 7pt；不出现越界、交叉穿框或未经验证数字。当前 AI 图组仅通过版心/溢出检查，因其仍是单张 JPEG 栅格图，**尚未通过 TrueType/矢量生产门**。
 - 版本测试：v0、v1、v2、v3、v4、v5、v6、v7 的 PDF、脚本和评审记录全部保留，不能覆盖历史版本。
 
-本轮及前轮 AI 版本和提示词保存在 `article/aamas2027/figures/ai_versions/` 下的 v18–v27 目录。当前正文晋升的是 v27、v22、v24；v19、v20、v21、v23、v25、v26 保留为可回退的中间候选。样例库风格审查见 `GALLERY_FIGURE_STYLE_AUDIT_20261006.md`。AI 工具的模型标识未披露，不能把这些资产标注为 image2.5 结果。
+本轮及前轮 AI 版本和提示词保存在 `article/aamas2027/figures/ai_versions/` 下的 v18–v28 目录。当前正文候选是 v28、v23、v26；v27、v22、v24 及更早版本保留为可回退的中间候选。样例库风格审查见 `GALLERY_FIGURE_STYLE_AUDIT_20261006.md`。AI 工具的模型标识未披露，不能把这些资产标注为 image2.5 结果。
 
 当前图组质量审查见 [`20261006_figure_quality_audit_v27_v22_v24.md`](../../coordination/task_reports/20261006_figure_quality_audit_v27_v22_v24.md)。在矢量/字体门关闭前，三张图是内部候选，不是最终投稿图。
 
-长期 AI 重绘目标的最新候选为 Figure 1 v28、Figure 2 v23、Figure 3 v26；它们目前只存在于
-`article/aamas2027/figures/ai_versions/` 的版本目录中，没有替换正文资产。候选生成、完整 prompt、
-输入参考和 SHA-256 见 [`20261006_ai_figure_long_goal_round_v28_v23_v26.md`](../../coordination/task_reports/20261006_ai_figure_long_goal_round_v28_v23_v26.md)
-及对应的 `experiments/logs/figure_ai_long_goal_round_20261006/receipt.json`。必须先完成统一的纸面
-审查和生产格式核验，才可晋升。
+长期 AI 重绘目标的最新候选为 Figure 1 v28、Figure 2 v23、Figure 3 v26；它们已通过统一的版心、
+灰度和论文 PDF 构建检查并晋升为当前正文候选。候选生成、完整 prompt、输入参考、SHA-256 和
+纸面构建 receipt 见 [`20261006_ai_figure_long_goal_round_v28_v23_v26.md`](../../coordination/task_reports/20261006_ai_figure_long_goal_round_v28_v23_v26.md)
+及 `experiments/logs/figure_ai_long_goal_round_20261006/receipt.json`。它们仍未关闭矢量/字体生产门，
+因此不等于最终投稿资产。
 
 ## 结果图预留
 

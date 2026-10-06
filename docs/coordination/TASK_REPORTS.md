@@ -1,5 +1,7 @@
 # Task reports
 
+- [partial] 2026-10-06 parent-source release hardening: typed parent summaries, pre-API budget validation, and cost-ledger fail-closed completion are covered by 19 offline tests; independent seal and exact scientific pin remain open, see [release-hardening report](task_reports/20261006_release_hardening.md).
+
 - [partial] 2026-10-06 parent-owned live-source smoke: the frozen eight-request real-API development card completed with complete raw/cost/ledger evidence and no transport failures; it validates the shared-source execution seam but exposes recipient-judgment versus objective-outcome disagreement, so no efficacy claim is allowed, see [live smoke report](task_reports/20261006_parent_source_live_smoke.md).
 
 - [partial] 2026-10-06 parent-source cost and failure-path hardening (continuation of shared-source preflight): action timing is deduplicated, missing measurements remain UNKNOWN, and completed target cost survives later arm failure; a fresh zero-call fixture and 18 focused tests pass. This is engineering evidence only; the second root, same-information baseline parity and scientific efficacy remain open, see [parent preflight report](task_reports/20261006_shared_source_parent_preflight.md).
@@ -29,7 +31,7 @@ Goal 修改。
 
 ## Reports
 
-- [partial] 2026-10-06 AI figure long-goal round v28/v23/v26：围绕样例库重写完整 prompt，重新生成 Figure 1/2/3，统一开放式主轴、泳道、对象化 glyph 和颜色；历史版本与 receipt 保留。候选尚未晋升正文，栅格/TrueType/矢量生产门和最终纸面核验仍开放，见 [long-goal figure report](task_reports/20261006_ai_figure_long_goal_round_v28_v23_v26.md)。
+- [partial] 2026-10-06 AI figure long-goal round v28/v23/v26：围绕样例库重写完整 prompt，重新生成 Figure 1/2/3，统一开放式主轴、泳道、对象化 glyph 和颜色；候选通过真实论文版心、7 英寸缩放和灰度检查后晋升正文候选，历史版本与 receipt 保留。栅格/TrueType/矢量生产门仍开放，见 [long-goal figure report](task_reports/20261006_ai_figure_long_goal_round_v28_v23_v26.md)。
 
 - [blocked_by_evidence] 2026-10-06 figure quality audit v27/v22/v24：语义和版心检查通过，但与 best/oral 样例的定制化视觉质感仍有差距；`pdfimages` 确认三张 PDF 都是单张 JPEG 栅格图，未通过 TrueType/矢量生产门。保留当前候选，不降级 Goal，最终投稿前必须解决矢量字体和统一图形系统，见 [quality audit](task_reports/20261006_figure_quality_audit_v27_v22_v24.md)。
 

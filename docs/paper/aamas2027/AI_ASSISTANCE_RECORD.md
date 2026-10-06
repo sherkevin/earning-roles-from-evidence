@@ -887,3 +887,8 @@ v27/v22/v24 图组构建并目视核验：正文 8 页、参考文献从第 9 �
 模型标识由服务端隐藏，因此不称为 image2.5。完整 receipt 和 SHA-256 在
 `experiments/logs/figure_ai_long_goal_round_20261006/receipt.json`，任务报告在
 `docs/coordination/task_reports/20261006_ai_figure_long_goal_round_v28_v23_v26.md`。
+
+纸面复核随后以候选 PDF 真实替换图位进行隔离构建：正文 10 页、正文内容 8 页、参考文献从第 9
+页开始、引用解析、0 overfull；7 英寸缩放和 Generic Gray Gamma 2.2 灰度副本均可读。v28/v23/v26
+因此晋升为当前正文候选，旧 v27/v22/v24 保留回退。该晋升只改变图形资产，不改变科学结果或
+submission gate；三张图仍是 AI 栅格输出，矢量/嵌入字体生产门尚未关闭。

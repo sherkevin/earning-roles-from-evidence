@@ -28,7 +28,7 @@ ICLR、ICML、NeurIPS、CVPR、ACL、AAAI 设计型主图，并对候选图做�
 
 - v25 首次加入对象化叙事，但仍有大块背景卡片；因此不晋升。
 - v26 移除背景卡片，形成连续开放主轴；版心标签偏小。
-- v27 收紧空白并放大中央事件与标签，作为 Figure 1 当前版本。
-- Figure 2 v22 和 Figure 3 v24 已分别采用开放泳道和开放三列，避免小模块卡片化。
+- v27 收紧空白并放大中央事件与标签；随后 v28 进一步去掉巨型标题，统一 peer/artifact/judgment/evidence/read-cut/seal/outcome glyph，作为 Figure 1 当前正文候选。
+- Figure 2 v22 和 Figure 3 v24 已分别采用开放泳道和开放三列；随后 v23/v26 统一使用 v28 的对象化 glyph，作为当前正文候选。
 
 这份审查只规定视觉表达质量，不把“像 best paper”当成科学贡献或录用保证。
