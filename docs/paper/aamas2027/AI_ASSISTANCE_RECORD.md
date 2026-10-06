@@ -827,3 +827,7 @@ The clean-HEAD layout receipt is
 supplement 2 pages, zero overfull boxes, and zero unresolved references. v16
 was promoted to the active Figure 1. This is a figure-presentation check, not
 evidence for role-learning efficacy.
+
+### 2026-10-06 正式论文中文 Markdown 阅读稿
+
+根据用户要求，将当前 `article/aamas2027/main.tex` 逐节翻译为可直接阅读的中文 Markdown。唯一生效文件为 `docs/paper/aamas2027/FORMAL_PAPER_ZH.md`；`article/aamas2027/main_zh.md` 仅作指针。翻译保留 RARE、ArtifactRole、PeerSelect、责任门、读取截点、仅选中项更新、RQ/H 假设、空结果单元、图表和正文引用，不新增实验数字或科学结论。结构核查记录在 `experiments/logs/chinese_paper_translation_20261006/translation_checks.json`；本次没有 LLM API 调用、GPU 作业或实验运行。英文 `main.tex` 仍是内容和科学状态的唯一权威来源。
