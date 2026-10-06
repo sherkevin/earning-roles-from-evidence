@@ -1,0 +1,248 @@
+[
+  {
+    "event_type": "peer_selection",
+    "payload": {
+      "selection_id": "selection-parent-0",
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 0,
+      "selector_id": "peer-a",
+      "role": "producer",
+      "candidate_ids": [
+        "peer-b",
+        "peer-c"
+      ],
+      "chosen_peer_id": "peer-b",
+      "propensity": 0.5
+    },
+    "previous_hash": "GENESIS",
+    "record_hash": "fadb100ca9a173206f3d77dc76fbb46ae47d5ed79d016e4054216bb740220644"
+  },
+  {
+    "event_type": "task_start",
+    "payload": {
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 0
+    },
+    "previous_hash": "fadb100ca9a173206f3d77dc76fbb46ae47d5ed79d016e4054216bb740220644",
+    "record_hash": "539894163c9476e011ea616a80574c175ae0dc5edfbd1b29e76ac3468c20c23a"
+  },
+  {
+    "event_type": "producer_delivery",
+    "payload": {
+      "delivery_id": "parent-delivery-0",
+      "task_id": "PIPE3_stream_processing",
+      "producer_id": "peer-b",
+      "recipient_id": "peer-a",
+      "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "source_event_id": "request-parent_source-0",
+      "task_index": 0,
+      "selection_id": "selection-parent-0",
+      "candidate_source_digest": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2"
+    },
+    "previous_hash": "539894163c9476e011ea616a80574c175ae0dc5edfbd1b29e76ac3468c20c23a",
+    "record_hash": "ccdaed1b4ead5668bb711fdc3dd972b89e656bf8972166d8cf5bea6c09f52cbe"
+  },
+  {
+    "event_type": "producer_score",
+    "payload": {
+      "producer_score_id": "parent_source-producer-score-0",
+      "delivery_id": "parent-delivery-0",
+      "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "scorer_version": "pipe3-producer-objective-v2",
+      "status": "FAIL",
+      "label": 0,
+      "quality_score": 0.6666666666666666,
+      "score_payload_sha256": "470d153773afa0d97e10cf0aa37355cdacc97168692d801b486f991b6489038c",
+      "coverage_complete": true,
+      "decision_complete": true
+    },
+    "previous_hash": "ccdaed1b4ead5668bb711fdc3dd972b89e656bf8972166d8cf5bea6c09f52cbe",
+    "record_hash": "bbe5a9b6115615d5ce8feaeb34916e1da1875f6b14d2bbfd0085d654a7bf50c6"
+  },
+  {
+    "event_type": "recipient_judgment",
+    "payload": {
+      "judgment_id": "parent-judgment-0",
+      "delivery_id": "parent-delivery-0",
+      "consumer_id": "peer-a",
+      "decision": "accept",
+      "observed_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "terminal_outcome_available": false,
+      "repair_note": "No repairs required for producer.py. The recipient will proceed to implement or repair processor.py to consume the JSONL output produced by this artifact."
+    },
+    "previous_hash": "bbe5a9b6115615d5ce8feaeb34916e1da1875f6b14d2bbfd0085d654a7bf50c6",
+    "record_hash": "a188eb76d7bc92f0052d7ae5fc78eeaf2a955f0b23cc9c9c0e13f24dfa808caf"
+  },
+  {
+    "event_type": "consumer_action",
+    "payload": {
+      "action_id": "parent-action-0",
+      "delivery_id": "parent-delivery-0",
+      "consumer_id": "peer-a",
+      "used_artifact": true,
+      "input_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "output_artifact_sha256": "819118801d4ccfab2801b36032d4f0808bdf938eedf9ee532d8ea798fd7ffa29",
+      "repair_cost": 0.0,
+      "action": "use"
+    },
+    "previous_hash": "a188eb76d7bc92f0052d7ae5fc78eeaf2a955f0b23cc9c9c0e13f24dfa808caf",
+    "record_hash": "d25606d0add35c47f8f7ca66bfa41f44c6150755b610463663ac49781fe729be"
+  },
+  {
+    "event_type": "terminal_outcome",
+    "payload": {
+      "outcome_id": "parent-outcome-0",
+      "delivery_id": "parent-delivery-0",
+      "success": false,
+      "scorer_version": "pipe3-adoption-v1",
+      "partial_score": 0.5,
+      "score_payload_sha256": "ff4298e4e86c6dbe7d41e25e64487f8bde0844a36e0ec45746c0d386fe176569"
+    },
+    "previous_hash": "d25606d0add35c47f8f7ca66bfa41f44c6150755b610463663ac49781fe729be",
+    "record_hash": "aa5d9857478e2973ba8ef51815938ace2589ac784b2fb4093b2a560d8f93d49a"
+  },
+  {
+    "event_type": "role_evidence_update",
+    "payload": {
+      "evidence_id": "evidence-contextual_trust_linear-source",
+      "judgment_id": "parent-judgment-0",
+      "action_id": "parent-action-0",
+      "outcome_id": "parent-outcome-0",
+      "update_version": "pipe3-two-stage-composition-v1.8",
+      "arrived_at": 1.0
+    },
+    "previous_hash": "aa5d9857478e2973ba8ef51815938ace2589ac784b2fb4093b2a560d8f93d49a",
+    "record_hash": "fee415dd761d49fce37c1a5aa3b96d3b9eb0d357aff4b5cea33bf18e64567fa1"
+  },
+  {
+    "event_type": "later_assignment",
+    "payload": {
+      "assignment_id": "assignment-contextual_trust_linear",
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 1,
+      "agent_id": "peer-b",
+      "role": "producer",
+      "evidence_ids": [
+        "evidence-contextual_trust_linear-source"
+      ],
+      "decision_propensity": 0.5825702064623147
+    },
+    "previous_hash": "fee415dd761d49fce37c1a5aa3b96d3b9eb0d357aff4b5cea33bf18e64567fa1",
+    "record_hash": "f6a7a90e7eca0902c0fb543cfca669a23f3ce1599ca8206e5b6eed52c5544efc"
+  },
+  {
+    "event_type": "peer_selection",
+    "payload": {
+      "selection_id": "selection-contextual_trust_linear-1",
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 1,
+      "selector_id": "peer-a",
+      "role": "producer",
+      "candidate_ids": [
+        "peer-b",
+        "peer-c"
+      ],
+      "chosen_peer_id": "peer-b",
+      "propensity": 0.5825702064623147
+    },
+    "previous_hash": "f6a7a90e7eca0902c0fb543cfca669a23f3ce1599ca8206e5b6eed52c5544efc",
+    "record_hash": "cb9427d7c5f00bc71f4f750d7af7744eed22bb043587b441db98001bcfd337d1"
+  },
+  {
+    "event_type": "task_start",
+    "payload": {
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 1
+    },
+    "previous_hash": "cb9427d7c5f00bc71f4f750d7af7744eed22bb043587b441db98001bcfd337d1",
+    "record_hash": "a1c7a24483e7e5ed148e786aa0c3c9e757a9cd220b02947778c9ce751bfd2882"
+  },
+  {
+    "event_type": "producer_delivery",
+    "payload": {
+      "delivery_id": "contextual_trust_linear-delivery-1",
+      "task_id": "PIPE3_stream_processing",
+      "producer_id": "peer-b",
+      "recipient_id": "peer-a",
+      "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "source_event_id": "request-contextual_trust_linear-1",
+      "task_index": 1,
+      "selection_id": "selection-contextual_trust_linear-1",
+      "candidate_source_digest": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2"
+    },
+    "previous_hash": "a1c7a24483e7e5ed148e786aa0c3c9e757a9cd220b02947778c9ce751bfd2882",
+    "record_hash": "90d3ffc6b0ca2b7aea539fa5199cf1fc55cd062cf7b5e6d56a6e9c88cb02494f"
+  },
+  {
+    "event_type": "producer_score",
+    "payload": {
+      "producer_score_id": "contextual_trust_linear-producer-score-1",
+      "delivery_id": "contextual_trust_linear-delivery-1",
+      "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "scorer_version": "pipe3-producer-objective-v2",
+      "status": "FAIL",
+      "label": 0,
+      "quality_score": 0.6666666666666666,
+      "score_payload_sha256": "c2c07d03f5736646828657de511d0898050a2d1e29cda490b2a1468fb40797e9",
+      "coverage_complete": true,
+      "decision_complete": true
+    },
+    "previous_hash": "90d3ffc6b0ca2b7aea539fa5199cf1fc55cd062cf7b5e6d56a6e9c88cb02494f",
+    "record_hash": "d33171e542294b61e2a1918bf2d00fc14dc0be8309292e0a53a4a64f90051cf8"
+  },
+  {
+    "event_type": "recipient_judgment",
+    "payload": {
+      "judgment_id": "contextual_trust_linear-judgment-1",
+      "delivery_id": "contextual_trust_linear-delivery-1",
+      "consumer_id": "peer-a",
+      "decision": "accept",
+      "observed_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "terminal_outcome_available": false,
+      "repair_note": "No repair needed for producer.py. The recipient will implement processor.py to consume the JSONL output produced by this file, parsing each line as JSON and mapping the fields to the downstream sink interface."
+    },
+    "previous_hash": "d33171e542294b61e2a1918bf2d00fc14dc0be8309292e0a53a4a64f90051cf8",
+    "record_hash": "07c3a1c2824f015131e54442498fe9e28f402cc7c7f9051824650aecf948c50c"
+  },
+  {
+    "event_type": "consumer_action",
+    "payload": {
+      "action_id": "contextual_trust_linear-action-1",
+      "delivery_id": "contextual_trust_linear-delivery-1",
+      "consumer_id": "peer-a",
+      "used_artifact": true,
+      "input_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "output_artifact_sha256": "819118801d4ccfab2801b36032d4f0808bdf938eedf9ee532d8ea798fd7ffa29",
+      "repair_cost": 0.0,
+      "action": "use"
+    },
+    "previous_hash": "07c3a1c2824f015131e54442498fe9e28f402cc7c7f9051824650aecf948c50c",
+    "record_hash": "6556c164ec3f4bdc91cdc94e9e83642a833e640fbd947153d336a4ec0f1bd0c5"
+  },
+  {
+    "event_type": "terminal_outcome",
+    "payload": {
+      "outcome_id": "contextual_trust_linear-outcome-1",
+      "delivery_id": "contextual_trust_linear-delivery-1",
+      "success": false,
+      "scorer_version": "pipe3-adoption-v1",
+      "partial_score": 0.5,
+      "score_payload_sha256": "27252d5bec82d5651d49191484f6fc31c4eae1125fee6c9bf492cc3828cf503e"
+    },
+    "previous_hash": "6556c164ec3f4bdc91cdc94e9e83642a833e640fbd947153d336a4ec0f1bd0c5",
+    "record_hash": "5ec04d4f2d6df4efeade15eed619db680d2d36a840205ba08b93ebe995664b19"
+  },
+  {
+    "event_type": "role_evidence_update",
+    "payload": {
+      "evidence_id": "contextual_trust_linear-target-completion-evidence",
+      "judgment_id": "contextual_trust_linear-judgment-1",
+      "action_id": "contextual_trust_linear-action-1",
+      "outcome_id": "contextual_trust_linear-outcome-1",
+      "update_version": "c1-target-completion-v1",
+      "arrived_at": 2.0
+    },
+    "previous_hash": "5ec04d4f2d6df4efeade15eed619db680d2d36a840205ba08b93ebe995664b19",
+    "record_hash": "9636283a210a4947db29e7f5a3aaea8f2203331e7b319c1274a197213b8c4be1"
+  }
+]

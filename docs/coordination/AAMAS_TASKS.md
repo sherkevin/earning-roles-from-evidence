@@ -41,6 +41,18 @@ This remains an engineering qualification only. The scientific gate is unchanged
 one structural root, no unseen stream, no qualified same-information comparison, and
 no efficacy or self-evolution claim.
 
+**Real parent-source smoke — 2026-10-06:** the frozen eight-request card completed
+with 8/8 HTTP 200 `end_turn` responses, 9,658 input and 4,857 output tokens, complete
+source/target cost receipts, and replay-complete arm ledgers. The parent selected
+`peer-b@v1` once; all three arms reused that source and selected the same target. The
+recipient judgment accepted the producer while the independent producer/adoption
+scorers returned `FAIL` (`P2_iso_serialization` and `A1_producer_boundary`), so the
+two update arms used a judgment label of 1.0 despite later quality 0.5. This is a
+signal-design failure diagnosis, not evidence of efficacy or self-evolution. Full
+raw evidence and reconciliation are in
+[`20261006_parent_source_live_smoke`](task_reports/20261006_parent_source_live_smoke.md);
+the scientific gate remains closed.
+
 **Current scientific checkpoint — 2026-10-06:** C0 candidate parity and the C1 zero-call
 contract qualification are complete as engineering evidence. C1 v3 then made 10 real
 recipient API requests: `no_update` and RARE are complete development-only chains with strict

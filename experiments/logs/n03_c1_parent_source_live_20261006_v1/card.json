@@ -1,0 +1,112 @@
+{
+  "manifest_version": "peerrolebench-c1-parent-source-development-v1",
+  "status": "DESIGN_ONLY",
+  "purpose": "Bounded development smoke for one parent-owned real source projected into three isolated policy arms",
+  "primary_track": "ArtifactRole",
+  "root": "PIPE3_stream_processing",
+  "source_commit": "10211ac",
+  "structural_root_count": 1,
+  "seed": 0,
+  "arms": [
+    "no_update",
+    "contextual_trust_linear",
+    "RARE"
+  ],
+  "decisions_per_arm": 2,
+  "api_requests_per_decision": 2,
+  "source_phase_requests": 2,
+  "target_requests_per_arm": 2,
+  "maximum_api_requests": 8,
+  "provider": "内部",
+  "model": "qwen3.8-max",
+  "temperature": 0,
+  "thinking": {
+    "type": "disabled"
+  },
+  "stream": true,
+  "max_tokens": {
+    "judgment": 1024,
+    "action": 2048
+  },
+  "request_timeout_seconds": 300,
+  "maximum_task_requests": 2,
+  "maximum_retries": 0,
+  "source_phase": {
+    "owner": "parent",
+    "selection_namespace": "parent",
+    "candidate": "peer-b@v1",
+    "selection_draw": "fixed_pre_registered_index_0",
+    "must_complete_before_arm_loop": true,
+    "external_digest_file": "source_digest.txt"
+  },
+  "candidate_registry": {
+    "menu": [
+      "peer-b@v1",
+      "peer-c@v1"
+    ],
+    "peer-b@v1": "pinned PIPE3 producer snapshot with registered P2 serialization defect",
+    "peer-c@v1": "the same snapshot with the pre-registered timestamp serialization repair",
+    "identity_warning": "Both snapshots use the same model/tool envelope; this is one-root development evidence, not peer specialization evidence"
+  },
+  "information_contract": {
+    "public_feature_schema": "matrix-features-v1",
+    "public_encoder_version": "hash64-v1",
+    "feature_dimension": 64,
+    "base_scores": [
+      0.0,
+      0.0
+    ],
+    "read_cut_schedule": [
+      0,
+      1
+    ],
+    "arrival_schedule": [
+      0,
+      1
+    ],
+    "exploration": 0.0,
+    "state_cap_bytes": 1048576,
+    "unknown_policy": "preserve UNKNOWN, no update, no denominator repair"
+  },
+  "cost_contract": {
+    "measure": [
+      "api_attempts",
+      "input_tokens",
+      "output_tokens",
+      "wall_seconds",
+      "scorer_seconds",
+      "update_seconds",
+      "state_bytes"
+    ],
+    "unknown_usage": "retain unknown; never recode as zero",
+    "source_cost_count": "once",
+    "target_cost_count": "once_per_arm",
+    "api_calls_are_real": true
+  },
+  "stop_rules": [
+    "source manifest, selection binding or candidate digest mismatch: UNKNOWN and stop all arms",
+    "malformed/truncated/timeout/incomplete API response: UNKNOWN; preserve source and arm receipts",
+    "source cost usage or scorer timing incomplete: retain cost_status=UNKNOWN",
+    "judgment/action/outcome lineage or ownership mismatch: UNKNOWN and stop affected arm",
+    "no retries, task substitution, manual label repair, or post-hoc split changes"
+  ],
+  "scientific_boundary": {
+    "scientific_claim_allowed": false,
+    "benchmark_frozen": false,
+    "effect_estimable": false,
+    "promotion_condition": "Only a later two-root confirmation card with qualified same-information baselines may enter scientific analysis",
+    "interpretation": "single-root live development smoke; no efficacy or specialization claim"
+  },
+  "runner_version": "c1-pipe3-bounded-live-v2-structural-owner",
+  "responsibility_gate": {
+    "version": "two-stage-role-evidence-v3-structural-owner",
+    "eligibility_owner_source": "contract_registry_scorer",
+    "judged_role_policy": "calibration_only",
+    "disagreement_field": "judged_role_agrees",
+    "registered_producer_candidates": [
+      "peer-b@v1"
+    ],
+    "recipient_only_and_mixed": "UNKNOWN_no_update",
+    "unknown_policy": "preserve_UNKNOWN_no_denominator_repair"
+  }
+}

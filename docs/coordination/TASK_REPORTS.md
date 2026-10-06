@@ -1,5 +1,7 @@
 # Task reports
 
+- [partial] 2026-10-06 parent-owned live-source smoke: the frozen eight-request real-API development card completed with complete raw/cost/ledger evidence and no transport failures; it validates the shared-source execution seam but exposes recipient-judgment versus objective-outcome disagreement, so no efficacy claim is allowed, see [live smoke report](task_reports/20261006_parent_source_live_smoke.md).
+
 - [partial] 2026-10-06 parent-source cost and failure-path hardening (continuation of shared-source preflight): action timing is deduplicated, missing measurements remain UNKNOWN, and completed target cost survives later arm failure; a fresh zero-call fixture and 18 focused tests pass. This is engineering evidence only; the second root, same-information baseline parity and scientific efficacy remain open, see [parent preflight report](task_reports/20261006_shared_source_parent_preflight.md).
 
 - [partial] 2026-10-06 parent-owned live source and arm projection (`task_reports/20261006_shared_source_parent_preflight.md`): the C1 runner now acquires one parent source before the arm loop, imports its immutable ledger prefix into three isolated policy namespaces, and binds an external digest/selection lineage. A zero-call fixture and 11 focused tests pass; real API efficacy, second-root authority, independent histories and scientific parity remain open.
