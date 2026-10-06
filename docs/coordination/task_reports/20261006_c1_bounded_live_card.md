@@ -57,9 +57,13 @@ terminal outcome，并在合法 delayed credit 后记录第三次执行前选择
 
 | arm | API 请求 | 严格 replay | 延迟更新 | 运行状态 |
 |---|---:|---|---:|---|
-| `no_update` | 4 | PASS / complete | 0 | `COMPLETE_DEVELOPMENT_ONLY` |
+| `no_update` | 4 | PASS / complete | 0 | `COMPLETE_DEVELOPMENT_ONLY*` |
 | `contextual_trust_linear` | 2 | 未形成完整 source chain | 0 | `UNKNOWN` / promotion blocked |
-| `RARE` | 4 | PASS / complete | 1 | `COMPLETE_DEVELOPMENT_ONLY` |
+| `RARE` | 4 | PASS / complete | 1 | `COMPLETE_DEVELOPMENT_ONLY*` |
+
+`*` 表示 protocol/API development chain complete，不表示 card 的完整 cost contract 已完成；
+`scorer_seconds`、`update_seconds` 和 `state_bytes` 没有形成明确的汇总字段，因此 v3 不能用于
+cost-sensitive policy comparison。
 
 `RARE` 的源证据来自预注册的 `peer-b@v1` producer defect；目标反馈为 selected-only recipient
 judgment，延迟 1 个 decision，到达后执行 1 次更新。更新前概率为 `[0.5, 0.5]`，更新后为
@@ -110,9 +114,9 @@ mutation rejection。
 
 ## 真实运行后的判定
 
-只有真实响应通过 SSE 完整性、公开 judgment schema、action writable-path、三类 scorer、ledger
-replay 和成本记录，才将对应臂标为 `COMPLETE_DEVELOPMENT_ONLY`。任一臂失败仍保留完整原始响应
-并标为 `UNKNOWN`。即使三臂都完成，本卡也只能关闭“单 root live development seam”；独立 root、
+只有真实响应通过 SSE 完整性、公开 judgment schema、action writable-path、三类 scorer 和
+protocol ledger replay，才将对应臂标为 `COMPLETE_DEVELOPMENT_ONLY`；成本字段仍需单独审计。
+任一臂失败仍保留完整原始响应并标为 `UNKNOWN`。即使三臂都完成，本卡也只能关闭“单 root live development seam”；独立 root、
 confirmation split、few-shot/temporal 泛化、完整 baseline parity 和 scientific efficacy 仍未通过。
 
 因此本卡整体状态保持 `PARTIAL`：两条 arm 关闭了开发链工程子门，一条 arm 的责任 gate 暴露了
