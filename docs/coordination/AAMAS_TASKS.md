@@ -9,8 +9,10 @@ ledger replay; `contextual_trust_linear` stopped at a responsibility gate after 
 returned a recipient target for the source episode. RARE produced one delayed selected-only
 update and a post-update preview. The run is still one PIPE3 root with static candidate
 snapshots, so it is not benchmark confirmation and does not authorize an efficacy claim. The
-next scientific design issue is separating structural ownership from stochastic model
-target-role text before attempting another live comparison. See
+recorded delayed update uses the recipient-judgment channel; policy-selection to native-ledger
+sidecar binding and complete cost aggregation remain open. The next scientific design issue is
+separating structural ownership from stochastic model target-role text before attempting another
+live comparison. See
 [`20261006_c1_bounded_live_card.md`](task_reports/20261006_c1_bounded_live_card.md).
 
 ## Current checkpoint — 2026-09-26
