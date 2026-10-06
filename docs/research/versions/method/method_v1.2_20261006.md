@@ -1,12 +1,12 @@
-# 方法论与训练合同 v1.1
+# 方法论与训练合同 v1.2
 
-- **状态**：`SUPERSEDED by method_v1.2_20261006`
-- **生效日期**：2026-09-30
+- **状态**：`ACTIVE`
+- **生效日期**：2026-10-06
 - **类别**：method
-- **前一版本**：[`method_v1.0_20260928.md`](method_v1.0_20260928.md)
+- **前一版本**：[`method_v1.1_20260930.md`](method_v1.1_20260930.md)
 - **目标约束**：[`docs/coordination/GOAL.md`](../../../coordination/GOAL.md) ER-G2
 
-`ACTIVE` 只表示当前唯一的方法合同，不表示算法已经验证或 backbone/updater 已经选定。v1.1 由 ADR 0043 确认的两阶段 evidence/update 语义取代 v1.0 中把公开反馈和持久更新放在同一入口的含混之处；v1.0 保留为历史版本。
+`ACTIVE` 只表示当前唯一的方法合同，不表示算法已经验证或 backbone/updater 已经选定。v1.2 由 ADR 0047 在两阶段 evidence/update 语义上增加结构化责任 owner gate：冻结 contract/registry/scorer 决定责任归属，模型 judged role 只用于校准；v1.1 保留为历史版本。
 
 ## 1. 最小数学问题与信息边界
 
@@ -63,14 +63,17 @@ $$
 
 ### 2.1 `attribution_eligible(i)`
 
+责任 gate 先计算一个不可由模型覆盖的 `structural_owner_role`。它来自冻结 contract/registry、实际 changed paths、独立 producer contract check 以及显式注册的 producer defect/quality 事件。模型返回的 `judged_target_role` 和 `judged_target_paths` 是带噪声的观测；父进程另外写入 `judged_role_agrees`，用于校准，不作为唯一归因依据。
+
 该量为真当且仅当：
 
 - producer 的 contract 变化或预注册 source defect 能被 action 的路径集合唯一绑定；
 - producer score `Q_p`、recipient judgment `J`、consumer action `A`、terminal outcome `Y` 均完整且 digest/版本/顺序可回放；
-- 目标角色是 producer，且 recipient-owned path 为空；
+- 由冻结 task contract、candidate registry、changed paths、独立 producer check 与预注册 defect/quality 事件推导的 `structural_owner_role` 是 `producer`，且 recipient-owned/sink-owned path 为空；
+- 模型给出的 `judged_target_role` 可以是 `producer`、`recipient` 或 `unknown`。若它与 structural owner 不一致，仍保留该事件及 `judged_role_agrees=false`，并单独报告 disagreement；不因文字不一致而随机 censor 合法 producer event；
 - `later_valid` 不得单独把一个没有 producer-owned change 的源 episode 变成 eligible。
 
-因此 recipient-only、mixed ownership、缺字段、资源失败、later outcome 单独出现都返回 `UNKNOWN`/`PENDING_ATTRIBUTION`，不产生源 role evidence。
+因此 recipient-only、mixed ownership、缺字段、资源失败、later outcome 单独出现都返回 `UNKNOWN`/`PENDING_ATTRIBUTION`，不产生源 role evidence。模型判断中的 `target_role` 或 `target_paths` 不能单独创造或取消 producer evidence；它们作为 `judged_target_role`、`judged_target_paths` 和 `judged_role_agrees` 保留，用于校准和安全分析。
 
 ### 2.2 `evidence_publish_allowed(i)`
 
@@ -221,6 +224,12 @@ evidence capacity/淘汰和跨 context 泛化仍未锁定。它们必须由 benc
 candidate/channel/namespace 绑定、容量与回滚。这只是方法接口的工程资格，adapter 自身
 尚未接 preview→assignment→commit、independent histories 或 live PIPE3，不能当作最终
 updater、实时训练收益或 scientific result，也不改变本节的实现顺序和未锁定项。
+
+### 8.1 2026-10-06 structural-owner gate amendment
+
+ADR 0047 将责任资格从模型生成的 `target_role` 硬条件改为结构化 owner gate。当前实现版本为 `pipe3-responsibility-label-v2-structural-owner` 与 `two-stage-role-evidence-v3-structural-owner`；A1--A8 zero-call mutation/replay qualification 已通过，receipt 位于 `experiments/logs/n03_structural_owner_gate_qualification_20261006_v2/`。该 receipt 只证明 typed gate、反例拒绝、重复幂等和 contract mutation fail-closed，不产生 LLM/GPU 或科学效能结论。
+
+下一张 live card 必须携带 explicit structural-owner registration，并同时报告 judged-role disagreement；历史 C1 receipt 不回写。
 
 ## 9. 对照标准
 

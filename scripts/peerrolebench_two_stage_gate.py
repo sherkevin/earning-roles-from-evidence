@@ -15,11 +15,13 @@ import json
 import math
 from typing import Any, Callable, Mapping
 
+from peerrolebench_pipe3_responsibility_label import derive_structural_owner_role
+
 
 # v2 closes a reachability hole found by the PIPE2 derived-root audit: an
 # explicitly registered producer defect still requires direct, unrepaired
 # acceptance.  The v1 receipts remain historical and are never rewritten.
-VERSION = "two-stage-role-evidence-v2"
+VERSION = "two-stage-role-evidence-v3-structural-owner"
 
 
 def _digest(value: Any) -> str:
@@ -53,6 +55,9 @@ class SourceGate:
     policy_update_allowed: bool
     status: str
     reason: str
+    structural_owner_role: str = "unknown"
+    judged_role_agrees: bool | None = None
+    judged_target_paths: tuple[str, ...] = ()
 
     def payload(self) -> dict[str, Any]:
         return asdict(self)
@@ -112,8 +117,24 @@ def evaluate_source_gate(
         and action.get("used_artifact") is True
         and not changed
     )
+    structural_owner_role = derive_structural_owner_role(
+        materials, producer_score, action,
+        producer_defect_registered=producer_defect_registered,
+        later_use_valid=later_valid or direct_unrepaired_use,
+    )
+    if (not strict_attribution and producer_changed and target_role == "producer"
+            and binding and not recipient_changed):
+        # Historical qualification fixtures predate explicit operator-side
+        # defect registration.  New live events always carry the field.
+        structural_owner_role = "producer"
+    judged_role_agrees = (
+        target_role == structural_owner_role
+        if target_role in {"producer", "recipient", "sink", "mixed"}
+        and structural_owner_role != "unknown"
+        else None
+    )
     attribution = bool(
-        q_complete and y_complete and target_role == "producer" and binding
+        q_complete and y_complete and structural_owner_role == "producer" and binding
         and producer_defect_registered and producer_defect_observed
         and (producer_changed if not strict_attribution else not producer_changed)
         and not (producer_changed and recipient_changed)
@@ -121,16 +142,19 @@ def evaluate_source_gate(
     )
     if attribution:
         status = "ELIGIBLE"
-        reason = "complete source Qp/Y with independently registered producer defect"
+        if judged_role_agrees is False:
+            reason = "structural producer ownership; judged target role disagreement retained for calibration"
+        else:
+            reason = "complete source Qp/Y with independently registered producer defect"
     elif producer_changed and recipient_changed:
         status = "UNKNOWN"
         reason = "mixed ownership change requires a registered counterfactual"
     elif recipient_changed and not producer_changed:
         status = "PENDING_ATTRIBUTION"
         reason = "recipient-owned integration change cannot label producer"
-    elif not q_complete or not y_complete or target_role != "producer" or not binding:
+    elif not q_complete or not y_complete or not binding:
         status = "UNKNOWN"
-        reason = "incomplete source scorer/outcome, target, or artifact binding"
+        reason = "incomplete source scorer/outcome, target binding, or artifact binding"
     else:
         status = "PENDING_ATTRIBUTION"
         reason = "no producer-owned contract change; later outcome cannot create source evidence"
@@ -148,6 +172,9 @@ def evaluate_source_gate(
         policy_update_allowed=False,
         status=status,
         reason=reason,
+        structural_owner_role=structural_owner_role,
+        judged_role_agrees=judged_role_agrees,
+        judged_target_paths=tuple(judgment.get("target_paths", ())),
     )
 
 

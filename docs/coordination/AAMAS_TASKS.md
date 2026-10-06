@@ -1,6 +1,6 @@
 # AAMAS 2027 task ledger
 
-Updated: 2026-10-06 (C1 bounded live development v3 completed with 10 real API requests; scientific gate remains open). The project-level goal authority is [GOAL v1.0](GOAL.md); task-by-task reconciliation is indexed in [TASK_REPORTS](TASK_REPORTS.md). Owner: scientist; one engineer owns execution. Authority: [REQUIREMENTS.md](../paper/aamas2027/REQUIREMENTS.md), version 1.5.8. This is the sole active AAMAS gap/status/execution ledger. Role TODOs are historical pointers. Bounded read-only critiques inform the current direction; they did not execute experiments.
+Updated: 2026-10-06 (structural-owner gate v1.2 activated and zero-call A1--A8 qualification passed; scientific gate remains open). The project-level goal authority is [GOAL v1.0](GOAL.md); task-by-task reconciliation is indexed in [TASK_REPORTS](TASK_REPORTS.md). Owner: scientist; one engineer owns execution. Authority: [REQUIREMENTS.md](../paper/aamas2027/REQUIREMENTS.md), version 1.5.8. This is the sole active AAMAS gap/status/execution ledger. Role TODOs are historical pointers. Bounded read-only critiques inform the current direction; they did not execute experiments.
 
 **Current scientific checkpoint — 2026-10-06:** C0 candidate parity and the C1 zero-call
 contract qualification are complete as engineering evidence. C1 v3 then made 10 real
@@ -10,14 +10,20 @@ returned a recipient target for the source episode. RARE produced one delayed se
 update and a post-update preview. The run is still one PIPE3 root with static candidate
 snapshots, so it is not benchmark confirmation and does not authorize an efficacy claim. The
 recorded delayed update uses the recipient-judgment channel; policy-selection to native-ledger
-sidecar binding and complete cost aggregation remain open. The next scientific design issue is
-separating structural ownership from stochastic model target-role text before attempting another
-live comparison. See
+sidecar binding and complete cost aggregation remain open. ADR 0047 and active method v1.2 now
+separate contract-derived structural ownership from stochastic model target-role text; judged-role
+disagreement is retained for calibration rather than used as a random eligibility censor. The
+zero-call A1--A8 receipt is
+[`n03_structural_owner_gate_qualification_20261006_v2`](../../experiments/logs/n03_structural_owner_gate_qualification_20261006_v2/summary.json).
+Before another live comparison, a new card must carry explicit owner registration and report
+disagreement. See
 [`20261006_c1_bounded_live_card.md`](task_reports/20261006_c1_bounded_live_card.md).
 
 The paper-writing checkpoint on the same date now has an eight-page body after a structural
-prose rewrite and reference expansion; the isolated receipt is
+prose rewrite, reference expansion, and structural-owner gate synchronization; the latest
+isolated receipt is
 [`20261006_paper_structure_rewrite.md`](task_reports/20261006_paper_structure_rewrite.md).
+The current PDF is [`paper_structural_owner_20261006/main.pdf`](../../artifacts/aamas2027/paper_structural_owner_20261006/main.pdf).
 Three AI figure composition drafts and all prompts are versioned under
 `article/aamas2027/figures/ai_versions/v17_ai_draft_20261006/`; they are not yet active paper
 assets. These are writing/visual deliverables only and do not change the scientific gate.

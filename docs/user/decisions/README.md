@@ -51,3 +51,4 @@
 - [0043 — Two-stage evidence publication and delayed policy update](0043-two-stage-evidence-publication-and-delayed-update.md)：将责任归因、公共 evidence 发布和持久 policy 更新分开；未来 assignment/use 完成后才允许 selected-only delayed credit。
 - [0044 — Qualify PIPE2 derived candidate root](0044-qualify-pipe2-derived-candidate-root.md)：用户确认先将 CSV-writer overlay 做成 hash-locked candidate root 并完成零调用资格；不自动激活 benchmark 或启动 API/A800。
 - [0045 — Chain-local judgment and path lineage](0045-chain-local-judgment-and-path-lineage.md)：把每次交接的接收者评分作为有向边上的局部证据，通过 artifact/task lineage 形成路径；路径聚合和最终效用仍需单独实现与验证。
+- [0047 — Structural-owner gate and judged-role calibration](0047-structural-owner-gate-and-judged-role-calibration.md)：用冻结 contract/registry/scorer 推导责任 owner，保留模型 judged role 做校准；角色文字不再单独制造或取消 producer evidence。
