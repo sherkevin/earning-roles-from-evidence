@@ -1,5 +1,13 @@
 # AAMAS 2027 task ledger
 
+**Latest internal PDF — 2026-10-07:**
+[`observation_split_20261007_v2/main.pdf`](../../artifacts/aamas2027/observation_split_20261007_v2/main.pdf)
+supersedes the earlier terminal-measurement layout as the current manuscript.
+It incorporates ADR0049, has eight actual body pages and References only on
+page 9, with the complete matrix and empirical blanks preserved. The overlength
+v1 remains archived. [Build and visual review](task_reports/20261007_observation_split_paper_sync.md)
+do not open the scientific submission gate.
+
 **Latest scientific correction — 2026-10-07:** strict source publication makes
 J constant; its current assignment overlay is count-only. ADR0049, explicitly
 confirmed by the user, separates noisy observations from attributable credit.
@@ -8,6 +16,10 @@ observation/actor-state components qualify bounded interfaces, not efficacy.
 Before the previously planned real-actor continuation, complete the typed
 observation-to-native-assignment bridge and independent reward/cost contract.
 Existing ledger credit and target J alone do not establish producer reward.
+The reused five real producer trials also have constant J=accept_with_rework;
+all Qp are PASS, and all three available accepted-action diffs are recipient-only.
+This is integration/producer-label confounding, not evidence that five judges
+were wrong. Qualify task discrimination and judgment scope before another run.
 See [audit and Goal comparison](task_reports/20261007_judgment_support_and_observation_split.md).
 
 Updated: 2026-10-07 (real-artifact measurement reconciled; actual eight-body-page PDF verified; scientific submission gate remains closed). The project-level goal authority is [GOAL v1.0](GOAL.md); task-by-task reconciliation is indexed in [TASK_REPORTS](TASK_REPORTS.md). Owner: scientist; one engineer owns execution. Authority: [REQUIREMENTS.md](../paper/aamas2027/REQUIREMENTS.md), version 1.5.8. This is the sole active AAMAS gap/status/execution ledger. Role TODOs are historical pointers. Bounded read-only critiques inform the current direction; they did not execute experiments.

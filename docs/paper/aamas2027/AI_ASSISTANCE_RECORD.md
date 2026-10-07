@@ -892,3 +892,17 @@ v27/v22/v24 图组构建并目视核验：正文 8 页、参考文献从第 9 �
 页开始、引用解析、0 overfull；7 英寸缩放和 Generic Gray Gamma 2.2 灰度副本均可读。v28/v23/v26
 因此晋升为当前正文候选，旧 v27/v22/v24 保留回退。该晋升只改变图形资产，不改变科学结果或
 submission gate；三张图仍是 AI 栅格输出，矢量/嵌入字体生产门尚未关闭。
+
+## 2026-10-07 — Observation/credit separation and paper synchronization
+
+Codex gpt-6-sol collaborators audited source-gate label support, implemented bounded
+actor-history and read-only observation components, and revised English/Chinese
+prose under user-confirmed ADR0049. The coordinator reviewed counterexamples,
+recorded the existing target-J reward limitation, and inspected the compiled PDF.
+The new source-support audit and component tests are zero-API qualifications;
+the five real-producer records were inspected post hoc without rerunning models
+or scorers. No efficacy numbers were supplied. Observation-to-assignment bridging,
+independent reward semantics, qualified roots and live efficacy remain open.
+The current PDF has eight body pages, References from page 9. Failed v1 PDF/logs
+and the complete v2 source snapshot are retained. The exact v1 main.tex was not
+snapshotted before v2 edits; its hash alone cannot reproduce that failed build.

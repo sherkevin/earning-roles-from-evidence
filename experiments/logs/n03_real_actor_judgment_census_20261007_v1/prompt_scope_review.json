@@ -1,0 +1,207 @@
+{
+  "review_type": "posthoc read-only prompt scope review of five preexisting real-smoke runs",
+  "created_at_utc": "2026-10-07T04:57:01.997495+00:00",
+  "prompt_generator": {
+    "path": "scripts/peerrolebench_pipe3_real_smoke_v1.py",
+    "sha256": "192dd480731134792a3d5ccbce05e58fa0689c2de0a1fb91e01b71dbf7ecfa38",
+    "lines": {
+      "judgment_schema": "181-194",
+      "judgment_prompt": "195-199",
+      "decision_to_action_mapping": "207-214",
+      "action_prompt": "215-221"
+    },
+    "source_quote": "Review the delivered producer.py and decide accept, accept_with_rework, or reject_redo before executing anything.",
+    "scope_note": "The same request embeds recipient_payload with pipeline Goal, recipient-owned processor.py, read-only sink.py, producer.py, and writable_paths; v4-v6 request ownership fields."
+  },
+  "saved_trial_evidence": [
+    {
+      "run": "n03_pipe3_real_smoke_20260928_v2",
+      "decision": "accept_with_rework",
+      "decision_ref": {
+        "path": "experiments/logs/n03_pipe3_real_smoke_20260928_v2/episode_0/judgment.json",
+        "json_pointer": "/decision",
+        "sha256": "c0343f84cff7e103429061b4aaacb9fbfc1a91cc43f2553e7ffd77b80aa1eda3"
+      },
+      "prompt_short_quote": "Review the delivered producer.py",
+      "prompt_ref": {
+        "path": "experiments/logs/n03_pipe3_real_smoke_20260928_v2/episode_0/judgment_request.json",
+        "json_pointer": "/messages/0/content",
+        "sha256": "d7cfe80fda4f88dcef4620c260ba5036d956d13b9e98c50d38f7f8fce00eb793"
+      },
+      "rationale_short_quote": "The producer.py is correct and should not be modified",
+      "rationale_ref": {
+        "path": "experiments/logs/n03_pipe3_real_smoke_20260928_v2/episode_0/judgment.json",
+        "json_pointer": "/rationale",
+        "sha256": "c0343f84cff7e103429061b4aaacb9fbfc1a91cc43f2553e7ffd77b80aa1eda3"
+      },
+      "plan_short_quote": "In processor.py:",
+      "plan_ref": {
+        "path": "experiments/logs/n03_pipe3_real_smoke_20260928_v2/episode_0/judgment.json",
+        "json_pointer": "/repair_plan",
+        "sha256": "c0343f84cff7e103429061b4aaacb9fbfc1a91cc43f2553e7ffd77b80aa1eda3"
+      },
+      "target_role": "UNKNOWN",
+      "target_paths": "UNKNOWN",
+      "defect_type": "UNKNOWN",
+      "ownership_fields_ref": null
+    },
+    {
+      "run": "n03_pipe3_real_smoke_20260928_v3",
+      "decision": "accept_with_rework",
+      "decision_ref": {
+        "path": "experiments/logs/n03_pipe3_real_smoke_20260928_v3/episode_0/judgment.json",
+        "json_pointer": "/decision",
+        "sha256": "470923c94014e068aa4b1242595d3b293cbc22c4605d38cdfbba3a24ae0ef54d"
+      },
+      "prompt_short_quote": "Review the delivered producer.py",
+      "prompt_ref": {
+        "path": "experiments/logs/n03_pipe3_real_smoke_20260928_v3/episode_0/judgment_request.json",
+        "json_pointer": "/messages/0/content",
+        "sha256": "d7cfe80fda4f88dcef4620c260ba5036d956d13b9e98c50d38f7f8fce00eb793"
+      },
+      "rationale_short_quote": "The processor.py has two critical bugs",
+      "rationale_ref": {
+        "path": "experiments/logs/n03_pipe3_real_smoke_20260928_v3/episode_0/judgment.json",
+        "json_pointer": "/rationale",
+        "sha256": "470923c94014e068aa4b1242595d3b293cbc22c4605d38cdfbba3a24ae0ef54d"
+      },
+      "plan_short_quote": "In processor.py:",
+      "plan_ref": {
+        "path": "experiments/logs/n03_pipe3_real_smoke_20260928_v3/episode_0/judgment.json",
+        "json_pointer": "/repair_plan",
+        "sha256": "470923c94014e068aa4b1242595d3b293cbc22c4605d38cdfbba3a24ae0ef54d"
+      },
+      "target_role": "UNKNOWN",
+      "target_paths": "UNKNOWN",
+      "defect_type": "UNKNOWN",
+      "ownership_fields_ref": null
+    },
+    {
+      "run": "n03_pipe3_real_smoke_20260928_v4",
+      "decision": "accept_with_rework",
+      "decision_ref": {
+        "path": "experiments/logs/n03_pipe3_real_smoke_20260928_v4/episode_0/judgment.json",
+        "json_pointer": "/decision",
+        "sha256": "7b7e14e8ade23f943e97ef0e3c8a32e45e52de9d4ddd783fb92f1abbb9bddfd3"
+      },
+      "prompt_short_quote": "Also identify the implicated ownership boundary",
+      "prompt_ref": {
+        "path": "experiments/logs/n03_pipe3_real_smoke_20260928_v4/episode_0/judgment_request.json",
+        "json_pointer": "/messages/0/content",
+        "sha256": "b49cb76c94cd2a9953ad5f46d520ea129ddb343260626130cc16b229a7d91a4a"
+      },
+      "rationale_short_quote": "The producer.py is correct and should be accepted as-is",
+      "rationale_ref": {
+        "path": "experiments/logs/n03_pipe3_real_smoke_20260928_v4/episode_0/judgment.json",
+        "json_pointer": "/rationale",
+        "sha256": "7b7e14e8ade23f943e97ef0e3c8a32e45e52de9d4ddd783fb92f1abbb9bddfd3"
+      },
+      "plan_short_quote": "In processor.py:",
+      "plan_ref": {
+        "path": "experiments/logs/n03_pipe3_real_smoke_20260928_v4/episode_0/judgment.json",
+        "json_pointer": "/repair_plan",
+        "sha256": "7b7e14e8ade23f943e97ef0e3c8a32e45e52de9d4ddd783fb92f1abbb9bddfd3"
+      },
+      "target_role": "recipient",
+      "target_paths": [
+        "processor.py"
+      ],
+      "defect_type": "recipient_integration",
+      "ownership_fields_ref": {
+        "path": "experiments/logs/n03_pipe3_real_smoke_20260928_v4/episode_0/judgment.json",
+        "json_pointer": "/target_role",
+        "sha256": "7b7e14e8ade23f943e97ef0e3c8a32e45e52de9d4ddd783fb92f1abbb9bddfd3"
+      }
+    },
+    {
+      "run": "n03_pipe3_real_smoke_20260929_v5",
+      "decision": "accept_with_rework",
+      "decision_ref": {
+        "path": "experiments/logs/n03_pipe3_real_smoke_20260929_v5/episode_0/judgment.json",
+        "json_pointer": "/decision",
+        "sha256": "8ba1d78a59b5918a5ce2f0ccc935b771ae4bb845d337bfc23fedddd6462fc07d"
+      },
+      "prompt_short_quote": "Also identify the implicated ownership boundary",
+      "prompt_ref": {
+        "path": "experiments/logs/n03_pipe3_real_smoke_20260929_v5/episode_0/judgment_request.json",
+        "json_pointer": "/messages/0/content",
+        "sha256": "b49cb76c94cd2a9953ad5f46d520ea129ddb343260626130cc16b229a7d91a4a"
+      },
+      "rationale_short_quote": "The producer.py is correct and conforms to the spec.",
+      "rationale_ref": {
+        "path": "experiments/logs/n03_pipe3_real_smoke_20260929_v5/episode_0/judgment.json",
+        "json_pointer": "/rationale",
+        "sha256": "8ba1d78a59b5918a5ce2f0ccc935b771ae4bb845d337bfc23fedddd6462fc07d"
+      },
+      "plan_short_quote": "In processor.py:",
+      "plan_ref": {
+        "path": "experiments/logs/n03_pipe3_real_smoke_20260929_v5/episode_0/judgment.json",
+        "json_pointer": "/repair_plan",
+        "sha256": "8ba1d78a59b5918a5ce2f0ccc935b771ae4bb845d337bfc23fedddd6462fc07d"
+      },
+      "target_role": "recipient",
+      "target_paths": [
+        "processor.py"
+      ],
+      "defect_type": "recipient_integration",
+      "ownership_fields_ref": {
+        "path": "experiments/logs/n03_pipe3_real_smoke_20260929_v5/episode_0/judgment.json",
+        "json_pointer": "/target_role",
+        "sha256": "8ba1d78a59b5918a5ce2f0ccc935b771ae4bb845d337bfc23fedddd6462fc07d"
+      }
+    },
+    {
+      "run": "n03_pipe3_real_smoke_20260929_v6",
+      "decision": "accept_with_rework",
+      "decision_ref": {
+        "path": "experiments/logs/n03_pipe3_real_smoke_20260929_v6/episode_0/judgment.json",
+        "json_pointer": "/decision",
+        "sha256": "00520899df1b619efdb41a71bcb0bac75f0e840d14564f6820d18674258094fc"
+      },
+      "prompt_short_quote": "Also identify the implicated ownership boundary",
+      "prompt_ref": {
+        "path": "experiments/logs/n03_pipe3_real_smoke_20260929_v6/episode_0/judgment_request.json",
+        "json_pointer": "/messages/0/content",
+        "sha256": "02be2bdb907c5bcf76aef4bc2c4b47528dfcb02a845abdf6b4f1bb833e7796e3"
+      },
+      "rationale_short_quote": "The delivered producer.py is read-only context and looks correct.",
+      "rationale_ref": {
+        "path": "experiments/logs/n03_pipe3_real_smoke_20260929_v6/episode_0/judgment.json",
+        "json_pointer": "/rationale",
+        "sha256": "00520899df1b619efdb41a71bcb0bac75f0e840d14564f6820d18674258094fc"
+      },
+      "plan_short_quote": "In processor.py:",
+      "plan_ref": {
+        "path": "experiments/logs/n03_pipe3_real_smoke_20260929_v6/episode_0/judgment.json",
+        "json_pointer": "/repair_plan",
+        "sha256": "00520899df1b619efdb41a71bcb0bac75f0e840d14564f6820d18674258094fc"
+      },
+      "target_role": "recipient",
+      "target_paths": [
+        "processor.py"
+      ],
+      "defect_type": "recipient_integration",
+      "ownership_fields_ref": {
+        "path": "experiments/logs/n03_pipe3_real_smoke_20260929_v6/episode_0/judgment.json",
+        "json_pointer": "/target_role",
+        "sha256": "00520899df1b619efdb41a71bcb0bac75f0e840d14564f6820d18674258094fc"
+      }
+    }
+  ],
+  "finding": "The prompt verbally frames judgment around the producer delivery but asks for a choice that also determines the recipient action, while displaying the whole integration task. The saved rationales and plans point to recipient-owned processor.py; v4-v6 explicitly label target_role=recipient and defect_type=recipient_integration. The five accept_with_rework decisions therefore do not establish that the recipient judged producer.py defective. v3 names only processor defects; v2 and v4-v6 explicitly say producer.py is correct.",
+  "distinction": "This is evidence of judgment/action-plan conflation in the historical instrument, not proof that the model misjudged producer contract quality. Qp PASS is an independent historical measurement but old J must not be re-labeled posthoc.",
+  "next_card_candidate": {
+    "prompt_revision": "Before acting, provide separate sealed fields: producer_delivery_assessment (PASS/FAIL/UNKNOWN against producer-owned contract, evidence paths and artifact digest) and recipient_integration_plan (use/repair/redo, affected owned paths and rationale). State explicitly that recipient-owned repair needs do not lower producer_delivery_assessment.",
+    "measurement_revision": "Keep raw historical-style J/action category as an observation, record target_role/paths and actual recipient diff separately, and compare producer assessment with independently measured Qp. Do not convert accept_with_rework into producer defect/reward; new fields require a prospective frozen card and native protocol compatibility review.",
+    "historical_rescore_allowed": false
+  },
+  "limitations": [
+    "same seed/root and evolving prompts/protocols",
+    "saved requests show instruction content, not causal effect of wording",
+    "no API/model/scorer executed",
+    "no claim of method benefit"
+  ],
+  "new_api_calls": 0,
+  "new_scorer_calls": 0,
+  "new_model_executions": 0
+}

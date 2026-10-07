@@ -1,5 +1,11 @@
 # Task reports
 
+- [partial] 2026-10-07 observation/credit paper sync: English/Chinese prose now
+  follows ADR0049 and includes count-only/J-masked controls. Preserved v1's
+  overlength failure; v2 has exactly eight body pages, References only from
+  page 9, resolved citations and no overfull. Visual layout checked; no new
+  efficacy claim. See [paper sync report](task_reports/20261007_observation_split_paper_sync.md).
+
 - [partial] 2026-10-07 judgment-support audit and accepted observation split:
   strict source J is constant and its overlay equals eligible-event counts.
   User confirmed ADR0049; method v1.3/evaluation v1.4 activated without lowering

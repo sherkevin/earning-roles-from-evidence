@@ -20,7 +20,28 @@
 语义不足，更新后的选择也只预览未执行。不能扩写成“所有评价无用”或“模型不能学习”。
 本轮新增真实 API 调用和 GPU 作业均为 0。
 
+随后对既有 real-smoke v2–v6 全部五轮做了
+[事后真实记录清点](../../../experiments/logs/n03_real_actor_judgment_census_20261007_v1/summary.json)，
+不重跑模型或评分器：Qp 五次 PASS，J 五次 accept_with_rework，**没有 J 类别差异**。
+三轮可比的实际 repair 仅修改 recipient-owned `processor.py`；两轮 consumer 解析失败，
+动作及终局 UNKNOWN；仅 v3/v6 有 native terminal outcome。原始字段和文件摘要逐行保存。
+
+这不能推断“五次 judge 都判断错误”：需要集成可以是正确的行动计划。它证明不能
+直接把 rework 当作 producer 错误标签。新观察通道解除门控删样本，不会自动让这批
+饱和任务获得区分度。五轮同 root/seed 且协议改变，既不能估计独立准确率，也不能
+事后声称满足新合同的准入。下一轮优先核验 public producer contract、recipient
+integration 与判断问题的语义是否真正分开，而不是增加同一任务的调用或训练轮数。
+
 ## 多轮独立审查及纠正
+
+真实提示词的[逐轮作用域审查](../../../experiments/logs/n03_real_actor_judgment_census_20261007_v1/prompt_scope_review.json)
+进一步确定原因：请求虽然写着 review delivered producer，却附带整体集成任务，
+并直接把同一评价类别映射成 consumer 的 use/repair/redo。五轮 rework 理由均指向
+recipient-owned `processor.py`；四轮还明确表示 producer 正确。问题是评价类别
+混入自身集成计划，不能将其解释成 judge 把 producer 判错。下一卡应分别封存
+producer-contract assessment 和 recipient integration plan，保留原始类别与实际路径，
+用独立 Qp/未来结果检验它们的信息价值；这仍是卡片候选，历史标签与 ACTIVE 定义
+没有因此被回写或私自改义。
 
 主代理与 Codex `gpt-6-sol` 审查者逐条核对源码，没有以多数同意替代证明。
 
@@ -88,7 +109,8 @@ Qp/Y 的真实测量仍由上游独立评分器负责。结果存在及摘要不
 | ER-G3 benchmark/baseline | 增加 count-only/J-masked 辨识检查，保留合法 Qp/terminal/contextual 控制 | 两个合格结构 root、全基线 live parity、独立确认流 |
 | ER-G4 真实证据 | 明确区分数学/协议资格与模型实验，保留配置与逐例日志 | 不能据此填实证收益表 |
 
-下一小任务是 observation→assignment 的合法桥及 reward 合同：复用唯一原生完成锚点，
+下一小任务先完成任务区分度与判断对象的无新增调用检查，并完成 observation→assignment
+的合法桥及 reward 合同：复用唯一原生完成锚点，
 在旧 offer、最终 assignment、credit 消费边界检查类型、责任、subject/read cut/propensity。
 通过零调用完整链后冻结 label/成本规则，再接真实 producer、actor state 与实际后续任务。
 小卡先检查自然支持度和完整结果，不能反复改 seed/mapping、删失败来制造效果。
