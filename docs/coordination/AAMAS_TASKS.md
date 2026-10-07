@@ -1,5 +1,15 @@
 # AAMAS 2027 task ledger
 
+**Latest PIPE1 execution preflight — 2026-10-07:** the candidate source seed 0 → target
+seed 3 material passes 11 of 22 zero-call checks and confirms the native Planner/Executor
+projection plus Verifier harness. Ten execution prerequisites remain blocked, including
+source→artifact lineage, runtime actor visibility, live Verifier attestation, exact target
+scoring, timezone/provider pinning, a new budget issuer, the ledger runner, relay baseline,
+and assignment randomization; same-initial-peer divergence is open. The card remains
+`CANDIDATE / NOT_ACTIVE`: no API, generator, candidate or GPU call was made and no
+scientific claim is allowed. See [preflight report](task_reports/20261007_pipe1_preflight.md)
+and [`n03_pipe1_preflight_20261007_v3`](../../experiments/logs/n03_pipe1_preflight_20261007_v3/summary.json).
+
 **Latest bounded generation implementation — 2026-10-07:** a separate live
 producer stage now projects personal history into the real transport request,
 keeps generation policy separate from each delivery, and checks canonical

@@ -94,4 +94,6 @@
 - [open] 2026-10-07 下一科学单位是 source–target 任务/测量卡：用已有真实输出和 native 材料声明规则重叠、可见边界、独立收益与完整成本；全局预算发行及真实provider pin仍是调用前置。不要继续堆入口通用功能，不把软件通过算论文效果。
 - [done] 2026-10-07 source–target材料审计：独立审查确认历史C1 target material复用；PIPE1 seed0→3只有同一root内的规则差异，不能冒充第二root或已验证泛化。0新增API/生成器/candidate，正式benchmark未激活。→ [distinctness回执](experiments/logs/n03_task_distinctness_audit_20261007_v2/summary.json)。
 - [open] 2026-10-07 在任何新调用前完成PIPE1卡的 provider/TZ/预算发行与 source-target ledger preflight；追加4次 judgment预算不覆盖该卡，未获独立授权不得借用。
+- [done] 2026-10-07 PIPE1 零调用执行前预检完成：修订回执 11/22 项通过，10 项明确阻塞，1 项开放；独立审查补出 source→artifact lineage、runtime actor visibility、live Verifier attestation、relay baseline 与 assignment randomization 缺口。→ [预检报告](docs/coordination/task_reports/20261007_pipe1_preflight.md)；[回执](experiments/logs/n03_pipe1_preflight_20261007_v3/summary.json)。
+- [open] 2026-10-07 只解决 PIPE1 十个执行阻塞项并完成独立复核；不得借用四次 judgment-only 预算，不得以卡版本变化重置累计预算，不得在阻塞项关闭前发起 route call。
 - [done] 2026-10-07 论文 claim 与 distinctness 同步：收紧 held-out/root-split/candidate benchmark 三处措辞；隔离编译正文8页、References第9页，0API/0GPU。→ [构建与Goal对照](docs/coordination/task_reports/20261007_paper_claim_distinctness_sync.md)。

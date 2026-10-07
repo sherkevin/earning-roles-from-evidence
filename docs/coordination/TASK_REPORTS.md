@@ -1,5 +1,11 @@
 # Task reports
 
+- [blocked_by_preflight] 2026-10-07 PIPE1 source–target execution preflight: revised
+  zero-call receipt passes 11/22 checks, with 10 execution blockers and one open
+  same-initial-peer item; exact scoring, live lineage/visibility/attestation, cost, routing,
+  timezone/provider pinning, budget issuance and randomized assignment remain unresolved.
+  Zero API/generator/candidate/GPU calls and no scientific claim. See [preflight report](task_reports/20261007_pipe1_preflight.md).
+
 - [partial] 2026-10-07 live producer stage: bounded personal history reaches a
   real transport entrypoint; canonical reservations, request/raw-response/cost
   consistency and model identity are checked. Preserved the first passing test
