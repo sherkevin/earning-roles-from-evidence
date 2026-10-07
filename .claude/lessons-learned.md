@@ -370,3 +370,9 @@
 - **根因:** 检查集中于各对象的形状和单文件完整性，没有沿同一次请求验证预算、模型、原始响应、解析结果及经历写入之间的关系。
 - **避免:** 在唯一预算路径原子claim，复用真实解析器重读封存响应，核对实际请求和结果的模型/文本/usage/结束状态；设置重新封存但语义矛盾的负例。软件fixture只能证明约束实现，不能证明服务端运行或全局预算获批。
 - **Evidence:** `docs/coordination/task_reports/20261007_live_producer_stage_binding.md`；`experiments/logs/n03_live_producer_stage_checks_20261007_v1/post_test_review.json`；同目录v2回执。
+
+### 0059-partial-arms-must-not-be-assumed-complete | 2026-10-07 | earning-roles
+- **现象:** 首版任务 distinctness 审计默认每个 baseline arm 都有 source 与 target 请求，遇到 target 未启动的 contextual arm 时在比较前失败。
+- **根因:** 离线审计把“计划中的完整矩阵”误当成“历史上已经产生的文件集合”，没有先读取每个 arm 的实际完成前缀。
+- **避免:** 审计输入先枚举存在的封存文件，再把缺失 target 明确记为 `request_count` 不足和不可作效果证据；失败审计保留，修正版不能补写缺失请求或把 UNKNOWN 当负例。
+- **Evidence:** `experiments/logs/n03_task_distinctness_audit_20261007_v1/failure.json`；`experiments/logs/n03_task_distinctness_audit_20261007_v2/summary.json`；`scripts/peerrolebench_task_distinctness_audit.py`。
