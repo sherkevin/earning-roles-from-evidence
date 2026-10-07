@@ -29,6 +29,14 @@ shared structural root. A 25-test zero-call qualification passes; the exact bind
 [binding report](task_reports/20261007_pipe1_native_material_binding.md) and
 [`n03_pipe1_preflight_20261007_v5`](../../experiments/logs/n03_pipe1_preflight_20261007_v5/summary.json).
 
+**Latest PIPE1 runner reuse audit — 2026-10-07:** existing zero-call contracts already provide
+ledger replay, source→target schedule, candidate/propensity validation, ownership classification,
+selected-only attestation and terminal history binding. N02's closed-loop runner remains a
+lifecycle reference only because its controller update conflates recipient action with role
+credit. The next bounded implementation is an offline PIPE1 adapter that composes these modules
+and emits the qualified route receipt; no API/GPU or new budget is used. See [reuse audit]
+(task_reports/20261007_pipe1_runner_reuse_audit.md).
+
 **Latest bounded generation implementation — 2026-10-07:** a separate live
 producer stage now projects personal history into the real transport request,
 keeps generation policy separate from each delivery, and checks canonical

@@ -19,6 +19,12 @@
   zero-call qualification passes. No API/generator/candidate/GPU or scientific claim. See
   [binding report](task_reports/20261007_pipe1_native_material_binding.md).
 
+- [partial] 2026-10-07 PIPE1 runner reuse audit: existing ledger replay, source-target schedule,
+  candidate/propensity, selected-only attestation, ownership and terminal history modules are
+  reusable; the N02 controller update is explicitly not reused as PIPE1 reward. The next step
+  is a zero-call adapter composing those contracts. No API/GPU or benchmark activation. See
+  [reuse audit](task_reports/20261007_pipe1_runner_reuse_audit.md).
+
 - [partial] 2026-10-07 main PDF master sync: parent-level `artifacts/aamas2027/main.pdf`
   now points byte-for-byte to the verified `microtype_20261007_v55` build (8 body pages,
   References from page 9, SHA-256 recorded in provenance). Version directories remain
