@@ -1,0 +1,3 @@
+Pre-freeze debug run after the first binding patch: 2 failed, 11 passed.
+- The positive fixture failed because protocol serialization exposes candidate_ids/evidence_ids as tuples; the adapter initially accepted only lists.
+- The failure did not call any API, generator, candidate, or GPU. The final patch accepts the protocol's tuple/list sequence forms while retaining exact order checks.

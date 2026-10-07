@@ -5,6 +5,12 @@
   contracts into a zero-call adapter. The 9-case suite and `py_compile` pass; mutation cases
   fail closed. `READY_FOR_ROUTE` is not a live route and policy updates remain disabled;
   native material/route preflight and all scientific gates remain open. See [report](task_reports/20261007_pipe1_offline_adapter_qualification.md).
+
+- [partial] 2026-10-07 PIPE1 offline adapter binding repair: independent review reproduced
+  a chosen-peer/menu and evidence/source-index de-linking bug. The adapter now cross-binds
+  native target selection, menu order, chosen peer/propensity, assignment, evidence delivery
+  and task indices; malformed rows fail closed. v2 has 13 passing zero-call cases. `READY_FOR_ROUTE`
+  remains a pre-route contract, not attribution or scientific efficacy. See [repair report](task_reports/20261007_pipe1_offline_adapter_binding_repair.md).
 - [partial] 2026-10-07 PIPE1 route receipt qualification: a zero-call validator now binds
   source/target material, message/artifact/Executor/Verifier hashes, candidate versions,
   allocation propensity, provider/TZ, phase costs, selected-only visibility and causal order.

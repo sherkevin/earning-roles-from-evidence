@@ -102,3 +102,43 @@ def test_ownership_unknown_is_reported_without_role_credit():
     assert result["status"] == "READY_FOR_ROUTE"
     assert result["ownership_status"] == "UNKNOWN"
     assert result["ownership"][0]["policy_update_allowed"] is False
+
+
+def test_external_chosen_peer_mismatch_fails_closed():
+    kwargs = _kwargs(_pipe1_events())
+    kwargs.update(chosen_key="peer-c@v1", chosen_index=1)
+    result = validate_source_target_fixture(**kwargs)
+    assert result["status"] == "UNKNOWN"
+    assert result["route_ready"] is False
+    assert any("chosen peer" in error for error in result["selection_binding"]["errors"])
+    assert result["update_boundary"]["policy_update_allowed"] is False
+
+
+def test_external_menu_mismatch_fails_closed():
+    kwargs = _kwargs(_pipe1_events())
+    kwargs.update(menu_keys=("peer-c@v1", "peer-b@v1"), chosen_key="peer-c@v1", chosen_index=0)
+    result = validate_source_target_fixture(**kwargs)
+    assert result["status"] == "UNKNOWN"
+    assert result["route_ready"] is False
+    assert any("candidate menu" in error for error in result["selection_binding"]["errors"])
+
+
+def test_wrong_evidence_or_source_index_fails_closed():
+    kwargs = _kwargs(_pipe1_events())
+    kwargs.update(evidence_id="e1")
+    result = validate_source_target_fixture(**kwargs)
+    assert result["status"] == "UNKNOWN"
+    assert result["route_ready"] is False
+
+    kwargs = _kwargs(_pipe1_events())
+    kwargs.update(source_task_index=-1)
+    result = validate_source_target_fixture(**kwargs)
+    assert result["status"] == "UNKNOWN"
+    assert result["route_ready"] is False
+
+
+def test_malformed_row_fails_closed_without_exception():
+    events = _pipe1_events() + [None]
+    result = validate_source_target_fixture(**_kwargs(events))
+    assert result["status"] == "UNKNOWN"
+    assert result["route_ready"] is False

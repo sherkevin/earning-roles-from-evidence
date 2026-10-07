@@ -27,6 +27,9 @@ _TASK_EVENTS = {
 def _task_ids(events: Sequence[Mapping[str, Any]]) -> set[str]:
     values: set[str] = set()
     for row in events:
+        if not isinstance(row, Mapping):
+            values.add("<invalid-row>")
+            continue
         if row.get("event_type") not in _TASK_EVENTS:
             continue
         payload = row.get("payload")
@@ -35,6 +38,107 @@ def _task_ids(events: Sequence[Mapping[str, Any]]) -> set[str]:
         else:
             values.add(payload["task_id"])
     return values
+
+
+def _event_payloads(
+    rows: Sequence[Mapping[str, Any]], event_type: str, key: str, value: str,
+) -> list[Mapping[str, Any]]:
+    """Return payloads for one identity; malformed rows are simply absent."""
+    result: list[Mapping[str, Any]] = []
+    for row in rows:
+        if not isinstance(row, Mapping) or row.get("event_type") != event_type:
+            continue
+        payload = row.get("payload")
+        if isinstance(payload, Mapping) and payload.get(key) == value:
+            result.append(payload)
+    return result
+
+
+def _selection_binding(
+    *, rows: Sequence[Mapping[str, Any]], task_id: str, source_task_index: int,
+    target_task_index: int,
+    target_selection_id: str, assignment_id: str, evidence_id: str,
+    menu_keys: Sequence[str], chosen_key: str, propensity: float,
+) -> dict[str, Any]:
+    """Bind caller-visible selection arguments to the native ledger facts."""
+    errors: list[str] = []
+    selections = _event_payloads(rows, "peer_selection", "selection_id", target_selection_id)
+    if len(selections) != 1:
+        errors.append("target selection id must identify exactly one peer_selection")
+        selection = None
+    else:
+        selection = selections[0]
+    assignments = _event_payloads(rows, "later_assignment", "assignment_id", assignment_id)
+    if len(assignments) != 1:
+        errors.append("assignment id must identify exactly one later_assignment")
+        assignment = None
+    else:
+        assignment = assignments[0]
+
+    if not isinstance(target_task_index, int) or isinstance(target_task_index, bool) or target_task_index < 0:
+        errors.append("target_task_index must be a non-negative integer")
+    if selection is not None:
+        if selection.get("task_id") != task_id or selection.get("task_index") != target_task_index:
+            errors.append("target selection task identity/index is not bound")
+        candidate_ids = selection.get("candidate_ids")
+        menu_ids = [str(key).split("@", 1)[0] for key in menu_keys]
+        if not isinstance(candidate_ids, (list, tuple)) or tuple(candidate_ids) != tuple(menu_ids):
+            errors.append("target selection candidate menu differs from selection receipt")
+        selected_id = str(chosen_key).split("@", 1)[0]
+        if selection.get("chosen_peer_id") != selected_id:
+            errors.append("target selection chosen peer differs from selection receipt")
+        native_propensity = selection.get("propensity")
+        if not isinstance(native_propensity, (int, float)) or abs(float(native_propensity) - float(propensity)) > 1e-12:
+            errors.append("target selection propensity differs from selection receipt")
+
+    evidence_rows = _event_payloads(rows, "role_evidence_update", "evidence_id", evidence_id)
+    if len(evidence_rows) != 1:
+        errors.append("evidence id must identify exactly one role_evidence_update")
+        evidence = None
+    else:
+        evidence = evidence_rows[0]
+    if assignment is not None:
+        if assignment.get("task_id") != task_id or assignment.get("task_index") != target_task_index:
+            errors.append("assignment task identity/index is not bound")
+        evidence_ids = assignment.get("evidence_ids")
+        if not isinstance(evidence_ids, (list, tuple)) or evidence_id not in evidence_ids:
+            errors.append("assignment does not cite the supplied evidence id")
+        if selection is not None and assignment.get("agent_id") != selection.get("chosen_peer_id"):
+            errors.append("assignment agent differs from target selected peer")
+
+    evidence_delivery = None
+    if evidence is not None:
+        delivery_ids: list[str] = []
+        for event_type, ref_key in (
+            ("recipient_judgment", "judgment_id"),
+            ("consumer_action", "action_id"),
+            ("terminal_outcome", "outcome_id"),
+        ):
+            ref = evidence.get(ref_key)
+            linked = _event_payloads(rows, event_type, ref_key, ref) if isinstance(ref, str) else []
+            if len(linked) != 1 or not isinstance(linked[0].get("delivery_id"), str):
+                errors.append(f"evidence {ref_key} is not bound to one {event_type}")
+            else:
+                delivery_ids.append(linked[0]["delivery_id"])
+        if delivery_ids and len(set(delivery_ids)) != 1:
+            errors.append("evidence references disagree on delivery")
+        if delivery_ids:
+            deliveries = _event_payloads(rows, "producer_delivery", "delivery_id", delivery_ids[0])
+            if len(deliveries) != 1:
+                errors.append("evidence delivery is missing or duplicated")
+            else:
+                evidence_delivery = deliveries[0]
+                if evidence_delivery.get("task_id") != task_id or evidence_delivery.get("task_index") != source_task_index:
+                    errors.append("evidence delivery is not bound to the source task index")
+
+    return {
+        "valid": not errors,
+        "errors": errors,
+        "target_selection": dict(selection) if selection is not None else None,
+        "assignment": dict(assignment) if assignment is not None else None,
+        "evidence_count": len(evidence_rows),
+        "evidence_delivery": dict(evidence_delivery) if evidence_delivery is not None else None,
+    }
 
 
 def _ownership_status(rows: Sequence[Mapping[str, Any]]) -> str:
@@ -74,21 +178,45 @@ def validate_source_target_fixture(
     if task_ids != {task_id}:
         errors.append(f"task ids are not uniformly bound to {task_id!r}: {sorted(task_ids)}")
 
-    ledger = validate_ledger_key_binding(rows)
-    schedule = validate_source_target_schedule(
-        events=rows,
-        source_task_index=source_task_index,
+    source_index_valid = isinstance(source_task_index, int) and not isinstance(source_task_index, bool) and source_task_index >= 0
+    target_index_valid = isinstance(target_task_index, int) and not isinstance(target_task_index, bool) and target_task_index >= 0
+    if not source_index_valid:
+        errors.append("source_task_index must be a non-negative integer")
+    if not target_index_valid:
+        errors.append("target_task_index must be a non-negative integer")
+    if source_index_valid and target_index_valid and source_task_index >= target_task_index:
+        errors.append("source_task_index must precede target_task_index")
+    try:
+        ledger = validate_ledger_key_binding(rows)
+    except (AttributeError, TypeError, ValueError) as exc:
+        ledger = {"valid": False, "status": "INVALID", "error": f"{type(exc).__name__}: {exc}"}
+    try:
+        schedule = validate_source_target_schedule(
+            events=rows,
+            source_task_index=source_task_index,
+            target_task_index=target_task_index,
+            evidence_id=evidence_id,
+            assignment_id=assignment_id,
+            target_selection_id=target_selection_id,
+        )
+    except (AttributeError, TypeError, ValueError) as exc:
+        schedule = {"valid": False, "status": "INVALID", "errors": [f"{type(exc).__name__}: {exc}"]}
+    try:
+        selection = validate_selection_receipt(
+            registry=registry,
+            menu_keys=menu_keys,
+            chosen_key=chosen_key,
+            probabilities=probabilities,
+            chosen_index=chosen_index,
+            propensity=propensity,
+        )
+    except (AttributeError, TypeError, ValueError) as exc:
+        selection = {"valid": False, "errors": [f"{type(exc).__name__}: {exc}"]}
+    selection_binding = _selection_binding(
+        rows=rows, task_id=task_id, source_task_index=source_task_index,
         target_task_index=target_task_index,
-        evidence_id=evidence_id,
-        assignment_id=assignment_id,
-        target_selection_id=target_selection_id,
-    )
-    selection = validate_selection_receipt(
-        registry=registry,
-        menu_keys=menu_keys,
-        chosen_key=chosen_key,
-        probabilities=probabilities,
-        chosen_index=chosen_index,
+        target_selection_id=target_selection_id, assignment_id=assignment_id,
+        evidence_id=evidence_id, menu_keys=menu_keys, chosen_key=chosen_key,
         propensity=propensity,
     )
     ownership: list[dict[str, Any]] = []
@@ -105,6 +233,8 @@ def validate_source_target_fixture(
         errors.append("source-to-target schedule failed")
     if not selection.get("valid"):
         errors.append("selection receipt failed")
+    if not selection_binding["valid"]:
+        errors.append("native selection/assignment/evidence binding failed")
 
     route_ready = not errors
     if route_ready:
@@ -127,6 +257,7 @@ def validate_source_target_fixture(
         "ledger": ledger,
         "schedule": schedule,
         "selection": selection,
+        "selection_binding": selection_binding,
         "ownership": ownership,
         "ownership_status": _ownership_status(ownership),
         "update_boundary": update,

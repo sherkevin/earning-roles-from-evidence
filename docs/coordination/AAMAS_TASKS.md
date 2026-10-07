@@ -45,15 +45,17 @@ component evidence only (`0` API/generator/candidate/GPU, scientific gate closed
 benchmark result. See [qualification report](task_reports/20261007_pipe1_runner_reuse_qualification.md)
 and [`n03_pipe1_runner_reuse_qualification_20261007_v3`](../../experiments/logs/n03_pipe1_runner_reuse_qualification_20261007_v3/summary.json).
 
-**Latest PIPE1 offline adapter qualification — 2026-10-07:** a narrow adapter now composes
-the existing ledger replay, task-id binding, source→target schedule, selection receipt,
-ownership and UNKNOWN/no-update contracts. Its 9-case offline suite passes, including
-fail-closed mutations. `READY_FOR_ROUTE` is only a pre-route contract: policy updates remain
-disabled and native-material/route receipt, provider/TZ, live lineage, scoring, cost and
-assignment gates remain with the separate preflight. This is zero-call engineering evidence
-only (`0` API/generator/candidate/GPU; `scientific_claim_allowed=false`), not a PIPE1 result.
-See [qualification report](task_reports/20261007_pipe1_offline_adapter_qualification.md) and
-[`n03_pipe1_offline_adapter_qualification_20261007_v1`](../../experiments/logs/n03_pipe1_offline_adapter_qualification_20261007_v1/summary.json).
+**Latest PIPE1 offline adapter binding repair — 2026-10-07:** independent review found that
+the first adapter accepted a caller-supplied chosen peer/menu without cross-checking the native
+target `PeerSelection`, and also allowed evidence/source-index drift. The repair binds native
+selection, menu order, chosen peer/propensity, assignment, evidence delivery and non-negative
+source/target indices; malformed rows fail closed. Its v2 suite passes 13 cases. `READY_FOR_ROUTE`
+is only a pre-route contract: it is not attribution-ready, a live route, or a policy update.
+Native-material/route receipt, provider/TZ, live lineage, scoring, cost and assignment gates
+remain with the separate preflight. This is zero-call engineering evidence only
+(`0` API/generator/candidate/GPU; `scientific_claim_allowed=false`), not a PIPE1 result.
+See [repair report](task_reports/20261007_pipe1_offline_adapter_binding_repair.md) and
+[`n03_pipe1_offline_adapter_qualification_20261007_v2`](../../experiments/logs/n03_pipe1_offline_adapter_qualification_20261007_v2/summary.json).
 
 **Latest bounded generation implementation — 2026-10-07:** a separate live
 producer stage now projects personal history into the real transport request,
