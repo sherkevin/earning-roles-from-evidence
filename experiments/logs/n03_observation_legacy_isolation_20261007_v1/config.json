@@ -1,0 +1,28 @@
+{
+  "purpose": "Reject native-valid observation anchors in legacy attributed offer, credit and history channels; no model efficacy claim",
+  "started_at": "2026-10-07T05:16:33.831092+00:00",
+  "command": [
+    "/Library/Developer/CommandLineTools/usr/bin/python3",
+    "-m",
+    "pytest",
+    "-v",
+    "tests/test_peerrolebench_observation_legacy_isolation.py",
+    "tests/test_peerrolebench_role_evidence_offer.py",
+    "tests/test_peerrolebench_two_stage_gate.py",
+    "tests/test_peerrolebench_peer_history_adapter.py",
+    "tests/test_peerrolebench_peer_history_binding.py"
+  ],
+  "git_commit": "4378560b24a8b900fd77413daad283f7fd7b9f42",
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "source_sha256": {
+    "scripts/peerrolebench_role_evidence_offer.py": "163c656a307d582c5e6dcc5d3dd26429575c63d0508b0f01afc50016c5adfdf2",
+    "scripts/peerrolebench_two_stage_gate.py": "19851b54bf0619dc90f12200126888fdbc93b91ea139a133b53e89e34812f2d9",
+    "scripts/peerrolebench_peer_history_adapter.py": "00d3dcebc6b506f517e55e1865682572e7ac346247a09da7848bd2093b8ff031",
+    "tests/test_peerrolebench_peer_history_binding.py": "67d5f5edc2a083121df8fdb2004455d18177f71b77271444ab0a4c3e07470ca6",
+    "tests/test_peerrolebench_observation_legacy_isolation.py": "9a4c51f1e70caca38fcf4023e22b4813da89d81e3fa1e91131b093d2ea6d8c57"
+  },
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "expected": "observation namespace rejects; existing legacy regressions retain behavior; no history mutation on reject"
+}

@@ -1,0 +1,75 @@
+{
+  "purpose": "Integrated offline observation bridge and reserved-type isolation checks; preserve scientific gate",
+  "frozen_before_execution": true,
+  "started_at": "2026-10-07T05:28:58.245846+00:00",
+  "commands": [
+    [
+      "/Library/Developer/CommandLineTools/usr/bin/python3",
+      "-m",
+      "pytest",
+      "-v",
+      "tests/test_peerrolebench_observation_bridge.py",
+      "tests/test_peerrolebench_observation_legacy_isolation.py",
+      "tests/test_peerrolebench_role_evidence_offer.py",
+      "tests/test_peerrolebench_two_stage_gate.py",
+      "tests/test_peerrolebench_peer_history_adapter.py",
+      "tests/test_peerrolebench_peer_history_binding.py"
+    ],
+    [
+      "/Library/Developer/CommandLineTools/usr/bin/python3",
+      "scripts/check_research_registry.py"
+    ],
+    [
+      "/Library/Developer/CommandLineTools/usr/bin/python3",
+      "-m",
+      "py_compile",
+      "scripts/peerrolebench_observation_bridge.py",
+      "scripts/peerrolebench_role_evidence_offer.py",
+      "scripts/peerrolebench_two_stage_gate.py",
+      "scripts/peerrolebench_peer_history_adapter.py"
+    ],
+    [
+      "/Library/Developer/CommandLineTools/usr/bin/python3",
+      "scripts/check_aamas_documents.py",
+      "--sync-gate",
+      "--check-gate"
+    ],
+    [
+      "git",
+      "diff",
+      "--check",
+      "--",
+      "scripts/peerrolebench_observation_bridge.py",
+      "scripts/peerrolebench_role_evidence_offer.py",
+      "scripts/peerrolebench_two_stage_gate.py",
+      "scripts/peerrolebench_peer_history_adapter.py",
+      "tests/test_peerrolebench_observation_bridge.py",
+      "tests/test_peerrolebench_observation_legacy_isolation.py",
+      "tests/test_peerrolebench_peer_history_binding.py",
+      "docs/research/candidates/route_utility_and_scoped_judgment_v0.1_20261007.md",
+      "docs/coordination/task_reports/20261007_observation_bridge_and_route_reward.md",
+      "docs/coordination/AAMAS_TASKS.md",
+      "docs/coordination/TASK_REPORTS.md"
+    ]
+  ],
+  "git_commit": "4378560b24a8b900fd77413daad283f7fd7b9f42",
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "source_sha256": {
+    "scripts/peerrolebench_observation_bridge.py": "3f8f1ff6b1381417590f065a04af95f6a0b15781598aabba7b53161a31b717d5",
+    "scripts/peerrolebench_role_evidence_offer.py": "163c656a307d582c5e6dcc5d3dd26429575c63d0508b0f01afc50016c5adfdf2",
+    "scripts/peerrolebench_two_stage_gate.py": "19851b54bf0619dc90f12200126888fdbc93b91ea139a133b53e89e34812f2d9",
+    "scripts/peerrolebench_peer_history_adapter.py": "00d3dcebc6b506f517e55e1865682572e7ac346247a09da7848bd2093b8ff031",
+    "tests/test_peerrolebench_observation_bridge.py": "1f449f624c69ae1980e73beafc30075d42b8c08d5e10b69cbea3d0520e483121",
+    "tests/test_peerrolebench_observation_legacy_isolation.py": "9a4c51f1e70caca38fcf4023e22b4813da89d81e3fa1e91131b093d2ea6d8c57",
+    "tests/test_peerrolebench_peer_history_binding.py": "67d5f5edc2a083121df8fdb2004455d18177f71b77271444ab0a4c3e07470ca6",
+    "docs/research/candidates/route_utility_and_scoped_judgment_v0.1_20261007.md": "3927efa467992ed36246650c62a8e64938857f279944f3f696f3acb6632964d8",
+    "docs/coordination/task_reports/20261007_observation_bridge_and_route_reward.md": "cb077489535a5a9534e05f595b6628bb0e198947e064d8278772b8e6ca74a7dd",
+    "docs/coordination/AAMAS_TASKS.md": "cf5d3a4c50dfd22d445adc708592d4c0bb4ad0d834547a655e615ee0768cdc61",
+    "docs/coordination/TASK_REPORTS.md": "6b1ff82ed9be72cbe3805b4a21bc21d296577ccbcc22008c1c6facb4e0bb21d9"
+  },
+  "api_calls": 0,
+  "gpu_jobs": 0,
+  "persistent_test_log_env": "PEERROLE_OBSERVATION_BRIDGE_TEST_LOG must be absent",
+  "scope": "source to target selection only; no target execution or policy update qualification"
+}

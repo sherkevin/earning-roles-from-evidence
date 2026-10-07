@@ -1,0 +1,40 @@
+{
+  "purpose": "Offline typed bridge from published noisy observation to one native completion anchor and later assignment; no reward or policy update",
+  "frozen_before_tests": true,
+  "native_anchor_version": "noisy-observation-completion-v1",
+  "source_observation_schema": "noisy-judgment-observation-v1",
+  "chain": "sealed source Qp/J/A/Y -> verified observation -> native RoleEvidenceUpdate completion anchor -> typed read-only projection -> native LaterAssignment -> selection",
+  "controls": [
+    "3 legal J/action pairs",
+    "wrong anchor version",
+    "wrong subject/candidate key",
+    "wrong contract pin",
+    "wrong source/assignment read cut",
+    "duplicate native anchor",
+    "preterminal source",
+    "publication input mutation or policy update",
+    "wrong propensity"
+  ],
+  "excluded": [
+    "old RoleEvidenceOffer",
+    "old source gate",
+    "legacy credit/reward",
+    "live runner",
+    "API",
+    "GPU"
+  ],
+  "command": "python3 -m pytest -q tests/test_peerrolebench_observation_bridge.py",
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "git_head": "4378560b24a8b900fd77413daad283f7fd7b9f42",
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "started_at_utc": "2026-10-07T05:13:14.680110+00:00",
+  "source_sha256": {
+    "scripts/peerrolebench_observation_bridge.py": "d843866219440135ef36913f877ba7feef44a201897b5966361d4dda697d83b7",
+    "tests/test_peerrolebench_observation_bridge.py": "f53941757056ab2d81ad8f56f31f076c8fb950f8288c4eb57a40dffc36048f18",
+    "scripts/peerrolebench_judgment_observation.py": "1fa6d0e0533ebb866e6076c5a3c904ff5255665940b6e7325d9aa9723a8d76e3",
+    "references/aamas/peer_role_protocol_20260925.py": "c9c3082f5edc45c69ad190eaa9ab9282656c93cd1d512df170f90e8bf7b98b86"
+  }
+}
