@@ -97,3 +97,5 @@
 - [done] 2026-10-07 PIPE1 零调用执行前预检完成：修订回执 11/22 项通过，10 项明确阻塞，1 项开放；独立审查补出 source→artifact lineage、runtime actor visibility、live Verifier attestation、relay baseline 与 assignment randomization 缺口。→ [预检报告](docs/coordination/task_reports/20261007_pipe1_preflight.md)；[回执](experiments/logs/n03_pipe1_preflight_20261007_v3/summary.json)。
 - [open] 2026-10-07 只解决 PIPE1 十个执行阻塞项并完成独立复核；不得借用四次 judgment-only 预算，不得以卡版本变化重置累计预算，不得在阻塞项关闭前发起 route call。
 - [done] 2026-10-07 论文 claim 与 distinctness 同步：收紧 held-out/root-split/candidate benchmark 三处措辞；隔离编译正文8页、References第9页，0API/0GPU。→ [构建与Goal对照](docs/coordination/task_reports/20261007_paper_claim_distinctness_sync.md)。
+- [done] 2026-10-07 论文主版同步：上一层 `artifacts/aamas2027/main.pdf` 逐字节同步到已核验的 `microtype_20261007_v55`，正文8页、总9页；版本目录保持不可覆盖，provenance 与维护规则已记录。→ [主版汇报](docs/coordination/task_reports/20261007_main_pdf_master_sync.md)。
+- [done] 2026-10-07 PIPE1 route receipt 零调用资格：v1 占位 registry digest 失败已保留，v2 19 个突变测试通过；明确 source→artifact→Executor→Verifier、allocation、provider/TZ、成本和 selected-only 合同。→ [资格汇报](docs/coordination/task_reports/20261007_pipe1_route_receipt_qualification.md)。

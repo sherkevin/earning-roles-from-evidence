@@ -1,0 +1,20 @@
+F.................                                                       [100%]
+=================================== FAILURES ===================================
+__________________ test_valid_source0_target3_receipt_passes ___________________
+
+    def test_valid_source0_target3_receipt_passes():
+        result = validate_pipe1_route_receipt(_receipt())
+>       assert result == {"status": "PASS", "valid": True, "errors": [], "schema_version": SCHEMA_VERSION}
+E       AssertionError: assert {'errors': ['...valid': False} == {'errors': []...'valid': True}
+E
+E         Omitting 1 identical items, use -vv to show
+E         Differing items:
+E         {'valid': False} != {'valid': True}
+E         {'errors': ['candidate_registry.registry_digest: does not bind registry/version/candidates']} != {'errors': []}
+E         {'status': 'INVALID'} != {'status': 'PASS'}
+E         Use -v to get more diff
+
+tests/test_peerrolebench_pipe1_route_receipt.py:66: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_peerrolebench_pipe1_route_receipt.py::test_valid_source0_target3_receipt_passes
+1 failed, 17 passed in 0.06s

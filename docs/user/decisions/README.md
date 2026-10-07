@@ -53,3 +53,4 @@
 - [0045 — Chain-local judgment and path lineage](0045-chain-local-judgment-and-path-lineage.md)：把每次交接的接收者评分作为有向边上的局部证据，通过 artifact/task lineage 形成路径；路径聚合和最终效用仍需单独实现与验证。
 - [0047 — Structural-owner gate and judged-role calibration](0047-structural-owner-gate-and-judged-role-calibration.md)：用冻结 contract/registry/scorer 推导责任 owner，保留模型 judged role 做校准；角色文字不再单独制造或取消 producer evidence。
 - [0049 — 区分评价观察与可归因收益](0049-separate-judgment-observation-from-credit.md)：保留绑定真实交付的正负评价作为 noisy observation，责任与延迟收益另验；发布不更新，接收方工作不成为产出方奖惩。
+- [0050 — Canonical main PDF and versioned builds](0050-canonical-main-pdf-and-versioned-builds.md)：`artifacts/aamas2027/main.pdf` 是唯一当前主版；版本目录只保存候选/历史，经过页面与审查门后才提升到上一级。

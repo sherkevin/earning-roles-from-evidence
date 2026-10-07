@@ -1,5 +1,18 @@
 # Task reports
 
+- [partial] 2026-10-07 PIPE1 route receipt qualification: a zero-call validator now binds
+  source/target material, message/artifact/Executor/Verifier hashes, candidate versions,
+  allocation propensity, provider/TZ, phase costs, selected-only visibility and causal order.
+  v1's placeholder registry digest failure is preserved; v2 passes 19 mutation tests. Zero
+  API/generator/candidate/GPU; no benchmark activation or scientific claim. See [qualification
+  report](task_reports/20261007_pipe1_route_receipt_qualification.md).
+
+- [partial] 2026-10-07 main PDF master sync: parent-level `artifacts/aamas2027/main.pdf`
+  now points byte-for-byte to the verified `microtype_20261007_v55` build (8 body pages,
+  References from page 9, SHA-256 recorded in provenance). Version directories remain
+  immutable; submission readiness and scientific gate are unchanged. See [master sync
+  report](task_reports/20261007_main_pdf_master_sync.md).
+
 - [blocked_by_preflight] 2026-10-07 PIPE1 source–target execution preflight: revised
   zero-call receipt passes 11/22 checks, with 10 execution blockers and one open
   same-initial-peer item; exact scoring, live lineage/visibility/attestation, cost, routing,

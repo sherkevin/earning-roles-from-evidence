@@ -59,6 +59,14 @@ it does not fill an empirical cell or open the scientific gate. Concurrent figur
 source changes are not claimed to be included in this root-verified snapshot. See
 [build report](task_reports/20261007_paper_claim_distinctness_sync.md).
 
+**Main PDF master — 2026-10-07:** the parent-level
+[`artifacts/aamas2027/main.pdf`](../../artifacts/aamas2027/main.pdf) is now a byte-identical
+copy of the verified `microtype_20261007_v55` build. Its provenance, page count and SHA-256
+are recorded in [`main_pdf_master.json`](../../artifacts/aamas2027/main_pdf_master.json);
+future versions must pass the same checks before replacing the master. This is only artifact
+management: `submission_ready=false` and the scientific gate remain unchanged. See
+[master sync report](task_reports/20261007_main_pdf_master_sync.md).
+
 **Latest measurement/budget correction — 2026-10-07:** sanitized PIPE3 input
 omitted the native timestamp obligation still enforced by private Qp. Historical
 FAIL does not establish violation of actor-visible requirements or a mistaken
