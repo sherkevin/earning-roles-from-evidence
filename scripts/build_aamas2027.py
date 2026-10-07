@@ -18,6 +18,48 @@ BUILD = SOURCE / 'build'
 def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
+
+def measure_content_pages(pdf):
+    """Count body pages, including a page with body above References.
+
+    Text in the running header/footer bands is ignored when deciding whether
+    the References page also carries body content. PDF pages are one based in
+    the returned measurement.
+    """
+    own_document = not isinstance(pdf, fitz.Document)
+    doc = fitz.open(pdf) if own_document else pdf
+    try:
+        references_start_page = None
+        body_on_references_page = False
+        for page_number, page in enumerate(doc, 1):
+            lines = []
+            for block in page.get_text('dict')['blocks']:
+                for line in block.get('lines', []):
+                    value = ''.join(span['text'] for span in line['spans']).strip()
+                    if value:
+                        lines.append((value, fitz.Rect(line['bbox'])))
+            heading = next((box for text, box in lines if re.fullmatch(r'References', text, re.I)), None)
+            if heading is None:
+                continue
+            references_start_page = page_number
+            body_top = page.rect.y0 + page.rect.height * 0.10
+            body_bottom = page.rect.y1 - page.rect.height * 0.06
+            body_on_references_page = any(
+                box.y0 >= body_top and box.y1 <= body_bottom
+                and (box.y1 < heading.y0 - 1 or box.x1 < heading.x0 - 8)
+                for text, box in lines if text.lower() != 'references'
+            )
+            break
+        content_pages = (references_start_page - 1 + int(body_on_references_page)
+                         if references_start_page is not None else len(doc))
+        return {'pages': len(doc), 'references_start_page': references_start_page,
+                'body_on_references_page': body_on_references_page,
+                'content_pages': content_pages,
+                'conservative_content_last_page': references_start_page or len(doc)}
+    finally:
+        if own_document:
+            doc.close()
+
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--submission', action='store_true', help='Require the scientific and metadata gates before building')
@@ -64,11 +106,9 @@ def main():
         text='\n'.join(p.get_text() for p in doc)
         if args.proposal and 'INTERNAL PRE-RESULTS PROPOSAL' not in text:
             raise SystemExit('Proposal is missing its visible internal status marker')
-        refs=[i+1 for i,p in enumerate(doc) if re.search(r'(?mi)^\s*references\s*$',p.get_text())]
-        references_start_page=refs[0] if refs else None
-        content_pages=(references_start_page-1) if references_start_page else len(doc)
-        # Keep the historical conservative field, but make the actual body count explicit.
-        content_last_page=references_start_page if references_start_page else len(doc)
+        measurement=measure_content_pages(doc)
+        references_start_page=measurement['references_start_page']
+        content_pages=measurement['content_pages']
         if stem=='main' and content_pages>8:
             raise SystemExit('AAMAS eight-page content limit exceeded')
         if stem=='main' and args.require_content_pages is not None and content_pages != args.require_content_pages:
@@ -78,7 +118,9 @@ def main():
         if any(s in text for s in ['D:\\Codes','C:\\Users','/media/data3','shers@']):
             raise SystemExit('Local identity/path leakage detected')
         doc_report=dict(file=pdf.relative_to(ROOT).as_posix(),pages=len(doc),references_start_page=references_start_page,
-                        content_pages=content_pages,conservative_content_last_page=content_last_page,
+                        content_pages=content_pages,
+                        body_on_references_page=measurement['body_on_references_page'],
+                        conservative_content_last_page=measurement['conservative_content_last_page'],
                         unresolved_references=unresolved,overfull_boxes=overfull,sha256=sha(pdf),metadata=doc.metadata,
                         template_compatibility_warning='ifx' if 'was incomplete' in log else None)
         report['documents'].append(doc_report)

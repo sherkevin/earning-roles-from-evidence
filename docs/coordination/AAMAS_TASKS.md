@@ -1,6 +1,24 @@
 # AAMAS 2027 task ledger
 
-Updated: 2026-10-06 (structural-owner gate v1.2 activated and zero-call A1--A8 qualification passed; scientific gate remains open). The project-level goal authority is [GOAL v1.0](GOAL.md); task-by-task reconciliation is indexed in [TASK_REPORTS](TASK_REPORTS.md). Owner: scientist; one engineer owns execution. Authority: [REQUIREMENTS.md](../paper/aamas2027/REQUIREMENTS.md), version 1.5.8. This is the sole active AAMAS gap/status/execution ledger. Role TODOs are historical pointers. Bounded read-only critiques inform the current direction; they did not execute experiments.
+Updated: 2026-10-07 (real-artifact measurement reconciled; actual eight-body-page PDF verified; scientific submission gate remains closed). The project-level goal authority is [GOAL v1.0](GOAL.md); task-by-task reconciliation is indexed in [TASK_REPORTS](TASK_REPORTS.md). Owner: scientist; one engineer owns execution. Authority: [REQUIREMENTS.md](../paper/aamas2027/REQUIREMENTS.md), version 1.5.8. This is the sole active AAMAS gap/status/execution ledger. Role TODOs are historical pointers. Bounded read-only critiques inform the current direction; they did not execute experiments.
+
+**Current continuation — 2026-10-07:** the old page counter undercounted a mixed
+body/References page. The previous current PDF and terminal-measurement v1 both
+have nine actual body pages; those exact-eight claims are superseded. After
+removing duplicated internal checklists, the new
+[`terminal_measurement_20261007_v3/main.pdf`](../../artifacts/aamas2027/terminal_measurement_20261007_v3/main.pdf)
+has eight actual body pages, a complete conclusion on page 8, and References only
+on page 9. Historical failures remain preserved; see
+[page correction](task_reports/20261007_paper_actual_body_page_correction.md).
+The scientific reuse audit also found that the conformance/usability matched pair
+already exists, so no duplicate experiment is needed. Current C1 producer candidates
+are static, actor experience is absent, and the post-update choice is unexecuted.
+Five earlier actual producer calls give the same Qp label on one PIPE3 seed;
+failed later stages remain recorded. Next work must reuse that real producer
+interface for independent experience and actual later execution on informative
+tasks, not more fixed-snapshot parity. See
+[scientific next step](task_reports/20261007_scientific_next_step_reconciliation.md).
+No active method, Goal, baseline freeze or scientific requirement is downgraded.
 
 **Latest continuation amendment — 2026-10-06:** the earlier paragraphs below preserve
 historical checkpoints, but their “open” wording predates the latest zero-call repair.
@@ -11,10 +29,10 @@ choice remains preview-only. Shared-source v2 now rejects coordinated projection
 mutations, requires an externally supplied digest and provenance fingerprints, and
 reports shared source cost once. These are engineering prerequisites only. The next
 live card still needs a real external source manifest, shared acquisition before arm
-execution, independent target assignments, and complete measured costs. The current
-paper artifact is
-[`paper_figure_refresh_v2_20261006/main.pdf`](../../artifacts/aamas2027/paper_figure_refresh_v2_20261006/main.pdf):
-10 total pages, exactly 8 body pages, references from page 9. The scientific
+execution, independent target assignments, and complete measured costs. The then-current
+paper artifact was
+[`paper_figure_refresh_v2_20261006/main.pdf`](../../artifacts/aamas2027/paper_figure_refresh_v2_20261006/main.pdf).
+Its reported eight-body-page count is invalidated by the 2026-10-07 correction above: actual body pages = 9. The scientific
 submission gate remains closed; no historical result is reclassified.
 
 **Signal-channel parity amendment — 2026-10-06:** the first parent-source smoke

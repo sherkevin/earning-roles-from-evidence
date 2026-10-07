@@ -1,0 +1,26 @@
+{
+  "checks": [
+    {
+      "command": [
+        "python3",
+        "scripts/check_aamas_documents.py",
+        "--sync-gate",
+        "--check-gate"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "new_report_local_links": 20,
+  "broken_links": [],
+  "scientific_submission_ready": false,
+  "new_api_calls": 0,
+  "gpu_jobs": 0
+}

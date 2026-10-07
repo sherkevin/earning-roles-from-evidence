@@ -1,5 +1,15 @@
 # Task reports
 
+- [partial] 2026-10-07 actual paper-page correction: old mixed References page
+  caused undercounting. Fixed measurement; preserved two overlength builds; v3
+  is now exactly eight body pages with References alone on page 9. Scientific
+  claims unchanged; see [page correction report](task_reports/20261007_paper_actual_body_page_correction.md).
+
+- [partial] 2026-10-07 scientific next-step reconciliation: reused existing matched
+  conformance/usability controls and located real producer generation; C1 still
+  lacks actor experience and executed post-update outcomes. No new API/GPU calls;
+  see [evidence and next unit](task_reports/20261007_scientific_next_step_reconciliation.md).
+
 - [partial] 2026-10-07 real-artifact terminal diagnostic: frozen manifest scoring
   on four historical API outputs finds terminal PASS despite Qp/composite FAIL;
   all four share one code snapshot. Corrected full-input versus delivery hashing

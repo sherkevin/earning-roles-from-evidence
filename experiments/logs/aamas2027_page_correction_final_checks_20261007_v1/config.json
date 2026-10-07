@@ -1,0 +1,27 @@
+{
+  "purpose": "Final document/link/diff consistency, not scientific validation",
+  "timestamp_utc": "2026-10-07T04:06:23.696400+00:00",
+  "commands": [
+    [
+      "python3",
+      "scripts/check_aamas_documents.py",
+      "--sync-gate",
+      "--check-gate"
+    ],
+    [
+      "git",
+      "diff",
+      "--check"
+    ]
+  ],
+  "input_hashes": {
+    "docs/coordination/AAMAS_TASKS.md": "af16d7b24111734378bb8c5935129754475a930e768ce42f91ef3ededf598a59",
+    "docs/coordination/TASK_REPORTS.md": "51db168e11c994e3c413d79b97e40816a108857c3b55d09831489c66c02c4eec",
+    "docs/coordination/task_reports/20261007_paper_actual_body_page_correction.md": "ec5afcdc488e433b789fafdd0f372f8afb0c26e5183ae83ab244e4fa9170b03b",
+    "docs/coordination/task_reports/20261007_scientific_next_step_reconciliation.md": "5a20765c2b94001c4ebef70af1fca68891fe9fb44305160c428e707aec360a02",
+    "scripts/build_aamas2027.py": "2e643f1128ded7483201739a9c30c1d76c91f6993e0f927e39cee0b7de03d631",
+    "article/aamas2027/main.tex": "cb0933a470223fb468ed54a642f79d865604224fcaf05a9ee0c610e7db03fc7c"
+  },
+  "new_api_calls": 0,
+  "gpu_jobs": 0
+}
