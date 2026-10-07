@@ -57,6 +57,25 @@ remain with the separate preflight. This is zero-call engineering evidence only
 See [repair report](task_reports/20261007_pipe1_offline_adapter_binding_repair.md) and
 [`n03_pipe1_offline_adapter_qualification_20261007_v2`](../../experiments/logs/n03_pipe1_offline_adapter_qualification_20261007_v2/summary.json).
 
+**Latest PIPE1 adapter–route join — 2026-10-07:** a zero-call join gate now prevents two
+individually valid objects from describing different tasks or allocations. It requires the
+adapter's native binding and `READY_FOR_ROUTE`, then cross-checks route task ids, registry/menu
+order, chosen candidate, probabilities and propensity before returning `READY_FOR_PREFLIGHT`.
+The 38-case adapter/route/contract suite passes. This status is still only a structural
+preflight handoff; native material binding, actual selected-only inputs, provider/TZ, live
+lineage, exact scoring, cost, assignment execution and efficacy remain open. No API/generator/
+candidate/GPU call or policy update occurred, and `scientific_claim_allowed=false`. See [join
+report](task_reports/20261007_pipe1_adapter_route_join_qualification.md) and
+[`n03_pipe1_adapter_route_join_qualification_20261007_v1`](../../experiments/logs/n03_pipe1_adapter_route_join_qualification_20261007_v1/summary.json).
+
+**Latest canonical paper master — 2026-10-07:** the verified
+`reference_supplement_20261007_v2` build is now the byte-identical parent-level
+`artifacts/aamas2027/main.pdf`; its provenance was reconciled after the parallel promotion.
+It remains an internal 8-body-page/9-total-page revision with `submission_ready=false`.
+Versioned rounds, including v55, remain preserved for rollback. See [master reconciliation
+report](task_reports/20261007_main_pdf_reference_supplement_sync.md) and
+[`main_pdf_master.json`](../../artifacts/aamas2027/main_pdf_master.json).
+
 **Latest bounded generation implementation — 2026-10-07:** a separate live
 producer stage now projects personal history into the real transport request,
 keeps generation policy separate from each delivery, and checks canonical

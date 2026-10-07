@@ -11,6 +11,18 @@
   native target selection, menu order, chosen peer/propensity, assignment, evidence delivery
   and task indices; malformed rows fail closed. v2 has 13 passing zero-call cases. `READY_FOR_ROUTE`
   remains a pre-route contract, not attribution or scientific efficacy. See [repair report](task_reports/20261007_pipe1_offline_adapter_binding_repair.md).
+
+- [partial] 2026-10-07 PIPE1 adapter–route join qualification: a zero-call gate now joins
+  native-bound adapter output with a route receipt and rejects task, registry/menu, chosen
+  candidate, probability or propensity disagreement. `READY_FOR_PREFLIGHT` remains a structural
+  handoff; it does not execute a route or update policy. 38 adapter/route/contract cases pass.
+  See [join report](task_reports/20261007_pipe1_adapter_route_join_qualification.md).
+
+- [partial] 2026-10-07 canonical main PDF reconciliation: the promoted
+  `reference_supplement_20261007_v2` build is now recorded as the byte-identical parent-level
+  `artifacts/aamas2027/main.pdf`; provenance, page count, references boundary and SHA-256 agree.
+  The paper remains an internal pre-results revision with `submission_ready=false`. See [master
+  report](task_reports/20261007_main_pdf_reference_supplement_sync.md).
 - [partial] 2026-10-07 PIPE1 route receipt qualification: a zero-call validator now binds
   source/target material, message/artifact/Executor/Verifier hashes, candidate versions,
   allocation propensity, provider/TZ, phase costs, selected-only visibility and causal order.
