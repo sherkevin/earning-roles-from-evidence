@@ -1,5 +1,15 @@
 # AAMAS 2027 task ledger
 
+**Latest benchmark screen — 2026-10-07:** a native PIPE1 Planner→Executor
+handoff supplies legitimate task rules, but direct spec relay and the original
+full-spec Verifier/remediation path must be accounted for. Four domain captures
+remain one structural root. All 20 audited healthcare/financial dates differ
+between UTC and Asia/Shanghai; original capture TZ is unknown. Fix the shared
+environment contract before cross-machine gold use. Ordinary information-value
+analysis requires useful future peer discrimination, not merely J–Y correlation.
+No new API/GPU or benchmark activation; all three scientific standards remain
+open. See [evidence and Goal comparison](task_reports/20261007_selection_value_and_native_handoff.md).
+
 **Latest measurement/budget correction — 2026-10-07:** sanitized PIPE3 input
 omitted the native timestamp obligation still enforced by private Qp. Historical
 FAIL does not establish violation of actor-visible requirements or a mistaken
@@ -20,9 +30,11 @@ policy-level endpoint. Label namespace, cost weights/cut, scoped prompt and
 informative task card must be frozen before training. No API/GPU call or efficacy
 claim was added. See [task report](task_reports/20261007_observation_bridge_and_route_reward.md).
 
-**Latest internal PDF — 2026-10-07:**
+**Root-verified immutable PDF — 2026-10-07:**
 [`observation_split_20261007_v2/main.pdf`](../../artifacts/aamas2027/observation_split_20261007_v2/main.pdf)
-supersedes the earlier terminal-measurement layout as the current manuscript.
+supersedes the earlier terminal-measurement layout for this recorded verification.
+Subsequent figure-task builds are tracked in [task reports](TASK_REPORTS.md);
+this snapshot does not assert a hash match with the concurrently edited source.
 It incorporates ADR0049, has eight actual body pages and References only on
 page 9, with the complete matrix and empirical blanks preserved. The overlength
 v1 remains archived. [Build and visual review](task_reports/20261007_observation_split_paper_sync.md)

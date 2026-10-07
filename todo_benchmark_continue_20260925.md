@@ -77,3 +77,10 @@
 - [pending] 2026-10-07 原24次预算实际已记录31次；新卡最多4次判断，须完成具体卡与预检，再取得追加预算确认。不得换卡重置，不自动跟进action/训练。Goal及六份生效标准不变。
 - [done] 2026-10-07 新版公开合同修复，测试覆盖三域；四份请求已封存，2P+2R沙箱检查支持有限金标。预检含4次代码执行但0API/GPU，prepare v1失败与v2通过均保留。见 [四次判断卡](docs/research/candidates/scoped_judgment_four_call_card_20261007.md)。
 - [pending] 2026-10-07 追加4次预算已通过异步问题询问；等待具体答复，不改变已确认方案B。后续不得以卡版本变化重置累计数。
+
+### 2026-10-07 · 选择价值与原生规则交付
+- [done] 2026-10-07 上轮为实质进展：8979c72已推送，合同与金标修复完成；本轮追加API仍等预算答复。
+- [doing] 2026-10-07 只读审查PIPE1原生信息分工与peer选择价值必要条件；terminal_manifest_worker保存四域原生材料/视图，配置先于generator运行，0API/GPU，不运行candidate或grader。我的session_id=benchmark_continue_20260925。
+- [done] 2026-10-07 冻结普通信息价值推导：有预测信息却不改变最优peer时，理想选择增量为零；同信息baseline同享J，不能当RARE理论优势。→ [候选筛查](docs/research/candidates/benchmark_selection_value_20261007.md)。
+- [done] 2026-10-07 四域原生材料捕获完成；独立审查补出原样spec relay、第三角色Verifier和最多两轮返修。20条日期UTC/Shanghai全异，旧capture TZ未知；0API/GPU，不激活benchmark。→ [任务报告](docs/coordination/task_reports/20261007_selection_value_and_native_handoff.md)。
+- [open] 2026-10-07 先确定自然持久peer经验与未来收益的可识别条件，使用已存材料约束任务卡；不重复下载/生成，不以静态产物评分替代角色学习。追加4次判断预算仍pending。

@@ -1,0 +1,27 @@
+{
+  "status": "FROZEN_BEFORE_CHECKS",
+  "timestamp_utc": "2026-10-07T06:27:12.570979+00:00",
+  "project_commit": "8979c7284b1fe22107b0aea729288300a8889540",
+  "purpose": "Static provenance and document checks only; do not regenerate material or rerun timezone computation",
+  "commands": [
+    [
+      "python3",
+      "experiments/logs/n03_selection_value_checks_20261007_v1/verify.py"
+    ],
+    [
+      "python3",
+      "scripts/check_research_registry.py"
+    ],
+    [
+      "python3",
+      "scripts/check_aamas_documents.py",
+      "--sync-gate",
+      "--check-gate"
+    ]
+  ],
+  "api_calls": 0,
+  "gpu_runs": 0,
+  "generator_calls": 0,
+  "candidate_executions": 0,
+  "grader_calls": 0
+}

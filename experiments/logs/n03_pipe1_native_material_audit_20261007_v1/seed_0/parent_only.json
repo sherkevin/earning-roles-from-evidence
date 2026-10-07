@@ -1,0 +1,171 @@
+{
+  "expected": {
+    "domain": "ecommerce",
+    "field_map": {
+      "buyer_full_name": "customer_name",
+      "discount_percent": "discount_pct",
+      "id": "order_id",
+      "order_status": "status",
+      "placed_at": "order_date",
+      "price_usd": "unit_price",
+      "qty": "quantity",
+      "shipping_address_city": "city",
+      "shipping_address_country": "country",
+      "sku_code": "product_sku"
+    },
+    "null_rules": {
+      "city": "unknown",
+      "country": "unknown",
+      "discount_pct": "0"
+    },
+    "record_count": 10,
+    "records": [
+      {
+        "city": "Phoenix",
+        "country": "MX",
+        "customer_name": "Grace Wilson",
+        "discount_pct": 15,
+        "order_date": "2024-10-07",
+        "order_id": "ORD-10000",
+        "product_sku": "SKU-H8",
+        "quantity": 6,
+        "status": "delivered",
+        "unit_price": 228.59
+      },
+      {
+        "city": "Phoenix",
+        "country": "GB",
+        "customer_name": "Emma Jones",
+        "discount_pct": 5,
+        "order_date": "2024-08-18",
+        "order_id": "ORD-10001",
+        "product_sku": "SKU-B2",
+        "quantity": 6,
+        "status": "cancelled",
+        "unit_price": 227.95
+      },
+      {
+        "city": "Miami",
+        "country": "MX",
+        "customer_name": "Henry Jackson",
+        "discount_pct": 10,
+        "order_date": "2024-09-01",
+        "order_id": "ORD-10002",
+        "product_sku": "SKU-E5",
+        "quantity": 1,
+        "status": "cancelled",
+        "unit_price": 185.21
+      },
+      {
+        "city": "New York",
+        "country": "MX",
+        "customer_name": "Frank Davis",
+        "discount_pct": 25,
+        "order_date": "2024-04-19",
+        "order_id": "ORD-10003",
+        "product_sku": "SKU-F6",
+        "quantity": 2,
+        "status": "shipped",
+        "unit_price": 248.32
+      },
+      {
+        "city": "unknown",
+        "country": "unknown",
+        "customer_name": "Frank Jackson",
+        "discount_pct": 20,
+        "order_date": "2024-05-18",
+        "order_id": "ORD-10004",
+        "product_sku": "SKU-H8",
+        "quantity": 2,
+        "status": "pending",
+        "unit_price": 137.15
+      },
+      {
+        "city": "Houston",
+        "country": "DE",
+        "customer_name": "Henry Jones",
+        "discount_pct": 20,
+        "order_date": "2024-10-08",
+        "order_id": "ORD-10005",
+        "product_sku": "SKU-G7",
+        "quantity": 6,
+        "status": "shipped",
+        "unit_price": 103.16
+      },
+      {
+        "city": "Phoenix",
+        "country": "MX",
+        "customer_name": "Bob Jones",
+        "discount_pct": 5,
+        "order_date": "2024-01-27",
+        "order_id": "ORD-10006",
+        "product_sku": "SKU-C3",
+        "quantity": 3,
+        "status": "cancelled",
+        "unit_price": 14.73
+      },
+      {
+        "city": "Houston",
+        "country": "AU",
+        "customer_name": "Jack Anderson",
+        "discount_pct": 25,
+        "order_date": "2024-08-22",
+        "order_id": "ORD-10007",
+        "product_sku": "SKU-E5",
+        "quantity": 8,
+        "status": "delivered",
+        "unit_price": 159.74
+      },
+      {
+        "city": "Austin",
+        "country": "FR",
+        "customer_name": "David Davis",
+        "discount_pct": 0,
+        "order_date": "2024-02-23",
+        "order_id": "ORD-10008",
+        "product_sku": "SKU-A1",
+        "quantity": 5,
+        "status": "shipped",
+        "unit_price": 100.67
+      },
+      {
+        "city": "unknown",
+        "country": "unknown",
+        "customer_name": "Carol Davis",
+        "discount_pct": 10,
+        "order_date": "2024-11-18",
+        "order_id": "ORD-10009",
+        "product_sku": "SKU-A1",
+        "quantity": 10,
+        "status": "pending",
+        "unit_price": 130.7
+      }
+    ],
+    "target_fields": [
+      "order_id",
+      "customer_name",
+      "product_sku",
+      "quantity",
+      "unit_price",
+      "order_date",
+      "status",
+      "discount_pct",
+      "city",
+      "country"
+    ]
+  },
+  "hashes": {
+    "brief_md_sha256": "0e8e7cc7b0c679b6ce8bebde80f1d3e1196a35c01d500a05cf57af68b8c2bae4",
+    "expected_canonical_sha256": "d9681742d9a6831ec42b56ed0eabe609d121f86d23a461d4eeb809a6cd5daa78",
+    "spec_md_sha256": "27a87767bfb390d9598f3e0596dfd0567fcc082c06bba8c3a0ae74853f148939",
+    "workspace_sha256": {
+      "etl.py": "a8fdba81a4942f121e2cdb70793a6e96ea9d652fbd9e7ffebc147b946eb44083",
+      "run_etl.py": "1763df3e015abea5d028f277f246c4dbc7390cf92332633bf8d56d4fd948bf10",
+      "source_sample.json": "ecb9cd04bf39defac732065b88f95160ab5326ab03118be4187675fd9cc93c6b",
+      "target_schema.json": "f32bda284c88c862c17d1f295847bdbab20605163ffec78e8e4798ff037de4ac"
+    }
+  },
+  "seed": 0,
+  "source_projection_note": "Actor views use generated.spec_md, generated.brief_md, and generated.workspace_files only; generated.expected is copied solely here. Content overlap with public schema or Planner-private rules is native and is not treated as leakage.",
+  "task_id": "PIPE1_etl_fix"
+}

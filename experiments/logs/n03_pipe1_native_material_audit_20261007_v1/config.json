@@ -1,0 +1,67 @@
+{
+  "activity_budget": {
+    "candidate_executions": 0,
+    "generator_calls": 4,
+    "gpu_runs": 0,
+    "graders": 0,
+    "llm_api_calls": 0
+  },
+  "command": [
+    "/Library/Developer/CommandLineTools/usr/bin/python3",
+    "/Users/jingwu/work/earning-roles/scripts/peerrolebench_pipe1_native_material_audit.py",
+    "--out",
+    "/Users/jingwu/work/earning-roles/experiments/logs/n03_pipe1_native_material_audit_20261007_v1"
+  ],
+  "cwd": "/Users/jingwu/work/earning-roles",
+  "environment": {
+    "PYTHONHASHSEED": "unset",
+    "platform": "macOS-26.3.2-arm64-arm-64bit",
+    "python": "3.9.6"
+  },
+  "generator": {
+    "module": "generators.gen_pipe1_etl_fix.Generator",
+    "repository": "/Users/jingwu/work/earning-roles/references/benchmark_sources/TeamBench",
+    "required_commit": "d185aef1916fd86a9ba554d581fd256319a973af",
+    "seeds": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "task_id": "PIPE1_etl_fix"
+  },
+  "provenance": {
+    "project_commit": "8979c7284b1fe22107b0aea729288300a8889540",
+    "source_sha256": {
+      "base": "5f72d5e9abecbc7c738211020f8ed00f60977f4b383a1b8a72f2c9104c3f30ba",
+      "capture": "fc037bc58a45031b2f56c67834e2c666f7b0a24167ae018af969c6f6efe1bada",
+      "generator": "f011e843ecbb7144501d28a040c3ec59d6bfa48d4f0080b5af3ccbfc1fd6af01",
+      "primitives": "1d9076095c488abc22208c2ff5a6e797d37bd84e79c0a95a9807ccfd14ce002e"
+    },
+    "team_bench_clean": true,
+    "team_bench_commit": "d185aef1916fd86a9ba554d581fd256319a973af"
+  },
+  "role_projection": {
+    "executor": [
+      "task_id",
+      "seed",
+      "brief_md",
+      "workspace_files",
+      "peer_message"
+    ],
+    "parent_only": [
+      "expected",
+      "hashes",
+      "provenance"
+    ],
+    "peer_message": "single null slot in Executor view; no message generated",
+    "planner": [
+      "task_id",
+      "seed",
+      "spec_md"
+    ]
+  },
+  "schema_version": "n03-pipe1-native-material-audit-config-v1",
+  "started_utc": "2026-10-07T06:14:04.821681+00:00",
+  "status": "FROZEN_BEFORE_GENERATION"
+}

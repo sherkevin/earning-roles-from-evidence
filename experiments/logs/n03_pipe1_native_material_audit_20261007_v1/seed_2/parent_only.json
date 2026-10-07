@@ -1,0 +1,171 @@
+{
+  "expected": {
+    "domain": "financial",
+    "field_map": {
+      "acct_number": "account_num",
+      "card_last4": "card_last4",
+      "card_network": "card_network",
+      "currency_code": "currency",
+      "debit_amount_minor": "amount",
+      "fraud_flag": "is_flagged",
+      "mcc_category": "category",
+      "payee": "merchant_name",
+      "posted_timestamp": "txn_date",
+      "transaction_reference": "txn_id"
+    },
+    "null_rules": {
+      "card_last4": "0000",
+      "card_network": "unknown",
+      "is_flagged": "False"
+    },
+    "record_count": 10,
+    "records": [
+      {
+        "account_num": "ACCT-32162",
+        "amount": 38.06,
+        "card_last4": "0000",
+        "card_network": "unknown",
+        "category": "utilities",
+        "currency": "GBP",
+        "is_flagged": false,
+        "merchant_name": "Shell",
+        "txn_date": "2024-02-16",
+        "txn_id": "TXN-30000"
+      },
+      {
+        "account_num": "ACCT-76724",
+        "amount": 381.89,
+        "card_last4": "8056",
+        "card_network": "Discover",
+        "category": "other",
+        "currency": "AUD",
+        "is_flagged": false,
+        "merchant_name": "Delta Airlines",
+        "txn_date": "2024-12-14",
+        "txn_id": "TXN-30001"
+      },
+      {
+        "account_num": "ACCT-65523",
+        "amount": 24.54,
+        "card_last4": "6217",
+        "card_network": "Discover",
+        "category": "dining",
+        "currency": "EUR",
+        "is_flagged": false,
+        "merchant_name": "CVS",
+        "txn_date": "2024-01-15",
+        "txn_id": "TXN-30002"
+      },
+      {
+        "account_num": "ACCT-76868",
+        "amount": 152.12,
+        "card_last4": "3844",
+        "card_network": "Mastercard",
+        "category": "dining",
+        "currency": "GBP",
+        "is_flagged": false,
+        "merchant_name": "CVS",
+        "txn_date": "2024-01-13",
+        "txn_id": "TXN-30003"
+      },
+      {
+        "account_num": "ACCT-57433",
+        "amount": 272.75,
+        "card_last4": "6967",
+        "card_network": "Amex",
+        "category": "entertainment",
+        "currency": "EUR",
+        "is_flagged": false,
+        "merchant_name": "Spotify",
+        "txn_date": "2024-09-25",
+        "txn_id": "TXN-30004"
+      },
+      {
+        "account_num": "ACCT-75646",
+        "amount": 430.2,
+        "card_last4": "5572",
+        "card_network": "Discover",
+        "category": "other",
+        "currency": "GBP",
+        "is_flagged": false,
+        "merchant_name": "CVS",
+        "txn_date": "2024-09-28",
+        "txn_id": "TXN-30005"
+      },
+      {
+        "account_num": "ACCT-96361",
+        "amount": 230.88,
+        "card_last4": "8480",
+        "card_network": "Discover",
+        "category": "dining",
+        "currency": "GBP",
+        "is_flagged": false,
+        "merchant_name": "Whole Foods",
+        "txn_date": "2024-10-17",
+        "txn_id": "TXN-30006"
+      },
+      {
+        "account_num": "ACCT-50874",
+        "amount": 315.41,
+        "card_last4": "9261",
+        "card_network": "Discover",
+        "category": "healthcare",
+        "currency": "CAD",
+        "is_flagged": true,
+        "merchant_name": "Whole Foods",
+        "txn_date": "2024-06-07",
+        "txn_id": "TXN-30007"
+      },
+      {
+        "account_num": "ACCT-17701",
+        "amount": 224.77,
+        "card_last4": "4135",
+        "card_network": "Visa",
+        "category": "fuel",
+        "currency": "USD",
+        "is_flagged": false,
+        "merchant_name": "Starbucks",
+        "txn_date": "2024-01-05",
+        "txn_id": "TXN-30008"
+      },
+      {
+        "account_num": "ACCT-42090",
+        "amount": 448.26,
+        "card_last4": "3236",
+        "card_network": "Amex",
+        "category": "entertainment",
+        "currency": "USD",
+        "is_flagged": false,
+        "merchant_name": "Whole Foods",
+        "txn_date": "2024-02-24",
+        "txn_id": "TXN-30009"
+      }
+    ],
+    "target_fields": [
+      "txn_id",
+      "account_num",
+      "merchant_name",
+      "amount",
+      "currency",
+      "txn_date",
+      "category",
+      "is_flagged",
+      "card_last4",
+      "card_network"
+    ]
+  },
+  "hashes": {
+    "brief_md_sha256": "97ebe578fc047ba8aef0b0470c6d0395d0761d33806b8f5b2cf016381e823adf",
+    "expected_canonical_sha256": "f5a2c3ee51d79d533eccc06fb223c41a97136be24e68f1167452348740bba157",
+    "spec_md_sha256": "1619f1eb8718ccad96cd2da5eedba485c4ac523619a114c3c6db932a787a94cc",
+    "workspace_sha256": {
+      "etl.py": "7f2ef3e9d582a3882b17a853acd91f1a72e4fa9714fd8494914c1f596c6ac9e1",
+      "run_etl.py": "1763df3e015abea5d028f277f246c4dbc7390cf92332633bf8d56d4fd948bf10",
+      "source_sample.json": "142b611d0dbdc5a9a4681a0320205761cc7f00463ac6123129330fa4d27a052e",
+      "target_schema.json": "15620de1f8bf3c647e3e580a81aa1f109350f21a62e828144321a59fb80bb8b1"
+    }
+  },
+  "seed": 2,
+  "source_projection_note": "Actor views use generated.spec_md, generated.brief_md, and generated.workspace_files only; generated.expected is copied solely here. Content overlap with public schema or Planner-private rules is native and is not treated as leakage.",
+  "task_id": "PIPE1_etl_fix"
+}

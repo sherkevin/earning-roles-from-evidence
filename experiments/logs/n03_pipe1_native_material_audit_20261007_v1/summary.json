@@ -1,0 +1,221 @@
+{
+  "candidate_executions": 0,
+  "case_count": 4,
+  "cases": [
+    {
+      "brief_utf8_bytes": 1185,
+      "domain": "ecommerce",
+      "peer_message_slot": null,
+      "record_count": 10,
+      "rule_headings": [
+        "# PIPE1: ETL Schema Mapping Fix — Planner Specification",
+        "## Domain",
+        "## Situation",
+        "## Schema Overview",
+        "### Old Source Schema (what ETL currently expects)",
+        "### New Source Schema (what source now produces)",
+        "### Target Schema (destination — unchanged)",
+        "## Field Renaming Map",
+        "## Nested Field Flattening",
+        "## Type Conversions",
+        "### Enum Mapping: `order_status`",
+        "## Null / Missing Value Handling",
+        "## Edge Cases",
+        "## Deliverables"
+      ],
+      "seed": 0,
+      "source_utf8_bytes": {
+        "etl.py": 1989,
+        "run_etl.py": 339,
+        "source_sample.json": 3219,
+        "target_schema.json": 714
+      },
+      "spec_utf8_bytes": 3841,
+      "target_fields": [
+        "order_id",
+        "customer_name",
+        "product_sku",
+        "quantity",
+        "unit_price",
+        "order_date",
+        "status",
+        "discount_pct",
+        "city",
+        "country"
+      ],
+      "task_id": "PIPE1_etl_fix",
+      "task_text_sha256": {
+        "executor_brief": "0e8e7cc7b0c679b6ce8bebde80f1d3e1196a35c01d500a05cf57af68b8c2bae4",
+        "planner_spec": "27a87767bfb390d9598f3e0596dfd0567fcc082c06bba8c3a0ae74853f148939"
+      },
+      "view_file_sha256": {
+        "executor": "bd73d9375ac56d680520184427b9e8ed534bb6868b3a47e34c2c2a6f5acad8f8",
+        "parent_only": "505adb7a96f7947e6bae9b181301221ae36d6a526e0d4447684b3639bb93c37c",
+        "planner": "a22d0623795a304aa0c8c9fa0c4ddb0c63ea76f81a81c2ba331aee8fcb34dca3"
+      }
+    },
+    {
+      "brief_utf8_bytes": 1194,
+      "domain": "healthcare",
+      "peer_message_slot": null,
+      "record_count": 10,
+      "rule_headings": [
+        "# PIPE1: ETL Schema Mapping Fix — Planner Specification",
+        "## Domain",
+        "## Situation",
+        "## Schema Overview",
+        "### Old Source Schema (what ETL currently expects)",
+        "### New Source Schema (what source now produces)",
+        "### Target Schema (destination — unchanged)",
+        "## Field Renaming Map",
+        "## Nested Field Flattening",
+        "## Type Conversions",
+        "### Enum Mapping: `icd10_code`",
+        "## Null / Missing Value Handling",
+        "## Edge Cases",
+        "## Deliverables"
+      ],
+      "seed": 1,
+      "source_utf8_bytes": {
+        "etl.py": 2002,
+        "run_etl.py": 339,
+        "source_sample.json": 3150,
+        "target_schema.json": 730
+      },
+      "spec_utf8_bytes": 3782,
+      "target_fields": [
+        "patient_id",
+        "last_name",
+        "first_name",
+        "dob",
+        "diagnosis_code",
+        "visit_date",
+        "provider_npi",
+        "copay_amount",
+        "plan_id",
+        "plan_name"
+      ],
+      "task_id": "PIPE1_etl_fix",
+      "task_text_sha256": {
+        "executor_brief": "a00eaa9c3d3eb60b4d50d5c8bb1fc5ab1fa1060cf60db0b405124455fcf72cc4",
+        "planner_spec": "6884d5049e9692b48202b61a82ba3fb8ac04c529edb9889e2eb145069559eb36"
+      },
+      "view_file_sha256": {
+        "executor": "2fa49317fc34fd59014fcd6733be73802409275ca878c6f581b88065987ee748",
+        "parent_only": "4af1fc5b2b246959cf5018481570deefacce8d5aebbc069f98de7ddfab26566b",
+        "planner": "2b6215bf4442f002fcb98c05172778c75ecb03a1bae1c86fb13b4f626c30dad0"
+      }
+    },
+    {
+      "brief_utf8_bytes": 1190,
+      "domain": "financial",
+      "peer_message_slot": null,
+      "record_count": 10,
+      "rule_headings": [
+        "# PIPE1: ETL Schema Mapping Fix — Planner Specification",
+        "## Domain",
+        "## Situation",
+        "## Schema Overview",
+        "### Old Source Schema (what ETL currently expects)",
+        "### New Source Schema (what source now produces)",
+        "### Target Schema (destination — unchanged)",
+        "## Field Renaming Map",
+        "## Nested Field Flattening",
+        "## Type Conversions",
+        "### Enum Mapping: `mcc_category`",
+        "## Null / Missing Value Handling",
+        "## Edge Cases",
+        "## Deliverables"
+      ],
+      "seed": 2,
+      "source_utf8_bytes": {
+        "etl.py": 1978,
+        "run_etl.py": 339,
+        "source_sample.json": 3319,
+        "target_schema.json": 722
+      },
+      "spec_utf8_bytes": 3918,
+      "target_fields": [
+        "txn_id",
+        "account_num",
+        "merchant_name",
+        "amount",
+        "currency",
+        "txn_date",
+        "category",
+        "is_flagged",
+        "card_last4",
+        "card_network"
+      ],
+      "task_id": "PIPE1_etl_fix",
+      "task_text_sha256": {
+        "executor_brief": "97ebe578fc047ba8aef0b0470c6d0395d0761d33806b8f5b2cf016381e823adf",
+        "planner_spec": "1619f1eb8718ccad96cd2da5eedba485c4ac523619a114c3c6db932a787a94cc"
+      },
+      "view_file_sha256": {
+        "executor": "6f2a2a9eb737ffd1f2b93e788fe23519e4b1f3dad9a44fe3ff1bf91aee74d56f",
+        "parent_only": "f4cb0aad042a23c25bbea9be0fdb48470bb90b367a832ec81961417cd21e16bd",
+        "planner": "5ff37f71de550f0281e0cafd5c9b79e9a31c9e5dd0c615e6eade1e81b352b5c0"
+      }
+    },
+    {
+      "brief_utf8_bytes": 1187,
+      "domain": "logistics",
+      "peer_message_slot": null,
+      "record_count": 10,
+      "rule_headings": [
+        "# PIPE1: ETL Schema Mapping Fix — Planner Specification",
+        "## Domain",
+        "## Situation",
+        "## Schema Overview",
+        "### Old Source Schema (what ETL currently expects)",
+        "### New Source Schema (what source now produces)",
+        "### Target Schema (destination — unchanged)",
+        "## Field Renaming Map",
+        "## Nested Field Flattening",
+        "## Type Conversions",
+        "### Enum Mapping: `carrier_code`",
+        "## Null / Missing Value Handling",
+        "## Edge Cases",
+        "## Deliverables"
+      ],
+      "seed": 3,
+      "source_utf8_bytes": {
+        "etl.py": 2019,
+        "run_etl.py": 339,
+        "source_sample.json": 3921,
+        "target_schema.json": 752
+      },
+      "spec_utf8_bytes": 4051,
+      "target_fields": [
+        "shipment_id",
+        "origin_city",
+        "destination_city",
+        "weight_kg",
+        "carrier",
+        "shipped_date",
+        "estimated_days",
+        "tracking_num",
+        "origin_country",
+        "destination_country"
+      ],
+      "task_id": "PIPE1_etl_fix",
+      "task_text_sha256": {
+        "executor_brief": "bc7d444c6f838f0251e9a829eba808eabc3ea4e109430decc5b66b62c05bb0f8",
+        "planner_spec": "e1abc00a34af268099365ed974b95b101fa27c567ae66586541052e0e7fc0c77"
+      },
+      "view_file_sha256": {
+        "executor": "ed57f45f3366b19826f4304b4f70f7ca30934696e874bae77b3191c83740c0f6",
+        "parent_only": "1be1847188cf17e0058da8dcd64c05ec2fc1e74a3773c0612387236114f5e925",
+        "planner": "a3f5bc75c0fac5fbe940bd82ed23dbcab78ed6d95bbce4730f5a226a7ad049dd"
+      }
+    }
+  ],
+  "generator_calls": 4,
+  "gpu_runs": 0,
+  "graders": 0,
+  "llm_api_calls": 0,
+  "qualification_claim": "None; static native material capture only",
+  "shared_structural_root": "PIPE1_etl_fix",
+  "status": "NATIVE_MATERIAL_CAPTURED"
+}

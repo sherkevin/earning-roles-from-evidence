@@ -1,0 +1,35 @@
+{
+  "by_seed": {
+    "1": {
+      "domain": "healthcare",
+      "parent_matches_asia_shanghai": 10,
+      "parent_matches_neither": 0,
+      "parent_matches_utc": 0,
+      "records": 10,
+      "utc_vs_shanghai_different": 10
+    },
+    "2": {
+      "domain": "financial",
+      "parent_matches_asia_shanghai": 10,
+      "parent_matches_neither": 0,
+      "parent_matches_utc": 0,
+      "records": 10,
+      "utc_vs_shanghai_different": 10
+    }
+  },
+  "candidate_executions": 0,
+  "capture_timezone_inference": "UNKNOWN: current environment does not prove the timezone used during earlier capture",
+  "generator_calls": 0,
+  "grader_calls": 0,
+  "llm_api_calls": 0,
+  "portable_label_note": "Native generator calls datetime.fromtimestamp without tz; if the saved raw timestamps cross calendar dates between UTC and Asia/Shanghai, expected dates depend on process TZ. A future cross-machine comparison should pin TZ before generation/scoring or explicitly report its timezone; native rules are unchanged here.",
+  "record_count": 20,
+  "runtime_timezone_observation": {
+    "TZ": null,
+    "time_tzname": [
+      "CST",
+      "CST"
+    ]
+  },
+  "status": "STATIC_DATE_COMPARISON_COMPLETE"
+}

@@ -1,0 +1,171 @@
+{
+  "expected": {
+    "domain": "healthcare",
+    "field_map": {
+      "birth_date": "dob",
+      "copay_cents": "copay_amount",
+      "encounter_dt": "visit_date",
+      "given_name": "first_name",
+      "icd10_code": "diagnosis_code",
+      "insurance_plan_id": "plan_id",
+      "insurance_plan_name": "plan_name",
+      "npi": "provider_npi",
+      "record_uid": "patient_id",
+      "surname": "last_name"
+    },
+    "null_rules": {
+      "copay_amount": "0.0",
+      "plan_id": "SELF_PAY",
+      "plan_name": "Self Pay"
+    },
+    "record_count": 10,
+    "records": [
+      {
+        "copay_amount": 50.0,
+        "diagnosis_code": "J06.9",
+        "dob": "05/04/1948",
+        "first_name": "Linda",
+        "last_name": "Williams",
+        "patient_id": "PAT-20000",
+        "plan_id": "PLN-488",
+        "plan_name": "Aetna",
+        "provider_npi": "1711178002",
+        "visit_date": "2024-09-10"
+      },
+      {
+        "copay_amount": 100.0,
+        "diagnosis_code": "J06.9",
+        "dob": "12/15/1940",
+        "first_name": "James",
+        "last_name": "Wilson",
+        "patient_id": "PAT-20001",
+        "plan_id": "PLN-705",
+        "plan_name": "BlueCross",
+        "provider_npi": "1564680097",
+        "visit_date": "2024-05-16"
+      },
+      {
+        "copay_amount": 100.0,
+        "diagnosis_code": "K21.0",
+        "dob": "11/07/1988",
+        "first_name": "Linda",
+        "last_name": "Davis",
+        "patient_id": "PAT-20002",
+        "plan_id": "SELF_PAY",
+        "plan_name": "Self Pay",
+        "provider_npi": "1109883727",
+        "visit_date": "2024-08-04"
+      },
+      {
+        "copay_amount": 50.0,
+        "diagnosis_code": "Z00.00",
+        "dob": "08/10/1968",
+        "first_name": "Robert",
+        "last_name": "Brown",
+        "patient_id": "PAT-20003",
+        "plan_id": "PLN-669",
+        "plan_name": "BlueCross",
+        "provider_npi": "1347891063",
+        "visit_date": "2024-01-12"
+      },
+      {
+        "copay_amount": 20.0,
+        "diagnosis_code": "G43.909",
+        "dob": "07/17/2004",
+        "first_name": "Michael",
+        "last_name": "Anderson",
+        "patient_id": "PAT-20004",
+        "plan_id": "PLN-701",
+        "plan_name": "Cigna",
+        "provider_npi": "1457228733",
+        "visit_date": "2024-12-09"
+      },
+      {
+        "copay_amount": 35.0,
+        "diagnosis_code": "F41.1",
+        "dob": "07/22/1991",
+        "first_name": "Linda",
+        "last_name": "Williams",
+        "patient_id": "PAT-20005",
+        "plan_id": "PLN-819",
+        "plan_name": "UnitedHealth",
+        "provider_npi": "1615639791",
+        "visit_date": "2024-03-29"
+      },
+      {
+        "copay_amount": 50.0,
+        "diagnosis_code": "G43.909",
+        "dob": "06/16/1990",
+        "first_name": "Barbara",
+        "last_name": "Thomas",
+        "patient_id": "PAT-20006",
+        "plan_id": "SELF_PAY",
+        "plan_name": "Self Pay",
+        "provider_npi": "1275769705",
+        "visit_date": "2024-01-16"
+      },
+      {
+        "copay_amount": 75.0,
+        "diagnosis_code": "J18.9",
+        "dob": "04/01/2004",
+        "first_name": "William",
+        "last_name": "Moore",
+        "patient_id": "PAT-20007",
+        "plan_id": "PLN-661",
+        "plan_name": "Aetna",
+        "provider_npi": "1281026748",
+        "visit_date": "2024-04-12"
+      },
+      {
+        "copay_amount": 20.0,
+        "diagnosis_code": "K21.0",
+        "dob": "07/26/1940",
+        "first_name": "James",
+        "last_name": "Moore",
+        "patient_id": "PAT-20008",
+        "plan_id": "PLN-674",
+        "plan_name": "Aetna",
+        "provider_npi": "1592988938",
+        "visit_date": "2024-09-19"
+      },
+      {
+        "copay_amount": 50.0,
+        "diagnosis_code": "J18.9",
+        "dob": "07/16/2004",
+        "first_name": "Barbara",
+        "last_name": "Thomas",
+        "patient_id": "PAT-20009",
+        "plan_id": "PLN-651",
+        "plan_name": "Humana",
+        "provider_npi": "1695283749",
+        "visit_date": "2024-07-01"
+      }
+    ],
+    "target_fields": [
+      "patient_id",
+      "last_name",
+      "first_name",
+      "dob",
+      "diagnosis_code",
+      "visit_date",
+      "provider_npi",
+      "copay_amount",
+      "plan_id",
+      "plan_name"
+    ]
+  },
+  "hashes": {
+    "brief_md_sha256": "a00eaa9c3d3eb60b4d50d5c8bb1fc5ab1fa1060cf60db0b405124455fcf72cc4",
+    "expected_canonical_sha256": "ba789951218e33488b6d1c0de40811fe75604f1f2afc0624eb7d540e903a0cee",
+    "spec_md_sha256": "6884d5049e9692b48202b61a82ba3fb8ac04c529edb9889e2eb145069559eb36",
+    "workspace_sha256": {
+      "etl.py": "5816802654cd4e60f68e29adc255f108f2d900b2a8c5be28c916d33b4e5e5d67",
+      "run_etl.py": "1763df3e015abea5d028f277f246c4dbc7390cf92332633bf8d56d4fd948bf10",
+      "source_sample.json": "90ef0118e6c97df88796ad1a22e321ecba65bba83a617a69420a856a43cbc206",
+      "target_schema.json": "7df0966404b4508ee9c12808df11c4f28a9f8485874f59b1cd06311fb81d0e72"
+    }
+  },
+  "seed": 1,
+  "source_projection_note": "Actor views use generated.spec_md, generated.brief_md, and generated.workspace_files only; generated.expected is copied solely here. Content overlap with public schema or Planner-private rules is native and is not treated as leakage.",
+  "task_id": "PIPE1_etl_fix"
+}

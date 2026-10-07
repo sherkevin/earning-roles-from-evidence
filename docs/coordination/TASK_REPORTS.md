@@ -1,5 +1,12 @@
 # Task reports
 
+- [partial] 2026-10-07 selection-value/native-handoff screen: four PIPE1 domain
+  captures expose rule-message handoff but also require direct-spec relay and the
+  full Verifier/remediation control. All 20 audited timestamp dates differ under
+  UTC vs Asia/Shanghai; capture TZ is unknown. Mathematical screening separates
+  predictive information from useful future peer selection. No API/GPU, benchmark
+  activation or efficacy claim. See [evidence and Goal comparison](task_reports/20261007_selection_value_and_native_handoff.md).
+
 - [partial] 2026-10-07 public contract/budget correction: restored actor-visible
   obligations removed alongside solution hints. Historical Qp FAIL does not prove
   violation of the sanitized contract. Census finds 31 episodes/68 task requests

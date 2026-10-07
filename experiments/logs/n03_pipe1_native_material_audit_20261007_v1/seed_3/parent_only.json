@@ -1,0 +1,171 @@
+{
+  "expected": {
+    "domain": "logistics",
+    "field_map": {
+      "carrier_code": "carrier",
+      "destination": "destination_city",
+      "destination_country_code": "destination_country",
+      "dispatch_date": "shipped_date",
+      "gross_weight_grams": "weight_kg",
+      "origin": "origin_city",
+      "origin_country_code": "origin_country",
+      "tracking_number": "tracking_num",
+      "tracking_reference": "shipment_id",
+      "transit_days_estimate": "estimated_days"
+    },
+    "null_rules": {
+      "destination_country": "XX",
+      "estimated_days": "0",
+      "origin_country": "XX"
+    },
+    "record_count": 10,
+    "records": [
+      {
+        "carrier": "ups",
+        "destination_city": "Paris",
+        "destination_country": "BR",
+        "estimated_days": 3,
+        "origin_city": "Tokyo",
+        "origin_country": "XX",
+        "shipment_id": "SHP-40000",
+        "shipped_date": "2024-09-19",
+        "tracking_num": "1Z750257551",
+        "weight_kg": 7.897
+      },
+      {
+        "carrier": "usps",
+        "destination_city": "Tokyo",
+        "destination_country": "CN",
+        "estimated_days": 4,
+        "origin_city": "Sydney",
+        "origin_country": "MX",
+        "shipment_id": "SHP-40001",
+        "shipped_date": "2024-04-18",
+        "tracking_num": "1Z786194186",
+        "weight_kg": 8.598
+      },
+      {
+        "carrier": "ups",
+        "destination_city": "Paris",
+        "destination_country": "CA",
+        "estimated_days": 7,
+        "origin_city": "Chicago",
+        "origin_country": "US",
+        "shipment_id": "SHP-40002",
+        "shipped_date": "2024-09-28",
+        "tracking_num": "1Z423483687",
+        "weight_kg": 5.068
+      },
+      {
+        "carrier": "usps",
+        "destination_city": "Paris",
+        "destination_country": "XX",
+        "estimated_days": 12,
+        "origin_city": "Berlin",
+        "origin_country": "FR",
+        "shipment_id": "SHP-40003",
+        "shipped_date": "2024-10-16",
+        "tracking_num": "1Z244041511",
+        "weight_kg": 8.928
+      },
+      {
+        "carrier": "usps",
+        "destination_city": "Sydney",
+        "destination_country": "JP",
+        "estimated_days": 5,
+        "origin_city": "Berlin",
+        "origin_country": "FR",
+        "shipment_id": "SHP-40004",
+        "shipped_date": "2024-04-16",
+        "tracking_num": "1Z716352222",
+        "weight_kg": 4.555
+      },
+      {
+        "carrier": "dhl",
+        "destination_city": "Chicago",
+        "destination_country": "JP",
+        "estimated_days": 11,
+        "origin_city": "Paris",
+        "origin_country": "US",
+        "shipment_id": "SHP-40005",
+        "shipped_date": "2024-06-08",
+        "tracking_num": "1Z681716748",
+        "weight_kg": 19.244
+      },
+      {
+        "carrier": "ups",
+        "destination_city": "Los Angeles",
+        "destination_country": "JP",
+        "estimated_days": 11,
+        "origin_city": "Toronto",
+        "origin_country": "BR",
+        "shipment_id": "SHP-40006",
+        "shipped_date": "2024-04-21",
+        "tracking_num": "1Z617545080",
+        "weight_kg": 23.49
+      },
+      {
+        "carrier": "usps",
+        "destination_city": "Berlin",
+        "destination_country": "US",
+        "estimated_days": 7,
+        "origin_city": "Toronto",
+        "origin_country": "XX",
+        "shipment_id": "SHP-40007",
+        "shipped_date": "2024-02-12",
+        "tracking_num": "1Z227686402",
+        "weight_kg": 3.0
+      },
+      {
+        "carrier": "fedex",
+        "destination_city": "Sydney",
+        "destination_country": "XX",
+        "estimated_days": 10,
+        "origin_city": "Toronto",
+        "origin_country": "AU",
+        "shipment_id": "SHP-40008",
+        "shipped_date": "2024-12-13",
+        "tracking_num": "1Z138668495",
+        "weight_kg": 1.572
+      },
+      {
+        "carrier": "fedex",
+        "destination_city": "Toronto",
+        "destination_country": "JP",
+        "estimated_days": 4,
+        "origin_city": "Paris",
+        "origin_country": "XX",
+        "shipment_id": "SHP-40009",
+        "shipped_date": "2024-01-18",
+        "tracking_num": "1Z840595251",
+        "weight_kg": 19.753
+      }
+    ],
+    "target_fields": [
+      "shipment_id",
+      "origin_city",
+      "destination_city",
+      "weight_kg",
+      "carrier",
+      "shipped_date",
+      "estimated_days",
+      "tracking_num",
+      "origin_country",
+      "destination_country"
+    ]
+  },
+  "hashes": {
+    "brief_md_sha256": "bc7d444c6f838f0251e9a829eba808eabc3ea4e109430decc5b66b62c05bb0f8",
+    "expected_canonical_sha256": "7392ae9d783c9c9ffde646781e957a85c0c21652fe8e19c3b3129e153f9be6d6",
+    "spec_md_sha256": "e1abc00a34af268099365ed974b95b101fa27c567ae66586541052e0e7fc0c77",
+    "workspace_sha256": {
+      "etl.py": "8f7d8f7fb20d4be0367da883424a58430ddd5c79ecfe2ad133320da967fc65ed",
+      "run_etl.py": "1763df3e015abea5d028f277f246c4dbc7390cf92332633bf8d56d4fd948bf10",
+      "source_sample.json": "fae587607dc7adac376e82eca820cd4c5b1e78ed161b747a1a217f06846ad703",
+      "target_schema.json": "e9f3f369f58a71232a0eaf0b69967954359257e2c91c2c3476157efa1aaf4925"
+    }
+  },
+  "seed": 3,
+  "source_projection_note": "Actor views use generated.spec_md, generated.brief_md, and generated.workspace_files only; generated.expected is copied solely here. Content overlap with public schema or Planner-private rules is native and is not treated as leakage.",
+  "task_id": "PIPE1_etl_fix"
+}
