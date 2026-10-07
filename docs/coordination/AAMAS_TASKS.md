@@ -23,12 +23,17 @@ benchmark authority, live parity, later-use, cost and scientific gate remain ope
 
 **Latest canonical main PDF reconciliation — 2026-10-07:** the parent-level
 `artifacts/aamas2027/main.pdf` now matches the newer verified
-`reference_supplement_20261007_v3` version byte-for-byte (SHA-256
-`b316464801f9e02c65fa61d9f704c21945679ced1492e897df1749b72425f3be`). The previous v2 remains
-preserved. Both have 8 body pages/9 total pages with References beginning on page 9;
-`submission_ready=false`. The parent provenance was repaired to point to v3 so the canonical
-entry and its verification agree. See [reconciliation report](task_reports/20261007_main_pdf_master_reconcile_v3.md)
+`baseline_sync_20261007_v1` version byte-for-byte (SHA-256
+`3bdfeec42d8ab983c8bcc73fc51642aae2d064bd16e73de997840ff3764aebf8`). The previous v2/v3
+rounds remain preserved. The current build has 8 body pages/9 total pages with References
+beginning on page 9; `submission_ready=false`. The parent provenance points to the current
+version and records the same hash. See [sync report](task_reports/20261007_main_pdf_master_baseline_sync.md)
 and [`main_pdf_master.json`](../../artifacts/aamas2027/main_pdf_master.json).
+
+The synchronized wording is paper-only: it keeps the historical context-only trust arm as a
+diagnostic comparator, names the same-information arm `contextual_trust_linear`, and leaves the
+DIST1/PIPE3 development/confirmation split to the versioned parity card. It does not freeze a
+benchmark, run a baseline, or open the scientific gate.
 
 **Latest baseline parity candidate card — 2026-10-07:** `n03_baseline_live_parity_candidate_v0.2`
 freezes a candidate-only ArtifactRole/PIPE3 matrix with `uniform`, `no_update`,
