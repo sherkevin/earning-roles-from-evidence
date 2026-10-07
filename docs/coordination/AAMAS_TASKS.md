@@ -1,5 +1,16 @@
 # AAMAS 2027 task ledger
 
+**Latest baseline runner arm registration — 2026-10-07:** the shared offline
+`PolicyMatrixRunner` now accepts the candidate executable set
+`uniform/no_update/raw_acceptance/terminal_only/contextual_trust_linear/pooled_controller/RARE`.
+The legacy context-only arm remains available for historical receipts; `Meta-Team-L2-public`
+stays an explicit `BLOCKED_NO_GO` row and is not silently simulated. The focused suite has
+18 passing tests and a two-offer seven-arm replay passes with snapshot equality. This only
+closes the runner registration seam: no API, generator, candidate or GPU call occurred, and
+benchmark authority, live parity, later-use, cost and scientific gate remain open. See
+[qualification report](task_reports/20261007_candidate_runner_arm_registry.md) and
+[`n03_candidate_runner_arm_registry_20261007_v1`](../../experiments/logs/n03_candidate_runner_arm_registry_20261007_v1/summary.json).
+
 **Latest canonical main PDF reconciliation — 2026-10-07:** the parent-level
 `artifacts/aamas2027/main.pdf` now matches the newer verified
 `reference_supplement_20261007_v3` version byte-for-byte (SHA-256

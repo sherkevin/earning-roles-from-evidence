@@ -229,6 +229,13 @@ assignment-level alternate-outcome 拒绝。该 adapter 仍未
 进入 active 七臂 manifest；canonical ledger replay、独立 target histories、四格信息价值
 和完整成本未完成，因此 `baseline_frozen=false` 保持不变。
 
+2026-10-07 candidate runner registration amendment：共享离线 `PolicyMatrixRunner` 已接收
+候选 parity 卡的七个可执行臂（含 `contextual_trust_linear`），旧 `contextual_trust` 仅为
+历史兼容/诊断；`Meta-Team-L2-public` 仍是显式 `BLOCKED_NO_GO`，不能用手写 profile 或
+trust score 代替。18 项 focused regression 与两 offer replay 通过，0 API/0 GPU；这只关闭
+runner arm registration，baseline authority、独立 live histories、later-use、measured cost
+和 `baseline_frozen` 仍未通过。详见 [runner qualification](../../../coordination/task_reports/20261007_candidate_runner_arm_registry.md)。
+
 ## 7. 对照标准
 
 本文件按 [`benchmark_baseline_v1.2_20260929_eval.md`](../evaluation/benchmark-baseline/benchmark_baseline_v1.2_20260929_eval.md) 审查。故事与创新见 [`storyline_v1.1_20260928.md`](../storyline/storyline_v1.1_20260928.md)，方法合同见当前生效的 [`method_v1.3_20261007.md`](../method/method_v1.3_20261007.md)。轨道确认记录见 [`ADR 0042`](../../../user/decisions/0042-confirm-artifactrole-primary-peerselect-secondary.md)。Parity 候选卡见 [`n03_baseline_live_parity_candidate_v0.2.json`](../../../configs/aamas2027/n03_baseline_live_parity_candidate_v0.2.json)；该卡仍是设计候选，不能解释为 benchmark/baseline 已冻结。

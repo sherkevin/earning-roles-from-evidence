@@ -62,6 +62,19 @@ ARM_NAMES = (
     "uniform", "no_update", "raw_acceptance", "terminal_only",
     "contextual_trust", "pooled_controller", "RARE",
 )
+
+# The legacy seven-arm fixture remains the default so historical qualification
+# receipts replay unchanged.  The candidate scientific card uses the
+# feature-aware comparator instead of the context-only diagnostic; exposing a
+# separate executable set lets the same runner accept that card without
+# silently rewriting old receipts.  Meta-Team-L2-public is intentionally not
+# listed: its published adapter remains an explicit NO-GO until its public
+# profile parser and assignment consumer are independently qualified.
+CANDIDATE_EXECUTABLE_ARM_NAMES = (
+    "uniform", "no_update", "raw_acceptance", "terminal_only",
+    "contextual_trust_linear", "pooled_controller", "RARE",
+)
+SUPPORTED_ARM_NAMES = frozenset(ARM_NAMES) | frozenset(CANDIDATE_EXECUTABLE_ARM_NAMES)
 def _sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -199,7 +212,7 @@ class PolicyMatrixRunner:
         self.arm_names = tuple(arm_names)
         self.require_manifest = bool(require_manifest)
         self.require_canonical_manifest = bool(require_canonical_manifest)
-        unknown = set(self.arm_names) - set(ARM_NAMES)
+        unknown = set(self.arm_names) - SUPPORTED_ARM_NAMES
         if unknown:
             raise ValueError(f"unsupported matrix arms={sorted(unknown)}")
 

@@ -1,5 +1,13 @@
 # Task reports
 
+- [partial] 2026-10-07 baseline runner arm registration：发现 parity 候选卡所需的
+  `contextual_trust_linear` 虽已有 policy，却未被共享 `PolicyMatrixRunner` 的 arm 注册表接受；
+  已新增候选七臂执行集合，同时保留旧 context-only arm 以重放历史回执，并把
+  `Meta-Team-L2-public` 保持为显式 `BLOCKED_NO_GO`。18 项 runner 测试和两 offer 七臂回放通过，
+  snapshot 全部一致；0 API、0 generator、0 candidate、0 GPU、0 policy update。它只关闭注册
+  接缝，不是 live parity、效果结果或 baseline freeze，见
+  [report](task_reports/20261007_candidate_runner_arm_registry.md)。
+
 - [partial] 2026-10-07 canonical main PDF reconciliation v3：并行构建已把父目录主版更新为
   `reference_supplement_20261007_v3`，但旧 provenance 仍指向 v2；现已补齐 v3 verification，
   修复 parent-level provenance，并验证主版与 v3 字节一致。SHA-256 为

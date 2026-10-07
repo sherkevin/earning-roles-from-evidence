@@ -11,6 +11,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from peerrolebench_policy_matrix_runner_v1 import (  # noqa: E402
     ARM_NAMES,
+    CANDIDATE_EXECUTABLE_ARM_NAMES,
     PolicyMatrixRunner,
     fixture_case,
     _registry,
@@ -83,6 +84,19 @@ def test_all_arms_pass_seven_offline_contract_cases(tmp_path):
     for case_result in result["results"].values():
         assert set(case_result["metrics"]) == set(ARM_NAMES)
         assert all(item["snapshot_equal"] for item in case_result["replay"].values())
+
+
+def test_candidate_executable_arm_set_reaches_shared_runner(tmp_path):
+    """The current candidate card can use the runner without executing Meta-Team."""
+    offers, schedule, digest = fixture_case("recipient_only")
+    result = PolicyMatrixRunner(
+        registry=_registry(), arm_names=CANDIDATE_EXECUTABLE_ARM_NAMES,
+    ).run(offers, schedule, expected_schedule_digest=digest)
+    assert result["status"] == "PASS"
+    assert tuple(result["arms"]) == CANDIDATE_EXECUTABLE_ARM_NAMES
+    assert result["scientific_claim_allowed"] is False
+    assert all(result["metrics"][name]["n_selected"] == len(offers)
+               for name in CANDIDATE_EXECUTABLE_ARM_NAMES)
 
 
 def test_runner_rejects_future_read_cut_and_schedule_digest():
