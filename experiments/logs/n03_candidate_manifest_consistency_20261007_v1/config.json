@@ -1,0 +1,19 @@
+{
+  "experiment_id": "n03_candidate_manifest_consistency_20261007_v1",
+  "type": "zero_call_pre_activation_audit",
+  "created_at_local": "2026-10-07T21:31:54.922552+08:00",
+  "git_head": "3bb28d7e214b3280f8e2f0daee2ae6931c786a3c",
+  "source_sha256": {
+    "configs/aamas2027/n03_benchmark_baseline_candidate_v2.json": "61dda20ce84d80aa3faee85de5fa434746cd75837f81be824eef4c1065eb6733",
+    "configs/aamas2027/n03_baseline_live_parity_candidate_v0.2.json": "35f4643194130ef4c8f687ef2ffee4d09dd232930f675fcabcbcb11272cee434",
+    "configs/aamas2027/n03_c1_parent_source_live_v2_signal_channels.json": "76c659cffc3a0c3160109ecf66bc875773b9b38f63612e6c08d3f75f215d1568",
+    "scripts/peerrolebench_policy_matrix_runner_v1.py": "60191304c9eda354cff8c8eff0f79eb8e6b324b3747deb5a2ed8497c51a15c8f",
+    "scripts/peerrolebench_candidate_manifest_consistency.py": "eec941710df9e1bfc55101e90c7711c24a766fee3a73b638a2d6e1deea91ff96",
+    "tests/test_peerrolebench_candidate_manifest_consistency.py": "bfbd817e9054eab34b6aa3ed23e731dddb7e066df8f1a3d2cbb0f72da9070cba"
+  },
+  "command": "python3 -m pytest -q tests/test_peerrolebench_candidate_manifest_consistency.py --disable-warnings --maxfail=1",
+  "api_calls_allowed": false,
+  "gpu_jobs_allowed": false,
+  "scientific_claim_allowed": false,
+  "purpose": "Detect disagreement among the older two-root manifest, the newer parity card, the C1 live card, and the shared runner before activation."
+}

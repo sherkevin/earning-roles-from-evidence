@@ -1,5 +1,12 @@
 # Task reports
 
+- [blocked_by_evidence] 2026-10-07 candidate manifest consistency audit：旧两 root manifest、
+  新 parity card 与 C1 live card 对 development root、`contextual_trust`/`contextual_trust_linear`
+  和完整 arm coverage 的描述不一致。审计按预期返回 `BLOCKED_PRE_EXECUTION`；2 项测试在
+  修复一次 Python 3.9 动态导入问题后通过，0 API、0 generator、0 candidate、0 GPU。没有
+  擅自修改 active benchmark；需要先共同收敛唯一 root split 与 parity card，见
+  [audit report](task_reports/20261007_candidate_manifest_consistency_audit.md)。
+
 - [partial] 2026-10-07 baseline runner arm registration：发现 parity 候选卡所需的
   `contextual_trust_linear` 虽已有 policy，却未被共享 `PolicyMatrixRunner` 的 arm 注册表接受；
   已新增候选七臂执行集合，同时保留旧 context-only arm 以重放历史回执，并把

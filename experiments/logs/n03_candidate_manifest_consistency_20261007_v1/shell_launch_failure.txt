@@ -1,0 +1,4 @@
+Historical launch attempt preserved for audit integrity:
+zsh:3: read-only variable: status
+Cause: the wrapper used zsh's read-only `status` variable name while capturing the expected exit code.
+The audit was rerun with variable `rc`; no source or input data changed.

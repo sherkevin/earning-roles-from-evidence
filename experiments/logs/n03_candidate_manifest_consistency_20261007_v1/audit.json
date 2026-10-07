@@ -1,0 +1,112 @@
+{
+  "status": "BLOCKED_PRE_EXECUTION",
+  "scientific_claim_allowed": false,
+  "api_runs_allowed": false,
+  "gpu_runs_allowed": false,
+  "old_manifest": {
+    "path": "configs/aamas2027/n03_benchmark_baseline_candidate_v2.json",
+    "manifest_version": "peerrolebench-benchmark-baseline-candidate-v2",
+    "roots": {
+      "DIST1_queue_race": "development",
+      "PIPE3_stream_processing": "confirmation"
+    },
+    "baselines": [
+      "uniform",
+      "no_update",
+      "raw_acceptance",
+      "terminal_only",
+      "contextual_trust",
+      "pooled_controller",
+      "RARE"
+    ]
+  },
+  "parity_card": {
+    "path": "configs/aamas2027/n03_baseline_live_parity_candidate_v0.2.json",
+    "manifest_version": "peerrolebench-live-baseline-parity-candidate-v0.2",
+    "primary_root": "PIPE3_stream_processing",
+    "arms": [
+      "uniform",
+      "no_update",
+      "raw_acceptance",
+      "terminal_only",
+      "contextual_trust_linear",
+      "pooled_controller",
+      "RARE",
+      "Meta-Team-L2-public"
+    ]
+  },
+  "c1_card": {
+    "path": "configs/aamas2027/n03_c1_parent_source_live_v2_signal_channels.json",
+    "manifest_version": "peerrolebench-c1-parent-source-development-v2-signal-channels",
+    "arms": [
+      "no_update",
+      "contextual_trust_linear",
+      "RARE"
+    ]
+  },
+  "runner": {
+    "path": "scripts/peerrolebench_policy_matrix_runner_v1.py",
+    "legacy_arms": [
+      "uniform",
+      "no_update",
+      "raw_acceptance",
+      "terminal_only",
+      "contextual_trust",
+      "pooled_controller",
+      "RARE"
+    ],
+    "candidate_executable_arms": [
+      "uniform",
+      "no_update",
+      "raw_acceptance",
+      "terminal_only",
+      "contextual_trust_linear",
+      "pooled_controller",
+      "RARE"
+    ]
+  },
+  "blockers": [
+    {
+      "id": "root_split_disagreement",
+      "old_manifest_development_root": "DIST1_queue_race",
+      "parity_card_primary_root": "PIPE3_stream_processing",
+      "impact": "development/confirmation assignment is not frozen"
+    },
+    {
+      "id": "strongest_control_name_disagreement",
+      "old_manifest": "contextual_trust",
+      "parity_card": "contextual_trust_linear",
+      "impact": "same-information control cannot be identified across cards"
+    },
+    {
+      "id": "c1_arm_coverage_gap",
+      "candidate_executable_arms": [
+        "uniform",
+        "no_update",
+        "raw_acceptance",
+        "terminal_only",
+        "contextual_trust_linear",
+        "pooled_controller",
+        "RARE"
+      ],
+      "c1_arms": [
+        "no_update",
+        "contextual_trust_linear",
+        "RARE"
+      ],
+      "missing": [
+        "uniform",
+        "raw_acceptance",
+        "terminal_only",
+        "pooled_controller"
+      ],
+      "impact": "C1 cannot be promoted to the parity matrix without new arm adapters"
+    }
+  ],
+  "source_sha256": {
+    "configs/aamas2027/n03_benchmark_baseline_candidate_v2.json": "61dda20ce84d80aa3faee85de5fa434746cd75837f81be824eef4c1065eb6733",
+    "configs/aamas2027/n03_baseline_live_parity_candidate_v0.2.json": "35f4643194130ef4c8f687ef2ffee4d09dd232930f675fcabcbcb11272cee434",
+    "configs/aamas2027/n03_c1_parent_source_live_v2_signal_channels.json": "76c659cffc3a0c3160109ecf66bc875773b9b38f63612e6c08d3f75f215d1568",
+    "scripts/peerrolebench_policy_matrix_runner_v1.py": "60191304c9eda354cff8c8eff0f79eb8e6b324b3747deb5a2ed8497c51a15c8f"
+  }
+}

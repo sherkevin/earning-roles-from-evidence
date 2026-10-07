@@ -1,0 +1,19 @@
+{
+  "experiment_id": "n03_candidate_manifest_consistency_20261007_v1-repair",
+  "parent": "n03_candidate_manifest_consistency_20261007_v1",
+  "created_at_local": "2026-10-07T21:33:53.719584+08:00",
+  "git_head": "3bb28d7e214b3280f8e2f0daee2ae6931c786a3c",
+  "source_sha256": {
+    "configs/aamas2027/n03_benchmark_baseline_candidate_v2.json": "61dda20ce84d80aa3faee85de5fa434746cd75837f81be824eef4c1065eb6733",
+    "configs/aamas2027/n03_baseline_live_parity_candidate_v0.2.json": "35f4643194130ef4c8f687ef2ffee4d09dd232930f675fcabcbcb11272cee434",
+    "configs/aamas2027/n03_c1_parent_source_live_v2_signal_channels.json": "76c659cffc3a0c3160109ecf66bc875773b9b38f63612e6c08d3f75f215d1568",
+    "scripts/peerrolebench_policy_matrix_runner_v1.py": "60191304c9eda354cff8c8eff0f79eb8e6b324b3747deb5a2ed8497c51a15c8f",
+    "scripts/peerrolebench_candidate_manifest_consistency.py": "7f86433e6b140d03934720a7c58087ea094a13381db121e1cb752435e1b824c8",
+    "tests/test_peerrolebench_candidate_manifest_consistency.py": "bfbd817e9054eab34b6aa3ed23e731dddb7e066df8f1a3d2cbb0f72da9070cba"
+  },
+  "command": "python3 -m pytest -q tests/test_peerrolebench_candidate_manifest_consistency.py --disable-warnings --maxfail=1",
+  "repair": "register transient imported runner module in sys.modules for Python 3.9 dataclass postponed annotations",
+  "api_calls_allowed": false,
+  "gpu_jobs_allowed": false,
+  "scientific_claim_allowed": false
+}

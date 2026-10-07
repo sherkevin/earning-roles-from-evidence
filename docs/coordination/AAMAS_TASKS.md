@@ -1,5 +1,15 @@
 # AAMAS 2027 task ledger
 
+**Latest candidate manifest consistency audit — 2026-10-07:** the older two-root manifest,
+new parity card and C1 live card disagree on the development root, strongest control name and
+arm coverage. The audit returns `BLOCKED_PRE_EXECUTION`: old manifest = DIST1 development /
+PIPE3 confirmation with context-only `contextual_trust`; parity candidate = PIPE3 development
+candidate with `contextual_trust_linear` and explicit Meta-Team `NO-GO`; C1 still has only three
+arms. Two audit tests pass after preserving one Python 3.9 import failure; no API/generator/
+candidate/GPU call. The active benchmark is not silently changed. See [audit report]
+(task_reports/20261007_candidate_manifest_consistency_audit.md) and
+[`n03_candidate_manifest_consistency_20261007_v1`](../../experiments/logs/n03_candidate_manifest_consistency_20261007_v1/audit.json).
+
 **Latest baseline runner arm registration — 2026-10-07:** the shared offline
 `PolicyMatrixRunner` now accepts the candidate executable set
 `uniform/no_update/raw_acceptance/terminal_only/contextual_trust_linear/pooled_controller/RARE`.

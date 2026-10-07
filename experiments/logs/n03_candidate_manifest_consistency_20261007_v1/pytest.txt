@@ -1,0 +1,90 @@
+F
+=================================== FAILURES ===================================
+________ test_current_candidate_cards_fail_closed_on_real_disagreements ________
+
+    def test_current_candidate_cards_fail_closed_on_real_disagreements():
+>       result = audit(_load(OLD_CARD), _load(PARITY_CARD), _load(C1_CARD))
+
+tests/test_peerrolebench_candidate_manifest_consistency.py:13: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+scripts/peerrolebench_candidate_manifest_consistency.py:52: in audit
+    legacy_arms, executable_arms = _runner_constants()
+scripts/peerrolebench_candidate_manifest_consistency.py:38: in _runner_constants
+    spec.loader.exec_module(module)
+<frozen importlib._bootstrap_external>:850: in exec_module
+    ???
+<frozen importlib._bootstrap>:228: in _call_with_frames_removed
+    ???
+scripts/peerrolebench_policy_matrix_runner_v1.py:99: in <module>
+    class MatrixOffer:
+/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/dataclasses.py:1013: in wrap
+    return _process_class(cls, init, repr, eq, order, unsafe_hash, frozen)
+/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/dataclasses.py:863: in _process_class
+    cls_fields = [_get_field(cls, name, type)
+/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/dataclasses.py:863: in <listcomp>
+    cls_fields = [_get_field(cls, name, type)
+/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/dataclasses.py:714: in _get_field
+    and _is_type(f.type, cls, typing, typing.ClassVar,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+annotation = 'Any', cls = <class 'peerrolebench_matrix_runner.MatrixOffer'>
+a_module = <module 'typing' from '/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/typing.py'>
+a_type = typing.ClassVar
+is_type_predicate = <function _is_classvar at 0x107aac3a0>
+
+    def _is_type(annotation, cls, a_module, a_type, is_type_predicate):
+        # Given a type annotation string, does it refer to a_type in
+        # a_module?  For example, when checking that annotation denotes a
+        # ClassVar, then a_module is typing, and a_type is
+        # typing.ClassVar.
+    
+        # It's possible to look up a_module given a_type, but it involves
+        # looking in sys.modules (again!), and seems like a waste since
+        # the caller already knows a_module.
+    
+        # - annotation is a string type annotation
+        # - cls is the class that this annotation was found in
+        # - a_module is the module we want to match
+        # - a_type is the type in that module we want to match
+        # - is_type_predicate is a function called with (obj, a_module)
+        #   that determines if obj is of the desired type.
+    
+        # Since this test does not do a local namespace lookup (and
+        # instead only a module (global) lookup), there are some things it
+        # gets wrong.
+    
+        # With string annotations, cv0 will be detected as a ClassVar:
+        #   CV = ClassVar
+        #   @dataclass
+        #   class C0:
+        #     cv0: CV
+    
+        # But in this example cv1 will not be detected as a ClassVar:
+        #   @dataclass
+        #   class C1:
+        #     CV = ClassVar
+        #     cv1: CV
+    
+        # In C1, the code in this function (_is_type) will look up "CV" in
+        # the module and not find it, so it will not consider cv1 as a
+        # ClassVar.  This is a fairly obscure corner case, and the best
+        # way to fix it would be to eval() the string "CV" with the
+        # correct global and local namespaces.  However that would involve
+        # a eval() penalty for every single field of every dataclass
+        # that's defined.  It was judged not worth it.
+    
+        match = _MODULE_IDENTIFIER_RE.match(annotation)
+        if match:
+            ns = None
+            module_name = match.group(1)
+            if not module_name:
+                # No module name, assume the class's module did
+                # "from dataclasses import InitVar".
+>               ns = sys.modules.get(cls.__module__).__dict__
+E               AttributeError: 'NoneType' object has no attribute '__dict__'
+
+/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/dataclasses.py:660: AttributeError
+=========================== short test summary info ============================
+FAILED tests/test_peerrolebench_candidate_manifest_consistency.py::test_current_candidate_cards_fail_closed_on_real_disagreements
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed in 0.38s
