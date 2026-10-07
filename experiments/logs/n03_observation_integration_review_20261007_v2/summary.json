@@ -1,0 +1,51 @@
+{
+  "passed": true,
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "scripts/check_research_registry.py"
+      ],
+      "exit_code": 0,
+      "timestamp": "2026-10-07T04:46:43.936647+00:00",
+      "output_file": "command_0.txt"
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "py_compile",
+        "scripts/peerrolebench_judgment_support_audit.py",
+        "scripts/peerrolebench_actor_experience.py",
+        "scripts/peerrolebench_judgment_observation.py"
+      ],
+      "exit_code": 0,
+      "timestamp": "2026-10-07T04:46:43.983056+00:00",
+      "output_file": "command_1.txt"
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "timestamp": "2026-10-07T04:46:44.027840+00:00",
+      "output_file": "command_2.txt"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check_aamas_documents.py",
+        "--sync-gate",
+        "--check-gate"
+      ],
+      "exit_code": 0,
+      "timestamp": "2026-10-07T04:46:44.075317+00:00",
+      "output_file": "command_3.txt"
+    }
+  ],
+  "api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_gate_opened": false
+}

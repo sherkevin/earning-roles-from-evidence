@@ -1,7 +1,7 @@
 # ADR 0047 — 用结构化责任 owner 决定 evidence 资格，保留 judged role 做校准
 
 日期：2026-10-06  
-状态：Accepted  
+状态：Accepted；observation publication 与 attribution 等同的部分由 [0049](0049-separate-judgment-observation-from-credit.md) 替代，结构化 owner 原则保留。
 范围：ArtifactRole 的 source responsibility gate 与后续 live comparison
 
 ## Context

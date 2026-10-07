@@ -1,5 +1,15 @@
 # AAMAS 2027 task ledger
 
+**Latest scientific correction — 2026-10-07:** strict source publication makes
+J constant; its current assignment overlay is count-only. ADR0049, explicitly
+confirmed by the user, separates noisy observations from attributable credit.
+Method v1.3 and method evaluation v1.4 are ACTIVE; Goal is unchanged. Offline
+observation/actor-state components qualify bounded interfaces, not efficacy.
+Before the previously planned real-actor continuation, complete the typed
+observation-to-native-assignment bridge and independent reward/cost contract.
+Existing ledger credit and target J alone do not establish producer reward.
+See [audit and Goal comparison](task_reports/20261007_judgment_support_and_observation_split.md).
+
 Updated: 2026-10-07 (real-artifact measurement reconciled; actual eight-body-page PDF verified; scientific submission gate remains closed). The project-level goal authority is [GOAL v1.0](GOAL.md); task-by-task reconciliation is indexed in [TASK_REPORTS](TASK_REPORTS.md). Owner: scientist; one engineer owns execution. Authority: [REQUIREMENTS.md](../paper/aamas2027/REQUIREMENTS.md), version 1.5.8. This is the sole active AAMAS gap/status/execution ledger. Role TODOs are historical pointers. Bounded read-only critiques inform the current direction; they did not execute experiments.
 
 **Current continuation — 2026-10-07:** the old page counter undercounted a mixed

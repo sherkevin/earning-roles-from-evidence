@@ -1,5 +1,12 @@
 # Task reports
 
+- [partial] 2026-10-07 judgment-support audit and accepted observation split:
+  strict source J is constant and its overlay equals eligible-event counts.
+  User confirmed ADR0049; method v1.3/evaluation v1.4 activated without lowering
+  Goal. Offline actor-history/observation components added; native assignment
+  bridge and independent reward semantics remain open. See
+  [audit, debate and Goal comparison](task_reports/20261007_judgment_support_and_observation_split.md).
+
 - [partial] 2026-10-07 actual paper-page correction: old mixed References page
   caused undercounting. Fixed measurement; preserved two overlength builds; v3
   is now exactly eight body pages with References alone on page 9. Scientific

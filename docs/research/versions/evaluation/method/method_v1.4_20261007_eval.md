@@ -1,25 +1,29 @@
-# 方法论评价标准 v1.3
+# 方法论评价标准 v1.4
 
-- **状态**：`SUPERSEDED` — 由 [`method_v1.4_20261007_eval.md`](method_v1.4_20261007_eval.md) 接替；保留历史标准。
+- **状态**：`ACTIVE`
 - **类别**：evaluation/method
-- **评价对象**：[`method_v1.2_20261006.md`](../../method/method_v1.2_20261006.md)
-- **生效日期**：2026-10-06
-- **前一版本**：[`method_v1.2_20260930_eval.md`](method_v1.2_20260930_eval.md)
+- **评价对象**：[`method_v1.3_20261007.md`](../../method/method_v1.3_20261007.md)
+- **生效日期**：2026-10-07
+- **前一版本**：[`method_v1.3_20261006_eval.md`](method_v1.3_20261006_eval.md)
 - **用途**：审查两阶段 role-evidence 方法是否真正新、可运行、可验证、实时且稳定；不保证录用。
 
-## A. 三层状态硬门
+## A. 观察、归因、发布与更新硬门
 
 方法必须把以下状态分开记录并可重放：
+
+- `observation_eligible/observation_publish_allowed`：评价绑定真实交付与责任对象，J 在行动前封存，源任务完整后才可发布独立 typed observation。固定合法 lineage 后，accept/rework/reject 必须同等准入；Qp 正负不能作事后选样规则。完整 recipient/mixed 交接只可保留为 noisy observation，不是 producer reward。
 
 - `attribution_eligible`：源 producer contract、recipient judgment、实际 action、terminal outcome 和 digest 唯一绑定；later outcome 不能单独制造源归因；recipient-only/mixed/UNKNOWN 必须拒绝。
 - `evidence_publish_allowed`：可发布不可变 public evidence，供未来 read cut 使用；发布阶段持久 policy digest 和 update count 不变。
 - `policy_update_allowed`：只有 assignment 在 selection/start 前成立、selection 消费同一 evidence snapshot、later task 完成后，才允许一次 selected-only delayed credit。
 
-Role evidence offer 必须与 policy feedback offer 分离；native `evidence_id`、producer/version、delivery/artifact lineage 和 target assignment subject 必须可从 canonical ledger 重放。必须有 preview→assignment→selection 的 exact chosen/propensity 检查，禁止把 source selection id 当 evidence id，或用错误 peer 消费别人的 evidence。
+Noisy observation、attributable role evidence 与 policy feedback 必须类型分离；新观察视图不冒用 native evidence 身份。Role evidence offer 必须与 policy feedback offer 分离；native `evidence_id`、producer/version、delivery/artifact lineage 和 target assignment subject 必须可从 canonical ledger 重放。必须有 preview→assignment→selection 的 exact chosen/propensity 检查，禁止把 source selection id 当 evidence id，或用错误 peer 消费别人的 evidence。
 
 任何把 diagnostic ELIGIBLE 直接当训练标签、把 later outcome 回填成旧 producer 标签、或在早期 selection 读取未来结果的实现均不通过。
 
-结构化 owner 与 judged role 必须分开验收：`structural_owner_role` 只能由冻结 contract/registry、changed paths、独立 producer check 和预注册 defect/quality 事件推导；模型生成的 `target_role`/`target_paths` 只能作为带噪声的 calibration observation。producer owner 与 judged recipient 的 disagreement 应保留并计入 judge calibration，不能单独 censor 合法 producer evidence；recipient-only、mixed、unknown、资源失败和 contract mutation 必须 fail closed。
+结构化 owner 与 judged role 必须分开验收：`structural_owner_role` 只能由冻结 contract/registry、changed paths、独立 producer check 和预注册 defect/quality 事件推导；模型生成的 `target_role`/`target_paths` 只能作为带噪声的 calibration observation。producer owner 与 judged recipient 的 disagreement 应保留并计入 judge calibration，不能单独 censor 合法观察。producer 输入→交付 diff 与 recipient 交付→最终 diff 必须分开；recipient-only/mixed 在 producer credit 通道 fail closed；unknown、资源失败和 contract mutation 在观察发布和训练通道均 fail closed。
+
+现有 ledger-credit 校验只是 lineage/时序前提，不能替代 reward 验证。目标任务的 Qp、独立 Y、实际动作和完整成本须分别记录，更新目标与标签规则须预注册；不得直接把 target J 的 rework/reject 当作 producer 奖惩。实际运行后且完整合法才更新，发布时持久状态必须不变。
 
 ## B. 形式完整性与事件顺序
 
@@ -67,6 +71,26 @@ profile/prototype permutation 对照。融合权重、刷新周期、Top-K、更
 规则只能在 development split 冻结，不能按 confirmation 结果回调。否则无法把收益归因
 到方法机制，方法门不通过。
 
+## F.3 评价支持度与增量信息硬门
+
+必须报告准入前后 J/Qp/动作的支持度、UNKNOWN 与完整分母。若源发布 J 恒定且
+scorer 只读其类别，则 source overlay 的效果只能先解释为事件数；不能写成评价
+内容的增量。增加 Qp PASS 分支但仍只保留 accept，不算解决此缺口。
+
+至少提供 count-only/J-masked、合法 Qp-only、terminal-only、raw-J 与同表示
+contextual 对照；字段、机会数、read cut、探索和预算对齐。公开不合法的 Qp/Y 只能
+作为标明信息差异的上界，不可混入公平 baseline。先在交付/Qp/Y/owner 固定条件下
+比较三种合法 J–action 配对，再在各配对内改变合法路径；违反 native 决策–动作配对的
+输入必须拒绝。真实自然支持度与未来执行效益必须另行测量。
+
+从 auxiliary observation 到 native LaterAssignment 必须有真实注册回执和类型明确的
+适配器，不能只把 observation_id 改名。原生每组 J/A 唯一 update 的约束不能绕开；
+旧 attributable offer、最终 assignment 与 credit 都须拒绝观察回执冒充独立责任证明。
+Native replay PASS 不能替代这些门或 reward 验证。
+
+任何观察通道收益都不能只靠降低责任标准、把接收方自己的工作记给 producer，
+或在确认集上挑选标签/seed 得到。拆通道本身既不证明创新，也不通过有效性门。
+
 ## G. 反驳与停止
 
 以下任一情况时方法主张不通过：
@@ -79,6 +103,8 @@ profile/prototype permutation 对照。融合权重、刷新周期、Top-K、更
 6. contextual trust/bandit 在同信息和成本下解释全部收益；
 7. 只有 zero-call fixture 或单次 API 链，没有独立 live histories 和 confirmation split。
 8. 检索使用了 query 之后的 evidence，或跨 root 的相似任务泛化只由随机行切分支持。
+
+9. 只凭完整 ledger credit 就把 target J 当 producer reward，或 J 恒定时仍声称内容增量。
 
 ## H. 两档交付门
 
@@ -94,4 +120,4 @@ two-stage、四格消融、future assignment effect 或 independent history 门�
 
 ## 来源边界
 
-本标准延续方法评价 v1.2 的 soundness、reproducibility、成本和统计要求，并将 ADR 0043 确认的三层状态和 assignment-level estimand 设为本项目实时 role-evidence 主张的硬门。
+本标准保留方法评价 v1.3 的 soundness、reproducibility、创新、成本、稳定性与统计要求。依用户确认的 ADR0049 分开 noisy observation 与可归因收益，并增加支持度/计数对照及 reward 语义审查；不把任何原有效果要求删除或降级。

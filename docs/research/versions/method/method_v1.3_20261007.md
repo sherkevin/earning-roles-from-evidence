@@ -1,12 +1,16 @@
-# 方法论与训练合同 v1.2
+# 方法论与训练合同 v1.3
 
-- **状态**：`SUPERSEDED` — 由 [`method_v1.3_20261007.md`](method_v1.3_20261007.md) 接替；保留历史定义。
-- **生效日期**：2026-10-06
+- **状态**：`ACTIVE`
+- **生效日期**：2026-10-07
 - **类别**：method
-- **前一版本**：[`method_v1.1_20260930.md`](method_v1.1_20260930.md)
+- **前一版本**：[`method_v1.2_20261006.md`](method_v1.2_20261006.md)
 - **目标约束**：[`docs/coordination/GOAL.md`](../../../coordination/GOAL.md) ER-G2
 
-`ACTIVE` 只表示当前唯一的方法合同，不表示算法已经验证或 backbone/updater 已经选定。v1.2 由 ADR 0047 在两阶段 evidence/update 语义上增加结构化责任 owner gate：冻结 contract/registry/scorer 决定责任归属，模型 judged role 只用于校准；v1.1 保留为历史版本。
+`ACTIVE` 只表示当前唯一的方法合同，不表示算法或 backbone/updater 已验证。
+v1.3 依 [ADR0049](../../../user/decisions/0049-separate-judgment-observation-from-credit.md)
+区分有噪声的交付评价观察、可归因的 producer evidence 与后续任务的合法 credit。
+ADR0047 的结构化 owner 原则保留。实际实现仍含旧 accept-only source gate 和
+诊断性 target-J 更新；下面是需实现并验证的合同，不能把版本生效当成实现完成。
 
 ## 1. 最小数学问题与信息边界
 
@@ -18,7 +22,7 @@ a_t \sim \pi_\theta(\cdot\mid x_t,C_t,R_t),
 R_t = \operatorname{Snapshot}(E_{\le w_t}),
 $$
 
-其中 `E_{≤w_t}` 是该决策 read cut 前已发布且通过公开责任门的 evidence。隐藏 gold、未来 later outcome、private scorer 和其他 policy 的 realized memory 不能进入本轮决策。
+其中 `E_{≤w_t}` 是该决策 read cut 前已发布的有类型观察/证据；每条显式声明为 noisy observation 或 attributable evidence，二者不能暗中互换。隐藏 gold、未来 later outcome、private scorer 和其他 policy 的 realized memory 不能进入本轮决策。
 
 ### 1.1 符号、来源和最小实例
 
@@ -34,7 +38,7 @@ qualification fixture 当作科学结果。没有出现在表中的量是由这�
 | `o_t` | producer 交付及其 artifact digest | `producer.py` 的 sealed source snapshot 与 `delivery_record_hash` |
 | `m_t` | recipient 对该交付的实际动作 | `use`、`repair`、`reject` 或 `redo`，绑定 changed paths |
 | `Q_p,J,A,Y` | 分别来自 producer contract、recipient judgment、recipient action、terminal outcome 的独立事件 | `Q_p=FAIL`、`J=accept_with_rework`、`A=repair`、`Y=PASS/FAIL/UNKNOWN` |
-| `E` | 已通过责任门、可公开读取的不可变 evidence 事件集合 | `evidence_id` 绑定 delivery/judgment/action/outcome/artifact/version |
+| `E` | 通过对应类型准入门、可公开读取的不可变事件集合 | `evidence_id` 绑定 delivery/judgment/action/outcome/artifact/version |
 | `w_t` | assignment 读取 evidence 的事件时间 read cut | 目标 selection 前的 `read_cut=1`；更晚到达的 correction 不可见 |
 | `R_t` | policy 读取的 evidence snapshot | `Snapshot(E_{≤1})`，不含 target outcome 或 private scorer 字段 |
 | `g_t` | 在 arrival index `τ_t` 到达的 public evidence 记录 | `g_0` 为 source role evidence，`τ_0=1` |
@@ -44,8 +48,8 @@ qualification fixture 当作科学结果。没有出现在表中的量是由这�
 
 因此一次合法最小路径是：`x_1,C_1` 冻结菜单，`R_1=Snapshot(E_{≤1})`，先记录
 `LaterAssignment`，再封存 `a_1`；target 完成后才构造 `L_1` 并调用 `U_delay`。若
-`m_t` 修改的是 recipient 自有路径、某一字段缺失或资源执行失败，则对应结果为
-`UNKNOWN`，而不是 producer 的负标签。
+`m_t` 修改的是 recipient 自有路径，不得据此生成 producer 负标签；完整且绑定的
+原始评价仍可作为 noisy observation。缺字段、资源失败或绑定未知的事件不能发布或训练。
 
 episode index `t` 与 feedback-arrival index `k` 分开。每个 arrival batch 为 `B_k={g_t:τ_t=k}`，但更新不再直接由源 episode 触发：
 
@@ -57,52 +61,94 @@ $$
 
 其中 `U_pub` 只登记不可变 public evidence，`L_j` 只有在后续 assignment `j` 已经执行并有完整 later-use outcome 后才存在。发布阶段不改变 `θ`；`U_delay` 对一个 assignment 最多生效一次，且只对未来 assignment/use 的 credit 生效。
 
-## 2. 三层责任/更新状态
+## 2. 观察、归因、发布与更新的独立状态
 
-对源 episode `i`，父进程生成并封存三个独立布尔量和原因：
+### 2.1 `observation_eligible(i)`：谁对哪次真实交付作了什么评价
 
-### 2.1 `attribution_eligible(i)`
+由 canonical ledger 唯一绑定 producer/version、delivery digest、recipient judgment、
+实际 action、独立 Qp 及完整 terminal outcome；对应 contract/registry 在执行前冻结。
+J 在 action 前封存，observation 在源任务完成后才发布。当前或未来读切之外的信息
+不可提前可见。Qp/terminal 的正负、J 的 accept/rework/reject 都不能单独决定准入。
+UNKNOWN、缺字段、错误摘要、非法顺序和版本错配 fail closed。
 
-责任 gate 先计算一个不可由模型覆盖的 `structural_owner_role`。它来自冻结 contract/registry、实际 changed paths、独立 producer contract check 以及显式注册的 producer defect/quality 事件。模型返回的 `judged_target_role` 和 `judged_target_paths` 是带噪声的观测；父进程另外写入 `judged_role_agrees`，用于校准，不作为唯一归因依据。
+producer 输入→交付的变化与 recipient 收到交付→最终产物的变化分开保存。
+前者说明交付来源，后者说明使用与加工；不能把两者都叫 action changed_paths。
+观察绑定的对象是 producer 的交付物，但不因此证明所述缺陷由 producer 导致。
+recipient-only/mixed 动作可作为完整交接观察保存，必须带类型与范围警示，不能
+进入 producer reward。judged role 与结构化对象不同须保留差异，不按措辞删样本。
 
-该量为真当且仅当：
+对固定交付、Qp、Y、owner 和注册条件，设 A(J) 为原生协议要求的合法动作，
+G_obs 为观察准入布尔量，则在各输入均通过原生验证时应满足：
 
-- producer 的 contract 变化或预注册 source defect 能被 action 的路径集合唯一绑定；
-- producer score `Q_p`、recipient judgment `J`、consumer action `A`、terminal outcome `Y` 均完整且 digest/版本/顺序可回放；
-- 由冻结 task contract、candidate registry、changed paths、独立 producer check 与预注册 defect/quality 事件推导的 `structural_owner_role` 是 `producer`，且 recipient-owned/sink-owned path 为空；
-- 模型给出的 `judged_target_role` 可以是 `producer`、`recipient` 或 `unknown`。若它与 structural owner 不一致，仍保留该事件及 `judged_role_agrees=false`，并单独报告 disagreement；不因文字不一致而随机 censor 合法 producer event；
-- `later_valid` 不得单独把一个没有 producer-owned change 的源 episode 变成 eligible。
+$$
+G_{\mathrm{obs}}(0,A(0))=G_{\mathrm{obs}}(\tfrac12,A(\tfrac12))
+                       =G_{\mathrm{obs}}(1,A(1)).
+$$
 
-因此 recipient-only、mixed ownership、缺字段、资源失败、later outcome 单独出现都返回 `UNKNOWN`/`PENDING_ATTRIBUTION`，不产生源 role evidence。模型判断中的 `target_role` 或 `target_paths` 不能单独创造或取消 producer evidence；它们作为 `judged_target_role`、`judged_target_paths` 和 `judged_role_agrees` 保留，用于校准和安全分析。
+Case：固定 B 的同一 `producer.py`、Qp 与 Y，分别构造 accept/use、rework/repair、
+reject_redo/independent_redo 三条合法协议链，按各自动作实际绑定摘要与 used_artifact。
+三个合法配对应有同样观察资格；不能在准入时只保留 accept。路径变化在各配对内单独
+检验。固定 use 却改成 reject 不是合法输入，必须拒绝。这里只构造零调用合同反例，
+不在已完成真实日志中重写评价；非法时序或损坏记录仍拒绝。
 
-### 2.2 `evidence_publish_allowed(i)`
+### 2.2 `attribution_eligible(i)`：该结果可以归因给 producer 吗
 
-若 `attribution_eligible(i)=true`，父进程可追加一个不可变的 `RoleEvidence` 发布记录，记录 source event、责任依据、artifact/ledger digests、evidence version、arrival index 和 supersession lineage。该记录可以在未来任务 read cut 被看见，但发布不调用 `policy.observe_feedback`，不增加 `policy.updates`，也不改变持久 `θ`。
+这是比 observation 更强且独立的判断。结构化 owner 只能来自冻结 contract、registry、
+producer 交付来源、recipient 实际修改路径、独立 producer check 和预注册 defect/quality
+事件；模型 target_role/target_paths 仅为 noisy calibration observation。
+事件规则和候选注册必须先于 selection，Qp PASS/FAIL 只实例化规则，不能事后挑选
+哪些 actor 算数。Qp 完整不等于 terminal utility，terminal PASS 不等于 producer 合规。
 
-原生 ledger 只有在 source terminal outcome 完成后才登记 `RoleEvidenceUpdate`；尚未完成 terminal 的临时可见信息只能存在于 auxiliary offer/trace，不能伪造 evidence 或 `LaterAssignment`。
+recipient-only、mixed、unknown 或缺独立责任依据不能生成 producer 奖惩。
+后续 outcome 也不能单独创造源归因。若需要边际贡献，必须使用单独注册且有效的
+反事实设计；仅绑定到 B 并不证明结果由 B 因果造成。
 
-用于 assignment 的公开视图必须使用独立的 `RoleEvidenceOffer` schema：它以 native
-`evidence_id` 为主键，并绑定 delivery、judgment、action、outcome、artifact digest、producer
-candidate/version 和 source task。旧 `AssignmentEvidenceOffer` 仍只表示 policy feedback
-channel，不能把其中的 `source_event_id` 当成 native role evidence id。offer builder 必须从
-canonical ledger 派生 subject；evidence 属于 producer B 时，assignment 选择 C 必须拒绝。
+Case：B 正确交付序列化，A 评价 rework 并只改自己负责的 processor。A 的评价能被
+记录、其错误解释能被研究，但 `rework→B错误` 不成立；也不能用最终 PASS 反写原评价。
 
-### 2.3 `policy_update_allowed(j)`
+### 2.3 `observation_publish_allowed(i)` 与 `evidence_publish_allowed(i)`
 
-对未来 assignment `j`，只有以下条件同时成立时为真：
+完整 noisy observation 可在未来合法 read cut 被公开读取，类型与 attribution flag
+必须保留；producer attributable evidence 则额外要求 2.2。二者都不可在发布阶段调用
+`policy.observe_feedback`，不可改变持久 θ 或增加 update count。
 
-1. assignment 在目标 selection/task start 之前写入，并引用 source episode 已登记的 evidence；
-2. selection 消费同一 read cut，agent 和 propensity 与 assignment 一致；
-3. later task 的 delivery、judgment/action 和 terminal outcome 完整、绑定且通过 replay gate；
-4. assignment 尚未被 credit（幂等 key 为 assignment id + later outcome lineage）。
+native RoleEvidenceUpdate/RoleEvidenceOffer 与 policy feedback offer 继续分开；新
+observation 使用独立 schema/auxiliary view，不能冒用 native evidence id 或把
+`source_event_id` 改名为有归因证据。完成前的临时 J 仅在 auxiliary trace；不提前生成
+native evidence 或 LaterAssignment。旧 evidence 路径的 subject、版本、digest、arrival、
+supersession、read cut 以及 preview→assignment→commit 校验保留；新观察路径须有等价
+但类型明确的绑定资格，未经实现审查不可接入旧接口冒充已满足。
 
-此时 `L_j` 只评价“该未来选择/被选 peer 在 later task 中的质量、完整成本和使用结果”。它不能修改 source episode 的 `Q_p`/`Y`，不能把 recipient repair 变成 producer credit，也不能读取 later outcome 后重算已封存的 selection。
+**当前桥接缺口：** native LaterAssignment 必须引用已登记的 native evidence id，
+单有 auxiliary observation_id 尚不能完成这条路径。可复用原生 RoleEvidenceUpdate
+作为带专用版本的真实完成回执，由同一回执承载分别校验的观察与归因投影；原生协议
+每组 J/A 只准一条 update，不能先发观察回执再追加第二条 attribution update。
+所有 offer/assignment/credit 消费边界须按版本与独立责任证明做类型隔离；native
+replay PASS 仅证明 lineage。该桥须通过完整零调用链再接 selector，当前尚未完成。
+
+### 2.4 `policy_update_allowed(j)`：未来分派的收益经过实际验证了吗
+
+assignment 必须先于目标 selection/start，选择消费同一快照，agent/propensity 一致，
+later task 真正执行，delivery/action/outcome 完整，更新按 assignment/lineage 幂等。
+这些是必要条件；`derive_later_credit_from_ledger` 现有实现只提供 lineage 前提，
+不检查目标修改责任、独立质量或完整成本，因此不是充分的训练标签校验。
+
+还必须有预注册的 reward 语义：明确训练目标是未来分派质量/完整成本，或经过独立
+责任识别的 producer 能力。两者不可混同；source/target J 都不是默认真值。
+任何把 recipient 集成或 mixed 修改直接映射成 producer 正负标签的更新不合格。
+独立 Y、Qp、实际使用和完整成本须分开记录，缺少合法 label 时不更新且保留分母。
+不能根据后来结果重采样先前选择、修改 source Qp/J/Y 或补写当时不存在的 assignment。
+
+Case：A 的 source 评价让未来任务选择 B，B 的未来任务实际运行完成。只有未来任务
+存在且 label 规则通过后才能产生 L_j。A 曾说 rework 不会直接产生 L_j；仅改变选择概率
+或运行更新函数也不是未来效益。当前 C1 的 target J→Feedback 更新与 post-update preview
+仍属于开发诊断，不能作为符合本合同的训练结果。
 
 ## 3. 事件时序和可重放合同
 
 ```text
 source selection → delivery → Qp/J/A/Y
-  → attribution gate → evidence publication
+  → typed observation / attribution gates → versioned publication
   → assignment (before target selection/start)
   → target selection/read cut → target task outcome
   → delayed selected-only credit
@@ -113,9 +159,9 @@ source selection → delivery → Qp/J/A/Y
 ## 4. 选择器与更新器接口
 
 ```text
-publish(source_episode) -> {published_evidence | UNKNOWN | INVALID}
+publish(source_episode) -> {typed_observation / attributable_evidence | UNKNOWN | INVALID}
 choose(x, C, public_snapshot) -> (selected_peer, propensity, decision_digest)
-validate_later(assignment, later_episode) -> {credit | UNKNOWN | INVALID}
+validate_later(assignment, later_episode, reward_contract) -> {credit | UNKNOWN | INVALID}
 update(credit) -> {updated_once | NOOP}
 snapshot()/restore() -> versioned state
 ```
@@ -229,8 +275,21 @@ updater、实时训练收益或 scientific result，也不改变本节的实现�
 
 ADR 0047 将责任资格从模型生成的 `target_role` 硬条件改为结构化 owner gate。当前实现版本为 `pipe3-responsibility-label-v2-structural-owner` 与 `two-stage-role-evidence-v3-structural-owner`；A1--A8 zero-call mutation/replay qualification 已通过，receipt 位于 `experiments/logs/n03_structural_owner_gate_qualification_20261006_v2/`。该 receipt 只证明 typed gate、反例拒绝、重复幂等和 contract mutation fail-closed，不产生 LLM/GPU 或科学效能结论。
 
-下一张 live card 必须携带 explicit structural-owner registration，并同时报告 judged-role disagreement；历史 C1 receipt 不回写。
+这段为历史资格记录，不证明本次 observation/reward 分离已实现。下一张 live card 必须携带 explicit structural-owner registration、observation schema、合法 reward 规则，并报告 judged-role disagreement；历史 C1 receipt 不回写。
+
+### 8.2 2026-10-07 评价支持度与训练标签前提
+
+当前 strict source gate ⇒ J=1，其 assignment overlay 退化为合格事件计数。
+[可复算的 2592 个符号输入审计](../../../../experiments/logs/n03_judgment_support_audit_20261007_v1/summary.json)
+及九组 count-only 对照只证明此代码性质，0 API/0 GPU，不是否定评价理论。
+新通道必须先通过三类 J × recipient 动作、迟到/重复/绑定的零调用资格；随后小流
+检查自然支持度与真实更新后执行。比较至少包含 count-only/J-masked，以及部署可得的
+Qp/terminal/raw-J/contextual 强对照。所有值同为 1 的 shuffle 不应产生变化。
+
+现有 C1 target J 可以变化，但它直接作为 producer 更新标签的责任/质量/成本语义
+尚未成立；不能用源 gate 的安全性代替目标 label 审查。此缺口关闭前，不启动新训练
+收益实验；数学资格通过也不替代两根、完整基线、实时/遗忘与独立确认要求。
 
 ## 9. 对照标准
 
-方法审查使用 [`method_v1.2_20260930_eval.md`](../evaluation/method/method_v1.2_20260930_eval.md)。故事边界见 [`storyline_v1.1_20260928.md`](../storyline/storyline_v1.1_20260928.md)，可执行实验卡见 [`benchmark_baseline_v1.1_20260930.md`](../benchmark-baseline/benchmark_baseline_v1.1_20260930.md)。
+方法审查使用 [`method_v1.4_20261007_eval.md`](../evaluation/method/method_v1.4_20261007_eval.md)。故事边界见 [`storyline_v1.1_20260928.md`](../storyline/storyline_v1.1_20260928.md)，可执行实验卡见 [`benchmark_baseline_v1.1_20260930.md`](../benchmark-baseline/benchmark_baseline_v1.1_20260930.md)。

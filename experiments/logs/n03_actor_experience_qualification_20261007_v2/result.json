@@ -1,0 +1,29 @@
+{
+  "qualification_version": "actor-experience-v2-zero-call",
+  "passed": true,
+  "case_results": {
+    "namespace_and_future_exclusion": "PASS",
+    "saved_snapshot_for_past_decision": "PASS",
+    "idempotence_order_cap": "PASS",
+    "private_fields_and_tamper": "PASS"
+  },
+  "test_command": "python3 -m pytest -q tests/test_peerrolebench_actor_experience.py",
+  "test_exit_code": 0,
+  "test_stdout_sha256": "988344a7589dd35ded61b8e784dcd5bc43cb64ba0f19a2bda1a7ec44b380abcb",
+  "config_sha256": "84683217a41c9b8e17e7114b7f741d139b582791012f5976087670f5b86ea1bc",
+  "source_sha256": {
+    "scripts/peerrolebench_actor_experience.py": "7115d725f2b0c4012a9feca8563daba04c637545df3669e98c9e401450921a05",
+    "tests/test_peerrolebench_actor_experience.py": "f813f2bdbc49791c16d8a8b04a6af07447cba23a0e5e6ce911519b06d030041c"
+  },
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "limitations": [
+    "public-field guard validates structured key names, not text semantics",
+    "caller must apply task public allowlist before recording",
+    "caller must persist snapshot at each decision for historical replay",
+    "snapshot hash detects corruption, not malicious rewriting",
+    "no model reflection, training, or API invocation"
+  ],
+  "ended_at_utc": "2026-10-07T04:21:29.564467+00:00"
+}

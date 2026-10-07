@@ -1,0 +1,50 @@
+{
+  "qualification_version": "noisy-judgment-observation-v3-zero-call",
+  "frozen_before_tests": true,
+  "repair": "support-path recipient edit and missing terminal score payload fail closed; replay and read-cut limitations explicit",
+  "semantic_cases": [
+    "accept/neither",
+    "accept_with_rework/neither",
+    "reject_redo/neither",
+    "accept/producer_only",
+    "accept_with_rework/producer_only",
+    "reject_redo/producer_only",
+    "accept/recipient_only",
+    "accept_with_rework/recipient_only",
+    "reject_redo/recipient_only",
+    "accept/both",
+    "accept_with_rework/both",
+    "reject_redo/both"
+  ],
+  "fail_closed_controls": [
+    "missing_outcome",
+    "late_read_cut",
+    "wrong_registry",
+    "wrong_artifact",
+    "unknown_qp",
+    "judgment_after_outcome",
+    "wrong_contract_pin",
+    "missing_outcome_payload",
+    "support_rewrite"
+  ],
+  "scope_controls": [
+    "recipient_rewrites_producer",
+    "mixed_rewrite"
+  ],
+  "typed_control": [
+    "typed_promotion_rejected"
+  ],
+  "command": "python3 -m pytest -q tests/test_peerrolebench_judgment_observation.py",
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "source_sha256": {
+    "scripts/peerrolebench_judgment_observation.py": "68e206f51f3d5119b1c324ff5ba82a016c38c267ffea5aebfec993229b2d3d19",
+    "tests/test_peerrolebench_judgment_observation.py": "8c95cd11d02e9e6d11211ca4323da8da16622ee5dcb8c1bf8ea63e6968b0cede",
+    "docs/research/candidates/judgment_observation_credit_split_v0.1_20261007.md": "9aa7787a3d99e59b5520fc9e45e093fdaa1a75b7ab0bf199438328ed7e821d9f"
+  },
+  "git_commit": "e19f01245378a05b6f87de412b10ff29f2e0ac60",
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "started_at_utc": "2026-10-07T04:36:12.675236+00:00"
+}

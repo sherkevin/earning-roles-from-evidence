@@ -1,0 +1,78 @@
+{
+  "version": "strict-source-judgment-support-audit-v1",
+  "kind": "symbolic_contract_audit",
+  "api_calls": 0,
+  "gpu_jobs": 0,
+  "started_at": "2026-10-07T04:21:38.175995+00:00",
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "command": [
+    "scripts/peerrolebench_judgment_support_audit.py",
+    "--output",
+    "experiments/logs/n03_judgment_support_audit_20261007_v1"
+  ],
+  "git_commit": "e19f01245378a05b6f87de412b10ff29f2e0ac60",
+  "source_sha256": {
+    "scripts/peerrolebench_judgment_support_audit.py": "6a40ee8552dc2af291a1f9a71fd49e52b2aaf7d165faba2db4e8117444e04f7c",
+    "scripts/peerrolebench_two_stage_gate.py": "93b4b7d08eef817dfe4c9f7893be53d1a69cd0765d48388f449f9dfea144ed26",
+    "scripts/peerrolebench_pipe3_responsibility_label.py": "e47f90c74f0b8dd72bba749f3ff705fdb5dca729695362ce683f33b84b4c779b",
+    "scripts/peerrolebench_role_evidence_scorer.py": "7f4a26faa3488cb0b10b1a3f48332bc96e46152029c153a7fd23d10eb6109813",
+    "scripts/peerrolebench_role_evidence_offer.py": "ffeff6e46a461350d4e9913641ad2f0eb891e6b0b7ee6a200599e6725113bea5"
+  },
+  "gate_version": "two-stage-role-evidence-v3-structural-owner",
+  "axes": {
+    "qp": [
+      "PASS",
+      "FAIL",
+      "UNKNOWN"
+    ],
+    "judgment": [
+      "accept",
+      "accept_with_rework",
+      "reject_redo"
+    ],
+    "action": [
+      "use",
+      "repair",
+      "redo"
+    ],
+    "changed": [
+      [],
+      [
+        "producer.py"
+      ],
+      [
+        "processor.py"
+      ],
+      [
+        "producer.py",
+        "processor.py"
+      ]
+    ],
+    "registered": [
+      false,
+      true
+    ],
+    "y": [
+      "PASS",
+      "FAIL",
+      "UNKNOWN"
+    ],
+    "bound": [
+      false,
+      true
+    ],
+    "used_artifact": [
+      false,
+      true
+    ]
+  },
+  "expected_rows": 2592,
+  "scope": "Explicit registration field; upstream validation assumed; no legacy branch, no live inference.",
+  "hypotheses": [
+    "Every publishable strict source row has J=1 and Qp=FAIL.",
+    "All-accept overlay equals its count-only formula.",
+    "Ungated category changes can change the existing overlay."
+  ],
+  "delayed_target_scope": "Not audited: target feedback can vary independently of source eligibility."
+}
