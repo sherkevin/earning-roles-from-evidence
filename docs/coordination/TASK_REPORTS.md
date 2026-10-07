@@ -1,5 +1,12 @@
 # Task reports
 
+- [partial] 2026-10-07 live producer stage: bounded personal history reaches a
+  real transport entrypoint; canonical reservations, request/raw-response/cost
+  consistency and model identity are checked. Preserved the first passing test
+  receipt and its uncovered defects; revised 20-test software suite passes.
+  Zero model API/GPU; no full live pipeline or efficacy claim. See
+  [review, boundaries and Goal comparison](task_reports/20261007_live_producer_stage_binding.md).
+
 - [partial] 2026-10-07 actor continuity/effect separation: production call audit
   finds no actor-history wiring and fixed C1 producer snapshots. Native protocol
   can preserve identity across new deliveries; only runner-level static bindings

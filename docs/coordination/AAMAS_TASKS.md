@@ -1,5 +1,16 @@
 # AAMAS 2027 task ledger
 
+**Latest bounded generation implementation — 2026-10-07:** a separate live
+producer stage now projects personal history into the real transport request,
+keeps generation policy separate from each delivery, and checks canonical
+reservation, request/raw-response/cost consistency and returned-model identity.
+Twenty focused software tests pass after independent review; no model/API/GPU
+run occurred. This supersedes the absence of a stage-level caller noted below,
+not the absence of a full live history pipeline. Global budget issuance, provider
+configuration pinning, informative task qualification, recipient/ledger/reward
+integration and scientific efficacy remain open. Four judgment calls still
+await their separate budget confirmation. See [report and Goal comparison](task_reports/20261007_live_producer_stage_binding.md).
+
 **Latest actor-continuity audit — 2026-10-07:** `ActorExperience` has no production
 caller; C1 producers remain fixed artifacts. Native Delivery already separates
 generation-source and artifact digests, so fresh generation requires a versioned

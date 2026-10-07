@@ -1,0 +1,39 @@
+{
+  "results": [
+    {
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "scripts/check_research_registry.py"
+      ],
+      "exit_code": 0,
+      "log": "document_check_0.log"
+    },
+    {
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "scripts/check_aamas_documents.py",
+        "--sync-gate",
+        "--check-gate"
+      ],
+      "exit_code": 0,
+      "log": "document_check_1.log"
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "scripts/peerrolebench_live_producer_stage.py",
+        "tests/test_peerrolebench_live_producer_stage.py",
+        "docs/coordination/AAMAS_TASKS.md",
+        "docs/coordination/TASK_REPORTS.md",
+        "todo_benchmark_continue_20260925.md",
+        ".claude/lessons-learned.md"
+      ],
+      "exit_code": 0,
+      "log": "document_check_2.log"
+    }
+  ],
+  "scientific_claim_allowed": false
+}

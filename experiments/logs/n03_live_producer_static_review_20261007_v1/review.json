@@ -1,0 +1,26 @@
+{
+  "timestamp_utc": "2026-10-07T07:03:08.185487+00:00",
+  "status": "STATIC_REVIEW_REQUIRES_REPAIR",
+  "execution_count": 0,
+  "llm_api_calls": 0,
+  "files": [
+    {
+      "source": "scripts/peerrolebench_live_producer_stage.py",
+      "copy": "peerrolebench_live_producer_stage.py",
+      "sha256": "d9fe58a13a2f9046a863feaf3e2d68422d13754fc37e0b8fa866e5537849efea"
+    },
+    {
+      "source": "tests/test_peerrolebench_live_producer_stage.py",
+      "copy": "test_peerrolebench_live_producer_stage.py",
+      "sha256": "bc5ba1f644c14c9e510f8c6037264262d8f0dbe1760fa99b77d4c8aef9e141ea"
+    }
+  ],
+  "findings": [
+    "Literal JSON braces break Python format placeholders.",
+    "Payload schema omits repaired public contract v2 clause refs.",
+    "Memory capacity policy not bound to actual store.",
+    "Card has no explicit stream/arm external namespace checks.",
+    "Completion metadata and prepared request need stronger rejection of inconsistent status and mutations."
+  ],
+  "disposition": "Worker repairing before any test execution; no successful integration claim."
+}

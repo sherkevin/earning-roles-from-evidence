@@ -364,3 +364,9 @@
 - **根因:** 新版本启动前未跨卡去重核对累计尝试，失败和共享源计账缺少统一入口。
 - **避免:** 新卡执行前核对累计清点、计入失败、共享源仅一次；无新增授权则关闭调用，不以换版本续预算。当前只prepare的卡无API执行入口，不宣称旧入口全局拦截已实现。
 - **Evidence:** `experiments/logs/n03_attempt_budget_census_20261007_v1/summary.json`；同日合同/预算修复任务报告。
+
+### 0058-file-seals-need-cross-file-consistency | 2026-10-07 | earning-roles
+- **现象:** producer stage 首轮11项软件检查通过，但仍允许复制预算凭证换路径重用、任意 parsed 结果完成、返回模型身份错记。仅增加各文件hash仍可漏掉原始响应与解析结果不一致。
+- **根因:** 检查集中于各对象的形状和单文件完整性，没有沿同一次请求验证预算、模型、原始响应、解析结果及经历写入之间的关系。
+- **避免:** 在唯一预算路径原子claim，复用真实解析器重读封存响应，核对实际请求和结果的模型/文本/usage/结束状态；设置重新封存但语义矛盾的负例。软件fixture只能证明约束实现，不能证明服务端运行或全局预算获批。
+- **Evidence:** `docs/coordination/task_reports/20261007_live_producer_stage_binding.md`；`experiments/logs/n03_live_producer_stage_checks_20261007_v1/post_test_review.json`；同目录v2回执。

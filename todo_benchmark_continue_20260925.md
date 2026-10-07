@@ -86,3 +86,9 @@
 - [open] 2026-10-07 先确定自然持久peer经验与未来收益的可识别条件，使用已存材料约束任务卡；不重复下载/生成，不以静态产物评分替代角色学习。追加4次判断预算仍pending。
 - [done] 2026-10-07 actor continuity调用链审查：个人历史没有production caller；C1与two-stage固定产物等值门不适用真实生成。native协议已有策略/产物分离，无需重写。记录三条路径及独立反驳修订，0模型API/GPU。→ [设计与Goal对照](docs/coordination/task_reports/20261007_actor_continuity_and_effect_separation.md)。
 - [open] 2026-10-07 新runner只补版本化生成身份、actor可见历史投影与fresh交付的绑定；先完成任务/成本卡前置，不启用未批调用，不把离线全信息诊断写入线上selected-only训练。
+
+### 2026-10-07 · 真实 producer 生成接入
+- [doing] 2026-10-07 actor_generation_worker 独占新 live_producer_stage 模块及定向测试；只实现真实transport调用路径与历史/身份/产物绑定，禁止运行API/GPU。我的session_id=benchmark_continue_20260925。root负责执行前配置、零调用测试、独立审查及任务报告。
+- [open] 2026-10-07 验收：默认禁用/预算错误必须在provider读取前拒绝；历史只含本actor旧输入输出，source与artifact分开绑定；真实成功路径仍须另行获批并实测，不以软件测试替代。
+- [done] 2026-10-07 producer stage 有界软件接缝完成：修复 reservation 复制、响应未绑定、返回模型错配；v2 20项定向检查通过，独立 Codex 复核。首轮通过但覆盖不足的回执保留，0 API/0 GPU。→ [任务汇报与Goal对照](docs/coordination/task_reports/20261007_live_producer_stage_binding.md)；[教训0058](.claude/lessons-learned.md)。
+- [open] 2026-10-07 下一科学单位是 source–target 任务/测量卡：用已有真实输出和 native 材料声明规则重叠、可见边界、独立收益与完整成本；全局预算发行及真实provider pin仍是调用前置。不要继续堆入口通用功能，不把软件通过算论文效果。
