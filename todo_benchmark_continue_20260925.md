@@ -92,3 +92,4 @@
 - [open] 2026-10-07 验收：默认禁用/预算错误必须在provider读取前拒绝；历史只含本actor旧输入输出，source与artifact分开绑定；真实成功路径仍须另行获批并实测，不以软件测试替代。
 - [done] 2026-10-07 producer stage 有界软件接缝完成：修复 reservation 复制、响应未绑定、返回模型错配；v2 20项定向检查通过，独立 Codex 复核。首轮通过但覆盖不足的回执保留，0 API/0 GPU。→ [任务汇报与Goal对照](docs/coordination/task_reports/20261007_live_producer_stage_binding.md)；[教训0058](.claude/lessons-learned.md)。
 - [open] 2026-10-07 下一科学单位是 source–target 任务/测量卡：用已有真实输出和 native 材料声明规则重叠、可见边界、独立收益与完整成本；全局预算发行及真实provider pin仍是调用前置。不要继续堆入口通用功能，不把软件通过算论文效果。
+- [doing] 2026-10-07 source–target材料审计：actor_state_wiring_audit只读核对PIPE3 seed差异，y_binding_audit只读反驳PIPE1候选split；root核验保存的实际请求、落候选卡和Goal对照。我的session_id=benchmark_continue_20260925；0新增API/生成器/候选执行，保持正式benchmark未激活。

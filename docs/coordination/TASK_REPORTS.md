@@ -21,6 +21,13 @@
   predictive information from useful future peer selection. No API/GPU, benchmark
   activation or efficacy claim. See [evidence and Goal comparison](task_reports/20261007_selection_value_and_native_handoff.md).
 
+- [partial] 2026-10-07 task distinctness audit: saved C1 requests confirm source/target
+  seed-0 material reuse and a missing contextual target; historical `generated_target`
+  equals `generated_source`. PIPE1 seed-0→seed-3 is retained only as a candidate same-root
+  screen with native Planner/Executor/Verifier, no-message and full-spec-relay controls.
+  Zero API/generator/candidate/GPU; no benchmark activation or efficacy claim. See
+  [audit and card](task_reports/20261007_selection_value_and_native_handoff.md).
+
 - [partial] 2026-10-07 public contract/budget correction: restored actor-visible
   obligations removed alongside solution hints. Historical Qp FAIL does not prove
   violation of the sanitized contract. Census finds 31 episodes/68 task requests

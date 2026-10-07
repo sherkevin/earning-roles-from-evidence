@@ -31,6 +31,15 @@ analysis requires useful future peer discrimination, not merely J–Y correlatio
 No new API/GPU or benchmark activation; all three scientific standards remain
 open. See [evidence and Goal comparison](task_reports/20261007_selection_value_and_native_handoff.md).
 
+**Latest task distinctness audit — 2026-10-07:** saved C1 judging requests show that
+`no_update` and `RARE` reused seed-0 source/target payloads and identical producer
+material; the contextual arm has no target request. The historical runner also assigns
+`generated_target = generated_source`. These records cannot support unseen-task
+generalization. A candidate PIPE1 screen now pins source seed 0 and target seed 3 with
+native Planner/Executor/Verifier permissions, no-message and full-spec-relay controls,
+and an INCONCLUSIVE outcome if identical initial Planners naturally produce identical
+messages. No budget/API activation or benchmark change. See [audit and candidate card](task_reports/20261007_selection_value_and_native_handoff.md).
+
 **Latest measurement/budget correction — 2026-10-07:** sanitized PIPE3 input
 omitted the native timestamp obligation still enforced by private Qp. Historical
 FAIL does not establish violation of actor-visible requirements or a mistaken

@@ -75,3 +75,27 @@ Codex 独立方法审查确认有限菜单、可积效用、信息不改执行�
 
 可复用产出已经落地：固定原生 generator/grader/harness、四域分角色材料、
 逐条时区审计以及选择价值的筛查条件。后续实现直接使用这些资产，不从零造任务。
+
+## 2026-10-07 continuation：实际请求与候选 target 的 distinctness audit
+
+为了避免把配置字段误当成新任务，root 只读取已封存的 C1 judging 请求、material
+manifest 和 pinned generator 的字面规则，没有导入 generator、运行候选代码、调用
+模型或修改历史结果。回执见
+[`n03_task_distinctness_audit_20261007_v2/summary.json`](../../../experiments/logs/n03_task_distinctness_audit_20261007_v2/summary.json)。
+
+审计发现 `no_update` 与 `RARE` 的 source/target 请求均为 seed 0，任务合同和 producer
+文件相同；`contextual_trust_linear` 只有 source 请求，因为 target 没有启动。历史
+runner 的 `generated_target = generated_source` 进一步确认此前的 target seed 字段不能
+当作新的 target material。故这些请求不支持未见任务泛化或 peer 选择收益，旧结果保持
+原分类。
+
+PIPE1 seed 0 ecommerce 与 seed 3 logistics 的整组 mapping/type/nested/enum/null 规则
+没有整组相同项，适合作为同一 structural root 内的先行筛查；它仍不是第二 root。
+根据两位独立审查意见，已写入[筛查卡](../../research/candidates/pipe1_source_target_screen_card_v0.1_20261007.md)：
+使用 Planner 作为候选 peer，保留原生完整 spec、Executor、Verifier 和成本；必须包括
+no-message 与 full-spec relay。后者是合法 Planner 消息的生成绕过对照，不是同信息
+selector baseline。相同初态 Planner 可能自然地产生相同消息/历史；若无可重复差异，
+记录 `INCONCLUSIVE`，不改 prompt 制造专家。
+
+这个候选卡尚未获预算或执行授权，不能替代 benchmark freeze、真实后续收益、强同信息
+baseline 或 A800 门。它的作用是阻止下一次昂贵实验再把“seed 不同”写成任务泛化。
