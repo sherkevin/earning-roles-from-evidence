@@ -15,7 +15,7 @@ Verifier 的原生介入；只比较静态消息或最终通过率不能回答�
 当前 C1 保存的三条可读 judging 请求中，`no_update` 与 `RARE` 的 source/target
 public payload 都是 seed 0、完整任务合同相同，producer 文件也相同；
 `contextual_trust_linear` 只有 source 请求，因为它在源证据后没有启动 target。
-材料审计见 [`n03_task_distinctness_audit_20261007_v2`](../../../experiments/logs/n03_task_distinctness_audit_20261007_v2/summary.json)。
+材料审计见 [`n03_task_distinctness_audit_20261007_v3`](../../../experiments/logs/n03_task_distinctness_audit_20261007_v3/summary.json)。
 历史 runner 还显式把 `generated_target = generated_source`，不能用 target scorer 收到
 的 seed 字段替代真实 target material。上述历史结果不重写，只标成不可用于未见任务泛化的证据。
 

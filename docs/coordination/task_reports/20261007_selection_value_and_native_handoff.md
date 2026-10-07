@@ -81,7 +81,7 @@ Codex 独立方法审查确认有限菜单、可积效用、信息不改执行�
 为了避免把配置字段误当成新任务，root 只读取已封存的 C1 judging 请求、material
 manifest 和 pinned generator 的字面规则，没有导入 generator、运行候选代码、调用
 模型或修改历史结果。回执见
-[`n03_task_distinctness_audit_20261007_v2/summary.json`](../../../experiments/logs/n03_task_distinctness_audit_20261007_v2/summary.json)。
+[`n03_task_distinctness_audit_20261007_v3/summary.json`](../../../experiments/logs/n03_task_distinctness_audit_20261007_v3/summary.json)。
 
 审计发现 `no_update` 与 `RARE` 的 source/target 请求均为 seed 0，任务合同和 producer
 文件相同；`contextual_trust_linear` 只有 source 请求，因为 target 没有启动。历史

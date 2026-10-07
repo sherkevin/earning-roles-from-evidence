@@ -1,0 +1,115 @@
+{
+  "source_seed": 0,
+  "target_seed": 3,
+  "source_domain": "ecommerce",
+  "target_domain": "logistics",
+  "rule_digests": [
+    "1ec2868f32a25f16a837d1489a4bd64720889d02ef4427a648203e0f5100a0ba",
+    "63d430b3ffa07a52de0218b9efae7fe69124f100aac3a644ee0f350c14078002"
+  ],
+  "exact_rule_groups_shared": [],
+  "source_rule_groups": {
+    "field_map": {
+      "id": "order_id",
+      "buyer_full_name": "customer_name",
+      "sku_code": "product_sku",
+      "qty": "quantity",
+      "price_usd": "unit_price",
+      "placed_at": "order_date",
+      "order_status": "status",
+      "discount_percent": "discount_pct",
+      "shipping_address_city": "city",
+      "shipping_address_country": "country"
+    },
+    "type_conversions": {
+      "placed_at": [
+        "YYYY-MM-DD",
+        "ISO-8601 datetime (YYYY-MM-DDTHH:MM:SSZ)",
+        "extract date portion: value[:10]"
+      ],
+      "price_usd": [
+        "float",
+        "string with currency prefix (e.g. 'USD 29.99')",
+        "strip 'USD ' prefix and convert to float"
+      ],
+      "discount_percent": [
+        "integer 0-100",
+        "decimal fraction 0.0-1.0",
+        "multiply by 100 and round to int"
+      ]
+    },
+    "nested_fields": {
+      "shipping_address_city": "shipping_address.city",
+      "shipping_address_country": "shipping_address.country"
+    },
+    "enum_maps": {
+      "order_status": {
+        "PENDING": "pending",
+        "SHIPPED": "shipped",
+        "DELIVERED": "delivered",
+        "CANCELLED": "cancelled"
+      }
+    },
+    "null_rules": {
+      "discount_pct": 0,
+      "city": "unknown",
+      "country": "unknown"
+    }
+  },
+  "target_rule_groups": {
+    "field_map": {
+      "tracking_reference": "shipment_id",
+      "origin": "origin_city",
+      "destination": "destination_city",
+      "gross_weight_grams": "weight_kg",
+      "carrier_code": "carrier",
+      "dispatch_date": "shipped_date",
+      "transit_days_estimate": "estimated_days",
+      "tracking_number": "tracking_num",
+      "origin_country_code": "origin_country",
+      "destination_country_code": "destination_country"
+    },
+    "type_conversions": {
+      "gross_weight_grams": [
+        "float kilograms",
+        "integer grams",
+        "divide by 1000 to get kilograms, round to 3 decimal places"
+      ],
+      "dispatch_date": [
+        "YYYY-MM-DD",
+        "DD/MM/YYYY",
+        "reformat: datetime.strptime(v, '%d/%m/%Y').strftime('%Y-%m-%d')"
+      ],
+      "transit_days_estimate": [
+        "integer days",
+        "string like '3d' or '5d'",
+        "strip trailing 'd' and convert to int"
+      ]
+    },
+    "nested_fields": {
+      "origin_country_code": "origin_location.country_code",
+      "destination_country_code": "destination_location.country_code"
+    },
+    "enum_maps": {
+      "carrier_code": {
+        "UPS": "ups",
+        "FEDEX": "fedex",
+        "DHL": "dhl",
+        "USPS": "usps",
+        "AMAZON": "amazon_logistics"
+      }
+    },
+    "null_rules": {
+      "origin_country": "XX",
+      "destination_country": "XX",
+      "estimated_days": 0
+    }
+  },
+  "contains_fromtimestamp": [
+    false,
+    false
+  ],
+  "structural_roots": 1,
+  "generalization_evidence": false,
+  "overlap_measure": "Exact whole rule-group equality; not semantic independence"
+}

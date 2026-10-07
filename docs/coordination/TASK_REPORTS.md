@@ -28,6 +28,11 @@
   Zero API/generator/candidate/GPU; no benchmark activation or efficacy claim. See
   [audit and card](task_reports/20261007_selection_value_and_native_handoff.md).
 
+- [partial] 2026-10-07 paper claim/distinctness sync: three phrases now mark held-out
+  quality, planned root splits, and candidate benchmark fields without implying live
+  qualification. Isolated PDF has 8 body pages and References from page 9; 0 API/0 GPU.
+  No result cell or scientific gate changed. See [build and Goal comparison](task_reports/20261007_paper_claim_distinctness_sync.md).
+
 - [partial] 2026-10-07 public contract/budget correction: restored actor-visible
   obligations removed alongside solution hints. Historical Qp FAIL does not prove
   violation of the sanitized contract. Census finds 31 episodes/68 task requests

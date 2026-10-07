@@ -40,7 +40,7 @@ We ask: \emph{when can the agent that actually receives and uses a delivery prov
 \begin{equation}
 \begin{aligned}
 &\text{delivery}\rightarrow\text{recipient use and judgment}\rightarrow\text{typed observation}\\
-&\rightarrow\text{future assignment}\rightarrow\text{unseen quality and cost}.
+&\rightarrow\text{future assignment}\rightarrow\text{held-out future quality and cost}.
 \end{aligned}
 \label{eq:story}
 \end{equation}
@@ -56,7 +56,7 @@ The paper makes four contributions.
 \begin{itemize}
   \item We formulate responsibility confounding as an information and attribution problem, separating producer quality, recipient action, downstream adoption, final outcome, and \unknown{} while preserving delivery, version, read cut, and propensity.
   \item We introduce the earning-roles protocol and three audit invariants: target outcomes cannot affect a sealed selection, recipient-only work cannot create producer reward, and replay cannot credit one assignment twice.
-  \item We define an ArtifactRole track and a secondary PeerSelect mechanism track, with root-level splits, same-information baselines, and complete resource accounting that distinguish evidence value from closed-loop team benefit.
+  \item We define an ArtifactRole track and a secondary PeerSelect mechanism track, with pre-registered root-level split requirements, same-information baselines, and complete resource accounting that distinguish evidence value from closed-loop team benefit.
   \item We make the claim falsifiable: no out-of-sample information, an equally informed contextual explanation, unsafe attribution, or a gain that disappears at matched cost invalidates the role-formation interpretation.
 \end{itemize}
 
@@ -225,7 +225,7 @@ This candidate contract makes late judgments visible only to future snapshots, e
 \label{sec:benchmark}
 
 \subsection{Two complementary tracks}
-The primary track, \textbf{ArtifactRole}, is a TeamBench-derived candidate benchmark \cite{kim2026teambench}. It contains producer artifacts, recipient dependencies, use/rework/rejection actions, responsibility checks, later assignments, downstream adoption, and complete cost. Candidate roots are DIST1 queue-race (development diagnostic) and PIPE3 stream-processing (conditional confirmation); renamed seeds are not independent roots. Promotion requires material visibility, write permissions, scorer coverage, root independence, and clean replay. This stricter contract is intentional: TeamBench's role separation supplies the dependency scaffold, while ArtifactRole adds the producer--recipient attribution and future-assignment fields needed by our question.
+The primary track, \textbf{ArtifactRole}, is a TeamBench-derived candidate benchmark \cite{kim2026teambench}. It is specified to expose producer artifacts, recipient dependencies, use/rework/rejection actions, responsibility checks, later assignments, downstream adoption, and complete cost. Candidate roots are DIST1 queue-race (development diagnostic) and PIPE3 stream-processing (conditional confirmation); renamed seeds are not independent roots. Promotion requires material visibility, write permissions, scorer coverage, root independence, and clean replay. This stricter contract is intentional: TeamBench's role separation supplies the dependency scaffold, while ArtifactRole adds the producer--recipient attribution and future-assignment fields needed by our question.
 
 Producer conformance and terminal usability are scored separately: a recipient may normalize a nonconforming delivery into a usable result. Every executed arm, including no-update, receives terminal evaluation. A prior valid, evidence-bound assignment and an independently validated reward are required for assignment credit, not for inclusion in the outcome denominator; native benchmark conformance remains a separate endpoint.
 
