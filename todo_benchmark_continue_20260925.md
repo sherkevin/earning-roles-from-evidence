@@ -70,3 +70,10 @@
 - [done] 2026-10-01 benchmark authority re-audit: official TeamBench/CooperBench/MARBLE/Collab-Overcooked/AgentCollabBench/graph-ipd sources are now mapped to their native fields and gaps; TeamBench remains the primary authority substrate, PeerRoleBench-TB is explicitly a derived causal extension, and no benchmark freeze or Goal downgrade was made.
 - [done] 2026-10-01 second-root screen: `PIPE2_data_pipeline` is the next conditional root candidate because its ETL handoff is cleaner than MULTI3; native brief/grader oracle leakage remains open, so the active manifest stays unfrozen and the next task is a zero-call ownership/adoption adapter qualification.
 - [done] 2026-10-01 PIPE2 material qualification: seeds 0/1/2 pass neutral payload, hidden expected-output isolation, disjoint extractor/transform-load ownership and typed artifact handoff; v2 keeps operator correctness metadata outside public artifact. Next is sandbox runtime + independent producer/recipient/adoption scorer, not API/A800.
+
+### 2026-10-07 · 公开合同与累计预算
+- [done] 2026-10-07 两位 Codex 独立确认 v1 公开材料丢失 T 和终端转换义务；已限定历史 Qp FAIL 的解释，旧日志不变。→ [任务报告](docs/coordination/task_reports/20261007_public_contract_and_budget_repair.md)。
+- [doing] 2026-10-07 native_task_discriminability 独占 v2 public contract 与少量测试；terminal_manifest_worker 清点预算并独占只 prepare 的四格判断卡；y_binding_audit 只读审查。我的 session_id=benchmark_continue_20260925。产出：版本化材料、精确输入与标签、可审查卡；0新增API/GPU。
+- [pending] 2026-10-07 原24次预算实际已记录31次；新卡最多4次判断，须完成具体卡与预检，再取得追加预算确认。不得换卡重置，不自动跟进action/训练。Goal及六份生效标准不变。
+- [done] 2026-10-07 新版公开合同修复，测试覆盖三域；四份请求已封存，2P+2R沙箱检查支持有限金标。预检含4次代码执行但0API/GPU，prepare v1失败与v2通过均保留。见 [四次判断卡](docs/research/candidates/scoped_judgment_four_call_card_20261007.md)。
+- [pending] 2026-10-07 追加4次预算已通过异步问题询问；等待具体答复，不改变已确认方案B。后续不得以卡版本变化重置累计数。

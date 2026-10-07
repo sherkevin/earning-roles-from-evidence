@@ -1,0 +1,50 @@
+{
+  "checks": [
+    {
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "-m",
+        "pytest",
+        "-v",
+        "-p",
+        "no:cacheprovider",
+        "tests/test_peerrolebench_pipe3_public_contract_v2.py"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 1.000460833
+    },
+    {
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "-m",
+        "py_compile",
+        "scripts/peerrolebench_pipe3_public_contract_v2.py",
+        "scripts/peerrolebench_scoped_judgment_diagnostic.py",
+        "scripts/peerrolebench_scoped_judgment_gold_preflight.py"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.049664917000000086
+    },
+    {
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "scripts/check_research_registry.py"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.03420520799999993
+    },
+    {
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "scripts/check_aamas_documents.py",
+        "--sync-gate",
+        "--check-gate"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.056743792000000015
+    }
+  ],
+  "api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_readiness": false
+}

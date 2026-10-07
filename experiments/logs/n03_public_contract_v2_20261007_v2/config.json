@@ -1,0 +1,46 @@
+{
+  "purpose": "Final C6 schema coverage, bounded prepare/scorer syntax and unchanged research gate consistency",
+  "before_execution": true,
+  "started_at": "2026-10-07T06:02:25.746091+00:00",
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "git_commit": "c752e6daf98c47015b9f4941197145dc45acdb2e",
+  "commands": [
+    [
+      "/Library/Developer/CommandLineTools/usr/bin/python3",
+      "-m",
+      "pytest",
+      "-v",
+      "-p",
+      "no:cacheprovider",
+      "tests/test_peerrolebench_pipe3_public_contract_v2.py"
+    ],
+    [
+      "/Library/Developer/CommandLineTools/usr/bin/python3",
+      "-m",
+      "py_compile",
+      "scripts/peerrolebench_pipe3_public_contract_v2.py",
+      "scripts/peerrolebench_scoped_judgment_diagnostic.py",
+      "scripts/peerrolebench_scoped_judgment_gold_preflight.py"
+    ],
+    [
+      "/Library/Developer/CommandLineTools/usr/bin/python3",
+      "scripts/check_research_registry.py"
+    ],
+    [
+      "/Library/Developer/CommandLineTools/usr/bin/python3",
+      "scripts/check_aamas_documents.py",
+      "--sync-gate",
+      "--check-gate"
+    ]
+  ],
+  "api_calls": 0,
+  "gpu_jobs": 0,
+  "source_sha256": {
+    "scripts/peerrolebench_pipe3_public_contract_v2.py": "dae8346c3ad57acbf58d406067db86e709db7f68efe5c9000198eb191fec933e",
+    "tests/test_peerrolebench_pipe3_public_contract_v2.py": "70ba6322403e0eb6133782bffeecedaf81f3b57f1deb83398de56efbdb526d85",
+    "scripts/peerrolebench_scoped_judgment_diagnostic.py": "cf987b9bdcdc248a14e6b7d1bd443e967dd16592e9f552a89de4447114da2464",
+    "scripts/peerrolebench_scoped_judgment_gold_preflight.py": "17ea3604dc23b8ab590d137b611d8cc539c02a4cb2e255a4d77a9f3e99cc4f3f",
+    "configs/aamas2027/n03_scoped_judgment_diagnostic_v1.json": "1f6c3cc2e123308965b7e370a66b79f4f38a6b4139df910e6d2f980aa6fe9f41"
+  }
+}

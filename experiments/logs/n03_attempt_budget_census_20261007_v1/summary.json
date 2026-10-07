@@ -1,0 +1,88 @@
+{
+  "as_of_commit": "c752e6daf98c47015b9f4941197145dc45acdb2e",
+  "budget_source": {
+    "path": "docs/coordination/AAMAS_TASKS.md",
+    "line": 735,
+    "rule": "N03 development total at most 24 attempted episodes including N02; incompatible historical attempts remain counted"
+  },
+  "defined_denominator": "Distinct real task episode with >=1 request_start, counted once per run/episode/arm; repeated J/action calls within same episode are calls, not extra episodes; imported shared source counted once in parent_source run.",
+  "category_counts": {
+    "N02 development v1-v3": {
+      "attempted_episodes": 4,
+      "real_task_api_request_starts": 8,
+      "complete_execution_episodes": 2,
+      "unknown_attempted_episodes": 2,
+      "unstarted_or_zero_call_rows": 2
+    },
+    "N03 C1 bounded live v2-v4": {
+      "attempted_episodes": 15,
+      "real_task_api_request_starts": 30,
+      "complete_execution_episodes": 15,
+      "unknown_attempted_episodes": 0,
+      "unstarted_or_zero_call_rows": 3
+    },
+    "N03 C1 shared parent source v1": {
+      "attempted_episodes": 4,
+      "real_task_api_request_starts": 8,
+      "complete_execution_episodes": 4,
+      "unknown_attempted_episodes": 0,
+      "unstarted_or_zero_call_rows": 0
+    },
+    "N03 PIPE3 real smoke v1-v6": {
+      "attempted_episodes": 6,
+      "real_task_api_request_starts": 16,
+      "complete_execution_episodes": 2,
+      "unknown_attempted_episodes": 4,
+      "unstarted_or_zero_call_rows": 0
+    },
+    "N03 neutral prepare": {
+      "attempted_episodes": 2,
+      "real_task_api_request_starts": 6,
+      "complete_execution_episodes": 0,
+      "unknown_attempted_episodes": 2,
+      "unstarted_or_zero_call_rows": 2
+    },
+    "excluded zero-call/probe": {
+      "attempted_episodes": 0,
+      "real_task_api_request_starts": 0,
+      "complete_execution_episodes": 0,
+      "unknown_attempted_episodes": 0,
+      "unstarted_or_zero_call_rows": 9
+    }
+  },
+  "certain_unambiguous_lower_bound_episodes": 25,
+  "audited_documented_attempted_episodes": 31,
+  "documented_lower_upper_bound_episodes": [
+    31,
+    31
+  ],
+  "global_unlogged_upper_bound": "UNKNOWN; this census cannot bound unlogged external calls",
+  "real_task_api_request_starts": 68,
+  "status_counts_for_attempted": {
+    "UNKNOWN": 8,
+    "COMPLETE": 23
+  },
+  "known_unstarted_or_zero_call_rows": 12,
+  "excluded_non_episode_health_probe_request_starts": 5,
+  "real_transport_failures_counted": [
+    "n02_peerrole_dev_v1_20260926/episode_0",
+    "n02_peerrole_dev_v2_20260926/episode_0"
+  ],
+  "four_new_judgment_only_cells_conservative_episode_cost": 4,
+  "would_be_lower_bound_after_four": 29,
+  "would_be_documented_total_after_four": 35,
+  "within_original_24_episode_budget": false,
+  "remaining_original_budget_episodes": 0,
+  "reasoning": "N02 4 + PIPE3 smoke 6 + C1 bounded live v2-v4 15 = 25 certain attempts, already above 24. Neutral-preparation 2 and parent-source/three-target 4 additional documented attempts bring the audited total to 31. Exact same request bodies across versions are not duplicate calls when request_start timestamps and run paths differ. Parent-source projection copies in arm logs have no source request_start and are not recounted.",
+  "qualification_limits": [
+    "COMPLETE means the episode execution reached its recorded terminal path, not PASS quality or valid learning.",
+    "UNKNOWN includes real transport failures and downstream scoring/parse failures; no failed attempt is erased.",
+    "N02 provider health probes are real API diagnostics without task episodes and excluded from the episode cap.",
+    "Zero-call C1 fixtures and startup failure are not real task attempts.",
+    "This is a budget audit, not a new experiment or statistical estimate."
+  ],
+  "new_api_calls": 0,
+  "gpu_jobs": 0,
+  "raw_sha256": "94aacea3f27c3f0f36f0ea87dca4e2dfbcc1e28362eec0b7e8afdbb1070b4857",
+  "completed_at_utc": "2026-10-07T05:45:02.549788+00:00"
+}

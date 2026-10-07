@@ -1,5 +1,12 @@
 # Task reports
 
+- [partial] 2026-10-07 public contract/budget correction: restored actor-visible
+  obligations removed alongside solution hints. Historical Qp FAIL does not prove
+  violation of the sanitized contract. Census finds 31 episodes/68 task requests
+  above the 24 cap; new API calls remain disabled. Four requests are sealed and
+  their labels supported by four local component checks; no actions/training.
+  See [report](task_reports/20261007_public_contract_and_budget_repair.md).
+
 - [partial] 2026-10-07 observation bridge and route reward: three legal J/action
   pairs reach a native assignment/selection through a typed neutral receipt;
   v2 binds an actual policy preview and external pins. Legacy attribution/credit

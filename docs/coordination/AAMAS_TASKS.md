@@ -1,5 +1,15 @@
 # AAMAS 2027 task ledger
 
+**Latest measurement/budget correction — 2026-10-07:** sanitized PIPE3 input
+omitted the native timestamp obligation still enforced by private Qp. Historical
+FAIL does not establish violation of actor-visible requirements or a mistaken
+recipient judgment. Versioned public prose restores behavior requirements while
+preserving source/ownership. Census records 31 episode attempts / 68 task API
+requests against the original 24 cap. Four judgment requests are sealed; four
+local component scorer runs support their finite control labels. No action,
+training or new API is enabled without a new bounded budget confirmation.
+See [repair and Goal comparison](task_reports/20261007_public_contract_and_budget_repair.md).
+
 **Latest bounded implementation — 2026-10-07:** ADR0049's neutral observation
 anchor now reaches a typed native assignment/selection in offline tests, with
 external receipt/preview pins; old attributed offer/credit/history paths reject

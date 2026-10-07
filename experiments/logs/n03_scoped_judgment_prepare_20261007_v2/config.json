@@ -1,0 +1,149 @@
+{
+  "api_calls": 0,
+  "candidate_executions": 0,
+  "card": {
+    "actions": 0,
+    "budget": {
+      "counting_rule": "Each judgment request counts conservatively as one episode, even without producer generation.",
+      "new_diagnostic_episodes_if_authorized": 4,
+      "original_cap_episodes": 24,
+      "prior_attempted_episodes": 31
+    },
+    "candidate_executions": 0,
+    "decision_rule": {
+      "failure": "Any transport/parse error, invalid schema or binding stops immediately. A valid but incorrect/uncertain answer is retained; no action or learning follows, and the card stops rather than replacing that cell. No retry, replacement, model swap, or prompt revision.",
+      "forbidden_claims": [
+        "population accuracy",
+        "method efficacy",
+        "learning gain",
+        "producer credit",
+        "recipient action quality"
+      ],
+      "permitted_claim": "At most, a fixed four-cell scoped-judgment diagnostic for these four prepared source combinations.",
+      "success": "All four producer verdicts and all four recipient needs_change/target_paths values match the frozen and independently checked parent manifest, with exact producer digest and a valid two-field schema; native producer negatives must include public clause C2_producer_timestamp and rationale identifying the timestamp separator mismatch. Only then consider a separate experiment."
+    },
+    "execution_boundary": "Prepare writes offline prompts and a private manifest only; no API/actions/training/candidate code. A separately logged preflight may execute four existing components in the established sandbox. Real judgment calls remain disabled pending new budget authorization and a separately versioned execution card.",
+    "gpu_runs": 0,
+    "max_episodes": 4,
+    "max_judgment_requests": 4,
+    "native_generator": {
+      "commit": "d185aef1916fd86a9ba554d581fd256319a973af",
+      "repository": "references/benchmark_sources/TeamBench",
+      "seed": 0,
+      "task_id": "PIPE3_stream_processing"
+    },
+    "offline_gold_preflight": {
+      "api_calls": 0,
+      "expected_producer_native_failed_check_ids": [
+        "P2_iso_serialization"
+      ],
+      "maximum_existing_source_sandbox_executions": 4,
+      "note": "candidate_executions=0 above applies only to prepare and judgment stages; this separate local preflight executes existing artifacts four times. Source styles and non-target changes are not controlled; 4/4 is not a causal effect of the timestamp requirement.",
+      "recipient_check": "recipient-self with canonical conforming input; no crossed terminal label",
+      "script": "scripts/peerrolebench_scoped_judgment_gold_preflight.py",
+      "separate_stage": true,
+      "stop_on_mismatch": true
+    },
+    "provider_if_separately_authorized": {
+      "max_judgment_tokens": 1024,
+      "model": "qwen3.8-max",
+      "provider": "内部",
+      "temperature": 0,
+      "thinking": {
+        "type": "disabled"
+      },
+      "timeout_seconds": 300,
+      "transport": "SSE"
+    },
+    "public_contract_version": "peerrolebench-pipe3-public-contract-v2",
+    "purpose": "Offline-prepared four-cell diagnostic separating public producer-contract assessment from recipient-owned integration needs.",
+    "real_api_runs_allowed": false,
+    "requires_new_user_budget_confirmation": true,
+    "response_schema": {
+      "producer_contract_assessment": {
+        "contract_clause_refs": "array of public clause IDs",
+        "observed_artifact_sha256": "sha256 hex string supplied in request",
+        "rationale": "string",
+        "verdict": [
+          "meets_contract",
+          "violates_contract",
+          "uncertain"
+        ]
+      },
+      "recipient_integration_plan": {
+        "needs_change": "boolean: whether processor.py itself must change when paired with a conforming producer",
+        "rationale": "string",
+        "target_paths": "[] if false; [processor.py] if true"
+      }
+    },
+    "retries": 0,
+    "schema_version": "n03-scoped-judgment-card-v1",
+    "shuffle_seed": 172931,
+    "source_construction": {
+      "actor_payload_allowlist": [
+        "case_id",
+        "task_id",
+        "public_task_text",
+        "public_source_files",
+        "producer_artifact_sha256",
+        "public_contract_clauses"
+      ],
+      "axes": "producer.py historical/native crossed with processor.py historical/native",
+      "private_parent_only": [
+        "producer_origin",
+        "recipient_origin",
+        "historical source paths",
+        "gold labels",
+        "shuffle seed",
+        "prior judgments and outcomes"
+      ],
+      "same_public_spec": true,
+      "sanitizer": "strip_comments_and_docstrings applied uniformly to all four public files",
+      "support_files": [
+        "models.py",
+        "sink.py"
+      ]
+    },
+    "source_inputs": {
+      "action": {
+        "path": "experiments/logs/n03_pipe3_real_smoke_20260929_v6/episode_0/action.json",
+        "sha256": "8947985dd7ddc4784c967b39a963cc3dede72444e95cf68b3f104bc2d5ed3dcd",
+        "use": "Historical processor.py only; no action rationale, judgment, or outcome is exposed."
+      },
+      "delivery": {
+        "path": "experiments/logs/n03_pipe3_real_smoke_20260929_v6/episode_0/delivery.json",
+        "sha256": "fd977cee51720ac5b221b5ef7fee4b9bad4c09383856d0c3a683abb884bc83bf",
+        "use": "Historical producer.py only; no historical judgment or outcome is exposed."
+      },
+      "material_adapter": {
+        "path": "scripts/peerrolebench_pipe3_material_adapter.py",
+        "sha256": "8cad02d117ed3d219a1a067bee339bd4db51ae9cf58cc92ca484f41bc62389a2"
+      },
+      "public_contract": {
+        "path": "scripts/peerrolebench_pipe3_public_contract_v2.py",
+        "sha256": "dae8346c3ad57acbf58d406067db86e709db7f68efe5c9000198eb191fec933e"
+      },
+      "qualification": {
+        "path": "scripts/peerrolebench_pipe3_task_qualification.py",
+        "sha256": "737fcd51e9d2e8a5207294bccc0673e8586511dcf1ee1c6ec29890738b2325e0"
+      }
+    },
+    "status": "PREPARE_ONLY_BUDGET_BLOCKED",
+    "training_updates": 0
+  },
+  "card_path": "/Users/jingwu/work/earning-roles/configs/aamas2027/n03_scoped_judgment_diagnostic_v1.json",
+  "card_sha256": "1f6c3cc2e123308965b7e370a66b79f4f38a6b4139df910e6d2f980aa6fe9f41",
+  "command": [
+    "/Library/Developer/CommandLineTools/usr/bin/python3",
+    "/Users/jingwu/work/earning-roles/scripts/peerrolebench_scoped_judgment_diagnostic.py",
+    "prepare",
+    "--card",
+    "/Users/jingwu/work/earning-roles/configs/aamas2027/n03_scoped_judgment_diagnostic_v1.json",
+    "--out",
+    "experiments/logs/n03_scoped_judgment_prepare_20261007_v2"
+  ],
+  "gpu_runs": 0,
+  "python": "3.9.6",
+  "schema_version": "n03-scoped-judgment-prepare-v1",
+  "started_utc": "2026-10-07T05:59:39.352997+00:00"
+}

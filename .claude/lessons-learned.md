@@ -351,3 +351,16 @@
 - **根因:** adoption 被当成一个布尔存在性检查，缺少 row count、ordered key sequence、artifact/output digest 与独立负对照。
 - **避免:** 以完整 key sequence 和 row count 比较 lineage，记录 source/output digest；把 synthetic canary、drop-row、ignore-artifact 作为独立 sensitivity diagnostics，不能混入真实 handoff label。
 - **Evidence:** `scripts/peerrolebench_pipe2_runtime_qualification.py`；`experiments/logs/n03_pipe2_runtime_adoption_qualification_20261001_v8/`。
+
+### 0056-redaction-must-preserve-observable-obligations | 2026-10-07 | earning-roles
+- **现象:** PIPE3 actor 只看通用互通说明，私有 Qp 却考核被删除的 T 时间格式；先前分析把 FAIL 直接称为可见合同违规。
+- **根因:** 把含解法提示的原生文档整段删掉，缺少私有检查到公开行为条款的逐项对应。
+- **避免:** 分离行为要求和实现提示；新材料版本公开每个被考核义务，保留隐藏测试。旧分数不改，旧解释补充条件，不把一般 ISO 语义与特定任务合同混为一谈。
+- **Evidence:** `docs/coordination/task_reports/20261007_public_contract_and_budget_repair.md`；`scripts/peerrolebench_pipe3_public_contract_v2.py`。
+
+
+### 0057-local-run-caps-do-not-enforce-a-cumulative-budget | 2026-10-07 | earning-roles
+- **现象:** 各卡有局部限额，历史实际31个任务episode、68次请求超过N03含N02的24次总上限。
+- **根因:** 新版本启动前未跨卡去重核对累计尝试，失败和共享源计账缺少统一入口。
+- **避免:** 新卡执行前核对累计清点、计入失败、共享源仅一次；无新增授权则关闭调用，不以换版本续预算。当前只prepare的卡无API执行入口，不宣称旧入口全局拦截已实现。
+- **Evidence:** `experiments/logs/n03_attempt_budget_census_20261007_v1/summary.json`；同日合同/预算修复任务报告。

@@ -1,0 +1,21 @@
+{
+  "purpose": "Read-only conservative real API episode attempt census through c752e6d for N02/N03 24-episode guard",
+  "as_of_commit_prefix": "c752e6d",
+  "frozen_before_log_parsing": true,
+  "scope": [
+    "N02 dev v1-v3",
+    "N03 pipe3 real smoke v1-v6",
+    "N03 c1 pipe3 bounded live 20261006 v2-v4",
+    "N03 parent_source_live_v1",
+    "other N03 logs with real request_start"
+  ],
+  "attempt_definition": "One distinct attempted real model request_start at an episode stage counts that episode at least once; multiple calls in one episode remain one episode; shared source reused across targets counted once; transport failures count as attempts.",
+  "exclusions": "Zero-call fixtures, scorer-only local sandbox, duplicated logs/copies of same API request identity, and unstarted planned episodes.",
+  "conservative_4_cell_rule": "Each new judgment-only cell counts as one episode for remaining-budget test.",
+  "raw_schema": "one row per deduplicated real episode plus audited zero-call/unstarted run groups; source paths and request IDs/hashes",
+  "no_new_api_calls": true,
+  "gpu_jobs": 0,
+  "created_at_utc": "2026-10-07T05:34:55.235942+00:00",
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "platform": "macOS-26.3.2-arm64-arm-64bit"
+}
