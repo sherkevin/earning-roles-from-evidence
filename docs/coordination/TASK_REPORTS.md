@@ -1,5 +1,13 @@
 # Task reports
 
+- [partial] 2026-10-07 baseline parity candidate card v0.2：将 PIPE3 主轨的八行矩阵、同信息
+  `contextual_trust_linear`、closest published adapter 的显式 `NO-GO`、统一菜单/read-cut/
+  arrival/propensity/成本、later-assignment-before-selection、UNKNOWN 分母、独立 namespace
+  和 stream-clustered 统计写成单一候选合同。14 项零调用一致性断言通过；0 API、0 generator、
+  0 candidate、0 GPU、0 policy update。它不冻结 benchmark/baseline，也不打开 G3–G5；第二
+  structural root、真实 later-use、独立 history、完整成本和新预算仍开放，见
+  [report](task_reports/20261007_baseline_live_parity_card_v02.md)。
+
 - [partial] 2026-10-07 PIPE1 offline adapter qualification: composed the existing ledger
   replay, task-id, source→target schedule, selection receipt, ownership and UNKNOWN/no-update
   contracts into a zero-call adapter. The 9-case suite and `py_compile` pass; mutation cases

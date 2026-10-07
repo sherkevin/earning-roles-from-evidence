@@ -1,5 +1,10 @@
 # Benchmark Inventory — Datasets + Baselines + Topologies + Backbones
 
+> **Stale pointer (2026-10-07):** this inventory belongs to an earlier HotpotQA/EDO project and
+> is **not authoritative for `earning-roles`**. Use the active ArtifactRole/PeerSelect contract
+> in [`docs/research/versions/benchmark-baseline/benchmark_baseline_v1.1_20260930.md`](../research/versions/benchmark-baseline/benchmark_baseline_v1.1_20260930.md)
+> and the candidate parity card [`configs/aamas2027/n03_baseline_live_parity_candidate_v0.2.json`](../../configs/aamas2027/n03_baseline_live_parity_candidate_v0.2.json).
+
 > **Single authoritative source** for "what benchmarks are we using". Compiled per user instruction (R34 commit, 2026-04-20).
 > Owner: scientist (writing lead); engineer keeps `methods.py` + `external_baselines/*` actually runnable.
 > Cross-references: [`external_baseline_plan.md`](external_baseline_plan.md) (module-swap design + external baseline survey), [`page_budget_audit.md`](page_budget_audit.md) (page count), [`PROJECT_STRUCTURE.md`](../../PROJECT_STRUCTURE.md) §0 (sprint state), [`docs/coordination/ENGINEER_TODO.md`](../coordination/ENGINEER_TODO.md) (engineer execution log).

@@ -1,5 +1,17 @@
 # AAMAS 2027 task ledger
 
+**Latest baseline parity candidate card — 2026-10-07:** `n03_baseline_live_parity_candidate_v0.2`
+freezes a candidate-only ArtifactRole/PIPE3 matrix with `uniform`, `no_update`,
+`raw_acceptance`, `terminal_only`, same-information `contextual_trust_linear`,
+`pooled_controller`, `RARE`, and an explicit `Meta-Team-L2-public` `NO-GO` row. It binds the
+same menu, public read cut, arrival, propensity, budget, cost fields, independent namespaces,
+later-assignment-before-target-selection, UNKNOWN denominator and stream-clustered statistics.
+Fourteen zero-call contract assertions pass; no API/generator/candidate/GPU call or policy update
+occurred. This does not freeze the benchmark/baselines or open G3–G5: second structural root,
+independent later-use, live costs, executable arm adapters and new budget remain blockers. See
+[parity-card report](task_reports/20261007_baseline_live_parity_card_v02.md) and
+[`n03_baseline_live_parity_candidate_v0.2`](../../experiments/logs/n03_baseline_live_parity_candidate_v0.2_20261007/summary.json).
+
 **Latest PIPE1 execution preflight — 2026-10-07:** the candidate source seed 0 → target
 seed 3 material passes 11 of 22 zero-call checks and confirms the native Planner/Executor
 projection plus Verifier harness. Ten execution prerequisites remain blocked, including

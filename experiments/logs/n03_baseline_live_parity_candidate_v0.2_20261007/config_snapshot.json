@@ -1,0 +1,202 @@
+{
+  "manifest_version": "peerrolebench-live-baseline-parity-candidate-v0.2",
+  "created_at": "2026-10-07",
+  "status": "CANDIDATE_NOT_FROZEN",
+  "purpose": "Pre-register one end-to-end parity card before any new API or GPU call; establish whether the benchmark and baseline matrix can identify the value of situated evidence.",
+  "primary_track": "ArtifactRole",
+  "primary_root": "PIPE3_stream_processing",
+  "primary_root_status": "development_candidate_only",
+  "confirmation_root": null,
+  "second_structural_root_required": true,
+  "second_root_status": "NOT_AUTHORIZED",
+  "benchmark_authority": "candidate_only_until_two_root_and_material_scorer_receipts",
+  "source_commit": "to_be_sealed_at_activation",
+  "seed_split": {
+    "development": [
+      0
+    ],
+    "confirmation": "independent structural root required"
+  },
+  "matched_replay": true,
+  "independent_live_arm_histories": true,
+  "selected_only_feedback": true,
+  "scientific_claim_allowed": false,
+  "effect_estimable": false,
+  "api_runs_allowed": false,
+  "gpu_runs_allowed": false,
+  "new_budget_required": true,
+  "arms": [
+    "uniform",
+    "no_update",
+    "raw_acceptance",
+    "terminal_only",
+    "contextual_trust_linear",
+    "pooled_controller",
+    "RARE",
+    "Meta-Team-L2-public"
+  ],
+  "arm_status": {
+    "uniform": "REQUIRED_CONTROL",
+    "no_update": "REQUIRED_CONTROL",
+    "raw_acceptance": "REQUIRED_ABLATION",
+    "terminal_only": "REQUIRED_ABLATION",
+    "contextual_trust_linear": "REQUIRED_STRONG_SAME_INFORMATION_CONTROL",
+    "pooled_controller": "DIAGNOSTIC_WIDE_HISTORY_CONTROL",
+    "RARE": "PRIMARY_CANDIDATE",
+    "Meta-Team-L2-public": "REQUIRED_CLOSEST_ADAPTER_OR_EXPLICIT_NO_GO"
+  },
+  "arm_semantics": {
+    "uniform": {
+      "read": "current candidate menu only",
+      "update": "none",
+      "purpose": "fixed exploration/lower-bound control"
+    },
+    "no_update": {
+      "read": "sealed initial state plus current public context",
+      "update": "none",
+      "purpose": "frozen execution control"
+    },
+    "raw_acceptance": {
+      "read": "eligible recipient accept/reject observation only",
+      "update": "raw observation updater",
+      "purpose": "measure responsibility-aware evidence increment over raw acceptance"
+    },
+    "terminal_only": {
+      "read": "independent later terminal outcome only",
+      "update": "terminal updater",
+      "purpose": "measure value of situated evidence beyond final outcome"
+    },
+    "contextual_trust_linear": {
+      "read": "same public phi/menu/base-score/arrival/propensity/cost fields as RARE",
+      "update": "pre-registered feature-aware diagonal RLS",
+      "purpose": "strongest same-information non-RARE control"
+    },
+    "pooled_controller": {
+      "read": "pre-registered public history shared across arms, never private scorer state",
+      "update": "pooled controller",
+      "purpose": "wide-history diagnostic upper bound, not primary fair comparison"
+    },
+    "RARE": {
+      "read": "typed public observation plus attributable evidence and delayed selected-only credit",
+      "update": "candidate responsibility-aware delayed updater",
+      "purpose": "test the proposed closed loop"
+    },
+    "Meta-Team-L2-public": {
+      "read": "only public delivery-to-recipient evidence permitted by this card",
+      "update": "profile adapter as pre-registered",
+      "purpose": "closest published semantic adapter; NO-GO unless independently executable"
+    }
+  },
+  "closest_published": {
+    "name": "Meta-Team-L2-public",
+    "paper": "arXiv:2605.29790v1",
+    "code_anchor": "36dc85d9dc2219d292fa180f347479738a84acb2",
+    "status": "BLOCKED_NO_GO",
+    "reason": "profile parser, public information cut, assignment consumer, cost contract and independent history are not yet executable; omission requires an explicit NO-GO row, never silent deletion"
+  },
+  "shared_execution_contract": {
+    "candidate_registry": "one immutable id@version/source/model/config digest for every arm",
+    "candidate_menu": "identical ordered menu and candidate versions in matched cells",
+    "task_material": "one sealed material/task/sandbox/scorer digest per root; no hidden gold in actor payload",
+    "public_prefix": "identical event-time read cut; future outcome and other policy state forbidden",
+    "rng": "pre-registered offer/selection schedule; preview->assignment->commit with no re-sampling",
+    "ownership": "producer defect, recipient-only, sink-only, mixed and UNKNOWN are distinct",
+    "unknown": "resource, binding, scorer, visibility or attribution uncertainty is UNKNOWN/no-update and remains in denominator",
+    "cost": "measured producer, recipient, judge, communication, retry, repair, scorer and replay cost; zero needs a receipt",
+    "namespace": "separate policy state, ledger, output and history namespace for each arm",
+    "replay": "every API event, state digest and selection receipt replayable from raw JSONL"
+  },
+  "required_event_order": [
+    "source_selection",
+    "delivery",
+    "producer_contract_check",
+    "recipient_judgment",
+    "recipient_action_or_use",
+    "independent_source_outcome",
+    "typed_observation_or_attribution_gate",
+    "publication_at_read_cut",
+    "later_assignment_before_target_selection",
+    "target_selection_and_task_start",
+    "target_action_or_use",
+    "independent_later_outcome",
+    "selected_only_delayed_credit",
+    "idempotent_update"
+  ],
+  "measurement_contract": {
+    "source_quality": [
+      "producer_contract_pass_rate",
+      "producer_defect_precision_or_coverage",
+      "recipient_action_validity"
+    ],
+    "future_utility": [
+      "later_quality",
+      "later_adoption",
+      "later_rework",
+      "assignment_regret"
+    ],
+    "cost": [
+      "producer_api",
+      "recipient_api",
+      "judge_api",
+      "communication",
+      "retry",
+      "repair",
+      "scorer",
+      "replay",
+      "wall_time"
+    ],
+    "online": [
+      "publish_p50_p95",
+      "assignment_p50_p95",
+      "update_p50_p95",
+      "state_bytes",
+      "service_lag"
+    ],
+    "stability": [
+      "old_root_peak_drop",
+      "old_root_mean_drop",
+      "recovery_window",
+      "correction_replay_consistency"
+    ],
+    "accounting": [
+      "unknown_count_and_denominator",
+      "invalid_count",
+      "per_stream_clustered_95pct_interval"
+    ]
+  },
+  "split_and_statistics": {
+    "unit": "independent live stream, not episode row",
+    "development": "PIPE3 seed 0 only for preflight after authority is granted",
+    "confirmation": "a second structural root selected before seeing development results",
+    "generalization": "leave_one_structural_root_out plus temporal split; no random row split",
+    "few_shot": "0-shot/1-shot/K-shot support from earlier sealed read cuts only",
+    "interval": "stream-clustered 95% interval with UNKNOWN retained in denominator",
+    "minimum": "at least two structural roots unless a written precision analysis pre-registers a different design"
+  },
+  "activation_blockers": [
+    "second_root_authority_and_valid_material_scorer",
+    "native_task_and_artifact_lineage_receipt",
+    "recipient_action_use_adoption_and_later_outcome_are_independent",
+    "seven executable arm adapters plus explicit Meta-Team NO-GO row",
+    "same-information phi/menu/read-cut/arrival/propensity parity receipt",
+    "independent policy/history/output namespaces",
+    "measured full-cost ledger and UNKNOWN denominator",
+    "provider/model/timezone/API configuration and new budget sealed",
+    "real API smoke success followed by bounded activation review"
+  ],
+  "preflight_only_checks": [
+    "json_schema_and_arm_semantics",
+    "registry/menu/read-cut/probability parity mutation rejection",
+    "assignment-before-target-selection rejection",
+    "ownership_and_UNKNOWN_no-update rejection",
+    "namespace and snapshot-restore replay",
+    "cost-field completeness"
+  ],
+  "goal_comparison": {
+    "ER-G1": "design specifies delivery→judgment→attribution→future assignment→later quality/cost, but no live evidence yet",
+    "ER-G2": "RARE update boundary is specified; realtime/adaptation/stability remain unmeasured",
+    "ER-G3": "candidate matrix and two-root requirement are explicit; benchmark and baselines remain unfrozen",
+    "ER-G4": "API logging and failure accounting are specified; no new API/GPU run authorized",
+    "gate_status": "G3/G4/G5 remain OPEN"
+  }
+}
