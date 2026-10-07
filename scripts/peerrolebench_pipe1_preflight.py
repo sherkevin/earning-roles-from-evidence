@@ -16,6 +16,9 @@ from pathlib import Path
 import platform
 import subprocess
 import sys
+from typing import Optional, Tuple
+
+from peerrolebench_pipe1_route_receipt import validate_pipe1_route_receipt
 
 ROOT = Path(__file__).resolve().parents[1]
 MATERIAL = ROOT / "experiments/logs/n03_pipe1_native_material_audit_20261007_v1"
@@ -37,7 +40,62 @@ def check(name: str, status: str, evidence: list[str], reason: str) -> dict:
     return {"check": name, "status": status, "evidence": evidence, "reason": reason}
 
 
-def run(out: Path) -> None:
+def _display_path(path: Path) -> str:
+    """Use a stable project-relative path where possible."""
+    path = path.resolve()
+    try:
+        return str(path.relative_to(ROOT))
+    except ValueError:
+        return str(path)
+
+
+def _route_receipt_check(route_receipt: Optional[Path]) -> Tuple[dict, dict]:
+    """Validate an optional operator-owned route receipt without executing it.
+
+    The receipt is an eligibility precondition only.  A valid receipt contributes
+    a PASS to the preflight, while the preflight still keeps the scientific gate
+    closed until all independent execution checks pass.
+    """
+    if route_receipt is None:
+        return (
+            check("route_receipt", "BLOCKED", [],
+                  "No PIPE1 route receipt was supplied; source-to-target lineage remains unverified"),
+            {"path": None, "exists": False},
+        )
+    path = route_receipt.resolve()
+    evidence = [_display_path(path)]
+    if not path.is_file():
+        return (
+            check("route_receipt", "BLOCKED", evidence,
+                  "The requested PIPE1 route receipt does not exist"),
+            {"path": _display_path(path), "exists": False},
+        )
+    try:
+        receipt = json.loads(path.read_text())
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        return (
+            check("route_receipt", "FAIL", evidence,
+                  f"Route receipt could not be parsed: {type(exc).__name__}"),
+            {"path": _display_path(path), "exists": True, "sha256": sha(path)},
+        )
+    result = validate_pipe1_route_receipt(receipt)
+    if result.get("valid"):
+        return (
+            check("route_receipt", "PASS", evidence,
+                  "PIPE1 source seed 0 to target seed 3 receipt satisfies the zero-call route contract"),
+            {"path": _display_path(path), "exists": True, "sha256": sha(path),
+             "schema_version": result.get("schema_version")},
+        )
+    return (
+        check("route_receipt", "FAIL", evidence,
+              "Route receipt fails closed: " + "; ".join(result.get("errors", [])[:5])),
+        {"path": _display_path(path), "exists": True, "sha256": sha(path),
+         "schema_version": result.get("schema_version"),
+         "validation_errors": result.get("errors", [])},
+    )
+
+
+def run(out: Path, route_receipt: Optional[Path] = None) -> None:
     if out.exists():
         raise FileExistsError(out)
     out.mkdir(parents=True)
@@ -46,9 +104,12 @@ def run(out: Path) -> None:
                      for s in SEEDS for n in ("planner_view", "executor_view", "parent_only")]
     source_files += list((MATERIAL / "source_snapshot").glob("*"))
     source_files += list(HARNESS.rglob("*.py")) + [HARNESS / "manifest.json"]
+    if route_receipt is not None and route_receipt.is_file():
+        source_files.append(route_receipt.resolve())
     source_files = [p for p in source_files if p.is_file()]
+    route_result, route_metadata = _route_receipt_check(route_receipt)
     config = {
-        "schema": "pipe1-preflight-v1",
+        "schema": "pipe1-preflight-v2",
         "kind": "ZERO_CALL_EXECUTION_PREFLIGHT",
         "status": "FROZEN_BEFORE_CHECKS",
         "started_utc": datetime.now(timezone.utc).isoformat(),
@@ -57,7 +118,8 @@ def run(out: Path) -> None:
         "project_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
         "teambench_pin": PIN,
         "seeds": list(SEEDS),
-        "source_sha256": {str(p.relative_to(ROOT)): sha(p) for p in source_files},
+        "source_sha256": {_display_path(p): sha(p) for p in source_files},
+        "route_receipt": route_metadata,
         "api_calls": 0,
         "gpu_runs": 0,
         "generator_calls": 0,
@@ -66,6 +128,7 @@ def run(out: Path) -> None:
     }
     put(out / "config.json", config)
     results = []
+    results.append(route_result)
     views = {}
     for seed in SEEDS:
         directory = MATERIAL / f"seed_{seed}"
@@ -131,8 +194,11 @@ def run(out: Path) -> None:
         "No pre-registered candidate version, allocation seed, permutation table, or allocation receipt binds the target assignment"))
     results.append(check("same_initial_peer_identity", "OPEN", [],
         "The design requires identical initial peers; whether independent calls produce useful persistent differences is unknown after the identity receipt is added"))
-    status = "BLOCKED_PRE_EXECUTION" if any(r["status"] == "BLOCKED" for r in results) else "QUALIFIED_DESIGN_ONLY"
-    receipt = {"schema": "pipe1-preflight-v1", "status": status, "checks": results,
+    # Any failed prerequisite also fails closed.  A malformed route receipt
+    # must never be hidden by the design-only status when other checks happen
+    # to pass in a future preflight version.
+    status = "BLOCKED_PRE_EXECUTION" if any(r["status"] in {"BLOCKED", "FAIL"} for r in results) else "QUALIFIED_DESIGN_ONLY"
+    receipt = {"schema": "pipe1-preflight-v2", "status": status, "checks": results,
                "api_calls": 0, "gpu_runs": 0, "generator_calls": 0, "candidate_executions": 0,
                "scientific_claim_allowed": False, "historical_results_modified": False}
     put(out / "receipt.json", receipt)
@@ -146,4 +212,7 @@ def run(out: Path) -> None:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--out", type=Path, required=True)
-    run(parser.parse_args().out.resolve())
+    parser.add_argument("--route-receipt", type=Path,
+                        help="Optional zero-call PIPE1 source-to-target route receipt JSON")
+    args = parser.parse_args()
+    run(args.out.resolve(), args.route_receipt.resolve() if args.route_receipt else None)

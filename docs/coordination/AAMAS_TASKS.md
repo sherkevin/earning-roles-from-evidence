@@ -10,6 +10,16 @@ and assignment randomization; same-initial-peer divergence is open. The card rem
 scientific claim is allowed. See [preflight report](task_reports/20261007_pipe1_preflight.md)
 and [`n03_pipe1_preflight_20261007_v3`](../../experiments/logs/n03_pipe1_preflight_20261007_v3/summary.json).
 
+**Latest PIPE1 preflight integration — 2026-10-07:** the preflight now consumes the
+independent source seed 0 → target seed 3 route receipt validator. Missing receipts are
+`BLOCKED`; a structurally valid synthetic receipt adds one `PASS`; malformed receipts are
+`FAIL` and the overall result remains `BLOCKED_PRE_EXECUTION`. The 22-test integration
+qualification and `py_compile` pass, with zero API/generator/candidate/GPU calls. This is an
+engineering precondition only: `scientific_claim_allowed=false`, PIPE1 remains
+`CANDIDATE / NOT_ACTIVE`, and the ten live blockers above are unchanged. See [integration
+report](task_reports/20261007_pipe1_preflight_route_receipt_integration.md) and
+[`n03_pipe1_preflight_20261007_v4`](../../experiments/logs/n03_pipe1_preflight_20261007_v4/summary.json).
+
 **Latest bounded generation implementation — 2026-10-07:** a separate live
 producer stage now projects personal history into the real transport request,
 keeps generation policy separate from each delivery, and checks canonical

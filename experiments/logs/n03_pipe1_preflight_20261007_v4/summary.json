@@ -1,0 +1,63 @@
+{
+  "schema": "pipe1-preflight-integration-result-v1",
+  "status": "QUALIFIED_OFFLINE_INTEGRATION",
+  "tests_passed": 22,
+  "tests_expected": 22,
+  "paths": {
+    "missing_receipt": {
+      "api_calls": 0,
+      "candidate_executions": 0,
+      "check_counts": {
+        "BLOCKED": 11,
+        "FAIL": 0,
+        "OPEN": 1,
+        "PASS": 11
+      },
+      "generator_calls": 0,
+      "gpu_runs": 0,
+      "next_action": "Resolve all BLOCKED checks before any route call",
+      "scientific_claim_allowed": false,
+      "status": "BLOCKED_PRE_EXECUTION"
+    },
+    "synthetic_valid_receipt": {
+      "api_calls": 0,
+      "candidate_executions": 0,
+      "check_counts": {
+        "BLOCKED": 10,
+        "FAIL": 0,
+        "OPEN": 1,
+        "PASS": 12
+      },
+      "generator_calls": 0,
+      "gpu_runs": 0,
+      "next_action": "Resolve all BLOCKED checks before any route call",
+      "scientific_claim_allowed": false,
+      "status": "BLOCKED_PRE_EXECUTION"
+    },
+    "malformed_receipt": {
+      "api_calls": 0,
+      "candidate_executions": 0,
+      "check_counts": {
+        "BLOCKED": 10,
+        "FAIL": 1,
+        "OPEN": 1,
+        "PASS": 11
+      },
+      "generator_calls": 0,
+      "gpu_runs": 0,
+      "next_action": "Resolve all BLOCKED checks before any route call",
+      "scientific_claim_allowed": false,
+      "status": "BLOCKED_PRE_EXECUTION"
+    }
+  },
+  "synthetic_valid_receipt_sha256": "adf290d4f226aac04d627af37d599fffb040e9b7cce2559a2126ee44a26db959",
+  "malformed_receipt_sha256": "5f1489f06c5ccddd3c45b1585cb9e68fecbdc6d614367f101589b013084626b2",
+  "api_calls": 0,
+  "generator_calls": 0,
+  "candidate_executions": 0,
+  "gpu_runs": 0,
+  "scientific_claim_allowed": false,
+  "historical_results_modified": false,
+  "interpretation": "The validator is wired into the zero-call preflight. A structural PASS is necessary but insufficient; live lineage, actor execution, exact scoring, budget and baseline checks remain blocked.",
+  "next_action": "Use this precondition in a future PIPE1 runner after separate budget issuance; do not call API or GPU from this qualification."
+}

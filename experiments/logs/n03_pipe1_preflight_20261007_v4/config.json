@@ -1,0 +1,28 @@
+{
+  "schema": "pipe1-preflight-integration-v1",
+  "kind": "ZERO_CALL_ROUTE_RECEIPT_INTEGRATION",
+  "status": "FROZEN_BEFORE_CHECKS",
+  "project_commit": "bce56e1b16430e2c3cda8f334a4dd46d256a11c4",
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "source_sha256": {
+    "scripts/peerrolebench_pipe1_preflight.py": "162034b7a13544c6b83607e735249f84f8454c2f59b41009e729f36f78f193e6",
+    "scripts/peerrolebench_pipe1_route_receipt.py": "04df1dfd5fddb5ce6cd6781b8e4babbc5cb2305787a0951f852c1bd5f25327ee",
+    "tests/test_peerrolebench_pipe1_preflight_route_receipt.py": "7f07779db41f038172eb687f5462f08fabd1ec6d73ec6a9d66fe92c015c0dd4c",
+    "tests/test_peerrolebench_pipe1_route_receipt.py": "c6426529e000f9d274c42ac9212f14271a4b38e359c5adce9cd355f782f67928"
+  },
+  "commands": [
+    "python3 -m pytest -q tests/test_peerrolebench_pipe1_route_receipt.py tests/test_peerrolebench_pipe1_preflight_route_receipt.py",
+    "python3 -m py_compile scripts/peerrolebench_pipe1_route_receipt.py scripts/peerrolebench_pipe1_preflight.py"
+  ],
+  "api_calls": 0,
+  "generator_calls": 0,
+  "candidate_executions": 0,
+  "gpu_runs": 0,
+  "scientific_claim_allowed": false,
+  "scope": [
+    "missing route receipt blocks",
+    "synthetic valid route receipt passes contract but does not open gate",
+    "malformed route receipt fails closed"
+  ]
+}

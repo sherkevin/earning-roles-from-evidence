@@ -7,6 +7,12 @@
   API/generator/candidate/GPU; no benchmark activation or scientific claim. See [qualification
   report](task_reports/20261007_pipe1_route_receipt_qualification.md).
 
+- [partial] 2026-10-07 PIPE1 preflight route-receipt integration: the zero-call preflight now
+  consumes the route validator before any future route call. Missing receipts block, valid
+  synthetic receipts add one protocol PASS, and malformed receipts fail closed; all three
+  paths keep `scientific_claim_allowed=false`. The 22-test integration suite and `py_compile`
+  pass; no API/generator/candidate/GPU call. See [integration report](task_reports/20261007_pipe1_preflight_route_receipt_integration.md).
+
 - [partial] 2026-10-07 main PDF master sync: parent-level `artifacts/aamas2027/main.pdf`
   now points byte-for-byte to the verified `microtype_20261007_v55` build (8 body pages,
   References from page 9, SHA-256 recorded in provenance). Version directories remain
