@@ -84,3 +84,5 @@
 - [done] 2026-10-07 冻结普通信息价值推导：有预测信息却不改变最优peer时，理想选择增量为零；同信息baseline同享J，不能当RARE理论优势。→ [候选筛查](docs/research/candidates/benchmark_selection_value_20261007.md)。
 - [done] 2026-10-07 四域原生材料捕获完成；独立审查补出原样spec relay、第三角色Verifier和最多两轮返修。20条日期UTC/Shanghai全异，旧capture TZ未知；0API/GPU，不激活benchmark。→ [任务报告](docs/coordination/task_reports/20261007_selection_value_and_native_handoff.md)。
 - [open] 2026-10-07 先确定自然持久peer经验与未来收益的可识别条件，使用已存材料约束任务卡；不重复下载/生成，不以静态产物评分替代角色学习。追加4次判断预算仍pending。
+- [done] 2026-10-07 actor continuity调用链审查：个人历史没有production caller；C1与two-stage固定产物等值门不适用真实生成。native协议已有策略/产物分离，无需重写。记录三条路径及独立反驳修订，0模型API/GPU。→ [设计与Goal对照](docs/coordination/task_reports/20261007_actor_continuity_and_effect_separation.md)。
+- [open] 2026-10-07 新runner只补版本化生成身份、actor可见历史投影与fresh交付的绑定；先完成任务/成本卡前置，不启用未批调用，不把离线全信息诊断写入线上selected-only训练。

@@ -1,5 +1,15 @@
 # AAMAS 2027 task ledger
 
+**Latest actor-continuity audit — 2026-10-07:** `ActorExperience` has no production
+caller; C1 producers remain fixed artifacts. Native Delivery already separates
+generation-source and artifact digests, so fresh generation requires a versioned
+runner and per-decision history binding, not a protocol rewrite. C1 and the
+two-stage composition both contain static equality assumptions. The candidate
+design separates actor-memory effects from selection effects; full-information
+diagnostic outputs stay outside selected-only learning, and a small null pilot
+is inconclusive. No new API/GPU; all scientific gates remain open. See
+[evidence, reuse and Goal comparison](task_reports/20261007_actor_continuity_and_effect_separation.md).
+
 **Latest benchmark screen — 2026-10-07:** a native PIPE1 Planner→Executor
 handoff supplies legitimate task rules, but direct spec relay and the original
 full-spec Verifier/remediation path must be accounted for. Four domain captures

@@ -1,5 +1,12 @@
 # Task reports
 
+- [partial] 2026-10-07 actor continuity/effect separation: production call audit
+  finds no actor-history wiring and fixed C1 producer snapshots. Native protocol
+  can preserve identity across new deliveries; only runner-level static bindings
+  need a new contract. Candidate design separates personal memory, selector and
+  their interaction, with private full-information diagnostic outcomes. Zero
+  model API/GPU; no experiment activation. See [report](task_reports/20261007_actor_continuity_and_effect_separation.md).
+
 - [partial] 2026-10-07 selection-value/native-handoff screen: four PIPE1 domain
   captures expose rule-message handoff but also require direct-spec relay and the
   full Verifier/remediation control. All 20 audited timestamp dates differ under
