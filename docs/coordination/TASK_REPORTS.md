@@ -1,5 +1,12 @@
 # Task reports
 
+- [partial] 2026-10-07 canonical main PDF reconciliation v3：并行构建已把父目录主版更新为
+  `reference_supplement_20261007_v3`，但旧 provenance 仍指向 v2；现已补齐 v3 verification，
+  修复 parent-level provenance，并验证主版与 v3 字节一致。SHA-256 为
+  `b316464801f9e02c65fa61d9f704c21945679ced1492e897df1749b72425f3be`，正文 8 页、总 9 页、
+  References 从第 9 页开始；`submission_ready=false`。版本目录均保留，见
+  [report](task_reports/20261007_main_pdf_master_reconcile_v3.md)。
+
 - [partial] 2026-10-07 baseline parity candidate card v0.2：将 PIPE3 主轨的八行矩阵、同信息
   `contextual_trust_linear`、closest published adapter 的显式 `NO-GO`、统一菜单/read-cut/
   arrival/propensity/成本、later-assignment-before-selection、UNKNOWN 分母、独立 namespace
