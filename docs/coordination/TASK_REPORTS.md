@@ -25,6 +25,12 @@
   is a zero-call adapter composing those contracts. No API/GPU or benchmark activation. See
   [reuse audit](task_reports/20261007_pipe1_runner_reuse_audit.md).
 
+- [partial] 2026-10-07 PIPE1 runner-reuse component qualification: the existing PIPE3 contract
+  runner passes 5/5 offline cases for ledger replay, ordering, candidate propensity, ownership
+  and UNKNOWN no-update. v1/v2 launch failures are preserved; v3 succeeds through a wrapper.
+  This is component evidence only, with 0 API/generator/candidate/GPU and no scientific claim.
+  See [qualification report](task_reports/20261007_pipe1_runner_reuse_qualification.md).
+
 - [partial] 2026-10-07 main PDF master sync: parent-level `artifacts/aamas2027/main.pdf`
   now points byte-for-byte to the verified `microtype_20261007_v55` build (8 body pages,
   References from page 9, SHA-256 recorded in provenance). Version directories remain

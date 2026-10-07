@@ -37,6 +37,14 @@ credit. The next bounded implementation is an offline PIPE1 adapter that compose
 and emits the qualified route receipt; no API/GPU or new budget is used. See [reuse audit]
 (task_reports/20261007_pipe1_runner_reuse_audit.md).
 
+**Latest PIPE1 runner-reuse component qualification — 2026-10-07:** the existing PIPE3
+contract runner passes 5/5 offline cases for ledger replay, source→target ordering, candidate
+propensity, ownership classification and UNKNOWN no-update. Two launch mistakes are preserved
+as v1/v2; v3 uses a wrapper that lets the script create its own output directory. This is
+component evidence only (`0` API/generator/candidate/GPU, scientific gate closed), not a PIPE1
+benchmark result. See [qualification report](task_reports/20261007_pipe1_runner_reuse_qualification.md)
+and [`n03_pipe1_runner_reuse_qualification_20261007_v3`](../../experiments/logs/n03_pipe1_runner_reuse_qualification_20261007_v3/summary.json).
+
 **Latest bounded generation implementation — 2026-10-07:** a separate live
 producer stage now projects personal history into the real transport request,
 keeps generation policy separate from each delivery, and checks canonical
