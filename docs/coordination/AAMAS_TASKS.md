@@ -45,6 +45,16 @@ component evidence only (`0` API/generator/candidate/GPU, scientific gate closed
 benchmark result. See [qualification report](task_reports/20261007_pipe1_runner_reuse_qualification.md)
 and [`n03_pipe1_runner_reuse_qualification_20261007_v3`](../../experiments/logs/n03_pipe1_runner_reuse_qualification_20261007_v3/summary.json).
 
+**Latest PIPE1 offline adapter qualification — 2026-10-07:** a narrow adapter now composes
+the existing ledger replay, task-id binding, source→target schedule, selection receipt,
+ownership and UNKNOWN/no-update contracts. Its 9-case offline suite passes, including
+fail-closed mutations. `READY_FOR_ROUTE` is only a pre-route contract: policy updates remain
+disabled and native-material/route receipt, provider/TZ, live lineage, scoring, cost and
+assignment gates remain with the separate preflight. This is zero-call engineering evidence
+only (`0` API/generator/candidate/GPU; `scientific_claim_allowed=false`), not a PIPE1 result.
+See [qualification report](task_reports/20261007_pipe1_offline_adapter_qualification.md) and
+[`n03_pipe1_offline_adapter_qualification_20261007_v1`](../../experiments/logs/n03_pipe1_offline_adapter_qualification_20261007_v1/summary.json).
+
 **Latest bounded generation implementation — 2026-10-07:** a separate live
 producer stage now projects personal history into the real transport request,
 keeps generation policy separate from each delivery, and checks canonical

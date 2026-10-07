@@ -1,0 +1,30 @@
+{
+  "schema": "pipe1-offline-adapter-qualification-v1",
+  "kind": "ZERO_CALL_SOURCE_TARGET_LEDGER_ADAPTER",
+  "status": "FROZEN_BEFORE_CHECKS",
+  "project_commit": "3927048aee35511a75bc88af233fa14e4a334719",
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "source_sha256": {
+    "scripts/peerrolebench_pipe1_offline_adapter.py": "1b60d48b9fde4e995cce557e67e0d01db1379d99076543e29dfacb762fab43bc",
+    "scripts/peerrolebench_pipe3_live_contract.py": "8153d7d930d6b675a998e8012dc28fd0090285215275cb3ec346e86c306e49e8",
+    "tests/test_peerrolebench_pipe1_offline_adapter.py": "1fc0c5f222c58135e3f514add8113018e9a5c02ded7cc461bd6a3fd3ca917bbe",
+    "tests/test_peerrolebench_pipe3_live_contract.py": "d066418b888f6ec9276de5d76142c273d5dac9b55b99722b17ebe05518a757bb",
+    "scripts/peerrolebench_pipe3_live_contract_qualification.py": "b24a11fbeffef9085f64ca01443b4adaca2a074edd8e19e766da6964e44243d4"
+  },
+  "command": "python3 -m pytest -q tests/test_peerrolebench_pipe1_offline_adapter.py tests/test_peerrolebench_pipe3_live_contract.py",
+  "api_calls": 0,
+  "generator_calls": 0,
+  "candidate_executions": 0,
+  "gpu_runs": 0,
+  "policy_updates": 0,
+  "scientific_claim_allowed": false,
+  "scope": [
+    "PIPE1 task-id binding",
+    "ledger replay and artifact binding",
+    "source-to-target schedule",
+    "candidate menu/propensity",
+    "ownership classification",
+    "UNKNOWN no-update mutation"
+  ]
+}

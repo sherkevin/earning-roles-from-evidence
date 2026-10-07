@@ -1,5 +1,10 @@
 # Task reports
 
+- [partial] 2026-10-07 PIPE1 offline adapter qualification: composed the existing ledger
+  replay, task-id, source→target schedule, selection receipt, ownership and UNKNOWN/no-update
+  contracts into a zero-call adapter. The 9-case suite and `py_compile` pass; mutation cases
+  fail closed. `READY_FOR_ROUTE` is not a live route and policy updates remain disabled;
+  native material/route preflight and all scientific gates remain open. See [report](task_reports/20261007_pipe1_offline_adapter_qualification.md).
 - [partial] 2026-10-07 PIPE1 route receipt qualification: a zero-call validator now binds
   source/target material, message/artifact/Executor/Verifier hashes, candidate versions,
   allocation propensity, provider/TZ, phase costs, selected-only visibility and causal order.
