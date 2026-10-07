@@ -257,6 +257,13 @@ def validate_source_target_fixture(
         "ledger": ledger,
         "schedule": schedule,
         "selection": selection,
+        "selection_input": {
+            "menu_keys": list(menu_keys),
+            "chosen_key": chosen_key,
+            "probabilities": [float(value) for value in probabilities],
+            "chosen_index": chosen_index,
+            "propensity": float(propensity),
+        },
         "selection_binding": selection_binding,
         "ownership": ownership,
         "ownership_status": _ownership_status(ownership),
