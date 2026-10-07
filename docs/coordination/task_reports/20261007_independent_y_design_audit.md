@@ -110,11 +110,11 @@ terminal response. Four tests cover the positive target row, source/D relabels,
 binding and digest mutations, and UNKNOWN/partial/duplicate/late rows. The
 qualified rerun is recorded at
 [`n03_independent_y_contract_qualification_20261007_v1`](../../../experiments/logs/n03_independent_y_contract_qualification_20261007_v1/summary.json):
-4/4 passed, 0 API calls, 0 GPU jobs. This is a provenance gate only; the hidden
- validator is a provenance gate only; the private terminal worker and parent
- adapter are implemented and separately smoke-qualified below. The first test
- invocation happened before config creation and is explicitly recorded as a
- process deviation; it is not used as evidence.
+4/4 passed, 0 API calls, 0 GPU jobs. This validator is a provenance gate only;
+the private terminal worker and parent adapter are implemented and separately
+smoke-qualified below. The first test invocation happened before config
+creation and is explicitly recorded as a process deviation; it is not used as
+evidence.
 
 The minimal private worker and parent adapter are now implemented in
 [`peerrolebench_pipe3_terminal_scorer_worker_v1.py`](../../../scripts/peerrolebench_pipe3_terminal_scorer_worker_v1.py)
@@ -140,6 +140,14 @@ candidate implementation specification pending the next protocol qualification;
 it does not authorize a new live API run or an A800 job.
 
 ## Goal reconciliation
+
+**Later correction (same day):** the target-only/assignment requirement above
+was too broad for measuring Y. Every executed arm, including `no_update`, needs
+the same terminal measurement; prior assignment is required for L, not for
+observing Y. The v2 audit also found that delivery and full action-input digests
+cover different files. See the [v2 integration audit](20261007_independent_y_integration_audit_v2.md)
+for the corrected bindings, frozen-manifest worker, and retrospective evaluation
+of real API artifacts. Historical v1 logs and the live runner are unchanged.
 
 - ER-G1: `PARTIAL` — the causal chain is specified, but independent Y is not yet
   observed in the live runner.

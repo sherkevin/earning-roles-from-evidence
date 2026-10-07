@@ -1,0 +1,77 @@
+{
+  "transport": {
+    "status": "complete"
+  },
+  "request": {
+    "op": "score_terminal",
+    "schema_version": "pipe3-terminal-holdout-request-v2",
+    "scorer_version": "pipe3-terminal-holdout-v2",
+    "task_id": "PIPE3_stream_processing",
+    "seed": 0,
+    "artifact_sha256": "be331daffa1fe327d62a61149db3429e3e7a0d1a324f67ed8c49b1fb7f924dd2",
+    "manifest_sha256": "0cc909b56d25eff8b7badd47ac94fef3afb68ce1eb7b7238abd3e0cb89930424",
+    "holdout_digest": "e9bf1964e489ac90ddeb4393889b877bd8c671bcfd7621b0c0f23bfc493f2afe",
+    "manifest_case_seed": 0,
+    "case": {
+      "seed": 0,
+      "public_source_digest": "80cf4005e30cb467a784d06fda22567f52727df8f6af3f5fbf665c42d7eb8fcc",
+      "event_class": "UserEvent",
+      "fields": {
+        "id": "event_id",
+        "timestamp": "timestamp",
+        "user": "user_name",
+        "action": "action",
+        "value": "page_url"
+      },
+      "input_records": [
+        {
+          "event_id": "terminal-001",
+          "timestamp": "2023-11-14T22:13:20",
+          "user_name": "Müller",
+          "action": "page_view",
+          "page_url": "Price: €99.99"
+        },
+        {
+          "event_id": "terminal-002",
+          "timestamp": "2023-11-14T22:13:20",
+          "user_name": "Renée",
+          "action": "page_view",
+          "page_url": "Café €12"
+        }
+      ],
+      "expected_projection": [
+        {
+          "event_id": "terminal-001",
+          "timestamp": "2023-11-14T22:13:20",
+          "user_name": "Müller",
+          "action": "PAGE_VIEW",
+          "page_url": "Price: €99.99"
+        },
+        {
+          "event_id": "terminal-002",
+          "timestamp": "2023-11-14T22:13:20",
+          "user_name": "Renée",
+          "action": "PAGE_VIEW",
+          "page_url": "Café €12"
+        }
+      ]
+    },
+    "worker_input_sha256": "8924fa5f2271f47734a738f993d5805bcb04415c2afe4d2c9a687ffeeefb35bd"
+  },
+  "response": {
+    "ok": false,
+    "error_type": "PermissionError",
+    "message": "denied"
+  },
+  "response_digest": "3acae432f5499c942a6b5debe4f6a03b12c7db8f82f7f945bb9ca73ce235134e",
+  "result": {
+    "status": "UNKNOWN",
+    "label": null,
+    "quality_score": null,
+    "scorer_version": "pipe3-terminal-holdout-v2",
+    "coverage_complete": false,
+    "reason": "terminal_worker_error",
+    "error_type": "PermissionError"
+  },
+  "scorer_wall_seconds": 0.5651886250000002
+}

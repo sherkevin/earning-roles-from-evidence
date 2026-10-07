@@ -1,0 +1,121 @@
+{
+  "transport": {
+    "status": "complete"
+  },
+  "request": {
+    "op": "score_terminal",
+    "schema_version": "pipe3-terminal-holdout-request-v2",
+    "scorer_version": "pipe3-terminal-holdout-v2",
+    "task_id": "PIPE3_stream_processing",
+    "seed": 0,
+    "artifact_sha256": "4d949e54cf2cce4927230a4c0ee5c41025f0d27cb8fc3eeb7993c7c465fe1569",
+    "manifest_sha256": "0cc909b56d25eff8b7badd47ac94fef3afb68ce1eb7b7238abd3e0cb89930424",
+    "holdout_digest": "e9bf1964e489ac90ddeb4393889b877bd8c671bcfd7621b0c0f23bfc493f2afe",
+    "manifest_case_seed": 0,
+    "case": {
+      "seed": 0,
+      "public_source_digest": "80cf4005e30cb467a784d06fda22567f52727df8f6af3f5fbf665c42d7eb8fcc",
+      "event_class": "UserEvent",
+      "fields": {
+        "id": "event_id",
+        "timestamp": "timestamp",
+        "user": "user_name",
+        "action": "action",
+        "value": "page_url"
+      },
+      "input_records": [
+        {
+          "event_id": "terminal-001",
+          "timestamp": "2023-11-14T22:13:20",
+          "user_name": "Müller",
+          "action": "page_view",
+          "page_url": "Price: €99.99"
+        },
+        {
+          "event_id": "terminal-002",
+          "timestamp": "2023-11-14T22:13:20",
+          "user_name": "Renée",
+          "action": "page_view",
+          "page_url": "Café €12"
+        }
+      ],
+      "expected_projection": [
+        {
+          "event_id": "terminal-001",
+          "timestamp": "2023-11-14T22:13:20",
+          "user_name": "Müller",
+          "action": "PAGE_VIEW",
+          "page_url": "Price: €99.99"
+        },
+        {
+          "event_id": "terminal-002",
+          "timestamp": "2023-11-14T22:13:20",
+          "user_name": "Renée",
+          "action": "PAGE_VIEW",
+          "page_url": "Café €12"
+        }
+      ]
+    },
+    "worker_input_sha256": "ab6a2302273956f3a390ecf573b24a842a60e45b91fc15416e81a3e5da588fba"
+  },
+  "response": {
+    "ok": true,
+    "schema_version": "pipe3-terminal-holdout-response-v2",
+    "scorer_version": "pipe3-terminal-holdout-v2",
+    "task_id": "PIPE3_stream_processing",
+    "seed": 0,
+    "artifact_sha256": "4d949e54cf2cce4927230a4c0ee5c41025f0d27cb8fc3eeb7993c7c465fe1569",
+    "manifest_sha256": "0cc909b56d25eff8b7badd47ac94fef3afb68ce1eb7b7238abd3e0cb89930424",
+    "holdout_digest": "e9bf1964e489ac90ddeb4393889b877bd8c671bcfd7621b0c0f23bfc493f2afe",
+    "manifest_case_seed": 0,
+    "worker_input_sha256": "ab6a2302273956f3a390ecf573b24a842a60e45b91fc15416e81a3e5da588fba",
+    "status": "PASS",
+    "label": 1,
+    "quality_score": 1.0,
+    "coverage_complete": true,
+    "checks": [
+      {
+        "id": "T1_holdout_projection",
+        "status": "PASS",
+        "observed_projection_digest": "c1b1eda568832d82e5f88da2a855d060716a43b9a5681205c3bdad113ae3b996"
+      },
+      {
+        "id": "T2_batch_cardinality",
+        "status": "PASS"
+      },
+      {
+        "id": "T3_unicode_semantics",
+        "status": "PASS"
+      }
+    ],
+    "required_check_ids": [
+      "T1_holdout_projection",
+      "T2_batch_cardinality",
+      "T3_unicode_semantics"
+    ]
+  },
+  "response_digest": "5f00293f21b37bda016c0730a2b15df50a960212e12321e8cc89e8668abd8833",
+  "result": {
+    "status": "PASS",
+    "label": 1,
+    "quality_score": 1.0,
+    "scorer_version": "pipe3-terminal-holdout-v2",
+    "coverage_complete": true,
+    "checks": [
+      {
+        "id": "T1_holdout_projection",
+        "status": "PASS",
+        "observed_projection_digest": "c1b1eda568832d82e5f88da2a855d060716a43b9a5681205c3bdad113ae3b996"
+      },
+      {
+        "id": "T2_batch_cardinality",
+        "status": "PASS"
+      },
+      {
+        "id": "T3_unicode_semantics",
+        "status": "PASS"
+      }
+    ]
+  },
+  "scorer_wall_seconds": 1.1327443750000001
+}

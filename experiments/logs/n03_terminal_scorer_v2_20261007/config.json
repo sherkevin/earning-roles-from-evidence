@@ -1,0 +1,43 @@
+{
+  "experiment_id": "n03_terminal_scorer_v2_20261007",
+  "qualification_version": "pipe3-terminal-holdout-qualification-v2",
+  "frozen_before_execution": true,
+  "task_id": "PIPE3_stream_processing",
+  "manifest_path": "configs/aamas2027/pipe3_terminal_holdout_v2.json",
+  "manifest_sha256": "0cc909b56d25eff8b7badd47ac94fef3afb68ce1eb7b7238abd3e0cb89930424",
+  "seeds": [
+    0,
+    1
+  ],
+  "cases": [
+    "correct_both",
+    "original",
+    "producer_only_fixed",
+    "recipient_only_fixed",
+    "unicode_escaped_correct",
+    "permission_failure"
+  ],
+  "expected_status": {
+    "correct_both": "PASS",
+    "original": "FAIL",
+    "producer_only_fixed": "FAIL",
+    "recipient_only_fixed": "PASS",
+    "unicode_escaped_correct": "PASS",
+    "permission_failure": "UNKNOWN"
+  },
+  "controls": [
+    "malformed_response",
+    "digest_mismatch",
+    "manifest_hash_mismatch"
+  ],
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "native_grader_invoked": false,
+  "scientific_claim_allowed": false,
+  "same_process_instrumentation_tamper_proof": false,
+  "seed_root_relation": "same structural root; development-only",
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "git_commit": "e3e4ac25cfd72a96fb8f590e1a0382fbd3943614",
+  "started_at_utc": "2026-10-07T03:11:37.736939+00:00"
+}

@@ -1,0 +1,99 @@
+{
+  "schema_version": "pipe3-terminal-holdout-manifest-v2",
+  "task_id": "PIPE3_stream_processing",
+  "generator_commit": "d185aef1916fd86a9ba554d581fd256319a973af",
+  "generator_file_sha256": "1f23d6c7471fbde16f8f7e6141fff573eb4e5e4caf14d55656114e57467c44b2",
+  "root_relation": "seed 0 and seed 1 share one structural PIPE3 root; development-only, no independent-root efficacy claim",
+  "candidate_received_hidden_assertions": false,
+  "scientific_claim_allowed": false,
+  "cases": [
+    {
+      "seed": 0,
+      "public_source_digest": "80cf4005e30cb467a784d06fda22567f52727df8f6af3f5fbf665c42d7eb8fcc",
+      "event_class": "UserEvent",
+      "fields": {
+        "id": "event_id",
+        "timestamp": "timestamp",
+        "user": "user_name",
+        "action": "action",
+        "value": "page_url"
+      },
+      "input_records": [
+        {
+          "event_id": "terminal-001",
+          "timestamp": "2023-11-14T22:13:20",
+          "user_name": "Müller",
+          "action": "page_view",
+          "page_url": "Price: €99.99"
+        },
+        {
+          "event_id": "terminal-002",
+          "timestamp": "2023-11-14T22:13:20",
+          "user_name": "Renée",
+          "action": "page_view",
+          "page_url": "Café €12"
+        }
+      ],
+      "expected_projection": [
+        {
+          "event_id": "terminal-001",
+          "timestamp": "2023-11-14T22:13:20",
+          "user_name": "Müller",
+          "action": "PAGE_VIEW",
+          "page_url": "Price: €99.99"
+        },
+        {
+          "event_id": "terminal-002",
+          "timestamp": "2023-11-14T22:13:20",
+          "user_name": "Renée",
+          "action": "PAGE_VIEW",
+          "page_url": "Café €12"
+        }
+      ]
+    },
+    {
+      "seed": 1,
+      "public_source_digest": "84d881d997845a3a02ef2b6690cfc3f925bce6120d0280e93793689b478d3d00",
+      "event_class": "SensorReading",
+      "fields": {
+        "id": "reading_id",
+        "timestamp": "measured_at",
+        "user": "sensor_name",
+        "action": "metric_type",
+        "value": "location"
+      },
+      "input_records": [
+        {
+          "reading_id": "terminal-001",
+          "measured_at": "2023-11-14T22:13:20",
+          "sensor_name": "Müller",
+          "metric_type": "temperature",
+          "location": "Price: €99.99"
+        },
+        {
+          "reading_id": "terminal-002",
+          "measured_at": "2023-11-14T22:13:20",
+          "sensor_name": "Renée",
+          "metric_type": "temperature",
+          "location": "Café €12"
+        }
+      ],
+      "expected_projection": [
+        {
+          "reading_id": "terminal-001",
+          "measured_at": "2023-11-14T22:13:20",
+          "sensor_name": "Müller",
+          "metric_type": "TEMPERATURE",
+          "location": "Price: €99.99"
+        },
+        {
+          "reading_id": "terminal-002",
+          "measured_at": "2023-11-14T22:13:20",
+          "sensor_name": "Renée",
+          "metric_type": "TEMPERATURE",
+          "location": "Café €12"
+        }
+      ]
+    }
+  ]
+}

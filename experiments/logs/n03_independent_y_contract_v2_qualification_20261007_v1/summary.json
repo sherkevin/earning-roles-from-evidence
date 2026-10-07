@@ -1,0 +1,94 @@
+{
+  "version": "n03-independent-y-contract-v2-qualification-v1",
+  "contract_version": "pipe3-independent-y-contract-v2",
+  "started_at_utc": "2026-10-06T18:48:30.259256+00:00",
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "cases": {
+    "positive": {
+      "schema_version": "pipe3-independent-y-contract-v2",
+      "valid": true,
+      "disposition": "ELIGIBLE",
+      "policy_update_allowed": true,
+      "source": "independent_terminal_holdout",
+      "feedback_id": "feedback-y-1",
+      "candidate_key": "peer-b@v1",
+      "label": 1,
+      "quality_score": 1.0,
+      "arrival_index": 18,
+      "read_cut": 20,
+      "receipt_digest": "2292271a9a4adc20c29ec8de4afddb5bef00763e1a333299eaee66877a6e4086"
+    },
+    "source_relabel": {
+      "schema_version": "pipe3-independent-y-contract-v2",
+      "valid": false,
+      "disposition": "UNKNOWN",
+      "policy_update_allowed": false,
+      "label": null,
+      "quality_score": null,
+      "reason": "terminal_signal_requires_target_episode"
+    },
+    "D_relabel": {
+      "schema_version": "pipe3-independent-y-contract-v2",
+      "valid": false,
+      "disposition": "UNKNOWN",
+      "policy_update_allowed": false,
+      "label": null,
+      "quality_score": null,
+      "reason": "terminal_signal_must_not_be_derived"
+    },
+    "wrong_target_snapshot": {
+      "schema_version": "pipe3-independent-y-contract-v2",
+      "valid": false,
+      "disposition": "UNKNOWN",
+      "policy_update_allowed": false,
+      "label": null,
+      "quality_score": null,
+      "reason": "target_snapshot_sha256_mismatch"
+    },
+    "invalid_event_order": {
+      "schema_version": "pipe3-independent-y-contract-v2",
+      "valid": false,
+      "disposition": "UNKNOWN",
+      "policy_update_allowed": false,
+      "label": null,
+      "quality_score": null,
+      "reason": "native_event_order_invalid"
+    },
+    "late_feedback": {
+      "schema_version": "pipe3-independent-y-contract-v2",
+      "valid": false,
+      "disposition": "UNKNOWN",
+      "policy_update_allowed": false,
+      "label": null,
+      "quality_score": null,
+      "reason": "terminal_arrives_after_read_cut"
+    },
+    "duplicate": {
+      "schema_version": "pipe3-independent-y-contract-v2",
+      "valid": false,
+      "disposition": "UNKNOWN",
+      "policy_update_allowed": false,
+      "label": null,
+      "quality_score": null,
+      "reason": "duplicate_terminal_feedback"
+    },
+    "incomplete": {
+      "schema_version": "pipe3-independent-y-contract-v2",
+      "valid": false,
+      "disposition": "UNKNOWN",
+      "policy_update_allowed": false,
+      "label": null,
+      "quality_score": null,
+      "reason": "terminal_coverage_incomplete"
+    }
+  },
+  "ended_at_utc": "2026-10-06T18:48:30.259718+00:00",
+  "positive_valid": true,
+  "negative_cases_fail_closed": true,
+  "passed": true,
+  "status": "QUALIFIED_OFFLINE",
+  "policy_state_mutated": false,
+  "interpretation": "provenance and event-order seam only; no worker execution, API, GPU, policy update, or efficacy claim"
+}

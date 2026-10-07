@@ -1,5 +1,12 @@
 # Task reports
 
+- [partial] 2026-10-07 real-artifact terminal diagnostic: frozen manifest scoring
+  on four historical API outputs finds terminal PASS despite Qp/composite FAIL;
+  all four share one code snapshot. Corrected full-input versus delivery hashing
+  and kept Y measurement for no-update separate from assignment credit L.
+  Historical results unchanged, no new API/GPU/policy update; see
+  [evidence and next experiment](task_reports/20261007_independent_y_integration_audit_v2.md).
+
 - [candidate design] 2026-10-07 independent terminal outcome design audit:
   separates immediate D from later target Y and specifies a private terminal
   scorer contract; the provenance validator and a bounded private-worker smoke

@@ -74,6 +74,19 @@ implementation design, not an active method change, live result, or authorizatio
 for an A800 job. See
 [`20261007_independent_y_design_audit.md`](task_reports/20261007_independent_y_design_audit.md).
 
+**Real-artifact terminal diagnostic — 2026-10-07:** subsequent independent review
+corrected two design errors: producer-only delivery and four-file action input
+must have separate hashes, and no-update requires Y measurement even without
+assignment credit L. A manifest-bound v2 worker scored four frozen real API
+outputs: all terminal PASS while Qp and legacy D composite remain FAIL. The
+four outputs have one unique snapshot: the processor normalizes the producer's
+nonconforming timestamp. This is post-hoc evidence of contract/utility separation,
+not four independent successes or native benchmark completion. Six binding
+regressions and 15 receipt mutations pass; old logs and live policies are untouched.
+Next: qualify signal discrimination on native tasks before repeating this static
+single-root live card. No new API/GPU calls or scientific-gate promotion. See
+[`20261007_independent_y_integration_audit_v2.md`](task_reports/20261007_independent_y_integration_audit_v2.md).
+
 **Parent-source integration amendment — 2026-10-06:** the C1 runner now executes a
 single `parent_source` phase before the arm loop, seals its source digest and native
 selection binding, and imports the immutable ledger prefix into three isolated arm

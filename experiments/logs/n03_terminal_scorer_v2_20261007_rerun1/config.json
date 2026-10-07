@@ -1,0 +1,49 @@
+{
+  "qualification_version": "pipe3-terminal-holdout-qualification-v2",
+  "frozen_before_execution": true,
+  "task_id": "PIPE3_stream_processing",
+  "manifest_path": "/Users/jingwu/work/earning-roles/configs/aamas2027/pipe3_terminal_holdout_v2.json",
+  "manifest_sha256": "0cc909b56d25eff8b7badd47ac94fef3afb68ce1eb7b7238abd3e0cb89930424",
+  "seeds": [
+    0,
+    1
+  ],
+  "cases": [
+    "correct_both",
+    "original",
+    "producer_only_fixed",
+    "recipient_only_fixed",
+    "unicode_escaped_correct",
+    "permission_failure"
+  ],
+  "expected_status": {
+    "correct_both": "PASS",
+    "original": "FAIL",
+    "producer_only_fixed": "FAIL",
+    "recipient_only_fixed": "PASS",
+    "unicode_escaped_correct": "PASS",
+    "permission_failure": "UNKNOWN"
+  },
+  "controls": [
+    "malformed_response",
+    "digest_mismatch",
+    "resource_failure",
+    "manifest_hash_mismatch"
+  ],
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "native_grader_invoked": false,
+  "scientific_claim_allowed": false,
+  "same_process_instrumentation_tamper_proof": false,
+  "seed_root_relation": "same structural root; development-only",
+  "source_sha256": {
+    "scripts/peerrolebench_pipe3_terminal_scorer_v2.py": "9e40081a1a433ef6b61cf535199596972feeab87469ca6cfe259ba58df5f66d9",
+    "scripts/peerrolebench_pipe3_terminal_scorer_worker_v2.py": "cf11edc74e6d5e1ceb839e971aef95a7c129986f88a15787acd87f1ef7d917f9",
+    "tests/test_peerrolebench_terminal_scorer_v2.py": "626aa4b8913add6b16adf50aa6f9a22fbecf99019ff98fb1911a37a55fb8a89b"
+  },
+  "test_command": "python3 -m pytest -q tests/test_peerrolebench_terminal_scorer_v2.py",
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "git_commit": "e3e4ac25cfd72a96fb8f590e1a0382fbd3943614",
+  "started_at_utc": "2026-10-07T03:22:16.031170+00:00"
+}

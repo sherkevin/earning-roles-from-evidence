@@ -1,0 +1,143 @@
+{
+  "transport": {
+    "status": "complete"
+  },
+  "request": {
+    "op": "score_terminal",
+    "schema_version": "pipe3-terminal-holdout-request-v2",
+    "scorer_version": "pipe3-terminal-holdout-v2",
+    "task_id": "PIPE3_stream_processing",
+    "seed": 1,
+    "artifact_sha256": "8f623bb8c108921c7135cc8835de898fd24b1fbd3d5df4824c5e3f702f23bd16",
+    "manifest_sha256": "0cc909b56d25eff8b7badd47ac94fef3afb68ce1eb7b7238abd3e0cb89930424",
+    "holdout_digest": "af714de7fb126a8d90dfc4d86109c3d9d933fb8ce253bd905ae3919b5e5c0183",
+    "manifest_case_seed": 1,
+    "case": {
+      "seed": 1,
+      "public_source_digest": "84d881d997845a3a02ef2b6690cfc3f925bce6120d0280e93793689b478d3d00",
+      "event_class": "SensorReading",
+      "fields": {
+        "id": "reading_id",
+        "timestamp": "measured_at",
+        "user": "sensor_name",
+        "action": "metric_type",
+        "value": "location"
+      },
+      "input_records": [
+        {
+          "reading_id": "terminal-001",
+          "measured_at": "2023-11-14T22:13:20",
+          "sensor_name": "Müller",
+          "metric_type": "temperature",
+          "location": "Price: €99.99"
+        },
+        {
+          "reading_id": "terminal-002",
+          "measured_at": "2023-11-14T22:13:20",
+          "sensor_name": "Renée",
+          "metric_type": "temperature",
+          "location": "Café €12"
+        }
+      ],
+      "expected_projection": [
+        {
+          "reading_id": "terminal-001",
+          "measured_at": "2023-11-14T22:13:20",
+          "sensor_name": "Müller",
+          "metric_type": "TEMPERATURE",
+          "location": "Price: €99.99"
+        },
+        {
+          "reading_id": "terminal-002",
+          "measured_at": "2023-11-14T22:13:20",
+          "sensor_name": "Renée",
+          "metric_type": "TEMPERATURE",
+          "location": "Café €12"
+        }
+      ]
+    },
+    "worker_input_sha256": "916a229868a2118e1aa7a8ef6c6ed4368f3b360203ac50ed13a10bbee0a539a1"
+  },
+  "response": {
+    "ok": true,
+    "schema_version": "pipe3-terminal-holdout-response-v2",
+    "scorer_version": "pipe3-terminal-holdout-v2",
+    "task_id": "PIPE3_stream_processing",
+    "seed": 1,
+    "artifact_sha256": "8f623bb8c108921c7135cc8835de898fd24b1fbd3d5df4824c5e3f702f23bd16",
+    "manifest_sha256": "0cc909b56d25eff8b7badd47ac94fef3afb68ce1eb7b7238abd3e0cb89930424",
+    "holdout_digest": "af714de7fb126a8d90dfc4d86109c3d9d933fb8ce253bd905ae3919b5e5c0183",
+    "manifest_case_seed": 1,
+    "worker_input_sha256": "916a229868a2118e1aa7a8ef6c6ed4368f3b360203ac50ed13a10bbee0a539a1",
+    "status": "FAIL",
+    "label": 0,
+    "quality_score": 0.0,
+    "coverage_complete": true,
+    "checks": [
+      {
+        "id": "T1_holdout_projection",
+        "status": "FAIL",
+        "failure_origin": "candidate",
+        "source_path": "processor.py",
+        "exception_class": "UnicodeEncodeError",
+        "reason": "'latin-1' codec can't encode character '\\u20ac' in position 153: ordinal not in range(256)"
+      },
+      {
+        "id": "T2_batch_cardinality",
+        "status": "FAIL",
+        "failure_origin": "candidate",
+        "source_path": "processor.py",
+        "exception_class": "UnicodeEncodeError",
+        "reason": "'latin-1' codec can't encode character '\\u20ac' in position 153: ordinal not in range(256)"
+      },
+      {
+        "id": "T3_unicode_semantics",
+        "status": "FAIL",
+        "failure_origin": "candidate",
+        "source_path": "processor.py",
+        "exception_class": "UnicodeEncodeError",
+        "reason": "'latin-1' codec can't encode character '\\u20ac' in position 153: ordinal not in range(256)"
+      }
+    ],
+    "required_check_ids": [
+      "T1_holdout_projection",
+      "T2_batch_cardinality",
+      "T3_unicode_semantics"
+    ]
+  },
+  "response_digest": "470c9f1a60e0e744f123887e2d753527f6d446eabb734b577945446f5b4810e2",
+  "result": {
+    "status": "FAIL",
+    "label": 0,
+    "quality_score": 0.0,
+    "scorer_version": "pipe3-terminal-holdout-v2",
+    "coverage_complete": true,
+    "checks": [
+      {
+        "id": "T1_holdout_projection",
+        "status": "FAIL",
+        "failure_origin": "candidate",
+        "source_path": "processor.py",
+        "exception_class": "UnicodeEncodeError",
+        "reason": "'latin-1' codec can't encode character '\\u20ac' in position 153: ordinal not in range(256)"
+      },
+      {
+        "id": "T2_batch_cardinality",
+        "status": "FAIL",
+        "failure_origin": "candidate",
+        "source_path": "processor.py",
+        "exception_class": "UnicodeEncodeError",
+        "reason": "'latin-1' codec can't encode character '\\u20ac' in position 153: ordinal not in range(256)"
+      },
+      {
+        "id": "T3_unicode_semantics",
+        "status": "FAIL",
+        "failure_origin": "candidate",
+        "source_path": "processor.py",
+        "exception_class": "UnicodeEncodeError",
+        "reason": "'latin-1' codec can't encode character '\\u20ac' in position 153: ordinal not in range(256)"
+      }
+    ]
+  },
+  "scorer_wall_seconds": 0.4860028329999997
+}

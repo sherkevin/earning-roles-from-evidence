@@ -1,0 +1,121 @@
+{
+  "transport": {
+    "status": "complete"
+  },
+  "request": {
+    "op": "score_terminal",
+    "schema_version": "pipe3-terminal-holdout-request-v2",
+    "scorer_version": "pipe3-terminal-holdout-v2",
+    "task_id": "PIPE3_stream_processing",
+    "seed": 1,
+    "artifact_sha256": "b74502c02ba61256a4e02bc5855ac58ae053fafe743e7f52a0508749972cc450",
+    "manifest_sha256": "0cc909b56d25eff8b7badd47ac94fef3afb68ce1eb7b7238abd3e0cb89930424",
+    "holdout_digest": "af714de7fb126a8d90dfc4d86109c3d9d933fb8ce253bd905ae3919b5e5c0183",
+    "manifest_case_seed": 1,
+    "case": {
+      "seed": 1,
+      "public_source_digest": "84d881d997845a3a02ef2b6690cfc3f925bce6120d0280e93793689b478d3d00",
+      "event_class": "SensorReading",
+      "fields": {
+        "id": "reading_id",
+        "timestamp": "measured_at",
+        "user": "sensor_name",
+        "action": "metric_type",
+        "value": "location"
+      },
+      "input_records": [
+        {
+          "reading_id": "terminal-001",
+          "measured_at": "2023-11-14T22:13:20",
+          "sensor_name": "Müller",
+          "metric_type": "temperature",
+          "location": "Price: €99.99"
+        },
+        {
+          "reading_id": "terminal-002",
+          "measured_at": "2023-11-14T22:13:20",
+          "sensor_name": "Renée",
+          "metric_type": "temperature",
+          "location": "Café €12"
+        }
+      ],
+      "expected_projection": [
+        {
+          "reading_id": "terminal-001",
+          "measured_at": "2023-11-14T22:13:20",
+          "sensor_name": "Müller",
+          "metric_type": "TEMPERATURE",
+          "location": "Price: €99.99"
+        },
+        {
+          "reading_id": "terminal-002",
+          "measured_at": "2023-11-14T22:13:20",
+          "sensor_name": "Renée",
+          "metric_type": "TEMPERATURE",
+          "location": "Café €12"
+        }
+      ]
+    },
+    "worker_input_sha256": "468fe6385891bdcdda853c84ddfb88f0d0a87cff1d01994c2891673087b68e62"
+  },
+  "response": {
+    "ok": true,
+    "schema_version": "pipe3-terminal-holdout-response-v2",
+    "scorer_version": "pipe3-terminal-holdout-v2",
+    "task_id": "PIPE3_stream_processing",
+    "seed": 1,
+    "artifact_sha256": "b74502c02ba61256a4e02bc5855ac58ae053fafe743e7f52a0508749972cc450",
+    "manifest_sha256": "0cc909b56d25eff8b7badd47ac94fef3afb68ce1eb7b7238abd3e0cb89930424",
+    "holdout_digest": "af714de7fb126a8d90dfc4d86109c3d9d933fb8ce253bd905ae3919b5e5c0183",
+    "manifest_case_seed": 1,
+    "worker_input_sha256": "468fe6385891bdcdda853c84ddfb88f0d0a87cff1d01994c2891673087b68e62",
+    "status": "PASS",
+    "label": 1,
+    "quality_score": 1.0,
+    "coverage_complete": true,
+    "checks": [
+      {
+        "id": "T1_holdout_projection",
+        "status": "PASS",
+        "observed_projection_digest": "98a6ba32b0e4b0147d68a98276576cbf10adc295914890100c4abb724e999eb5"
+      },
+      {
+        "id": "T2_batch_cardinality",
+        "status": "PASS"
+      },
+      {
+        "id": "T3_unicode_semantics",
+        "status": "PASS"
+      }
+    ],
+    "required_check_ids": [
+      "T1_holdout_projection",
+      "T2_batch_cardinality",
+      "T3_unicode_semantics"
+    ]
+  },
+  "response_digest": "041cb337c402b3fc77781cf83c392eaf396624ed01d1f1003fa84a4bb5016914",
+  "result": {
+    "status": "PASS",
+    "label": 1,
+    "quality_score": 1.0,
+    "scorer_version": "pipe3-terminal-holdout-v2",
+    "coverage_complete": true,
+    "checks": [
+      {
+        "id": "T1_holdout_projection",
+        "status": "PASS",
+        "observed_projection_digest": "98a6ba32b0e4b0147d68a98276576cbf10adc295914890100c4abb724e999eb5"
+      },
+      {
+        "id": "T2_batch_cardinality",
+        "status": "PASS"
+      },
+      {
+        "id": "T3_unicode_semantics",
+        "status": "PASS"
+      }
+    ]
+  },
+  "scorer_wall_seconds": 0.6162590000000003
+}

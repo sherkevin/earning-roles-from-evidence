@@ -1,0 +1,200 @@
+{
+  "positive_diagnostic_clock": {
+    "schema_version": "pipe3-independent-y-contract-v2",
+    "valid": true,
+    "disposition": "VALID_MEASUREMENT",
+    "policy_update_allowed": false,
+    "assignment_bound": true,
+    "credit_created": false,
+    "mode": "online_diagnostic",
+    "feedback_id": "posthoc-y-RARE",
+    "label": 1,
+    "quality_score": 1.0,
+    "receipt_digest": "0aedaf5a3d3045f5aa0f3a044ed2d6463de1d49738919592d340c4800a6cd648",
+    "reason": "diagnostic measurement only; independent online credit adapter not promoted"
+  },
+  "negative_cases": [
+    {
+      "case": "D_relabel",
+      "result": {
+        "schema_version": "pipe3-independent-y-contract-v2",
+        "valid": false,
+        "disposition": "UNKNOWN",
+        "policy_update_allowed": false,
+        "label": null,
+        "quality_score": null,
+        "reason": "schema_or_source_mismatch"
+      }
+    },
+    {
+      "case": "derived_Y",
+      "result": {
+        "schema_version": "pipe3-independent-y-contract-v2",
+        "valid": false,
+        "disposition": "UNKNOWN",
+        "policy_update_allowed": false,
+        "label": null,
+        "quality_score": null,
+        "reason": "derived_or_policy_visible_measurement"
+      }
+    },
+    {
+      "case": "raw_visible",
+      "result": {
+        "schema_version": "pipe3-independent-y-contract-v2",
+        "valid": false,
+        "disposition": "UNKNOWN",
+        "policy_update_allowed": false,
+        "label": null,
+        "quality_score": null,
+        "reason": "derived_or_policy_visible_measurement"
+      }
+    },
+    {
+      "case": "wrong_worker_input",
+      "result": {
+        "schema_version": "pipe3-independent-y-contract-v2",
+        "valid": false,
+        "disposition": "UNKNOWN",
+        "policy_update_allowed": false,
+        "label": null,
+        "quality_score": null,
+        "reason": "worker_input_sha256_mismatch"
+      }
+    },
+    {
+      "case": "wrong_holdout",
+      "result": {
+        "schema_version": "pipe3-independent-y-contract-v2",
+        "valid": false,
+        "disposition": "UNKNOWN",
+        "policy_update_allowed": false,
+        "label": null,
+        "quality_score": null,
+        "reason": "holdout_digest_mismatch"
+      }
+    },
+    {
+      "case": "backdated_posthoc",
+      "result": {
+        "schema_version": "pipe3-independent-y-contract-v2",
+        "valid": false,
+        "disposition": "UNKNOWN",
+        "policy_update_allowed": false,
+        "label": null,
+        "quality_score": null,
+        "reason": "posthoc_feedback_must_not_be_backdated"
+      }
+    },
+    {
+      "case": "missing_feedback_id",
+      "result": {
+        "schema_version": "pipe3-independent-y-contract-v2",
+        "valid": false,
+        "disposition": "UNKNOWN",
+        "policy_update_allowed": false,
+        "label": null,
+        "quality_score": null,
+        "reason": "feedback_id_missing"
+      }
+    },
+    {
+      "case": "forged_assignment",
+      "result": {
+        "schema_version": "pipe3-independent-y-contract-v2",
+        "valid": false,
+        "disposition": "UNKNOWN",
+        "policy_update_allowed": false,
+        "label": null,
+        "quality_score": null,
+        "reason": "native_artifact_binding_mismatch"
+      }
+    },
+    {
+      "case": "wrong_ledger_hash",
+      "result": {
+        "schema_version": "pipe3-independent-y-contract-v2",
+        "valid": false,
+        "disposition": "UNKNOWN",
+        "policy_update_allowed": false,
+        "label": null,
+        "quality_score": null,
+        "reason": "invalid_native_artifacts_or_receipt"
+      }
+    },
+    {
+      "case": "wrong_action_output",
+      "result": {
+        "schema_version": "pipe3-independent-y-contract-v2",
+        "valid": false,
+        "disposition": "UNKNOWN",
+        "policy_update_allowed": false,
+        "label": null,
+        "quality_score": null,
+        "reason": "invalid_native_artifacts_or_receipt"
+      }
+    },
+    {
+      "case": "raw_response_mutation",
+      "result": {
+        "schema_version": "pipe3-independent-y-contract-v2",
+        "valid": false,
+        "disposition": "UNKNOWN",
+        "policy_update_allowed": false,
+        "label": null,
+        "quality_score": null,
+        "reason": "raw_response_digest_mismatch"
+      }
+    },
+    {
+      "case": "unknown_scorer",
+      "result": {
+        "schema_version": "pipe3-independent-y-contract-v2",
+        "valid": false,
+        "disposition": "UNKNOWN",
+        "policy_update_allowed": false,
+        "label": null,
+        "quality_score": null,
+        "reason": "terminal_score_unknown_or_incomplete"
+      }
+    },
+    {
+      "case": "duplicate_feedback",
+      "result": {
+        "schema_version": "pipe3-independent-y-contract-v2",
+        "valid": false,
+        "disposition": "UNKNOWN",
+        "policy_update_allowed": false,
+        "label": null,
+        "quality_score": null,
+        "reason": "duplicate_terminal_feedback"
+      }
+    },
+    {
+      "case": "target_read_cut_leak",
+      "result": {
+        "schema_version": "pipe3-independent-y-contract-v2",
+        "valid": false,
+        "disposition": "UNKNOWN",
+        "policy_update_allowed": false,
+        "label": null,
+        "quality_score": null,
+        "reason": "feedback_clock_invalid_or_not_available"
+      }
+    },
+    {
+      "case": "after_future_read_cut",
+      "result": {
+        "schema_version": "pipe3-independent-y-contract-v2",
+        "valid": false,
+        "disposition": "UNKNOWN",
+        "policy_update_allowed": false,
+        "label": null,
+        "quality_score": null,
+        "reason": "feedback_clock_invalid_or_not_available"
+      }
+    }
+  ],
+  "passed": true,
+  "scientific_claim_allowed": false
+}
