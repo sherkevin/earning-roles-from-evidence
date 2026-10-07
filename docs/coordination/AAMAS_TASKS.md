@@ -40,6 +40,15 @@ native Planner/Executor/Verifier permissions, no-message and full-spec-relay con
 and an INCONCLUSIVE outcome if identical initial Planners naturally produce identical
 messages. No budget/API activation or benchmark change. See [audit and candidate card](task_reports/20261007_selection_value_and_native_handoff.md).
 
+**Latest paper claim-boundary build — 2026-10-07:** the isolated main-only build
+[`build_distinctness_20261007/main.pdf`](../../article/aamas2027/build_distinctness_20261007/main.pdf)
+has 8 body pages and References from page 9 (SHA-256
+`3174a7799a195a1de8353da5d363c167ef39e5924f91dba72446a0987e344a23`). It narrows
+planned held-out quality, root-split requirements, and candidate benchmark wording;
+it does not fill an empirical cell or open the scientific gate. Concurrent figure
+source changes are not claimed to be included in this root-verified snapshot. See
+[build report](task_reports/20261007_paper_claim_distinctness_sync.md).
+
 **Latest measurement/budget correction — 2026-10-07:** sanitized PIPE3 input
 omitted the native timestamp obligation still enforced by private Qp. Historical
 FAIL does not establish violation of actor-visible requirements or a mistaken
