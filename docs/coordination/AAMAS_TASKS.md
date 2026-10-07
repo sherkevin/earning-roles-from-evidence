@@ -20,6 +20,15 @@ engineering precondition only: `scientific_claim_allowed=false`, PIPE1 remains
 report](task_reports/20261007_pipe1_preflight_route_receipt_integration.md) and
 [`n03_pipe1_preflight_20261007_v4`](../../experiments/logs/n03_pipe1_preflight_20261007_v4/summary.json).
 
+**Latest PIPE1 native-material binding — 2026-10-07:** the route precondition now recomputes
+source/target `material_digest` from the frozen native seed-0/seed-3 Planner/Executor
+projections and rejects digest mismatch or missing binding. The validator also requires one
+shared structural root. A 25-test zero-call qualification passes; the exact binding path has
+12 `PASS` and the overall preflight remains `BLOCKED_PRE_EXECUTION` with
+`scientific_claim_allowed=false`. No live route or benchmark activation occurred. See
+[binding report](task_reports/20261007_pipe1_native_material_binding.md) and
+[`n03_pipe1_preflight_20261007_v5`](../../experiments/logs/n03_pipe1_preflight_20261007_v5/summary.json).
+
 **Latest bounded generation implementation — 2026-10-07:** a separate live
 producer stage now projects personal history into the real transport request,
 keeps generation policy separate from each delivery, and checks canonical

@@ -73,6 +73,7 @@ def test_valid_source0_target3_receipt_passes():
     lambda r: r.update({"route_status": "UNKNOWN"}),
     lambda r: r["source"].update({"material_digest": r["target"]["material_digest"]}),
     lambda r: r["target"].update({"task_id": "other-task"}),
+    lambda r: r["target"].update({"root_id": "other-root"}),
     lambda r: r["lineage"]["source"].update({"artifact_digest": "f" * 64}),
     lambda r: r["candidate_registry"]["candidates"][0].update({"version": "v2"}),
     lambda r: r["allocation"].update({"seed": -1}),

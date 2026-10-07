@@ -1,0 +1,31 @@
+{
+  "schema": "pipe1-material-binding-qualification-v1",
+  "kind": "ZERO_CALL_ROUTE_AND_NATIVE_MATERIAL_BINDING",
+  "status": "FROZEN_BEFORE_CHECKS",
+  "project_commit": "e0b9dde798debee403794c7a7149acf511015648",
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "source_sha256": {
+    "scripts/peerrolebench_pipe1_preflight.py": "aea12fc6d3b45c04a6f21195d84457faefc5a80950066d14036fc03241652532",
+    "scripts/peerrolebench_pipe1_route_receipt.py": "c782ae761e824846db463bb34acf853f672ac64a8e932cdc8f7664e5847f6c72",
+    "tests/test_peerrolebench_pipe1_preflight_route_receipt.py": "d54c1ff35687c7d6c817ccc9a5ba70fb54b16c12179f25734ec7fe9b16b2f95c",
+    "tests/test_peerrolebench_pipe1_route_receipt.py": "3deb6c570fdfeacd4ec19cef0679dc6cbc2904ef23fc0e5c9850fd2e9cf5e6d9"
+  },
+  "material_audit": "experiments/logs/n03_pipe1_native_material_audit_20261007_v1",
+  "commands": [
+    "python3 -m pytest -q tests/test_peerrolebench_pipe1_route_receipt.py tests/test_peerrolebench_pipe1_preflight_route_receipt.py",
+    "python3 -m py_compile scripts/peerrolebench_pipe1_route_receipt.py scripts/peerrolebench_pipe1_preflight.py",
+    "python3 scripts/peerrolebench_pipe1_preflight.py --out <case> --route-receipt <receipt> --material-binding experiments/logs/n03_pipe1_native_material_audit_20261007_v1"
+  ],
+  "api_calls": 0,
+  "generator_calls": 0,
+  "candidate_executions": 0,
+  "gpu_runs": 0,
+  "scientific_claim_allowed": false,
+  "scope": [
+    "canonical material digest from frozen projection hashes",
+    "root-id equality",
+    "missing binding blocks",
+    "digest mismatch fails closed"
+  ]
+}

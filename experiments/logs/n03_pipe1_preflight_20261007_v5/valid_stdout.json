@@ -1,0 +1,181 @@
+{
+  "schema": "pipe1-preflight-v2",
+  "status": "BLOCKED_PRE_EXECUTION",
+  "checks": [
+    {
+      "check": "route_receipt",
+      "status": "PASS",
+      "evidence": [
+        "experiments/logs/n03_pipe1_preflight_20261007_v5/synthetic_valid_route_receipt.json"
+      ],
+      "reason": "PIPE1 source seed 0 to target seed 3 receipt satisfies the zero-call route contract"
+    },
+    {
+      "check": "seed_0_planner_projection",
+      "status": "PASS",
+      "evidence": [
+        "experiments/logs/n03_pipe1_native_material_audit_20261007_v1/seed_0/planner_view.json"
+      ],
+      "reason": "Planner has only native task identity and full specification"
+    },
+    {
+      "check": "seed_0_executor_projection",
+      "status": "PASS",
+      "evidence": [
+        "experiments/logs/n03_pipe1_native_material_audit_20261007_v1/seed_0/executor_view.json"
+      ],
+      "reason": "Executor has native brief/workspace and one empty message slot"
+    },
+    {
+      "check": "seed_0_expected_is_parent_only",
+      "status": "PASS",
+      "evidence": [
+        "experiments/logs/n03_pipe1_native_material_audit_20261007_v1/seed_0/planner_view.json",
+        "experiments/logs/n03_pipe1_native_material_audit_20261007_v1/seed_0/executor_view.json",
+        "experiments/logs/n03_pipe1_native_material_audit_20261007_v1/seed_0/parent_only.json"
+      ],
+      "reason": "Expected records occur only in parent projection"
+    },
+    {
+      "check": "seed_0_workspace_shape",
+      "status": "PASS",
+      "evidence": [
+        "experiments/logs/n03_pipe1_native_material_audit_20261007_v1/seed_0/executor_view.json"
+      ],
+      "reason": "Public workspace parses before any actor execution"
+    },
+    {
+      "check": "seed_3_planner_projection",
+      "status": "PASS",
+      "evidence": [
+        "experiments/logs/n03_pipe1_native_material_audit_20261007_v1/seed_3/planner_view.json"
+      ],
+      "reason": "Planner has only native task identity and full specification"
+    },
+    {
+      "check": "seed_3_executor_projection",
+      "status": "PASS",
+      "evidence": [
+        "experiments/logs/n03_pipe1_native_material_audit_20261007_v1/seed_3/executor_view.json"
+      ],
+      "reason": "Executor has native brief/workspace and one empty message slot"
+    },
+    {
+      "check": "seed_3_expected_is_parent_only",
+      "status": "PASS",
+      "evidence": [
+        "experiments/logs/n03_pipe1_native_material_audit_20261007_v1/seed_3/planner_view.json",
+        "experiments/logs/n03_pipe1_native_material_audit_20261007_v1/seed_3/executor_view.json",
+        "experiments/logs/n03_pipe1_native_material_audit_20261007_v1/seed_3/parent_only.json"
+      ],
+      "reason": "Expected records occur only in parent projection"
+    },
+    {
+      "check": "seed_3_workspace_shape",
+      "status": "PASS",
+      "evidence": [
+        "experiments/logs/n03_pipe1_native_material_audit_20261007_v1/seed_3/executor_view.json"
+      ],
+      "reason": "Public workspace parses before any actor execution"
+    },
+    {
+      "check": "source_target_material_distinct",
+      "status": "PASS",
+      "evidence": [
+        "experiments/logs/n03_pipe1_native_material_audit_20261007_v1/seed_0",
+        "experiments/logs/n03_pipe1_native_material_audit_20261007_v1/seed_3"
+      ],
+      "reason": "Seed 0 and 3 are distinct native domain materials"
+    },
+    {
+      "check": "same_structural_root_declared",
+      "status": "PASS",
+      "evidence": [
+        "pipe1_source_target_screen_card_v0.1_20261007.md"
+      ],
+      "reason": "The screen is explicitly one root and cannot be reported as cross-root generalization"
+    },
+    {
+      "check": "native_message_and_verifier_harness",
+      "status": "PASS",
+      "evidence": [
+        "references/aamas/task_signal_materials_20261007/native_harness/manifest.json"
+      ],
+      "reason": "Native message and full Verifier/remediation source is available"
+    },
+    {
+      "check": "source_target_artifact_lineage",
+      "status": "BLOCKED",
+      "evidence": [],
+      "reason": "Static source/target views exist, but no live source delivery, target delivery, message, artifact, Executor, or Verifier hash chain exists"
+    },
+    {
+      "check": "actor_visibility_live",
+      "status": "BLOCKED",
+      "evidence": [],
+      "reason": "Saved projections show intended boundaries, but no live receipt proves target prompt/history isolation or selected-only visibility"
+    },
+    {
+      "check": "verifier_live_attestation",
+      "status": "BLOCKED",
+      "evidence": [],
+      "reason": "Native Verifier source is available, but no route has produced before/after attestation or remediation evidence"
+    },
+    {
+      "check": "exact_outcome_scorer",
+      "status": "BLOCKED",
+      "evidence": [
+        "n03_pipe1_native_material_audit_20261007_v1/summary.json"
+      ],
+      "reason": "Saved native material has expected records, but the native grader is partial; exact target scorer is not qualified"
+    },
+    {
+      "check": "timezone_contract",
+      "status": "BLOCKED",
+      "evidence": [],
+      "reason": "Captured generation timezone is unknown; UTC/Asia-Shanghai dates diverge in the saved audit"
+    },
+    {
+      "check": "provider_identity_pin",
+      "status": "BLOCKED",
+      "evidence": [],
+      "reason": "No executable PIPE1 card pins the non-secret provider configuration/model route"
+    },
+    {
+      "check": "global_budget_issuer",
+      "status": "BLOCKED",
+      "evidence": [],
+      "reason": "Cumulative budget already exceeded the old cap and no new reservation issuer approval exists"
+    },
+    {
+      "check": "source_target_ledger_runner",
+      "status": "BLOCKED",
+      "evidence": [],
+      "reason": "No runner yet binds Planner history, message lineage, Executor pre/post output, Verifier, and full cost"
+    },
+    {
+      "check": "direct_relay_baseline",
+      "status": "BLOCKED",
+      "evidence": [],
+      "reason": "The card specifies no-message/generated-planner/full-spec-relay routes, but no executable relay receipt or route result is sealed"
+    },
+    {
+      "check": "identity_randomization",
+      "status": "BLOCKED",
+      "evidence": [],
+      "reason": "No pre-registered candidate version, allocation seed, permutation table, or allocation receipt binds the target assignment"
+    },
+    {
+      "check": "same_initial_peer_identity",
+      "status": "OPEN",
+      "evidence": [],
+      "reason": "The design requires identical initial peers; whether independent calls produce useful persistent differences is unknown after the identity receipt is added"
+    }
+  ],
+  "api_calls": 0,
+  "gpu_runs": 0,
+  "generator_calls": 0,
+  "candidate_executions": 0,
+  "scientific_claim_allowed": false,
+  "historical_results_modified": false
+}

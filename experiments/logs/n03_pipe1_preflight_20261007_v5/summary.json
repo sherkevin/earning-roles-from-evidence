@@ -1,0 +1,78 @@
+{
+  "schema": "pipe1-material-binding-qualification-result-v1",
+  "status": "QUALIFIED_OFFLINE_MATERIAL_BINDING",
+  "tests_passed": 25,
+  "tests_expected": 25,
+  "paths": {
+    "valid": {
+      "api_calls": 0,
+      "candidate_executions": 0,
+      "check_counts": {
+        "BLOCKED": 10,
+        "FAIL": 0,
+        "OPEN": 1,
+        "PASS": 12
+      },
+      "generator_calls": 0,
+      "gpu_runs": 0,
+      "next_action": "Resolve all BLOCKED checks before any route call",
+      "scientific_claim_allowed": false,
+      "status": "BLOCKED_PRE_EXECUTION"
+    },
+    "missing_binding": {
+      "api_calls": 0,
+      "candidate_executions": 0,
+      "check_counts": {
+        "BLOCKED": 11,
+        "FAIL": 0,
+        "OPEN": 1,
+        "PASS": 11
+      },
+      "generator_calls": 0,
+      "gpu_runs": 0,
+      "next_action": "Resolve all BLOCKED checks before any route call",
+      "scientific_claim_allowed": false,
+      "status": "BLOCKED_PRE_EXECUTION"
+    },
+    "mismatch": {
+      "api_calls": 0,
+      "candidate_executions": 0,
+      "check_counts": {
+        "BLOCKED": 10,
+        "FAIL": 1,
+        "OPEN": 1,
+        "PASS": 11
+      },
+      "generator_calls": 0,
+      "gpu_runs": 0,
+      "next_action": "Resolve all BLOCKED checks before any route call",
+      "scientific_claim_allowed": false,
+      "status": "BLOCKED_PRE_EXECUTION"
+    },
+    "missing": {
+      "api_calls": 0,
+      "candidate_executions": 0,
+      "check_counts": {
+        "BLOCKED": 11,
+        "FAIL": 0,
+        "OPEN": 1,
+        "PASS": 11
+      },
+      "generator_calls": 0,
+      "gpu_runs": 0,
+      "next_action": "Resolve all BLOCKED checks before any route call",
+      "scientific_claim_allowed": false,
+      "status": "BLOCKED_PRE_EXECUTION"
+    }
+  },
+  "valid_receipt_sha256": "4db16dad627e2b2eb3905675b63c311f7c04912f5a213185587bada0036bdbdf",
+  "mismatch_receipt_sha256": "6c3847c0d121765efdb06478afa607a9e9062aaea47b3e5ad0bb0d76b7fff8e6",
+  "api_calls": 0,
+  "generator_calls": 0,
+  "candidate_executions": 0,
+  "gpu_runs": 0,
+  "scientific_claim_allowed": false,
+  "historical_results_modified": false,
+  "interpretation": "A structurally valid route receipt is accepted only when its source/target digests match a canonical digest of the frozen native seed-0/seed-3 projections. Missing binding and digest mismatch fail closed; live lineage and efficacy remain untested.",
+  "next_action": "Carry this binding into the future PIPE1 runner after separate budget issuance; do not treat synthetic valid path as a live route."
+}

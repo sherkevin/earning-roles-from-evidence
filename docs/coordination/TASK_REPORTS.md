@@ -13,6 +13,12 @@
   paths keep `scientific_claim_allowed=false`. The 22-test integration suite and `py_compile`
   pass; no API/generator/candidate/GPU call. See [integration report](task_reports/20261007_pipe1_preflight_route_receipt_integration.md).
 
+- [partial] 2026-10-07 PIPE1 native-material binding: route receipt digests are now recomputed
+  from frozen seed-0/seed-3 Planner/Executor projections, and source/target must share one
+  structural root. Missing binding blocks and digest mismatch fails closed; the 25-test
+  zero-call qualification passes. No API/generator/candidate/GPU or scientific claim. See
+  [binding report](task_reports/20261007_pipe1_native_material_binding.md).
+
 - [partial] 2026-10-07 main PDF master sync: parent-level `artifacts/aamas2027/main.pdf`
   now points byte-for-byte to the verified `microtype_20261007_v55` build (8 body pages,
   References from page 9, SHA-256 recorded in provenance). Version directories remain

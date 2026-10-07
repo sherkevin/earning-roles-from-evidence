@@ -356,6 +356,8 @@ def validate_pipe1_route_receipt(receipt: Mapping[str, Any]) -> dict[str, Any]:
             _error(errors, "source/target", "material digests overlap")
         if source.get("task_id") != target.get("task_id"):
             _error(errors, "source/target.task_id", "source and target must share the native task contract")
+        if source.get("root_id") != target.get("root_id"):
+            _error(errors, "source/target.root_id", "source and target must share one structural root")
         if source.get("seed") != 0 or target.get("seed") != 3:
             _error(errors, "source/target", "PIPE1 receipt must be source seed 0 -> target seed 3")
         if source.get("task_timezone") != target.get("task_timezone"):

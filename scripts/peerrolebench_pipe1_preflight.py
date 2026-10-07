@@ -16,9 +16,9 @@ from pathlib import Path
 import platform
 import subprocess
 import sys
-from typing import Optional, Tuple
+from typing import Any, Optional, Tuple
 
-from peerrolebench_pipe1_route_receipt import validate_pipe1_route_receipt
+from peerrolebench_pipe1_route_receipt import canonical_digest, validate_pipe1_route_receipt
 
 ROOT = Path(__file__).resolve().parents[1]
 MATERIAL = ROOT / "experiments/logs/n03_pipe1_native_material_audit_20261007_v1"
@@ -26,6 +26,7 @@ HARNESS = ROOT / "references/aamas/task_signal_materials_20261007/native_harness
 PIN = "d185aef1916fd86a9ba554d581fd256319a973af"
 SEEDS = (0, 3)
 WORKSPACE = {"etl.py", "run_etl.py", "source_sample.json", "target_schema.json"}
+MATERIAL_BINDING_SCHEMA = "pipe1-material-binding-v1"
 
 
 def sha(path: Path) -> str:
@@ -49,7 +50,134 @@ def _display_path(path: Path) -> str:
         return str(path)
 
 
-def _route_receipt_check(route_receipt: Optional[Path]) -> Tuple[dict, dict]:
+def _sha_text(value: str) -> str:
+    return hashlib.sha256(value.encode("utf-8")).hexdigest()
+
+
+def _material_payload(planner: dict[str, Any], executor: dict[str, Any], parent: dict[str, Any]) -> dict[str, Any]:
+    """Build the only material identity used by PIPE1 route binding.
+
+    The payload is deliberately limited to the identity and hashes already
+    captured by the frozen native audit.  It does not introduce domain labels,
+    expected outputs, file paths, or provenance fields into the digest.
+    """
+    hashes = parent.get("hashes")
+    if not isinstance(hashes, dict):
+        raise ValueError("parent_only.hashes must be an object")
+    expected_hash_keys = {"spec_md_sha256", "brief_md_sha256", "workspace_sha256"}
+    if not expected_hash_keys.issubset(set(hashes)):
+        raise ValueError(f"parent_only.hashes lacks required material hashes: {sorted(hashes)}")
+    workspace = executor.get("workspace_files")
+    if not isinstance(workspace, dict) or set(workspace) != WORKSPACE:
+        raise ValueError("executor workspace does not match frozen PIPE1 workspace")
+    task_id = planner.get("task_id")
+    seed = planner.get("seed")
+    if task_id != executor.get("task_id") or task_id != parent.get("task_id"):
+        raise ValueError("task_id differs across frozen projections")
+    if seed != executor.get("seed") or seed != parent.get("seed"):
+        raise ValueError("seed differs across frozen projections")
+    if not isinstance(planner.get("spec_md"), str) or not isinstance(executor.get("brief_md"), str):
+        raise ValueError("frozen task text must be strings")
+    calculated = {
+        "spec_md_sha256": _sha_text(planner["spec_md"]),
+        "brief_md_sha256": _sha_text(executor["brief_md"]),
+        "workspace_sha256": {name: _sha_text(workspace[name]) for name in sorted(WORKSPACE)},
+    }
+    if any(hashes[key] != calculated[key] for key in expected_hash_keys):
+        raise ValueError("frozen parent hashes do not match projected material")
+    return {
+        "task_id": task_id,
+        "seed": seed,
+        "spec_md_sha256": calculated["spec_md_sha256"],
+        "brief_md_sha256": calculated["brief_md_sha256"],
+        "workspace_sha256": calculated["workspace_sha256"],
+    }
+
+
+def build_material_binding(root: Path = MATERIAL) -> dict[str, Any]:
+    """Derive a deterministic seed 0/3 binding from the frozen native audit."""
+    root = root.resolve()
+    materials: dict[str, Any] = {}
+    for seed in SEEDS:
+        directory = root / f"seed_{seed}"
+        planner = json.loads((directory / "planner_view.json").read_text())
+        executor = json.loads((directory / "executor_view.json").read_text())
+        parent = json.loads((directory / "parent_only.json").read_text())
+        payload = _material_payload(planner, executor, parent)
+        materials[str(seed)] = {
+            "task_id": payload["task_id"],
+            "seed": payload["seed"],
+            "material_digest": canonical_digest(payload),
+            "payload": payload,
+        }
+    if set(materials) != {"0", "3"}:
+        raise ValueError("PIPE1 material binding must contain exactly seeds 0 and 3")
+    return {
+        "schema": MATERIAL_BINDING_SCHEMA,
+        "source": _display_path(root),
+        "seeds": [0, 3],
+        "materials": materials,
+    }
+
+
+def _read_material_binding(path: Optional[Path]) -> tuple[Optional[dict[str, Any]], Optional[str]]:
+    if path is None:
+        return None, "No frozen PIPE1 material binding was supplied"
+    path = path.resolve()
+    try:
+        if path.is_dir():
+            candidate = build_material_binding(path)
+            frozen = build_material_binding(MATERIAL)
+            if candidate["materials"] != frozen["materials"]:
+                return None, "Material binding does not match the frozen seed 0/3 audit"
+            return candidate, None
+        if path.is_file():
+            value = json.loads(path.read_text())
+            if not isinstance(value, dict) or value.get("schema") != MATERIAL_BINDING_SCHEMA:
+                return None, "Material binding file has unsupported schema"
+            frozen = build_material_binding(MATERIAL)
+            if value.get("materials") != frozen["materials"]:
+                return None, "Material binding does not match the frozen seed 0/3 audit"
+            return value, None
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError, ValueError, KeyError, TypeError) as exc:
+        return None, f"Material binding could not be read: {type(exc).__name__}"
+    return None, "Material binding path does not exist"
+
+
+def _material_binding_check(receipt: dict[str, Any], path: Optional[Path]) -> tuple[dict, dict]:
+    binding, read_error = _read_material_binding(path)
+    metadata: dict[str, Any] = {"path": _display_path(path.resolve()) if path else None,
+                                 "exists": bool(path and path.resolve().exists()),
+                                 "schema": binding.get("schema") if binding else None}
+    if read_error:
+        status = "BLOCKED" if path is None else "FAIL"
+        return check("material_binding", status, [], read_error), metadata
+    materials = binding.get("materials") if isinstance(binding, dict) else None
+    if not isinstance(materials, dict) or set(materials) != {"0", "3"}:
+        return check("material_binding", "FAIL", [], "Binding must contain exactly frozen source seed 0 and target seed 3"), metadata
+    errors: list[str] = []
+    for role, seed in (("source", 0), ("target", 3)):
+        expected = materials.get(str(seed))
+        actual = receipt.get(role)
+        if not isinstance(expected, dict) or not isinstance(actual, dict):
+            errors.append(f"{role}: missing material record")
+            continue
+        expected_digest = expected.get("material_digest")
+        if actual.get("task_id") != expected.get("task_id"):
+            errors.append(f"{role}.task_id does not match frozen material")
+        if actual.get("seed") != seed:
+            errors.append(f"{role}.seed does not match frozen material")
+        if actual.get("material_digest") != expected_digest:
+            errors.append(f"{role}.material_digest does not match frozen material")
+    if errors:
+        metadata["errors"] = errors
+        return check("material_binding", "FAIL", [], "; ".join(errors)), metadata
+    metadata["material_digests"] = {seed: materials[seed].get("material_digest") for seed in ("0", "3")}
+    return check("material_binding", "PASS", [_display_path(path.resolve())],
+                 "Source seed 0 and target seed 3 match the frozen native material binding"), metadata
+
+
+def _route_receipt_check(route_receipt: Optional[Path], material_binding: Optional[Path] = None) -> Tuple[dict, dict]:
     """Validate an optional operator-owned route receipt without executing it.
 
     The receipt is an eligibility precondition only.  A valid receipt contributes
@@ -80,11 +208,17 @@ def _route_receipt_check(route_receipt: Optional[Path]) -> Tuple[dict, dict]:
         )
     result = validate_pipe1_route_receipt(receipt)
     if result.get("valid"):
+        material_result, material_metadata = _material_binding_check(receipt, material_binding)
+        metadata = {"path": _display_path(path), "exists": True, "sha256": sha(path),
+                    "schema_version": result.get("schema_version"),
+                    "material_binding": material_metadata}
+        if material_result["status"] != "PASS":
+            return check("route_receipt", material_result["status"], evidence,
+                         material_result["reason"]), metadata
         return (
             check("route_receipt", "PASS", evidence,
                   "PIPE1 source seed 0 to target seed 3 receipt satisfies the zero-call route contract"),
-            {"path": _display_path(path), "exists": True, "sha256": sha(path),
-             "schema_version": result.get("schema_version")},
+            metadata,
         )
     return (
         check("route_receipt", "FAIL", evidence,
@@ -95,7 +229,7 @@ def _route_receipt_check(route_receipt: Optional[Path]) -> Tuple[dict, dict]:
     )
 
 
-def run(out: Path, route_receipt: Optional[Path] = None) -> None:
+def run(out: Path, route_receipt: Optional[Path] = None, material_binding: Optional[Path] = None) -> None:
     if out.exists():
         raise FileExistsError(out)
     out.mkdir(parents=True)
@@ -106,8 +240,14 @@ def run(out: Path, route_receipt: Optional[Path] = None) -> None:
     source_files += list(HARNESS.rglob("*.py")) + [HARNESS / "manifest.json"]
     if route_receipt is not None and route_receipt.is_file():
         source_files.append(route_receipt.resolve())
+    if material_binding is not None:
+        binding_path = material_binding.resolve()
+        if binding_path.is_file():
+            source_files.append(binding_path)
+        elif binding_path.is_dir():
+            source_files.extend(p for p in binding_path.rglob("*") if p.is_file())
     source_files = [p for p in source_files if p.is_file()]
-    route_result, route_metadata = _route_receipt_check(route_receipt)
+    route_result, route_metadata = _route_receipt_check(route_receipt, material_binding)
     config = {
         "schema": "pipe1-preflight-v2",
         "kind": "ZERO_CALL_EXECUTION_PREFLIGHT",
@@ -214,5 +354,8 @@ if __name__ == "__main__":
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--route-receipt", type=Path,
                         help="Optional zero-call PIPE1 source-to-target route receipt JSON")
+    parser.add_argument("--material-binding", type=Path,
+                        help="Frozen PIPE1 material-audit directory or binding JSON; required for a route PASS")
     args = parser.parse_args()
-    run(args.out.resolve(), args.route_receipt.resolve() if args.route_receipt else None)
+    run(args.out.resolve(), args.route_receipt.resolve() if args.route_receipt else None,
+        args.material_binding.resolve() if args.material_binding else None)

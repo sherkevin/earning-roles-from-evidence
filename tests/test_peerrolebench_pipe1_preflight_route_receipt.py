@@ -6,7 +6,11 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from peerrolebench_pipe1_preflight import run  # noqa: E402
+from peerrolebench_pipe1_preflight import (  # noqa: E402
+    MATERIAL,
+    build_material_binding,
+    run,
+)
 from peerrolebench_pipe1_route_receipt import (  # noqa: E402
     EXPECTED_EVENTS,
     SCHEMA_VERSION,
@@ -16,7 +20,10 @@ from peerrolebench_pipe1_route_receipt import (  # noqa: E402
 
 def _valid_receipt():
     digest = lambda digit: digit * 64
-    d0, d1, d2, d4, d6, d9 = (digest(d) for d in "012469")
+    d2, d4, d6, d9 = (digest(d) for d in "2469")
+    binding = build_material_binding(MATERIAL)
+    d0 = binding["materials"]["0"]["material_digest"]
+    d1 = binding["materials"]["3"]["material_digest"]
     artifact = canonical_digest({"message_digest": d2})
     post_workspace = canonical_digest({"pre_workspace_digest": d4, "artifact_digest": artifact})
     post_attestation = canonical_digest({"pre_attestation_digest": d6, "post_workspace_digest": post_workspace})
@@ -81,13 +88,38 @@ def test_valid_route_receipt_adds_pass_but_keeps_scientific_gate_closed(tmp_path
     route = tmp_path / "route.json"
     route.write_text(json.dumps(_valid_receipt(), sort_keys=True))
     out = tmp_path / "valid"
-    run(out, route)
+    run(out, route, MATERIAL)
     receipt = _load_receipt(out)
     assert _check(receipt)["status"] == "PASS"
     assert receipt["status"] == "BLOCKED_PRE_EXECUTION"
     assert receipt["scientific_claim_allowed"] is False
     config = json.loads((out / "config.json").read_text())
     assert config["route_receipt"]["exists"] is True
+    assert config["route_receipt"]["material_binding"]["material_digests"]["0"] == _valid_receipt()["source"]["material_digest"]
+
+
+def test_valid_route_without_material_binding_remains_blocked(tmp_path):
+    route = tmp_path / "route.json"
+    route.write_text(json.dumps(_valid_receipt(), sort_keys=True))
+    out = tmp_path / "missing-binding"
+    run(out, route)
+    receipt = _load_receipt(out)
+    assert _check(receipt)["status"] == "BLOCKED"
+    assert "material binding" in _check(receipt)["reason"]
+    assert receipt["status"] == "BLOCKED_PRE_EXECUTION"
+
+
+def test_material_digest_mismatch_fails_closed(tmp_path):
+    value = _valid_receipt()
+    value["source"]["material_digest"] = "f" * 64
+    route = tmp_path / "mismatch.json"
+    route.write_text(json.dumps(value, sort_keys=True))
+    out = tmp_path / "mismatch"
+    run(out, route, MATERIAL)
+    receipt = _load_receipt(out)
+    assert _check(receipt)["status"] == "FAIL"
+    assert "material_digest" in _check(receipt)["reason"]
+    assert receipt["status"] == "BLOCKED_PRE_EXECUTION"
 
 
 def test_invalid_route_receipt_fails_closed(tmp_path):
