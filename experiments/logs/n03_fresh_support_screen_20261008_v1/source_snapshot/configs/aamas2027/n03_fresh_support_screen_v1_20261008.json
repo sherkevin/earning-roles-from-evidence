@@ -1,0 +1,38 @@
+{
+  "schema": "n03-fresh-support-screen-v1",
+  "purpose": "Screen measured contract variation in two fresh source task/actor combinations before buying judgments or future routes",
+  "real_api_runs_allowed": true,
+  "provider": "内部",
+  "model": "qwen3.8-max",
+  "temperature": 0,
+  "thinking": {"type": "disabled"},
+  "stream": true,
+  "max_tokens": {"producer": 2048},
+  "request_timeout_seconds": 300,
+  "maximum_task_requests": 1,
+  "source_assignments": [
+    {"actor_id": "peer-b", "seed": 0},
+    {"actor_id": "peer-c", "seed": 1}
+  ],
+  "future_target_seed": 2,
+  "maximum_new_requests": 2,
+  "maximum_new_episodes": 2,
+  "prior_documented_episodes": 33,
+  "prior_documented_task_requests": 70,
+  "original_tentative_episode_cap": 24,
+  "retries": 0,
+  "judgment_calls": 0,
+  "recipient_action_calls": 0,
+  "target_calls": 0,
+  "training_updates": 0,
+  "gpu_calls": 0,
+  "authorization": "Routine bounded execution under the user's continuing delegation; not an assertion that the user explicitly approved this numeric cap. Historical overrun is retained; Goal and ACTIVE method unchanged.",
+  "decision_rule": {
+    "unknown": "Stop immediately; retain attempted request, raw response, cost and error. No retry or replacement.",
+    "valid_failure": "Retain legitimate producer FAIL. It does not by itself stop or remove a task.",
+    "same_check_vectors": "Stop this card after both sources: no observed contrast across these three checks. This is not equivalence of actors, absence of judgment value, or general benchmark saturation.",
+    "different_check_vectors": "Stop this card and consider a separately frozen same-target comparison. Actor and source schema are confounded; do not infer ability or selector gain."
+  },
+  "scientific_claim_allowed": false,
+  "scope": "One structural PIPE3 root, finite producer checks only; no J/A/Y, policy update or actual future assignment. Target payload is frozen but unexecuted."
+}

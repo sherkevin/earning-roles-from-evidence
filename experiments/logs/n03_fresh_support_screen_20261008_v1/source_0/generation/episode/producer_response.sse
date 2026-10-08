@@ -1,0 +1,194 @@
+event:ping
+data:{"type": "ping"}
+
+event:message_start
+data:{"type": "message_start", "message": {"id": "msg_c37aeecc-103e-9af9-bc63-ea2808ef44e6", "type": "message", "role": "assistant", "model": "qwen3.8-max", "content": [], "stop_reason": null, "stop_sequence": null, "usage": {"input_tokens": 1234, "output_tokens": 0}}}
+
+event:content_block_start
+data:{"type": "content_block_start", "index": 0, "content_block": {"type": "text", "text": ""}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "{\""}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "source_files"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\":{\"producer"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ".py\":\"import json"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\nimport os\\n"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "from datetime import datetime"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\nfrom"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " models import UserEvent"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\n\\n"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\ndef serialize_event"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "(event: UserEvent"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ") -> str"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ":\\n    \\"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "    data = {\\"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n       "}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " \\\"event_id\\\":"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " event.event_id,\\"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n       "}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " \\\"timestamp\\\": event"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ".timestamp"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ".isoformat(),\\"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n       "}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " \\\"user_name\\\":"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " event.user_name,\\"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n       "}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " \\\"action\\\": event"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ".action,\\n"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "        \\\"page_url"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\\": event"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ".page_url,\\n"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "    }\\"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n    \\n"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "    return"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " json.dumps(data,"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " ensure_ascii=False"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ")\\n\\n\\"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "ndef produce_events"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "(events: list["}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "UserEvent], output"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "_path: str"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ") -> None:\\"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n   "}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " \\n    with"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " open(output"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "_path, \\\"w"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\\\","}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " encoding=\\\"utf-"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "8\\\") as"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " f:\\n       "}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " for event"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " in events:\\n"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "           "}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " f.write(serialize"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "_event(event"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ") + \\\"\\\\"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "n\\\")\\n"}}
+
+event:content_block_delta
+data:{"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\"}}"}}
+
+event:content_block_stop
+data:{"type": "content_block_stop", "index": 0}
+
+event:message_delta
+data:{"type": "message_delta", "delta": {"stop_reason": "end_turn", "stop_sequence": null}, "usage": {"input_tokens": 1246, "output_tokens": 178, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "prompt_tokens_details": {"cached_tokens": 0}}}
+
+event:message_stop
+data:{"type": "message_stop"}
+
+data: [DONE]
+

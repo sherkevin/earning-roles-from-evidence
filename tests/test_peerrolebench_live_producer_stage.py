@@ -48,7 +48,7 @@ def test_history_excludes_metadata_ids_and_future_rows():
         task_input=BASE, actor_response={'source_files': {'producer.py': 'x = 2\n'}},
         model_metadata={'model_id': 'fixture-model', 'request_id': 'secret-request'})
     prepared = prepare_request(base_payload=BASE, candidate=candidate,
-                               experience=experience, task_index=1, card=CARD)
+                               experience=experience, task_index=1, interaction_id="i0", card=CARD)
     assert 'secret-id' not in prepared['prompt']
     assert 'secret-request' not in prepared['prompt']
     assert 'model_metadata' not in prepared['prompt']
@@ -57,7 +57,7 @@ def test_history_excludes_metadata_ids_and_future_rows():
     assert experience.snapshot() == prepared['before']
     with pytest.raises(ValueError):
         prepare_request(base_payload=BASE, candidate=candidate,
-                        experience=experience, task_index=0, card=CARD)
+                        experience=experience, task_index=0, interaction_id="i0", card=CARD)
 
 
 def test_wrong_actor_version_policy_and_config_rejected():
@@ -65,28 +65,28 @@ def test_wrong_actor_version_policy_and_config_rejected():
     other, _ = fixture('v2')
     with pytest.raises(ValueError):
         prepare_request(base_payload=BASE, candidate=other,
-                        experience=experience, task_index=0, card=CARD)
+                        experience=experience, task_index=0, interaction_id="i0", card=CARD)
     changed = dict(CARD, temperature=0.5)
     with pytest.raises(ValueError):
         prepare_request(base_payload=BASE, candidate=candidate,
-                        experience=experience, task_index=0, card=changed)
+                        experience=experience, task_index=0, interaction_id="i0", card=changed)
     changed_source = CandidateRegistryEntry('producer-a', 'v1', 'a' * 64,
                                             CARD['model'], model_config_digest(CARD))
     with pytest.raises(ValueError):
         prepare_request(base_payload=BASE, candidate=changed_source,
-                        experience=experience, task_index=0, card=CARD)
+                        experience=experience, task_index=0, interaction_id="i0", card=CARD)
     with pytest.raises(ValueError):
         prepare_request(base_payload=BASE, candidate=candidate,
-                        experience=experience, task_index=0, card=dict(CARD, arm_id='other'))
+                        experience=experience, task_index=0, interaction_id="i0", card=dict(CARD, arm_id='other'))
     with pytest.raises(ValueError):
         prepare_request(base_payload={k: v for k, v in BASE.items() if k != 'contract_clause_refs'},
-                        candidate=candidate, experience=experience, task_index=0, card=CARD)
+                        candidate=candidate, experience=experience, task_index=0, interaction_id="i0", card=CARD)
 
 
 def test_distinct_delivery_artifacts_keep_stable_candidate():
     candidate, experience = fixture()
     prepared = prepare_request(base_payload=BASE, candidate=candidate,
-                               experience=experience, task_index=0, card=CARD)
+                               experience=experience, task_index=0, interaction_id="i0", card=CARD)
     # Explicit handwritten software fixtures, not claimed as model outputs.
     metadata = {'usage_complete': True, 'usage': {'input_tokens': 1, 'output_tokens': 1},
                 'http_status': '200', 'exit_code': 0, 'stop_reason': 'end_turn',
@@ -97,7 +97,7 @@ def test_distinct_delivery_artifacts_keep_stable_candidate():
                      delivery_id='d0', source_event_id='e0',
                      expected_request_digest=prepared['decision_digest'])
     second = _finalize_software_fixture(prepared=prepared, parsed={'source_files': {'producer.py': 'x = 3\n'}},
-                      metadata=metadata, recipient_id='recipient', interaction_id='i1',
+                      metadata=metadata, recipient_id='recipient', interaction_id='i0',
                       delivery_id='d1', source_event_id='e1',
                       expected_request_digest=prepared['decision_digest'])
     assert first['candidate'] == second['candidate']
@@ -128,7 +128,7 @@ def test_distinct_delivery_artifacts_keep_stable_candidate():
 def test_disabled_gate_rejects_before_provider_or_directory(tmp_path):
     candidate, experience = fixture()
     prepared = prepare_request(base_payload=BASE, candidate=candidate,
-                               experience=experience, task_index=0, card=CARD)
+                               experience=experience, task_index=0, interaction_id="i0", card=CARD)
     output = tmp_path / 'attempt'
     with pytest.raises(PermissionError, match='disabled'):
         run_generation(prepared=prepared, card=CARD, expected_card_digest='anything',
@@ -142,7 +142,7 @@ def test_sealed_disk_completion_and_replay_rejection(tmp_path, monkeypatch):
     live_card = dict(CARD, real_api_runs_allowed=True)
     candidate, experience = fixture(card=live_card)
     prepared = prepare_request(base_payload=BASE, candidate=candidate,
-                               experience=experience, task_index=0, card=live_card)
+                               experience=experience, task_index=0, interaction_id="i0", card=live_card)
     out = tmp_path / 'software_fixture'
     (out / 'episode').mkdir(parents=True)
     reservation_root = tmp_path / 'software_reservations'
@@ -237,7 +237,7 @@ def test_invalid_transport_fields_rejected_before_provider(field, value):
 def test_returned_model_mismatch_is_not_completed():
     candidate, experience = fixture()
     prepared = prepare_request(base_payload=BASE, candidate=candidate,
-                               experience=experience, task_index=0, card=CARD)
+                               experience=experience, task_index=0, interaction_id="i0", card=CARD)
     metadata = {'usage_complete': True, 'usage': {'input_tokens': 1, 'output_tokens': 1},
                 'http_status': '200', 'exit_code': 0, 'stop_reason': 'end_turn',
                 'elapsed_seconds': 0.1, 'returned_model': 'another-model'}
@@ -249,12 +249,74 @@ def test_returned_model_mismatch_is_not_completed():
     assert experience.snapshot() == prepared['before']
 
 
+def test_canonical_response_bound_and_second_episode_capacity():
+    # SOFTWARE FIXTURE: handwritten source and metadata, never a model result.
+    candidate, experience = fixture()
+    metadata = {'usage_complete': True,
+                'usage': {'input_tokens': stage.MEMORY_POLICY['max_usage_tokens'],
+                          'output_tokens': stage.MEMORY_POLICY['max_usage_tokens']},
+                'http_status': '200', 'exit_code': 0, 'stop_reason': 'end_turn',
+                'elapsed_seconds': 1.7976931348623157e308,
+                'returned_model': 'fixture-model'}
+    overhead = len(canonical_bytes({'source_files': {'producer.py': ''}}))
+    cap = stage.MEMORY_POLICY['max_response_canonical_bytes']
+    source = '"' * ((cap - overhead) // 2) + 'x' * ((cap - overhead) % 2)
+    assert len(canonical_bytes({'source_files': {'producer.py': source}})) == cap
+    for index in (0, 1):
+        interaction_id = f'i{index}'
+        prepared = prepare_request(base_payload=BASE, candidate=candidate,
+                                   experience=experience, task_index=index,
+                                   interaction_id=interaction_id, card=CARD)
+        completed = _finalize_software_fixture(
+            prepared=prepared, parsed={'source_files': {'producer.py': source}},
+            metadata=metadata, recipient_id='recipient', interaction_id=interaction_id,
+            delivery_id=f'd{index}', source_event_id=f'e{index}',
+            expected_request_digest=prepared['decision_digest'])
+        experience = ActorExperience.restore(completed['after'], stream_id='s',
+                                             arm_id='a', actor_id=candidate.key)
+    assert len(experience.snapshot()['entries']) == 2
+    with pytest.raises(ValueError, match='oversized producer source'):
+        stage._response_files({'source_files': {'producer.py': source + '"'}}, metadata)
+
+
+def test_preflight_rejects_unstorable_state_before_request():
+    candidate, experience = fixture()
+    large_base = json.loads(canonical_bytes(BASE))
+    large_base['task_text']['spec_md'] = 'z' * 25000
+    with pytest.raises(ValueError, match='cannot fit'):
+        prepare_request(base_payload=large_base, candidate=candidate,
+                        experience=experience, task_index=0, interaction_id='i0', card=CARD)
+    with pytest.raises(ValueError, match='interaction_id is required'):
+        prepare_request(base_payload=BASE, candidate=candidate,
+                        experience=experience, task_index=0, interaction_id='', card=CARD)
+    assert experience.snapshot()['entries'] == []
+    experience.record_completed_interaction(interaction_id='i0', task_index=0,
+        task_input=BASE, actor_response={'source_files': {'producer.py': 'x = 2\n'}},
+        model_metadata={'model_id': 'fixture-model'})
+    with pytest.raises(ValueError, match='already recorded'):
+        prepare_request(base_payload=BASE, candidate=candidate,
+                        experience=experience, task_index=1, interaction_id='i0', card=CARD)
+
+
+def test_preflight_accounts_for_retained_older_response():
+    # SOFTWARE FIXTURE: legacy sized public history is valid state, not a live model response.
+    candidate, experience = fixture()
+    experience.record_completed_interaction(interaction_id='old', task_index=0,
+        task_input=BASE, actor_response={'source_files': {'producer.py': 'x' * 23000}},
+        model_metadata={'model_id': 'fixture-model'})
+    before = experience.snapshot()
+    with pytest.raises(ValueError, match='cannot fit'):
+        prepare_request(base_payload=BASE, candidate=candidate,
+                        experience=experience, task_index=1, interaction_id='new', card=CARD)
+    assert experience.snapshot() == before
+
+
 def test_canonical_reservation_copy_and_reuse_rejected(tmp_path, monkeypatch):
     # Offline gate test: no provider or run_generation invocation.
     enabled = dict(CARD, real_api_runs_allowed=True)
     candidate, experience = fixture(card=enabled)
     prepared = prepare_request(base_payload=BASE, candidate=candidate,
-                               experience=experience, task_index=0, card=enabled)
+                               experience=experience, task_index=0, interaction_id="i0", card=enabled)
     root = tmp_path / 'budget_reservations'
     root.mkdir()
     monkeypatch.setattr(stage, 'RESERVATION_ROOT', root)

@@ -1,0 +1,23 @@
+{
+  "scorer_version": "pipe3-producer-objective-v2",
+  "request_schema": "pipe3-producer-score-request-v2",
+  "response_schema": "pipe3-producer-score-response-v2",
+  "worker": "scripts/peerrolebench_pipe3_producer_scorer_worker_v2.py",
+  "worker_sha256": "a787c7643162add4fcb124cae25182bf25d482b779ff67b2a058e8228e94a6fe",
+  "task_id": "PIPE3_stream_processing",
+  "seed": 0,
+  "producer_files": [
+    "producer.py"
+  ],
+  "worker_visible_files": [
+    "models.py",
+    "producer.py"
+  ],
+  "rpc_timeout_seconds": 20,
+  "artifact_sha256": "94135b3790b4c7f55b970787f7108958fed07b70883df5ae1bb40bfcb78a50f0",
+  "event_class": "UserEvent",
+  "timestamp_field": "timestamp",
+  "id_field": "event_id",
+  "candidate_received_hidden_assertions": false,
+  "scientific_claim_allowed": false
+}

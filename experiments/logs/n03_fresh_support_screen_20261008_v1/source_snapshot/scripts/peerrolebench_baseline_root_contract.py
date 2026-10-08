@@ -1,0 +1,340 @@
+"""Zero-call root-runner checks shared by every baseline arm.
+
+The policy matrix runner validates one hand-authored offer at a time.  A live
+root runner additionally has to prove that an offer contains the complete
+public prefix at its read cut, that denominators are not inferred later, and
+that assignment is sealed before task execution.  These helpers are pure
+validators so they can be used by both the ArtifactRole runner and offline
+replay without introducing model calls.
+"""
+
+from __future__ import annotations
+
+from collections import Counter
+from dataclasses import asdict, dataclass
+import hashlib
+import json
+import math
+from typing import Any, Mapping, Sequence
+
+from peerrolebench_baseline_contract import COST_FIELDS, BASELINE_ARM_SPECS, validate_cost_ledger
+from peerrolebench_event_time_schedule import ArrivalAssignment
+
+
+ROOT_CONTRACT_VERSION = "artifactrole-root-runner-v1"
+LIVE_BINDING_VERSION = "artifactrole-live-binding-v1"
+FEEDBACK_CLASSES = ("eligible", "unknown", "ignored", "duplicate", "pending")
+
+
+def _validate_digest(name: str, value: str) -> str:
+    if not isinstance(value, str) or len(value) != 64 or value != value.lower() or any(
+        char not in "0123456789abcdef" for char in value
+    ):
+        raise ValueError(f"{name} must be a lowercase 64-character sha256")
+    return value
+
+
+@dataclass(frozen=True)
+class LiveRuntimeBinding:
+    """Runtime/material identity required by a measured live parity receipt.
+
+    ``RootRunnerManifest`` identifies the policy matrix and event schedule.  A
+    live run additionally needs to bind the actual neutral material, task
+    contract, sandbox/runtime settings, scorer configuration, worker limits,
+    policy namespace, and selected candidate snapshots.  Keeping this as a
+    separate object preserves replay compatibility with historical offline
+    manifests while giving the live runner a strict opt-in gate.
+    """
+
+    arm_name: str
+    material_manifest_digest: str
+    task_contract_digest: str
+    sandbox_runtime_digest: str
+    scorer_config_digest: str
+    worker_limits_digest: str
+    policy_namespace_digest: str
+    candidate_source_digests: tuple[tuple[str, str], ...]
+
+    def payload(self) -> dict[str, Any]:
+        return {
+            "binding_version": LIVE_BINDING_VERSION,
+            "arm_name": self.arm_name,
+            "material_manifest_digest": self.material_manifest_digest,
+            "task_contract_digest": self.task_contract_digest,
+            "sandbox_runtime_digest": self.sandbox_runtime_digest,
+            "scorer_config_digest": self.scorer_config_digest,
+            "worker_limits_digest": self.worker_limits_digest,
+            "policy_namespace_digest": self.policy_namespace_digest,
+            "candidate_source_digests": [
+                {"candidate_key": key, "source_digest": digest}
+                for key, digest in self.candidate_source_digests
+            ],
+        }
+
+    def digest(self) -> str:
+        canonical = json.dumps(self.payload(), ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+    def validate(self) -> dict[str, Any]:
+        if not isinstance(self.arm_name, str) or not self.arm_name:
+            raise ValueError("live binding arm_name is required")
+        for name in (
+            "material_manifest_digest", "task_contract_digest", "sandbox_runtime_digest",
+            "scorer_config_digest", "worker_limits_digest", "policy_namespace_digest",
+        ):
+            _validate_digest(name, getattr(self, name))
+        if not self.candidate_source_digests:
+            raise ValueError("live binding requires candidate source snapshots")
+        keys: set[str] = set()
+        normalized: list[tuple[str, str]] = []
+        for key, digest in self.candidate_source_digests:
+            if not isinstance(key, str) or not key or key in keys:
+                raise ValueError("candidate source snapshot keys must be non-empty and unique")
+            keys.add(key)
+            normalized.append((key, _validate_digest(f"candidate_source_digest[{key}]", digest)))
+        if tuple(sorted(normalized)) != tuple(normalized):
+            raise ValueError("candidate source snapshots must be sorted by candidate key")
+        payload = self.payload()
+        payload["binding_digest"] = self.digest()
+        return payload
+
+
+@dataclass(frozen=True)
+class RootRunnerManifest:
+    """Immutable identity and budget for one root-level comparison stream."""
+
+    root_id: str
+    root_commit: str
+    source_digest: str
+    generator_digest: str
+    scorer_digest: str
+    schedule_digest: str
+    rng_schedule_digest: str
+    registry_digest: str
+    seed_split: tuple[int, ...]
+    arm_names: tuple[str, ...]
+    rng_algorithm: str
+    visibility_rule: str
+    max_episode_attempts: int
+    max_api_calls: int
+    max_wall_seconds: float
+
+    def payload(self) -> dict[str, Any]:
+        data = asdict(self)
+        data["seed_split"] = list(self.seed_split)
+        data["arm_names"] = list(self.arm_names)
+        data["contract_version"] = ROOT_CONTRACT_VERSION
+        return data
+
+    def digest(self) -> str:
+        canonical = json.dumps(self.payload(), ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+    def validate(self) -> dict[str, Any]:
+        if not self.root_id or not self.root_commit or not self.rng_algorithm or not self.visibility_rule:
+            raise ValueError("root manifest identity and visibility fields are required")
+        if len(self.root_commit) != 40 or self.root_commit != self.root_commit.lower() or any(
+            char not in "0123456789abcdef" for char in self.root_commit
+        ):
+            raise ValueError("root_commit must be a lowercase 40-character git SHA")
+        for name, digest in (
+            ("source_digest", self.source_digest), ("generator_digest", self.generator_digest),
+            ("scorer_digest", self.scorer_digest), ("schedule_digest", self.schedule_digest),
+            ("rng_schedule_digest", self.rng_schedule_digest),
+            ("registry_digest", self.registry_digest),
+        ):
+            if len(digest) != 64 or digest != digest.lower() or any(
+                char not in "0123456789abcdef" for char in digest
+            ):
+                raise ValueError(f"{name} must be a lowercase 64-character sha256")
+        if tuple(self.arm_names) != tuple(spec.name for spec in BASELINE_ARM_SPECS):
+            raise ValueError("manifest arm order differs from the registered baseline matrix")
+        if not self.seed_split or any(isinstance(seed, bool) or not isinstance(seed, int) or seed < 0 for seed in self.seed_split):
+            raise ValueError("seed_split must contain non-negative integer seeds")
+        if tuple(sorted(set(self.seed_split))) != self.seed_split:
+            raise ValueError("seed_split must be sorted and unique")
+        if (
+            isinstance(self.max_episode_attempts, bool)
+            or isinstance(self.max_api_calls, bool)
+            or not isinstance(self.max_episode_attempts, int)
+            or not isinstance(self.max_api_calls, int)
+            or not math.isfinite(float(self.max_wall_seconds))
+            or self.max_episode_attempts <= 0
+            or self.max_api_calls < 0
+            or self.max_wall_seconds <= 0
+        ):
+            raise ValueError("manifest budgets are invalid")
+        payload = self.payload()
+        payload["manifest_digest"] = self.digest()
+        return payload
+
+
+def validate_public_prefix(
+    schedule: Sequence[ArrivalAssignment],
+    observed_feedback_ids: Sequence[str],
+    *,
+    read_cut: int,
+) -> dict[str, Any]:
+    """Require exactly the schedule prefix visible at ``read_cut``.
+
+    A caller may intentionally filter a row only after it has been classified
+    by the denominator contract; it may not silently omit a row from the
+    public prefix before classification.
+    """
+
+    if read_cut < 0:
+        raise ValueError("read_cut must be non-negative")
+    schedule_ids = [str(row.feedback_id) for row in schedule]
+    if len(schedule_ids) != len(set(schedule_ids)):
+        raise ValueError("schedule contains duplicate feedback ids")
+    arrival_indices = [int(row.arrival_index) for row in schedule]
+    if arrival_indices != sorted(arrival_indices) or len(arrival_indices) != len(set(arrival_indices)):
+        raise ValueError("schedule must be strictly ordered by unique arrival_index")
+    expected = [str(row.feedback_id) for row in schedule if int(row.arrival_index) <= read_cut]
+    observed = [str(item) for item in observed_feedback_ids]
+    if len(observed) != len(set(observed)):
+        raise ValueError("observed public prefix contains duplicate feedback ids")
+    future = sorted(set(observed) - set(expected))
+    missing = sorted(set(expected) - set(observed))
+    unknown = sorted(set(observed) - set(schedule_ids))
+    if unknown:
+        raise ValueError(f"observed feedback is outside frozen schedule: {unknown}")
+    if future:
+        raise ValueError(f"future feedback visible before read cut: {future}")
+    if missing:
+        raise ValueError(f"public prefix omits arrived feedback: {missing}")
+    if observed != expected:
+        raise ValueError("observed public prefix order differs from frozen arrival order")
+    return {
+        "contract_version": ROOT_CONTRACT_VERSION,
+        "read_cut": int(read_cut),
+        "expected_feedback_ids": expected,
+        "observed_feedback_ids": observed,
+        "prefix_complete": True,
+    }
+
+
+def feedback_denominators(rows: Sequence[Mapping[str, Any]]) -> dict[str, int]:
+    """Compute explicit total/selected/eligible/UNKNOWN denominators."""
+
+    counts = Counter({
+        "n_feedback_rows": 0, "n_selected": 0, "n_unselected": 0,
+        "n_eligible": 0, "n_unknown": 0, "n_ignored": 0,
+        "n_duplicate": 0, "n_pending": 0,
+    })
+    for selectedness in ("selected", "unselected"):
+        for classification in FEEDBACK_CLASSES:
+            counts[f"n_{selectedness}_{classification}"] = 0
+    seen_feedback_ids: set[str] = set()
+    for row in rows:
+        feedback_id = str(row.get("feedback_id", ""))
+        if not feedback_id:
+            raise ValueError("feedback denominator row requires feedback_id")
+        if feedback_id in seen_feedback_ids:
+            raise ValueError("feedback denominator rows must have unique feedback_id")
+        seen_feedback_ids.add(feedback_id)
+        counts["n_feedback_rows"] += 1
+        selected_value = row.get("selected", False)
+        if type(selected_value) is not bool:
+            raise ValueError("feedback denominator selected must be boolean")
+        selected = selected_value
+        counts["n_selected" if selected else "n_unselected"] += 1
+        classification = str(row.get("classification", ""))
+        if classification not in FEEDBACK_CLASSES:
+            raise ValueError(f"invalid feedback classification={classification!r}")
+        counts[f"n_{classification}"] += 1
+        counts[f"n_{'selected' if selected else 'unselected'}_{classification}"] += 1
+    if counts["n_feedback_rows"] != counts["n_selected"] + counts["n_unselected"]:
+        raise AssertionError("selected/unselected denominator does not sum to total")
+    if counts["n_feedback_rows"] != sum(counts[f"n_{name}"] for name in FEEDBACK_CLASSES):
+        raise AssertionError("feedback classification denominator does not sum to total")
+    return dict(counts)
+
+
+def validate_assignment_before_start(receipt: Mapping[str, Any]) -> dict[str, Any]:
+    """Validate the execution-before-selection boundary for later assignment."""
+
+    required = {
+        "assignment_id", "evidence_offer_id", "candidate_key", "selection_event_id",
+        "decision_index", "task_start_index", "menu_digest", "assignment_digest",
+    }
+    missing = sorted(required - set(receipt))
+    if missing:
+        raise ValueError(f"assignment receipt missing fields={missing}")
+    if int(receipt["decision_index"]) >= int(receipt["task_start_index"]):
+        raise ValueError("assignment must be sealed before task start")
+    if not str(receipt["assignment_digest"]):
+        raise ValueError("assignment digest is required")
+    if not str(receipt["menu_digest"]):
+        raise ValueError("menu digest is required")
+    return {
+        "contract_version": ROOT_CONTRACT_VERSION,
+        "assignment_id": str(receipt["assignment_id"]),
+        "evidence_offer_id": str(receipt["evidence_offer_id"]),
+        "candidate_key": str(receipt["candidate_key"]),
+        "selection_event_id": str(receipt["selection_event_id"]),
+        "decision_index": int(receipt["decision_index"]),
+        "task_start_index": int(receipt["task_start_index"]),
+        "menu_digest": str(receipt["menu_digest"]),
+        "assignment_digest": str(receipt["assignment_digest"]),
+        "sealed_before_start": True,
+    }
+
+
+def validate_root_receipt(
+    *,
+    schedule: Sequence[ArrivalAssignment],
+    observed_feedback_ids: Sequence[str],
+    read_cut: int,
+    feedback_rows: Sequence[Mapping[str, Any]],
+    assignment: Mapping[str, Any],
+    cost_ledger: Mapping[str, Mapping[str, Mapping[str, Any]]],
+    require_measured_cost: bool,
+) -> dict[str, Any]:
+    prefix = validate_public_prefix(schedule, observed_feedback_ids, read_cut=read_cut)
+    row_ids = [str(row.get("feedback_id", "")) for row in feedback_rows]
+    if row_ids != list(prefix["observed_feedback_ids"]):
+        raise ValueError("denominator rows must match the observed public prefix in order")
+    denominators = feedback_denominators(feedback_rows)
+    assignment_receipt = validate_assignment_before_start(assignment)
+    normalized_cost = validate_cost_ledger(cost_ledger, require_measured=require_measured_cost)
+    return {
+        "contract_version": ROOT_CONTRACT_VERSION,
+        "prefix": prefix,
+        "denominators": denominators,
+        "assignment": assignment_receipt,
+        "cost_ledger": normalized_cost,
+        "cost_fields": list(COST_FIELDS),
+        "scientific_claim_allowed": False,
+    }
+
+
+def validate_live_root_receipt(
+    *,
+    schedule: Sequence[ArrivalAssignment],
+    observed_feedback_ids: Sequence[str],
+    read_cut: int,
+    feedback_rows: Sequence[Mapping[str, Any]],
+    assignment: Mapping[str, Any],
+    cost_ledger: Mapping[str, Mapping[str, Mapping[str, Any]]],
+    live_binding: LiveRuntimeBinding,
+) -> dict[str, Any]:
+    """Strict live parity gate with measured costs and runtime/material binding."""
+
+    result = validate_root_receipt(
+        schedule=schedule, observed_feedback_ids=observed_feedback_ids,
+        read_cut=read_cut, feedback_rows=feedback_rows, assignment=assignment,
+        cost_ledger=cost_ledger, require_measured_cost=True,
+    )
+    binding = live_binding.validate()
+    result["live_binding"] = binding
+    result["live_parity_contract"] = True
+    result["scientific_claim_allowed"] = False
+    return result
+
+
+__all__ = [
+    "FEEDBACK_CLASSES", "LIVE_BINDING_VERSION", "ROOT_CONTRACT_VERSION", "LiveRuntimeBinding",
+    "RootRunnerManifest", "feedback_denominators", "validate_assignment_before_start",
+    "validate_live_root_receipt", "validate_public_prefix", "validate_root_receipt",
+]

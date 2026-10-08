@@ -1,0 +1,77 @@
+{
+  "transport": {
+    "status": "complete"
+  },
+  "request": {
+    "op": "score_producer",
+    "schema_version": "pipe3-producer-score-request-v2",
+    "task_id": "PIPE3_stream_processing",
+    "seed": 0,
+    "artifact_sha256": "94135b3790b4c7f55b970787f7108958fed07b70883df5ae1bb40bfcb78a50f0",
+    "scorer_version": "pipe3-producer-objective-v2",
+    "event_class": "UserEvent",
+    "timestamp_field": "timestamp",
+    "id_field": "event_id"
+  },
+  "response": {
+    "ok": true,
+    "value": {
+      "schema_version": "pipe3-producer-score-response-v2",
+      "scorer_version": "pipe3-producer-objective-v2",
+      "task_id": "PIPE3_stream_processing",
+      "seed": 0,
+      "artifact_sha256": "94135b3790b4c7f55b970787f7108958fed07b70883df5ae1bb40bfcb78a50f0",
+      "status": "PASS",
+      "label": 1,
+      "quality_score": 1.0,
+      "decision_complete": true,
+      "coverage_complete": true,
+      "checks": [
+        {
+          "id": "P1_import",
+          "status": "PASS"
+        },
+        {
+          "id": "P2_iso_serialization",
+          "status": "PASS"
+        },
+        {
+          "id": "P3_batch_output",
+          "status": "PASS"
+        }
+      ],
+      "failed_check_ids": [],
+      "observed_check_count": 3,
+      "required_check_ids": [
+        "P1_import",
+        "P2_iso_serialization",
+        "P3_batch_output"
+      ]
+    }
+  },
+  "response_digest": "0f0a774abb59cf3039882b18683ca3712d39d6a79d7ab64b532f21ae3f4c5d16",
+  "result": {
+    "status": "PASS",
+    "label": 1,
+    "quality_score": 1.0,
+    "scorer_version": "pipe3-producer-objective-v2",
+    "decision_complete": true,
+    "coverage_complete": true,
+    "checks": [
+      {
+        "id": "P1_import",
+        "status": "PASS"
+      },
+      {
+        "id": "P2_iso_serialization",
+        "status": "PASS"
+      },
+      {
+        "id": "P3_batch_output",
+        "status": "PASS"
+      }
+    ],
+    "failed_check_ids": []
+  },
+  "candidate_received_hidden_assertions": false
+}

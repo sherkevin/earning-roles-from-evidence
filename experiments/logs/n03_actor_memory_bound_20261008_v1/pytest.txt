@@ -1,0 +1,91 @@
+..F.........FF.                                                          [100%]
+=================================== FAILURES ===================================
+____________ test_distinct_delivery_artifacts_keep_stable_candidate ____________
+
+    def test_distinct_delivery_artifacts_keep_stable_candidate():
+        candidate, experience = fixture()
+        prepared = prepare_request(base_payload=BASE, candidate=candidate,
+                                   experience=experience, task_index=0, interaction_id="i0", card=CARD)
+        # Explicit handwritten software fixtures, not claimed as model outputs.
+        metadata = {'usage_complete': True, 'usage': {'input_tokens': 1, 'output_tokens': 1},
+                    'http_status': '200', 'exit_code': 0, 'stop_reason': 'end_turn',
+                    'elapsed_seconds': 0.1, 'returned_model': 'fixture-model',
+                    'thinking_delta_count': 0}
+        first = _finalize_software_fixture(prepared=prepared, parsed={'source_files': {'producer.py': 'x = 2\n'}},
+                         metadata=metadata, recipient_id='recipient', interaction_id='i0',
+                         delivery_id='d0', source_event_id='e0',
+                         expected_request_digest=prepared['decision_digest'])
+>       second = _finalize_software_fixture(prepared=prepared, parsed={'source_files': {'producer.py': 'x = 3\n'}},
+                          metadata=metadata, recipient_id='recipient', interaction_id='i1',
+                          delivery_id='d1', source_event_id='e1',
+                          expected_request_digest=prepared['decision_digest'])
+
+tests/test_peerrolebench_live_producer_stage.py:99: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def _finalize_software_fixture(*, prepared: Mapping[str, Any], parsed: Mapping[str, Any],
+                                   metadata: Mapping[str, Any], recipient_id: str,
+                                   interaction_id: str, delivery_id: str, source_event_id: str,
+                                   expected_request_digest: str, selection_id: str | None = None) -> dict[str, Any]:
+        """Pure offline contract helper; arbitrary inputs here are never live evidence."""
+        entry = CandidateRegistryEntry(**prepared['candidate'])
+        if (expected_request_digest != prepared['decision_digest']
+                or digest({k: v for k, v in prepared.items() if k != 'decision_digest'}) != expected_request_digest
+                or entry.source_digest != policy_digest()):
+            raise ValueError('request seal or producer policy mismatch')
+        store = ActorExperience.restore(prepared['before'], stream_id=prepared['before']['stream_id'],
+                                        arm_id=prepared['before']['arm_id'], actor_id=entry.key)
+        base = _payload(prepared['base_payload'])
+        if (prepared['generation_policy_digest'] != policy_digest()
+                or prepared['model_config_digest'] != entry.model_config_digest
+                or prepared['prompt_sha256'] != hashlib.sha256(prepared['prompt'].encode()).hexdigest()
+                or prepared['history'] != _visible_history(store, prepared['task_index'])):
+            raise ValueError('prepared decision cut changed')
+        # No card is needed to re-create the prompt; the candidate digests were sealed at prepare time.
+        prompt = PROMPT_TEMPLATE.format(history=json.dumps(prepared['history'], sort_keys=True, ensure_ascii=False),
+                                        payload=json.dumps(base, sort_keys=True, ensure_ascii=False))
+        if prepared['prompt'] != prompt:
+            raise ValueError('prompt differs from frozen inputs')
+        files = _response_files(parsed, metadata)
+        if interaction_id != prepared['interaction_id']:
+>           raise ValueError('interaction_id differs from prepared state reservation')
+E           ValueError: interaction_id differs from prepared state reservation
+
+scripts/peerrolebench_live_producer_stage.py:329: ValueError
+__________ test_canonical_response_bound_and_second_episode_capacity ___________
+
+    def test_canonical_response_bound_and_second_episode_capacity():
+        # SOFTWARE FIXTURE: handwritten source and metadata, never a model result.
+        candidate, experience = fixture()
+        metadata = {'usage_complete': True,
+                    'usage': {'input_tokens': stage.MEMORY_POLICY['max_usage_tokens'],
+                              'output_tokens': stage.MEMORY_POLICY['max_usage_tokens']},
+                    'http_status': '200', 'exit_code': 0, 'stop_reason': 'end_turn',
+                    'elapsed_seconds': 1.7976931348623157e308,
+                    'returned_model': 'fixture-model'}
+        overhead = len(canonical_bytes({'source_files': {'producer.py': ''}}))
+        cap = stage.MEMORY_POLICY['max_response_canonical_bytes']
+        source = '"' * ((cap - overhead) // 2)
+>       assert len(canonical_bytes({'source_files': {'producer.py': source}})) == cap
+E       assert 8191 == 8192
+E        +  where 8191 = len(b'{"source_files":{"producer.py":"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"..."\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\""}}')
+E        +    where b'{"source_files":{"producer.py":"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"..."\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\"\\""}}' = canonical_bytes({'source_files': {'producer.py': '""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""...""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""'}})
+
+tests/test_peerrolebench_live_producer_stage.py:264: AssertionError
+____________ test_preflight_rejects_unstorable_state_before_request ____________
+
+    def test_preflight_rejects_unstorable_state_before_request():
+        candidate, experience = fixture()
+        large_base = json.loads(canonical_bytes(BASE))
+        large_base['task_text']['spec_md'] = 'z' * 16000
+        with pytest.raises(ValueError, match='cannot fit'):
+>           prepare_request(base_payload=large_base, candidate=candidate,
+                            experience=experience, task_index=0, interaction_id='i0', card=CARD)
+E           Failed: DID NOT RAISE <class 'ValueError'>
+
+tests/test_peerrolebench_live_producer_stage.py:287: Failed
+=========================== short test summary info ============================
+FAILED tests/test_peerrolebench_live_producer_stage.py::test_distinct_delivery_artifacts_keep_stable_candidate
+FAILED tests/test_peerrolebench_live_producer_stage.py::test_canonical_response_bound_and_second_episode_capacity
+FAILED tests/test_peerrolebench_live_producer_stage.py::test_preflight_rejects_unstorable_state_before_request
+3 failed, 12 passed in 0.58s
