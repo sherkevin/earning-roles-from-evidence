@@ -21,19 +21,19 @@ benchmark authority, live parity, later-use, cost and scientific gate remain ope
 [qualification report](task_reports/20261007_candidate_runner_arm_registry.md) and
 [`n03_candidate_runner_arm_registry_20261007_v1`](../../experiments/logs/n03_candidate_runner_arm_registry_20261007_v1/summary.json).
 
-**Latest canonical main PDF reconciliation — 2026-10-07:** the parent-level
-`artifacts/aamas2027/main.pdf` now matches the newer verified
-`baseline_sync_20261007_v1` version byte-for-byte (SHA-256
-`3bdfeec42d8ab983c8bcc73fc51642aae2d064bd16e73de997840ff3764aebf8`). The previous v2/v3
-rounds remain preserved. The current build has 8 body pages/9 total pages with References
-beginning on page 9; `submission_ready=false`. The parent provenance points to the current
-version and records the same hash. See [sync report](task_reports/20261007_main_pdf_master_baseline_sync.md)
-and [`main_pdf_master.json`](../../artifacts/aamas2027/main_pdf_master.json).
+**Latest canonical main PDF synchronization — 2026-10-08:** the parent-level
+`artifacts/aamas2027/main.pdf` now matches the isolated
+`baseline_sync_20261007_v2` version byte-for-byte (SHA-256
+`9092c81938e12a9bcf8b234bc28c7fe758c6f3fa3e55b70bfc9ac224da671edc`). The prior v1 and all
+older rounds remain preserved. The current build has 8 body pages/9 total pages with
+References beginning on page 9; citations are resolved, overfull boxes are 0, and
+`submission_ready=false`. The parent provenance points to v2 and records the same hash. See
+[sync report](task_reports/20261008_main_pdf_master_baseline_sync_v2.md) and
+[`main_pdf_master.json`](../../artifacts/aamas2027/main_pdf_master.json).
 
-The synchronized wording is paper-only: it keeps the historical context-only trust arm as a
-diagnostic comparator, names the same-information arm `contextual_trust_linear`, and leaves the
-DIST1/PIPE3 development/confirmation split to the versioned parity card. It does not freeze a
-benchmark, run a baseline, or open the scientific gate.
+The synchronized wording and references are paper-only. Page 8 still has unused right-column
+space and is recorded as a substantive density debt for a later isolated revision. This
+synchronization does not freeze a benchmark, run a baseline, or open the scientific gate.
 
 **Latest baseline parity candidate card — 2026-10-07:** `n03_baseline_live_parity_candidate_v0.2`
 freezes a candidate-only ArtifactRole/PIPE3 matrix with `uniform`, `no_update`,
