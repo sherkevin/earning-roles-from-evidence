@@ -1,0 +1,24 @@
+{
+  "schema": "n03-pipe2-observation-bridge-compatibility-v1",
+  "status": "BLOCKED_BY_HANDOFF_SEMANTICS",
+  "task_id": "PIPE2_data_pipeline",
+  "seed": 0,
+  "candidate_root": "pipe2-csv-writer-v1",
+  "api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "policy_update_allowed": false,
+  "purpose": "Check whether the existing typed observation bridge can be reused without changing PIPE2 visibility or inventing J/A/Y fields.",
+  "command": [
+    "python3",
+    "scripts/peerrolebench_pipe2_observation_bridge_compatibility.py",
+    "--output",
+    "experiments/logs/n03_pipe2_observation_bridge_compatibility_20261008_v1",
+    "--seed",
+    "0"
+  ],
+  "started_at_utc": "2026-10-08T13:18:41.747922+00:00",
+  "python": "3.9.6",
+  "git_commit": "dc8d9a338815269a354a4e4c8102f7db281d84be",
+  "working_tree_dirty": true
+}

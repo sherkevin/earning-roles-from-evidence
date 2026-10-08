@@ -1,0 +1,104 @@
+{
+  "schema": "n03-pipe2-observation-bridge-compatibility-result-v1",
+  "status": "BLOCKED_BY_HANDOFF_SEMANTICS",
+  "seed": 0,
+  "task_id": "PIPE2_data_pipeline",
+  "candidate_root": "pipe2-csv-writer-v1",
+  "material_schema": "peerrolebench-pipe2-materials-v2",
+  "producer_source_paths": [
+    "pipeline/extract.py",
+    "pipeline/__init__.py",
+    "PIPELINE_SPEC.md",
+    "data/source.csv"
+  ],
+  "recipient_source_paths": [
+    "pipeline/transform.py",
+    "pipeline/load.py",
+    "pipeline/__init__.py",
+    "PIPELINE_SPEC.md"
+  ],
+  "checks": [
+    {
+      "check": "recipient_does_not_receive_producer_source",
+      "passed": true,
+      "observed": {
+        "producer_writable_paths": [
+          "pipeline/extract.py"
+        ],
+        "recipient_source_paths": [
+          "pipeline/transform.py",
+          "pipeline/load.py",
+          "pipeline/__init__.py",
+          "PIPELINE_SPEC.md"
+        ]
+      },
+      "impact": "source-file observation bridge cannot require delivered producer paths in recipient snapshots"
+    },
+    {
+      "check": "handoff_is_opaque_data_artifact",
+      "passed": true,
+      "observed": {
+        "required_delivery_paths": [
+          "artifact/extracted_rows.json"
+        ],
+        "delivery_path": "artifact/extracted_rows.json",
+        "delivery_schema": "pipe2-extracted-rows-v1"
+      },
+      "impact": "delivery digest must bind pipe2-extracted-rows-v1, not producer source digest"
+    },
+    {
+      "check": "runtime_receipt_has_no_judgment_action_outcome",
+      "passed": true,
+      "observed": {
+        "runtime_receipt_fields": [
+          "producer_contract",
+          "recipient_self",
+          "artifact_adoption"
+        ],
+        "required_for_observation": [
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "impact": "current runtime replay must remain UNKNOWN rather than inventing Scheme-B fields"
+    },
+    {
+      "check": "runtime_receipt_has_no_recipient_pre_post_diff",
+      "passed": true,
+      "observed": {
+        "recipient_payload_paths": [
+          "pipeline/transform.py",
+          "pipeline/load.py",
+          "pipeline/__init__.py",
+          "PIPELINE_SPEC.md"
+        ],
+        "source_snapshot_available": false,
+        "post_action_snapshot_available": false
+      },
+      "impact": "recipient-only/mixed scope cannot be inferred from output_sha256 or adoption status"
+    }
+  ],
+  "blockers": [
+    "typed handoff descriptor is missing (artifact path/schema/hash separate from producer source provenance)",
+    "explicit recipient judgment, consumer action, and terminal outcome are missing from runtime receipts",
+    "recipient pre/post source manifests or sealed changed-path descriptor are missing",
+    "output_sha256 and adoption status cannot be promoted to J, A, or Y"
+  ],
+  "reuse_decision": "DO_NOT_APPLY_EXISTING_OBSERVATION_BRIDGE_TO_CURRENT_PIPE2_RECEIPTS",
+  "required_next_descriptor": {
+    "artifact_path": "artifact/extracted_rows.json",
+    "artifact_schema": "pipe2-extracted-rows-v1",
+    "artifact_sha256": "sealed at producer delivery",
+    "producer_source_digest": "separate registry provenance",
+    "recipient_before_after_manifest": "sealed before/after action",
+    "judgment_action_outcome": "explicit typed events"
+  },
+  "api_calls": 0,
+  "gpu_jobs": 0,
+  "policy_updates": 0,
+  "scientific_claim_allowed": false,
+  "config_sha256": "1a0de5cebd2f035206de373b4c0169edc6ec6bfdbc7257a0cbab192015b8b6e5",
+  "source_code_sha256": "6bfcbb08a297784e616a3bfb57e33a4a6221eb6e75ad6cb2839dff46b88a58eb",
+  "finished_at_utc": "2026-10-08T13:18:43.035353+00:00"
+}
