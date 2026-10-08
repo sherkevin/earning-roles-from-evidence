@@ -186,3 +186,38 @@ def test_native_rebind_bundle_rejects_forged_serialized_adapter(tmp_path):
     result, metadata = _adapter_rebind_check(bundle, route, required=True)
     assert result["status"] == "FAIL"
     assert metadata["join_status"] == "UNKNOWN"
+
+
+def test_full_preflight_requires_native_rebind_in_strict_mode(tmp_path):
+    route = tmp_path / "route.json"
+    route.write_text(json.dumps(_valid_receipt(), sort_keys=True))
+    out = tmp_path / "strict-missing"
+    run(out, route, require_adapter_join=True)
+    receipt = _load_receipt(out)
+    adapter_check = next(item for item in receipt["checks"] if item["check"] == "adapter_route_join")
+    assert adapter_check["status"] == "BLOCKED"
+    assert receipt["status"] == "BLOCKED_PRE_EXECUTION"
+
+
+def test_full_preflight_records_native_rebind_pass(tmp_path):
+    from test_peerrolebench_pipe1_adapter_route_join import _adapter, _events, _request, _route
+    from peerrolebench_pipe3_live_contract_qualification import _registry
+
+    request = _request()
+    request["registry"] = [entry.payload() for entry in _registry()]
+    bundle = tmp_path / "rebind.json"
+    bundle.write_text(json.dumps({
+        "schema": ADAPTER_BUNDLE_SCHEMA,
+        "adapter_result": _adapter(),
+        "native_events": _events(),
+        "adapter_request": request,
+    }, sort_keys=True))
+    route = tmp_path / "route.json"
+    route.write_text(json.dumps(_route(), sort_keys=True))
+    out = tmp_path / "strict-valid"
+    run(out, route, adapter_bundle=bundle, require_adapter_join=True)
+    receipt = _load_receipt(out)
+    adapter_check = next(item for item in receipt["checks"] if item["check"] == "adapter_route_join")
+    assert adapter_check["status"] == "PASS"
+    assert receipt["status"] == "BLOCKED_PRE_EXECUTION"
+    assert receipt["scientific_claim_allowed"] is False

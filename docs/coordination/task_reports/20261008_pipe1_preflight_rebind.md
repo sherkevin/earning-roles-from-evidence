@@ -37,6 +37,16 @@
 - 历史结果未修改；
 - 初次测试中发现的 `CandidateRegistryEntry` 无法直接 JSON 序列化问题已作为 fixture 序列化错误保留在 `raw.jsonl`，修复为写入 registry payload 后重跑通过。
 
+## 端到端回执补充
+
+随后补充了 full preflight 状态机测试，单独保存在
+`experiments/logs/n03_pipe1_preflight_rebind_20261008_v2/`：
+
+- `python3 -m pytest -q tests/test_peerrolebench_pipe1*.py`：`46 passed`；
+- strict mode 缺少 bundle 在完整 receipt 中为 `BLOCKED`；
+- 合法 bundle 在完整 receipt 中留下 `adapter_route_join=PASS`；
+- 即使 rebind 通过，整条 PIPE1 preflight 仍为 `BLOCKED_PRE_EXECUTION`，因为后续真实执行前置条件仍未满足。
+
 ## 结论边界
 
 这只证明 preflight 的组合边界会重新绑定 native selection/evidence/source index；它没有证明真实 source→target 执行、模型判断、责任标签、later-use、baseline parity、成本或方法收益。PIPE1 仍是候选路线，科学投稿 gate 不变。
