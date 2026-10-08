@@ -7,7 +7,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from peerrolebench_pipe1_preflight import (  # noqa: E402
+    ADAPTER_BUNDLE_SCHEMA,
     MATERIAL,
+    _adapter_rebind_check,
     build_material_binding,
     run,
 )
@@ -131,3 +133,56 @@ def test_invalid_route_receipt_fails_closed(tmp_path):
     assert _check(receipt)["status"] == "FAIL"
     assert receipt["status"] == "BLOCKED_PRE_EXECUTION"
     assert receipt["scientific_claim_allowed"] is False
+
+
+def test_required_native_rebind_is_blocked_without_bundle(tmp_path):
+    route = tmp_path / "route.json"
+    route.write_text(json.dumps(_valid_receipt(), sort_keys=True))
+    result, metadata = _adapter_rebind_check(None, route, required=True)
+    assert result["status"] == "BLOCKED"
+    assert metadata["required"] is True
+
+
+def test_native_rebind_bundle_matches_adapter_and_route(tmp_path):
+    # Reuse the independent adapter qualification fixture as a serialized
+    # bundle; the preflight only consumes the public bundle contract.
+    from test_peerrolebench_pipe1_adapter_route_join import _adapter, _events, _request, _route
+    from peerrolebench_pipe3_live_contract_qualification import _registry
+
+    request = _request()
+    request["registry"] = [entry.payload() for entry in _registry()]
+
+    bundle = tmp_path / "rebind.json"
+    bundle.write_text(json.dumps({
+        "schema": ADAPTER_BUNDLE_SCHEMA,
+        "adapter_result": _adapter(),
+        "native_events": _events(),
+        "adapter_request": request,
+    }, sort_keys=True))
+    route = tmp_path / "route.json"
+    route.write_text(json.dumps(_route(), sort_keys=True))
+    result, metadata = _adapter_rebind_check(bundle, route, required=True)
+    assert result["status"] == "PASS"
+    assert metadata["join_status"] == "READY_FOR_PREFLIGHT"
+
+
+def test_native_rebind_bundle_rejects_forged_serialized_adapter(tmp_path):
+    from test_peerrolebench_pipe1_adapter_route_join import _adapter, _events, _request, _route
+    from peerrolebench_pipe3_live_contract_qualification import _registry
+
+    adapter = _adapter()
+    adapter["selection_binding"]["target_selection"]["chosen_peer_id"] = "peer-c"
+    bundle = tmp_path / "forged.json"
+    request = _request()
+    request["registry"] = [entry.payload() for entry in _registry()]
+    bundle.write_text(json.dumps({
+        "schema": ADAPTER_BUNDLE_SCHEMA,
+        "adapter_result": adapter,
+        "native_events": _events(),
+        "adapter_request": request,
+    }, sort_keys=True))
+    route = tmp_path / "route.json"
+    route.write_text(json.dumps(_route(), sort_keys=True))
+    result, metadata = _adapter_rebind_check(bundle, route, required=True)
+    assert result["status"] == "FAIL"
+    assert metadata["join_status"] == "UNKNOWN"

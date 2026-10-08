@@ -19,6 +19,7 @@ import sys
 from typing import Any, Optional, Tuple
 
 from peerrolebench_pipe1_route_receipt import canonical_digest, validate_pipe1_route_receipt
+from peerrolebench_pipe1_adapter_route_join import validate_adapter_route_join
 
 ROOT = Path(__file__).resolve().parents[1]
 MATERIAL = ROOT / "experiments/logs/n03_pipe1_native_material_audit_20261007_v1"
@@ -27,6 +28,7 @@ PIN = "d185aef1916fd86a9ba554d581fd256319a973af"
 SEEDS = (0, 3)
 WORKSPACE = {"etl.py", "run_etl.py", "source_sample.json", "target_schema.json"}
 MATERIAL_BINDING_SCHEMA = "pipe1-material-binding-v1"
+ADAPTER_BUNDLE_SCHEMA = "pipe1-adapter-rebind-bundle-v1"
 
 
 def sha(path: Path) -> str:
@@ -229,7 +231,68 @@ def _route_receipt_check(route_receipt: Optional[Path], material_binding: Option
     )
 
 
-def run(out: Path, route_receipt: Optional[Path] = None, material_binding: Optional[Path] = None) -> None:
+def _adapter_rebind_check(
+    adapter_bundle: Optional[Path], route_receipt: Optional[Path], *, required: bool = False,
+) -> tuple[dict, dict]:
+    """Recompute the offline adapter against native rows before route handoff.
+
+    A route receipt can be structurally valid while a serialized adapter result
+    has been edited after it ran.  This check is separate from
+    ``route_receipt`` so historical v2 receipts remain readable; a new live
+    preflight can require it before treating the route as eligible.
+    """
+    if adapter_bundle is None:
+        status = "BLOCKED" if required else "OPEN"
+        reason = (
+            "No adapter rebind bundle was supplied; native adapter-to-route join remains unverified"
+            if required else
+            "Adapter rebind is optional for this historical preflight invocation"
+        )
+        return check("adapter_route_join", status, [], reason), {
+            "path": None, "exists": False, "required": required,
+        }
+    path = adapter_bundle.resolve()
+    evidence = [_display_path(path)]
+    metadata = {"path": _display_path(path), "exists": path.is_file(), "required": required}
+    if not path.is_file():
+        return check("adapter_route_join", "FAIL", evidence,
+                     "Adapter rebind bundle does not exist"), metadata
+    if route_receipt is None or not route_receipt.is_file():
+        return check("adapter_route_join", "BLOCKED", evidence,
+                     "A route receipt is required for adapter rebind"), metadata
+    try:
+        bundle = json.loads(path.read_text())
+        route = json.loads(route_receipt.read_text())
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        return check("adapter_route_join", "FAIL", evidence,
+                     f"Adapter rebind bundle could not be parsed: {type(exc).__name__}"), metadata
+    if not isinstance(bundle, dict) or bundle.get("schema") != ADAPTER_BUNDLE_SCHEMA:
+        return check("adapter_route_join", "FAIL", evidence,
+                     "Adapter rebind bundle has unsupported schema"), metadata
+    expected = {"schema", "adapter_result", "native_events", "adapter_request"}
+    if set(bundle) != expected:
+        return check("adapter_route_join", "FAIL", evidence,
+                     "Adapter rebind bundle keys do not match the frozen contract"), metadata
+    try:
+        joined = validate_adapter_route_join(
+            adapter_result=bundle["adapter_result"], route_receipt=route,
+            native_events=bundle["native_events"], adapter_request=bundle["adapter_request"],
+        )
+    except (TypeError, ValueError, AttributeError, KeyError) as exc:
+        return check("adapter_route_join", "FAIL", evidence,
+                     f"Adapter rebind validator raised {type(exc).__name__}: {exc}"), metadata
+    metadata.update({"join_status": joined.get("status"), "join_errors": joined.get("errors", [])})
+    if joined.get("status") != "READY_FOR_PREFLIGHT":
+        return check("adapter_route_join", "FAIL", evidence,
+                     "Native adapter-to-route join failed closed: " + "; ".join(joined.get("errors", [])[:5])), metadata
+    return check("adapter_route_join", "PASS", evidence,
+                 "Adapter projection was recomputed from native rows and matched the route receipt"), metadata
+
+
+def run(
+    out: Path, route_receipt: Optional[Path] = None, material_binding: Optional[Path] = None,
+    adapter_bundle: Optional[Path] = None, require_adapter_join: bool = False,
+) -> None:
     if out.exists():
         raise FileExistsError(out)
     out.mkdir(parents=True)
@@ -246,10 +309,15 @@ def run(out: Path, route_receipt: Optional[Path] = None, material_binding: Optio
             source_files.append(binding_path)
         elif binding_path.is_dir():
             source_files.extend(p for p in binding_path.rglob("*") if p.is_file())
+    if adapter_bundle is not None and adapter_bundle.is_file():
+        source_files.append(adapter_bundle.resolve())
     source_files = [p for p in source_files if p.is_file()]
     route_result, route_metadata = _route_receipt_check(route_receipt, material_binding)
+    adapter_result, adapter_metadata = _adapter_rebind_check(
+        adapter_bundle, route_receipt, required=require_adapter_join,
+    )
     config = {
-        "schema": "pipe1-preflight-v2",
+        "schema": "pipe1-preflight-v3",
         "kind": "ZERO_CALL_EXECUTION_PREFLIGHT",
         "status": "FROZEN_BEFORE_CHECKS",
         "started_utc": datetime.now(timezone.utc).isoformat(),
@@ -260,6 +328,7 @@ def run(out: Path, route_receipt: Optional[Path] = None, material_binding: Optio
         "seeds": list(SEEDS),
         "source_sha256": {_display_path(p): sha(p) for p in source_files},
         "route_receipt": route_metadata,
+        "adapter_route_join": adapter_metadata,
         "api_calls": 0,
         "gpu_runs": 0,
         "generator_calls": 0,
@@ -269,6 +338,7 @@ def run(out: Path, route_receipt: Optional[Path] = None, material_binding: Optio
     put(out / "config.json", config)
     results = []
     results.append(route_result)
+    results.append(adapter_result)
     views = {}
     for seed in SEEDS:
         directory = MATERIAL / f"seed_{seed}"
@@ -338,7 +408,7 @@ def run(out: Path, route_receipt: Optional[Path] = None, material_binding: Optio
     # must never be hidden by the design-only status when other checks happen
     # to pass in a future preflight version.
     status = "BLOCKED_PRE_EXECUTION" if any(r["status"] in {"BLOCKED", "FAIL"} for r in results) else "QUALIFIED_DESIGN_ONLY"
-    receipt = {"schema": "pipe1-preflight-v2", "status": status, "checks": results,
+    receipt = {"schema": "pipe1-preflight-v3", "status": status, "checks": results,
                "api_calls": 0, "gpu_runs": 0, "generator_calls": 0, "candidate_executions": 0,
                "scientific_claim_allowed": False, "historical_results_modified": False}
     put(out / "receipt.json", receipt)
@@ -356,6 +426,12 @@ if __name__ == "__main__":
                         help="Optional zero-call PIPE1 source-to-target route receipt JSON")
     parser.add_argument("--material-binding", type=Path,
                         help="Frozen PIPE1 material-audit directory or binding JSON; required for a route PASS")
+    parser.add_argument("--adapter-bundle", type=Path,
+                        help="JSON bundle with adapter_result/native_events/adapter_request for native rebind")
+    parser.add_argument("--require-adapter-join", action="store_true",
+                        help="Fail closed when no native adapter rebind bundle is supplied")
     args = parser.parse_args()
     run(args.out.resolve(), args.route_receipt.resolve() if args.route_receipt else None,
-        args.material_binding.resolve() if args.material_binding else None)
+        args.material_binding.resolve() if args.material_binding else None,
+        args.adapter_bundle.resolve() if args.adapter_bundle else None,
+        require_adapter_join=args.require_adapter_join)

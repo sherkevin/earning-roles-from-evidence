@@ -1,0 +1,25 @@
+{
+  "schema": "n03-pipe1-preflight-rebind-v1",
+  "status": "QUALIFIED_ZERO_CALL_NATIVE_REBIND",
+  "focused_suite": "tests/test_peerrolebench_pipe1_preflight*.py + tests/test_peerrolebench_pipe1_adapter_route_join.py",
+  "full_pipe1_suite": "44 passed",
+  "api_calls": 0,
+  "generator_calls": 0,
+  "candidate_executions": 0,
+  "gpu_runs": 0,
+  "scientific_claim_allowed": false,
+  "historical_results_modified": false,
+  "new_capability": "preflight can require a serialized adapter_result/native_events/adapter_request bundle and recompute the native join before route handoff",
+  "negative_cases": [
+    "missing required bundle -> BLOCKED",
+    "forged chosen peer in serialized adapter -> FAIL/UNKNOWN join"
+  ],
+  "remaining_scientific_blockers": [
+    "live source-to-target lineage",
+    "exact scorer",
+    "provider/timezone pin",
+    "new budget",
+    "independent root and live baseline parity",
+    "later-use and complete cost"
+  ]
+}
