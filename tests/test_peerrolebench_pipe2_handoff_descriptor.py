@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from dataclasses import replace
+import csv
+import io
 from pathlib import Path
 import sys
 
@@ -13,6 +15,8 @@ from peerrolebench_pipe2_handoff_descriptor import (  # noqa: E402
     DELIVERY_PATH, DELIVERY_SCHEMA, Pipe2HandoffDescriptor, canonical_digest,
     digest_changed_paths, make_descriptor,
 )
+from peerrolebench_pipe2_derived_material_adapter import build_derived_materials  # noqa: E402
+from peerrolebench_pipe2_material_adapter_v2 import validate_extracted_rows  # noqa: E402
 
 
 def fields():
@@ -72,3 +76,19 @@ def test_descriptor_cannot_authorize_policy_or_credit():
     payload["policy_update_allowed"] = True
     with pytest.raises(ValueError):
         Pipe2HandoffDescriptor(**payload, descriptor_digest=canonical_digest(payload))
+
+
+def test_descriptor_boundary_matches_actual_pipe2_material_visibility():
+    materials = build_derived_materials(0)
+    producer = materials["agent_payloads"]["producer"]
+    recipient = materials["agent_payloads"]["recipient"]
+    assert "pipeline/extract.py" in producer["source_files"]
+    assert "pipeline/extract.py" not in recipient["source_files"]
+    assert tuple(recipient["required_delivery_paths"]) == ("artifact/extracted_rows.json",)
+    source = producer["source_files"]["data/source.csv"]
+    reader = csv.DictReader(io.StringIO(source, newline=""))
+    rows = list(reader)
+    artifact = validate_extracted_rows(rows, columns=tuple(reader.fieldnames or ()))
+    assert artifact["schema"] == "pipe2-extracted-rows-v1"
+    assert artifact["artifact_sha256"]
+    assert artifact["artifact_sha256"] != materials["manifest"]["payload_sha256"]

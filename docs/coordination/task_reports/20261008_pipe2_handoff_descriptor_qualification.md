@@ -1,6 +1,6 @@
 # PIPE2 typed handoff descriptor qualification
 
-日期：2026-10-08。结果：`QUALIFIED_OFFLINE`；8 项定向检查通过，0 API、0 GPU、0
+日期：2026-10-08。结果：`QUALIFIED_OFFLINE`；v1 的 8 项定向检查和 v2 的 9 项定向检查通过，0 API、0 GPU、0
 policy update。它是 schema/lineage 工程子门，不是 PIPE2 benchmark 资格、在线学习或
 论文效果结果。
 
@@ -15,6 +15,7 @@ policy update。它是 schema/lineage 工程子门，不是 PIPE2 benchmark 资�
 - [config](../../../experiments/logs/n03_pipe2_handoff_descriptor_qualification_20261008_v1/config.json)
 - [raw JSONL](../../../experiments/logs/n03_pipe2_handoff_descriptor_qualification_20261008_v1/events.jsonl)
 - [summary](../../../experiments/logs/n03_pipe2_handoff_descriptor_qualification_20261008_v1/summary.json)
+- [v2 config/raw/summary](../../../experiments/logs/n03_pipe2_handoff_descriptor_qualification_20261008_v2/)
 
 descriptor 分开封存：
 
@@ -30,8 +31,10 @@ root digest、producer source digest、`output_sha256` 或 adoption status 代�
 
 ## 结果边界
 
-测试覆盖 path/schema 不匹配、sealed digest 变化、source→target 时序、read-cut、changed
-path canonicalization/traversal 和禁止 update/credit。8/8 通过。artifact digest 的新值
+v1 测试覆盖 path/schema 不匹配、sealed digest 变化、source→target 时序、read-cut、changed
+path canonicalization/traversal 和禁止 update/credit，8/8 通过。随后 v2 增加了对真实
+PIPE2 seed-0 material 的 visibility 与 `validate_extracted_rows` artifact hash 合同检查，
+9/9 通过；v1 回执保持不可变。artifact digest 的新值
 本身代表新的交付身份，只有在 runner 保持旧 sealed descriptor digest 或 external expected
 digest 时才应被拒绝；测试明确记录了这个边界，避免把“格式合法”误报为“与历史交付一致”。
 
