@@ -4,11 +4,14 @@
 original native event rows and the exact adapter request, recomputes the adapter projection,
 and compares binding-critical fields before returning `READY_FOR_PREFLIGHT`. Missing native
 revalidation, chosen-peer mutation, evidence mutation, and source-index mutation fail closed as
-`UNKNOWN`. The zero-call regression suite reports 41 passing tests; API/generator/candidate/GPU
-counts are all zero and `scientific_claim_allowed=false`. This closes an attribution-integrity
-seam only; PIPE1 remains a candidate and no scientific or submission claim is enabled. See
-[rebind report](task_reports/20261008_pipe1_adapter_route_rebind.md) and
-[`n03_pipe1_adapter_route_rebind_20261008_v1`](../../experiments/logs/n03_pipe1_adapter_route_rebind_20261008_v1/summary.json).
+`UNKNOWN`. The full PIPE1 regression suite reports 46 passing tests; API/generator/candidate/GPU
+counts are all zero and `scientific_claim_allowed=false`. The follow-up preflight receipt test
+also records missing rebind input as `BLOCKED` and a valid native bundle as
+`adapter_route_join=PASS`. This closes an attribution-integrity seam only; PIPE1 remains a
+candidate and no scientific or submission claim is enabled. See [rebind report]
+(task_reports/20261008_pipe1_adapter_route_rebind.md), [preflight receipt supplement]
+(task_reports/20261008_pipe1_preflight_rebind.md) and
+[`n03_pipe1_preflight_rebind_20261008_v2`](../../experiments/logs/n03_pipe1_preflight_rebind_20261008_v2/summary.json).
 
 **Latest candidate manifest consistency audit — 2026-10-07:** the older two-root manifest,
 new parity card and C1 live card disagree on the development root, strongest control name and
