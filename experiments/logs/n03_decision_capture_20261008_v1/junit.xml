@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="6" skipped="0" tests="43" time="0.628" timestamp="2026-10-08T18:14:01.973231+08:00" hostname="U-CGPCVWR0-0024.local"><testcase classname="tests.test_peerrolebench_c1_decision_capture" name="test_parent_capture_precedes_episode_failure_and_remains_reloadable" time="0.012"><failure message="ValueError: capture differs from independent native ledger">tmp_path = PosixPath('/Users/jingwu/work/earning-roles/experiments/logs/n03_decision_capture_20261008_v1/pytest_tmp/test_parent_capture_precedes_e0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10add9040&gt;
+
+    def test_parent_capture_precedes_episode_failure_and_remains_reloadable(tmp_path, monkeypatch):
+        def fail_later(**_kwargs):
+            raise RuntimeError("episode stopped after selection")
+    
+        monkeypatch.setattr("peerrolebench_c1_pipe3_bounded_live._run_episode", fail_later)
+        with pytest.raises(RuntimeError, match="after selection"):
+&gt;           _run_parent_source(tmp_path, {}, _prepare_context())
+
+tests/test_peerrolebench_c1_decision_capture.py:53: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+scripts/peerrolebench_c1_pipe3_bounded_live.py:768: in _run_parent_source
+    load_decision_capture(parent_dir / "decision_0" / "preexecution_capture.json",
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('/Users/jingwu/work/earning-roles/experiments/logs/n03_decision_capture_20261008_v1/pytest_tmp/test_parent_capture_precedes_e0/parent_source/decision_0/preexecution_capture.json')
+
+    def load_decision_capture(path: Path, *, ledger_events: Any = None, auxiliary_rows: Any = None,
+                              parent_capture_digest: str | None = None) -&gt; tuple[float, ...]:
+        """Reload typed existing seals and return the chosen sealed feature vector."""
+        try:
+            receipt = json.loads(path.read_text(encoding="utf-8"))
+            body = dict(receipt)
+            digest = body.pop("capture_digest")
+            if body["capture_version"] != "c1-preexecution-existing-seals-v1" or _seal_digest(body) != digest:
+                raise ValueError("decision capture digest is invalid")
+            if parent_capture_digest is not None and body["parent_capture_digest"] != parent_capture_digest:
+                raise ValueError("parent source capture digest differs")
+            registry = tuple(CandidateRegistryEntry(**item) for item in body["registry"])
+            if registry_digest(registry) != body["registry_digest"]:
+                raise ValueError("capture registry differs")
+            prefix = body["ledger_prefix"]
+            for index, item in enumerate(prefix):
+                previous = prefix[index - 1]["record_hash"] if index else "GENESIS"
+                if item["previous_hash"] != previous or item["record_hash"] != _seal_digest({
+                    key: value for key, value in item.items() if key != "record_hash"
+                }):
+                    raise ValueError("native ledger prefix is invalid")
+            record = body["native_record"]
+            if not prefix or record != prefix[-1] or record["event_type"] != "peer_selection":
+                raise ValueError("capture does not end at committed selection")
+            if ledger_events is not None and list(ledger_events)[:len(prefix)] != prefix:
+&gt;               raise ValueError("capture differs from independent native ledger")
+E               ValueError: capture differs from independent native ledger
+
+scripts/peerrolebench_c1_pipe3_bounded_live.py:653: ValueError</failure></testcase><testcase classname="tests.test_peerrolebench_c1_decision_capture" name="test_capture_is_immutable_and_does_not_alias_later_policy_or_ledger" time="0.003"><failure message="ValueError: capture differs from independent native ledger">tmp_path = PosixPath('/Users/jingwu/work/earning-roles/experiments/logs/n03_decision_capture_20261008_v1/pytest_tmp/test_capture_is_immutable_and_0')
+
+    def test_capture_is_immutable_and_does_not_alias_later_policy_or_ledger(tmp_path):
+        boundary, seal, path, _ = _source_capture(tmp_path)
+        before = path.read_bytes()
+        with pytest.raises(FileExistsError):
+            save_decision_capture(path, seal, boundary)
+        boundary.policy.updates = 7
+        boundary.ledger.record_task_start("PIPE3_stream_processing", 0)
+        assert path.read_bytes() == before
+&gt;       assert load_decision_capture(path, ledger_events=boundary.ledger.events) == _features()["peer-b@v1"]
+
+tests/test_peerrolebench_c1_decision_capture.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('/Users/jingwu/work/earning-roles/experiments/logs/n03_decision_capture_20261008_v1/pytest_tmp/test_capture_is_immutable_and_0/preexecution_capture.json')
+
+    def load_decision_capture(path: Path, *, ledger_events: Any = None, auxiliary_rows: Any = None,
+                              parent_capture_digest: str | None = None) -&gt; tuple[float, ...]:
+        """Reload typed existing seals and return the chosen sealed feature vector."""
+        try:
+            receipt = json.loads(path.read_text(encoding="utf-8"))
+            body = dict(receipt)
+            digest = body.pop("capture_digest")
+            if body["capture_version"] != "c1-preexecution-existing-seals-v1" or _seal_digest(body) != digest:
+                raise ValueError("decision capture digest is invalid")
+            if parent_capture_digest is not None and body["parent_capture_digest"] != parent_capture_digest:
+                raise ValueError("parent source capture digest differs")
+            registry = tuple(CandidateRegistryEntry(**item) for item in body["registry"])
+            if registry_digest(registry) != body["registry_digest"]:
+                raise ValueError("capture registry differs")
+            prefix = body["ledger_prefix"]
+            for index, item in enumerate(prefix):
+                previous = prefix[index - 1]["record_hash"] if index else "GENESIS"
+                if item["previous_hash"] != previous or item["record_hash"] != _seal_digest({
+                    key: value for key, value in item.items() if key != "record_hash"
+                }):
+                    raise ValueError("native ledger prefix is invalid")
+            record = body["native_record"]
+            if not prefix or record != prefix[-1] or record["event_type"] != "peer_selection":
+                raise ValueError("capture does not end at committed selection")
+            if ledger_events is not None and list(ledger_events)[:len(prefix)] != prefix:
+&gt;               raise ValueError("capture differs from independent native ledger")
+E               ValueError: capture differs from independent native ledger
+
+scripts/peerrolebench_c1_pipe3_bounded_live.py:653: ValueError</failure></testcase><testcase classname="tests.test_peerrolebench_c1_decision_capture" name="test_tampered_selection_inputs_fail_closed[&lt;lambda&gt;0]" time="0.003" /><testcase classname="tests.test_peerrolebench_c1_decision_capture" name="test_tampered_selection_inputs_fail_closed[&lt;lambda&gt;1]" time="0.003" /><testcase classname="tests.test_peerrolebench_c1_decision_capture" name="test_tampered_selection_inputs_fail_closed[&lt;lambda&gt;2]" time="0.003" /><testcase classname="tests.test_peerrolebench_c1_decision_capture" name="test_tampered_selection_inputs_fail_closed[&lt;lambda&gt;3]" time="0.003" /><testcase classname="tests.test_peerrolebench_c1_decision_capture" name="test_tampered_selection_inputs_fail_closed[&lt;lambda&gt;4]" time="0.003" /><testcase classname="tests.test_peerrolebench_c1_decision_capture" name="test_tampered_selection_inputs_fail_closed[&lt;lambda&gt;5]" time="0.003" /><testcase classname="tests.test_peerrolebench_c1_decision_capture" name="test_external_native_prefix_mismatch_fails" time="0.009" /><testcase classname="tests.test_peerrolebench_c1_decision_capture" name="test_target_capture_binds_role_read_and_overlay" time="0.002"><failure message="ValueError: preview selected a candidate without published role evidence">tmp_path = PosixPath('/Users/jingwu/work/earning-roles/experiments/logs/n03_decision_capture_20261008_v1/pytest_tmp/test_target_capture_binds_role0')
+
+    def test_target_capture_binds_role_read_and_overlay(tmp_path):
+        boundary = Pipe3SelectionBoundary(ContextualTrustPolicy(), registry())
+        role_offer, feedback_offer = _source(boundary)
+        common = dict(
+            assignment_id="as1", native_selection_id="s1", selector_id="peer-a",
+            rng=np.random.default_rng(7), state_version="state", encoder_version="encoder",
+            feature_schema="pipe3", policy_version="contextual-v1", base_score_version="base-v1",
+            rng_algorithm="numpy-pcg64", rng_draw=1, selected_at=1.0,
+            decision_index=1, captured_features={"peer-b@v1": (1.0, 0.0), "peer-c@v1": (0.0, 1.0)},
+        )
+&gt;       plan, overlay = preview_role_evidence_selection_with_public_judgment(
+            boundary, role_offer=role_offer, feedback_offer=feedback_offer,
+            base_scores=(0.0, 0.0), read_cut=1, **common,
+        )
+
+tests/test_peerrolebench_c1_decision_capture.py:103: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+scripts/peerrolebench_role_evidence_selection.py:224: in preview_role_evidence_selection_with_public_judgment
+    plan = preview_role_evidence_selection(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+boundary = &lt;peerrolebench_pipe3_runner_v1.Pipe3SelectionBoundary object at 0x10c4f7700&gt;
+
+    def preview_role_evidence_selection(
+        boundary: Pipe3SelectionBoundary,
+        *,
+        role_offer: RoleEvidenceOffer,
+        feedback_offer: AssignmentEvidenceOffer,
+        assignment_id: str,
+        native_selection_id: str,
+        selector_id: str,
+        base_scores: Sequence[float],
+        rng: Any,
+        state_version: str,
+        encoder_version: str,
+        feature_schema: str,
+        policy_version: str,
+        base_score_version: str,
+        rng_algorithm: str,
+        rng_draw: int,
+        selected_at: float,
+        read_cut: int,
+        decision_index: int,
+        captured_features: Mapping[str, Sequence[float]] | None = None,
+    ) -&gt; SelectionPlan:
+        """Preview a role-evidence-informed choice without persistent mutation."""
+        _validate_offer_pair(role_offer, feedback_offer, read_cut=read_cut)
+        if role_offer.candidate_registry_digest is not None and role_offer.candidate_registry_digest != boundary.registry_digest:
+            raise ValueError("role evidence offer is bound to a different candidate registry")
+        if not assignment_id or not native_selection_id:
+            raise ValueError("assignment and selection identifiers are required")
+        scores = tuple(float(value) for value in base_scores)
+        if len(scores) != len(role_offer.candidate_keys) or not all(math.isfinite(value) for value in scores):
+            raise ValueError("overlay scores must align with the role-evidence candidate menu")
+        before = _state_digest(boundary.policy)
+        selection = preview_selection(
+            boundary, offer=feedback_offer, native_selection_id=native_selection_id,
+            selector_id=selector_id, role=role_offer.role, base_scores=scores, rng=rng,
+            state_version=state_version, encoder_version=encoder_version,
+            feature_schema=feature_schema, policy_version=policy_version,
+            base_score_version=base_score_version, rng_algorithm=rng_algorithm,
+            rng_draw=rng_draw, selected_at=selected_at, read_cut=read_cut,
+            decision_index=decision_index, captured_features=captured_features,
+        )
+        selected_key = selection.chosen.key
+        selected_evidence = tuple(sorted(
+            str(row["evidence_id"])
+            for row in role_offer.public_evidence
+            if _base_candidate(str(row["candidate_key"])) == selection.chosen.candidate_id
+        ))
+        if not selected_evidence:
+&gt;           raise ValueError("preview selected a candidate without published role evidence")
+E           ValueError: preview selected a candidate without published role evidence
+
+scripts/peerrolebench_role_evidence_selection.py:174: ValueError</failure></testcase><testcase classname="tests.test_peerrolebench_c1_live_contract" name="test_c1_zero_api_contract_qualifies_all_arms" time="0.027"><failure message="RuntimeError: card runner_version 'c1-pipe3-bounded-live-v3-signal-channels' does not match runner 'c1-pipe3-bounded-live-v4-preexecution-capture'">tmp_path = PosixPath('/Users/jingwu/work/earning-roles/experiments/logs/n03_decision_capture_20261008_v1/pytest_tmp/test_c1_zero_api_contract_qual0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10c397400&gt;
+
+    def test_c1_zero_api_contract_qualifies_all_arms(tmp_path, monkeypatch):
+        monkeypatch.setattr(c1.api, "call_api", _fake_actor)
+        card = json.loads(c1.CARD.read_text(encoding="utf-8"))
+        card["source_commit"] = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=c1.ROOT, text=True
+        ).strip()
+        card_copy = tmp_path / "card.json"
+        card_copy.write_text(json.dumps(card), encoding="utf-8")
+&gt;       result = c1.run(tmp_path / "c1", card_path=card_copy, diagnostic_only=True)
+
+tests/test_peerrolebench_c1_live_contract.py:40: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+out_dir = PosixPath('/Users/jingwu/work/earning-roles/experiments/logs/n03_decision_capture_20261008_v1/pytest_tmp/test_c1_zero_api_contract_qual0/c1')
+
+    def run(out_dir: Path, *, card_path: Path = CARD, diagnostic_only: bool = False) -&gt; dict[str, Any]:
+        if diagnostic_only is not True:
+            raise RuntimeError(
+                "C1 target-J training is diagnostic only (ADR0049); "
+                "explicit diagnostic_only=True is required and is not API budget authorization"
+            )
+        out_dir = out_dir.resolve()
+        card_path = card_path.resolve()
+        out_dir.mkdir(parents=False, exist_ok=False)
+        card = json.loads(card_path.read_text(encoding="utf-8"))
+        _validate_responsibility_card(card)
+        if card.get("runner_version") != VERSION:
+&gt;           raise RuntimeError(
+                f"card runner_version {card.get('runner_version')!r} does not match runner {VERSION!r}"
+            )
+E           RuntimeError: card runner_version 'c1-pipe3-bounded-live-v3-signal-channels' does not match runner 'c1-pipe3-bounded-live-v4-preexecution-capture'
+
+scripts/peerrolebench_c1_pipe3_bounded_live.py:1072: RuntimeError</failure></testcase><testcase classname="tests.test_peerrolebench_c1_live_contract" name="test_target_cost_survives_failure_after_target_episode" time="0.014"><failure message="RuntimeError: card runner_version 'c1-pipe3-bounded-live-v3-signal-channels' does not match runner 'c1-pipe3-bounded-live-v4-preexecution-capture'">tmp_path = PosixPath('/Users/jingwu/work/earning-roles/experiments/logs/n03_decision_capture_20261008_v1/pytest_tmp/test_target_cost_survives_fail0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10c4f7d90&gt;
+
+    def test_target_cost_survives_failure_after_target_episode(tmp_path, monkeypatch):
+        monkeypatch.setattr(c1.api, "call_api", _fake_actor)
+        original = c1._select_post_update
+    
+        def fail_after_target(boundary, arm, features, decision_index):
+            if arm == "RARE":
+                raise RuntimeError("synthetic post-target failure")
+            return original(boundary, arm, features, decision_index)
+    
+        monkeypatch.setattr(c1, "_select_post_update", fail_after_target)
+        card = json.loads(c1.CARD.read_text(encoding="utf-8"))
+        card["source_commit"] = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=c1.ROOT, text=True
+        ).strip()
+        card_copy = tmp_path / "card.json"
+        card_copy.write_text(json.dumps(card), encoding="utf-8")
+&gt;       result = c1.run(tmp_path / "c1", card_path=card_copy, diagnostic_only=True)
+
+tests/test_peerrolebench_c1_live_contract.py:109: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+out_dir = PosixPath('/Users/jingwu/work/earning-roles/experiments/logs/n03_decision_capture_20261008_v1/pytest_tmp/test_target_cost_survives_fail0/c1')
+
+    def run(out_dir: Path, *, card_path: Path = CARD, diagnostic_only: bool = False) -&gt; dict[str, Any]:
+        if diagnostic_only is not True:
+            raise RuntimeError(
+                "C1 target-J training is diagnostic only (ADR0049); "
+                "explicit diagnostic_only=True is required and is not API budget authorization"
+            )
+        out_dir = out_dir.resolve()
+        card_path = card_path.resolve()
+        out_dir.mkdir(parents=False, exist_ok=False)
+        card = json.loads(card_path.read_text(encoding="utf-8"))
+        _validate_responsibility_card(card)
+        if card.get("runner_version") != VERSION:
+&gt;           raise RuntimeError(
+                f"card runner_version {card.get('runner_version')!r} does not match runner {VERSION!r}"
+            )
+E           RuntimeError: card runner_version 'c1-pipe3-bounded-live-v3-signal-channels' does not match runner 'c1-pipe3-bounded-live-v4-preexecution-capture'
+
+scripts/peerrolebench_c1_pipe3_bounded_live.py:1072: RuntimeError</failure></testcase><testcase classname="tests.test_peerrolebench_c1_live_contract" name="test_invalid_api_budget_is_rejected_before_actor_call" time="0.020"><failure message="AssertionError: Regex pattern did not match.&#10; Regex: 'API budget'&#10; Input: &quot;card runner_version 'c1-pipe3-bounded-live-v3-signal-channels' does not match runner 'c1-pipe3-bounded-live-v4-preexecution-capture'&quot;">tmp_path = PosixPath('/Users/jingwu/work/earning-roles/experiments/logs/n03_decision_capture_20261008_v1/pytest_tmp/test_invalid_api_budget_is_rej0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10c672430&gt;
+
+    def test_invalid_api_budget_is_rejected_before_actor_call(tmp_path, monkeypatch):
+        def fail_actor(*_args, **_kwargs):
+            raise AssertionError("invalid budget must fail before API")
+    
+        monkeypatch.setattr(c1.api, "call_api", fail_actor)
+        card = json.loads(c1.CARD.read_text(encoding="utf-8"))
+        card["source_commit"] = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=c1.ROOT, text=True
+        ).strip()
+        card["maximum_api_requests"] = 7
+        card_copy = tmp_path / "card.json"
+        card_copy.write_text(json.dumps(card), encoding="utf-8")
+        with pytest.raises(RuntimeError, match="API budget"):
+&gt;           c1.run(tmp_path / "invalid-budget", card_path=card_copy, diagnostic_only=True)
+
+tests/test_peerrolebench_c1_live_contract.py:131: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+out_dir = PosixPath('/Users/jingwu/work/earning-roles/experiments/logs/n03_decision_capture_20261008_v1/pytest_tmp/test_invalid_api_budget_is_rej0/invalid-budget')
+
+    def run(out_dir: Path, *, card_path: Path = CARD, diagnostic_only: bool = False) -&gt; dict[str, Any]:
+        if diagnostic_only is not True:
+            raise RuntimeError(
+                "C1 target-J training is diagnostic only (ADR0049); "
+                "explicit diagnostic_only=True is required and is not API budget authorization"
+            )
+        out_dir = out_dir.resolve()
+        card_path = card_path.resolve()
+        out_dir.mkdir(parents=False, exist_ok=False)
+        card = json.loads(card_path.read_text(encoding="utf-8"))
+        _validate_responsibility_card(card)
+        if card.get("runner_version") != VERSION:
+&gt;           raise RuntimeError(
+                f"card runner_version {card.get('runner_version')!r} does not match runner {VERSION!r}"
+            )
+E           RuntimeError: card runner_version 'c1-pipe3-bounded-live-v3-signal-channels' does not match runner 'c1-pipe3-bounded-live-v4-preexecution-capture'
+
+scripts/peerrolebench_c1_pipe3_bounded_live.py:1072: RuntimeError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = PosixPath('/Users/jingwu/work/earning-roles/experiments/logs/n03_decision_capture_20261008_v1/pytest_tmp/test_invalid_api_budget_is_rej0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10c672430&gt;
+
+    def test_invalid_api_budget_is_rejected_before_actor_call(tmp_path, monkeypatch):
+        def fail_actor(*_args, **_kwargs):
+            raise AssertionError("invalid budget must fail before API")
+    
+        monkeypatch.setattr(c1.api, "call_api", fail_actor)
+        card = json.loads(c1.CARD.read_text(encoding="utf-8"))
+        card["source_commit"] = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=c1.ROOT, text=True
+        ).strip()
+        card["maximum_api_requests"] = 7
+        card_copy = tmp_path / "card.json"
+        card_copy.write_text(json.dumps(card), encoding="utf-8")
+        with pytest.raises(RuntimeError, match="API budget"):
+&gt;           c1.run(tmp_path / "invalid-budget", card_path=card_copy, diagnostic_only=True)
+E           AssertionError: Regex pattern did not match.
+E            Regex: 'API budget'
+E            Input: "card runner_version 'c1-pipe3-bounded-live-v3-signal-channels' does not match runner 'c1-pipe3-bounded-live-v4-preexecution-capture'"
+
+tests/test_peerrolebench_c1_live_contract.py:131: AssertionError</failure></testcase><testcase classname="tests.test_peerrolebench_c1_live_contract" name="test_c1_public_entry_rejects_implicit_diagnostic_execution[False]" time="0.001" /><testcase classname="tests.test_peerrolebench_c1_live_contract" name="test_c1_public_entry_rejects_implicit_diagnostic_execution[None]" time="0.001" /><testcase classname="tests.test_peerrolebench_c1_live_contract" name="test_c1_public_entry_rejects_implicit_diagnostic_execution[1]" time="0.001" /><testcase classname="tests.test_peerrolebench_c1_live_contract" name="test_c1_public_entry_rejects_implicit_diagnostic_execution[true]" time="0.001" /><testcase classname="tests.test_peerrolebench_pipe3_runner_v1" name="test_boundary_seals_native_selection_and_auxiliary_consumption_separately" time="0.001" /><testcase classname="tests.test_peerrolebench_pipe3_runner_v1" name="test_boundary_rejects_evidence_for_an_unselected_candidate" time="0.001" /><testcase classname="tests.test_peerrolebench_pipe3_runner_v1" name="test_boundary_applies_selected_feedback_before_a_later_decision" time="0.001" /><testcase classname="tests.test_peerrolebench_pipe3_runner_v1" name="test_preflight_read_cut_failure_leaves_all_state_unchanged" time="0.000" /><testcase classname="tests.test_peerrolebench_pipe3_runner_v1" name="test_preflight_unavailable_offer_leaves_all_state_unchanged" time="0.000" /><testcase classname="tests.test_peerrolebench_pipe3_runner_v1" name="test_preflight_unknown_candidate_leaves_all_state_unchanged" time="0.000" /><testcase classname="tests.test_peerrolebench_pipe3_runner_v1" name="test_transaction_rolls_back_when_policy_rng_fails_after_preflight" time="0.000" /><testcase classname="tests.test_peerrolebench_pipe3_runner_v1" name="test_transaction_restores_rng_getstate_after_post_sampling_failure" time="0.000" /><testcase classname="tests.test_peerrolebench_assignment_attestation" name="test_consumed_offer_binds_preselection_context_and_state" time="0.000" /><testcase classname="tests.test_peerrolebench_assignment_attestation" name="test_unconsumed_offer_is_explicit_control_and_ignores_bundle_contents" time="0.000" /><testcase classname="tests.test_peerrolebench_assignment_attestation" name="test_consumed_public_mutation_changes_policy_input_digest" time="0.000" /><testcase classname="tests.test_peerrolebench_assignment_attestation" name="test_operator_ledger_hash_does_not_change_public_bundle_digest" time="0.000" /><testcase classname="tests.test_peerrolebench_assignment_attestation" name="test_offer_can_carry_a_late_correction_without_collapsing_source_lineage" time="0.000" /><testcase classname="tests.test_peerrolebench_assignment_attestation" name="test_offer_rejects_private_or_unknown_public_fields[bad_row0]" time="0.000" /><testcase classname="tests.test_peerrolebench_assignment_attestation" name="test_offer_rejects_private_or_unknown_public_fields[bad_row1]" time="0.000" /><testcase classname="tests.test_peerrolebench_assignment_attestation" name="test_offer_rejects_non_scalar_or_non_numeric_timing" time="0.000" /><testcase classname="tests.test_peerrolebench_assignment_attestation" name="test_offer_rejects_unsorted_or_duplicate_evidence_ids" time="0.000" /><testcase classname="tests.test_peerrolebench_assignment_attestation" name="test_attestation_rejects_future_offer_and_menu_or_context_mismatch" time="0.001" /><testcase classname="tests.test_peerrolebench_assignment_attestation" name="test_attestation_requires_state_digest_and_verification_rejects_other_decision" time="0.000" /><testcase classname="tests.test_peerrolebench_assignment_attestation" name="test_attestation_rejects_tampered_canonical_digest" time="0.000" /><testcase classname="tests.test_peerrolebench_role_evidence_selection" name="test_role_evidence_preview_commit_is_nonupdating_and_assignment_first" time="0.001" /><testcase classname="tests.test_peerrolebench_role_evidence_selection" name="test_role_evidence_commit_rolls_back_if_plan_is_stale" time="0.001" /><testcase classname="tests.test_peerrolebench_role_evidence_selection" name="test_evidence_content_mutation_does_not_change_hand_authored_overlay_choice" time="0.001" /><testcase classname="tests.test_peerrolebench_role_evidence_selection" name="test_judgment_score_changes_but_quality_score_is_not_read" time="0.001" /><testcase classname="tests.test_peerrolebench_role_evidence_selection" name="test_public_judgment_comparator_changes_assignment_probabilities" time="0.001" /><testcase classname="tests.test_peerrolebench_role_evidence_selection" name="test_public_judgment_rejects_duplicate_delivery_without_correction_lineage" time="0.001" /></testsuite></testsuites>

@@ -1,0 +1,57 @@
+{
+  "created_at_utc": "2026-10-08T10:14:01.460887+00:00",
+  "purpose": "Pre-execution input persistence and exact selected-vector reload",
+  "scope": "Software/fixture validation only; no empirical task effectiveness or legal reward update",
+  "command": [
+    "/Library/Developer/CommandLineTools/usr/bin/python3",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/test_peerrolebench_c1_decision_capture.py",
+    "tests/test_peerrolebench_c1_live_contract.py",
+    "tests/test_peerrolebench_pipe3_runner_v1.py",
+    "tests/test_peerrolebench_assignment_attestation.py",
+    "tests/test_peerrolebench_role_evidence_selection.py",
+    "--basetemp",
+    "/Users/jingwu/work/earning-roles/experiments/logs/n03_decision_capture_20261008_v1/pytest_tmp",
+    "--junitxml",
+    "/Users/jingwu/work/earning-roles/experiments/logs/n03_decision_capture_20261008_v1/junit.xml"
+  ],
+  "cwd": "/Users/jingwu/work/earning-roles",
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "packages": {
+    "numpy": "1.26.4",
+    "pytest": "8.4.2"
+  },
+  "git_commit": "d6d15d67621a4c252d2e200d3a4948a8251dd942",
+  "dirty_worktree": true,
+  "source_sha256": {
+    "scripts/peerrolebench_c1_pipe3_bounded_live.py": "9124c576604293c78d513f3876da1a3b2fb826a6c6835aba610e489f6128cf35",
+    "scripts/peerrolebench_pipe3_runner_v1.py": "b45cf7a53e1ef0aa3f83567d373aa7752f052c4c309881db5f3e9e7ba38f28fb",
+    "scripts/peerrolebench_assignment_attestation.py": "70ef6608299b27d504ea4c8e1ac64e4bb719a8f6dca4bdf2af3df4e54d71e3fa",
+    "scripts/peerrolebench_policy_sidecar.py": "9ad8a4b5068bfbdb7cd1e34fc63c5dc8a000b4c5e31b911186bb64a26e3251ac",
+    "scripts/peerrolebench_role_evidence_offer.py": "163c656a307d582c5e6dcc5d3dd26429575c63d0508b0f01afc50016c5adfdf2",
+    "scripts/peerrolebench_role_evidence_selection.py": "b7cb4c960a63907f1186771d74a37065e001a3619df6f77bc93242ac2caca74b",
+    "scripts/peerrolebench_role_evidence_scorer.py": "7f4a26faa3488cb0b10b1a3f48332bc96e46152029c153a7fd23d10eb6109813",
+    "scripts/peerrolebench_baseline_policies.py": "cabc35ebcb47c2faee8fd860ec3cff42822805710906641e8c3011863d7abff8",
+    "tests/test_peerrolebench_c1_decision_capture.py": "0c0df44b9760edb59dc5bda52feed0890405fc3510d0bc9253e43606ac27eb36",
+    "tests/test_peerrolebench_c1_live_contract.py": "bc05ca4a0fb772e6f6345be0ef1dbebd5660bbf88561091b632d484701dca51f",
+    "tests/test_peerrolebench_pipe3_runner_v1.py": "0c88db0bc5075f1da3a16e92923b4c1cc48ff189300da635cd4428ea97e860e7",
+    "tests/test_peerrolebench_assignment_attestation.py": "ba38c3af86dd12682e90c26d8bd1e25b7db1c78b6710cd6d9d149ccb213a926b",
+    "tests/test_peerrolebench_role_evidence_selection.py": "ab6a87fc2268cfa722cb64f23f5c4bca018fb3d208ef0b508467b0bc3708f2a5"
+  },
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "seed": "fixed per software test; no scientific sampling",
+  "expected_properties": [
+    "source and target inputs persist before task start",
+    "exact chosen features recover without encoder call",
+    "immutable no-overwrite bytes",
+    "existing diagnostic boundaries unchanged"
+  ],
+  "known_review_concerns": [
+    "role offer permits missing overlay",
+    "decision directory precreation may conflict with actor workspace mkdir"
+  ]
+}

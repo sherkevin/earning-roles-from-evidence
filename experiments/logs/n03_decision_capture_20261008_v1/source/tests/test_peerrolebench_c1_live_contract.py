@@ -32,7 +32,6 @@ def _fake_actor(_out, _stage_dir, stage, prompt, _card):
 def test_c1_zero_api_contract_qualifies_all_arms(tmp_path, monkeypatch):
     monkeypatch.setattr(c1.api, "call_api", _fake_actor)
     card = json.loads(c1.CARD.read_text(encoding="utf-8"))
-    card["runner_version"] = c1.VERSION
     card["source_commit"] = subprocess.check_output(
         ["git", "rev-parse", "HEAD"], cwd=c1.ROOT, text=True
     ).strip()
@@ -102,7 +101,6 @@ def test_target_cost_survives_failure_after_target_episode(tmp_path, monkeypatch
 
     monkeypatch.setattr(c1, "_select_post_update", fail_after_target)
     card = json.loads(c1.CARD.read_text(encoding="utf-8"))
-    card["runner_version"] = c1.VERSION
     card["source_commit"] = subprocess.check_output(
         ["git", "rev-parse", "HEAD"], cwd=c1.ROOT, text=True
     ).strip()
@@ -123,7 +121,6 @@ def test_invalid_api_budget_is_rejected_before_actor_call(tmp_path, monkeypatch)
 
     monkeypatch.setattr(c1.api, "call_api", fail_actor)
     card = json.loads(c1.CARD.read_text(encoding="utf-8"))
-    card["runner_version"] = c1.VERSION
     card["source_commit"] = subprocess.check_output(
         ["git", "rev-parse", "HEAD"], cwd=c1.ROOT, text=True
     ).strip()

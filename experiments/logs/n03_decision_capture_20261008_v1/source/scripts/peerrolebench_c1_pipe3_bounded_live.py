@@ -585,8 +585,6 @@ def save_decision_capture(path: Path, seal: Any, boundary: Pipe3SelectionBoundar
     """Atomically persist the exact committed inputs before episode execution."""
     if seal.offer is None:
         raise ValueError("selection seal lacks its exact feedback offer")
-    if (role_offer is None) != (overlay is None):
-        raise ValueError("target role offer and public overlay must be captured together")
     binding = _selection_binding(seal, boundary)
     role_read = None
     if role_offer is not None:
@@ -634,8 +632,7 @@ def load_decision_capture(path: Path, *, ledger_events: Any = None, auxiliary_ro
         receipt = json.loads(path.read_text(encoding="utf-8"))
         body = dict(receipt)
         digest = body.pop("capture_digest")
-        if (body["capture_version"] != "c1-preexecution-existing-seals-v1"
-                or body["runner_version"] != VERSION or _seal_digest(body) != digest):
+        if body["capture_version"] != "c1-preexecution-existing-seals-v1" or _seal_digest(body) != digest:
             raise ValueError("decision capture digest is invalid")
         if parent_capture_digest is not None and body["parent_capture_digest"] != parent_capture_digest:
             raise ValueError("parent source capture digest differs")
@@ -652,7 +649,7 @@ def load_decision_capture(path: Path, *, ledger_events: Any = None, auxiliary_ro
         record = body["native_record"]
         if not prefix or record != prefix[-1] or record["event_type"] != "peer_selection":
             raise ValueError("capture does not end at committed selection")
-        if ledger_events is not None and json.loads(json.dumps(list(ledger_events)[:len(prefix)])) != prefix:
+        if ledger_events is not None and list(ledger_events)[:len(prefix)] != prefix:
             raise ValueError("capture differs from independent native ledger")
         native = PeerSelection(**{**record["payload"], "candidate_ids": tuple(record["payload"]["candidate_ids"])})
         offer_raw = dict(body["feedback_offer"])
@@ -678,7 +675,7 @@ def load_decision_capture(path: Path, *, ledger_events: Any = None, auxiliary_ro
         attestation = DecisionConsumptionAttestation(**att_raw)
         verify_consumption_attestation(attestation, offer, sidecar)
         auxiliary = body["auxiliary_prefix"]
-        if auxiliary_rows is not None and json.loads(json.dumps(list(auxiliary_rows)[:len(auxiliary)])) != auxiliary:
+        if auxiliary_rows is not None and list(auxiliary_rows)[:len(auxiliary)] != auxiliary:
             raise ValueError("capture differs from independent auxiliary manifest")
         offer_rows = [item for item in auxiliary if item["event_type"] == "assignment_evidence_offer"
                       and item["offer_id"] == offer.offer_id]
@@ -701,8 +698,6 @@ def load_decision_capture(path: Path, *, ledger_events: Any = None, auxiliary_ro
                 or binding["native_record_digest"] != record["record_hash"]):
             raise ValueError("capture selection binding differs")
         if body["role_offer"] is not None:
-            if body["overlay"] is None:
-                raise ValueError("target role offer is missing its public overlay")
             role_raw = dict(body["role_offer"])
             role_raw.pop("schema")
             role_offer = RoleEvidenceOffer(**{
@@ -923,7 +918,7 @@ def _run_arm(arm: str, out_dir: Path, card: Mapping[str, Any], parent: Mapping[s
         # no_update deliberately has no evidence assignment; it is the frozen
         # execution control and still uses the same menu/read-cut/cost envelope.
         pass
-    target_key = seal1.policy_selection.chosen.key
+    target_key = seal1.native_selection.chosen_peer_id + "@v1"
     selection_bindings.append(_selection_binding(seal1, boundary))
     target_capture = arm_dir / "decision_1" / "preexecution_capture.json"
     save_decision_capture(
