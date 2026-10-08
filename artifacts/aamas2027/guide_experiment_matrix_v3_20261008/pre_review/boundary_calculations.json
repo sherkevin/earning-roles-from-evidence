@@ -1,0 +1,75 @@
+{
+  "kind": "deterministic_algebraic_stress_cases",
+  "not_observed": true,
+  "empirical_forecast": false,
+  "method_ranks_supplied": false,
+  "estimated_variances_supplied": false,
+  "contrasts": [
+    {
+      "id": "B0",
+      "condition": "No outcome gain, extra work",
+      "delta_quality": 0.0,
+      "delta_cost": 0.1,
+      "delta_utility": -0.010000000000000002
+    },
+    {
+      "id": "B1",
+      "condition": "Gain exceeds overhead",
+      "delta_quality": 0.04,
+      "delta_cost": 0.1,
+      "delta_utility": 0.03
+    },
+    {
+      "id": "B2",
+      "condition": "Exact break-even",
+      "delta_quality": 0.02,
+      "delta_cost": 0.2,
+      "delta_utility": -3.469446951953614e-18
+    },
+    {
+      "id": "B3",
+      "condition": "Small gain, costly evidence",
+      "delta_quality": 0.02,
+      "delta_cost": 0.3,
+      "delta_utility": -0.009999999999999998
+    },
+    {
+      "id": "B4",
+      "condition": "Misleading or stale evidence",
+      "delta_quality": -0.02,
+      "delta_cost": 0.05,
+      "delta_utility": -0.025
+    },
+    {
+      "id": "B5",
+      "condition": "Better but expensive peer",
+      "delta_quality": 0.06,
+      "delta_cost": 0.8,
+      "delta_utility": -0.020000000000000018
+    },
+    {
+      "id": "B6",
+      "condition": "Gain with fewer repairs",
+      "delta_quality": 0.02,
+      "delta_cost": -0.1,
+      "delta_utility": 0.030000000000000002
+    }
+  ],
+  "v2_boundary": {
+    "alpha": 1.0666666666666667,
+    "kappa_threshold_per_extra_h": 0.31249999999999994,
+    "extra_h_break_even_for_delta_kappa_025": 0.8000000000000002
+  },
+  "unknown_bounds": {
+    "candidate": [
+      0.5525,
+      0.7025
+    ],
+    "control": [
+      0.588,
+      0.608
+    ]
+  },
+  "new_api_calls": 0,
+  "gpu_jobs": 0
+}

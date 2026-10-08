@@ -1,0 +1,35 @@
+{
+  "kind": "assumption_conditional_analytic_guide",
+  "version": "v2_20261008",
+  "empirical_forecast": false,
+  "scientific_results_source": false,
+  "new_api_calls": 0,
+  "gpu_jobs": 0,
+  "source_summary": "experiments/logs/n03_c1_parent_source_live_20261006_v1/summary.json",
+  "model_scope": "Frozen-policy one-step allocation submodel, not an adaptive learning simulation, executable oracle selector, benchmark or method efficacy estimate.",
+  "parameters": {
+    "candidate_quality_gap_half_d": 0.2,
+    "repair_cost_gamma": 1.0,
+    "utility_weight_lambda": 0.1,
+    "normalized_cost_jitter": {"distribution": "Rademacher", "values": [-0.1, 0.1], "probabilities": [0.5, 0.5]},
+    "episodes_per_conditional_stream": 30,
+    "root_count_sensitivity_only": 3,
+    "streams_per_root_sensitivity_only": 6
+  },
+  "scenarios": [
+    {"id": "S0", "name": "Uninformative forecast; random routing", "kappa": 0.0, "forecast": "constant_half", "overhead_h": 0.0},
+    {"id": "S1", "name": "Accurate forecast; routing unchanged", "kappa": 0.0, "forecast": "oracle_quality_plus_bias", "bias_e": 0.0, "overhead_h": 0.02},
+    {"id": "S2", "name": "Moderate routing; biased forecast", "kappa": 0.25, "forecast": "oracle_quality_plus_bias", "bias_e": 0.05, "overhead_h": 0.02},
+    {"id": "S3", "name": "Better routing; same forecast bias", "kappa": 0.50, "forecast": "oracle_quality_plus_bias", "bias_e": 0.05, "overhead_h": 0.02},
+    {"id": "S4", "name": "Better routing; poorer forecast", "kappa": 0.50, "forecast": "oracle_quality_plus_bias", "bias_e": 0.15, "overhead_h": 0.05}
+  ],
+  "paired_sensitivity": {
+    "left_scenario": "S2",
+    "right_scenario": "S3",
+    "joint_candidate_success_u": [0.0, 0.21, 0.3],
+    "cost_jitter_correlation": 0.0,
+    "paired_episode_icc_rho": [0.0, 0.05, 0.10],
+    "root_effect_sd": [0.0, 0.02, 0.05]
+  },
+  "method_mapping": "No real method is assigned kappa, bias, overhead, root SD or outcome coupling. These require qualified real pilot data and independent validation."
+}

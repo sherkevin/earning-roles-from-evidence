@@ -1,0 +1,133 @@
+{
+  "kind": "benchmark_baseline_closure_gate",
+  "version": "v4_20261008",
+  "status_before_experiment": "OPEN",
+  "guide_alignment_is_necessary": true,
+  "guide_alignment_is_sufficient": false,
+  "mandatory_gates": [
+    {
+      "id": "B1",
+      "name": "benchmark authority and claim fit",
+      "required": "active track manifest; at least two structurally distinct roots; structural/time holdout and template de-duplication; traceable scorer; ArtifactRole producer contract, recipient action, adoption, later assignment and independent Y, or PeerSelect auditable payoff; contamination/visibility mutation audit"
+    },
+    {
+      "id": "B2",
+      "name": "executable baseline qualification",
+      "required": "every required arm has versioned executable entry, sealed independent history, raw receipt and failure denominator; strong same-information control and closest faithful adapter qualified for full closure; retained NO-GO row limits claims"
+    },
+    {
+      "id": "B3",
+      "name": "same-information and complete-cost parity",
+      "required": "same legal read-cut fields, task/peer representation, encoder/checkpoint/schema, capacity, history digest, menu/version, tie-break, gate opportunity set, delay, exploration, service/model/API/tool/token/retry/state/queue budget and complete cost; post-gate coverage/UNKNOWN reported separately"
+    },
+    {
+      "id": "B4",
+      "name": "matrix completeness and independence",
+      "required": "manifest covers track/root/split, all arms, responsibility, drift/delay, independent streams, support/query or time holdout, minimum stream count and stopping receipt; no shared live memory, silent UNKNOWN or post-hoc split"
+    },
+    {
+      "id": "B5",
+      "name": "result semantics and guide consistency",
+      "required": "condition, endpoint and numerical gate sealed before execution; every cell classified favorable/neutral/adverse and falsifier run; ArtifactRole H2 requires future assignment to independent Y; absent Y is UNSTUDIED; hard-fail sentinels cover J permutation, trace-only, menu/version swap, recipient-only/mixed/UNKNOWN and unselected-label censoring"
+    },
+    {
+      "id": "B6",
+      "name": "statistical and cost evidence",
+      "required": "root/stream-aware uncertainty, ITT/all-attempt estimands, effect estimates, UNKNOWN worst-case bounds, failed/unstarted counts, full quality-cost/service accounting, and overlap/positivity or pre-registered randomized transport"
+    },
+    {
+      "id": "B7",
+      "name": "reproducible closure receipt",
+      "required": "source/data/scorer/prompt/model/config/hardware hashes, commands, raw outputs and summaries; independent environment/code path, blind scorer, policy-state masking, adversarial mutation replay and independent reviewer"
+    }
+  ],
+  "closure_rule": "CLOSED_FULL iff every mandatory gate B1-B7 appears exactly once and is PASS, the primary ArtifactRole future-assignment-to-independent-Y cells are complete, the required target cells are executed with known denominators, no unresolved protocol contradiction/leakage/unfair information/missing denominator remains, and the clean replay/independent-review receipt passes. This closure is independent of method_outcome: positive, neutral, or adverse completed results are allowed; insufficient or UNSTUDIED evidence keeps the gate OPEN. CLOSED_BOUNDED is not a benchmark acceptance status; bounded findings remain OPEN.",
+  "claim_rule": "Gate CLOSED_FULL closes benchmark+baseline acceptance; it does not force a positive method result. A positive H2/H3 claim needs its own evidence. If the method is neutral/adverse against the strong control, report a bounded/null/negative/trade-off conclusion. If H1 is positive but H2 is neutral, support information value only; if H2 improves but H1 is not identified, the effect is confounded.",
+  "illustrative_v3_numbers_are_thresholds": false,
+  "new_api_calls": 0,
+  "gpu_jobs": 0,
+  "benchmark_runs": 0,
+  "closure_scope": "benchmark_baseline_acceptance",
+  "primary_track": "ArtifactRole",
+  "secondary_track": "PeerSelect",
+  "guide_alignment_definition": "Applicable condition, endpoint and numerical gate sealed before execution; observed regime classified as favorable, neutral or adverse; falsifier and denominator checks run; every required cell reported.",
+  "status_enum": [
+    "PASS",
+    "FAIL",
+    "UNSTUDIED",
+    "BLOCKED",
+    "N_A_PREDECLARED"
+  ],
+  "required_receipt_fields": [
+    "closure_scope",
+    "guide_version",
+    "goal_sha256",
+    "evaluation_sha256",
+    "pre_run_manifest_sha256",
+    "gates",
+    "track_manifest",
+    "roots",
+    "streams",
+    "arms",
+    "minimum_streams_per_arm",
+    "holdout",
+    "artifactrole",
+    "target_cells",
+    "hard_fail_sentinels",
+    "real_api_calls",
+    "stop_receipt",
+    "denominator_reconciliation",
+    "cost_reconciliation",
+    "independent_review",
+    "clean_replay",
+    "method_outcome",
+    "readiness_level",
+    "status"
+  ],
+  "hard_fail_sentinels": [
+    "judgment_permutation",
+    "trace_only",
+    "candidate_id_menu_order_permutation",
+    "version_swap_stale_evidence",
+    "recipient_only_mixed_unknown",
+    "unselected_label_censoring",
+    "replay_idempotence_correction_lineage",
+    "gold_future_label_injection"
+  ],
+  "readiness_levels": {
+    "exploratory": "Protocol/fixture/single-root or insufficient precision; no main scientific claim.",
+    "findings_ready": "Reproducible real result with at least one independent confirmation or strict controlled diagnostic, complete denominator/cost and bounded claim scope; positive or negative allowed.",
+    "proceedings_ready": "At least three structural roots, or a pre-registered precision-justified two-root design; multiple independent streams, unseen confirmation, strongest same-information and closest published treatment, full statistics/cost and clean replay."
+  },
+  "method_outcome_enum": [
+    "positive",
+    "neutral",
+    "adverse",
+    "insufficient"
+  ],
+  "positive_superiority_required_for_closure": false,
+  "receipt_status_enum": [
+    "OPEN",
+    "CLOSED_FULL",
+    "FAIL"
+  ],
+  "status_matrix": {
+    "OPEN": "Any gate not PASS, missing/UNKNOWN/UNSTUDIED required cell, insufficient method outcome, or readiness below proceedings_ready; benchmark+baseline acceptance remains open.",
+    "CLOSED_FULL": "All B1-B7 PASS, required cells complete, proceedings-ready evidence, clean replay and independent review; method_outcome may be positive, neutral, or adverse. Target cells must cover each pre-run root/stream/arm tuple and include H1/H2/H3/safety; the ArtifactRole H2 cells must carry known future-Y evidence.",
+    "FAIL": "A hard-fail sentinel, leakage, unfair information, denominator contradiction, invalid root/stream, or failed reproducibility invalidates the acceptance attempt; preserve evidence and rerun only under a new pre-registered card."
+  },
+  "bounded_status_rule": "CLOSED_BOUNDED is prohibited for closure_scope=benchmark_baseline_acceptance; use readiness_level=findings_ready plus status=OPEN and bounded claim_scope.",
+  "real_api_requirement": "A zero-call fixture may close only a protocol qualification subgate; benchmark+baseline acceptance requires real API evidence with raw response hashes, attempted/charged counts and post-stop call count.",
+  "history_semantics": "Parity requires the same legal history opportunity/read-cut schema and public-input digest across arms; each adaptive arm retains an independent realized-history namespace and records its own history digest.",
+  "cross_field_checks": [
+    "gates has exactly seven entries with unique IDs B1..B7; no duplicate can be signed",
+    "every root/stream/arm tuple in the pre-run stream manifest has a target cell with root_id, stream_id and arm_id",
+    "target cells include H1, H2, H3 and safety; ArtifactRole H2 has a known future Y with assignment and evidence digest",
+    "minimum_streams_per_arm is at least two and each arm meets it with independent history namespaces",
+    "each sentinel has executed=true, PASS status, reason and evidence digest",
+    "real API attempted/charged/successful and stop receipt counts agree; post-stop calls are zero",
+    "gate/cell/stream denominators reconcile arithmetically and complete-cost ledger is independently verified",
+    "estimate and interval are finite, ordered and contain the estimate",
+    "independent reviewer identity differs from all gate verifiers"
+  ]
+}

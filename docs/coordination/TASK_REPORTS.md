@@ -1,5 +1,83 @@
 # Task reports
 
+- [blocked_pre_execution] 2026-10-08 PIPE1 pinned native harness 的 Executor 可读 reports/expected、shell 无白名单，且 run_all 未把 generated spec/brief 写入 task 目录；零调用复现后阻止直接路由实验。需版本化安全隔离、材料接线、pre-Verifier scorer 与成本合同。见 [报告](task_reports/20261008_pipe1_isolation_audit.md)。
+
+- [candidate_reassessment] 2026-10-08 基于 PIPE3 fresh screen 与 PIPE1 隔离审计重排下一步：不再追加 PIPE3 时间戳判断；PIPE1 先修复 sandbox/material handoff；PIPE2 作为最值得做零调用 lineage/parity 资格化的候选，尚未升级 active。见 [路线重审](../research/candidates/benchmark_route_reassessment_20261008.md)。
+
+- [conditional_guide_go / empirical_forecast_not_identified] 2026-10-08 Guide 多角度审核：三位 Codex gpt-6-sol 分查选型/公平性、效果联合一致性、优势/不足；v3 增加机制驱动的赢/平/输、强对照、成本/UNKNOWN边界，修复Qp权限与预测目标等两轮意见，保留首稿。终审仅条件指南GO，真实方法排名/误差仍未识别；Goal/正文/main.pdf不改，0新API/GPU/benchmark。见 [报告](task_reports/20261008_guide_multiview_mechanism_audit.md)。
+
+- [screen_stopped] 2026-10-08 两次真实fresh producer生成均通过有限3项Qp检查，按卡停止；2504输入/511输出token，累计35尝试/72task请求。新代码进入各自公开历史，尚无未来消费/J/A/Y/训练；固定代码好坏不能代替自然peer差异。见 [报告](task_reports/20261008_fresh_producer_support_screen.md)。
+
+- [diagnostic_failed / repair_observation_ready] 2026-10-08 真实职责分离诊断：2次API后因datetime语义错误导致上游误接受而停止；后两格未执行，累计33尝试。2次公开沙箱轨迹已给出T/空格差异，未验证模型利用/方法收益。见 [报告](task_reports/20261008_scoped_judgment_execution.md)。
+
+- [partial] 2026-10-08 公开上下文表示：真实本地BGE 463/66token完整编码、768维经既有选择保存恢复；54项软件检查通过，可加XOR限制已记。无历史/收益/效果。见 [报告](task_reports/20261008_public_context_representation.md)。
+
+- [public_reference_archived / method_forecast_open] 2026-10-08 公开原生成绩参照：TeamBench、graph-ipd、Meta-Team及相关协作/委派公报落到用户指定reasonable_results，175条记录/60个源文件保留口径、误差定义和冲突；独立Codex审查修复统计单位与分母，mixed聚合不拟合先验。Goal与Guide参数不变，0新推理/benchmark/GPU。见 [报告](task_reports/20261008_public_native_result_reference.md)。
+
+- [partial] 2026-10-08 决策输入持久化：执行前保存、独立前缀核对及原向量恢复通过48项软件检查；不是合法奖励或学习收益。见 [报告](task_reports/20261008_preexecution_decision_capture.md)。
+
+- [conditional_guide_complete / empirical_forecast_open] 2026-10-08 Guide 置信度与联合分布重建：独立 Codex 审查撤回 v1 未拟合的方法预期；v2 同源计算质量、Brier/ECE、成本/效用的有限样本分布、协方差、预测区间和敏感性，附空白逐流对标模板。现实排序/误差仍未识别，Goal 与正文不变，0 新 API/GPU。见 [报告](task_reports/20261008_guide_confidence_and_joint_distribution.md)。
+
+- [partial] 2026-10-08 任务条件对照：经典分块ridge通过22项检查并表达交叉偏好；MiniLM截断当前合同，缓存BGE窄范围覆盖修正通过。无真实收益/新API/GPU，不锁定backbone。见 [报告](task_reports/20261008_task_conditioned_comparator.md)。
+
+- [done] 2026-10-08 唯一主版维护确认：10 个源输入摘要、版本和父目录主版一致；修正临时旧构建入口，明确合并、检查、同步职责。正文 8 页，科学门不变。见 [报告](task_reports/20261008_main_pdf_maintenance_confirmation.md)。
+
+- [partial] 2026-10-08 有符号完整岭回归候选数值核心：v1逆矩阵抵消失败保留，v2 18项测试/258前缀通过；不视为真实效果或新训练贡献。见 [报告](task_reports/20261008_signed_ridge_comparator.md)。
+
+- [guide_created] 2026-10-08 watermarked prospective experiment guide: the
+  user-authorized independent target matrices map to all three body tables,
+  derive utility/prediction/interaction/state/service quantities consistently,
+  and include null and strong-control-win scenarios. Codex independent methods
+  review fixes are incorporated; empirical paper cells and Goal remain intact.
+  0 new API/GPU runs. See [report](task_reports/20261008_watermarked_experiment_target_guide.md).
+
+- [partial] 2026-10-08 旧标签更新的诊断隔离与 producer 生成费用补齐，首轮快照别名失败保留；详见 [报告](task_reports/20261008_reward_boundary_and_generation_cost.md)。科学门未打开。
+
+- [data_extracted] 2026-10-08 measured values and forecast limits: extracted
+  the real PIPE3 per-arm check counts and single-update timings into a scoped
+  diagnostic CSV with raw-source SHA-256. Missing method effects cannot be
+  extrapolated from one shared artifact and unexecuted post-update previews;
+  scientific cells remain unfilled. Goal unchanged, 0 new API/GPU runs. See
+  [report](task_reports/20261008_measured_values_and_forecast_limits.md).
+
+- [evidence_audited] 2026-10-08 result-table fill eligibility: audited the three
+  body-facing grids against real API runs, PeerSelect smoke, responsibility
+  controls, and ER-G3/G4. No empirical cell is eligible as a paper method result;
+  the eight-call PIPE3 run yields only single-root development diagnostics,
+  including one update latency per updating policy. All cells remain blank;
+  Goal unchanged, 0 new API/GPU runs. See [report](task_reports/20261008_result_table_fill_eligibility.md).
+
+- [partial] 2026-10-08 四格消融解释并入主版：明确新增评价信息、参数更新与交互的三个差值，补具体实例和未测结果表；正文8页，科学门未开。见 [报告](task_reports/20261008_information_update_contrasts.md)。
+
+- [presentation_revised] 2026-10-08 body result-table correction：回应用户对文字过多的
+  质疑，移出旧 RQ 索引表和组件解释列，将正文候选收敛为主结果、在线服务/漂移、消融/责任
+  三张数值网格；恢复 H3 backlog 和遗忘指标，保留未合格的 published adapter 标记。
+  v6 官方本地模板编译为 2 页，0 overfull、0 未解析引用，逐页核查并保留历史。主稿未由
+  本任务合并或提升，0 API/GPU；资格和科学 gate 仍开放。见
+  [revision report](task_reports/20261008_experiment_tables_body_revision.md)。
+
+- [partial] 2026-10-08 主版合并 balance v2：源/PDF 同步，正文 8 页；最终引用解析通过。纠正早期 console 警告误判，保留末页留白和科学证据缺口。见 [报告](task_reports/20261008_main_pdf_master_current_review.md)。
+
+- [presentation_complete] 2026-10-08 standalone experiment-matrix blueprint：将 RQ1–RQ4
+  对应为 overview、主结果、在线服务/稳定性、机制与责任消融四张 LaTeX 表；经验数值全部
+  保留横线占位。官方模板构建为 3 页，0 overfull、0 未解析引用；独立 PDF 与源码、编译
+  证据已归档，未修改主版 PDF，0 API/GPU。见
+  [blueprint report](task_reports/20261008_experiment_matrix_blueprint.md)。
+
+- [partial] 2026-10-08 experiment-matrix audit and layout candidate：对照本地
+  CollabLLM、MultiAgentBench 与 Cross-environment Cooperation 的结果表，确认当前
+  六列表格把执行元数据和空结果栏混在一起，导致 `\scriptsize` 密集且没有经验数值；保留
+  九个执行 cell 到独立 manifest，主稿改为四行 RQ overview 与 H1–H4 endpoint contract。
+  候选编译为正文 8 页、总 9 页、引用解析且无 overfull；未运行 API/GPU/benchmark，科学
+  submission gate 不变。见 [audit](task_reports/20261008_experiment_matrix_audit.md)。
+
+- [partial] 2026-10-07 canonical main PDF baseline synchronization：当前源的
+  baseline 表述在隔离构建中通过；版本 PDF 正文 8 页、总 9 页、References 从第 9 页开始，
+  无未解析引用和 overfull box。已保留不可变版本并同步上一层唯一主版及 provenance，SHA-256
+  为 `3bdfeec42d8ab983c8bcc73fc51642aae2d064bd16e73de997840ff3764aebf8`。这是论文版本维护，
+  不代表 benchmark、baseline 或科学投稿 gate 已打开。见
+  [report](task_reports/20261007_main_pdf_master_baseline_sync.md)。
+
 - [blocked_by_evidence] 2026-10-07 candidate manifest consistency audit：旧两 root manifest、
   新 parity card 与 C1 live card 对 development root、`contextual_trust`/`contextual_trust_linear`
   和完整 arm coverage 的描述不一致。审计按预期返回 `BLOCKED_PRE_EXECUTION`；2 项测试在
@@ -30,6 +108,8 @@
   structural root、真实 later-use、独立 history、完整成本和新预算仍开放，见
   [report](task_reports/20261007_baseline_live_parity_card_v02.md)。
 
+- [partial] 2026-10-07 reference survey and supplement: five primary-source strong-paper samples contain 38–65 compiled references, and their bibliographies mix nearest work, foundations, benchmark/evaluator sources, adjacent evidence, and labelled preprints rather than citing only top conferences. The active manuscript moved from 22 cited keys/28 entries to 30/30 after adding eight argument-bearing sources and removing six stale uncited entries. The candidate has 8 body pages, 9 total pages, references from page 9, 0 unresolved citations, and 0 overfull boxes; the scientific/submission gate is unchanged. See [reference survey](task_reports/20261007_reference_supplement.md).
+
 - [partial] 2026-10-07 PIPE1 offline adapter qualification: composed the existing ledger
   replay, task-id, source→target schedule, selection receipt, ownership and UNKNOWN/no-update
   contracts into a zero-call adapter. The 9-case suite and `py_compile` pass; mutation cases
@@ -53,6 +133,14 @@
   `artifacts/aamas2027/main.pdf`; provenance, page count, references boundary and SHA-256 agree.
   The paper remains an internal pre-results revision with `submission_ready=false`. See [master
   report](task_reports/20261007_main_pdf_reference_supplement_sync.md).
+
+- [partial] 2026-10-07 Figure 2 microtype correction and canonical master sync：受限
+  v53–v55 轮次保留每个 prompt/image/哈希与失败原因；v53 无可观察改善，v54 的
+  `Profile P (< κ)` 符号变形被拒绝，v55 修正后通过独立图面和实际版心核查。v51/v55
+  候选 PDF 为 8 个正文页、总 9 页、References 从第 9 页开始、引用解析且 0 overfull，
+  已提升为唯一 `artifacts/aamas2027/main.pdf`；版本目录仍是历史/回退。栅格字体生产门、
+  科学 Goal 和 submission gate 不变。详见 [微文字轮次报告](task_reports/20261007_figure_microtype_round_v53_v55.md)。
+
 - [partial] 2026-10-07 PIPE1 route receipt qualification: a zero-call validator now binds
   source/target material, message/artifact/Executor/Verifier hashes, candidate versions,
   allocation propensity, provider/TZ, phase costs, selected-only visibility and causal order.
@@ -128,6 +216,14 @@
   quality, planned root splits, and candidate benchmark fields without implying live
   qualification. Isolated PDF has 8 body pages and References from page 9; 0 API/0 GPU.
   No result cell or scientific gate changed. See [build and Goal comparison](task_reports/20261007_paper_claim_distinctness_sync.md).
+
+- [partial] 2026-10-07 two-figure hierarchy/density: four bounded built-in AI edits
+  produce v51/v52, replacing v42/v48 in the internal manuscript. Regular titles,
+  tighter Figure 1 packing and clearer Figure 2 fine fields pass independent
+  actual-page observation. Body 8/total 9 pages, References alone on page 9,
+  resolved citations and no overfull. Raster-font publication quality remains
+  OPEN; no scientific API/GPU experiment or Goal downgrade. See
+  [purpose, versions, review and Goal comparison](task_reports/20261007_figure_hierarchy_density_round.md).
 
 - [partial] 2026-10-07 public contract/budget correction: restored actor-visible
   obligations removed alongside solution hints. Historical Qp FAIL does not prove
@@ -635,3 +731,7 @@ Goal 修改。
 - [partial] 2026-10-04 Canonical history provenance clean replay：在 clean commit `257791f` 上重跑正式 v2 回执，配置记录空 worktree；v1 未提交工作树回执保留，valid/mutation/exactly-once 结论不变。
 - [partial] 2026-10-04 三份审查核验文档距离审计 (`task_reports/20261004_three_doc_distance_audit.md`)：按当前唯一生效的故事线、方法论、benchmark+baseline 及三份评价标准重算距离；三份均仍 `NOT_READY`，G0/G1/G2 为部分关闭，G3–G5 未打开。工程 provenance/history 与七 arm 离线 parity 已有回执，但第二结构 root、公共 feature same-information parity、closest adapter、independent live history、future utility、实时/遗忘/成本和科学统计仍开放；不降级 Goal，不启动 API/A800。
 - [partial] 2026-10-04 三条方法不变量的合同—证据映射 (`task_reports/20261004_invariant_mapping.md`)：将 pre-selection noninterference、recipient-only attribution safety、idempotent replay 写成当前可检验性质，映射到既有零调用回执；三者目前最多支持协议/工程级 claim，不能替代 live scientific evidence 或正式定理。
+- [blocked_pre_execution] 2026-10-08 PIPE2 Scheme-B observation bridge compatibility audit：真实 PIPE2 handoff 是 opaque `artifact/extracted_rows.json`，recipient 不接收 producer source；现有 source-file observation bridge 不能直接套用，runtime receipt 也缺 J/A/Y 与 recipient pre/post diff。保留 v1 synthetic fixture 但不计为资格证据；1 项定向测试、0 API/0 GPU。下一步先做 typed handoff descriptor/schema mutation qualification，不启动真实 judgment 或 A800。见 [报告](task_reports/20261008_pipe2_observation_bridge_compatibility.md)。
+- [partial] 2026-10-08 PIPE2 typed handoff descriptor qualification：新增 `pipe2-typed-handoff-v1`，分离 producer source provenance 与 `artifact/extracted_rows.json` path/schema/hash，并保留 recipient pre/post、J/A/source completion identity；8 项定向检查通过，0 API/0 GPU，尚未接真实 J/A/Y、runtime replay 或 selector。见 [报告](task_reports/20261008_pipe2_handoff_descriptor_qualification.md)。
+- [partial] 2026-10-08 PIPE2 descriptor v2 replay：在不改写 v1 回执的前提下增加真实 seed-0 material visibility 与 `validate_extracted_rows` artifact hash 检查，9 项定向测试通过；仍未记录真实 J/A/Y、未接 observation bridge/selector，0 API/0 GPU。见 [报告](task_reports/20261008_pipe2_handoff_descriptor_qualification.md)。
+- [partial] 2026-10-08 Guide v4 benchmark+baseline closure gate repair (`task_reports/20261008_guide_closure_gate_repair.md`): v3 only described conditional result directions and could not sign an acceptance receipt. v4 defines B1--B7, exact closure states, target-cell/stream/future-Y/API/stop/denominator evidence, and a fail-closed validator with 8 software-only tests. Neutral/adverse complete evidence may close the benchmark evidence gate without supporting method superiority; missing/insufficient evidence remains OPEN. No new API/GPU/benchmark run; Goal and scientific closure remain unchanged and OPEN.

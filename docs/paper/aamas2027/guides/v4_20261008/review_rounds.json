@@ -1,0 +1,55 @@
+{
+  "kind": "v4_closure_contract_review",
+  "date": "2026-10-08",
+  "scientific_experiments": 0,
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "rounds": [
+    {
+      "round": "semantic_design",
+      "reviewer": "/root/guide_gate_closure_design",
+      "mode": "read_only",
+      "verdict": "GO_CONDITIONAL_GUIDE",
+      "findings": [
+        "B1-B7 cover authority, same-information baselines, independence, future-Y, ITT/UNKNOWN, cost and replay",
+        "neutral/adverse complete result may close the evidence gate without claiming method superiority",
+        "CLOSED_FULL versus bounded state and history opportunity semantics must be explicit"
+      ]
+    },
+    {
+      "round": "adversarial_schema_before_repair",
+      "reviewer": "/root/guide_gate_adversarial_audit",
+      "mode": "read_only",
+      "verdict": "P0_NOT_READY",
+      "findings": [
+        "old schema accepted seven duplicate B1 gates as CLOSED_FULL",
+        "old schema accepted all FAIL gates as CLOSED_BOUNDED",
+        "artifact existence, denominator and independent verifier were not enforced"
+      ]
+    },
+    {
+      "round": "repair_regression",
+      "reviewer": "Codex root plus software negative tests",
+      "mode": "software_only",
+      "verdict": "PASS_STRUCTURAL_REPAIRS",
+      "evidence": "experiments/logs/experiment_target_guide_20261008_v4/closure_validator_v4/summary.json",
+      "tests": 8,
+      "findings": [
+        "duplicate/missing gates, malformed IDs/enums, NaN/interval failures, target-cell omissions, missing future-Y, zero denominators and API/stop mismatch are rejected",
+        "synthetic complete neutral receipt is accepted structurally, preserving separation between evidence closure and method outcome"
+      ]
+    },
+    {
+      "round": "final_external_review",
+      "reviewer": "Codex gpt-6-sol",
+      "mode": "requested_read_only",
+      "verdict": "PENDING_CAPACITY",
+      "findings": [
+        "Two additional Codex final reviewers hit model capacity; a third was interrupted before reporting. No verdict is inferred from these non-reviews."
+      ]
+    }
+  ],
+  "final_status": "CURRENT_CONDITIONAL_GUIDE; SCIENTIFIC_CLOSURE_OPEN; EXTERNAL_STRUCTURAL_REVIEW_PENDING",
+  "goal_changed": false,
+  "empirical_forecast": "NOT_IDENTIFIED"
+}

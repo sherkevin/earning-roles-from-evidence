@@ -1,0 +1,106 @@
+{
+  "kind": "independent_codex_review_synthesis",
+  "timestamp_utc": "2026-10-08T12:07:03.141770+00:00",
+  "model": "gpt-6-sol",
+  "mode": "read_only",
+  "new_experiments": 0,
+  "reviewed_final_source_sha256": "ae45e87308165b879ba3424312324abcc77b7d5155c88e8b5306b7fc1f0da1b9",
+  "rounds": [
+    {
+      "round": "v2_initial",
+      "reviewers": [
+        {
+          "agent": "/root/guide_v2_benchmark_review",
+          "verdict": "CONDITIONAL_ONLY_NOT_METHOD_FORECAST",
+          "findings": [
+            "S0-S4 not mapped to real methods",
+            "roots/strong live parity/adapter unresolved",
+            "mechanism-by-condition comparison absent"
+          ]
+        },
+        {
+          "agent": "/root/guide_v2_effect_review",
+          "verdict": "CONDITIONAL_MATH_PASS_EMPIRICAL_NOT_IDENTIFIED",
+          "findings": [
+            "oracle q+e is not a predictor",
+            "selected populations differ",
+            "repair-only cost creates dependence",
+            "root/history/missingness affect errors"
+          ]
+        },
+        {
+          "agent": "/root/guide_v2_advantage_review",
+          "verdict": "PARTIAL_GO",
+          "findings": [
+            "missing two-sided mechanism matrix",
+            "cold start/noisy J/drift/cost losing regimes missing",
+            "same-info learner may explain all gain"
+          ]
+        }
+      ]
+    },
+    {
+      "round": "v3_first",
+      "findings": [
+        "private Qp live visibility unspecified",
+        "task-conditioned strong comparator required before matching claim",
+        "body delta-A arrow conflict and label horizon unspecified",
+        "constant-J falsifier ambiguous",
+        "public L2 versus custom L2-public boundary",
+        "gate coverage must be allowed to differ",
+        "selected-only overlap and no unselected labels",
+        "B2 negative floating zero"
+      ],
+      "old_artifacts": "artifacts/aamas2027/guide_experiment_matrix_v3_20261008/pre_review/",
+      "resolved_in": "v3 revision r2"
+    },
+    {
+      "round": "v3_final_r2",
+      "reviewers": [
+        {
+          "agent": "/root/guide_v2_benchmark_review",
+          "guide_verdict": "GO",
+          "empirical_forecast": "NO_GO_NOT_IDENTIFIED",
+          "remaining_p0": false,
+          "final_excerpt": "P0 is closed. v3 is GO as a conditional research guide.",
+          "pending": [
+            "canonical body matrix integration",
+            "qualified live parity",
+            "roots and forecast sample"
+          ]
+        },
+        {
+          "agent": "/root/guide_v2_effect_review",
+          "guide_verdict": "GO",
+          "empirical_forecast": "NOT_IDENTIFIED",
+          "remaining_p0": false,
+          "final_excerpt": "guide 逻辑 GO；真实效果预测 NOT_IDENTIFIED。",
+          "verified": [
+            "seven utility boundaries",
+            "kappa threshold .3125",
+            "overhead boundary .8",
+            "UNKNOWN bounds",
+            "same selected population and legality"
+          ]
+        },
+        {
+          "agent": "/root/guide_v2_advantage_review",
+          "guide_verdict": "GO",
+          "empirical_forecast": "NOT_PASSED",
+          "remaining_p0": false,
+          "final_excerpt": "Guide v3: GO as a conditional research guide. Empirical forecast gate: not passed.",
+          "verified": [
+            "mechanism-driven wins/losses",
+            "same gate trace task features",
+            "judgment fact error boundary",
+            "Goal unchanged"
+          ]
+        }
+      ]
+    }
+  ],
+  "notes": [
+    "Structured synthesis, not a fabricated verbatim transcript. Exact short final excerpts and detailed repair mapping also in independent_review.md.",
+    "Agreement is guide logic, not empirical superiority."
+  ]
+}

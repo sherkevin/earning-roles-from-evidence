@@ -893,6 +893,10 @@ v27/v22/v24 图组构建并目视核验：正文 8 页、参考文献从第 9 �
 因此晋升为当前正文候选，旧 v27/v22/v24 保留回退。该晋升只改变图形资产，不改变科学结果或
 submission gate；三张图仍是 AI 栅格输出，矢量/嵌入字体生产门尚未关闭。
 
+### 2026-10-07 AI figure production round v30/v32/v34
+
+The assistant retained the v28/v23/v26 visual designs and used the built-in AI image generator to create textless bases v29/v31/v33. Each complete prompt and output is preserved. LuaLaTeX then added only the exact short labels in embedded Arial Bold TrueType; no HTML or Python drawing was used. The resulting v30/v32/v34 PDFs pass pdffonts, paper-scale, grayscale, and isolated AAMAS build checks: 10 total pages, 8 body pages, references begin page 9, no unresolved references, and zero overfull boxes. The AI visual bases remain raster images, while visible labels are scalable and extractable. The candidates were promoted to the active draft figure paths; prior candidates remain for rollback. Final independent visual audit and scientific submission readiness remain open. This work produces paper assets, not role-learning efficacy evidence. The image service did not disclose its model identifier, so the output is not labelled image2.5.
+
 ## 2026-10-07 — Observation/credit separation and paper synchronization
 
 Codex gpt-6-sol collaborators audited source-gate label support, implemented bounded
@@ -906,3 +910,189 @@ independent reward semantics, qualified roots and live efficacy remain open.
 The current PDF has eight body pages, References from page 9. Failed v1 PDF/logs
 and the complete v2 source snapshot are retained. The exact v1 main.tex was not
 snapshotted before v2 edits; its hash alone cannot reproduce that failed build.
+
+
+## 2026-10-07 — Two-figure gallery analysis and AI redraw v35–v48
+
+The assistant inspected eight original images in the local topconf-paper-figure-gallery,
+using Agentic Supernet for compact object-rich composition and Snapshot of Influence
+for technical typography and fine rules. These observations describe visible design,
+not unverified claims about awards or the authors’ drawing software. User-confirmed
+ADR0048 reduces the main paper to two figures; the experiment matrix remains in tables.
+
+Fourteen built-in image-generation calls produced one saved prompt/image pair per
+version, v35–v48. The service did not expose a selectable or returned model identifier,
+seed or generation-token usage; the images are not labelled image2.5. Rejected and
+superseded versions are retained. A Codex gpt-6-sol reviewer independently checked
+the actual images, rejected v47 for source eligibility, omitted task-to-head input and
+invented formulas, and passed the diagram semantics of v42/v48 after those corrections.
+Final visual quality and raster-font production readiness remain open.
+
+The two chosen internal candidates are original AI rasters embedded without pixel
+edits, drawing or text overlays into 7in × 2.333in PDF containers (about 310 raster dpi).
+The containers contain no extractable fonts; raster appearance does not prove an
+embedded-font pass or exact label font sizes. Source/caption edits remove the third
+figure and synchronize the Chinese reading copy. Pre-edit sources and assets,
+all generation events and hashes, reviewer conclusions and build configuration are
+saved in `experiments/logs/figure_compact_gallery_round_20261007_v35_v36/`.
+The earlier v30/v32/v34 production assertions are narrowed by the same-day counteraudit.
+
+This round runs no scientific LLM experiment or GPU job, supplies no efficacy number,
+and does not change Goal, backbone/updater selection, innovation decisions or the
+scientific submission gate. Actual build and paper-scale findings are recorded in
+`docs/coordination/task_reports/20261007_compact_two_figure_redraw.md`.
+
+## 2026-10-07 — Targeted figure hierarchy/density edits v49–v52
+
+Four real built-in image-generation calls were made within the predeclared cap.
+v49 repacks Figure 1's right-side loop into two rows; v50 improves Figure 2's
+fine labels. Both retained bold titles despite the first typography instruction.
+v51/v52 use an existing ordinary label within each image as an explicit type
+specimen, achieving regular-weight panel headings. Every actual prompt, original
+image, parent version and hash is preserved; the first-pass failures remain.
+The service exposed neither a selectable/returned model ID nor seed/usage, so
+these outputs are not identified as image2.5.
+
+A Codex gpt-6-sol reviewer checked the actual images and paper pages 3/4.
+Diagram semantics, cropping, observable paper readability and pair coherence
+pass for the internal manuscript. The smallest Figure 2 labels remain thin/small
+at whole-page view; raster-font and final publication quality remain OPEN.
+Our wrappers contain zero extractable fonts; gallery JPEG inspection cannot
+establish whether the reference papers embed extractable fonts.
+
+v51/v52 replace the internal candidates as unmodified AI rasters in PDF containers,
+without diagram scripts, pixel edits or text overlays. The Figure 1 caption and
+Chinese reading copy add the Figure 2 validation reference before future-state
+feedback. A unique build and exact source snapshot are retained. The current
+PDF has 8 body pages, 9 total, References alone from page 9, resolved citations
+and zero overfull boxes; all nine pages were rendered and inspected. The existing
+ifx compatibility warning remains recorded. Stable output, raw reviewer message
+and receipts are under `experiments/logs/figure_hierarchy_density_round_20261007_v49_v50/`
+and `artifacts/aamas2027/hierarchy_density_20261007_v51_v52/`. Under ADR 0050,
+`artifacts/aamas2027/main.pdf` is the sole canonical current PDF; the versioned
+directory is retained as its promoted source snapshot.
+
+No scientific LLM experiment or GPU job was run, no result cell or method selection
+changed, and Goal was not revised. Scientific submission readiness remains closed.
+
+## 2026-10-07 — Figure 2 microtype correction v53–v55 and canonical master sync
+
+The assistant opened a bounded follow-up round because Figure 2's smallest labels
+were still thin at paper scale. Three built-in image-generation edits were made
+within the recorded four-call maximum. v53 produced no sufficiently observable
+improvement and was superseded. v54 made the labels darker but mutated the exact
+symbol `Profile P (< κ)` into an incorrect-looking expression, so it was rejected
+and never entered the manuscript. v55 inherited the useful microtype change and
+restored the exact symbol; its topology, P/D split, residual score, sealed
+assignment, validation, one-update and No-op paths were independently checked.
+
+Every prompt, raw output path, image hash and rejection reason is retained under
+`article/aamas2027/figures/ai_versions/v53_method_microtype_20261007/`,
+`v54_method_microtype_stronger_20261007/`, and
+`v55_method_microtype_symbol_fix_20261007/`. The round receipt and paper-scale
+review are under `experiments/logs/figure_microtype_round_20261007_v53_v55/`.
+The v55 raster was embedded in a proportional PDF container without HTML/Python
+drawing, pixel editing, or text overlay; the container has no extractable fonts.
+
+The v51/v55 candidate build passed the internal layout checks: eight body pages,
+nine total pages, References beginning on page 9, resolved citations, zero
+overfull boxes, and no figure crop or semantic topology drift. Following ADR 0050,
+the byte-identical candidate was promoted to the single current internal master
+`artifacts/aamas2027/main.pdf`; versioned PDFs remain rollback evidence. This
+promotion changes only paper presentation. It adds no scientific API/GPU evidence,
+does not close the raster-font production gate, and does not alter Goal or the
+submission gate.
+
+## 2026-10-07 — Reference-list survey and citation-coverage supplement
+
+The assistant audited five primary-source strong-paper samples before editing the
+bibliography: two ICML 2025 papers tagged oral in the local gallery, two official
+AAMAS partner/reputation papers, and ACL 2025 MultiAgentBench. Their compiled
+reference lists contain 38–65 entries (median 57). The audit found a deliberate mix
+of nearest problem work, canonical foundations, benchmark/evaluator specifications,
+adjacent social or human-AI evidence, and labelled preprints; it did not support a
+top-conference-only rule. Count methods, official URLs, and the pre-edit key census
+are recorded in `experiments/logs/reference_supplement_round_20261007/` and
+summarized in `docs/paper/aamas2027/REFERENCE_SURVEY_20261007.md`.
+
+The active manuscript had 22 cited keys out of 28 entries. Eight argument-bearing
+sources were added (AAMAS partner selection, ICLR MetaGPT and AgentVerse, ACL
+AppWorld, NeurIPS LLM cooperation, Nature Human Behaviour repeated games, JAIR
+continual RL, and a multi-agent non-stationarity survey); six stale uncited entries
+from an abandoned benchmark direction were removed. The active `.bib` now contains
+30 entries and every entry is cited. The Chinese reading copy was updated to identify
+its 16-item list as a selected reading list and to defer to the English 30-entry
+source for completeness.
+
+The isolated candidate build `build/reference_supplement_20261007_v3/` has eight
+body pages, nine total pages, references starting on page 9, zero unresolved
+citations/references, and zero overfull boxes. Its PDF was promoted to the canonical
+internal master with hash
+`b316464801f9e02c65fa61d9f704c21945679ced1492e897df1749b72425f3be` and retained
+under `artifacts/aamas2027/reference_supplement_20261007_v3/`. This is citation
+coverage work only: it adds no scientific result and leaves the submission gate
+closed.
+
+- 2026-10-08: AI verified and merged the one-line balanced-body layout revision into source and canonical main.pdf; final-pass citation report corrected. No model/GPU experiment; all empirical cells remain unfilled. Report: `docs/coordination/task_reports/20261008_main_pdf_master_current_review.md`.
+
+- 2026-10-08: AI expanded the existing 2×2 evidence/update ablation into explicit secondary estimands, a case and an empty results table. English source, Chinese reading text and canonical PDF synchronized after final build and visual checks. No empirical values or new algorithms claimed.
+
+- 2026-10-08：Codex 根任务与 gpt-6-sol 独立审查/实现协作者核查 ADR0049，修复 legacy 更新的诊断隔离、快照别名与 producer API 费用计量。v1 33通过1失败，v2 35通过；零新 API/GPU，不构成方法效果。报告：`docs/coordination/task_reports/20261008_reward_boundary_and_generation_cost.md`。论文科学内容与唯一主版 PDF 本轮未改。
+
+- 2026-10-08：Codex与gpt-6-sol独立审查/实现协作者完成候选signed full-ridge数值基线；外部依据为NumPy/scikit-learn文档与River源码。v1反例失败保留，v2 18测试/258前缀通过，无新增LLM实验/GPU，不将控制数据写为科学效果。见`docs/coordination/task_reports/20261008_signed_ridge_comparator.md`。
+
+## 2026-10-08 — Canonical PDF maintenance confirmation
+
+Codex verified the existing master against its promoted PDF and ten source-input hashes, with a separate Codex read-only review. Root/article README and ADR0050 now state the source-merge, fresh-version-build, review and master-sync completion rule. No manuscript content, PDF bytes, empirical values or scientific claims changed. Evidence: `experiments/logs/main_pdf_policy_confirmation_20261008_v1/`; report: `docs/coordination/task_reports/20261008_main_pdf_maintenance_confirmation.md`.
+
+## 2026-10-08 — Task-conditioned comparator and local encoding audit
+
+Codex derived the additive-linear ranking counterexample, implemented a classical disjoint signed-ridge comparator, and reviewed it independently. Two logged offline runs exercised numerical controls and actual frozen local MiniLM/BGE CPU encodings. MiniLM truncation was preserved; BGE retained the four supplied texts. No task reward, task API/GPU run, novelty result or manuscript result was created. Candidate math and task report explain same-information/receipt gaps. Main manuscript/PDF remain unchanged. Evidence: `experiments/logs/n03_contextual_ridge_20261008_v1/` and `experiments/logs/n03_contextual_ridge_20261008_v2/`.
+
+## 2026-10-08 — Pre-execution capture repair
+
+Codex and gpt-6-sol implementation/review collaborators preserved existing decision sidecars, exact offers and public-score projections before task execution. v1 recorded six failures; v2 passed 48 targeted software checks with no task API/GPU calls. Four synthetic capture examples and an independent review are saved. This provides recoverable inputs, not legal rewards, task generalization or method effects. Historical runs and manuscript/master PDF are unchanged. Report: `docs/coordination/task_reports/20261008_preexecution_decision_capture.md`.
+
+## 2026-10-08 — Public-context representation and additive limitation
+
+Codex and gpt-6-sol collaborators implemented a bounded public task/recipient contract encoder and independently reviewed it. One logged CPU run used the existing frozen local BGE checkpoint, with 54 software checks and an exact representation-to-selection-to-capture roundtrip. No historical memory, reward updates, task API or GPU calls were used. A candidate note proves the additive task/recipient XOR limitation; it is not a new-method efficacy claim. Manuscript and master PDF are unchanged. Report: `docs/coordination/task_reports/20261008_public_context_representation.md`.
+
+## 2026-10-08 — Real scoped-judgment failure and public execution evidence
+
+Codex and independent gpt-6-sol reviewers prepared and audited a frozen four-cell diagnostic. Two real qwen3.8-max requests used the existing named experiment provider; the second falsely accepted the producer based on an incorrect datetime string premise, so the remaining cells were not run. Full raw responses, 4510 total tokens, 5 software checks, a standard-library reproduction and 2 public artifact sandbox traces are archived. The trace feasibility check made no API calls and did not regrade the failure or train any policy. No manuscript/master PDF or Goal changes. Report: `docs/coordination/task_reports/20261008_scoped_judgment_execution.md`.
+
+## 2026-10-08 — Fresh producer support screen
+
+Codex and gpt-6-sol collaborators implemented and reviewed a persistent public-history generation seam and its pre-request capacity bound. Two real qwen3.8-max producer calls generated distinct code for two fixed PIPE3 source schemas; both passed the three finite producer checks, triggering the predeclared stop. Total usage: 2504 input and 511 output tokens. No judgment, recipient action, target execution, training, or GPU calls. The unused target was frozen before generation. Source/actor confounding, finite coverage, and placeholder delivery identities are explicit; manuscript and canonical PDF are unchanged. Report: `docs/coordination/task_reports/20261008_fresh_producer_support_screen.md`.
+
+## 2026-10-08 — Guide multi-angle mechanism audit
+
+Codex and three read-only gpt-6-sol reviewers audited benchmark/baseline fairness, joint effect/error consistency, and mechanism-driven strengths/weaknesses. A four-page watermarked v3 guide adds favorable/adverse conditions, matched strong controls, seven algebraic utility boundaries and UNKNOWN limits; first drafts and review corrections are retained. All reviewers give conditional research guide GO and empirical forecast NOT_IDENTIFIED. No named-method rankings, estimated errors, task API/GPU runs or paper results were created. Guide master alone was promoted; Goal, active registry, body tables and manuscript/master PDF were hash-checked unchanged. Report: `docs/coordination/task_reports/20261008_guide_multiview_mechanism_audit.md`.
+
+## 2026-10-08 — PIPE2 Scheme-B handoff compatibility audit
+
+Codex and a read-only gpt-6-sol reviewer traced the real PIPE2 material adapter and compared
+it with the existing typed noisy-observation bridge. The recipient receives an opaque
+`artifact/extracted_rows.json` data artifact rather than producer source; current runtime
+receipts also lack explicit recipient judgment, action, terminal outcome, and pre/post diff.
+The bridge was therefore blocked before execution. One zero-call compatibility test and a
+structured JSONL receipt are retained; no API/GPU call, policy update, benchmark promotion,
+or manuscript/master-PDF change occurred. Report:
+`docs/coordination/task_reports/20261008_pipe2_observation_bridge_compatibility.md`.
+
+## 2026-10-08 — PIPE2 typed handoff descriptor qualification
+
+Codex implemented a zero-call typed descriptor after tracing the actual PIPE2 opaque data
+handoff. Eight focused checks pass for source-provenance versus artifact-digest separation,
+path/schema and read-cut validation, recipient manifest identity, public projection and
+fail-closed update/credit flags. No runtime J/A/Y was invented, and no API/GPU call,
+benchmark promotion, policy update, manuscript edit or canonical-PDF change occurred.
+Report: `docs/coordination/task_reports/20261008_pipe2_handoff_descriptor_qualification.md`.
+
+Descriptor v2 recheck added actual seed-0 PIPE2 material visibility and the existing
+`validate_extracted_rows` artifact-hash contract without executing candidate code. The
+focused count is 9/9; v1 receipts remain immutable and the scientific gate stays closed.
+
+## 2026-10-08 — Guide v4 benchmark+baseline closure gate repair
+
+Codex incorporated the user's correction that a result-direction guide is insufficient for closing the benchmark+baseline acceptance standard. v4 adds B1--B7 closure conditions, exact `OPEN`/`CLOSED_FULL`/`FAIL` semantics, explicit separation of evidence closure from method superiority, and a fail-closed receipt validator. Eight software-only tests reject duplicate gates, missing future-Y, zero denominators, API/stop mismatches, malformed IDs/enums, and incomplete target cells; a synthetic neutral receipt is accepted only as a structural contract test. The watermarked five-page Guide PDF was rebuilt and synced as the current conditional Guide. No new LLM/API, benchmark, or GPU experiment occurred; scientific closure remains OPEN. Report: `docs/coordination/task_reports/20261008_guide_closure_gate_repair.md`.

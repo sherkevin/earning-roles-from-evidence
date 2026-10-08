@@ -1,0 +1,50 @@
+{
+  "kind": "mechanism_condition_guide_and_algebraic_boundaries",
+  "not_observed": true,
+  "not_preregistered": true,
+  "empirical_forecast": false,
+  "real_method_parameters_identified": false,
+  "utility_definition": "U = Y - lambda * C; normalized complete cost C",
+  "illustrative_lambda": 0.1,
+  "lambda_status": "Inherited illustrative v2 weight, not a confirmed scientific threshold",
+  "contrasts": [
+    {"id": "B0", "condition": "No outcome gain, extra work", "delta_quality": 0.0, "delta_cost": 0.1},
+    {"id": "B1", "condition": "Gain exceeds overhead", "delta_quality": 0.04, "delta_cost": 0.1},
+    {"id": "B2", "condition": "Exact break-even", "delta_quality": 0.02, "delta_cost": 0.2},
+    {"id": "B3", "condition": "Small gain, costly evidence", "delta_quality": 0.02, "delta_cost": 0.3},
+    {"id": "B4", "condition": "Misleading or stale evidence", "delta_quality": -0.02, "delta_cost": 0.05},
+    {"id": "B5", "condition": "Better but expensive peer", "delta_quality": 0.06, "delta_cost": 0.8},
+    {"id": "B6", "condition": "Gain with fewer repairs", "delta_quality": 0.02, "delta_cost": -0.1}
+  ],
+  "contrast_status": "Hand-specified algebraic stress cases; no named method, dataset fit, estimated variance or ranking",
+  "v2_boundary_inputs": {"d": 0.2, "lambda": 0.1, "gamma": 1.0, "baseline_cost_c0": 1.5, "delta_kappa": 0.25},
+  "missing_outcome_example": {
+    "candidate": {"observed_binary_quality": 0.65, "unknown_fraction": 0.15},
+    "control": {"observed_binary_quality": 0.60, "unknown_fraction": 0.02},
+    "status": "Illustrative algebra only; not observed"
+  },
+  "source_files": [
+    "docs/coordination/GOAL.md",
+    "docs/research/canonical/active_versions.json",
+    "docs/research/versions/method/method_v1.3_20261007.md",
+    "docs/research/versions/evaluation/method/method_v1.4_20261007_eval.md",
+    "docs/research/versions/benchmark-baseline/benchmark_baseline_v1.1_20260930.md",
+    "docs/research/versions/evaluation/benchmark-baseline/benchmark_baseline_v1.2_20260929_eval.md",
+    "article/aamas2027/experiment_tables_body.tex",
+    "experiments/logs/n03_c1_parent_source_live_20261006_v1/summary.json",
+    "docs/coordination/task_reports/20261008_scoped_judgment_execution.md",
+    "docs/coordination/task_reports/20261008_task_conditioned_comparator.md",
+    "artifacts/aamas2027/guide_experiment_matrix_v2_20261008/joint_distribution_calculations.json"
+  ],
+  "protected_files": [
+    "docs/coordination/GOAL.md",
+    "docs/research/canonical/active_versions.json",
+    "article/aamas2027/experiment_tables_body.tex",
+    "article/aamas2027/main.tex",
+    "artifacts/aamas2027/main.pdf",
+    "artifacts/aamas2027/guide_experiment_matrix_v2_20261008/guide_experiment_matrix.pdf"
+  ],
+  "new_api_calls": 0,
+  "gpu_jobs": 0,
+  "benchmark_runs": 0
+}

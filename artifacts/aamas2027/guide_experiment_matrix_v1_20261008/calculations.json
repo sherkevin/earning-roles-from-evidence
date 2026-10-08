@@ -1,0 +1,267 @@
+{
+  "artifact_type": "prospective_guide_calculations",
+  "not_observed": true,
+  "not_preregistered": true,
+  "main": [
+    {
+      "method": "Uniform",
+      "quality": 0.5,
+      "normalized_cost": 1.0,
+      "assignment_change": 0.0,
+      "predictions": [
+        0.5,
+        0.5
+      ],
+      "brier": 0.25,
+      "calibration": 0.0,
+      "utility": 0.4
+    },
+    {
+      "method": "No update",
+      "quality": 0.5,
+      "normalized_cost": 1.0,
+      "assignment_change": 0.0,
+      "predictions": [
+        0.5,
+        0.5
+      ],
+      "brier": 0.25,
+      "calibration": 0.0,
+      "utility": 0.4
+    },
+    {
+      "method": "Raw acceptance",
+      "quality": 0.5,
+      "normalized_cost": 1.02,
+      "assignment_change": 0.06,
+      "predictions": [
+        0.15,
+        0.85
+      ],
+      "brier": 0.2325,
+      "calibration": 0.15000000000000002,
+      "utility": 0.398
+    },
+    {
+      "method": "Terminal only",
+      "quality": 0.52,
+      "normalized_cost": 1.01,
+      "assignment_change": 0.1,
+      "predictions": [
+        0.2,
+        0.8
+      ],
+      "brier": 0.22,
+      "calibration": 0.10000000000000003,
+      "utility": 0.41900000000000004
+    },
+    {
+      "method": "Ctx.-trust linear",
+      "quality": 0.55,
+      "normalized_cost": 1.03,
+      "assignment_change": 0.15,
+      "predictions": [
+        0.23,
+        0.77
+      ],
+      "brier": 0.2149,
+      "calibration": 0.07000000000000002,
+      "utility": 0.44700000000000006
+    },
+    {
+      "method": "Pooled controller",
+      "quality": 0.55,
+      "normalized_cost": 1.03,
+      "assignment_change": 0.18,
+      "predictions": [
+        0.23,
+        0.77
+      ],
+      "brier": 0.2149,
+      "calibration": 0.07000000000000002,
+      "utility": 0.44700000000000006
+    },
+    {
+      "method": "Meta-Team L2-public",
+      "quality": 0.55,
+      "normalized_cost": 1.03,
+      "assignment_change": 0.15,
+      "predictions": [
+        0.23,
+        0.77
+      ],
+      "conditional_proxy": true,
+      "brier": 0.2149,
+      "calibration": 0.07000000000000002,
+      "utility": 0.44700000000000006
+    },
+    {
+      "method": "RARE",
+      "quality": 0.6,
+      "normalized_cost": 1.05,
+      "assignment_change": 0.2,
+      "predictions": [
+        0.26,
+        0.74
+      ],
+      "brier": 0.2116,
+      "calibration": 0.04000000000000001,
+      "utility": 0.495
+    }
+  ],
+  "ablations": [
+    {
+      "variant": "Full RARE",
+      "quality": 0.6,
+      "normalized_cost": 1.05,
+      "assignment_change": 0.2,
+      "false_attribution": 0,
+      "utility": 0.495
+    },
+    {
+      "variant": "No public evidence",
+      "quality": 0.53,
+      "normalized_cost": 1.02,
+      "assignment_change": 0.1,
+      "false_attribution": 0,
+      "utility": 0.42800000000000005
+    },
+    {
+      "variant": "No delayed credit",
+      "quality": 0.55,
+      "normalized_cost": 1.03,
+      "assignment_change": 0.15,
+      "false_attribution": 0,
+      "utility": 0.44700000000000006
+    },
+    {
+      "variant": "Neither evidence nor credit",
+      "quality": 0.5,
+      "normalized_cost": 1.0,
+      "assignment_change": 0.0,
+      "false_attribution": 0,
+      "utility": 0.4
+    },
+    {
+      "variant": "No ownership gate",
+      "quality": 0.54,
+      "normalized_cost": 1.05,
+      "assignment_change": 0.24,
+      "false_attribution": 0.1375,
+      "utility": 0.43500000000000005
+    },
+    {
+      "variant": "No locality",
+      "quality": 0.61,
+      "normalized_cost": 1.18,
+      "assignment_change": 0.22,
+      "false_attribution": 0,
+      "utility": 0.492
+    },
+    {
+      "variant": "No selected-only rule",
+      "invalid_under_current_feedback_contract": true
+    },
+    {
+      "variant": "No correction / replay",
+      "quality": 0.57,
+      "normalized_cost": 1.04,
+      "assignment_change": 0.2,
+      "false_attribution": 0,
+      "utility": 0.46599999999999997
+    }
+  ],
+  "stress": [
+    {
+      "variant": "Full RARE",
+      "false_attribution_rates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "equal_weight_rate": 0.0
+    },
+    {
+      "variant": "No ownership gate",
+      "false_attribution_rates": [
+        0.25,
+        0.15,
+        0.1,
+        0.05
+      ],
+      "equal_weight_rate": 0.1375
+    }
+  ],
+  "scenarios": [
+    {
+      "name": "Null: no quality gain",
+      "rare_quality": 0.5,
+      "control_quality": 0.5,
+      "rare_cost": 1.05,
+      "control_cost": 1.03,
+      "rare_utility": 0.395,
+      "control_utility": 0.397,
+      "difference": -0.0020000000000000018
+    },
+    {
+      "name": "Small gain",
+      "rare_quality": 0.56,
+      "control_quality": 0.55,
+      "rare_cost": 1.05,
+      "control_cost": 1.03,
+      "rare_utility": 0.45500000000000007,
+      "control_utility": 0.44700000000000006,
+      "difference": 0.008000000000000007
+    },
+    {
+      "name": "S1: working target",
+      "rare_quality": 0.6,
+      "control_quality": 0.55,
+      "rare_cost": 1.05,
+      "control_cost": 1.03,
+      "rare_utility": 0.495,
+      "control_utility": 0.44700000000000006,
+      "difference": 0.04799999999999993
+    },
+    {
+      "name": "Cost overrun",
+      "rare_quality": 0.6,
+      "control_quality": 0.55,
+      "rare_cost": 1.2,
+      "control_cost": 1.03,
+      "rare_utility": 0.48,
+      "control_utility": 0.44700000000000006,
+      "difference": 0.03299999999999992
+    },
+    {
+      "name": "Strong control wins",
+      "rare_quality": 0.53,
+      "control_quality": 0.6,
+      "rare_cost": 1.05,
+      "control_cost": 1.03,
+      "rare_utility": 0.42500000000000004,
+      "control_utility": 0.497,
+      "difference": -0.07199999999999995
+    }
+  ],
+  "new_api_calls": 0,
+  "gpu_jobs": 0,
+  "utility_interaction": 0.019999999999999907,
+  "memory_budget_calculation_bytes": 38912,
+  "burst_service_ms": 20,
+  "requests_lower_bound_skeleton": 13392,
+  "future_target_assignments": 4320,
+  "observed_source_calls": 8,
+  "observed_input_tokens": 9658,
+  "observed_output_tokens": 4857,
+  "observed_summed_api_seconds": 87.95371350100001,
+  "source_mean_tokens_per_call": 1814.375,
+  "projected_token_skeleton": 24298110.0,
+  "projected_api_hours_skeleton": 40.898476777965,
+  "normal_approx_stream_count": 13,
+  "assumed_sd_planning_half_width": 0.029837077738947556,
+  "independent_zero_error_upper_95_at_300": 0.00993608194445772,
+  "source_summary_sha256": "b807764ee4a852874511897ff47582bcb8c2469c215971b486f40c54f583edac",
+  "target_spec_sha256": "def406c38ce67aad34d78bb709dcc7e013eade741642dc396f94751b1c465ad7"
+}

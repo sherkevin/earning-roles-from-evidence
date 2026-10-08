@@ -1,0 +1,917 @@
+{
+  "kind": "exact_conditional_joint_law_derivation",
+  "not_observed": true,
+  "empirical_forecast": false,
+  "new_api_calls": 0,
+  "gpu_jobs": 0,
+  "source_sha256": "b807764ee4a852874511897ff47582bcb8c2469c215971b486f40c54f583edac",
+  "spec_sha256": "a93390f8c6fba6932713b2ac751c7834e070c63458b9c00d8389a36d7546ba5c",
+  "scenario_results": [
+    {
+      "id": "S0",
+      "name": "Uninformative forecast; random routing",
+      "kappa": 0.0,
+      "forecast": "constant_half",
+      "overhead_h": 0.0,
+      "population_quality": 0.5,
+      "population_brier": 0.25,
+      "population_ece": 0.0,
+      "expected_cost": 0.9999999999999969,
+      "expected_utility": 0.3999999999999996,
+      "forecast_values": [
+        0.5,
+        0.5
+      ],
+      "metric_order": [
+        "Quality",
+        "Brier",
+        "Sample ECE",
+        "Cost",
+        "Utility"
+      ],
+      "marginals": {
+        "Quality": {
+          "mean": 0.5000000000000008,
+          "sd": 0.0912870929175277,
+          "conditional_central_95_prediction_interval": [
+            0.3333333333333333,
+            0.6666666666666666
+          ],
+          "median": 0.5,
+          "conditional_interval_probability_mass": 0.9572260547429323
+        },
+        "Brier": {
+          "mean": 0.24999999999999903,
+          "sd": 9.71445146547012e-16,
+          "conditional_central_95_prediction_interval": [
+            0.25,
+            0.25
+          ],
+          "median": 0.25,
+          "conditional_interval_probability_mass": 1.0
+        },
+        "Sample ECE": {
+          "mean": 0.07223222404718443,
+          "sd": 0.05581970209998211,
+          "conditional_central_95_prediction_interval": [
+            0.0,
+            0.2
+          ],
+          "median": 0.06666666666666665,
+          "conditional_interval_probability_mass": 0.983875198289752
+        },
+        "Cost": {
+          "mean": 0.9999999999999969,
+          "sd": 0.06353768202442577,
+          "conditional_central_95_prediction_interval": [
+            0.8755555555555556,
+            1.1244444444444446
+          ],
+          "median": 1.0,
+          "conditional_interval_probability_mass": 0.9531550727504385
+        },
+        "Utility": {
+          "mean": 0.3999999999999996,
+          "sd": 0.09739001393785102,
+          "conditional_central_95_prediction_interval": [
+            0.2202222222222222,
+            0.5797777777777777
+          ],
+          "median": 0.4,
+          "conditional_interval_probability_mass": 0.9516160677668654
+        }
+      },
+      "conditional_stream_covariance": [
+        [
+          0.008333333333333337,
+          -7.676565564171361e-31,
+          -2.4672061772580796e-18,
+          -0.005555555555555554,
+          0.008888888888888887
+        ],
+        [
+          -7.675862148351829e-31,
+          9.437056727497457e-31,
+          -4.405648839712924e-31,
+          3.0276980807805844e-30,
+          3.8237633697379112e-31
+        ],
+        [
+          -2.6036312145300723e-18,
+          -4.403715856802432e-31,
+          0.0031158391425307476,
+          9.916429366875052e-19,
+          -2.839598959921543e-18
+        ],
+        [
+          -0.005555555555555554,
+          3.0269277088028295e-30,
+          9.916429366875052e-19,
+          0.004037037037037037,
+          -0.005959259259259257
+        ],
+        [
+          0.008888888888888887,
+          3.8854984816394952e-31,
+          -2.8938090685458183e-18,
+          -0.005959259259259257,
+          0.009484814814814814
+        ]
+      ],
+      "conditional_stream_correlation": [
+        [
+          1.0,
+          null,
+          -4.841819022537465e-16,
+          -0.957826285221151,
+          0.9998242650849968
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          -5.109549116075092e-16,
+          null,
+          1.0000000000000002,
+          2.7959953288855007e-16,
+          -5.223421424544743e-16
+        ],
+        [
+          -0.957826285221151,
+          null,
+          2.7959953288855007e-16,
+          1.0,
+          -0.9630447877348945
+        ],
+        [
+          0.9998242650849968,
+          null,
+          -5.323140521083206e-16,
+          -0.9630447877348945,
+          0.9999999999999998
+        ]
+      ],
+      "confidence_scope": "Exact conditional on unestimated model inputs and iid frozen-policy episodes; not an empirical method forecast."
+    },
+    {
+      "id": "S1",
+      "name": "Accurate forecast; routing unchanged",
+      "kappa": 0.0,
+      "forecast": "oracle_quality_plus_bias",
+      "bias_e": 0.0,
+      "overhead_h": 0.02,
+      "population_quality": 0.5,
+      "population_brier": 0.21000000000000002,
+      "population_ece": 0.0,
+      "expected_cost": 1.0133333333333348,
+      "expected_utility": 0.3986666666666659,
+      "forecast_values": [
+        0.3,
+        0.7
+      ],
+      "metric_order": [
+        "Quality",
+        "Brier",
+        "Sample ECE",
+        "Cost",
+        "Utility"
+      ],
+      "marginals": {
+        "Quality": {
+          "mean": 0.5000000000000008,
+          "sd": 0.0912870929175277,
+          "conditional_central_95_prediction_interval": [
+            0.3333333333333333,
+            0.6666666666666666
+          ],
+          "median": 0.5,
+          "conditional_interval_probability_mass": 0.9572260547429323
+        },
+        "Brier": {
+          "mean": 0.21000000000000035,
+          "sd": 0.033466401061363026,
+          "conditional_central_95_prediction_interval": [
+            0.14333333333333337,
+            0.27666666666666667
+          ],
+          "median": 0.21,
+          "conditional_interval_probability_mass": 0.9737461211962732
+        },
+        "Sample ECE": {
+          "mean": 0.09456422105130897,
+          "sd": 0.04991850671135841,
+          "conditional_central_95_prediction_interval": [
+            0.013333333333333374,
+            0.20000000000000004
+          ],
+          "median": 0.09333333333333335,
+          "conditional_interval_probability_mass": 0.9633429735337815
+        },
+        "Cost": {
+          "mean": 1.0133333333333348,
+          "sd": 0.06353768202442575,
+          "conditional_central_95_prediction_interval": [
+            0.8888888888888891,
+            1.137777777777778
+          ],
+          "median": 1.0133333333333334,
+          "conditional_interval_probability_mass": 0.9531550727504385
+        },
+        "Utility": {
+          "mean": 0.3986666666666659,
+          "sd": 0.097390013937851,
+          "conditional_central_95_prediction_interval": [
+            0.21888888888888886,
+            0.5784444444444444
+          ],
+          "median": 0.39866666666666667,
+          "conditional_interval_probability_mass": 0.9516160677668654
+        }
+      },
+      "conditional_stream_covariance": [
+        [
+          0.008333333333333337,
+          4.1904928472905754e-19,
+          6.753231767853629e-20,
+          -0.005555555555555554,
+          0.008888888888888889
+        ],
+        [
+          3.92366092529322e-19,
+          0.0011200000000000003,
+          0.0001688672220094452,
+          -1.4452375585434617e-19,
+          2.317738362882504e-19
+        ],
+        [
+          6.123256183212072e-21,
+          0.0001688672220094452,
+          0.0024918573122919346,
+          -2.208789887415262e-19,
+          4.675988413252675e-19
+        ],
+        [
+          -0.005555555555555554,
+          -1.445965218988567e-19,
+          -2.504126453321195e-19,
+          0.004037037037037036,
+          -0.005959259259259258
+        ],
+        [
+          0.008888888888888887,
+          2.0805691376513e-19,
+          4.265574997516248e-19,
+          -0.005959259259259259,
+          0.009484814814814812
+        ]
+      ],
+      "conditional_stream_correlation": [
+        [
+          1.0,
+          1.3716607622771484e-16,
+          1.4819743694265115e-17,
+          -0.9578262852211511,
+          0.9998242650849972
+        ],
+        [
+          1.2843195136783318e-16,
+          1.0,
+          0.10108221790946831,
+          -6.796711896853889e-17,
+          7.111168507576241e-17
+        ],
+        [
+          1.3437283115542823e-18,
+          0.10108221790946831,
+          1.0,
+          -6.964043147648839e-17,
+          9.618279943109107e-17
+        ],
+        [
+          -0.9578262852211511,
+          -6.800133962918309e-17,
+          -7.895203055508684e-17,
+          1.0000000000000002,
+          -0.9630447877348951
+        ],
+        [
+          0.999824265084997,
+          6.383497795282002e-17,
+          8.774079578161097e-17,
+          -0.9630447877348953,
+          1.0
+        ]
+      ],
+      "confidence_scope": "Exact conditional on unestimated model inputs and iid frozen-policy episodes; not an empirical method forecast."
+    },
+    {
+      "id": "S2",
+      "name": "Moderate routing; biased forecast",
+      "kappa": 0.25,
+      "forecast": "oracle_quality_plus_bias",
+      "bias_e": 0.05,
+      "overhead_h": 0.02,
+      "population_quality": 0.55,
+      "population_brier": 0.2125,
+      "population_ece": 0.050000000000000024,
+      "expected_cost": 0.9800000000000006,
+      "expected_utility": 0.4519999999999992,
+      "forecast_values": [
+        0.35,
+        0.75
+      ],
+      "metric_order": [
+        "Quality",
+        "Brier",
+        "Sample ECE",
+        "Cost",
+        "Utility"
+      ],
+      "marginals": {
+        "Quality": {
+          "mean": 0.55,
+          "sd": 0.09082951062292474,
+          "conditional_central_95_prediction_interval": [
+            0.36666666666666664,
+            0.7333333333333333
+          ],
+          "median": 0.5666666666666667,
+          "conditional_interval_probability_mass": 0.9740593579980268
+        },
+        "Brier": {
+          "mean": 0.21250000000000024,
+          "sd": 0.03646916505762094,
+          "conditional_central_95_prediction_interval": [
+            0.1445,
+            0.28650000000000003
+          ],
+          "median": 0.21183333333333332,
+          "conditional_interval_probability_mass": 0.9502420860133863
+        },
+        "Sample ECE": {
+          "mean": 0.10204893035691627,
+          "sd": 0.05487170446541794,
+          "conditional_central_95_prediction_interval": [
+            0.016666666666666666,
+            0.22666666666666668
+          ],
+          "median": 0.09333333333333334,
+          "conditional_interval_probability_mass": 0.9587084735869935
+        },
+        "Cost": {
+          "mean": 0.9800000000000006,
+          "sd": 0.06324555320336758,
+          "conditional_central_95_prediction_interval": [
+            0.8577777777777778,
+            1.1044444444444446
+          ],
+          "median": 0.98,
+          "conditional_interval_probability_mass": 0.9516256300879772
+        },
+        "Utility": {
+          "mean": 0.4519999999999992,
+          "sd": 0.09690201236300512,
+          "conditional_central_95_prediction_interval": [
+            0.2564444444444444,
+            0.6468888888888887
+          ],
+          "median": 0.46577777777777774,
+          "conditional_interval_probability_mass": 0.9547415039708054
+        }
+      },
+      "conditional_stream_covariance": [
+        [
+          0.008249999999999999,
+          -0.0014,
+          -0.0024645198383690826,
+          -0.0055,
+          0.008799999999999997
+        ],
+        [
+          -0.0013999999999999998,
+          0.00133,
+          0.0007464669151246466,
+          0.0009333333333333333,
+          -0.001493333333333333
+        ],
+        [
+          -0.002464519838369083,
+          0.0007464669151246467,
+          0.0030109039509401674,
+          0.0016430132255793896,
+          -0.0026288211609270225
+        ],
+        [
+          -0.005499999999999998,
+          0.0009333333333333333,
+          0.0016430132255793894,
+          0.003999999999999999,
+          -0.005899999999999997
+        ],
+        [
+          0.008799999999999997,
+          -0.001493333333333333,
+          -0.0026288211609270225,
+          -0.005899999999999999,
+          0.009389999999999997
+        ]
+      ],
+      "conditional_stream_correlation": [
+        [
+          1.0,
+          -0.4226445186616111,
+          -0.49448929405673575,
+          -0.9574271077563382,
+          0.9998224904574635
+        ],
+        [
+          -0.422644518661611,
+          0.9999999999999999,
+          0.3730235857004091,
+          0.40465131911125596,
+          -0.422569495226448
+        ],
+        [
+          -0.49448929405673586,
+          0.37302358570040917,
+          1.0000000000000002,
+          0.47343745462521425,
+          -0.4944015174883588
+        ],
+        [
+          -0.9574271077563379,
+          0.40465131911125596,
+          0.4734374546252142,
+          1.0,
+          -0.9626961164181351
+        ],
+        [
+          0.9998224904574635,
+          -0.422569495226448,
+          -0.4944015174883588,
+          -0.9626961164181355,
+          1.0
+        ]
+      ],
+      "confidence_scope": "Exact conditional on unestimated model inputs and iid frozen-policy episodes; not an empirical method forecast."
+    },
+    {
+      "id": "S3",
+      "name": "Better routing; same forecast bias",
+      "kappa": 0.5,
+      "forecast": "oracle_quality_plus_bias",
+      "bias_e": 0.05,
+      "overhead_h": 0.02,
+      "population_quality": 0.5999999999999999,
+      "population_brier": 0.21250000000000002,
+      "population_ece": 0.05000000000000003,
+      "expected_cost": 0.9466666666666684,
+      "expected_utility": 0.5053333333333329,
+      "forecast_values": [
+        0.35,
+        0.75
+      ],
+      "metric_order": [
+        "Quality",
+        "Brier",
+        "Sample ECE",
+        "Cost",
+        "Utility"
+      ],
+      "marginals": {
+        "Quality": {
+          "mean": 0.5999999999999998,
+          "sd": 0.08944271909999157,
+          "conditional_central_95_prediction_interval": [
+            0.43333333333333335,
+            0.7666666666666667
+          ],
+          "median": 0.6,
+          "conditional_interval_probability_mass": 0.9615770988935922
+        },
+        "Brier": {
+          "mean": 0.21249999999999977,
+          "sd": 0.03834057902536163,
+          "conditional_central_95_prediction_interval": [
+            0.14049999999999999,
+            0.2905
+          ],
+          "median": 0.21116666666666664,
+          "conditional_interval_probability_mass": 0.9514162240949625
+        },
+        "Sample ECE": {
+          "mean": 0.0999486944856907,
+          "sd": 0.055857714062681474,
+          "conditional_central_95_prediction_interval": [
+            0.016666666666666666,
+            0.23
+          ],
+          "median": 0.09000000000000001,
+          "conditional_interval_probability_mass": 0.9593445158221615
+        },
+        "Cost": {
+          "mean": 0.9466666666666684,
+          "sd": 0.062360956446232345,
+          "conditional_central_95_prediction_interval": [
+            0.8266666666666667,
+            1.0711111111111111
+          ],
+          "median": 0.9466666666666667,
+          "conditional_interval_probability_mass": 0.9528786352291607
+        },
+        "Utility": {
+          "mean": 0.5053333333333329,
+          "sd": 0.09542303472199755,
+          "conditional_central_95_prediction_interval": [
+            0.3255555555555556,
+            0.6837777777777778
+          ],
+          "median": 0.5053333333333333,
+          "conditional_interval_probability_mass": 0.9511829987638093
+        }
+      },
+      "conditional_stream_covariance": [
+        [
+          0.007999999999999998,
+          -0.0021,
+          -0.0026908844077019947,
+          -0.005333333333333331,
+          0.00853333333333333
+        ],
+        [
+          -0.0021,
+          0.0014700000000000002,
+          0.0010908315400243592,
+          0.0014,
+          -0.002239999999999999
+        ],
+        [
+          -0.0026908844077019947,
+          0.0010908315400243592,
+          0.0031200842203082833,
+          0.001793922938467996,
+          -0.0028702767015487945
+        ],
+        [
+          -0.005333333333333331,
+          0.0013999999999999998,
+          0.0017939229384679961,
+          0.0038888888888888875,
+          -0.0057222222222222206
+        ],
+        [
+          0.00853333333333333,
+          -0.002239999999999999,
+          -0.0028702767015487945,
+          -0.0057222222222222206,
+          0.00910555555555555
+        ]
+      ],
+      "conditional_stream_correlation": [
+        [
+          1.0,
+          -0.6123724356957946,
+          -0.5386006710249424,
+          -0.9561828874675149,
+          0.9998169448073262
+        ],
+        [
+          -0.6123724356957946,
+          1.0,
+          0.5093494723797161,
+          0.5855400437691199,
+          -0.6122603377415899
+        ],
+        [
+          -0.5386006710249424,
+          0.5093494723797161,
+          0.9999999999999999,
+          0.5150007448125703,
+          -0.5385020773753337
+        ],
+        [
+          -0.9561828874675149,
+          0.5855400437691198,
+          0.5150007448125704,
+          1.0,
+          -0.9616094617398075
+        ],
+        [
+          0.9998169448073262,
+          -0.6122603377415899,
+          -0.5385020773753337,
+          -0.9616094617398075,
+          1.0000000000000002
+        ]
+      ],
+      "confidence_scope": "Exact conditional on unestimated model inputs and iid frozen-policy episodes; not an empirical method forecast."
+    },
+    {
+      "id": "S4",
+      "name": "Better routing; poorer forecast",
+      "kappa": 0.5,
+      "forecast": "oracle_quality_plus_bias",
+      "bias_e": 0.15,
+      "overhead_h": 0.05,
+      "population_quality": 0.5999999999999999,
+      "population_brier": 0.23250000000000004,
+      "population_ece": 0.15000000000000002,
+      "expected_cost": 0.9666666666666666,
+      "expected_utility": 0.5033333333333339,
+      "forecast_values": [
+        0.44999999999999996,
+        0.85
+      ],
+      "metric_order": [
+        "Quality",
+        "Brier",
+        "Sample ECE",
+        "Cost",
+        "Utility"
+      ],
+      "marginals": {
+        "Quality": {
+          "mean": 0.5999999999999998,
+          "sd": 0.08944271909999157,
+          "conditional_central_95_prediction_interval": [
+            0.43333333333333335,
+            0.7666666666666667
+          ],
+          "median": 0.6,
+          "conditional_interval_probability_mass": 0.9615770988935922
+        },
+        "Brier": {
+          "mean": 0.2325000000000003,
+          "sd": 0.050892042599997876,
+          "conditional_central_95_prediction_interval": [
+            0.13783333333333334,
+            0.3364999999999999
+          ],
+          "median": 0.2311666666666667,
+          "conditional_interval_probability_mass": 0.9509465325325698
+        },
+        "Sample ECE": {
+          "mean": 0.1623576740405892,
+          "sd": 0.07467880317306129,
+          "conditional_central_95_prediction_interval": [
+            0.0366666666666666,
+            0.32
+          ],
+          "median": 0.15666666666666668,
+          "conditional_interval_probability_mass": 0.9506079329483488
+        },
+        "Cost": {
+          "mean": 0.9666666666666666,
+          "sd": 0.062360956446232345,
+          "conditional_central_95_prediction_interval": [
+            0.8466666666666667,
+            1.0911111111111111
+          ],
+          "median": 0.9666666666666668,
+          "conditional_interval_probability_mass": 0.9528786352291607
+        },
+        "Utility": {
+          "mean": 0.5033333333333339,
+          "sd": 0.09542303472199755,
+          "conditional_central_95_prediction_interval": [
+            0.3235555555555556,
+            0.6817777777777779
+          ],
+          "median": 0.5033333333333333,
+          "conditional_interval_probability_mass": 0.9511829987638093
+        }
+      },
+      "conditional_stream_covariance": [
+        [
+          0.007999999999999998,
+          -0.003499999999999999,
+          -0.005799101496951735,
+          -0.0053333333333333306,
+          0.008533333333333332
+        ],
+        [
+          -0.003499999999999999,
+          0.0025899999999999986,
+          0.003267176341719286,
+          0.002333333333333332,
+          -0.003733333333333332
+        ],
+        [
+          -0.005799101496951735,
+          0.003267176341719286,
+          0.005576923643360829,
+          0.00386606766463449,
+          -0.0061857082634151845
+        ],
+        [
+          -0.005333333333333331,
+          0.002333333333333332,
+          0.00386606766463449,
+          0.0038888888888888875,
+          -0.00572222222222222
+        ],
+        [
+          0.008533333333333332,
+          -0.003733333333333332,
+          -0.0061857082634151845,
+          -0.00572222222222222,
+          0.00910555555555555
+        ]
+      ],
+      "conditional_stream_correlation": [
+        [
+          1.0,
+          -0.7689058565365571,
+          -0.8681971727341831,
+          -0.9561828874675148,
+          0.9998169448073264
+        ],
+        [
+          -0.7689058565365571,
+          1.0,
+          0.859657278077291,
+          0.7352146220938076,
+          -0.7687651043268408
+        ],
+        [
+          -0.8681971727341831,
+          0.859657278077291,
+          1.0,
+          0.830155279516104,
+          -0.8680382447334496
+        ],
+        [
+          -0.9561828874675149,
+          0.7352146220938076,
+          0.830155279516104,
+          1.0,
+          -0.9616094617398074
+        ],
+        [
+          0.9998169448073264,
+          -0.7687651043268408,
+          -0.8680382447334496,
+          -0.9616094617398074,
+          1.0000000000000002
+        ]
+      ],
+      "confidence_scope": "Exact conditional on unestimated model inputs and iid frozen-policy episodes; not an empirical method forecast."
+    }
+  ],
+  "paired_comparison": {
+    "mismatch_probability": 0.125,
+    "delta_quality": 0.04999999999999982,
+    "delta_utility": 0.05333333333333368,
+    "cost_coupling_assumption": "independent Rademacher jitters in main sensitivity",
+    "coupling_sensitivity": [
+      {
+        "u": 0.0,
+        "episode_delta_quality_variance": 0.12250000000000001,
+        "episode_delta_utility_variance": 0.1395777777777778,
+        "iid_stream_delta_utility_sd": 0.06820991564715935
+      },
+      {
+        "u": 0.21,
+        "episode_delta_quality_variance": 0.07000000000000002,
+        "episode_delta_utility_variance": 0.07984444444444447,
+        "iid_stream_delta_utility_sd": 0.0515895481806294
+      },
+      {
+        "u": 0.3,
+        "episode_delta_quality_variance": 0.04750000000000002,
+        "episode_delta_utility_variance": 0.05424444444444447,
+        "iid_stream_delta_utility_sd": 0.04252232529093569
+      }
+    ],
+    "root_correlation_sensitivity": [
+      {
+        "paired_difference_icc": 0.0,
+        "assumed_root_sd": 0.0,
+        "design_effect": 1.0,
+        "stream_sd": 0.0515895481806294,
+        "mean_difference_se": 0.01215977311895772,
+        "conditional_normal_95_planning_band": [
+          0.029500178020176543,
+          0.07716648864649081
+        ]
+      },
+      {
+        "paired_difference_icc": 0.0,
+        "assumed_root_sd": 0.02,
+        "design_effect": 1.0,
+        "stream_sd": 0.0515895481806294,
+        "mean_difference_se": 0.016768822726651388,
+        "conditional_normal_95_planning_band": [
+          0.020466440789096957,
+          0.0862002258775704
+        ]
+      },
+      {
+        "paired_difference_icc": 0.0,
+        "assumed_root_sd": 0.05,
+        "design_effect": 1.0,
+        "stream_sd": 0.0515895481806294,
+        "mean_difference_se": 0.03132400701758733,
+        "conditional_normal_95_planning_band": [
+          -0.008061720421137487,
+          0.11472838708780483
+        ]
+      },
+      {
+        "paired_difference_icc": 0.05,
+        "assumed_root_sd": 0.0,
+        "design_effect": 2.45,
+        "stream_sd": 0.08075041566227156,
+        "mean_difference_se": 0.01903305549947487,
+        "conditional_normal_95_planning_band": [
+          0.01602854455436293,
+          0.09063812211230443
+        ]
+      },
+      {
+        "paired_difference_icc": 0.05,
+        "assumed_root_sd": 0.02,
+        "design_effect": 2.45,
+        "stream_sd": 0.08075041566227156,
+        "mean_difference_se": 0.02226186279221539,
+        "conditional_normal_95_planning_band": [
+          0.009700082260591512,
+          0.09696658440607583
+        ]
+      },
+      {
+        "paired_difference_icc": 0.05,
+        "assumed_root_sd": 0.05,
+        "design_effect": 2.45,
+        "stream_sd": 0.08075041566227156,
+        "mean_difference_se": 0.03457731243141121,
+        "conditional_normal_95_planning_band": [
+          -0.014438199032232299,
+          0.12110486569889965
+        ]
+      },
+      {
+        "paired_difference_icc": 0.1,
+        "assumed_root_sd": 0.0,
+        "design_effect": 3.9000000000000004,
+        "stream_sd": 0.10188119442653674,
+        "mean_difference_se": 0.024013627818129744,
+        "conditional_normal_95_planning_band": [
+          0.00626662280979938,
+          0.10040004385686797
+        ]
+      },
+      {
+        "paired_difference_icc": 0.1,
+        "assumed_root_sd": 0.02,
+        "design_effect": 3.9000000000000004,
+        "stream_sd": 0.10188119442653674,
+        "mean_difference_se": 0.026645593525402807,
+        "conditional_normal_95_planning_band": [
+          0.0011079700235441733,
+          0.10555869664312317
+        ]
+      },
+      {
+        "paired_difference_icc": 0.1,
+        "assumed_root_sd": 0.05,
+        "design_effect": 3.9000000000000004,
+        "stream_sd": 0.10188119442653674,
+        "mean_difference_se": 0.03754980232066459,
+        "conditional_normal_95_planning_band": [
+          -0.02026427921516892,
+          0.1269309458818363
+        ]
+      }
+    ]
+  },
+  "observed_diagnostic_anchors": [
+    {
+      "method": "no_update",
+      "updates": 0,
+      "single_update_ms": null,
+      "serialized_state_bytes": 2297,
+      "post_update_executed": false
+    },
+    {
+      "method": "contextual_trust_linear",
+      "updates": 1,
+      "single_update_ms": 0.5196659999882058,
+      "serialized_state_bytes": 3408,
+      "post_update_executed": false
+    },
+    {
+      "method": "RARE",
+      "updates": 1,
+      "single_update_ms": 0.2970409999960566,
+      "serialized_state_bytes": 4688,
+      "post_update_executed": false
+    }
+  ],
+  "real_method_parameters_identified": false,
+  "required_routing_interaction_for_utility_target_0_02_if_overhead_interaction_zero": 0.09375
+}

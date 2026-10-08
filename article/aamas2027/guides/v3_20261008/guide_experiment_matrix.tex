@@ -1,0 +1,218 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=18mm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,booktabs,array,tabularx,xcolor,fancyhdr,draftwatermark,hyperref}
+\usepackage[T1]{fontenc}\usepackage{lmodern}
+\hypersetup{pdftitle={Experiment GUIDE v3: When the Method Should Win or Lose},pdfsubject={Conditional research guide, not observed results or fitted rankings},pdfauthor={Earning Roles project}}
+\SetWatermarkText{GUIDE --- NOT OBSERVED}\SetWatermarkColor{red!14}
+\SetWatermarkAngle{35}\SetWatermarkFontSize{32pt}\SetWatermarkScale{1}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\color{red!70!black}\bfseries GUIDE v3: CONDITIONS AND TRADEOFFS}
+\fancyhead[R]{\color{red!70!black}NOT RESULTS}
+\fancyfoot[L]{\color{red!70!black}2026-10-08 / UNFITTED HYPOTHESES / NOT FOR SUBMISSION}
+\fancyfoot[R]{\thepage}
+\setlength{\parindent}{0pt}\setlength{\parskip}{5pt}
+\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.16}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcommand{\lead}[1]{\vspace{4pt}\textbf{#1}\par}
+\newcommand{\rare}{\textsc{rare}}
+\newcommand{\caution}{\textcolor{red!70!black}{\textbf{Directional hypotheses and algebraic cases; no fitted method ranking.}}\par}
+\begin{document}
+{\Large\bfseries When Should the Method Win---and Lose?}\par\caution
+The objective is future team quality at complete cost, with reliable attribution
+and timely updates. Reasonable expectations follow a mechanism and a matched
+contrast. We do not assign a loss merely to make a results table look credible.
+This guide supplements v2's exact conditional distribution model with conditions,
+strong controls, adverse cases and falsifiers for the three body tables.
+
+\lead{Independent review: the full forecast gate has not passed}
+\begin{center}\small
+\begin{tabularx}{\linewidth}{@{}L{.23\linewidth}L{.15\linewidth}X@{}}\toprule
+Review dimension & Verdict & Evidence or missing requirement\\\midrule
+Conditional arithmetic & Pass in scope & v2's same-outcome means, covariance and finite-count errors; assumed inputs.\\
+Benchmark fit/authority & Partial / open & ArtifactRole fits the handoff question; distinct qualified roots and native later-use bridge remain open. PeerSelect is a separate adaptation track.\\
+Baseline fairness & Open & Same information, task-dependent matching, eligibility, exploration and complete cost must be qualified live.\\
+Empirical means/errors & Not identified & No qualified method-level future stream population or fitted uncertainty.\\
+Advantage/weakness logic & Repaired in v3 & Two-sided conditions below; superiority still requires actual outcomes.\\\bottomrule
+\end{tabularx}\end{center}
+
+\lead{Existing evidence: snapshots, not a forecast sample}
+The C1 snapshot cited by v2 has eight complete real API calls on one PIPE3 root,
+no executed task after its updates, and a positive judgment despite failing
+producer/terminal checks. Its 0.520/0.297 ms timings are single core updates.
+The separate October 8 diagnosis made two real judgment calls, stopped on a
+producer false acceptance, and left two cells unstarted. A public execution trace
+exposes the datetime space/\texttt{T} mismatch; model use of that trace is untested.
+Neither snapshot estimates judgment error rates or future method gains.
+
+\lead{Table 1 baseline roles: a method must beat the right alternative}
+\begin{center}\small
+\begin{tabularx}{\linewidth}{@{}L{.27\linewidth}X@{}}\toprule
+Body-table row / control & What the contrast must rule out\\\midrule
+Uniform / no update & Exploration or base prior alone; cold start can tie with more overhead.\\
+Raw acceptance / terminal only & Judgment content beyond raw verdicts or independent outcomes; neither is privileged truth.\\
+Contextual trust linear & Ordinary contextual learning with the same public information; no presumed ranking.\\
+Task-conditioned ridge$^{*}$ & Same gate, trace and task features; ordinary task--peer preference reversal. Additive identity features alone are insufficient.\\
+Pooled controller & Benefit of local personalized state versus pooling; sparse histories may favor pooling.\\
+Meta-Team L2-public & Candidate information-restricted adapter inspired by published Meta-Team L2; no same-protocol public result, not qualified.\\
+\rare{} / matched composition$^{*}$ & Added mechanism beyond identical representation, gates and ordinary update/retrieval components.\\\bottomrule
+\end{tabularx}\end{center}
+\footnotesize $^{*}$Additional comparisons are necessary to attribute a
+task--peer matching gain to the proposed mechanism: task-conditioned ridge and
+matched composition must first pass live input/cost parity with independent
+histories. The current eight rows alone cannot establish that extension.
+Ridge has offline algebraic controls, not live parity. This guide flags the
+paper-matrix integration gap without changing the active matrix.
+Published native scores constrain metric
+definitions and plausible scale, not our ranking: TeamBench partial $.7544$ is
+not binary pass; Meta-Team's 13.1 pp system gain is not its 3.2 pp L2 increment.
+The versioned reference archive preserves conflicting results.\normalsize
+
+\clearpage
+{\large\bfseries Table 1: Information and Future Allocation}\par\caution
+Quality means an independently scored \emph{later} task. $U=Y-\lambda C$ uses
+all declared costs. Assignment change is a process diagnostic; the current body
+table's $\Delta A\uparrow$ must be removed or redefined before confirmation,
+because frequent changes can be harmful. No direction below is empirical.
+
+\begin{center}\small
+\begin{tabularx}{\linewidth}{@{}L{.20\linewidth}L{.22\linewidth}X L{.23\linewidth}@{}}\toprule
+Condition & Matched contrast & Plausible gain and possible loss & Against a claimed benefit\\\midrule
+Varied, informative judgments & Full vs count-only, J-masked, public trace-only and terminal-only & Lower held-out prediction loss and better later allocation \emph{if} J adds information. Extra judgment/retrieval cost may erase utility gain. & Masking J preserves the gain, or predictions improve but later quality does not.\\
+Public execution facts explain the defect & Trace+J vs trace-only; J-masked & Added explanation may help transfer, but trace-only may tie or win at lower cost. No assumed J increment. & All improvement is reproduced by the same execution trace without J.\\
+Stable task--peer crossover & Full vs task-conditioned ridge and matched composition & Context-specific matching may beat uniform/global trust. Advantage over the strong task-conditioned control is unknown. & Only weak additive controls lose, or ridge explains the whole gain.\\
+Uninformative or constant J & Full vs no-update, count-only and strong prior & No J-specific gain is justified. If choices/outcomes are identical and extra cost is positive, full utility is lower. & Claimed J benefit persists after masking/permuting with valid support.\\
+Incorrect, stale or mismatched evidence & Full vs static prior and same-info strong control & Learned evidence can reduce quality; costs and correction lag can worsen utility. A robust control may do better. & Benefit depends on wrong peer/version matching, leaked truth or future information.\\
+Sparse history / semantic mismatch & Full vs pooled, prior and ridge; 0/1/K and root holdout & Similar text can hide a changed requirement or payoff rule: old experience may hurt. Pooling may win with few labels; personalization needs transferable evidence. & Gain disappears under root/time holdout or only follows repeated task templates.\\\bottomrule
+\end{tabularx}\end{center}
+
+\lead{Fairness is part of the mechanism test}
+Match the task, candidate@version/menu, public execution facts, feature/encoder
+coverage, read cutoff, selected-only feedback, delay, raw opportunity/label
+availability rules, propensity and exploration, capacity and complete service
+budget. Report post-gate eligibility, coverage and UNKNOWN separately by arm;
+they can be consequences of the gate. Separate
+two interventions: removing a responsibility gate tests that gate; changing the
+updater while keeping the gate tests the updater. Do not give only full \rare{}
+the execution trace or stronger task features.
+
+\lead{Prediction comparisons cannot use different selected populations}
+Seal a prediction target and horizon before filling Brier: later-use
+$Y$ and producer contract $Q_p$ require separate forecasts/losses, never pooled
+labels. Private/target $Q_p$ is an evaluation or oracle-only diagnostic, not a
+live decision input. Past checks are deployable only when legally public at
+the read cutoff for every matched arm.
+Compare forecasts on the same real, already-selected held-out samples. If
+reweighting across policies, require justified overlap/positivity and account for
+weight uncertainty; selected-only logs contain no unselected outcome labels.
+Without coverage, report the selected-population result or design a qualified
+randomized diagnostic. Keep evaluation separate from training feedback.
+Otherwise a policy may
+change its own Brier by routing to easier cases. Choice propensity is not
+predicted correctness. In v2, $p=q+e$ is a latent-oracle sensitivity case,
+not a deployable predictor; S2/S3 Brier equality follows the symmetric $.7/.3$
+assumption and is not a general routing property.
+
+\clearpage
+{\large\bfseries Tables 2--3: Adaptation, Safety and Mechanisms}\par\caution
+\lead{Table 2: fast updates do not guarantee low end-to-end latency}
+\begin{center}\small
+\begin{tabularx}{\linewidth}{@{}L{.20\linewidth}L{.23\linewidth}X@{}}\toprule
+Condition & Comparator & Two-sided expectation / required measurement\\\midrule
+Stable peers, little novelty & No history / static prior / ordinary updater & Full may tie quality and lose on service/state cost. Measure whole-service p50/p95, state and complete cost; core time alone is insufficient.\\
+Gradual drift, timely legal labels & Frozen prior / same-info RLS, SGD or refit & Online feedback may recover earlier than frozen state. A strong updater may match or beat full; retention can slow adaptation. Measure old/new holdouts, recovery and utility.\\
+Abrupt change / peer replacement & Static prior / reset / version-aware control & Stale profiles may cause negative transfer; version isolation may avoid it but restart learning. Report recovery, old-task loss and feedback coverage.\\
+Long feedback delay / few eligible outcomes & History-only / matched delayed updater & Public observations may help early decisions if predictive; persistent training still waits for legal later credit. Sparse credits can make adaptation slower.\\
+High arrival rate / expensive evidence & Local uniform / matched service stack & Selection quality can rise while backlog and p95 worsen. Measure arrivals, full service distribution, queueing, drops/timeouts and net payoff.\\\bottomrule
+\end{tabularx}\end{center}
+Update p95, backlog, state, payoff, forgetting and recovery map to body Table 2.
+Full publish/read/update service tails and complete cost are necessary companion
+measurements, not aliases of core update p95.
+Graph-IPD is a native multi-round cooperation reference, not an ArtifactRole
+score or an online service result. Its published cooperation bounds cannot
+populate payoff, update p95, forgetting or recovery cells. Timing, drift and
+retention methods are not finally locked; these are tests, not feature claims.
+
+\lead{Table 3: attribution safety and organic interaction}
+\begin{center}\small
+\begin{tabularx}{\linewidth}{@{}L{.23\linewidth}X L{.25\linewidth}@{}}\toprule
+Contrast & What can improve / what can worsen & Disconfirming outcome\\\midrule
+Gate vs no gate & Independent owner truth can reduce false producer credit. Abstention costs coverage, usable labels and update speed. An owner gate cannot correct J's factual accuracy; legal positive/negative J remain observations. & Same safety but less coverage and worse future utility; factually wrong J still treated as reward.\\
+Public evidence $\times$ delayed credit (four cells) & Early public information plus later correction may work together. Neither interaction nor dominance of the full cell is automatic. & No joint increment, or full loses to one component or matched composition.\\
+Local vs nonlocal & Locality can lower communication/cost but miss a better distant peer. Compare complete costs and quality; no universally best neighborhood. & Cost saving comes entirely from a smaller information/compute budget.\\
+Correction/replay vs ordinary state & Exact identity/idempotence can prevent duplicate credit; retention/retraction has state and service costs. Engineering safety is not an efficacy estimate. & Legal credit counted twice, correction changes the wrong version, or gains vanish with matched replay.\\\bottomrule
+\end{tabularx}\end{center}
+Four-cell utility interaction is $I_U=U_{11}-U_{10}-U_{01}+U_{00}$, with
+$\operatorname{Var}(\widehat I_U)=c^\top\Sigma c$ for $c=(1,-1,-1,1)$ in that
+cell order. Report the qualified stream covariance; do not assign four convenient
+SDs. Use independent owner truth and all-attempt denominators for recipient-only,
+mixed, unobserved and resource-failure stress; report safety and coverage together.
+Zero interaction does not by itself negate the value of components, but
+fails a claimed synergy. All adaptive arms keep their own actual histories.
+
+\clearpage
+{\large\bfseries Quantitative Boundaries and Distribution Acceptance}\par\caution
+\lead{A quality gain can lose after complete cost}
+\[
+ \Delta U=\Delta\mathbb E[Y]-\lambda\Delta\mathbb E[C],\qquad
+ \Delta U>0\ \Longleftrightarrow\ \Delta Q>\lambda\Delta C.
+\]
+Case: $\lambda=.1$ below is the v2 \emph{illustrative} weight, not a frozen
+scientific acceptance margin. Cost is normalized complete cost. These are
+algebraic boundary inputs, not fitted means, predictions or method ranks.
+\begin{center}\small
+\begin{tabularx}{\linewidth}{@{}lXrrr@{}}\toprule
+Case & Explicit assumption & $\Delta Q$ & $\Delta C$ & $\Delta U$\\\midrule
+B0 & No outcome gain, extra work & +0.000 & +0.100 & -0.010\\
+B1 & Gain exceeds overhead & +0.040 & +0.100 & +0.030\\
+B2 & Exact break-even & +0.020 & +0.200 & +0.000\\
+B3 & Small gain, costly evidence & +0.020 & +0.300 & -0.010\\
+B4 & Misleading or stale evidence & -0.020 & +0.050 & -0.025\\
+B5 & Better but expensive peer & +0.060 & +0.800 & -0.020\\
+B6 & Gain with fewer repairs & +0.020 & -0.100 & +0.030\\
+\bottomrule\end{tabularx}\end{center}
+No case is assigned to \rare{} or a baseline. Observed methods may cross these
+boundaries; that is exactly what the complete-cost experiment must determine.
+
+\lead{Why v2's repair-only cost law is optimistic for routing}
+Within v2 only, $\Delta U=(1+\lambda\gamma/c_0)d\Delta\kappa
+-(\lambda/c_0)\Delta h$. With $d=.2$, $\gamma=1$, $c_0=1.5$ and $\lambda=.1$,
+positive utility requires $\Delta\kappa>0.3125\Delta h$.
+Case: the assumed S3--S2 routing difference $.25$ reverses only when extra raw
+overhead exceeds $0.800$. This weak penalty is not empirically justified.
+Real selection, judging, retrieval, publication, repair, failures and resource
+use must enter the cost ledger; stronger peers may be more expensive even when
+successful. Refit the model rather than forcing reality into its negative
+quality--cost correlation.
+
+\lead{UNKNOWN can reverse an apparent quality ranking}
+For all assignments, let $m$ be the fraction with unknown binary outcome and
+$q_{\rm obs}$ the success rate among known outcomes. Without a missingness model,
+\[
+ Q\in[(1-m)q_{\rm obs},\ (1-m)q_{\rm obs}+m].
+\]
+Case: hypothetical candidate $.65$ with $m=.15$ gives
+$[0.5525, 0.7025]$; control $.60$ with $m=.02$ gives
+$[0.5880, 0.6080]$. These overlap, so the higher observed rate does not
+establish a robust advantage. The bounds are logical limits, not confidence
+intervals; sampling uncertainty still applies. Unscorable resource failures
+remain UNKNOWN, with their attempted costs and denominators retained.
+
+\lead{Means, errors and distributions must be validated together}
+\small
+1. Seal qualified roots, independent live histories, same-info comparators,
+primary quality/cost metrics, budgets and stopping rules before a pilot.
+Fit on development only; validate on untouched future streams/root holdouts.\par
+2. Model the joint observable outcomes and complete costs. Utility variance is
+$\sigma_U^2=\sigma_Q^2+\lambda^2\sigma_C^2-2\lambda\operatorname{Cov}(Q,C)$.
+High quality--utility correlation is not independent corroboration. No guessed
+per-cell SD or 95\% interval is supplied here.\par
+3. Report residual bias, root heterogeneity, serial correlation, covariance,
+80/95\% prediction coverage \emph{and} width with uncertainty, alongside
+UNKNOWN by arm/root/J/owner. Prediction intervals differ from confidence
+intervals of a treatment effect; small root counts cannot justify a normal
+1.96 band automatically.\par
+4. Test the favorable and adverse conditions above. A strong control explaining
+the whole gain, or complete cost removing it, triggers diagnosis and method
+iteration. It does not authorize rewriting Goal or discarding failure logs.\normalsize
+
+\end{document}

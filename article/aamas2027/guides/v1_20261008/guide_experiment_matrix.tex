@@ -1,0 +1,302 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=18mm,headheight=15pt]{geometry}
+\usepackage{amsmath,booktabs,array,makecell,xcolor,graphicx,fancyhdr,draftwatermark,hyperref}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\hypersetup{pdftitle={Experiment Matrix GUIDE: Prospective Targets, Not Observed Results},pdfsubject={Internal planning scenario; not preregistered; not for submission},pdfauthor={Earning Roles project},colorlinks=true,urlcolor=blue!60!black}
+\SetWatermarkText{GUIDE --- NOT OBSERVED}
+\SetWatermarkColor{red!14}
+\SetWatermarkAngle{35}
+\SetWatermarkFontSize{32pt}
+\SetWatermarkScale{1}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\color{red!70!black}\bfseries GUIDE: PROSPECTIVE TARGETS}
+\fancyhead[R]{\color{red!70!black}NOT EXPERIMENTAL RESULTS}
+\fancyfoot[L]{\color{red!70!black}v1 / 2026-10-08 / NOT PREREGISTERED / NOT FOR SUBMISSION}
+\fancyfoot[R]{\thepage}
+\setlength{\parindent}{0pt}\setlength{\parskip}{5pt}
+\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.13}
+\newcommand{\rare}{\textsc{rare}}
+\newcommand{\metric}[1]{\makecell[c]{#1}}
+\newcommand{\status}{\textcolor{red!70!black}{\textbf{Guide numbers are assumptions or goals, never measurements.}}\par}
+\newcommand{\lead}[1]{\vspace{4pt}\textbf{#1}\par}
+\begin{document}
+{\Large\bfseries Experiment Matrix Guide}\hfill{\small Earning Roles}
+\par\status
+This independent guide mirrors the three proposed body result tables. S1 is a
+\emph{working target scenario}, not a fitted forecast. Comparator rows are
+planning reference points; RARE rows are desired endpoints. They neither freeze
+the experiment cards nor replace qualified roots, baselines, labels or costs.
+All $n$ entries are \emph{planned streams}, with zero guide experiments executed.
+
+\lead{Measured anchors: one PIPE3 development run, original v2 scorers}
+\begin{center}\small
+\begin{tabular}{@{}lcccc@{}}\toprule
+Policy & Producer checks & Recipient checks & Adoption checks & One update (ms)\\\midrule
+No update & 2/3 & 3/3 & 1/2 & Not run\\
+Ctx.-trust linear & 2/3 & 3/3 & 1/2 & 0.520\\
+RARE & 2/3 & 3/3 & 1/2 & 0.297\\\bottomrule
+\end{tabular}\end{center}
+Eight real API calls completed. All three target choices were the same peer.
+Updates had no subsequently executed target. Check fractions are not task
+accuracy, and these rows are not independent trials. Thus no measured quality
+advantage is used to construct S1. Serialized state was 3,408 bytes for the
+linear control and 4,688 bytes for RARE; this is not resident memory.
+
+\lead{Table 1 counterpart: ArtifactRole prediction and future allocation --- S1 targets}
+\begin{center}\small
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrrrr@{}}\toprule
+Method & Brier $\downarrow$ & Calib. $\downarrow$ & $U\uparrow$ & $\Delta A$ & Cost & $n^{\rm plan}$\\\midrule
+Uniform & 0.250 & 0.000 & 0.400 & 0.00 & 1.00 & 18\\
+No update & 0.250 & 0.000 & 0.400 & 0.00 & 1.00 & 18\\
+Raw acceptance & 0.233 & 0.150 & 0.398 & 0.06 & 1.02 & 18\\
+Terminal only & 0.220 & 0.100 & 0.419 & 0.10 & 1.01 & 18\\
+Ctx.-trust linear & 0.215 & 0.070 & 0.447 & 0.15 & 1.03 & 18\\
+Pooled controller & 0.215 & 0.070 & 0.447 & 0.18 & 1.03 & 18\\
+Meta-Team L2-public$^{\dagger}$ & 0.215 & 0.070 & 0.447 & 0.15 & 1.03 & 18\\
+RARE & 0.212 & 0.040 & 0.495 & 0.20 & 1.05 & 18\\
+\bottomrule\end{tabular*}\end{center}
+\textbf{GUIDE TARGET SCENARIO; NOT OBSERVED.} $^{\dagger}$The Meta-Team adapter is
+unqualified: its row is a conditional strong-control proxy, \emph{not} an
+estimate of the published method. RARE is allowed to cost 5\% more than no
+update and is not assumed to win every column. A greater $\Delta A$ is not
+automatically beneficial.
+
+\lead{Definitions and reproducible calculation}
+Let $Q$ be future independent terminal success, including full recipient use;
+$C$ is mean \emph{complete} per-assignment cost divided by no-update cost on the
+same root and stream. In this guide only, $U=Q-0.10C$. S1 assumes
+$Q_0=.50$, $Q_{\rm ctx}=.55$, $Q_{\rm RARE}=.60$. The measured 1/2 adoption
+check fraction merely warns against assuming near-perfect quality; it is not
+a fitted estimate of $Q$. Then $U_{\rm RARE}=.60-.10(1.05)=.495$ and
+$U_{\rm ctx}=.55-.10(1.03)=.447$: the \emph{desired} difference is .048.
+
+For prediction, two equally weighted, evaluation-only strata have assumed true
+rates $q=(.30,.70)$. With forecasts $p$, expected Brier is
+$\frac12\sum_{g=1}^2[q_g(1-q_g)+(p_g-q_g)^2]$.
+RARE's target $p=(.26,.74)$ gives $.21+.04^2=.2116$.
+Calibration is population ECE in fixed forecast bins $[0,.5)$ and $[.5,1]$.
+Constant .5 forecasts have ECE zero but Brier .25, so calibration alone does
+not show informative judgment. True rates are never selector inputs.
+
+\clearpage
+\lead{Table 2 counterpart: PeerSelect service and drift --- targets, not forecasts}
+\status
+\begin{center}\small
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrrrrr@{}}\toprule
+Method & \metric{Update p95\\(ms)} & Backlog & \metric{State\\(KiB)} & Payoff & Forget & \metric{Recovery\\(steps)} & $n^{\rm plan}$\\\midrule
+Local uniform & -- & 0 & $\leq$8 & 0.50 & $\leq$0.00 & $>50$ & 18\\
+No history & -- & 0 & $\leq$8 & 0.50 & $\leq$0.00 & $>50$ & 18\\
+History only & $\leq$5 & $\leq$4 & $\leq$64 & 0.54 & $\leq$0.02 & $\leq$40 & 18\\
+Graph-IPD reference$^{\dagger}$ & $\leq$5 & $\leq$4 & $\leq$1024 & 0.56 & $\leq$0.02 & $\leq$20 & 18\\
+RARE & $\leq$5 & $\leq$4 & $\leq$64 & 0.56 & $\leq$0.01 & $\leq$20 & 18\\
+\bottomrule\end{tabular*}\end{center}
+\textbf{GUIDE DESIGN ENVELOPES; NOT OBSERVED.} $^{\dagger}$Graph-IPD values are
+conditional comparison targets, not its measured speed or adaptation. Its
+upstream smoke reward 14.15 used a different aggregation and cannot be converted
+into the normalized payoff here. Memory limits are engineering allowances,
+not estimates of the reference implementation. RARE and the strong reference
+are deliberately assigned the same payoff and recovery targets.
+
+\lead{Service workload and arithmetic}
+These budgets cover a CPU selector with cached 64-dimensional features, queue
+handling, legal small-head update, state serialization and logging. The .297 ms
+and .520 ms measured anchors cover only one existing update; 5 ms is a new
+service allowance, not a p95 extrapolation. Neural encoding, retrieval/model
+training and end-to-end publish/read service must be measured separately before
+any full real-time-training claim. Backbone and updater remain open.
+
+The guide workload is four feedback arrivals every 40 ms, giving
+$\lambda=4/.040=100$ events/s. A \emph{maximum} 5 ms service envelope, stronger
+than p95 alone, processes a burst in $4\times5=20$ ms before the next burst.
+The backlog $\leq4$ target in the table is conditional on this \emph{maximum}
+5 ms service bound; it includes the event in service. Actual p95 cannot by
+itself guarantee backlog; both are test targets,
+and burst tails, disk stalls and asynchronous corrections must be recorded.
+
+The RARE dynamic-state allowance is
+\[
+ B=4096+4(64)(8)+128(256)=38912\ \text{bytes}=38.0\ \text{KiB}<64\ \text{KiB}.
+\]
+This reserves four float64 head vectors, 128 retained 256-byte records and
+4 KiB of fixed metadata. It is a proposed representation budget, not a statement
+that the current model uses it. Count serialized metadata and every retained
+feedback/replay record; model weights, full ledger, runtime resident memory and
+external artifact storage are reported separately, not silently discarded.
+No semantic compression quality is inferred from a byte limit.
+
+\lead{Payoff, forgetting and recovery}
+For the guide only, use the IPD payoff matrix $T=5,R=3,P=1,S=0$ and divide
+selected-pair payoff by 5. Values .50 and .56 mean raw payoff 2.50 and 2.80,
+within $[0,5]$. Only selected realized payoff may enter learning; unchosen
+oracle outcomes, if available for evaluation, never enter feedback.
+
+Forgetting is $\max(0,Q_{\rm old,pre}-Q_{\rm old,post})$ on a fixed old-task
+holdout. A target .01 is one percentage point, not 1\% relative loss. Recovery
+is the earliest post-drift step whose independent evaluation reaches at least
+90\% of the fixed post-drift reference payoff for three consecutive windows.
+The reference is frozen before the comparison and costs are matched. ``$>50$''
+for fixed policies is the guide scenario of drift that requires learning,
+not a prediction that every drift defeats a fixed policy. The exact evaluation
+window, reference and confidence rule remain to be frozen in the real card.
+
+\lead{Why these targets are restrained}
+Sub-millisecond core updates make a 5 ms cached-feature allowance worth testing;
+they say nothing about an unmeasured backbone forward/backward pass. No measured
+drift or forgetting data exist. Therefore the adaptation cells are desired
+constraints rather than extrapolated expectations, and strong controls can
+equal or outperform RARE when tested.
+
+\clearpage
+\lead{Table 3 counterpart: mechanisms and responsibility --- S1 targets}
+\status
+\begin{center}\small
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrr@{}}\toprule
+\multicolumn{5}{l}{\textbf{(a) Mechanism ablations}}\\
+Variant & $U$ & $\Delta A$ & False attrib. & Cost\\\midrule
+Full RARE & 0.495 & 0.20 & 0.000 & 1.05\\
+No public evidence & 0.428 & 0.10 & 0.000 & 1.02\\
+No delayed credit & 0.447 & 0.15 & 0.000 & 1.03\\
+Neither evidence nor credit & 0.400 & 0.00 & 0.000 & 1.00\\
+No ownership gate & 0.435 & 0.24 & 0.138 & 1.05\\
+No locality & 0.492 & 0.22 & 0.000 & 1.18\\
+No selected-only rule & \multicolumn{4}{l}{\textit{N/A: feedback contract not defined}}\\
+No correction / replay & 0.466 & 0.20 & 0.000 & 1.04\\
+\midrule
+\multicolumn{5}{l}{\textbf{(b) False producer-credit rate in negative-ownership stress}}\\
+Variant & Recipient-owned & Mixed & Unobserved & Resource failure\\\midrule
+Full RARE & 0.000 & 0.000 & 0.000 & 0.000\\
+No ownership gate & 0.250 & 0.150 & 0.100 & 0.050\\
+\bottomrule\end{tabular*}\end{center}
+\textbf{GUIDE TARGET SCENARIO; NOT OBSERVED.} The selected-only ablation cannot
+be assigned a legal number under the current observed-feedback contract. It
+requires a separately specified diagnostic intervention; pretending unchosen
+labels are available would make the table mathematically invalid.
+
+\lead{Four-cell consistency and testable interaction}
+In S1, let evidence publication and delayed credit be independently enabled:
+\[
+\begin{array}{c|cc}
+ & \text{No credit} & \text{Credit}\\\hline
+\text{No evidence} & U_{00}=.400 & U_{01}=.428\\
+\text{Evidence} & U_{10}=.447 & U_{11}=.495
+\end{array}
+\]
+Then the publication-only increment is .047, the credit-only increment .028,
+and the interaction is
+\[
+ I=U_{11}-U_{10}-U_{01}+U_{00}=.020;
+ \qquad .047+.028+.020=.095=U_{11}-U_{00}.
+\]
+This is the interaction we \emph{aim to test}, not evidence that it exists.
+Quality inputs are respectively .50, .53, .55 and .60; cost inputs are 1.00,
+1.02, 1.03 and 1.05. Their utility cells use the same coefficient as Table 1.
+
+The evidence switch changes what the selector reads. The operator still retains
+immutable assignment and provenance receipts. In the credit-only cell, these
+receipts permit legal post-target selected-only credit; the source observation
+is withheld from the selector. All cells share the annotation and compute budget
+and reward contract. Each arm uses its own realized future outcome and history.
+The credit switch controls only parameter updates.
+This separation requires runner qualification before the factorial comparison;
+without it the interaction is not identifiable.
+
+An assignment-change rate is the fraction of paired decisions whose chosen peer
+differs from no update using the same menu and random draw. Under a quality-only
+selection-effect model, $|Q-Q_0|\leq\Delta A$; every S1 row satisfies this bound.
+For RARE, a .10 quality gain with .20 changed choices requires an average .50
+gain on changed decisions. This is a demanding target, not a free consequence
+of changing probabilities. Real policies may also change delivery history;
+that pathway must be measured rather than forced into this simple model.
+
+\lead{Safety denominators and an explicit trade-off}
+False attribution means producer reward/penalty issued in a case whose frozen
+contract and independent evidence prohibit producer credit, divided by all
+tested negative-ownership cases. UNKNOWN and failures stay in the denominator
+with distinct status. Full RARE's zero is a fail-closed invariant target, not
+an observed zero-error estimate. No-gate values (.25,.15,.10,.05) are stress
+planning assumptions. With equally many cases per category, their overall rate
+is $(.25+.15+.10+.05)/4=.1375$, matching panel (a).
+
+No locality may slightly improve quality (.61 versus .60) but increase complete
+cost to 1.18, giving $U=.492$ versus .495. This retains a quality/cost trade-off
+instead of forcing every ablation to lose on every metric. A future result can
+overturn any S1 ordering; changing the guide never changes recorded results.
+
+\clearpage
+\lead{Sensitivity, precision and execution scale}
+\status
+\begin{center}\small
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrrr@{}}\toprule
+Scenario & $Q_R$ & $C_R$ & $U_R$ & $U_{\rm ctx}$ & Difference\\\midrule
+Null: no quality gain & 0.50 & 1.05 & 0.395 & 0.397 & -0.002\\
+Small gain & 0.56 & 1.05 & 0.455 & 0.447 & 0.008\\
+S1: working target & 0.60 & 1.05 & 0.495 & 0.447 & 0.048\\
+Cost overrun & 0.60 & 1.20 & 0.480 & 0.447 & 0.033\\
+Strong control wins & 0.53 & 1.05 & 0.425 & 0.497 & -0.072\\
+\bottomrule\end{tabular*}\end{center}
+These scenarios intentionally include a negative result, a near-tie and a strong
+control win. They
+are not a probability distribution. Unknown quality effects have no fitted
+posterior or prediction interval. No invented 95\% result intervals or
+significance marks appear in the target matrices.
+
+\lead{What the target difference would require}
+For the same S1 $\Delta Q=.05$ and $\Delta C=.02$,
+$\Delta U=.05-\lambda(.02)$. At guide sensitivity weights
+$\lambda=.05,.10,.20$, the differences are .049, .048 and .046.
+With no quality gain they are negative (.001, .002 and .004 in magnitude).
+The actual complete-cost conversion, utility coefficient and threshold must be
+frozen before confirmation. Wall time is not a substitute for money, GPU,
+tokens, tools, human effort and retry costs.
+
+Assuming, not observing, a paired-stream standard deviation $s_D=.06$ and
+target difference .048, the two-sided normal approximation for 80\% power is
+\[
+ n\approx\left(\frac{(1.96+.8416).06}{.048}\right)^2,
+ \quad \lceil n\rceil=13.
+\]
+The illustrative plan uses 18 paired stream differences for one primary contrast
+(six per each of at least three qualified structural roots). With
+$t_{.975,17}=2.1098$, the assumed
+95\% half-width is $2.1098(.06)/\sqrt{18}=0.030$.
+This is a \emph{precision calculation}, not a measured interval or final sample
+size. It describes conditional within-root precision under the assumed SD; it
+does not establish 80\% power for transfer across unseen structural roots.
+Root hierarchy, multiple primary comparisons and larger pilot variance can
+require more streams. Freeze the root-aware analysis and primary contrast, then
+re-estimate sample size from a development pilot. A stream contains many episodes; they are never
+counted as independent streams. Root split and seeds are not selected here.
+
+For an independent zero-error safety diagnostic, 300 negative cases would give
+the one-sided 95\% upper bound $1-.05^{1/300}\approx.00994$.
+Repeated cases within streams may be dependent; then this Bernoulli calculation
+does not apply and the registered clustered analysis must be used.
+
+\lead{Budget reality check before any launch}
+Eighteen streams, eight ArtifactRole arms and 30 future assignments per stream
+imply 4,320 target episodes. At three new calls per fresh target and three
+initial-source calls per arm/stream, the skeleton is 13,392 calls.
+The eight-call measured run averaged 1,814.375 input-plus-output tokens per call;
+holding that average gives approximately 24.30 million tokens and
+40.9 summed API hours. A 2$\times$ planning multiplier gives roughly twice
+these totals. These are workload projections, not full budgets: profile calls,
+retries, tools, scorer CPU, communication, model training and overhead must be
+added explicitly. No pricing or parallel wall-clock guarantee is inferred.
+
+This is a possible \emph{confirmation-scale} target, not the next experiment.
+First qualify roots, label/update legality and same-information baselines, then
+use a bounded development pilot to estimate stream variance and whether the
+signal exists. Freeze the complete cards, precision and stopping rules before
+confirmation. A null or reversed strong-control comparison requires analyzing
+the recorded failure and revising the method; it cannot be repaired by replacing
+the measured numbers or lowering the Goal. This guide does not alter execution
+budgets or launch resources; no experiment was performed to fill its targets.
+
+\lead{Version and source discipline}
+The PDF is independent of the canonical paper. Its editable source, target
+specification, arithmetic checks and raw-source hash are archived with v1.
+Every page carries a visible watermark and status header. The measured data
+remain unchanged; guide cells never feed the paper's real result tables.
+The active Goal and three acceptance standards remain authoritative.
+\end{document}
