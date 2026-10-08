@@ -2,6 +2,11 @@
 
 状态：`PREPARED / AWAITING_ADDITIONAL_BUDGET`。不修改 Goal 或 ACTIVE 方法。
 
+2026-10-08 历史状态注：原prepare-only机器卡不变；后续按已有常规执行授权另立
+版本化执行卡，第二格发生误判后停止，2次真实请求，后两格未执行。见
+[执行权限重审及实际结果](../../coordination/task_reports/20261008_scoped_judgment_execution.md)。
+以下保留原冻结输入、成功标准与历史预算提问，不追溯改写。
+
 ## 只回答一个问题
 
 给接收方明确公开职责后，它能否分别判断“producer 交付是否合规”和“自己的

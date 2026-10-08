@@ -1,0 +1,57 @@
+{
+  "schema_version": "n03-scoped-judgment-execution-v1",
+  "status": "AUTHORIZED_EXECUTION",
+  "real_api_runs_allowed": true,
+  "prepared_dir": "experiments/logs/n03_scoped_judgment_prepare_20261007_v2",
+  "parent_manifest_sha256": "3d46c2398cb814906500b958b3b6247c71dc22c4b4cdc4742958e5a23c4da11b",
+  "gold_summary_path": "experiments/logs/n03_scoped_judgment_gold_20261007_v1/summary.json",
+  "gold_summary_sha256": "8677a33748f01fcc929e2f1b357b9a1b1d45bc1287563bd1440c32430645ba91",
+  "gold_config_path": "experiments/logs/n03_scoped_judgment_gold_20261007_v1/config.json",
+  "gold_config_sha256": "24b74b9bad53024d523978a2781c2fc343d127889aa344829355468805bab881",
+  "max_judgment_requests": 4,
+  "max_episodes": 4,
+  "retries": 0,
+  "candidate_executions": 0,
+  "actions": 0,
+  "training_updates": 0,
+  "gpu_runs": 0,
+  "model": "qwen3.8-max",
+  "temperature": 0,
+  "thinking": {
+    "type": "disabled"
+  },
+  "stream": true,
+  "request_timeout_seconds": 300,
+  "max_tokens": {
+    "judgment": 1024
+  },
+  "maximum_task_requests": 4,
+  "authorization": {
+    "basis": "User explicitly delegates routine work; only major storyline/method changes require new confirmation. This is a bounded execution decision, not a new user-approved numerical cap.",
+    "scope_report": "docs/coordination/task_reports/20261008_scoped_judgment_execution.md",
+    "explicit_user_approval_of_number_four": false,
+    "goal_or_active_method_change": false
+  },
+  "budget": {
+    "prior_documented_attempted_episodes": 31,
+    "prior_documented_task_request_starts": 68,
+    "original_tentative_cap": 24,
+    "maximum_new_judgment_requests": 4,
+    "maximum_documented_cumulative_attempted_episodes": 35,
+    "counting_rule": "Each diagnostic request_start counts as one new attempted episode even without code actions; failures count; no repeats/retries."
+  },
+  "decision_rule": {
+    "success": "All four producer verdicts and all four recipient needs_change/target_paths values match the frozen and independently checked parent manifest, with exact producer digest and a valid two-field schema; native producer negatives must include public clause C2_producer_timestamp and rationale identifying the timestamp separator mismatch. Only then consider a separate experiment.",
+    "failure": "Any transport/parse error, invalid schema or binding stops immediately. A valid but incorrect/uncertain answer is retained; no action or learning follows, and the card stops rather than replacing that cell. No retry, replacement, model swap, or prompt revision.",
+    "permitted_claim": "At most, a fixed four-cell scoped-judgment diagnostic for these four prepared source combinations.",
+    "forbidden_claims": [
+      "population accuracy",
+      "method efficacy",
+      "learning gain",
+      "producer credit",
+      "recipient action quality"
+    ]
+  },
+  "review_rule": "Every completed structured response pauses for parent-only rationale_review.json tied to its exact response digest before the next call. Reject negative producer reasons that do not identify the timestamp space-vs-T mismatch; reject explanations conflicting with the assigned ownership boundary.",
+  "scientific_claim_allowed": false
+}

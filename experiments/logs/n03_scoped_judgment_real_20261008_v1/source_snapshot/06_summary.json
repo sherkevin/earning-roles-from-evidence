@@ -1,0 +1,166 @@
+{
+  "status": "FINITE_COMPONENT_GOLD_SUPPORTED",
+  "components": {
+    "producer_historical": {
+      "status": "PASS",
+      "label": 1,
+      "quality_score": 1.0,
+      "scorer_version": "pipe3-producer-objective-v2",
+      "decision_complete": true,
+      "coverage_complete": true,
+      "checks": [
+        {
+          "id": "P1_import",
+          "status": "PASS"
+        },
+        {
+          "id": "P2_iso_serialization",
+          "status": "PASS"
+        },
+        {
+          "id": "P3_batch_output",
+          "status": "PASS"
+        }
+      ],
+      "failed_check_ids": [],
+      "response_digest": "b0ff2f93ada3a46c3eee8aa771be08ac766053af066ab8c387d4936c1366c7bd",
+      "transport": {
+        "status": "complete"
+      },
+      "artifact_sha256": "73921e936376281e447b72b860220a88120c6a05ba3ca2bd02e5c58485abc298"
+    },
+    "producer_native": {
+      "status": "FAIL",
+      "label": 0,
+      "quality_score": 0.6666666666666666,
+      "scorer_version": "pipe3-producer-objective-v2",
+      "decision_complete": true,
+      "coverage_complete": true,
+      "checks": [
+        {
+          "id": "P1_import",
+          "status": "PASS"
+        },
+        {
+          "id": "P2_iso_serialization",
+          "status": "FAIL",
+          "reason": ""
+        },
+        {
+          "id": "P3_batch_output",
+          "status": "PASS"
+        }
+      ],
+      "failed_check_ids": [
+        "P2_iso_serialization"
+      ],
+      "response_digest": "470d153773afa0d97e10cf0aa37355cdacc97168692d801b486f991b6489038c",
+      "transport": {
+        "status": "complete"
+      },
+      "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2"
+    },
+    "recipient_historical": {
+      "status": "PASS",
+      "label": 1,
+      "quality_score": 1.0,
+      "scorer_version": "pipe3-recipient-objective-v2",
+      "mode": "recipient",
+      "decision_complete": true,
+      "coverage_complete": true,
+      "checks": [
+        {
+          "id": "R1_process",
+          "status": "PASS",
+          "reason": ""
+        },
+        {
+          "id": "R2_shape",
+          "status": "PASS"
+        },
+        {
+          "id": "R3_utf8_semantics",
+          "status": "PASS"
+        }
+      ],
+      "failed_check_ids": [],
+      "response_digest": "be69c76f6d4abaf11351058bb225247889ee77069dc75d9696998b9f9b573620",
+      "transport": {
+        "status": "complete"
+      },
+      "artifact_sha256": "4c43f79c95e650d5cf945d14b39e062202ae5f59e9094d9c0d5202952257cd0a"
+    },
+    "recipient_native": {
+      "status": "FAIL",
+      "label": 0,
+      "quality_score": 0.0,
+      "scorer_version": "pipe3-recipient-objective-v2",
+      "mode": "recipient",
+      "decision_complete": true,
+      "coverage_complete": true,
+      "checks": [
+        {
+          "id": "R1_process",
+          "status": "FAIL",
+          "reason": "UnicodeEncodeError('latin-1', '{\"data\": {\"event_id\": \"probe-001\", \"timestamp\": \"2023-11-14T22:13:20\", \"user_name\": \"Müller\", \"action\": \"PAGE_VIEW\", \"page_url\": \"€probe\", \"processed_at\": \"2026-10-07T06:00:13.366793\"}}\\n', 130, 131, 'ordinal not in range(256)')",
+          "failure_origin": "candidate",
+          "failure_stage": "processing",
+          "failure_code": "PROCESSOR_ERROR_IN_DELIVERY",
+          "exception_class": "UnicodeEncodeError",
+          "source_path": "processor.py"
+        },
+        {
+          "id": "R2_shape",
+          "status": "FAIL",
+          "reason": "blocked_by_candidate_processor_failure"
+        },
+        {
+          "id": "R3_utf8_semantics",
+          "status": "FAIL",
+          "reason": "blocked_by_candidate_processor_failure"
+        }
+      ],
+      "failed_check_ids": [
+        "R1_process",
+        "R2_shape",
+        "R3_utf8_semantics"
+      ],
+      "response_digest": "a55be1f8e03747f1b3e9949ec518b19a6ab027369f41395a0dd1069e6d4a5c0b",
+      "transport": {
+        "status": "complete"
+      },
+      "artifact_sha256": "16223542de99f20807fcf97463c16edd8883b0e90df5919942f2da1c6cdedcf5"
+    }
+  },
+  "four_cell_projections": [
+    {
+      "case_id": "9cc80e05042de875d638",
+      "producer_status": "PASS",
+      "recipient_self_status": "FAIL",
+      "other_axis_invariant": true
+    },
+    {
+      "case_id": "3ed01f760579a21ba20c",
+      "producer_status": "FAIL",
+      "recipient_self_status": "FAIL",
+      "other_axis_invariant": true
+    },
+    {
+      "case_id": "14b794d43a7b52d97bb9",
+      "producer_status": "FAIL",
+      "recipient_self_status": "PASS",
+      "other_axis_invariant": true
+    },
+    {
+      "case_id": "7b380082ba2b972142a1",
+      "producer_status": "PASS",
+      "recipient_self_status": "PASS",
+      "other_axis_invariant": true
+    }
+  ],
+  "api_calls": 0,
+  "gpu_jobs": 0,
+  "training_updates": 0,
+  "scientific_readiness": false,
+  "scope": "Four fixed component artifacts; not population accuracy or exhaustive contract verification"
+}

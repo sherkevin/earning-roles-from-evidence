@@ -1,0 +1,89 @@
+{
+  "version": "n03-scoped-judgment-execution-v1",
+  "card": {
+    "schema_version": "n03-scoped-judgment-execution-v1",
+    "status": "AUTHORIZED_EXECUTION",
+    "real_api_runs_allowed": true,
+    "prepared_dir": "experiments/logs/n03_scoped_judgment_prepare_20261007_v2",
+    "parent_manifest_sha256": "3d46c2398cb814906500b958b3b6247c71dc22c4b4cdc4742958e5a23c4da11b",
+    "gold_summary_path": "experiments/logs/n03_scoped_judgment_gold_20261007_v1/summary.json",
+    "gold_summary_sha256": "8677a33748f01fcc929e2f1b357b9a1b1d45bc1287563bd1440c32430645ba91",
+    "gold_config_path": "experiments/logs/n03_scoped_judgment_gold_20261007_v1/config.json",
+    "gold_config_sha256": "24b74b9bad53024d523978a2781c2fc343d127889aa344829355468805bab881",
+    "max_judgment_requests": 4,
+    "max_episodes": 4,
+    "retries": 0,
+    "candidate_executions": 0,
+    "actions": 0,
+    "training_updates": 0,
+    "gpu_runs": 0,
+    "model": "qwen3.8-max",
+    "temperature": 0,
+    "thinking": {
+      "type": "disabled"
+    },
+    "stream": true,
+    "request_timeout_seconds": 300,
+    "max_tokens": {
+      "judgment": 1024
+    },
+    "maximum_task_requests": 4,
+    "authorization": {
+      "basis": "User explicitly delegates routine work; only major storyline/method changes require new confirmation. This is a bounded execution decision, not a new user-approved numerical cap.",
+      "scope_report": "docs/coordination/task_reports/20261008_scoped_judgment_execution.md",
+      "explicit_user_approval_of_number_four": false,
+      "goal_or_active_method_change": false
+    },
+    "budget": {
+      "prior_documented_attempted_episodes": 31,
+      "prior_documented_task_request_starts": 68,
+      "original_tentative_cap": 24,
+      "maximum_new_judgment_requests": 4,
+      "maximum_documented_cumulative_attempted_episodes": 35,
+      "counting_rule": "Each diagnostic request_start counts as one new attempted episode even without code actions; failures count; no repeats/retries."
+    },
+    "decision_rule": {
+      "success": "All four producer verdicts and all four recipient needs_change/target_paths values match the frozen and independently checked parent manifest, with exact producer digest and a valid two-field schema; native producer negatives must include public clause C2_producer_timestamp and rationale identifying the timestamp separator mismatch. Only then consider a separate experiment.",
+      "failure": "Any transport/parse error, invalid schema or binding stops immediately. A valid but incorrect/uncertain answer is retained; no action or learning follows, and the card stops rather than replacing that cell. No retry, replacement, model swap, or prompt revision.",
+      "permitted_claim": "At most, a fixed four-cell scoped-judgment diagnostic for these four prepared source combinations.",
+      "forbidden_claims": [
+        "population accuracy",
+        "method efficacy",
+        "learning gain",
+        "producer credit",
+        "recipient action quality"
+      ]
+    },
+    "review_rule": "Every completed structured response pauses for parent-only rationale_review.json tied to its exact response digest before the next call. Reject negative producer reasons that do not identify the timestamp space-vs-T mismatch; reject explanations conflicting with the assigned ownership boundary.",
+    "scientific_claim_allowed": false
+  },
+  "card_path": "/Users/jingwu/work/earning-roles/configs/aamas2027/n03_scoped_judgment_execution_v1_20261008.json",
+  "card_sha256": "1350dc3d9be6812c3e047c5766f9b889ebe754fb804c03f43b5d6cc667a2c138",
+  "source_sha256": {
+    "/Users/jingwu/work/earning-roles/scripts/peerrolebench_scoped_judgment_execute.py": "484a0d548402b318d77d0dba3a3abdaf1a2482e4e26b623f0869571a5b8218a5",
+    "/Users/jingwu/work/earning-roles/scripts/peerrolebench_real_closed_loop.py": "3d5ff334f5c58dfc24808744bf1890c5a0a0e2733c17f04b567613c88a60d81e",
+    "/Users/jingwu/work/earning-roles/scripts/peerrolebench_pipe3_material_adapter.py": "8cad02d117ed3d219a1a067bee339bd4db51ae9cf58cc92ca484f41bc62389a2",
+    "/Users/jingwu/work/earning-roles/scripts/aamas_real_probe.py": "b9bba5e37e02e3d888bbc1ff9cf8c16bb59ed733ba65bcec575f37755205cf5c",
+    "/Users/jingwu/work/earning-roles/configs/aamas2027/n03_scoped_judgment_execution_v1_20261008.json": "1350dc3d9be6812c3e047c5766f9b889ebe754fb804c03f43b5d6cc667a2c138",
+    "/Users/jingwu/work/earning-roles/experiments/logs/n03_scoped_judgment_prepare_20261007_v2/parent_manifest.json": "3d46c2398cb814906500b958b3b6247c71dc22c4b4cdc4742958e5a23c4da11b",
+    "/Users/jingwu/work/earning-roles/experiments/logs/n03_scoped_judgment_gold_20261007_v1/summary.json": "8677a33748f01fcc929e2f1b357b9a1b1d45bc1287563bd1440c32430645ba91",
+    "/Users/jingwu/work/earning-roles/experiments/logs/n03_scoped_judgment_gold_20261007_v1/config.json": "24b74b9bad53024d523978a2781c2fc343d127889aa344829355468805bab881",
+    "/Users/jingwu/work/earning-roles/experiments/logs/n03_scoped_judgment_prepare_20261007_v2/requests/request_9cc80e05042de875d638.json": "ae75961a105b3c172c4faab53d38444fdcd5e3eb45b7706027fbceb0eceb09fa",
+    "/Users/jingwu/work/earning-roles/experiments/logs/n03_scoped_judgment_prepare_20261007_v2/requests/request_3ed01f760579a21ba20c.json": "d6bd1b77b8f1d2ff1ecc97e5ed7fac91a5d3c0e960d9704a59789ed720607fe1",
+    "/Users/jingwu/work/earning-roles/experiments/logs/n03_scoped_judgment_prepare_20261007_v2/requests/request_14b794d43a7b52d97bb9.json": "d7df943c55695465caaeea89f0c785af1d2d8f006cec6e3540baf85bcb924973",
+    "/Users/jingwu/work/earning-roles/experiments/logs/n03_scoped_judgment_prepare_20261007_v2/requests/request_7b380082ba2b972142a1.json": "8fc0e259fbbe9c53efacd35570eb30b503b19a5aa58e91e40262abe4a1926ed4"
+  },
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "timestamp_utc": "2026-10-08T11:05:04.267571+00:00",
+  "git_commit": "276ae7b7ac000e47c740fec1506c060a1ca13bbc",
+  "command": [
+    "scripts/peerrolebench_scoped_judgment_execute.py",
+    "prepare",
+    "--card",
+    "configs/aamas2027/n03_scoped_judgment_execution_v1_20261008.json",
+    "--out",
+    "experiments/logs/n03_scoped_judgment_real_20261008_v1"
+  ],
+  "scope": "four fixed judgment requests; no candidate, action, policy update or GPU"
+}

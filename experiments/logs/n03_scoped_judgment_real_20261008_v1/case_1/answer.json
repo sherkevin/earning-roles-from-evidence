@@ -1,0 +1,19 @@
+{
+  "producer_contract_assessment": {
+    "verdict": "meets_contract",
+    "observed_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+    "contract_clause_refs": [
+      "C1_interfaces",
+      "C2_producer_timestamp",
+      "C3_producer_jsonl"
+    ],
+    "rationale": "producer.py writes UTF-8 JSON Lines with one complete event object per line in order (C3). It serializes the datetime timestamp using json.dumps with default=str, which calls datetime.__str__ producing ISO 8601 format with a 'T' separator and no space (C2). All declared UserEvent fields are present and public function names and signatures are unchanged (C1)."
+  },
+  "recipient_integration_plan": {
+    "needs_change": true,
+    "target_paths": [
+      "processor.py"
+    ],
+    "rationale": "processor.py violates C4 by writing output with encoding='latin-1' instead of UTF-8. It violates C5 by wrapping each processed event in an envelope dict {'data': processed} instead of writing bare event objects at the top level; the sink expects direct access to fields like event_id and timestamp. These defects must be fixed in processor.py to meet its public responsibilities when paired with a conforming producer."
+  }
+}
