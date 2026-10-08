@@ -1,0 +1,88 @@
+{
+  "status": "AUDIT_COMPLETED",
+  "api_calls": 0,
+  "gpu_calls": 0,
+  "scientific_claim_allowed": false,
+  "authored_control": [
+    {
+      "context": [
+        1.0,
+        0.0
+      ],
+      "identity": {
+        "agent-a@v1": 0.0,
+        "agent-b@v1": 0.0
+      },
+      "additive": {
+        "agent-a@v1": 0.0,
+        "agent-b@v1": 0.0
+      },
+      "disjoint": {
+        "agent-a@v1": 0.5,
+        "agent-b@v1": -0.5
+      }
+    },
+    {
+      "context": [
+        0.0,
+        1.0
+      ],
+      "identity": {
+        "agent-a@v1": 0.0,
+        "agent-b@v1": 0.0
+      },
+      "additive": {
+        "agent-a@v1": 0.0,
+        "agent-b@v1": 0.0
+      },
+      "disjoint": {
+        "agent-a@v1": -0.5,
+        "agent-b@v1": 0.5
+      }
+    }
+  ],
+  "encoder": {
+    "dimension": 384,
+    "input_count": 4,
+    "tokens_before_truncation": [
+      226,
+      226,
+      467,
+      467
+    ],
+    "max_seq_length": 256,
+    "truncated_inputs": 2,
+    "cosine_matrix": [
+      [
+        1.0000001192092896,
+        0.996651828289032,
+        0.7523927092552185,
+        0.7545084357261658
+      ],
+      [
+        0.996651828289032,
+        0.9999997019767761,
+        0.747793436050415,
+        0.7551478147506714
+      ],
+      [
+        0.7523927092552185,
+        0.747793436050415,
+        0.9999998807907104,
+        0.9974379539489746
+      ],
+      [
+        0.7545084357261658,
+        0.7551478147506714,
+        0.9974379539489746,
+        1.000000238418579
+      ]
+    ],
+    "repeat_max_abs_error": 8.195638656616211e-08,
+    "input_coverage_qualified": false,
+    "final_backbone_selected": false,
+    "reward_updates_from_embeddings": 0
+  },
+  "finished_utc": "2026-10-08T09:45:47.943289+00:00",
+  "source_unchanged": true
+}

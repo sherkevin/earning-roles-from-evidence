@@ -1,0 +1,72 @@
+{
+  "schema": "contextual-ridge-audit-v1",
+  "started_utc": "2026-10-08T09:45:40.405725+00:00",
+  "command": [
+    "scripts/peerrolebench_contextual_ridge_check.py",
+    "--out-dir",
+    "experiments/logs/n03_contextual_ridge_20261008_v1",
+    "--local-encoder"
+  ],
+  "git_commit": "782522d61e01ac1e24b2799ef48cb635801b49a0",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "python": "3.9.6",
+  "hardware": {
+    "device": "cpu",
+    "gpu_used": false
+  },
+  "environment_overrides": {
+    "HF_HUB_OFFLINE": "1",
+    "TRANSFORMERS_OFFLINE": "1",
+    "TOKENIZERS_PARALLELISM": "false",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1"
+  },
+  "seed": 0,
+  "rho": 1.0,
+  "numerical_labels": "authored signed controls, NOT task rewards",
+  "tests": [
+    "tests/test_peerrolebench_signed_ridge.py",
+    "tests/test_peerrolebench_disjoint_ridge.py"
+  ],
+  "candidate_keys": [
+    "agent-a@v1",
+    "agent-b@v1"
+  ],
+  "source_hashes": {
+    "scripts/peerrolebench_signed_ridge.py": "8c4cfa5c445469ea8f37eb2e9d5ca9704edad86eb1c36e539e62dae93d5e7e94",
+    "scripts/peerrolebench_contextual_ridge_check.py": "0aa8e8f07f7a1181bc02f9fc1e49ee185899e87159c0c3c6fc71e04fe7971a0a",
+    "tests/test_peerrolebench_signed_ridge.py": "ad26e9de31e54b3e13e03df242465ce2a24eb557a7ecdfd55c795dae5fa8b986",
+    "tests/test_peerrolebench_disjoint_ridge.py": "649a9144c9b48b62cf78e627c062defb67d342d3b02a2c430a154c2f0d1d9eb4",
+    "scripts/peerrolebench_pipe3_public_contract_v2.py": "dae8346c3ad57acbf58d406067db86e709db7f68efe5c9000198eb191fec933e",
+    "scripts/peerrolebench_pipe3_material_adapter.py": "8cad02d117ed3d219a1a067bee339bd4db51ae9cf58cc92ca484f41bc62389a2"
+  },
+  "libraries": {
+    "numpy": "1.26.4",
+    "pytest": "8.4.2",
+    "torch": "2.8.0",
+    "sentence-transformers": "5.1.2",
+    "transformers": "4.46.3"
+  },
+  "encoder_enabled": true,
+  "encoder_model": "sentence-transformers/all-MiniLM-L6-v2",
+  "encoder_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "encoder_path": "/Users/jingwu/.cache/huggingface/hub/models--sentence-transformers--all-MiniLM-L6-v2/snapshots/1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "encoder_files": {
+    "model.safetensors": "53aa51172d142c89d9012cce15ae4d6cc0ca6895895114379cacb4fab128d9db",
+    "tokenizer_config.json": "acb92769e8195aabd29b7b2137a9e6d6e25c476a4f15aa4355c233426c61576b",
+    "special_tokens_map.json": "303df45a03609e4ead04bc3dc1536d0ab19b5358db685b6f3da123d05ec200e3",
+    "config.json": "953f9c0d463486b10a6871cc2fd59f223b2c70184f49815e7efbcab5d8908b41",
+    "config_sentence_transformers.json": "061ca9d39661d6c6d6de5ba27f79a1cd5770ea247f8d46412a68a498dc5ac9f3",
+    "tokenizer.json": "be50c3628f2bf5bb5e3a7f17b1f74611b2561a3a27eeab05e5aa30f411572037",
+    "README.md": "dcd602d2fd35c203a247304a06fec6654a12f7941b739f9221a064fe8dc3b7f0",
+    "sentence_bert_config.json": "fc1993fde0a95c24ec6c022539d41cf6e2f7c9721e5415d6fb6897472a9cd4b7",
+    "vocab.txt": "07eced375cec144d27c900241f3e339478dec958f92fddbc551f295c992038a3",
+    "modules.json": "84e40c8e006c9b1d6c122e02cba9b02458120b5fb0c87b746c41e0207cf642cf",
+    "1_Pooling/config.json": "4be450dde3b0273bb9787637cfbd28fe04a7ba6ab9d36ac48e92b11e350ffc23"
+  },
+  "encoder_check": "4 public contract/role texts, batch encoding + repeat first; record truncation, no utility labels",
+  "api_calls": 0,
+  "gpu_calls": 0,
+  "scientific_efficacy_experiment": false
+}

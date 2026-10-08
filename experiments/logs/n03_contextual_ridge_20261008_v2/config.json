@@ -1,0 +1,74 @@
+{
+  "schema": "contextual-ridge-audit-v2",
+  "started_utc": "2026-10-08T09:47:16.855559+00:00",
+  "command": [
+    "scripts/peerrolebench_contextual_ridge_check.py",
+    "--out-dir",
+    "experiments/logs/n03_contextual_ridge_20261008_v2",
+    "--local-encoder",
+    "--encoder",
+    "bge"
+  ],
+  "git_commit": "782522d61e01ac1e24b2799ef48cb635801b49a0",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "python": "3.9.6",
+  "hardware": {
+    "device": "cpu",
+    "gpu_used": false
+  },
+  "environment_overrides": {
+    "HF_HUB_OFFLINE": "1",
+    "TRANSFORMERS_OFFLINE": "1",
+    "TOKENIZERS_PARALLELISM": "false",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1"
+  },
+  "seed": 0,
+  "rho": 1.0,
+  "numerical_labels": "authored signed controls, NOT task rewards",
+  "tests": [
+    "tests/test_peerrolebench_signed_ridge.py",
+    "tests/test_peerrolebench_disjoint_ridge.py"
+  ],
+  "candidate_keys": [
+    "agent-a@v1",
+    "agent-b@v1"
+  ],
+  "source_hashes": {
+    "scripts/peerrolebench_signed_ridge.py": "8c4cfa5c445469ea8f37eb2e9d5ca9704edad86eb1c36e539e62dae93d5e7e94",
+    "scripts/peerrolebench_contextual_ridge_check.py": "c0f5b37d0ec0544afee1d75389801b46ca5fa912232592c4fcee0c73e666c265",
+    "tests/test_peerrolebench_signed_ridge.py": "ad26e9de31e54b3e13e03df242465ce2a24eb557a7ecdfd55c795dae5fa8b986",
+    "tests/test_peerrolebench_disjoint_ridge.py": "649a9144c9b48b62cf78e627c062defb67d342d3b02a2c430a154c2f0d1d9eb4",
+    "scripts/peerrolebench_pipe3_public_contract_v2.py": "dae8346c3ad57acbf58d406067db86e709db7f68efe5c9000198eb191fec933e",
+    "scripts/peerrolebench_pipe3_material_adapter.py": "8cad02d117ed3d219a1a067bee339bd4db51ae9cf58cc92ca484f41bc62389a2"
+  },
+  "libraries": {
+    "numpy": "1.26.4",
+    "pytest": "8.4.2",
+    "torch": "2.8.0",
+    "sentence-transformers": "5.1.2",
+    "transformers": "4.46.3"
+  },
+  "encoder_enabled": true,
+  "encoder_model": "BAAI/bge-small-en-v1.5",
+  "encoder_revision": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+  "encoder_path": "/Users/jingwu/.cache/huggingface/hub/models--BAAI--bge-small-en-v1.5/snapshots/5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+  "encoder_files": {
+    "model.safetensors": "3c9f31665447c8911517620762200d2245a2518d6e7208acc78cd9db317e21ad",
+    "tokenizer_config.json": "9261e7d79b44c8195c1cada2b453e55b00aeb81e907a6664974b4d7776172ab3",
+    "special_tokens_map.json": "b6d346be366a7d1d48332dbc9fdf3bf8960b5d879522b7799ddba59e76237ee3",
+    "config.json": "094f8e891b932f2000c92cfc663bac4c62069f5d8af5b5278c4306aef3084750",
+    "config_sentence_transformers.json": "940d5f50db195fa6e5e6a4f122c095f77880de259d74b14a65779ed48bdd7c56",
+    "tokenizer.json": "d241a60d5e8f04cc1b2b3e9ef7a4921b27bf526d9f6050ab90f9267a1f9e5c66",
+    "README.md": "ddb964361a55c6e5dfca6361615854b260c9c960205d04c7520151aaa1d75837",
+    "sentence_bert_config.json": "84e39fda68ccbff05bfa723ae9c0e70e23e2ec373b76e0f8c6e71af72a693cbf",
+    "vocab.txt": "07eced375cec144d27c900241f3e339478dec958f92fddbc551f295c992038a3",
+    "modules.json": "84e40c8e006c9b1d6c122e02cba9b02458120b5fb0c87b746c41e0207cf642cf",
+    "1_Pooling/config.json": "d1caf60c96f5fba2157c0c26b76d80818fad6cf0b8eb5e73ec372ff9818eba5c"
+  },
+  "encoder_check": "4 public contract/role texts, batch encoding + repeat first; record truncation, no utility labels",
+  "api_calls": 0,
+  "gpu_calls": 0,
+  "scientific_efficacy_experiment": false
+}
