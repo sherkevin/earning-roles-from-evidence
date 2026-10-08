@@ -13,7 +13,6 @@ does not provide (that ledger keys by assignment *and* outcome lineage).
 
 from __future__ import annotations
 
-from copy import deepcopy
 from dataclasses import asdict, dataclass
 import hashlib
 import json
@@ -122,9 +121,7 @@ class DelayedPolicyAdapter:
         return _digest(self.policy.snapshot())
 
     def _snapshot_payload(self) -> dict[str, Any]:
-        # A snapshot is a value: callers and rollback checks must not retain
-        # references to mutable live stores (including nested offer records).
-        return deepcopy({
+        return {
             "version": VERSION,
             "mode": DIAGNOSTIC_ONLY if self.diagnostic_only else OBSERVATION_ONLY,
             "namespace": self.namespace,
@@ -134,7 +131,7 @@ class DelayedPolicyAdapter:
             "evidence_subjects": self._evidence_subjects,
             "applied_assignments": self._applied_assignments,
             "credit_ledger": self._credit_ledger.snapshot(),
-        })
+        }
 
     def _check_capacity(self) -> None:
         encoded = json.dumps(self._snapshot_payload(), sort_keys=True, separators=(",", ":"), ensure_ascii=False)

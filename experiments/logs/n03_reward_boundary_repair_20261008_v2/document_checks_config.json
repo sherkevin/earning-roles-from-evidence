@@ -1,0 +1,30 @@
+{
+  "at_utc": "2026-10-08T08:53:51.919258+00:00",
+  "commands": [
+    [
+      "python3",
+      "scripts/check_aamas_documents.py",
+      "--sync-gate",
+      "--check-gate"
+    ],
+    [
+      "python3",
+      "scripts/check_research_registry.py"
+    ],
+    [
+      "git",
+      "diff",
+      "--check",
+      "--",
+      "scripts/peerrolebench_build_external_source_manifest.py",
+      "scripts/peerrolebench_c1_pipe3_bounded_live.py",
+      "scripts/peerrolebench_delayed_policy_adapter.py",
+      "scripts/peerrolebench_delayed_policy_qualification.py",
+      "tests/test_peerrolebench_c1_live_contract.py",
+      "tests/test_peerrolebench_delayed_policy_adapter.py",
+      "tests/test_peerrolebench_external_source_manifest.py",
+      "tests/test_peerrolebench_source_cost.py",
+      "docs/coordination/task_reports/20261008_reward_boundary_and_generation_cost.md"
+    ]
+  ]
+}

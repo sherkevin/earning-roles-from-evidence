@@ -1,0 +1,39 @@
+[
+  {
+    "command": [
+      "python3",
+      "scripts/check_aamas_documents.py",
+      "--sync-gate",
+      "--check-gate"
+    ],
+    "exit_code": 0,
+    "output": "{\n  \"requirements\": 15,\n  \"review_groups\": 13,\n  \"tasks\": 12,\n  \"local_links_checked\": 496,\n  \"archived_snapshots_verified\": 4,\n  \"acyclic_dependencies\": true,\n  \"task_statuses\": {\n    \"DONE\": 2,\n    \"RUNNING\": 2,\n    \"TODO\": 7,\n    \"WAITING_AUTHOR\": 1\n  },\n  \"all_requirements_mapped\": true,\n  \"all_reviews_mapped\": true,\n  \"requirements_sha256\": \"c6c9958e4d8831031606afb3cbe44977ba343444be0ba0eab5e89bc03dadd9c3\",\n  \"task_ledger_sha256\": \"f43c421cf23281adad8cc428c2585562cc7b0ffa4c43b3cfdfd37972295fb02e\",\n  \"scientific_readiness\": false\n}\n"
+  },
+  {
+    "command": [
+      "python3",
+      "scripts/check_research_registry.py"
+    ],
+    "exit_code": 0,
+    "output": "{\"categories\": 6, \"unique_active_documents\": 6, \"ok\": true}\n"
+  },
+  {
+    "command": [
+      "git",
+      "diff",
+      "--check",
+      "--",
+      "scripts/peerrolebench_build_external_source_manifest.py",
+      "scripts/peerrolebench_c1_pipe3_bounded_live.py",
+      "scripts/peerrolebench_delayed_policy_adapter.py",
+      "scripts/peerrolebench_delayed_policy_qualification.py",
+      "tests/test_peerrolebench_c1_live_contract.py",
+      "tests/test_peerrolebench_delayed_policy_adapter.py",
+      "tests/test_peerrolebench_external_source_manifest.py",
+      "tests/test_peerrolebench_source_cost.py",
+      "docs/coordination/task_reports/20261008_reward_boundary_and_generation_cost.md"
+    ],
+    "exit_code": 0,
+    "output": ""
+  }
+]

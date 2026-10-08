@@ -173,32 +173,16 @@ def test_diagnostic_update_rolls_back_policy_and_credit_on_capacity_failure(monk
     adapter = DelayedPolicyAdapter(policy(), namespace="ns-1", diagnostic_only=True)
     adapter.publish(offer(), source_gate=gate())
     selection = choose(adapter)
-    before = adapter.snapshot()
+    before = adapter._snapshot_payload()
 
     def reject_capacity():
         raise ValueError("delayed adapter state cap exceeded")
 
-    with monkeypatch.context() as patch:
-        patch.setattr(adapter, "_check_capacity", reject_capacity)
-        with pytest.raises(ValueError, match="state cap exceeded"):
-            adapter.apply_later_credit(channel(selection))
-    assert adapter.snapshot() == before
+    monkeypatch.setattr(adapter, "_check_capacity", reject_capacity)
+    with pytest.raises(ValueError, match="state cap exceeded"):
+        adapter.apply_later_credit(channel(selection))
+    assert adapter._snapshot_payload() == before
     assert adapter.policy.updates == 0
-
-
-def test_returned_snapshot_mutation_cannot_change_live_adapter_state():
-    adapter = DelayedPolicyAdapter(policy(), namespace="ns-1", diagnostic_only=True)
-    adapter.publish(offer(), source_gate=gate())
-    selection = choose(adapter)
-    adapter.apply_later_credit(channel(selection))
-    before = adapter.snapshot()
-    detached = adapter.snapshot()
-    detached["offers"]["offer-1"]["offer"].clear()
-    detached["evidence_subjects"].clear()
-    detached["applied_assignments"].clear()
-    detached["credit_ledger"].clear()
-    detached["policy"].clear()
-    assert adapter.snapshot() == before
 
 
 def test_canonical_replay_validation_binds_real_ledger_lineage_before_update():

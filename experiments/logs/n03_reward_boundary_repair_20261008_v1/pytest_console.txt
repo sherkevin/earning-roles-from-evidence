@@ -1,0 +1,30 @@
+.....F............................                                       [100%]
+=================================== FAILURES ===================================
+___ test_diagnostic_update_rolls_back_policy_and_credit_on_capacity_failure ____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10b79e430>
+
+    def test_diagnostic_update_rolls_back_policy_and_credit_on_capacity_failure(monkeypatch):
+        adapter = DelayedPolicyAdapter(policy(), namespace="ns-1", diagnostic_only=True)
+        adapter.publish(offer(), source_gate=gate())
+        selection = choose(adapter)
+        before = adapter._snapshot_payload()
+    
+        def reject_capacity():
+            raise ValueError("delayed adapter state cap exceeded")
+    
+        monkeypatch.setattr(adapter, "_check_capacity", reject_capacity)
+        with pytest.raises(ValueError, match="state cap exceeded"):
+            adapter.apply_later_credit(channel(selection))
+>       assert adapter._snapshot_payload() == before
+E       AssertionError: assert {'applied_ass...ic_only', ...} == {'applied_ass...ic_only', ...}
+E         
+E         Omitting 8 identical items, use -vv to show
+E         Differing items:
+E         {'applied_assignments': {}} != {'applied_assignments': {'assignment-1': {'credit_digest': 'be7b26fdb387522220371a4b6c1d63cd5c0528cbdfef57f25fe1c6400c...63df11f542133b1b983145981533a8ceba75ed841999166c75197334961d6', 'feedback_id': 'fb-1', 'later_outcome_id': 'o-later'}}}
+E         Use -v to get more diff
+
+tests/test_peerrolebench_delayed_policy_adapter.py:184: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_peerrolebench_delayed_policy_adapter.py::test_diagnostic_update_rolls_back_policy_and_credit_on_capacity_failure
+1 failed, 33 passed in 37.87s

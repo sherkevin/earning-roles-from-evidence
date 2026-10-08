@@ -1,0 +1,46 @@
+{
+  "created_at_utc": "2026-10-08T08:49:37.901964+00:00",
+  "purpose": "ADR0049 default no-reward boundary and explicit legacy diagnostics; measured producer generation costs",
+  "scope": "software fixtures only, not efficacy or independent reward qualification",
+  "command": [
+    "/Library/Developer/CommandLineTools/usr/bin/python3",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/test_peerrolebench_delayed_policy_adapter.py",
+    "tests/test_peerrolebench_source_cost.py",
+    "tests/test_peerrolebench_c1_live_contract.py",
+    "tests/test_peerrolebench_external_source_manifest.py"
+  ],
+  "cwd": "/Users/jingwu/work/earning-roles",
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "packages": {
+    "numpy": "1.26.4",
+    "pytest": "8.4.2"
+  },
+  "git_commit": "1baf48626d5912712f5264a718c31ea54add39c0",
+  "dirty_worktree": true,
+  "source_sha256": {
+    "scripts/peerrolebench_delayed_policy_adapter.py": "3ecf29a5fdef208e913aa32c4927605f9e31b2a125deca0f6c92594c1a3f2511",
+    "scripts/peerrolebench_delayed_policy_qualification.py": "33293a87ef56b67a29059a75e384dd81f35447f4e64cc622cd7910cc27bf2e0c",
+    "scripts/peerrolebench_c1_pipe3_bounded_live.py": "ef5ab125f61885730ec7e44961537a3bbe8f2c5b036e41c06fbfd0b2615f71f7",
+    "scripts/peerrolebench_build_external_source_manifest.py": "da735782c442312f2b50e531c44045f3ab10a09f7007630caac802424dc10f94",
+    "tests/test_peerrolebench_delayed_policy_adapter.py": "9c87c762f8e75f08fe91aec364609437834381114504296a9447f28134a45a6f",
+    "tests/test_peerrolebench_source_cost.py": "588f77dd4fef0966015f128f3ee107a6b5526a2a5f631c2b38dfa830cc21f7e8",
+    "tests/test_peerrolebench_c1_live_contract.py": "bc05ca4a0fb772e6f6345be0ef1dbebd5660bbf88561091b632d484701dca51f",
+    "tests/test_peerrolebench_external_source_manifest.py": "a01cab8bc28ebad0cdac09bf2a8c4fa410f68b0deae1fda58d2dc49a6525ac49"
+  },
+  "real_api_calls_authorized": 0,
+  "gpu_jobs": 0,
+  "seed": "fixed per software test; no scientific sampling",
+  "expected_properties": [
+    "default adapter update no-op with explicit error",
+    "diagnostic idempotency and rollback retained",
+    "diagnostic restore explicitly authorized",
+    "C1 default invocation rejected before provider access",
+    "producer duration counted exactly once; missing tokens retained UNKNOWN",
+    "full route cost not claimed"
+  ],
+  "change_from_v1": "Isolate snapshots from live mutable state; strengthen rollback and returned-snapshot mutation tests"
+}
