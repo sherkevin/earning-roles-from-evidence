@@ -134,6 +134,10 @@ attempted、完整、缺 Y、缺成本、transport/parse/scorer 失败数。选�
 不把 u 冒充 `recipient_judgment` 或截断到零；同信息 comparator 必须接受相同的目标。
 该入口尚未实现，因此当前代码不能训练本卡的 u。
 
+2026-10-08 实现增量：[有符号完整岭回归数值核心](signed_ridge_comparator_v0.1_20261008.md)
+已完成独立数值检查，能计算负u；但没有接入合法reward、selected-only绑定或真实runner。
+它不改变上述“训练入口尚未实现”的状态，也不锁定最终算法或成本权重。
+
 若将来能事前保证所有 C_exec 都有相同真实硬上界 Cmax，也可采用：
 
 $$

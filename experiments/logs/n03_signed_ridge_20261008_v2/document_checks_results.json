@@ -1,0 +1,37 @@
+[
+  {
+    "command": [
+      "python3",
+      "scripts/check_aamas_documents.py",
+      "--sync-gate",
+      "--check-gate"
+    ],
+    "exit_code": 0,
+    "output": "{\n  \"requirements\": 15,\n  \"review_groups\": 13,\n  \"tasks\": 12,\n  \"local_links_checked\": 497,\n  \"archived_snapshots_verified\": 4,\n  \"acyclic_dependencies\": true,\n  \"task_statuses\": {\n    \"DONE\": 2,\n    \"RUNNING\": 2,\n    \"TODO\": 7,\n    \"WAITING_AUTHOR\": 1\n  },\n  \"all_requirements_mapped\": true,\n  \"all_reviews_mapped\": true,\n  \"requirements_sha256\": \"c6c9958e4d8831031606afb3cbe44977ba343444be0ba0eab5e89bc03dadd9c3\",\n  \"task_ledger_sha256\": \"7c65e543b3e793fa36b22ad309f43da908d8d0458df1bebebc790a9cba5d0adf\",\n  \"scientific_readiness\": false\n}\n"
+  },
+  {
+    "command": [
+      "python3",
+      "scripts/check_research_registry.py"
+    ],
+    "exit_code": 0,
+    "output": "{\"categories\": 6, \"unique_active_documents\": 6, \"ok\": true}\n"
+  },
+  {
+    "command": [
+      "git",
+      "diff",
+      "--check",
+      "--",
+      "docs/research/candidates/route_utility_and_scoped_judgment_v0.1_20261007.md",
+      "scripts/peerrolebench_signed_ridge.py",
+      "tests/test_peerrolebench_signed_ridge.py",
+      "scripts/peerrolebench_signed_ridge_check.py",
+      "docs/research/candidates/signed_ridge_comparator_v0.1_20261008.md",
+      "docs/coordination/task_reports/20261008_signed_ridge_comparator.md",
+      "revision/CODE_SURVEY_signed_ridge_20261008.md"
+    ],
+    "exit_code": 0,
+    "output": ""
+  }
+]

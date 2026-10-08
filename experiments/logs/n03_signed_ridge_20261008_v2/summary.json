@@ -1,0 +1,65 @@
+{
+  "status": "PASS",
+  "unit_test_exit": 0,
+  "cases": [
+    {
+      "case": "opposing_tiny_rho",
+      "prefixes": 2,
+      "max_abs_error": 0.0,
+      "pass": true,
+      "update_seconds_p50": 6.0104e-05,
+      "update_seconds_p95": 8.47604e-05,
+      "array_state_bytes": 24
+    },
+    {
+      "case": "correlated64",
+      "prefixes": 128,
+      "max_abs_error": 1.1393663790215669e-14,
+      "pass": true,
+      "update_seconds_p50": 0.000120125,
+      "update_seconds_p95": 0.0020499334499999825,
+      "array_state_bytes": 33792
+    },
+    {
+      "case": "correlated_small_rho",
+      "prefixes": 128,
+      "max_abs_error": 1.6186163520615082e-11,
+      "pass": true,
+      "update_seconds_p50": 1.73335e-05,
+      "update_seconds_p95": 4.172949999999999e-05,
+      "array_state_bytes": 640
+    }
+  ],
+  "diagonal_ranking_control": {
+    "event": "diagonal_ranking_control",
+    "kind": "synthetic algebraic example",
+    "training_feature": [
+      0.8,
+      0.6
+    ],
+    "target": 1.0,
+    "query_menu": [
+      [
+        0.8,
+        -0.4
+      ],
+      [
+        -0.2,
+        0.8
+      ]
+    ],
+    "full_scores": [
+      0.2,
+      0.16
+    ],
+    "diagonal_scores": [
+      0.21377331420373025,
+      0.2553802008608322
+    ]
+  },
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "live_integration_complete": false,
+  "source_unchanged": true
+}

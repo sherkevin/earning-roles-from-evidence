@@ -1,0 +1,28 @@
+{
+  "at_utc": "2026-10-08T09:16:39.974402+00:00",
+  "commands": [
+    [
+      "python3",
+      "scripts/check_aamas_documents.py",
+      "--sync-gate",
+      "--check-gate"
+    ],
+    [
+      "python3",
+      "scripts/check_research_registry.py"
+    ],
+    [
+      "git",
+      "diff",
+      "--check",
+      "--",
+      "docs/research/candidates/route_utility_and_scoped_judgment_v0.1_20261007.md",
+      "scripts/peerrolebench_signed_ridge.py",
+      "tests/test_peerrolebench_signed_ridge.py",
+      "scripts/peerrolebench_signed_ridge_check.py",
+      "docs/research/candidates/signed_ridge_comparator_v0.1_20261008.md",
+      "docs/coordination/task_reports/20261008_signed_ridge_comparator.md",
+      "revision/CODE_SURVEY_signed_ridge_20261008.md"
+    ]
+  ]
+}
