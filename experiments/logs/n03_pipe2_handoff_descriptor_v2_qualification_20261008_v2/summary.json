@@ -1,0 +1,51 @@
+{
+  "runner_version": "pipe2-typed-handoff-v2-qualification-v1",
+  "descriptor_schema": "pipe2-typed-handoff-v2",
+  "task_id": "PIPE2_data_pipeline",
+  "seed": 0,
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "command": [
+    "scripts/peerrolebench_pipe2_handoff_descriptor_v2_qualification.py",
+    "--output",
+    "experiments/logs/n03_pipe2_handoff_descriptor_v2_qualification_20261008_v2"
+  ],
+  "git_commit": "78ca418a115c8635eb8c3c61e7410d0b00114ace",
+  "runner_sha256": "ea2ad52680bb4ed3488427004a3c83359adb73567a9ee3a12e4a3eb462cfcc22",
+  "api_calls": 0,
+  "gpu_jobs": 0,
+  "policy_updates": 0,
+  "candidate_code_executed": false,
+  "native_grader_invoked": false,
+  "scientific_claim_allowed": false,
+  "fixture_event_kind": "synthetic_contract_fixture_only",
+  "started_at_utc": "2026-10-08T15:02:51.450999+00:00",
+  "status": "QUALIFIED_OFFLINE",
+  "checks": {
+    "actual_material_visibility": {
+      "producer_has_extract": true,
+      "recipient_has_no_extract": true,
+      "recipient_required_delivery": true,
+      "delivery_schema": "pipe2-extracted-rows-v1",
+      "delivery_artifact_sha256": "12e3b5a97630d73085a5b65e5f596ee0dca81b7b0f2ae75e6e2140123b97b615"
+    },
+    "explicit_event_binding_and_snapshot_digest": {
+      "status": "PASS",
+      "descriptor_digest": "7e1df40ab7d1087461f50f32c7602078d98dca9b32568f505670e64b9305bdca",
+      "changed_paths_digest": "5f6671a97312f442e826783299852555a3c4318326f7c84c9e446f7e3d024e59",
+      "mismatch_retained": true
+    },
+    "missing_judgment_action_outcome_fail_closed": {
+      "status": "PASS",
+      "error_type": "ValueError",
+      "error": "delivery, judgment, action and outcome event records are required"
+    },
+    "opaque_artifact_not_source_manifest_fail_closed": {
+      "status": "PASS",
+      "error_type": "ValueError",
+      "error": "opaque delivery artifact cannot be a source-manifest path"
+    }
+  },
+  "ended_at_utc": "2026-10-08T15:02:52.380635+00:00",
+  "interpretation": "Actual PIPE2 public material visibility and delivery schema were checked; the event records are synthetic contract fixtures only. No benchmark, efficacy, or selector claim."
+}
