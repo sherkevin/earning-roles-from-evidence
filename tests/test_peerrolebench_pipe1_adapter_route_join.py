@@ -50,6 +50,25 @@ def _adapter():
     )
 
 
+def _request(events=None):
+    return dict(
+        task_id="PIPE1_etl_fix", source_task_index=0, target_task_index=1,
+        evidence_id="e0", assignment_id="as1", target_selection_id="s1",
+        registry=_registry(), menu_keys=("peer-b@v1", "peer-c@v1"),
+        chosen_key="peer-b@v1", probabilities=(.5, .5), chosen_index=0,
+        propensity=.5,
+    )
+
+
+def _join(adapter=None, route=None, events=None, request=None):
+    return validate_adapter_route_join(
+        adapter_result=_adapter() if adapter is None else adapter,
+        route_receipt=_route() if route is None else route,
+        native_events=_events() if events is None else events,
+        adapter_request=_request() if request is None else request,
+    )
+
+
 def _route():
     receipt = _receipt()
     candidates = [{"candidate_id": "peer-b", "version": "v1"}, {"candidate_id": "peer-c", "version": "v1"}]
@@ -74,7 +93,7 @@ def _route():
 
 
 def test_matching_adapter_and_route_are_ready_for_preflight_only():
-    result = validate_adapter_route_join(adapter_result=_adapter(), route_receipt=_route())
+    result = _join()
     assert result["status"] == "READY_FOR_PREFLIGHT"
     assert result["valid"] is True
     assert result["policy_update_allowed"] is False
@@ -83,7 +102,7 @@ def test_matching_adapter_and_route_are_ready_for_preflight_only():
 def test_route_chosen_peer_mismatch_fails_closed():
     route = _route()
     route["allocation"]["chosen"] = "peer-c@v1"
-    result = validate_adapter_route_join(adapter_result=_adapter(), route_receipt=route)
+    result = _join(route=route)
     assert result["status"] == "UNKNOWN"
     assert result["update_boundary"]["assignment_created"] is False
 
@@ -91,14 +110,14 @@ def test_route_chosen_peer_mismatch_fails_closed():
 def test_route_task_mismatch_fails_closed():
     route = _route()
     route["target"]["task_id"] = "other-task"
-    result = validate_adapter_route_join(adapter_result=_adapter(), route_receipt=route)
+    result = _join(route=route)
     assert result["status"] == "UNKNOWN"
 
 
 def test_invalid_route_does_not_get_promoted():
     route = _route()
     route["visibility"]["selected_only"] = False
-    result = validate_adapter_route_join(adapter_result=_adapter(), route_receipt=route)
+    result = _join(route=route)
     assert result["status"] == "UNKNOWN"
     assert result["route_valid"] is False
 
@@ -106,6 +125,30 @@ def test_invalid_route_does_not_get_promoted():
 def test_adapter_update_flag_cannot_be_enabled_by_join():
     adapter = _adapter()
     adapter["policy_update_allowed"] = True
-    result = validate_adapter_route_join(adapter_result=adapter, route_receipt=_route())
+    result = _join(adapter=adapter)
     assert result["status"] == "UNKNOWN"
     assert result["policy_update_allowed"] is False
+
+
+def test_forged_adapter_chosen_peer_is_rebound_to_native_events():
+    adapter = _adapter()
+    adapter["selection_binding"]["target_selection"]["chosen_peer_id"] = "peer-c"
+    result = _join(adapter=adapter)
+    assert result["status"] == "UNKNOWN"
+    assert any("selection_binding" in error for error in result["errors"])
+
+
+def test_forged_adapter_evidence_and_source_index_are_rebound():
+    adapter = _adapter()
+    adapter["selection_binding"]["assignment"]["evidence_ids"] = ["e1"]
+    adapter["schedule"]["source_task_index"] = -1
+    result = _join(adapter=adapter)
+    assert result["status"] == "UNKNOWN"
+    assert any("selection_binding" in error or "schedule" in error for error in result["errors"])
+
+
+def test_missing_native_revalidation_inputs_fail_closed():
+    result = validate_adapter_route_join(adapter_result=_adapter(), route_receipt=_route())
+    assert result["status"] == "UNKNOWN"
+    assert result["route_valid"] is False
+    assert any("revalidation" in error for error in result["errors"])

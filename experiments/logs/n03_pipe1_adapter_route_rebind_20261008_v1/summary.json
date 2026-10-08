@@ -1,0 +1,32 @@
+{
+  "schema": "n03-zero-call-qualification-summary-v1",
+  "created_at": "2026-10-08T02:58:47.011912+00:00",
+  "git_head": "86bc0089777f979cf38881ebf6c4699a3d4e3d6a",
+  "status": "QUALIFIED_ZERO_CALL_NATIVE_REBIND",
+  "pytest_summary": "41 passed",
+  "commands": [
+    "python3 -m pytest -q tests/test_peerrolebench_pipe1_adapter_route_join.py tests/test_peerrolebench_pipe1_offline_adapter.py",
+    "python3 -m pytest -q tests/test_peerrolebench_pipe1_adapter_route_join.py tests/test_peerrolebench_pipe1_offline_adapter.py tests/test_peerrolebench_pipe1_route_receipt.py tests/test_peerrolebench_pipe3_live_contract.py",
+    "python3 -m py_compile scripts/peerrolebench_pipe1_adapter_route_join.py scripts/peerrolebench_pipe1_offline_adapter.py"
+  ],
+  "api_calls": 0,
+  "generator_calls": 0,
+  "candidate_executions": 0,
+  "gpu_runs": 0,
+  "policy_updates": 0,
+  "scientific_claim_allowed": false,
+  "checks": {
+    "missing_native_events_fail_closed": true,
+    "tampered_chosen_peer_rejected": true,
+    "tampered_evidence_and_source_index_rejected": true,
+    "route_receipt_and_pipe3_regressions_pass": true
+  },
+  "files": {
+    "scripts/peerrolebench_pipe1_adapter_route_join.py": "37e217e4099f4343406b1bfd3e53f32ca68cf5a18c54253d9556d7142783ba80",
+    "tests/test_peerrolebench_pipe1_adapter_route_join.py": "ad10d0455ffb8461c39e6a1638c0729e2e989990745b1d40c4ca4ac01cc1fec8",
+    "scripts/peerrolebench_pipe1_offline_adapter.py": "33f276ac505de84118bc98e54f2ae1f5272302352bfa783872bd53e6f6b46b39",
+    "scripts/peerrolebench_pipe3_live_contract.py": "8153d7d930d6b675a998e8012dc28fd0090285215275cb3ec346e86c306e49e8",
+    "tests/test_peerrolebench_pipe1_route_receipt.py": "3deb6c570fdfeacd4ec19cef0679dc6cbc2904ef23fc0e5c9850fd2e9cf5e6d9",
+    "tests/test_peerrolebench_pipe3_live_contract.py": "d066418b888f6ec9276de5d76142c273d5dac9b55b99722b17ebe05518a757bb"
+  }
+}

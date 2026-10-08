@@ -7,13 +7,13 @@ task or allocation facts disagree.
 """
 from __future__ import annotations
 
-from typing import Any, Mapping
+from typing import Any, Mapping, Sequence
 
 from peerrolebench_pipe1_route_receipt import validate_pipe1_route_receipt
 from peerrolebench_pipe3_live_contract import unknown_no_update
 
 
-VERSION = "pipe1-adapter-route-join-v1"
+VERSION = "pipe1-adapter-route-join-v2"
 
 
 def _fail(errors: list[str]) -> dict[str, Any]:
@@ -35,8 +35,17 @@ def _fail(errors: list[str]) -> dict[str, Any]:
 
 def validate_adapter_route_join(
     *, adapter_result: Mapping[str, Any], route_receipt: Mapping[str, Any],
+    native_events: Sequence[Mapping[str, Any]] | None = None,
+    adapter_request: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Require the adapter and receipt to describe one allocation and task."""
+    """Require one allocation and re-bind the result to its native ledger.
+
+    A serialized adapter result is not an attestation: a caller can edit its
+    nested selection/evidence fields after the adapter ran.  Therefore a
+    ``READY_FOR_PREFLIGHT`` result is only possible when the original event
+    rows and the exact adapter request are supplied and produce the same
+    binding-critical projection.  Missing revalidation inputs fail closed.
+    """
     errors: list[str] = []
     if not isinstance(adapter_result, Mapping):
         return _fail(["adapter result must be an object"])
@@ -52,6 +61,40 @@ def validate_adapter_route_join(
     schedule = adapter_result.get("schedule")
     if not isinstance(schedule, Mapping) or schedule.get("valid") is not True:
         errors.append("source-target schedule is not valid")
+
+    if not isinstance(native_events, Sequence) or isinstance(native_events, (str, bytes)):
+        errors.append("native event rows are required for adapter revalidation")
+    if not isinstance(adapter_request, Mapping):
+        errors.append("adapter request is required for adapter revalidation")
+    else:
+        # Keep the request surface explicit.  Extra fields could silently
+        # change the meaning of the recomputation without being audited.
+        expected_request = {
+            "task_id", "source_task_index", "target_task_index", "evidence_id",
+            "assignment_id", "target_selection_id", "registry", "menu_keys",
+            "chosen_key", "probabilities", "chosen_index", "propensity",
+        }
+        if set(adapter_request) != expected_request:
+            errors.append("adapter request keys are not the frozen revalidation contract")
+        elif isinstance(native_events, Sequence) and not isinstance(native_events, (str, bytes)):
+            try:
+                from peerrolebench_pipe1_offline_adapter import validate_source_target_fixture
+                recomputed = validate_source_target_fixture(
+                    events=native_events, **dict(adapter_request),
+                )
+            except (TypeError, ValueError, AttributeError, KeyError) as exc:
+                recomputed = None
+                errors.append(f"native adapter revalidation failed: {type(exc).__name__}: {exc}")
+            if recomputed is not None:
+                # These fields contain the complete identity and lineage join;
+                # comparing only status would leave evidence/peer swaps
+                # undetected.
+                for field in (
+                    "status", "route_ready", "policy_update_allowed", "task_ids",
+                    "selection_input", "selection_binding", "schedule", "ledger",
+                ):
+                    if recomputed.get(field) != adapter_result.get(field):
+                        errors.append(f"adapter field {field!r} differs from native recomputation")
 
     try:
         route_check = validate_pipe1_route_receipt(route_receipt)
