@@ -1,0 +1,65 @@
+{
+  "schema": "public-context-check-v1",
+  "created_at_utc": "2026-10-08T10:37:47.499978+00:00",
+  "command": [
+    "/Library/Developer/CommandLineTools/usr/bin/python3",
+    "scripts/peerrolebench_public_context_check.py",
+    "--out-dir",
+    "experiments/logs/n03_public_context_20261008_v1"
+  ],
+  "git_commit": "ccdd0f63a16193e259838ffe7097a43ab9b4081e",
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "environment_overrides": {
+    "HF_HUB_OFFLINE": "1",
+    "TRANSFORMERS_OFFLINE": "1",
+    "TOKENIZERS_PARALLELISM": "false",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1"
+  },
+  "packages": {
+    "numpy": "1.26.4",
+    "pytest": "8.4.2",
+    "torch": "2.8.0",
+    "transformers": "4.46.3",
+    "sentence-transformers": "5.1.2"
+  },
+  "source_sha256": {
+    "scripts/peerrolebench_public_context_check.py": "efd7f8e3c2d5dfaca558fdb1d9ba0736ac27b3f337cd7cd7a96e39a5eb65fff5",
+    "scripts/peerrolebench_public_context.py": "c5c3e12987b3efd3a91841ca60bc61467c29f6754d652b8d4d9ae5a67feaab6d",
+    "scripts/peerrolebench_signed_ridge.py": "8c4cfa5c445469ea8f37eb2e9d5ca9704edad86eb1c36e539e62dae93d5e7e94",
+    "scripts/peerrolebench_c1_pipe3_bounded_live.py": "ef11f6a9f3a740d756350eb6347cb13c6635bda9050e7807c897474bc6600c29",
+    "scripts/peerrolebench_pipe3_runner_v1.py": "b45cf7a53e1ef0aa3f83567d373aa7752f052c4c309881db5f3e9e7ba38f28fb",
+    "scripts/peerrolebench_baseline_policies.py": "cabc35ebcb47c2faee8fd860ec3cff42822805710906641e8c3011863d7abff8",
+    "scripts/peerrolebench_policy_sidecar.py": "9ad8a4b5068bfbdb7cd1e34fc63c5dc8a000b4c5e31b911186bb64a26e3251ac",
+    "tests/test_peerrolebench_public_context.py": "2539b35d93a86526d062173df6e57ba5f359eb5808c10248e31b348589fcd0ef",
+    "tests/test_peerrolebench_signed_ridge.py": "ad26e9de31e54b3e13e03df242465ce2a24eb557a7ecdfd55c795dae5fa8b986",
+    "tests/test_peerrolebench_c1_decision_capture.py": "de8332ee16f4dbf78bbe3994d919e5cede8dd1da1f48cd00fc43ef612a4529bf"
+  },
+  "request_path": "experiments/logs/n03_scoped_judgment_prepare_20261007_v2/requests/request_14b794d43a7b52d97bb9.json",
+  "request_sha256": "d7df943c55695465caaeea89f0c785af1d2d8f006cec6e3540baf85bcb924973",
+  "encoder_model": "BAAI/bge-small-en-v1.5",
+  "encoder_revision": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+  "encoder_files": {
+    "model.safetensors": "3c9f31665447c8911517620762200d2245a2518d6e7208acc78cd9db317e21ad",
+    "tokenizer_config.json": "9261e7d79b44c8195c1cada2b453e55b00aeb81e907a6664974b4d7776172ab3",
+    "special_tokens_map.json": "b6d346be366a7d1d48332dbc9fdf3bf8960b5d879522b7799ddba59e76237ee3",
+    "config.json": "094f8e891b932f2000c92cfc663bac4c62069f5d8af5b5278c4306aef3084750",
+    "config_sentence_transformers.json": "940d5f50db195fa6e5e6a4f122c095f77880de259d74b14a65779ed48bdd7c56",
+    "tokenizer.json": "d241a60d5e8f04cc1b2b3e9ef7a4921b27bf526d9f6050ab90f9267a1f9e5c66",
+    "README.md": "ddb964361a55c6e5dfca6361615854b260c9c960205d04c7520151aaa1d75837",
+    "sentence_bert_config.json": "84e39fda68ccbff05bfa723ae9c0e70e23e2ec373b76e0f8c6e71af72a693cbf",
+    "vocab.txt": "07eced375cec144d27c900241f3e339478dec958f92fddbc551f295c992038a3",
+    "modules.json": "84e40c8e006c9b1d6c122e02cba9b02458120b5fb0c87b746c41e0207cf642cf",
+    "1_Pooling/config.json": "d1caf60c96f5fba2157c0c26b76d80818fad6cf0b8eb5e73ec372ff9818eba5c"
+  },
+  "seed": 0,
+  "device": "cpu",
+  "api_calls": 0,
+  "gpu_jobs": 0,
+  "reward_updates": 0,
+  "recipe": "Task: full prepared public spec+brief. Recipient: stated recipient role/ownership+same brief. Version: public processor source digest, metadata only. Two separately encoded segments concatenated equally.",
+  "scope": "Current public-contract representation and synthetic 0-shot selection interface only; no agent execution, historical retrieval, capability or efficacy result.",
+  "stop_rule": "Any test, coverage, binding or encoding error stops; no model/prompt substitution."
+}
