@@ -36,3 +36,7 @@ Apply the patch only to the pinned clean graph-ipd checkout. The source machine 
 `content_verification.json` records staged-content, JSON syntax, overlay, and coverage checks. It does not claim experimental tests passed. Successful network push and local/remote commit equality are verified separately at completion. The GitLab `origin`, branch tracking, branch name, and prior history are retained; GitHub is addressed via `github-archive` without force push.
 
 A stale, empty `.git/index.lock` with no open-file owner was preserved locally as `.git/index.lock.stale-full-sync-20261009` before staging. No other running Git process was terminated.
+
+## 完成回执
+
+首个完整工作区提交的远端一致性和忽略项覆盖检查见 [`completion_receipt.json`](completion_receipt.json)。最终提交还包含上传期间捕获的中文稿更新及该回执；最终远端 SHA 在推送后另行核对。
