@@ -1,0 +1,7 @@
+Edit this Figure 1 only in the following precise ways. Preserve the two file-ownership cases, all body labels, the slate-blue/teal colors, flat serif academic drawing, file/evidence structure, and the valid Outcome → Next state → Next choice feedback path. Keep the approximately 3:1 compact canvas and small margins.
+
+1. Reduce both panel headings by about 25% and make their weight modest semibold. Use the exact shorter headings “(a) Responsibility confounding” and “(b) Earning roles”. Body label sizes remain unchanged. Match the restrained text hierarchy of Agentic Supernet; no giant headings or banner.
+2. Move the vertical dotted “Read cut” marker LEFT of the candidate graph, between Public evidence and Candidate set. The graph depicts the sampled B choice, so the read cut must precede that choice. Remove the old dotted read-cut line between the graph and Sealed choice completely. Preserve the forward path Public evidence → Read cut → Candidate set → Sealed choice → Target task → Outcome.
+3. Add a short thin teal arrow from the top-row Eligible evidence token directly into the Public evidence table, crossing the panel divider with a clean gap. The bottom Audit only record remains a dead end, with no outgoing arrow.
+
+Do not alter any other arrow endpoint. In particular, the delayed outcome arrow must still end only at the distinct Next state record, never the current graph, current read cut, sealed choice or historical evidence. No extra captions, icons, scores, quality claims, gradients or shadows. Produce one complete revised image.

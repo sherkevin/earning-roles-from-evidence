@@ -1,0 +1,5 @@
+# Figure 3 v33 textless AI-base prompt
+
+Edit the supplied Figure 3 paper figure into a clean textless production base. Preserve the exact overall 1672 x 941 composition, white background, navy rules, three vertical columns, panel brackets, row separators, all arrows, circles, people icons, document/chat/shield/lock/heartbeat icons, and the green/orange/blue/purple color roles. Preserve the relative geometry and spacing of the original figure so a typeset label layer can be overlaid later.
+
+Remove every visible word, letter, numeral, panel marker, caption, pseudo-letter, and label from the image, including the top banner words, “(a)/(b)/(c)”, all track/policy/endpoint names, peer letters, and RQ numbers. Do not replace text with scribbles or invented glyphs. Keep the underlying icons and diagram lines intact, with clean white space where labels were removed. Do not add new icons, panels, arrows, gradients, decorations, shadows, or explanatory text. Do not crop or change the canvas size. The result should be a minimal, publication-quality visual base ready for exact embedded-font typesetting.

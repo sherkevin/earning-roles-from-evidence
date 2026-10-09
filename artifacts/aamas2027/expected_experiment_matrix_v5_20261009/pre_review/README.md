@@ -1,0 +1,1 @@
+Initial v5 rendered PDF before independent-review corrections. PDF/log preserved; the initial TeX snapshot was not retained before correction. Do not treat current source hash as provenance for this PDF.

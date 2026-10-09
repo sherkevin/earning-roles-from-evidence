@@ -1,0 +1,49 @@
+\documentclass{article}
+\usepackage[paperwidth=1672pt,paperheight=941pt,margin=0pt]{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{fontspec}
+\pagestyle{empty}
+\setmainfont{Arial}
+\setsansfont{Arial}
+\definecolor{navy}{HTML}{123B82}
+\definecolor{blue}{HTML}{1769D1}
+\definecolor{orange}{HTML}{F45A12}
+\definecolor{green}{HTML}{078A4B}
+\definecolor{purple}{HTML}{7B3AA7}
+\newcommand{\banner}[1]{{\sffamily\bfseries\fontsize{30}{32}\selectfont #1}}
+\newcommand{\panel}[1]{{\sffamily\bfseries\fontsize{30}{32}\selectfont #1}}
+\newcommand{\titlelabel}[1]{{\sffamily\bfseries\fontsize{31}{33}\selectfont #1}}
+\newcommand{\obj}[1]{{\sffamily\bfseries\fontsize{22}{24}\selectfont #1}}
+\newcommand{\smallobj}[1]{{\sffamily\bfseries\fontsize{18}{20}\selectfont #1}}
+\setlength{\unitlength}{1pt}
+\begin{document}
+\noindent\begin{picture}(1672,941)
+  \put(0,0){\includegraphics[width=1672pt,height=941pt]{figure3_v33_textless.png}}
+  % top banner and panel headers
+  \put(822,832){\makebox(0,0)[c]{\color{navy}\banner{MATCHED INFORMATION • MATCHED COST}}}
+  \put(174,748){\makebox(0,0)[c]{\color{navy}\panel{(a) TRACKS}}}
+  \put(809,748){\makebox(0,0)[c]{\color{navy}\panel{(b) POLICIES}}}
+  \put(1457,748){\makebox(0,0)[c]{\color{navy}\panel{(c) ENDPOINTS}}}
+  % left tracks
+  \put(183,619){\makebox(0,0)[c]{\color{orange}\titlelabel{ArtifactRole}}}
+  \put(184,581){\makebox(0,0)[c]{\color{navy}\obj{PRODUCER ATTRIBUTION}}}
+  \put(478,478){\makebox(0,0)[c]{\color{navy}\smallobj{ADAPTER}}}
+  \put(190,314){\makebox(0,0)[c]{\color{green}\titlelabel{PeerSelect}}}
+  \put(190,273){\makebox(0,0)[c]{\color{navy}\obj{LOCAL SELECTION + DRIFT}}}
+  \put(208,289){\makebox(0,0)[c]{\color{navy}\obj{A}}}
+  \put(130,132){\makebox(0,0)[c]{\color{navy}\obj{B}}}
+  \put(289,132){\makebox(0,0)[c]{\color{navy}\obj{C}}}
+  % middle policies
+  \put(835,630){\makebox(0,0)[c]{\color{navy}\obj{NO UPDATE}}}
+  \put(836,502){\makebox(0,0)[c]{\color{navy}\begin{tabular}{c}\obj{RAW}\\[-2pt]\obj{ACCEPTANCE}\end{tabular}}}
+  \put(836,365){\makebox(0,0)[c]{\color{navy}\begin{tabular}{c}\obj{CONTEXTUAL}\\[-2pt]\obj{TRUST}\end{tabular}}}
+  \put(835,211){\makebox(0,0)[c]{\color{green}\obj{RARE}}}
+  \put(1207,481){\makebox(0,0)[c]{\color{navy}\begin{tabular}{c}\smallobj{STREAM}\\[-2pt]\smallobj{COMPARISON}\end{tabular}}}
+  % right endpoints
+  \put(1535,617){\makebox(0,0)[c]{\color{navy}\begin{tabular}{c}\obj{RQ1}\\[-2pt]\obj{INFORMATION}\end{tabular}}}
+  \put(1535,468){\makebox(0,0)[c]{\color{navy}\begin{tabular}{c}\obj{RQ2}\\[-2pt]\obj{ASSIGNMENT}\end{tabular}}}
+  \put(1535,321){\makebox(0,0)[c]{\color{navy}\begin{tabular}{c}\obj{RQ3}\\[-2pt]\obj{SERVICE}\end{tabular}}}
+  \put(1535,177){\makebox(0,0)[c]{\color{navy}\begin{tabular}{c}\obj{RQ4}\\[-2pt]\obj{SAFETY}\end{tabular}}}
+\end{picture}
+\end{document}

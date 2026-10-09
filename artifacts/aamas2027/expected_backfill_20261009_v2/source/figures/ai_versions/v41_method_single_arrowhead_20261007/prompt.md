@@ -1,0 +1,5 @@
+Remove ONE unwanted arrowhead from this existing image. Do not change any other pixel-level design, object, text, line, position, color, type size or canvas.
+
+Immediately below the far-right Outcome Y file, the connector bends left towards Match id. There is a small DOWNWARD-POINTING triangle at the bend, visually above the words One update. ERASE ONLY that downward arrowhead. Keep the connector as a continuous thin plain line from the bottom of Outcome Y, bending LEFT and then into Match id. This whole connector has only ONE arrowhead: the existing LEFTWARD-POINTING arrowhead entering the upper-right boundary of Match id. Keep that correct arrowhead.
+
+One update must have only the existing horizontal incoming arrow FROM Match id. There is no standalone arrow pointing down towards One update or ending in open space. Preserve every other connector, including the assignment-id input to Match id, invalid No-op branch and selected-only Next θ feedback. Return the complete image with only the unwanted downward triangle removed.

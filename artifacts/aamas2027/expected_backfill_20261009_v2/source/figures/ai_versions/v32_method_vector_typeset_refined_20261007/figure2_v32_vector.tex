@@ -1,0 +1,42 @@
+\documentclass{article}
+\usepackage[paperwidth=1672pt,paperheight=941pt,margin=0pt]{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{fontspec}
+\pagestyle{empty}
+\setmainfont{Arial}
+\setsansfont{Arial}
+\definecolor{navy}{HTML}{123B82}
+\definecolor{blue}{HTML}{1769D1}
+\definecolor{orange}{HTML}{F45A12}
+\definecolor{green}{HTML}{078A4B}
+\definecolor{gray}{HTML}{53606F}
+\newcommand{\lane}[1]{{\sffamily\bfseries\fontsize{29}{31}\selectfont #1}}
+\newcommand{\obj}[1]{{\sffamily\bfseries\fontsize{22}{24}\selectfont #1}}
+\newcommand{\rel}[1]{{\sffamily\bfseries\fontsize{17}{19}\selectfont #1}}
+\setlength{\unitlength}{1pt}
+\begin{document}
+\noindent\begin{picture}(1672,941)
+  \put(0,0){\includegraphics[width=1672pt,height=941pt]{figure2_v31_textless.png}}
+  % lane titles
+  \put(137,754){\makebox(0,0)[c]{\color{orange}\lane{EPISODE}}}
+  \put(137,500){\makebox(0,0)[c]{\color{green}\begin{tabular}{c}\lane{PUBLIC}\\[-3pt]\lane{EVIDENCE}\end{tabular}}}
+  \put(138,139){\makebox(0,0)[c]{\color{blue}\begin{tabular}{c}\lane{LOCAL}\\[-3pt]\lane{DECISION}\end{tabular}}}
+  % top lane
+  \put(438,699){\makebox(0,0)[c]{\color{navy}\obj{ARTIFACT}}}
+  \put(839,699){\makebox(0,0)[c]{\color{navy}\obj{JUDGMENT}}}
+  \put(1459,699){\makebox(0,0)[c]{\color{navy}\obj{TARGET}}}
+  % evidence lane
+  \put(663,434){\makebox(0,0)[c]{\color{navy}\obj{PROJECT}}}
+  \put(1002,434){\makebox(0,0)[c]{\color{navy}\obj{GATE}}}
+  \put(1323,434){\makebox(0,0)[c]{\color{navy}\obj{ROW}}}
+  \put(1002,295){\makebox(0,0)[c]{\color{navy}\rel{UNKNOWN / AUDIT}}}
+  \put(1200,261){\makebox(0,0)[c]{\color{navy}\rel{BEFORE SELECTION}}}
+  \put(1558,323){\makebox(0,0)[c]{\color{navy}\rel{AFTER SEAL}}}
+  % local decision lane
+  \put(439,89){\makebox(0,0)[c]{\color{navy}\obj{PEERS}}}
+  \put(782,89){\makebox(0,0)[c]{\color{navy}\obj{READ CUT}}}
+  \put(1112,89){\makebox(0,0)[c]{\color{navy}\obj{SEALED ASSIGNMENT}}}
+  \put(1465,89){\makebox(0,0)[c]{\color{navy}\obj{SELECTED-ONLY UPDATE}}}
+\end{picture}
+\end{document}

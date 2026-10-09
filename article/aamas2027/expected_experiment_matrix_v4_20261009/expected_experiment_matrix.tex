@@ -1,0 +1,389 @@
+\documentclass[10pt,a4paper,landscape]{article}
+\usepackage[margin=11mm,headheight=15pt]{geometry}
+\usepackage[T1]{fontenc}\usepackage{lmodern}
+\usepackage{booktabs,array,tabularx,longtable,makecell,xcolor,fancyhdr,draftwatermark,hyperref}
+\hypersetup{hidelinks,pdftitle={Numeric Expected Experiment Matrix v4},pdfsubject={Expected not observed},pdfauthor={Earning Roles project}}
+\SetWatermarkText{EXPECTED --- NOT OBSERVED}\SetWatermarkColor{red!13}\SetWatermarkAngle{33}\SetWatermarkScale{0.90}
+\pagestyle{fancy}\fancyhf{}\fancyhead[L]{\color{red!65!black}\bfseries NUMERIC EXPECTED EXPERIMENT MATRIX v4}\fancyhead[R]{\color{red!65!black}SOLE EXPECTED REFERENCE / NOT RESULTS}\fancyfoot[L]{2026-10-09 / design expectation / not submission evidence}\fancyfoot[R]{\thepage}
+\setlength{\parindent}{0pt}\setlength{\parskip}{3pt}\setlength{\tabcolsep}{2.6pt}\renewcommand{\arraystretch}{1.10}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcommand{\rare}{\textsc{rare}}\newcommand{\na}{\textsc{n/a}}\newcommand{\nog}{\textsc{no-go}}\newcommand{\ok}{\textsc{pass}}
+\begin{document}
+{\LARGE\bfseries Numeric Expected Experiment Matrix v4}\hfill{\large\color{red!65!black}\bfseries EXPECTED --- NOT OBSERVED}\par
+\textbf{Decision.} This is the sole numerical expectation reference for the experiment matrix in \texttt{artifacts/aamas2027/main.pdf}. It is a falsifiable planning benchmark, not a result. The current PDF prints four RQ rows; its stated confirmation-card expansion is represented here by exactly nine cells (RQ1-I through RQ4-II). Real observations replace expectations and are never edited to match them.
+\textbf{Numeric basis.} The historical numeric mother is expected v3; its broken PDF is not reused. Guide v2 supplies the joint/paired uncertainty logic; guide v5 supplies positive and negative regime guards. Public work informs metric discipline and conservative scale only; no external result is treated as protocol-equivalent to ArtifactRole or PeerSelect.
+\textbf{Shared design.} Three structural roots $\times$ six independently reset streams per arm ($n=18$). ArtifactRole uses 120 ITT attempts/stream and a frozen 96-case H1 cohort/stream. PeerSelect uses 1,000 warm-up plus 5,000 scored arrivals/stream. $U=Y-0.10C$; $C$ is complete per-attempt cost normalized to matched uniform $=1.00$. Assignment change is diagnostic only.
+\section*{1. Current-PDF correspondence and expected direction}
+\begin{center}\small\begin{tabularx}{\linewidth}{@{}C{.06\linewidth}L{.14\linewidth}L{.22\linewidth}L{.17\linewidth}Y@{}}\toprule PDF row & Track/unit & Current-PDF contrast & Expanded cells & Expected boundary \\\midrule
+RQ1 & ArtifactRole/root & RARE/raw/terminal/contextual trust & RQ1-I, RQ1-II & Small positive signal only under informative typed evidence; same-information strong controls remain close. \\
+
+RQ2 & ArtifactRole/target & Evidence+delay/no evidence/delay-only/pooled & RQ2-I, II, III & Positive under stable crossover; pooled wins in sparse support; change rate never defines success. \\
+
+RQ3 & PeerSelect/stream & Updater/uniform/no-history/history-only & RQ3-I, II & Payoff may improve normally; RARE loses service and utility under high load; correction buys stability at cost. \\
+
+RQ4 & Both/mutation+drift & Ownership/correction-replay/leave-one-out & RQ4-I, II & Safety requires risk plus coverage/UNKNOWN; stale reset may beat RARE on quality/recovery. \\
+
+\bottomrule\end{tabularx}\end{center}
+\section*{2. RQ1---Information value}
+\textbf{RQ1-I: development-root signal controls.} Producer-contract $Q_p$ and independent later-use $Y$ use separate frozen common cohorts. Brier, ECE, and log loss are lower-better; AUC is higher-better.
+\begin{center}\small\begin{tabular}{llrrrr}\toprule Target & Arm & Brier & Log loss (nats) & ECE & AUC \\\midrule
+Producer-contract $Q_p$ & Raw acceptance & 0.225 & 0.637 & 0.073 & 0.680 \\
+
+Producer-contract $Q_p$ & Terminal only & 0.220 & 0.625 & 0.068 & 0.695 \\
+
+Producer-contract $Q_p$ & \rare{} & 0.203 & 0.584 & 0.055 & 0.738 \\
+
+\bottomrule\end{tabular}\end{center}
+\begin{center}\small\begin{tabular}{llrrrr}\toprule Target & Arm & Brier & Log loss (nats) & ECE & AUC \\\midrule
+Independent later-use $Y$ & Raw acceptance & 0.232 & 0.651 & 0.078 & 0.665 \\
+
+Independent later-use $Y$ & Terminal only & 0.218 & 0.620 & 0.066 & 0.704 \\
+
+Independent later-use $Y$ & \rare{} & 0.209 & 0.596 & 0.059 & 0.728 \\
+
+\bottomrule\end{tabular}\end{center}
+Expected eligible-judgment weighted $\kappa=0.780$ [0.740, 0.820]. This is a judgment-contract diagnostic, not a policy win.
+\textbf{RQ1-II: confirmation-root matched-information controls, counterfactuals, and falsifiers.}
+\begin{center}\scriptsize\begin{tabular}{llrrrrrl}\toprule Target & Arm & Brier & Log loss & ECE & AUC & Cross-root drop & Role/status \\\midrule
+Producer-contract $Q_p$ & Trace only & 0.216 & 0.616 & 0.064 & 0.704 & 0.019 & required counterfactual \\
+
+Producer-contract $Q_p$ & Count only & 0.213 & 0.609 & 0.062 & 0.712 & 0.018 & required counterfactual \\
+
+Producer-contract $Q_p$ & $J$ masked & 0.212 & 0.606 & 0.061 & 0.716 & 0.018 & required counterfactual \\
+
+Producer-contract $Q_p$ & $J$ permutation & 0.213 & 0.610 & 0.063 & 0.710 & 0.019 & required falsifier \\
+
+Producer-contract $Q_p$ & Menu/ID permutation & 0.214 & 0.612 & 0.064 & 0.708 & 0.020 & required falsifier \\
+
+Producer-contract $Q_p$ & Contextual-trust-linear & 0.211 & 0.604 & 0.060 & 0.720 & 0.020 & qualify/freeze before run \\
+
+Producer-contract $Q_p$ & Task-conditioned ridge & 0.207 & 0.595 & 0.058 & 0.728 & 0.016 & expected target; qualify/run \\
+
+Producer-contract $Q_p$ & Matched composition & 0.206 & 0.592 & 0.057 & 0.731 & 0.015 & expected target; qualify/run \\
+
+Producer-contract $Q_p$ & \rare{} & 0.203 & 0.584 & 0.055 & 0.738 & 0.014 & qualify/freeze before run \\
+
+Closest published adapter & \multicolumn{6}{c}{\nog{}: no faithful protocol-preserving adapter is currently qualified} & no numeric cell \\
+\bottomrule\end{tabular}\end{center}
+\begin{center}\scriptsize\begin{tabular}{llrrrrrl}\toprule Target & Arm & Brier & Log loss & ECE & AUC & Cross-root drop & Role/status \\\midrule
+Later-use $Y$ & Trace only & 0.223 & 0.630 & 0.068 & 0.694 & 0.023 & required counterfactual \\
+
+Later-use $Y$ & Count only & 0.219 & 0.622 & 0.066 & 0.702 & 0.022 & required counterfactual \\
+
+Later-use $Y$ & $J$ masked & 0.218 & 0.619 & 0.065 & 0.706 & 0.021 & required counterfactual \\
+
+Later-use $Y$ & $J$ permutation & 0.220 & 0.624 & 0.067 & 0.700 & 0.023 & required falsifier \\
+
+Later-use $Y$ & Menu/ID permutation & 0.221 & 0.626 & 0.068 & 0.698 & 0.024 & required falsifier \\
+
+Later-use $Y$ & Contextual-trust-linear & 0.217 & 0.617 & 0.064 & 0.710 & 0.023 & qualify/freeze before run \\
+
+Later-use $Y$ & Task-conditioned ridge & 0.214 & 0.608 & 0.062 & 0.717 & 0.019 & expected target; qualify/run \\
+
+Later-use $Y$ & Matched composition & 0.213 & 0.606 & 0.061 & 0.720 & 0.018 & expected target; qualify/run \\
+
+Later-use $Y$ & \rare{} & 0.209 & 0.596 & 0.059 & 0.728 & 0.017 & qualify/freeze before run \\
+
+Closest published adapter & \multicolumn{6}{c}{\nog{}: no faithful protocol-preserving adapter is currently qualified} & no numeric cell \\
+\bottomrule\end{tabular}\end{center}
+On $Q_p$, the RARE Brier edge over matched composition is $-0.003$; on later-use $Y$ it is $-0.004$. Both targets remain close enough for a tie or strong-control win to be an allowed outcome.
+\section*{3. RQ2---Assignment causality and quality--cost utility}
+\textbf{RQ2-I: public evidence before sealed target execution.} $Y$ is future independent quality; rework is the fraction requiring rework. Planning half-widths: $Y$ 0.012, $C$ 0.030, $U$ 0.011, rates 0.015.
+\begin{center}\small\begin{tabular}{lrrrrrr}\toprule Arm & $Y$ & $C$ & $U$ & Assignment change & Adoption & Rework \\\midrule
+No evidence/no update & 0.532 & 1.02 & 0.430 & 0.04 & 0.48 & 0.30 \\
+
+Public evidence only & 0.566 & 1.18 & 0.448 & 0.12 & 0.54 & 0.24 \\
+
+\bottomrule\end{tabular}\end{center}
+\textbf{RQ2-II: matched $2\times2$ public-evidence $\times$ delayed-update factorial.}
+\begin{center}\small\begin{tabular}{llrrrr}\toprule Evidence & Delayed update & $Y$ & $C$ & $U$ & Change (diagnostic) \\\midrule
+Masked & Off & 0.532 & 1.02 & 0.430 & 0.04 \\
+
+Visible & Off & 0.566 & 1.18 & 0.448 & 0.12 \\
+
+Masked & On & 0.570 & 1.15 & 0.455 & 0.13 \\
+
+Visible & On & 0.608 & 1.34 & 0.474 & 0.20 \\
+
+\midrule
+Interaction $I$ &  & 0.004 & 0.030 & 0.001 & \na \\
+
+\bottomrule\end{tabular}\end{center}
+Arithmetic is exact at displayed precision: $I_U=0.001=I_Y-0.10I_C=0.004-0.10(0.030)$. The near-additive interaction prevents a universal synergy claim.
+\textbf{RQ2-III: local personalization boundary.}
+\begin{center}\small\begin{tabular}{llrrrrrr}\toprule Regime & Arm & $Y$ & $C$ & $U$ & Change & Max share & Min propensity \\\midrule
+Stable crossover & Local uniform & 0.548 & 1.00 & 0.448 & 0.08 & 0.34 & 0.05 \\
+
+Stable crossover & Nonlocal/global & 0.592 & 1.25 & 0.467 & 0.16 & 0.32 & 0.06 \\
+
+Stable crossover & Same-cost centralized & 0.602 & 1.34 & 0.468 & 0.18 & 0.29 & 0.07 \\
+
+Stable crossover & Pooled & 0.600 & 1.28 & 0.472 & 0.14 & 0.31 & 0.06 \\
+
+Stable crossover & \rare{} & 0.608 & 1.34 & 0.474 & 0.20 & 0.27 & 0.08 \\
+
+Sparse support & Pooled & 0.578 & 1.28 & 0.450 & 0.12 & 0.33 & 0.05 \\
+
+Sparse support & \rare{} & 0.561 & 1.34 & 0.427 & 0.11 & 0.36 & 0.04 \\
+
+\bottomrule\end{tabular}\end{center}
+Under stable crossover RARE is only +0.002 vs pooled and +0.006 vs same-cost centralized, while local/nonlocal diagnostics remain explicit. Under sparse support RARE loses pooled utility by 0.023.
+\section*{4. RQ3---Online behavior, load, correction, and drift}
+\textbf{RQ3-I: selected-only end-to-end service.} All p50/p95 fields are milliseconds/event from event publication through sealed read/assignment and validated update; service lag is end-to-end wall time including validation, state write, queue/retry, and no-op handling. \na{} means no full update path.
+\begin{center}\scriptsize\begin{tabular}{llrrrrrrr}\toprule Regime & Arm & Payoff & $C$ & $U$ & Regret & Backlog p95 & State KiB & Drop/timeout \\\midrule
+Normal & Uniform & 0.500 & 1.00 & 0.400 & 0.150 & 0.0 & 8.0 & 0.001 \\
+
+Normal & No history & 0.532 & 1.02 & 0.430 & 0.118 & 0.0 & 8.0 & 0.001 \\
+
+Normal & History only & 0.565 & 1.16 & 0.449 & 0.085 & 0.4 & 20.0 & 0.004 \\
+
+Normal & Matched RLS & 0.600 & 1.31 & 0.469 & 0.050 & 0.8 & 32.0 & 0.005 \\
+
+Normal & Matched online SGD & 0.598 & 1.29 & 0.469 & 0.052 & 0.7 & 30.0 & 0.005 \\
+
+Normal & Matched periodic refit & 0.602 & 1.35 & 0.467 & 0.048 & 1.5 & 64.0 & 0.008 \\
+
+Normal & \rare{} & 0.606 & 1.34 & 0.472 & 0.044 & 1.0 & 36.0 & 0.006 \\
+
+High load & Uniform & 0.500 & 1.15 & 0.385 & 0.150 & 0.3 & 8.0 & 0.020 \\
+
+High load & \rare{} & 0.582 & 2.25 & 0.357 & 0.068 & 8.0 & 36.0 & 0.110 \\
+
+\bottomrule\end{tabular}\end{center}
+\begin{center}\scriptsize\begin{tabular}{llrrrrrrr}\toprule Regime & Arm & Publish p50 & Publish p95 & Read p50 & Read p95 & Update p50 & Update p95 & Service lag p95 \\\midrule
+Normal & Uniform & 6.0 & 10.0 & 7.2 & 12.0 & \na & \na & 34.0 \\
+
+Normal & No history & 6.6 & 11.0 & 8.4 & 14.0 & \na & \na & 38.0 \\
+
+Normal & History only & 9.0 & 15.0 & 14.4 & 24.0 & 19.2 & 32.0 & 76.0 \\
+
+Normal & Matched RLS & 10.8 & 18.0 & 25.2 & 42.0 & 39.6 & 66.0 & 142.0 \\
+
+Normal & Matched online SGD & 10.8 & 18.0 & 24.0 & 40.0 & 38.4 & 64.0 & 138.0 \\
+
+Normal & Matched periodic refit & 12.0 & 20.0 & 20.4 & 34.0 & 72.0 & 120.0 & 185.0 \\
+
+Normal & \rare{} & 13.2 & 22.0 & 27.6 & 46.0 & 40.8 & 68.0 & 155.0 \\
+
+High load & Uniform & 18.0 & 30.0 & 22.8 & 38.0 & \na & \na & 110.0 \\
+
+High load & \rare{} & 72.0 & 120.0 & 156.0 & 260.0 & 288.0 & 480.0 & 920.0 \\
+
+\bottomrule\end{tabular}\end{center}
+\begin{center}\scriptsize\begin{tabular}{llrrrrrrrr}\toprule Regime & Arm & CPU ms & GPU ms & RAM MiB & Model calls & Input tok. & Output tok. & Tool calls & Replay ms \\\midrule
+Normal & Uniform & 6.0 & 0.0 & 64.0 & 0 & 0 & 0 & 0 & 0.0 \\
+
+Normal & No history & 7.0 & 0.0 & 64.0 & 0 & 0 & 0 & 0 & 0.0 \\
+
+Normal & History only & 16.0 & 0.0 & 96.0 & 0 & 0 & 0 & 0 & 15.0 \\
+
+Normal & Matched RLS & 29.0 & 0.0 & 128.0 & 0 & 0 & 0 & 0 & 24.0 \\
+
+Normal & Matched online SGD & 27.0 & 0.0 & 120.0 & 0 & 0 & 0 & 0 & 22.0 \\
+
+Normal & Matched periodic refit & 44.0 & 0.0 & 256.0 & 0 & 0 & 0 & 0 & 60.0 \\
+
+Normal & \rare{} & 34.0 & 0.0 & 160.0 & 0 & 0 & 0 & 0 & 30.0 \\
+
+High load & Uniform & 18.0 & 0.0 & 64.0 & 0 & 0 & 0 & 0 & 0.0 \\
+
+High load & \rare{} & 210.0 & 0.0 & 192.0 & 0 & 0 & 0 & 0 & 180.0 \\
+
+\bottomrule\end{tabular}\end{center}
+Normal RARE has only a 0.003 utility edge over the best matched updater; periodic refit is slower. Under high load RARE loses utility to uniform by 0.028 and has worse end-to-end lag, backlog, state, replay, and drop rate. PeerSelect false producer attribution is structurally \na{}.
+\textbf{RQ3-II: correction/replay, gradual drift, and stale-version boundaries.}
+\begin{center}\scriptsize\begin{tabular}{lrrrrrrrr}\toprule Condition & Payoff & $C$ & $U$ & Forgetting & Recovery updates & Update p95 & Backlog p95 & Replay equality \\\midrule
+Delayed: correction+replay & 0.607 & 1.39 & 0.468 & 0.110 & 6.5 & 74.0 & 1.4 & 1.00 \\
+
+Delayed: no correction/replay & 0.580 & 1.25 & 0.455 & 0.170 & 9.0 & 60.0 & 0.9 & 0.86 \\
+
+\bottomrule\end{tabular}\end{center}
+\begin{center}\scriptsize\begin{tabular}{lrrrrrrr}\toprule Gradual-drift arm & Payoff & $C$ & $U$ & Forgetting & Recovery & Update p95 & Backlog \\\midrule
+Frozen prior & 0.566 & 1.02 & 0.464 & 0.230 & \na & \na & 0.0 \\
+
+Matched RLS & 0.602 & 1.31 & 0.471 & 0.125 & 7.0 & 66.0 & 0.9 \\
+
+Matched SGD & 0.599 & 1.29 & 0.470 & 0.135 & 7.5 & 64.0 & 0.8 \\
+
+Periodic refit & 0.601 & 1.35 & 0.466 & 0.115 & 8.0 & 120.0 & 1.5 \\
+
+\rare{} correction/replay & 0.607 & 1.39 & 0.468 & 0.110 & 6.5 & 74.0 & 1.4 \\
+
+\bottomrule\end{tabular}\end{center}
+\begin{center}\scriptsize\begin{tabular}{lrrrrrrrr}\toprule Condition & Publish p95 & Read p95 & Update p95 & Lag p95 & CPU ms & RAM MiB & Replay ms & Drop \\\midrule
+Delayed + correction & 24.0 & 48.0 & 74.0 & 175.0 & 40.0 & 176.0 & 42.0 & 0.010 \\
+
+Delayed without correction & 20.0 & 40.0 & 60.0 & 140.0 & 30.0 & 128.0 & 18.0 & 0.012 \\
+
+Drift frozen prior & 12.0 & 22.0 & \na & 50.0 & 10.0 & 64.0 & 0.0 & 0.005 \\
+
+Drift matched RLS & 18.0 & 42.0 & 66.0 & 145.0 & 30.0 & 128.0 & 24.0 & 0.007 \\
+
+Drift matched SGD & 18.0 & 40.0 & 64.0 & 140.0 & 28.0 & 120.0 & 22.0 & 0.007 \\
+
+Drift periodic refit & 20.0 & 34.0 & 120.0 & 188.0 & 46.0 & 256.0 & 60.0 & 0.009 \\
+
+Drift RARE & 24.0 & 48.0 & 74.0 & 175.0 & 40.0 & 176.0 & 42.0 & 0.010 \\
+
+Stale reset & 18.0 & 36.0 & 50.0 & 120.0 & 24.0 & 96.0 & 20.0 & 0.006 \\
+
+Stale RARE & 22.0 & 46.0 & 82.0 & 190.0 & 38.0 & 160.0 & 40.0 & 0.012 \\
+
+\bottomrule\end{tabular}\end{center}
+\begin{center}\small\begin{tabular}{lrrrrrr}\toprule Stale-version arm & Payoff & $C$ & $U$ & Brier & False attribution (all) & Recovery \\\midrule
+Version-aware reset & 0.579 & 1.30 & 0.449 & 0.224 & 0.060 & 6.0 \\
+
+\rare{} under mismatch & 0.557 & 1.34 & 0.423 & 0.232 & 0.040 & 8.5 \\
+
+\bottomrule\end{tabular}\end{center}
+Matched RLS has slightly higher drift utility than RARE (0.471 vs 0.468), so updater superiority is not presumed. The stale reset control wins utility by 0.026 and recovery; RARE retains only the safety advantage.
+\section*{5. RQ4---Attribution safety and mechanism boundaries}
+\textbf{RQ4-I: responsibility mutations.} Coverage+UNKNOWN=1. False-attribution(all) uses all owner-truth-eligible attempts; false-attribution(claimed) divides the same errors by coverage. No-op remains visible because high abstention cannot manufacture a safety win.
+\begin{center}\scriptsize\begin{tabular}{lrrrrrrr}\toprule Mutation & Coverage & UNKNOWN & FA all & FA claimed & UNKNOWN precision & No-op & Owner-truth recall \\\midrule
+Producer-only & 0.92 & 0.08 & 0.010 & 0.011 & 0.85 & 0.07 & 0.97 \\
+
+Recipient-only & 0.06 & 0.94 & 0.002 & 0.033 & 0.99 & 0.93 & 0.98 \\
+
+Sink-only & 0.10 & 0.90 & 0.003 & 0.030 & 0.98 & 0.89 & 0.96 \\
+
+Mixed ownership & 0.18 & 0.82 & 0.020 & 0.111 & 0.96 & 0.80 & 0.92 \\
+
+Unknown owner & 0.04 & 0.96 & \na & \na & 0.99 & 0.95 & \na \\
+
+Resource failure & 0.30 & 0.70 & 0.010 & 0.033 & 0.97 & 0.68 & 0.90 \\
+
+\bottomrule\end{tabular}\end{center}
+Recipient-only safety is achieved mainly by abstention (coverage 0.06), so its low all-attempt error is never reported without UNKNOWN 0.94 and conditional error 0.033.
+\textbf{RQ4-II: leave-one-mechanism-out with matched safety denominators.}
+\begin{center}\scriptsize\begin{tabular}{lrrrrrrr}\toprule Variant & $Y$ & $C$ & $U$ & Coverage & UNKNOWN & FA all & FA claimed \\\midrule
+Full \rare{} & 0.608 & 1.34 & 0.474 & 0.08 & 0.92 & 0.0064 & 0.08 \\
+
+No evidence/no update & 0.532 & 1.02 & 0.430 & 0.10 & 0.90 & 0.0180 & 0.18 \\
+
+Minus ownership gate & 0.588 & 1.27 & 0.461 & 0.75 & 0.25 & 0.1800 & 0.24 \\
+
+Minus public evidence & 0.570 & 1.15 & 0.455 & 0.25 & 0.75 & 0.0400 & 0.16 \\
+
+Minus delayed update & 0.566 & 1.18 & 0.448 & 0.45 & 0.55 & 0.0495 & 0.11 \\
+
+Minus locality & 0.600 & 1.30 & 0.470 & 0.18 & 0.82 & 0.0180 & 0.10 \\
+
+Minus updater & 0.580 & 1.20 & 0.460 & 0.20 & 0.80 & 0.0200 & 0.10 \\
+
+Minus selected-only rule & 0.603 & 1.31 & 0.472 & 0.30 & 0.70 & 0.0390 & 0.13 \\
+
+Minus correction/replay & 0.597 & 1.29 & 0.468 & 0.28 & 0.72 & 0.0336 & 0.12 \\
+
+\bottomrule\end{tabular}\end{center}
+The ownership gate is the principal safety mechanism: removing it raises coverage to 0.75 but raises all-attempt false attribution from 0.0064 to 0.1800 and claimed-case error from 0.08 to 0.24. No safety ranking is made from a conditional rate alone.
+\section*{6. Shared cost, interval, and denominator contract}
+\textbf{Complete-cost arithmetic.} Each total includes selection, execution, publish/read, matched judgment/masked call, assignment commit, communication, model/API/token/tool, verification, update, queue/retry, repair, state storage, and replay. Failed attempts retain observed cost.
+\begin{center}\scriptsize\begin{tabular}{lrrrrrrrrr}\toprule Shared base & Select & Execute & Publish/read & Judgment & Assign & Communicate & Model/API/tool & Verify & Sum \\\midrule Matched base & 0.08 & 0.30 & 0.10 & 0.15 & 0.02 & 0.04 & 0.17 & 0.01 & 0.87 \\\bottomrule\end{tabular}\end{center}
+\begin{center}\scriptsize\begin{tabular}{lrrrrrr}\toprule Template & Update & Queue/retry & Repair & Storage & Replay & Total $C$ \\\midrule
+uniform & 0.000 & 0.056 & 0.024 & 0.030 & 0.020 & 1.00 \\
+
+no\_update & 0.000 & 0.070 & 0.030 & 0.030 & 0.020 & 1.02 \\
+
+raw & 0.040 & 0.084 & 0.036 & 0.042 & 0.028 & 1.10 \\
+
+terminal & 0.070 & 0.091 & 0.039 & 0.048 & 0.032 & 1.15 \\
+
+context & 0.100 & 0.105 & 0.045 & 0.060 & 0.040 & 1.22 \\
+
+task\_ridge & 0.140 & 0.112 & 0.048 & 0.072 & 0.048 & 1.29 \\
+
+matched\_composition & 0.150 & 0.112 & 0.048 & 0.078 & 0.052 & 1.31 \\
+
+matched\_rls & 0.140 & 0.119 & 0.051 & 0.078 & 0.052 & 1.31 \\
+
+matched\_sgd & 0.130 & 0.112 & 0.048 & 0.078 & 0.052 & 1.29 \\
+
+matched\_periodic\_refit & 0.160 & 0.126 & 0.054 & 0.084 & 0.056 & 1.35 \\
+
+pooled & 0.130 & 0.112 & 0.048 & 0.072 & 0.048 & 1.28 \\
+
+rare & 0.160 & 0.119 & 0.051 & 0.084 & 0.056 & 1.34 \\
+
+public\_only & 0.060 & 0.098 & 0.042 & 0.066 & 0.044 & 1.18 \\
+
+delayed\_only & 0.080 & 0.084 & 0.036 & 0.048 & 0.032 & 1.15 \\
+
+history\_only & 0.080 & 0.091 & 0.039 & 0.048 & 0.032 & 1.16 \\
+
+\bottomrule\end{tabular}\end{center}
+\textbf{Result-row traceability.} Every numeric result row stores a \texttt{cost\_template\_id}, all 13 cost fields, and expected wall seconds. The table below lists every distinct result-row total; the automatic audit recomputes each row from its embedded breakdown.
+\begin{center}\scriptsize\begin{tabular}{lrrrrrr}\toprule Row-specific ID & Update & Queue/retry & Repair & Storage & Replay & Total $C$ \\\midrule
+row\_specific\_C\_1.00 & 0.045 & 0.033 & 0.013 & 0.023 & 0.016 & 1.00 \\
+
+row\_specific\_C\_1.02 & 0.052 & 0.037 & 0.015 & 0.027 & 0.018 & 1.02 \\
+
+row\_specific\_C\_1.15 & 0.098 & 0.070 & 0.028 & 0.050 & 0.034 & 1.15 \\
+
+row\_specific\_C\_1.16 & 0.102 & 0.072 & 0.029 & 0.052 & 0.035 & 1.16 \\
+
+row\_specific\_C\_1.18 & 0.108 & 0.077 & 0.031 & 0.056 & 0.037 & 1.18 \\
+
+row\_specific\_C\_1.20 & 0.116 & 0.083 & 0.033 & 0.059 & 0.040 & 1.20 \\
+
+row\_specific\_C\_1.25 & 0.133 & 0.095 & 0.038 & 0.068 & 0.046 & 1.25 \\
+
+row\_specific\_C\_1.27 & 0.140 & 0.100 & 0.040 & 0.072 & 0.048 & 1.27 \\
+
+row\_specific\_C\_1.28 & 0.143 & 0.102 & 0.041 & 0.074 & 0.049 & 1.28 \\
+
+row\_specific\_C\_1.29 & 0.147 & 0.105 & 0.042 & 0.076 & 0.050 & 1.29 \\
+
+row\_specific\_C\_1.30 & 0.150 & 0.107 & 0.043 & 0.077 & 0.052 & 1.30 \\
+
+row\_specific\_C\_1.31 & 0.154 & 0.110 & 0.044 & 0.079 & 0.053 & 1.31 \\
+
+row\_specific\_C\_1.34 & 0.165 & 0.117 & 0.047 & 0.085 & 0.056 & 1.34 \\
+
+row\_specific\_C\_1.35 & 0.168 & 0.120 & 0.048 & 0.086 & 0.058 & 1.35 \\
+
+row\_specific\_C\_1.39 & 0.182 & 0.130 & 0.052 & 0.094 & 0.062 & 1.39 \\
+
+row\_specific\_C\_2.25 & 0.483 & 0.345 & 0.138 & 0.248 & 0.166 & 2.25 \\
+
+\bottomrule\end{tabular}\end{center}
+Hardware/runtime envelope: four logical CPU cores per stream, no online GPU, 1,024 MiB RAM cap. PeerSelect model/API/token/tool counts are expected zero and are printed in the H3 resource table; ArtifactRole charges them in the normalized ledger. Wall time is stored per row.
+\textbf{Expected 95\% planning intervals.} These are not observed confidence intervals and not a common standard deviation. They are root-stratified paired-stream planning ranges. Nonzero latency/state use $\pm10\%$ for single arms.
+\begin{center}\scriptsize\begin{tabular}{lrrrrrrrrrr}\toprule Half-width & Brier & Log loss & ECE & AUC & $Y$/payoff & $C$ & $U$ & Rate & Forgetting & Recovery \\\midrule Single arm & 0.008 & 0.018 & 0.006 & 0.020 & 0.012 & 0.030 & 0.011 & 0.015 & 0.020 & 1.2 \\ Paired contrast & 0.006 & 0.012 & 0.004 & 0.014 & 0.009 & 0.020 & 0.008 & 0.010 & 0.015 & 0.8 \\\bottomrule\end{tabular}\end{center}
+Precision inputs are explicit and machine-audited: $h=1.96s/\sqrt{18}$, with the single-arm and paired stream-SD assumptions stored metric by metric in the JSON ledger. Recomputed residual is required to be below $10^{-6}$.
+\textbf{Denominators.} H1 uses the frozen common held-out cohort. H2 uses all sealed assignments and attempts (ITT), with per-protocol secondary. H3 uses all arrivals/attempted updates including failures, drops, no-ops, timeouts, and UNKNOWN. H4 false-attribution(all) uses all owner-truth-eligible mutations; H4 coverage/UNKNOWN uses all mutation attempts.
+\section*{7. Baseline eligibility and scientific boundary}
+\begin{center}\small\begin{tabularx}{\linewidth}{@{}L{.25\linewidth}L{.16\linewidth}Y@{}}\toprule Arm/endpoint & Status & Rule \\\midrule
+Information counterfactuals/falsifiers & REQUIRED TARGETS & Trace/count/J-mask/J-permutation/menu-ID permutation all have expected values and must run on the same cohort and cost contract. \\
+
+Contextual-trust-linear & REQUIRED QUALIFICATION & Strong same-information control; own history namespace, identical public representation/read cut/menu/budget/cost. \\
+
+Task-conditioned ridge & REQUIRED EXPECTED TARGET & Numeric expectation is part of the sole reference; the eventual observed comparison is inadmissible until executable and qualified. \\
+
+Matched composition & REQUIRED EXPECTED TARGET & Required guard against ordinary components explaining the gain; same qualification rule. \\
+
+Matched RLS/SGD/periodic refit & REQUIRED EXPECTED TARGETS & Updater comparators nested under one information policy; they prevent automatic updater-superiority claims. \\
+
+Closest published adapter & NO-GO & No faithful drop-in currently preserves the causal unit, timing, selected-only rule, assignment, and complete cost; therefore it has no numeric cell. \\
+
+Graph-IPD & N/A as substitute & External native-cooperation reference only; cannot fill any nine-cell result without a qualified adapter. \\
+
+PeerSelect false attribution & N/A & No producer owner-truth contract. \\
+
+No-update full update latency & N/A & Report its no-op path separately; it cannot be ranked as full update latency. \\
+
+\bottomrule\end{tabularx}\end{center}
+\section*{8. Automatic consistency audit}
+All 36/36 automatic checks passed: utility identities, cost-component sums, factorial identities, coverage/UNKNOWN complements, false-attribution denominator transforms, positive/negative regime guards, nine-cell identity, and absence of TBD/ambiguous $\pm$ placeholders. The scientific evidence gate remains open because this artifact has zero benchmark/API/GPU runs.
+\section*{9. Scale-calibration references}
+\small Public references inform metric discipline and conservative scale; none supplies a protocol-equivalent RARE effect.\begin{itemize}
+\item Gneiting and Raftery (2007), Strictly Proper Scoring Rules, Prediction, and Estimation. https://doi.org/10.1198/016214506000001437. Brier/log-loss interpretation; proper scoring-rule discipline
+\item Guo et al. (2017), On Calibration of Modern Neural Networks. https://proceedings.mlr.press/v70/guo17a.html. Calibration as a separate endpoint rather than a substitute for discrimination
+\item Li et al. (2010), A Contextual-Bandit Approach to Personalized News Article Recommendation. https://doi.org/10.1145/1772690.1772758. Contextual-bandit comparison framing; domain-specific lifts are not transplanted
+\item Dudik, Langford, and Li (2011), Doubly Robust Policy Evaluation and Learning. https://arxiv.org/abs/1103.4601. Selected-only feedback, propensities, and off-policy evaluation
+\item Bietti, Agarwal, and Langford (2021), A Contextual Bandit Bake-off. https://jmlr.org/papers/v22/18-863.html. Trade-offs and no universal dominance across contextual-bandit regimes
+\item Saito et al. (2021), Open Bandit Dataset and Pipeline. https://arxiv.org/abs/2008.07146. Logged bandit feedback and reproducible off-policy evaluation
+\item Chaudhry et al. (2018), Riemannian Walk for Incremental Learning. https://arxiv.org/abs/1801.10112. Forgetting is distinct from adaptation/recovery
+\item Geifman and El-Yaniv (2019), SelectiveNet. https://proceedings.mlr.press/v97/geifman19a.html. Coverage and selective risk must be reported jointly
+\end{itemize}
+\textbf{Final interpretation.} RARE is expected to be modestly better only where typed evidence is informative and task--peer crossover is stable. It is expected to be more expensive, slower, and larger in state; pooled/reset/uniform controls deliberately win in sparse, stale, or high-load regimes. This complete pattern---including losses---is the sole expected benchmark.
+\end{document}
