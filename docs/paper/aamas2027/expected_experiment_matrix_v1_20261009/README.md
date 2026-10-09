@@ -1,4 +1,9 @@
-# Expected experiment matrix (v1, 2026-10-09)
+# Expected experiment matrix (v1, 2026-10-09; superseded)
+
+This version is retained as an immutable history record. It is superseded by
+[`expected_experiment_matrix_v2_20261009`](../expected_experiment_matrix_v2_20261009/README.md),
+which scopes the values to R1 and repairs the owner-truth/UNKNOWN and strong-
+control guard semantics.
 
 This directory stores the **numerical expected-result table** used as a planning
 target for the next confirmation runs. It is deliberately separate from the

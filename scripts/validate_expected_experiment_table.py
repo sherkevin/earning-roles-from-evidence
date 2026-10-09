@@ -25,6 +25,7 @@ def main() -> int:
     ap.add_argument("--source-pdf", type=Path)
     args = ap.parse_args()
     data = json.loads(args.json_path.read_text())
+    assert data["version"].startswith("expected_v")
     assert data["status"] == "GUIDE_EXPECTATION_NOT_OBSERVED"
     assert data["watermark_required"] is True
     assert data["scientific_result"] is False
@@ -64,17 +65,27 @@ def main() -> int:
     service = data["table_3_service_safety"]
     assert len(service) == 7
     assert [row["method"] for row in service] == correspondence["row_order"]["table_3_service_safety"]
+    assert all(row["streams"] == 9 for row in service)
     svc = {row["method"]: row for row in service}
     assert svc["RARE"]["update_p95_ms"] > svc["Contextual-trust-linear"]["update_p95_ms"]
     assert svc["RARE"]["backlog_p95"] > svc["Contextual-trust-linear"]["backlog_p95"]
     assert svc["RARE"]["state_kib"] > svc["Contextual-trust-linear"]["state_kib"]
-    assert svc["RARE"]["false_attribution"] < svc["Contextual-trust-linear"]["false_attribution"]
+    # PeerSelect has no owner-truth contract; H4a is deliberately N/A there.
+    if data["version"].startswith("expected_v2"):
+        assert all(row["false_attribution"] is None for row in service[:4])
+        assert all(row["owner_truth_recall"] is None for row in service[:4])
+        assert all("unknown_abstention_rate" in row for row in service)
+        for row in service:
+            assert close(row["unknown_abstention_rate"], 1.0 - row["coverage"]), row["method"]
+    else:
+        assert svc["RARE"]["false_attribution"] < svc["Contextual-trust-linear"]["false_attribution"]
     assert svc["RARE"]["coverage"] < svc["Contextual-trust-linear"]["coverage"]
     assert svc["RARE"]["recovery_steps"] < svc["Contextual-trust-linear"]["recovery_steps"]
 
     ablations = data["table_4_ablations"]
     assert len(ablations) == 7
     assert [row["intervention"] for row in ablations] == correspondence["row_order"]["table_4_ablations"]
+    assert all(row["streams"] == 9 for row in ablations)
     for row in ablations:
         expected_q = row["utility"] + lam * row["complete_cost"]
         assert close(row["implied_quality"], expected_q), (row["intervention"], expected_q, row["implied_quality"])

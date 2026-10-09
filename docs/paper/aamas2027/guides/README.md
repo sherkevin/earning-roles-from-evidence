@@ -10,10 +10,12 @@ Guide 是独立的研发参照，不能写入正式结果或替代唯一生效�
 | [v2_20261008](v2_20261008/README.md) | ARCHIVED_CONDITIONAL_DISTRIBUTION_REFERENCE | 同源联合分布、误差/协方差、置信度审计与空白对标模板；原计算/PDF留存 |
 | [v1_20261008](v1_20261008/README.md) | ARCHIVED_EXPECTATIONS_WITHDRAWN | 保留第一次目标矩阵和修订历史；其方法排序与误差假设不得用作高置信度预测 |
 
-独立的 [Expected experiment table v1](../expected_experiment_matrix_v1_20261009/README.md)
-保存与原始正文矩阵一一对应的数值预期。它带有 `EXPECTED --- NOT OBSERVED`
-水印，不能作为真实结果或科学 gate 收据；其 canonical PDF 在
-`artifacts/aamas2027/expected_experiment_matrix.pdf`。
+独立的 [Expected experiment table v2](../expected_experiment_matrix_v2_20261009/README.md)
+保存与原始正文矩阵一一对应的 R1 场景数值预期。它带有
+`EXPECTED --- NOT OBSERVED` 水印，不能作为真实结果或科学 gate 收据；其
+canonical PDF 在 `artifacts/aamas2027/expected_experiment_matrix.pdf`。
+v1 保留在 [历史目录](../expected_experiment_matrix_v1_20261009/README.md)，
+不得作为当前目标。
 
 唯一当前 [Guide PDF](../../../../artifacts/aamas2027/guide_experiment_matrix.pdf)
 和 [master receipt](../../../../artifacts/aamas2027/guide_experiment_matrix_master.json)

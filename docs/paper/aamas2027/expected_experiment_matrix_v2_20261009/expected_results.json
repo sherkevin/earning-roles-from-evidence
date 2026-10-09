@@ -1,0 +1,73 @@
+{
+  "kind": "expected_experiment_table",
+  "version": "expected_v2_20261009",
+  "source_matrix_pdf": "artifacts/aamas2027/experiment_matrices_20261008_v3/experiment_matrices.pdf",
+  "source_matrix_sha256": "84ec43aa770787aea1d0c8cd5fcc799dc1b1e9584d55397b1f9cf984d289f316",
+  "status": "GUIDE_EXPECTATION_NOT_OBSERVED",
+  "watermark_required": true,
+  "scientific_result": false,
+  "new_api_calls": 0,
+  "gpu_jobs": 0,
+  "benchmark_runs": 0,
+  "scenario": "R1_informative_typed_evidence_only",
+  "correspondence": {
+    "overview": {"data_rows": 4, "columns": 5},
+    "table_2_artifactrole": {"data_rows": 7, "columns": 6},
+    "table_3_service_safety": {"data_rows": 7, "columns": 8},
+    "table_4_ablations": {"data_rows": 7, "columns": 6},
+    "row_order": {
+      "table_2_artifactrole": ["Uniform", "No update", "Raw acceptance", "Terminal only", "Contextual-trust-linear", "Pooled controller", "RARE"],
+      "table_3_service_safety": ["No update", "History only", "Contextual-trust-linear", "RARE", "Recipient-only mutation", "Mixed ownership mutation", "Delayed / out-of-order feedback"],
+      "table_4_ablations": ["No evidence / no update", "Public evidence only", "Delayed update only", "Evidence + delayed update (RARE)", "RARE without ownership gate", "RARE without selected-only rule", "RARE without correction/replay"]
+    }
+  },
+  "design_assumptions": {
+    "active_regime": "R1 informative typed evidence; R2-R8 are not assigned these numbers",
+    "structural_roots": 3,
+    "independent_streams_per_arm": 3,
+    "streams_per_arm": 9,
+    "utility_lambda": 0.1,
+    "cost_normalization": "no_update_mean_complete_cost=1.00",
+    "variation": "displayed plus-minus values are marginal planning variation over 3 roots x 3 streams, not confidence intervals or a covariance model",
+    "joint_model": "Brier/calibration and future utility/cost are separate target margins; no causal or covariance link is asserted",
+    "utility_break_even_lambda_rare_vs_context": 0.2167,
+    "directional_basis": "v5_20261008 conditional direction matrix; weak positive effect against the strongest same-information control, explicit service/safety trade-off, and losses in negative regimes",
+    "magnitude_basis": "conservative scenario medians anchored to existing diagnostics and public reference scale; no current observation is used as a fitted method effect"
+  },
+  "table_2_artifactrole": [
+    {"method":"Uniform","brier":0.250,"brier_sd":0.010,"calibration":0.100,"calibration_sd":0.015,"utility":0.400,"utility_sd":0.030,"assignment_change_diagnostic":0.00,"complete_cost":1.00,"complete_cost_sd":0.04,"streams":9,"implied_quality":0.500},
+    {"method":"No update","brier":0.238,"brier_sd":0.009,"calibration":0.080,"calibration_sd":0.013,"utility":0.430,"utility_sd":0.032,"assignment_change_diagnostic":0.04,"complete_cost":1.02,"complete_cost_sd":0.04,"streams":9,"implied_quality":0.532},
+    {"method":"Raw acceptance","brier":0.225,"brier_sd":0.010,"calibration":0.073,"calibration_sd":0.011,"utility":0.445,"utility_sd":0.034,"assignment_change_diagnostic":0.10,"complete_cost":1.10,"complete_cost_sd":0.05,"streams":9,"implied_quality":0.555},
+    {"method":"Terminal only","brier":0.220,"brier_sd":0.010,"calibration":0.068,"calibration_sd":0.010,"utility":0.452,"utility_sd":0.036,"assignment_change_diagnostic":0.12,"complete_cost":1.15,"complete_cost_sd":0.05,"streams":9,"implied_quality":0.567},
+    {"method":"Contextual-trust-linear","brier":0.211,"brier_sd":0.009,"calibration":0.060,"calibration_sd":0.009,"utility":0.466,"utility_sd":0.037,"assignment_change_diagnostic":0.16,"complete_cost":1.22,"complete_cost_sd":0.06,"streams":9,"implied_quality":0.588},
+    {"method":"Pooled controller","brier":0.207,"brier_sd":0.010,"calibration":0.057,"calibration_sd":0.010,"utility":0.458,"utility_sd":0.039,"assignment_change_diagnostic":0.14,"complete_cost":1.28,"complete_cost_sd":0.06,"streams":9,"implied_quality":0.586},
+    {"method":"RARE","brier":0.203,"brier_sd":0.009,"calibration":0.055,"calibration_sd":0.009,"utility":0.480,"utility_sd":0.038,"assignment_change_diagnostic":0.20,"complete_cost":1.34,"complete_cost_sd":0.07,"streams":9,"implied_quality":0.614}
+  ],
+  "table_3_service_safety": [
+    {"method":"No update","track":"PeerSelect","streams":9,"update_scope":"no-op update path","update_p95_ms":0.00,"backlog_p95":0.0,"state_kib":8,"false_attribution":null,"unknown_abstention_rate":0.04,"owner_truth_recall":null,"coverage":0.96,"forgetting":0.24,"recovery_steps":11.0},
+    {"method":"History only","track":"PeerSelect","streams":9,"update_scope":"full selected-feedback path","update_p95_ms":0.32,"update_p95_sd":0.08,"backlog_p95":0.4,"backlog_sd":0.2,"state_kib":20,"false_attribution":null,"unknown_abstention_rate":0.09,"owner_truth_recall":null,"coverage":0.91,"forgetting":0.16,"recovery_steps":8.0},
+    {"method":"Contextual-trust-linear","track":"PeerSelect","streams":9,"update_scope":"full selected-feedback path","update_p95_ms":0.52,"update_p95_sd":0.12,"backlog_p95":0.7,"backlog_sd":0.3,"state_kib":28,"false_attribution":null,"unknown_abstention_rate":0.11,"owner_truth_recall":null,"coverage":0.89,"forgetting":0.13,"recovery_steps":7.0},
+    {"method":"RARE","track":"PeerSelect","streams":9,"update_scope":"full selected-feedback path","update_p95_ms":0.68,"update_p95_sd":0.15,"backlog_p95":1.0,"backlog_sd":0.4,"state_kib":36,"false_attribution":null,"unknown_abstention_rate":0.16,"owner_truth_recall":null,"coverage":0.84,"forgetting":0.10,"recovery_steps":5.5},
+    {"method":"Recipient-only mutation","track":"ArtifactRole","streams":9,"update_scope":"full selected-feedback path","update_p95_ms":0.30,"update_p95_sd":0.08,"backlog_p95":0.1,"backlog_sd":0.1,"state_kib":18,"false_attribution":0.00,"unknown_abstention_rate":0.94,"owner_truth_recall":0.98,"coverage":0.06,"forgetting":0.00,"recovery_steps":0.0},
+    {"method":"Mixed ownership mutation","track":"ArtifactRole","streams":9,"update_scope":"full selected-feedback path","update_p95_ms":0.35,"update_p95_sd":0.10,"backlog_p95":0.2,"backlog_sd":0.1,"state_kib":22,"false_attribution":0.02,"unknown_abstention_rate":0.82,"owner_truth_recall":0.92,"coverage":0.18,"forgetting":0.04,"recovery_steps":1.0},
+    {"method":"Delayed / out-of-order feedback","track":"Both","streams":9,"update_scope":"full selected-feedback path","update_p95_ms":0.74,"update_p95_sd":0.18,"backlog_p95":1.4,"backlog_sd":0.5,"state_kib":39,"false_attribution":0.04,"unknown_abstention_rate":0.24,"owner_truth_recall":0.85,"coverage":0.76,"forgetting":0.12,"recovery_steps":8.5}
+  ],
+  "table_4_ablations": [
+    {"intervention":"No evidence / no update","streams":9,"utility":0.430,"utility_sd":0.032,"assignment_change_diagnostic":0.04,"false_attribution":0.18,"complete_cost":1.02,"implied_quality":0.532},
+    {"intervention":"Public evidence only","streams":9,"utility":0.448,"utility_sd":0.034,"assignment_change_diagnostic":0.12,"false_attribution":0.11,"complete_cost":1.18,"implied_quality":0.566},
+    {"intervention":"Delayed update only","streams":9,"utility":0.455,"utility_sd":0.036,"assignment_change_diagnostic":0.13,"false_attribution":0.16,"complete_cost":1.15,"implied_quality":0.570},
+    {"intervention":"Evidence + delayed update (RARE)","streams":9,"utility":0.480,"utility_sd":0.038,"assignment_change_diagnostic":0.20,"false_attribution":0.08,"complete_cost":1.34,"implied_quality":0.614},
+    {"intervention":"RARE without ownership gate","streams":9,"utility":0.461,"utility_sd":0.039,"assignment_change_diagnostic":0.22,"false_attribution":0.24,"complete_cost":1.27,"implied_quality":0.588},
+    {"intervention":"RARE without selected-only rule","streams":9,"utility":0.472,"utility_sd":0.041,"assignment_change_diagnostic":0.25,"false_attribution":0.13,"complete_cost":1.31,"implied_quality":0.603},
+    {"intervention":"RARE without correction/replay","streams":9,"utility":0.468,"utility_sd":0.040,"assignment_change_diagnostic":0.23,"false_attribution":0.12,"complete_cost":1.29,"implied_quality":0.597}
+  ],
+  "interpretation": {
+    "expected_win": "Only in R1, RARE is modestly better than contextual-trust-linear on Brier and future utility at lambda=0.10, while paying higher complete cost and service tails; the break-even lambda against context is about 0.2167.",
+    "expected_loss": "RARE loses on update p95/backlog/state resource in the illustrative R1 service branch and should tie or lose against task-conditioned ridge/matched composition in sparse, stale, shifted, or high-load regimes.",
+    "strong_control_guard": "The archived core table has no task-conditioned ridge or matched-composition row. Those comparisons are mandatory guard cells before any superiority claim; their expected direction is ?, not a filled numerical win.",
+    "interaction_scope": "The evidence x delayed-credit interaction (+0.007 in the ablation arithmetic) is an illustrative R1 target only, not a universal synergy claim.",
+    "service_scope": "PeerSelect false attribution is N/A without owner truth; service numbers use full selected-feedback path, while no-update is a no-op update path. Complete deployment cost remains ledger-only until parity is measured.",
+    "safety": "Ownership and selected-only ablations can show superficially more assignment change but have worse false attribution; change rate is not a success metric.",
+    "invalid_use": "These numbers must never be copied into the main paper or interpreted as observed evidence; any real cell that differs remains the real result."
+  }
+}

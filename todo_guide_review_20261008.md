@@ -11,7 +11,7 @@ Goal 与三份验收标准保持原样。
 - [done] 编译、逐页视觉/水印/摘要、同步唯一 Guide、记录 task report；v5 作为当前条件方向 Guide。
 - [done] v5 方向矩阵：拆分 H1/H2/H3/H4、删除 ΔA 成功方向、分离 forgetting/recovery、补强同信息 control、NO-GO、factorial、falsifier 与结果账本。
 - [done] v5 activation manifest 与 fail-closed validator；当前明确保持 API/GPU 关闭并列出全部阻断条件。
-- [done] expected experiment table v1：与原始三张结果表逐格对应的数值预期、JSON ledger、算术/方向校验、AAMAS PDF 与水印；canonical expected PDF 独立保存，科学 gate 仍 OPEN。
+- [done] expected experiment table v2：在 v1 数值目标基础上完成 R1 场景限定、owner-truth/UNKNOWN 语义修正、强对照 NO-GO guard 与 lambda sensitivity；canonical expected PDF 独立保存，科学 gate 仍 OPEN。
 - [open] 正文/确认卡集成：将 v5 的 `>`/`=`/`<`/`?` 方向、Qp/Y 分开、task-conditioned 强对照、完整服务与成本补充同步到唯一正文实验表。
 - [open] 合格 roots、同信息 live parity、自然 varied J、独立未来历史与 owner 真值。
 - [open] 从合格可观察数据拟合联合均值/误差，在独立留出流验证覆盖与宽度；不能用手设边界替代。

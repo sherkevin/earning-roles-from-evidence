@@ -1,0 +1,174 @@
+% Internal expected-result table. Values are target scenarios, not observations.
+\documentclass[sigconf,anonymous]{aamas}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{makecell}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{url}
+\usepackage{draftwatermark}
+\input{aamas_metadata}
+
+\vfuzz=1.5pt
+\acmSubmissionID{INTERNAL EXPECTED VALUES -- NOT FOR SUBMISSION}
+\submissionType{Research Paper Track}
+
+\title[Expected Experiment Matrix]{Expected Experiment Matrix (R1 Guide Scenario)}
+\author{Anonymous Authors}
+\affiliation{\institution{Internal research draft}}
+\email{omitted}
+\ccsdesc[500]{Computing methodologies~Multi-agent systems}
+\ccsdesc[300]{Computing methodologies~Cooperation and coordination}
+\keywords{multi-agent systems, role formation, peer judgment, online adaptation, experiments}
+
+\newcommand{\blank}{\textemdash}
+\newcommand{\unknown}{\textsc{unknown}}
+\newcommand{\na}{\textsc{n/a}}
+\newcommand{\rare}{\textsc{rare}}
+\newcommand{\metric}[1]{\makecell[c]{#1}}
+\newcommand{\val}[2]{\makecell[c]{#1\\[-1pt]\scriptsize$\pm$#2}}
+\newcommand{\svc}[2]{\makecell[c]{#1\\[-1pt]\scriptsize$\pm$#2}}
+\newcommand{\pair}[2]{\makecell[c]{#1\\[-1pt]\scriptsize/#2}}
+\SetWatermarkText{EXPECTED --- NOT OBSERVED}
+\SetWatermarkColor{red!16}
+\SetWatermarkAngle{35}
+\SetWatermarkFontSize{28pt}
+
+\begin{abstract}
+This document is the numerical expected-result companion to the paper-facing experiment matrix. It preserves the original rows, columns, endpoints, and stream count so that every future observed cell has one target cell. The numeric cells describe only the informative typed-evidence scenario (R1): they are conservative planning medians with expected stream variation, not universal directions. R2--R8 require separate cells or may tie, lose, or remain unknown. Nothing here is an observation, fitted estimate, or evidence that a gate has passed.
+\end{abstract}
+
+\begin{document}
+\maketitle
+
+\section{Table set and correspondence}
+
+The paper uses one compact overview and three result-bearing tables. The overview is a routing table. Table~\ref{tab:main-results} is the hero comparison for ArtifactRole; Table~\ref{tab:service-safety} reports service and safety; Table~\ref{tab:ablation} isolates mechanism boundaries. The expected table assumes three structural roots and three independent streams per arm ($n=9$); Table~\ref{tab:service-safety} and Table~\ref{tab:ablation} show marginal planning values over that same root--stream scope. Actual values may only replace these targets after the frozen cards, raw manifests and independent scoring pass.
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{p{0.08\textwidth}p{0.16\textwidth}p{0.23\textwidth}p{0.24\textwidth}p{0.20\textwidth}}
+\toprule
+RQ & Track / unit & Policy contrast & Primary result table & Primary estimand\\
+\midrule
+RQ1 & ArtifactRole / independent root & \rare{} vs raw acceptance, terminal-only, and contextual-trust-linear & Table~\ref{tab:main-results} & Common-cohort Brier/log loss and calibration\\
+RQ2 & ArtifactRole / target assignment & Evidence plus delayed credit vs no evidence, delayed-only, and pooled & Tables~\ref{tab:main-results} and~\ref{tab:ablation} & Future quality--cost utility; change is diagnostic\\
+RQ3 & PeerSelect / independent stream & Updater vs uniform, no-history, and history-only & Table~\ref{tab:service-safety} & Payoff/regret, update p95, backlog, state bytes\\
+RQ4 & Both / mutation and drift streams & Ownership mutation, correction/replay, and leave-one-out & Tables~\ref{tab:service-safety} and~\ref{tab:ablation} & False attribution, coverage, forgetting/recovery\\
+\bottomrule
+\end{tabular}
+\caption{Paper-facing experiment map. Each row points to the table that will carry the corresponding measured contrast. The table set is an overview of the pre-registered matrix; it is not evidence until the matching confirmation card is executed.}
+\label{tab:overview}
+\end{table*}
+
+\paragraph{Expected-value rule.} Every number below is a target for R1, not an observed result or a pre-registered universal direction. The displayed $\pm$ values are marginal between-stream planning variation, not confidence intervals and not a covariance model. The future experiment must retain all failures and UNKNOWN outcomes; it may disagree with this guide without being edited to match it. Cells that v5 marks ``?'' are shown only to make the scenario concrete and do not create an acceptance test.
+
+\section{Primary result tables}
+
+\subsection{ArtifactRole: information and assignment}
+
+The first result table is the hero table. Its policy rows are the complete matched-information comparison boundary, while its columns are limited to the two primary scientific questions and complete cost. The row order is fixed before confirmation; the last row is the candidate mechanism, not a claim of superiority.
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.13}
+\begin{tabular}{p{0.17\textwidth}*{6}{>{\centering\arraybackslash}p{0.105\textwidth}}}
+\toprule
+\multirow{2}{*}{Policy} & \multicolumn{2}{c}{RQ1: situated signal} & \multicolumn{2}{c}{RQ2: future assignment} & \multicolumn{1}{c}{Cost} & \multirow{2}{*}{Streams}\\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-6}
+ & \metric{Brier\\$\downarrow$} & \metric{Calibration\\$\downarrow$} & \metric{Quality--cost\\utility\\$\uparrow$} & \metric{\scriptsize Assignment\\[-1pt] change\\[-1pt] (diagnostic)} & \metric{Complete\\cost\\$\downarrow$} & \\
+\midrule
+Uniform & \val{0.250}{0.010} & \val{0.100}{0.015} & \val{0.400}{0.030} & 0.00 & \val{1.00}{0.04} & 9\\
+No update & \val{0.238}{0.009} & \val{0.080}{0.013} & \val{0.430}{0.032} & 0.04 & \val{1.02}{0.04} & 9\\
+Raw acceptance & \val{0.225}{0.010} & \val{0.073}{0.011} & \val{0.445}{0.034} & 0.10 & \val{1.10}{0.05} & 9\\
+Terminal only & \val{0.220}{0.010} & \val{0.068}{0.010} & \val{0.452}{0.036} & 0.12 & \val{1.15}{0.05} & 9\\
+Contextual-trust-linear & \val{0.211}{0.009} & \val{0.060}{0.009} & \val{0.466}{0.037} & 0.16 & \val{1.22}{0.06} & 9\\
+Pooled controller & \val{0.207}{0.010} & \val{0.057}{0.010} & \val{0.458}{0.039} & 0.14 & \val{1.28}{0.06} & 9\\
+\rare{} & \val{0.203}{0.009} & \val{0.055}{0.009} & \val{0.480}{0.038} & 0.20 & \val{1.34}{0.07} & 9\\
+\bottomrule
+\end{tabular}
+\caption{Primary ArtifactRole result table. Every arm receives the same candidate menu, opportunity schedule, public-information boundary, selected-only rule, and complete-cost contract. Values are filled only after the independent root, later assignment, and outcome checks pass; intervals are stream-level intervals from the frozen card.}
+\label{tab:main-results}
+\end{table*}
+
+\paragraph{Mandatory guard comparisons.} The archived core matrix has no numerical row for a task-conditioned ridge, matched-composition contextual controller, or closest published adapter. These are explicit NO-GO guard cells: they must be qualified and run under the same information boundary before any RARE superiority claim. Their R1 direction is deliberately ``?''; the values above are not a substitute for those controls.
+
+\subsection{Online service and stability}
+
+The second result table keeps operational claims separate from the hero utility comparison. PeerSelect supplies the controlled local-stream service measurement; ArtifactRole supplies the responsibility mutations. False-attribution is N/A for PeerSelect because that track has no owner-truth contract. The R1 service values use a full selected-feedback path (validation, state write, and queueing); they are not extrapolations from a one-event core update timing. No-update latency/backlog is the no-op update path only. Deployment cost is ledger-only here and is rankable only after the complete-cost receipt is available.
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{2.6pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{p{0.16\textwidth}p{0.10\textwidth}*{6}{>{\centering\arraybackslash}p{0.095\textwidth}}}
+\toprule
+\multirow{2}{*}{Policy / intervention} & \multirow{2}{*}{Track} & \multicolumn{3}{c}{RQ3: service} & \multicolumn{3}{c}{RQ4: safety and stability}\\
+\cmidrule(lr){3-5}\cmidrule(lr){6-8}
+ & & \metric{Update\\p95\\$\downarrow$} & \metric{Backlog\\p95\\$\downarrow$} & \metric{State\\bytes\\(resource)} & \metric{False\\attribution\\$\downarrow$} & \metric{Coverage\\(ledger)} & \metric{Old-root drop\\/ recovery}\\
+\midrule
+No update (no-op) & PeerSelect & 0.00 & 0.0 & 8 & \na & 0.55 & \pair{0.24}{11.0}\\
+History only & PeerSelect & \svc{0.32}{0.08} & \svc{0.4}{0.2} & 20 & \na & 0.61 & \pair{0.16}{8.0}\\
+Contextual-trust-linear & PeerSelect & \svc{0.52}{0.12} & \svc{0.7}{0.3} & 28 & \na & 0.64 & \pair{0.13}{7.0}\\
+\rare{} & PeerSelect & \svc{0.68}{0.15} & \svc{1.0}{0.4} & 36 & \na & 0.73 & \pair{0.10}{5.5}\\
+Recipient-only mutation & ArtifactRole & \svc{0.30}{0.08} & \svc{0.1}{0.1} & 18 & 0.00 & 0.98 & \pair{0.00}{0.0}\\
+Mixed ownership mutation & ArtifactRole & \svc{0.35}{0.10} & \svc{0.2}{0.1} & 22 & 0.02 & 0.92 & \pair{0.04}{1.0}\\
+Delayed / out-of-order feedback & Both & \svc{0.74}{0.18} & \svc{1.4}{0.5} & 39 & 0.04 & 0.85 & \pair{0.12}{8.5}\\
+\bottomrule
+\end{tabular}
+\caption{Service and stability table. Latency, backlog, and state size are measured under a fixed arrival and resource budget. The paired last column is old-root drop fraction / recovery steps; UNKNOWN rates and owner-truth recall remain in the ledger. PeerSelect false attribution is N/A without an owner-truth contract. Mutation rows test whether recipient-owned, mixed, delayed, or out-of-order events produce safe no-op or \unknown{} behavior rather than false producer credit.}
+\label{tab:service-safety}
+\end{table*}
+
+\subsection{Mechanism and responsibility ablations}
+
+The third table answers why any observed gain occurs. It holds the task roots, menus, models, and complete-cost accounting fixed while removing one information or update component at a time. These rows are not additional baselines; they are interventions on the candidate mechanism.
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.13}
+\begin{tabular}{p{0.23\textwidth}p{0.15\textwidth}*{4}{>{\centering\arraybackslash}p{0.11\textwidth}}}
+\toprule
+\multirow{2}{*}{Intervention} & \multirow{2}{*}{\makecell[l]{Removed or changed\\component}} & \multicolumn{4}{c}{Primary endpoints}\\
+\cmidrule(lr){3-6}
+ & & \metric{Future\\utility\\$\uparrow$} & \metric{\scriptsize Assignment\\[-1pt] change\\[-1pt] (diagnostic)} & \metric{False\\attribution\\$\downarrow$} & \metric{Complete\\cost\\$\downarrow$}\\
+\midrule
+No evidence / no update & Public evidence and persistent update & \val{0.430}{0.032} & 0.04 & 0.18 & \val{1.02}{0.04}\\
+Public evidence only & Persistent delayed update & \val{0.448}{0.034} & 0.12 & 0.11 & \val{1.18}{0.05}\\
+Delayed update only & New public evidence & \val{0.455}{0.036} & 0.13 & 0.16 & \val{1.15}{0.05}\\
+Evidence + delayed update (\rare{}) & None & \val{0.480}{0.038} & 0.20 & 0.08 & \val{1.34}{0.07}\\
+\rare{} without ownership gate & Structural attribution gate & \val{0.461}{0.039} & 0.22 & 0.24 & \val{1.27}{0.06}\\
+\rare{} without selected-only rule & Selected-only credit restriction & \val{0.472}{0.041} & 0.25 & 0.13 & \val{1.31}{0.07}\\
+\rare{} without correction/replay & Version correction and replay checks & \val{0.468}{0.040} & 0.23 & 0.12 & \val{1.29}{0.07}\\
+\bottomrule
+\end{tabular}
+\caption{Mechanism and responsibility ablations. The primary interpretation requires both a change in future assignment and a valid independent outcome. A utility gain without attribution safety, or a safety gain without changed assignment, is reported as a boundary result rather than role formation.}
+\label{tab:ablation}
+\end{table*}
+
+\section{Population and result-entry contract}
+
+The tables will be populated in a fixed order: first the independent-root and
+same-information checks, then the primary ArtifactRole result, then the
+PeerSelect service/stability table, and finally the ablation table. A table row
+is reported as \unknown{} when its scorer, transport, or responsibility contract
+cannot observe the required quantity. Failed attempts retain their measured cost;
+they are not deleted to improve the mean. The final paper will add stream-level
+intervals, per-root variation, and a short error analysis next to the relevant
+table rather than hiding these quantities in a single aggregate number.
+
+This blueprint is an internal pre-results artifact. It fixes presentation and
+estimand alignment; it does not assert that any arm wins or that the benchmark
+and baseline gates have passed.
+
+\end{document}
