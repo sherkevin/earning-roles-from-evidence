@@ -8,7 +8,7 @@
 
 在人类社会中，一个人的价值和擅长领域通常不是由自我声明决定，而是在真实合作中由合作伙伴使用其工作、评价交付，并通过是否再次委托责任逐步形成。预先固定的智能体角色缺少这种随证据变化的调整机制。受此协作模式启发，本文提出“赢得角色”（*earning roles*）：把角色定义为智能体在具体任务情境下获得未来责任机会的资格，而不是永久职位或脱离任务的总声誉。
 
-系统将接收方对带版本交付物的接受、修改或拒绝，以及相应的使用语境，记录为可审计的协作经历。同行评价作为观察供下一次选择读取；产出方是否应对结果负责，则由独立责任核验另行确定。只有在后续分派实际执行并通过独立质量与完整成本检查后，结果才用于更新选择器参数。这样可以区分“协作者观察到了什么”“谁应为交付负责”以及“这次分派是否值得再次使用”，避免把接收方的集成问题直接当作产出方缺陷。
+系统将接收方对带版本交付物的接受、修改或拒绝，以及相应的使用语境，记录为带类型、带噪声且可审计的协作经历。同行评价作为观察供下一次选择读取，但不直接变成产出方信用；产出方是否应对结果负责，则由独立责任核验另行确定。只有在后续分派实际执行并通过独立质量、责任与完整成本检查后，结果才用于更新选择器参数；合法结果可以是成功或失败，缺失或不可归因的结果不触发更新。这样可以区分“协作者观察到了什么”“谁应为交付负责”以及“这次分派是否值得再次使用”，避免把接收方的集成问题直接当作产出方缺陷。
 
 我们在 ArtifactRole 主轨道评估从真实交付、同行评价到未来分工的完整链路，在 PeerSelect 副轨道分析局部候选集、延迟反馈与在线更新的服务行为，并以同候选、同公开信息、同预算和同反馈时序的基线进行比较。论文将报告后续任务质量、质量—成本效用、评价预测价值、错误产出方归因率和服务开销，并用消融区分评价信息、责任核验与延迟更新的独立作用。主要实验数字待真实运行完成后回填。
 
@@ -46,7 +46,7 @@
 
 # 相关工作与定位
 
-同行反馈已经被用于多智能体协作的适应。[Meta-Team](https://arxiv.org/html/2605.29790v1#S3) 通过任务后的交流收集队友输出对下游执行的影响，更新队友画像，并调整后续协作；[RAPS](https://arxiv.org/html/2602.08009v1#S4.SS4) 则以接收者对发布内容的评价和其他见证者的报告维护同行声誉。这些工作为从交互中识别协作者提供了基础，本文进一步研究具体交付的评价、产出方责任和未来分派收益如何分开使用。
+同行反馈已经被用于多智能体协作的适应。[Meta-Team](https://arxiv.org/html/2605.29790v1#S3) 通过任务后的交流收集队友输出对下游执行的影响，更新队友画像，并调整后续协作；[RAPS](https://arxiv.org/html/2602.08009v1#S4.SS4) 则以接收者对发布内容的评价和其他见证者的报告维护同行声誉。[Sero](https://arxiv.org/html/2605.28433v1) 研究带契约约束的角色演化，[C3](https://arxiv.org/html/2603.06859v2) 研究合作智能体的精确信用分配，[DecisionBench](https://arxiv.org/html/2605.19099v1) 则把旧轨迹交给外部评判形成能力卡后再委派。这些工作共同界定了本文的近邻边界：它们分别覆盖协作反思、见证传播、契约角色、信用分配或历史能力摘要，但没有同时把一次带版本交付的接收方使用、产出方责任门和后续实际责任机会放在同一条可审计链路中。本文进一步研究具体交付的评价、产出方责任和未来分派收益如何分开使用；若同信息基线能够解释全部结果，我们不把这一区别写成方法收益。
 
 我们的分析围绕三个问题展开：评价描述的是哪次交付，结果能归因于谁，以及这条经历何时影响下一次分工。方法保留接收方对使用情境的观察，同时以独立责任检查约束产出方标签，再用实际执行后的质量与成本校正选择器。表 1 将这一机制与伙伴选择、声誉学习和动态角色方法作比较。
 
@@ -78,15 +78,17 @@ $$
 
 其中，$a_t\in C_t$ 是被选中的智能体，$p_t\in(0,1]$ 是这次实际选择的概率；$R_t$ 保存此时可读取的公共协作经历，$\psi$ 是固定评分参数，$\Theta_t$ 是可在线更新的参数集合。$R_t$ 与参数分开维护，因此新评价能够改变选择依据，而不必立即修改参数。
 
-一次完成的任务形成如下记录：
+一次源交付形成如下记录（下文将 $e_i$ 作为 $e_i^{\mathrm{src}}$ 的简写）：
 
 $$
-e_i=(x_i,C_i,a_i,o_i,j_i,J_i,m_i,Q_i,Y_i,\tau_i,c_i).
+e_i^{\mathrm{src}}=(x_i,C_i,a_i,o_i,j_i,J_i,m_i,Q_i,Y_i^{\mathrm{src}},\tau_i,c_i^{\mathrm{src}}).
 $$
 
-这里，$i$ 标识一条历史记录；$o_i$ 是 $a_i$ 的带版本交付物，$j_i$ 是实际接收并使用它的智能体，$J_i$ 是接收方在执行其使用或修改动作前封存的评价，$m_i$ 是随后发生的实际动作。$Q_i$ 检查原交付是否满足产出方责任，$Y_i$ 记录独立的后续任务结果，$\tau_i$ 是该记录完成并发布的到达序号，$c_i$ 保存模型、工具、token 和墙钟时间等成本。接收方的评价与动作通过同一交付物绑定，接受、修改和拒绝均保留其具体语境。
+这里，$i$ 标识一条源交付记录；$o_i$ 是 $a_i$ 的带版本交付物，$j_i$ 是实际接收并使用它的智能体，$J_i$ 是接收方在执行其使用或修改动作前封存的评价，$m_i$ 是随后发生的实际动作。$Q_i$ 检查原交付是否满足产出方责任，$Y_i^{\mathrm{src}}$ 表示该源 episode 自身定义的独立终局或 later-use 结果（若该任务有此结果），只用于源观察与审计，不产生未来分派 credit。$\tau_i$ 是该记录完成并发布的到达序号，$c_i^{\mathrm{src}}$ 保存源 episode 的模型、工具、token 和墙钟成本。接收方的评价与动作通过同一交付物绑定，接收、修改和拒绝均保留其具体语境。
 
-例如，队列任务的候选集合为 $C_t=\{B,C\}$，选择器将任务交给 $B$，由 $A$ 接收其优先级模块。$Q_i$ 检查 $B$ 负责的模块，$m_i$ 记录 $A$ 怎样接入或修改代码，$Y_i$ 检查后续程序的结果。若 $A$ 只修复了自己的消费者程序，这段经历可以被保存，但修复动作不构成 $B$ 出错的证据。
+目标任务 $j$ 的独立结果另记为 $Y_j^{\mathrm{tar}}$。只有在目标 assignment 已封存、候选和选择概率一致、任务实际启动并完成后，系统才将 $Y_j^{\mathrm{tar}}$ 与该 assignment 交给 $\operatorname{validate\_later}$，生成反馈记录 $L_j$；只有通过责任、质量、完整成本和幂等检查的合法 $L_j$ 才能更新 $\Theta$。因此，$Y_i^{\mathrm{src}}$ 不等同于 $Y_j^{\mathrm{tar}}$，也不能回填成更早分派已经知道的结果。
+
+例如，队列任务的候选集合为 $C_t=\{B,C\}$，选择器将源交付交给 $B$，由 $A$ 接收其优先级模块。$Q_i$ 检查 $B$ 负责的模块，$m_i$ 记录 $A$ 怎样接入或修改代码，$Y_i^{\mathrm{src}}$ 只记录该源 episode 定义的终局或 later-use 结果。若 $A$ 只修复了自己的消费者程序，这段经历可以被保存，但修复动作不构成 $B$ 出错的证据；只有之后某个目标 assignment 的 $Y_j^{\mathrm{tar}}$ 经过 $L_j$ 合法核验，才可能影响未来参数。
 
 ## 可见信息与学习目标
 
@@ -94,9 +96,9 @@ $$
 
 方法优化的是后续责任分派的任务质量与完整成本。给定任务上下文 $x$、候选 $a$ 和当时可见的公共经历 $R_t$，候选的情境化分派价值写为
 $$
-V_t(a\mid x,R_t)=\mathbb E\left[U(Y_t,c_t)\mid x,R_t,a\right],
+V_t(a\mid x,R_t)=\mathbb E\left[U(Y_j^{\mathrm{tar}},c_j^{\mathrm{tar}})\mid x,R_t,a\right],
 $$
-其中 $Y_t$ 是该候选在后续被选任务上的独立结果，$c_t$ 是完整成本，$U$ 是预先固定的质量—成本效用。该量描述“在什么任务上值得再次委托”，不是脱离情境的全球能力分数。产出方质量、接收方评价和团队结果分别记录：团队完成得好，不自动证明每个成员都做得好；一次差评也不自动构成产出方负标签。自我声明最多提供初始先验，不进入已验证证据，也不触发在线更新。
+其中 $Y_j^{\mathrm{tar}}$ 是该候选在未来目标 assignment $j$ 上的独立结果，$c_j^{\mathrm{tar}}$ 是目标任务的完整成本，$U$ 是预先固定的质量—成本效用。该量描述“在什么任务上值得再次委托”，不是脱离情境的全球能力分数。产出方质量、接收方评价和团队结果分别记录：团队完成得好，不自动证明每个成员都做得好；一次差评也不自动构成产出方负标签。自我声明最多提供初始先验，不进入已验证证据，也不触发在线更新。
 
 # 赢得角色：从评价到分工
 
@@ -130,7 +132,7 @@ $$
 \mathcal R_t^{\mathrm{obs}}=\{\tilde e_i:O_i=1,\tau_i\leq w_t\},\qquad
 \mathcal R_t^{\mathrm{cred}}=\{\tilde e_i:O_i=1,G_i=1,\tau_i\leq w_t\}.
 $$
-$\mathcal R_t^{\mathrm{obs}}$ 保留所有完整的接收方观察，包括接收、修改、拒绝和责任未知的记录；它可以帮助选择器理解合作情境。$\mathcal R_t^{\mathrm{cred}}$ 只包含通过责任门的记录，用于形成产出方责任证据和触发相应的参数更新。$G_i=0$ 的记录仍可带有“UNKNOWN”或“混合责任”类型进入公共上下文，但不能生成 source-credit。这样，责任门改变的是证据的语义与更新资格，而不是把无法归因的观察从数据中静默删除。
+$\mathcal R_t^{\mathrm{obs}}$ 保留所有完整的接收方观察，包括接收、修改、拒绝和责任未知的记录；它可以帮助选择器理解合作情境。$\mathcal R_t^{\mathrm{cred}}$ 只包含通过责任门的可归因证据，用于未来合法 read cut 的选择输入和责任覆盖统计；发布或登记它不会改变 $\Theta$、update count 或任何持久策略状态。$G_i=0$ 的记录仍可带有“UNKNOWN”或“混合责任”类型进入公共上下文，但不能生成 source-credit，也不能单独触发参数更新。只有后续目标 assignment 通过 $\operatorname{validate\_later}$ 生成合法 $L_j$ 后，才有资格调用延迟更新。这样，责任门改变的是证据的语义与更新资格，而不是把无法归因的观察从数据中静默删除。
 
 我们将有效记录分为历史档案和新到增量。档案概括既有经历，增量保留档案生成后到达的信息：
 
@@ -186,13 +188,13 @@ $$
 $$
 \begin{aligned}
 \operatorname{publish}(\tilde e_i)&:
-R\leftarrow R\cup\{\tilde e_i\},\qquad\Theta\text{ 不变},\\
-\operatorname{update}(L_t)&:
-\Theta^{+}=U(\Theta;L_t).
+R\leftarrow R\cup\{\tilde e_i\},\qquad\Theta\text{、update\_count 和 policy digest 不变},\\
+\operatorname{update}(L_j)&:
+\Theta^{+}=U_{\mathrm{delay}}(\Theta;L_j).
 \end{aligned}
 $$
 
-其中，$R$ 是公共记录库，$L_t$ 是任务 $t$ 完成后通过核验的反馈，$U$ 是作用于已选分派的更新器，$\Theta^{+}$ 是更新后的参数。$L_t$ 绑定执行前的分派记录、实际选择概率和输入快照，以及执行后的独立质量与完整成本结果。发布新观察可以改变下一次选择的输入，但不会把这条评价立即转换成参数奖惩。
+其中，$R$ 是公共记录库，$L_j$ 是目标 assignment $j$ 完成后通过核验的反馈；$U_{\mathrm{delay}}$ 是协议级的延迟更新接口，$\Theta^{+}$ 是更新后的参数。$L_j$ 绑定执行前封存的分派记录、实际选择概率和输入快照，以及执行后的独立目标结果 $Y_j^{\mathrm{tar}}$、责任检查、质量与完整成本结果。源记录 $e_i$ 中不存在 $L_j$；发布新观察可以改变下一次选择的输入，但不会把这条评价立即转换成参数奖惩，也不会改变持久策略状态。
 
 反馈核验同时检查分派是否先于执行、候选身份是否一致、结果是否完整、收益是否满足预先规定的责任与质量—成本口径，以及该分派是否已经用于更新。合法的成功与失败都可以形成反馈，缺失或不可归因的标签不触发更新。每次更新只作用于对应的已选分派，使用当时封存的输入，不以更新后的档案重构过去的决策。
 
@@ -299,6 +301,19 @@ $$
 
 ## 预算、统计与报告
 
+为避免把“可用于更新的信用”误当作团队效用分母，我们预先区分以下计数：
+
+| 计数 | 定义 | 用途 |
+|:---|:---|:---|
+| $N_{\mathrm{scheduled}}$ | 预注册且符合资格的目标任务数 | 计划负载与停止规则 |
+| $N_{\mathrm{started}}$ | 已完成选择并实际启动的目标任务数 | 选择后覆盖与资源报告 |
+| $N_{\mathrm{outcome}}$ | 所有已启动目标任务，包括失败、UNKNOWN 和 INVALID | H2 质量—完整成本的 ITT 分母 |
+| $N_{\mathrm{credit}}$ | 通过 assignment/lineage、selected-only、独立目标结果、奖励契约和 once-only 检查的子集 | 合法 $L_j$、延迟更新和 assignment-credit |
+| $N_{\mathrm{obs}}$ | $O_i=1$ 的完整源观察覆盖 | 评价信息覆盖率 |
+| $N_{\mathrm{attr}}$ | $G_i=1$ 的责任归因覆盖 | 责任证据覆盖率 |
+
+始终有 $N_{\mathrm{credit}}\leq N_{\mathrm{outcome}}$；$N_{\mathrm{credit}}$ 不过滤团队质量或完整成本的 ITT 分母。Brier 等预测指标只在预先定义的可评分标签子集上计算，同时报告全分母、UNKNOWN、INVALID 和其他缺失原因。未被选候选没有结果标签，也不被当作失败样本。
+
 每次模型请求在派发前预留尝试次数、提示词 token、最大生成 token、工具时间和存储；错误只释放未使用的预留资源，并保留已经观察到的成本。我们计入产出方执行、接收方集成、判断服务、通信、重试、重放、验证和返回产出物的成本。开发/搜索成本与部署成本分开报告。汇总控制器获得相同的总容量；不使用判断的实验臂仍支付声明的比较成本，或者使用共享判断调用但屏蔽其输出。
 
 对每条流，我们记录配置、模型路由和版本元数据、代码和数据摘要、种子、硬件、时间戳、原始 API 响应、token 使用量、中间动作、失败轨迹、“未知”原因和逐样本结果。我们报告带流级 95% 区间的均值和中位数、预注册对比的效应量、各结构根的异质性、ITT 和按方案分析的分母，以及质量–成本 Pareto 点。主要终点是分派层面的未来质量–完整成本效用；源产出方分数是辅助指标，不能替代它。
@@ -348,7 +363,7 @@ ArtifactRole 主轨道将报告情境化同行评价对独立目标的预测表�
 
 ## RQ2：评价能否改变实际分派
 
-我们将在目标任务执行前封存候选集合、公共历史、选择概率和实际抽样结果，再比较无证据、仅公开评价、仅延迟更新和 RARE 条件下真正执行的后续任务。分派改变率为【待填】，未来质量为【待填】，返工率为【待填】，质量—完整成本效用为【待填】（流级 95% CI：【待填】）。只有实际执行且通过质量与成本核验的分派进入该终点；预览分数和未被选候选不计入结果。
+我们将在目标任务执行前封存候选集合、公共历史、选择概率和实际抽样结果，再比较无证据、仅公开评价、仅延迟更新和 RARE 条件下真正执行的后续任务。分派改变率为【待填】，未来质量为【待填】，返工率为【待填】，质量—完整成本效用为【待填】（流级 95% CI：【待填】）。所有已排期并启动的目标任务进入 H2 的 ITT 分母，包括质量检查失败、UNKNOWN、INVALID 及资源或评分器失败；未被选候选无结果标签。只有通过“policy_update_allowed”的子集才能形成 $L_j$，并计入合法延迟更新和 assignment-credit 分母。
 
 ## RQ3：延迟更新的在线行为与服务成本
 
@@ -378,34 +393,40 @@ PeerSelect 副轨道将报告发布、读取/分派和更新的 p50/p95 延迟�
 
 “赢得角色”把人类协作中依据他人对实际工作的评价来安排分工的思路引入多智能体系统。我们以接收方对具体交付的评价形成任务相关的角色依据，通过责任核验区分评价与归因，再用后续执行的质量和成本结果校正选择器。论文据此将动态角色形成落实为一个可检验的问题：协作者的评价是否改变了未来分工，并让团队在新的任务中做得更好。
 
-## 参考文献（中文阅读精选）
+## 参考文献
 
-以下是便于中文审阅的精选条目，不是独立的参考文献表；英文主稿 `references.bib`
-当前包含 30 条且全部被正文引用。完整元数据、来源链接和增删审计以英文稿和
-[`REFERENCE_SURVEY_20261007.md`](REFERENCE_SURVEY_20261007.md)为准。
-
-1. Leung, C.-w., Turrini, P., & Nowé, A. (2025). *Curiosity-Driven Partner Selection Accelerates Convention Emergence in Language Games*. [AAMAS 2025](https://www.ifaamas.org/Proceedings/aamas2025/pdfs/p1282.pdf).
-2. Russell, B., Leung, C.-w., & Turrini, P. (2026). *Defection at First Sight: Learning Partner Selection in Optional Social Dilemmas without Prior Information*. [AAMAS 2026](https://www.ifaamas.org/Proceedings/aamas2026/pdfs/IBSZ1473.pdf).
-3. Ren, S., Fu, W., Zou, X., et al. (2026). *Reputation as a Solution to Cooperation Collapse in LLM-based MASs*. [AAMAS 2026](https://www.ifaamas.org/Proceedings/aamas2026/pdfs/UEHN4980.pdf).
-4. Yang, Y., Chai, H., Shao, S., et al. (2025). *AgentNet: Decentralized Evolutionary Coordination for LLM-based Multi-Agent Systems*. [NeurIPS 2025](https://papers.nips.cc/paper_files/paper/2025/hash/9a379c1b05793d1c42dc832269834515-Abstract-Conference.html).
-5. Zhuge, M., Wang, W., Kirsch, L., et al. (2024). *GPTSwarm: Language Agents as Optimizable Graphs*. [ICML 2024](https://proceedings.mlr.press/v235/zhuge24a.html).
-6. Zhang, M., Kim, J., Xiang, S., et al. (2026). *Dynamic Role Assignment for Multi-Agent Debate*. [arXiv:2601.17152](https://arxiv.org/abs/2601.17152).
-7. Li, P., Zhang, S., Zhang, Y., et al. (2026). *MoRSE: Task-Oriented Multi-Agent System with Mixture of Role-Subtask Experts*. [arXiv:2608.09251](https://arxiv.org/abs/2608.09251).
-8. Auer, P., Cesa-Bianchi, N., & Fischer, P. (2002). *Finite-time Analysis of the Multiarmed Bandit Problem*. [Machine Learning 47](https://doi.org/10.1023/A:1013689704352).
-9. Leung, C.-w. & Turrini, P. (2024). *Learning Partner Selection Rules that Sustain Cooperation in Social Dilemmas with the Option of Opting Out*. [AAMAS 2024](https://www.ifaamas.org/Proceedings/aamas2024/pdfs/p1110.pdf).
-10. Hong, S., Zhuge, M., Chen, J., et al. (2024). *MetaGPT: Meta Programming for a Multi-Agent Collaborative Framework*. [ICLR 2024 oral](https://iclr.cc/virtual/2024/oral/19756).
-11. Chen, W., Su, Y., Zuo, J., et al. (2024). *AgentVerse: Facilitating Multi-Agent Collaboration and Exploring Emergent Behaviors*. [ICLR 2024](https://proceedings.iclr.cc/paper_files/paper/2024/hash/578e65cdee35d00c708d4c64bce32971-Abstract-Conference.html).
-12. Trivedi, H., Khot, T., Hartmann, M., et al. (2024). *AppWorld: A Controllable World of Apps and People for Benchmarking Interactive Coding Agents*. [ACL 2024](https://aclanthology.org/2024.acl-long.850/).
-13. Piatti, G., Jin, Z., Kleiman-Weiner, M., et al. (2024). *Cooperate or Collapse: Emergence of Sustainable Cooperation in a Society of LLM Agents*. [NeurIPS 2024](https://proceedings.neurips.cc/paper_files/paper/2024/hash/ca9567d8ef6b2ea2da0d7eed57b933ee-Abstract-Conference.html).
-14. Akata, E., Schulz, L., Coda-Forno, J., et al. (2025). *Playing Repeated Games with Large Language Models*. [Nature Human Behaviour](https://doi.org/10.1038/s41562-025-02172-y).
-15. Khetarpal, K., Riemer, M., Rish, I., & Precup, D. (2022). *Towards Continual Reinforcement Learning: A Review and Perspectives*. [JAIR 75](https://www.jair.org/index.php/jair/article/view/13673).
-16. Hernandez-Leal, P., Kaisers, M., Baarslag, T., & Munoz de Cote, E. (2017). *A Survey of Learning in Multiagent Environments: Dealing with Non-Stationarity*. [arXiv:1707.09183](https://arxiv.org/abs/1707.09183).
----
-
-## 中文版阅读说明
-
-- 本文件是先行修订的中文工作稿，不再是英文主稿的逐句译本；本轮中文叙事尚未同步至英文 `main.tex` 或主版 PDF，也不改变生效方法与实验的科学状态。
-- “未知”是协议定义的结果类别，不等同于零结果，也不同于文稿中的 `【待填】` 占位。
-- `ArtifactRole`、`PeerSelect`、`RARE`、`read cut`、`selected-only` 等术语保留原名，便于和代码、实验卡及英文稿逐一对应。
-- 正文保留两张图，沿用英文图形资产：[图 1](../../../article/aamas2027/figures/overview.pdf)、[图 2](../../../article/aamas2027/figures/method_state.pdf)。实验矩阵由表格承载；旧图 3 仍留在历史资产中。
-- 正文引用和完整参考文献条目沿用英文稿 `references.bib`；本文件末尾列出 16 条精选阅读项，不能替代英文稿的 30 条 active bibliography。
+1. Hao, Z., Wang, T., Dong, H., Liu, Z., Wang, H., Lin, X., Lin, Q., Wang, C., Dong, H., & Chen, J. (2026). *Evolve as a Team: Collaborative Self-Evolution for LLM-based Multi-Agent Systems*. arXiv:2605.29790v1. https://arxiv.org/html/2605.29790v1
+2. Li, R., Zhang, Z., Bo, X., Dai, Q., Li, C., Wen, F., & Chen, X. (2026). *Towards Adaptive, Scalable, and Robust Coordination of LLM Agents: A Dynamic Ad-Hoc Networking Perspective*. arXiv:2602.08009v1. https://arxiv.org/html/2602.08009
+3. Ge, L.-Y., & Guo, L.-Z. (2026). *Roles with Rails: Contract-Preserving Role Evolution in Multi-Agent Structured Reasoning*. arXiv:2605.28433v1. https://arxiv.org/html/2605.28433v1
+4. Chen, Y., Sun, Y., Wang, H., Wang, J., Zhang, X., Shen, X., Li, W., & Zhang, W. (2026). *Exact Is Easier: Credit Assignment for Cooperative LLM Agents*. arXiv:2603.06859v2. https://arxiv.org/html/2603.06859v2
+5. Gao, Y., Wang, M., Yu, Y. L., Ma, Z. C., & Qu, A. (2026). *DecisionBench: A Benchmark for Emergent Delegation in Long-Horizon Agentic Workflows*. arXiv:2605.19099v1. https://arxiv.org/html/2605.19099v1
+6. Ren, S., Fu, W., Zou, X., Shen, C., Cai, Y., Chu, C., Wang, Z., & Hu, S. (2026). *Reputation as a Solution to Cooperation Collapse in LLM-based MASs*. Proceedings of AAMAS 2026. https://www.ifaamas.org/Proceedings/aamas2026/pdfs/UEHN4980.pdf
+7. Sabater, J., & Sierra, C. (2002). Reputation and social network analysis in multi-agent systems. *AAMAS 2002*, 475–482. https://doi.org/10.1145/544741.544854
+8. Pinyol, I., & Sabater-Mir, J. (2013). Computational trust and reputation models for open multi-agent systems: A review. *Artificial Intelligence Review, 40*, 607–626. https://doi.org/10.1007/s10462-011-9277-z
+9. Leung, C.-w., Turrini, P., & Nowé, A. (2025). *Curiosity-Driven Partner Selection Accelerates Convention Emergence in Language Games*. Proceedings of AAMAS 2025. https://www.ifaamas.org/Proceedings/aamas2025/pdfs/p1282.pdf
+10. Russell, B., Leung, C.-w., & Turrini, P. (2026). *Defection at First Sight: Learning Partner Selection in Optional Social Dilemmas without Prior Information*. Proceedings of AAMAS 2026. https://www.ifaamas.org/Proceedings/aamas2026/pdfs/IBSZ1473.pdf
+11. Leung, C.-w., & Turrini, P. (2024). *Learning Partner Selection Rules that Sustain Cooperation in Social Dilemmas with the Option of Opting Out*. Proceedings of AAMAS 2024. https://www.ifaamas.org/Proceedings/aamas2024/pdfs/p1110.pdf
+12. Lanctot, M., Larson, K., Kaisers, M., Berthet, Q., Gemp, I., Diaz, M., Maura-Rivero, R.-R., Bachrach, Y., Koop, A., & Precup, D. (2025). Soft Condorcet optimization for ranking of general agents. *Proceedings of AAMAS 2025*. https://www.ifaamas.org/Proceedings/aamas2025/pdfs/p1253.pdf
+13. Yang, Y., Chai, H., Shao, S., Song, Y., Qi, S., Rui, R., & Zhang, W. (2025). *AgentNet: Decentralized Evolutionary Coordination for LLM-based Multi-Agent Systems*. NeurIPS 2025. https://papers.nips.cc/paper_files/paper/2025/hash/9a379c1b05793d1c42dc832269834515-Abstract-Conference.html
+14. Zhuge, M., Wang, W., Kirsch, L., Faccio, F., Khizbullin, D., & others. (2024). *GPTSwarm: Language Agents as Optimizable Graphs*. ICML 2024. https://proceedings.mlr.press/v235/zhuge24a.html
+15. Zhang, M., Kim, J., Xiang, S., Gao, J., & Cao, C. (2026). *Dynamic Role Assignment for Multi-Agent Debate*. arXiv:2601.17152. https://arxiv.org/abs/2601.17152
+16. Li, P., Zhang, S., Zhang, Y., He, S., van Dijk, D., & Ying, R. (2026). *MoRSE: Task-Oriented Multi-Agent System with Mixture of Role-Subtask Experts*. arXiv:2608.09251. https://arxiv.org/abs/2608.09251
+17. Hong, S., Zhuge, M., Chen, J., Zheng, X., Cheng, Y., Wang, J., Zhang, C., Wang, Z., Yau, S. K. S., Lin, Z., Zhou, L., Ran, C., Xiao, L., Wu, C., & others. (2024). *MetaGPT: Meta Programming for a Multi-Agent Collaborative Framework*. ICLR 2024. https://iclr.cc/virtual/2024/oral/19756
+18. Chen, W., Su, Y., Zuo, J., Yang, C., Yuan, C., Chan, C.-M., Yu, H., Lu, Y., Hung, Y.-H., Qian, C., Qin, Y., Cong, X., Xie, R., Liu, Z., Sun, M., & Zhou, J. (2024). *AgentVerse: Facilitating Multi-Agent Collaboration and Exploring Emergent Behaviors*. ICLR 2024. https://proceedings.iclr.cc/paper_files/paper/2024/hash/578e65cdee35d00c708d4c64bce32971-Abstract-Conference.html
+19. Wu, Q., Bansal, G., Zhang, J., Wu, Y., Li, B., Zhu, E., Jiang, L., Zhang, X., Zhang, S., Liu, J., Awadallah, A. H., White, R. W., Burger, D., & Wang, C. (2023). *AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation*. arXiv:2308.08155. https://arxiv.org/abs/2308.08155
+20. Kim, Y., Park, C., Kim, T., Park, E., Schmidgall, S., Rahman, S., Park, C., Breazeal, C., Liu, X., Palangi, H., Park, H. W., & McDuff, D. (2026). *TeamBench: Evaluating Agent Coordination under Enforced Role Separation*. arXiv:2605.07073. https://arxiv.org/abs/2605.07073
+21. Zhu, K., Du, H., Hong, Z., Yang, X., Guo, S., Wang, Z., Wang, Z., Qian, C., Tang, X., Ji, H., & You, J. (2025). *MultiAgentBench: Evaluating the Collaboration and Competition of LLM Agents*. ACL 2025, 8580–8622. https://aclanthology.org/2025.acl-long.421/
+22. Agashe, S., Fan, Y., Reyna, A., & Wang, X. E. (2025). *LLM-Coordination: Evaluating and Analyzing Multi-agent Coordination Abilities in Large Language Models*. Findings of NAACL 2025, 8053–8072. https://aclanthology.org/2025.findings-naacl.448/
+23. Liu, X., Yu, H., Zhang, H., Xu, Y., Lei, X., Lai, H., Gu, Y., Ding, H., Men, K., Yang, K., Zhang, S., Deng, X., Zeng, A., Du, Z., Zhang, C., Shen, S., Zhang, T., Su, Y., Sun, H., Huang, M., Dong, Y., & Tang, J. (2024). *AgentBench: Evaluating LLMs as Agents*. ICLR 2024. https://proceedings.iclr.cc/paper_files/paper/2024/hash/e9df36b21ff4ee211a8b71ee8b7e9f57-Abstract-Conference.html
+24. Trivedi, H., Khot, T., Hartmann, M., Manku, R., Dong, V., Li, E., Gupta, S., Sabharwal, A., & Balasubramanian, N. (2024). *AppWorld: A Controllable World of Apps and People for Benchmarking Interactive Coding Agents*. ACL 2024. https://aclanthology.org/2024.acl-long.850/
+25. Yao, S., Shinn, N., Razavi, P., & Narasimhan, K. (2024). *τ-bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains*. arXiv:2406.12045. https://arxiv.org/abs/2406.12045
+26. Auer, P., Cesa-Bianchi, N., & Fischer, P. (2002). Finite-time analysis of the multiarmed bandit problem. *Machine Learning, 47*, 235–256. https://doi.org/10.1023/A:1013689704352
+27. Li, L., Chu, W., Langford, J., & Schapire, R. E. (2010). A contextual-bandit approach to personalized news article recommendation. *Proceedings of WWW 2010*, 661–670. https://doi.org/10.1145/1772690.1772758
+28. Joulani, P., György, A., & Szepesvári, C. (2013). Online learning under delayed feedback. *Proceedings of ICML 2013*, 107–115. https://proceedings.mlr.press/v28/joulani13.html
+29. Hernandez-Leal, P., Kaisers, M., Baarslag, T., & Munoz de Cote, E. (2017). *A Survey of Learning in Multiagent Environments: Dealing with Non-Stationarity*. arXiv:1707.09183. https://arxiv.org/abs/1707.09183
+30. Khetarpal, K., Riemer, M., Rish, I., & Precup, D. (2022). Towards continual reinforcement learning: A review and perspectives. *Journal of Artificial Intelligence Research, 75*. https://www.jair.org/index.php/jair/article/view/13673
+31. Foerster, J., Farquhar, G., Afouras, T., Nardelli, N., & Whiteson, S. (2018). Counterfactual multi-agent policy gradients. *Proceedings of AAAI 2018, 32*(1). https://ojs.aaai.org/index.php/AAAI/article/view/11794
+32. Rashid, T., Samvelyan, M., Schroeder de Witt, C., Farquhar, G., Foerster, J., & Whiteson, S. (2020). Monotonic value function factorisation for deep multi-agent reinforcement learning. *Journal of Machine Learning Research, 21*(178), 1–51. https://www.jmlr.org/papers/v21/20-081.html
+33. Piatti, G., Jin, Z., Kleiman-Weiner, M., Schulz, B., et al. (2024). *Cooperate or Collapse: Emergence of Sustainable Cooperation in a Society of LLM Agents*. NeurIPS 2024. https://proceedings.neurips.cc/paper_files/paper/2024/hash/ca9567d8ef6b2ea2da0d7eed57b933ee-Abstract-Conference.html
+34. Akata, E., Schulz, L., Coda-Forno, J., Oh, S. J., Bethge, M., & Schulz, E. (2025). Playing repeated games with large language models. *Nature Human Behaviour*. https://doi.org/10.1038/s41562-025-02172-y
+35. Yurrita, M., Dell'Anna, D., Murukannaiah, P. K., Jonker, C. M., & Yolum, P. (2026). *Developing Guidelines for Human-LLM Agent Teams: A Multi-Stakeholder Lens*. Proceedings of AAMAS 2026. https://doi.org/10.65109/JOWO4591
