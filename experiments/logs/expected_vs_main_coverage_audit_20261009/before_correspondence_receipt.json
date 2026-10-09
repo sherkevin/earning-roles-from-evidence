@@ -1,0 +1,40 @@
+{
+  "source_pdf": "artifacts/aamas2027/main.pdf",
+  "source_pdf_sha256": "3df34bd4c1f0cb36eade424735ef5348477444903cc0854efad5eb6fa2e84910",
+  "main_build": "artifacts/aamas2027/zh_authoritative_20261009_v6/main.pdf",
+  "source_tex_sha256": "262433b7b46e22c5f70aa0787128e306e76d65b8a676d207c70734af19af86ab",
+  "chinese_authority_sha256": "3eb260d63468279871480240acf08d7d43ef5460989b5835284d57490e7da01b",
+  "mapping": [
+    {
+      "main_pdf_table": 4,
+      "expected_pdf_page": 2,
+      "label": "tab:matrix",
+      "rows": 9,
+      "columns": 5
+    },
+    {
+      "main_pdf_table": 6,
+      "expected_pdf_page": 1,
+      "label": "tab:results",
+      "rows": 8,
+      "columns": 4
+    },
+    {
+      "main_pdf_table": 7,
+      "expected_pdf_page": 1,
+      "label": "tab:factorial-results",
+      "rows": 4,
+      "columns": 4
+    }
+  ],
+  "allowed_header_change": "95% CI / CI becomes planning range, because no observed sampling distribution exists",
+  "checks": {
+    "master_hash_matches_receipt": true,
+    "matrix_nine_cells_in_pdf": true,
+    "primary_table_in_pdf": true,
+    "factorial_in_pdf": true,
+    "stable_labels_in_source": true
+  },
+  "passed": true,
+  "not_mapped": "Main tables 1,2,3,5 are related-work/state/baseline/denominator definitions, not numerical result matrices."
+}

@@ -1,5 +1,15 @@
 # Task reports
 
+- [expected_preview_no_xx] 2026-10-09 [预期主版清除占位符](task_reports/20261009_expected_no_xx_completion.md)：剩余 33 个 xx 已补齐规划场景；8 页正文、保留水印，数值口径及区间假设独立落档，非实测。
+
+- [done] 2026-10-09 [仅保留斜向预期水印](task_reports/20261009_expected_watermark_header_cleanup.md)：10 页顶部重复标记移除，正文区域像素完全一致；主版同步 v3。
+
+- [expected_preview_promoted] 2026-10-09 [主稿预期数字回填](task_reports/20261009_expected_numeric_backfill.md)：用户允许表格排版微调后恢复 8 页正文；50 槽完整、2 槽部分填写，缺值/CI/口径不明仍保留。除数字及 Table 5 排版外文字不变，Codex 复核通过；同步带预期水印的 main.pdf，非实测。
+
+- [partial_numeric_coverage] 2026-10-09 [Expected 与主 PDF 完整性复核](task_reports/20261009_expected_vs_main_coverage_audit.md)：主稿更新后 Table 7/8 规划单元有对应值，Table 5 与正文子实验未完全覆盖；expected 旧表号 4/6/7 已过期；独立 Codex 复核确认，修正此前“全部匹配”的过宽表述，原数值及两份 PDF 不变。
+
+- [done: expectation artifact only] 2026-10-09 [手写预期矩阵 v5](task_reports/20261009_expected_experiment_table_v5.md)：两页、对应当前主 PDF Table 4/6/7；两位 Codex 审核通过内部自洽，科学 gate 不变。
+
 - [blocked_pre_execution] 2026-10-08 PIPE1 pinned native harness 的 Executor 可读 reports/expected、shell 无白名单，且 run_all 未把 generated spec/brief 写入 task 目录；零调用复现后阻止直接路由实验。需版本化安全隔离、材料接线、pre-Verifier scorer 与成本合同。见 [报告](task_reports/20261008_pipe1_isolation_audit.md)。
 
 - [candidate_reassessment] 2026-10-08 基于 PIPE3 fresh screen 与 PIPE1 隔离审计重排下一步：不再追加 PIPE3 时间戳判断；PIPE1 先修复 sandbox/material handoff；PIPE2 作为最值得做零调用 lineage/parity 资格化的候选，尚未升级 active。见 [路线重审](../research/candidates/benchmark_route_reassessment_20261008.md)。

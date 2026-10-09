@@ -1,0 +1,178 @@
+Know Who You Are / Expected experiment tables                                                                   v5 9 October 2026
+
+
+
+                                       Expected Experiment Tables
+Point values are conditional expectations for the specified populations. Brackets are subjective planning ranges, not
+measured confidence intervals or calibrated forecasts. Utility is U = Y − 0.10C. Complete cost C uses a common uniform-
+reference unit; Y is future-task partial quality, not native benchmark pass rate.
+
+                                           Main Table 6 — Expected primary results
+
+
+Endpoint                                                     rare          Same-info. baseline       Difference / planning range
+                                                                                                                 +0.020
+Future quality                                               0.608                  0.588
+                                                                                                              [-0.016, +0.056]
+
+                                                                                                                  +0.12
+Complete cost                                                 1.34                  1.22
+                                                                                                              [+0.05, +0.19]
+
+                                                                                                                 +0.008
+Quality–cost utility                                         0.474                  0.466
+                                                                                                              [-0.035, +0.051]
+
+                                                                                                                  +0.04
+Assignment change                                             0.20                  0.16
+                                                                                                              [-0.025, +0.105]
+
+                                                                                                                 −0.008
+Judgment Brier                                               0.203                  0.211
+                                                                                  ER                          [-0.020, +0.004]
+
+                                                                                                             +16 / +8,192
+Update p95 / state bytes                                  68 / 36,864
+                                                                                    VE
+                                                                                52 / 28,672
+                                                                                                          latency: [+2, +42] ms
+
+
+Old-root forgetting                                          0.025                    D
+                                                                                    0.041
+                                                                                                                 −0.016
+                                                                                                              [-0.040, +0.008]
+
+
+UNKNOWN / false attribution                             0.498 / 0.0066
+                                                                            BS0.498 / 0.0066
+                                                                                                                  0/0
+                                                                        O                               identical shared-gate inputs
+
+
+                                                                     T
+                                                            NO
+The baseline is contextual-trust-linear throughout, with the same responsibility gate. Quality, cost and assignment are ArtifactRole
+endpoints; timing and old-root drift are PeerSelect endpoints. Brier uses a common binary producer-contract cohort. Attribution uses
+the common mutation mixture on page 2; it is not online outcome missingness. Update p95 is the CPU feedback-processing path
+in milliseconds with cached features, excluding LLM execution. State bytes are selector state, not total RAM. Assignment change is
+                                                        –
+diagnostic. Same-gate safety is an equality check, not a RARE advantage.
+                                                    D
+                                            TE
+                                     Main Table 7 — Expected evaluation–update factorial
+
+
+                            EXEvaluation      Update      Future utility (planning range)        Cost
+
+                               PE
+                              Masked
+                              Visible
+                                              Off
+                                              Off
+                                                                  0.430 [0.385, 0.475]
+                                                                  0.448 [0.401, 0.495]
+                                                                                                 1.02
+                                                                                                 1.18
+                                  C
+                              Masked          On                  0.455 [0.405, 0.505]           1.15
+                              Visible         On                  0.474 [0.421, 0.527]           1.34
+
+
+The visible/on cell is the same RARE population as the primary utility row. The four quality means are 0.532, 0.566, 0.570 and 0.608,
+respectively. Observation given updating: 0.474 − 0.455 = 0.019; updating given observation: 0.474 − 0.448 = 0.026. The interaction
+is only 0.474 − 0.448 − 0.455 + 0.430 = 0.001, so these expectations do not posit a synergy gain. The conservative interaction range
+implied by the four marginal ranges is [−0.194, 0.196]; no narrow paired interval is inferred without covariance.
+
+
+The favorable-condition utility edge is small and uncertain; RARE has higher ArtifactRole cost and higher PeerSelect latency
+and state. Sparse support reverses its comparison with pooled control, and high load reverses its payoff comparison with
+contextual trust (page 2). Stronger controls remain near ties: producer-contract Brier targets are 0.207 for task-conditioned
+ridge and 0.206 for matched composition, versus 0.203 for RARE.
+
+
+
+
+Handwritten planning values. No benchmark results.                                                                                     1
+Know Who You Are / Expected experiment tables                                                                        v5 9 October 2026
+
+
+
+                                   Experiment matrix: expected cell results
+
+Row IDs match the nine-cell manuscript matrix. Each result below refers to its specified cohort; different task or stress populations are
+never pooled.
+
+                                          Main Table 4 — Expected experimental matrix
+
+Cell      Track / root        Strategy / intervention      Matched comparison          Measurement / expected result
+
+RQ1-I     ArtifactRole /      Raw vs. terminal vs. rare Same delivery, recipient       Brier: .225 / .220 / .203. Log loss: .637 / .625 /
+          dev                                           observation, legal             .584. ECE: .073 / .068 / .055.
+                                                        feedback
+RQ1-II    ArtifactRole /      Contextual trust vs. rare    Same read cut, delay,       Brier: .211 / .203; held-out-root Brier: .231 /
+          confirm                                          propensity, model,          .217. Transfer deterioration: .020 / .014.
+                                                           budget
+RQ2-I     ArtifactRole /      No evidence vs. public       Preview and assignment      Change: .04 / .12; quality: .532 / .566; adoption:
+          confirm             evidence                     before target execution     .48 / .54; rework: .30 / .24.
+RQ2-II    ArtifactRole /      Delayed-only vs.             Same target and             Utility: .455 / .474; cost: 1.15 / 1.34.
+          confirm             evidence+delay               selected-only outcome       Added-evidence utility: +.019.
+RQ2-III   ArtifactRole /      rare vs. pooled controller Same capacity and             Stable utility: .474 / .472; max share: .38 / .40;
+          confirm                                        candidate menu                min propensity: .08 / .06. Sparse utility: .427 /
+                                                                                       .450.
+RQ3-I     PeerSelect / dev    Uniform, no/history,         Pinned graph and            Normal payoff: .500 / .532 / .565 / .606. RARE
+          stream              updater                      call/token budget
+                                                                                     ERupdate p50/p95: 37/68 ms; state: 36,864 B.
+                                                                                       High-load payoff RARE/context: .542/.558; p95:
+
+RQ3-II    PeerSelect / drift Update with/without
+                                                                                       VE
+                                                                                       480/290 ms.
+                                                           Fixed peer/task drift and Correction / none: old-root drop .025/.048;
+                             replay                        delay
+                                                                                         D
+                                                                                     restricted mean recovery 6.5/9.0 updates;
+                                                                                     recovery by 20 updates .96/.88; backlog p95
+
+RQ4-I     ArtifactRole /      Responsibility mutations     Producer, recipient,
+                                                                               BS    1.4/.9; correction/replay agreement 1.00/.86.
+                                                                                       Known-owner mixture: UNKNOWN .498;
+          eligible roots                                                   O
+                                                           mixed, unknown, failure     coverage .502; FA/all .0066; FA/claimed .01315;
+                                                                                       UNKNOWN precision .9592. Source-publication
+                                                                      T                no-op 1.00; unknown-owner invalid credits 0.
+RQ4-II    ArtifactRole /
+          eligible roots
+                              Remove one mechanism
+                                                               NO
+                                                           Gate, evidence, delay,
+                                                           locality, updater
+                                                                                       Utility full/gate removed/evidence
+                                                                                       removed/updater off/locality removed:
+                                                                                       .474/.461/.455/.448/.470. FA full/gate removed:
+                                                                                       .0066/.1600. Utility interaction: +.001.
+                                                           –
+                                                     D
+                                              TE
+Safety denominator. The fixed owner-truth mixture weights are .50 producer-only, .20 recipient-only, .10 mixed, .10 sink-only and .10
+resource failure. Their claim coverage is .90/.04/.18/.06/.20; all-attempt false attribution is .008/.004/.012/.002/.004. Hence coverage is
+.502, UNKNOWN is .498 and false attribution is .0066; conditional claimed-case error is .0066/.502 = .01315. Unknown-owner cases are
+                             EX
+checked separately and do not supply invented ground-truth labels. UNKNOWN precision uses independently required abstention, not
+hidden owner identity; source-publication no-op is a parameter invariant. Nonzero FA means verdict error, not prohibited source-credit
+
+                                PE
+updating. Updater-off equals the visible/off factorial cell. Information/update ablations retain identical safety on this fixed corpus.
+Service and sampling. Normal selected payoff is (r + 0.3)/0.6 for the pinned [−0.3, 0.3] reward contract, with dropped/timed-out
+                                   C
+arrivals scored zero in the ITT mean; it is not mutual-cooperation rate. Recovery concerns new-task payoff (95% of a frozen reference
+for five windows, capped at 20 updates); forgetting uses old-root tasks. The online path uses cached features, three local candidates,
+four logical CPU cores and a 1 GiB RAM budget. The planning design has three roots and six reset streams per root/arm; roots are not
+interchangeable independent event replicates. Workload assumptions and numeric rationale are versioned with the JSON companion.
+These tables set comparison expectations, not criteria for choosing or discarding actual experiment outcomes.
+
+
+
+
+Handwritten planning values. No benchmark results.                                                                                          2
+

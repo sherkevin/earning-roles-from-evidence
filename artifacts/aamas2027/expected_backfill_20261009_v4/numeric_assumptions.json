@@ -1,0 +1,163 @@
+{
+  "status": "PROSPECTIVE_HYPOTHETICAL_SCENARIO_NOT_OBSERVED",
+  "base_values": "docs/paper/aamas2027/expected_experiment_matrix_v5_20261009/expected_results.json",
+  "purpose": "Complete the visibly watermarked internal numeric mock-up. Values are not raw observations or an evidence-based forecast.",
+  "precision_interpretation": "All intervals in this expected-only manuscript, including fields retaining the locked 95% CI wording, are prospective precision projections conditional on manually declared SDs and 18 independent reset streams on three fixed roots. They are not empirical confidence intervals, calibrated predictions, or evidence of statistical significance.",
+  "n_streams": 18,
+  "roots_fixed": 3,
+  "streams_per_root": 6,
+  "t_df": 17,
+  "t_critical": 2.10981557783318,
+  "sd_assumptions": {
+    "paired_utility": 0.03,
+    "absolute_utility": 0.05,
+    "paired_brier": 0.025,
+    "mutation_false_attribution": 0.007,
+    "mutation_unknown_precision": 0.045,
+    "source_observation_publication": 0.05,
+    "target_valid_update": 0.06,
+    "recovery_updates": 4.5,
+    "old_root_forgetting": 0.035
+  },
+  "covariance_feasibility": {
+    "utility_both_arms_sd": 0.05,
+    "utility_pair_correlation": 0.82,
+    "brier_arm_sd": 0.03,
+    "brier_pair_correlation": 0.6527777777777777
+  },
+  "counts": {
+    "source_deliveries": 2160,
+    "source_complete_observations": 2016,
+    "source_Qp_scorable": 1800,
+    "source_attribution_pass": 1680,
+    "target_started": 2160,
+    "target_valid_update": 1908,
+    "mutation_per_stream": 1000
+  },
+  "rates": {
+    "normal_Qp_unknown": 0.16666666666666666,
+    "source_observation_publication": 0.9333333333333333,
+    "target_valid_update": 0.8833333333333333,
+    "mutation_unknown": 0.498,
+    "mutation_false_attribution": 0.0066,
+    "mutation_unknown_precision": 0.9592369477911646,
+    "source_publication_parameter_no_op": 1.0
+  },
+  "units_and_estimands": {
+    "RQ1_cross_root_transfer": "RARE held-out-root Brier .217; incremental prediction is signed Brier difference -.008 vs contextual",
+    "RQ2_concentration": "maximum assignment share",
+    "RQ2_propensity": "minimum propensity in eligible menus",
+    "backlog": "mean queued events, not p95; .35 normal, .52/.31 drift replay/no replay",
+    "RQ3_matrix_latency": "read/assignment p50/p95 in ms, applicable even to no-update arms",
+    "RQ3_matrix_arm_order": [
+      "Uniform",
+      "No history",
+      "History only",
+      "RARE"
+    ],
+    "RQ4_no_op": "parameter no-op on source publication only",
+    "RQ4_rates": "FA and UNKNOWN precision on fixed mutation corpus; observation publication on source cohort; update rate on target cohort; do not mix denominators",
+    "RQ4_CI_order": [
+      "FA",
+      "UNKNOWN precision",
+      "observation publication",
+      "valid update",
+      "recovery",
+      "forgetting",
+      "no-op invariant"
+    ],
+    "service_cost_vector": [
+      "core-ms per started arrival",
+      "accelerator-ms per arrival",
+      "peak resident MiB",
+      "durable IO KiB per arrival",
+      "network bytes per arrival"
+    ],
+    "judgment_service_cost": ".18 in common ArtifactRole uniform-reference cost units, already included in total1.34, not added again",
+    "matched_updater_difference": "normal normalized payoff RARE minus matched RLS, .606-.600=.006"
+  },
+  "new_service_expectations": {
+    "publish_p50_p95_ms": [
+      8,
+      16
+    ],
+    "read_p50_p95_ms": [
+      12,
+      25
+    ],
+    "update_p50_p95_ms": [
+      37,
+      68
+    ],
+    "backlog_mean": 0.35,
+    "drift_backlog_means": [
+      0.52,
+      0.31
+    ],
+    "new_model_tokens": 0,
+    "new_model_calls": 0,
+    "replay_1000_cached_events_p50_p95_seconds": [
+      1.8,
+      3.6
+    ],
+    "complete_service_resource_vector": [
+      65,
+      0,
+      64,
+      4,
+      0
+    ],
+    "matched_RLS_core_ms": 60,
+    "read_latency_by_matrix_arm": [
+      [
+        2,
+        4
+      ],
+      [
+        3,
+        6
+      ],
+      [
+        9,
+        19
+      ],
+      [
+        12,
+        25
+      ]
+    ]
+  },
+  "new_ablation": {
+    "name": "without delay-aware handling",
+    "semantics": "Keep assignment legality/once-only validation, drop late feedback instead of reconciling it; not disabling all learning",
+    "quality": 0.581,
+    "cost": 1.25,
+    "utility": 0.456,
+    "fixed_corpus_FA": 0.0066
+  },
+  "ablation_display_order": [
+    "Full",
+    "without gate",
+    "without evidence",
+    "without delay-aware handling",
+    "without locality",
+    "without updater"
+  ],
+  "integrity": "No random draws, fabricated per-event traces, benchmark execution, or fitted variances. CI slots are a hypothetical expected layout scenario only. Real experiment outcomes/uncertainty must replace these before submission.",
+  "computed_projections": {
+    "delta_utility": "[-0.007, 0.023]",
+    "utility": "[0.449, 0.499]",
+    "brier_raw": "[-0.034, -0.010]",
+    "brier_terminal": "[-0.029, -0.005]",
+    "brier_contextual": "[-0.020, 0.004]",
+    "RQ4": [
+      "[0.0031, 0.0101]",
+      "[0.937, 0.982]",
+      "[0.908, 0.958]",
+      "[0.853, 0.913]",
+      "[4.26, 8.74]",
+      "[0.008, 0.042]",
+      "[1.000, 1.000]"
+    ]
+  }
+}

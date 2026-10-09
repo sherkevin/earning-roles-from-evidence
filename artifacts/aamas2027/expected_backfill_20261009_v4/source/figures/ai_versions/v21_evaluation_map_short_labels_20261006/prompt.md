@@ -1,0 +1,13 @@
+Use case: scientific-educational
+Asset type: final-candidate academic Figure 3 for an AAMAS multi-agent systems paper, wide landscape 16:9.
+Input image: Image 1 is the edit target; preserve the three-panel evaluation logic.
+
+Primary request: Refine this experimental-design figure into a restrained top-conference evaluation map. The single claim is that ArtifactRole and PeerSelect are distinct tracks, policy arms are compared under the same information and complete-cost contract, and four pre-registered endpoints are reported.
+
+Composition: use a small top ribbon with only "MATCHED INFORMATION • MATCHED COST". Below it, use three aligned open panels labeled (a) TRACKS, (b) POLICIES, and (c) ENDPOINTS. Avoid dashboard cards and long prose. Panel (a) has two compact colored tracks: orange ArtifactRole -> producer attribution; green PeerSelect -> local selection and drift. Panel (b) has four parallel policy rows with identical candidate dots on the left, a short method label in the middle, and identical outcome dots on the right: NO UPDATE, RAW ACCEPTANCE, CONTEXTUAL TRUST, RARE. Highlight RARE in blue. Panel (c) has four vertically aligned endpoint marks with short labels: RQ1 INFORMATION, RQ2 ASSIGNMENT, RQ3 SERVICE, RQ4 SAFETY. Use minimal icons for prediction, quality/cost, latency, and attribution. One arrow from tracks to policies labeled "ADAPTER" and one arrow from policies to endpoints labeled "STREAM COMPARISON". Keep the same candidate menu/read cut and same target outcome implicit in the aligned rows.
+
+Exact text, and no other text: "MATCHED INFORMATION • MATCHED COST", "(a) TRACKS", "ArtifactRole", "PRODUCER ATTRIBUTION", "PeerSelect", "LOCAL SELECTION + DRIFT", "ADAPTER", "(b) POLICIES", "NO UPDATE", "RAW ACCEPTANCE", "CONTEXTUAL TRUST", "RARE", "STREAM COMPARISON", "(c) ENDPOINTS", "RQ1 INFORMATION", "RQ2 ASSIGNMENT", "RQ3 SERVICE", "RQ4 SAFETY". Use uppercase sans-serif typography large enough for one-column paper width. No equations, no legends, no extra numbers, no paragraph sentences.
+
+Style: gallery-grounded scientific comparison figure; white background; flat vector-like marks; thin navy rules; orange #F5A623 for ArtifactRole and information, muted green #4B8B63 for PeerSelect and safety, blue #2E5DA1 for RARE and assignment/service, gray #B8C0CC for comparison arms; generous spacing; no gradients, shadows, 3-D, decorative characters, watermark, or logo.
+
+Semantic invariants: the two tracks remain separate; RARE is one policy arm, not a fourth benchmark; every policy row receives the same information and cost contract; endpoint panel does not imply that all four endpoints are one scalar.

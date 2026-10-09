@@ -1,0 +1,540 @@
+{
+  "kind": "handwritten_expected_experiment_table",
+  "version": "expected_v5_20261009",
+  "status": "EXPECTED_NOT_OBSERVED",
+  "scientific_result": false,
+  "benchmark_runs": 0,
+  "gpu_jobs": 0,
+  "value_authorship": "All aggregate point values and range assumptions handwritten; arithmetic checked only. No sampling, synthetic event records, automated rankings, or percentage-based cost allocation.",
+  "base_version": "expected_experiment_matrix_v4_20261009",
+  "structure_authority": "docs/paper/aamas2027/FORMAL_PAPER_ZH.md",
+  "table_labels": [
+    "tab:matrix",
+    "tab:results",
+    "tab:factorial-results"
+  ],
+  "design": {
+    "lambda": 0.1,
+    "quality": "Independent future-task partial quality in [0,1], ITT over all started selected assignments; not binary native benchmark pass rate.",
+    "cost": "Complete per-attempt deployment cost / common frozen uniform-reference mean on the same task schedule; includes all actual actor, recipient, judgment, tool, validation and retry costs once. 1.00 is a reference unit, not an observed currency cost.",
+    "primary_baseline": "Contextual-trust-linear under identical public inputs, menus, feedback and responsibility gate; each policy has its own online history.",
+    "regime": "Informative typed evidence and stable task-peer crossover. Stress rows are separate populations, never averaged into the main means.",
+    "sampling_plan": "3 structural roots, 6 reset streams per root/arm, 120 started assignments/stream; conditional fixed-root expectations, not 18 independent root populations. This is a planning scenario, not an activated experiment card.",
+    "range_semantics": "Subjective plausible ranges for paired differences, not observed or nominal 95% confidence intervals, not SD and not forecast coverage claims.",
+    "range_quality_cost_joint": "Delta Y in [-0.016,0.056], Delta C in [0.05,0.19]; conservative rectangle implies Delta U in [-0.035,0.051]. No independent arbitrary utility error bar.",
+    "prediction_target": "Producer-contract binary Qp on a common fixed labelled cohort. Later-use partial quality is a different target and population.",
+    "service": "PeerSelect CPU path with cached features, 4 logical CPU cores, 1 GiB RAM budget, 3-neighbor menus, 1000 warm-up and 5000 scored arrivals. Update p95 is event validation through durable state update, excludes task generation and network LLM time. State bytes are selector state only, not model weights/RAM.",
+    "forgetting": "Performance drop on the same frozen old-root cohort after a drift block, relative to its own pre-drift score. Frozen-prior control has zero expected parameter forgetting.",
+    "safety": "Common owner-truth-available mutation population; attribution claim coverage + UNKNOWN = 1. Both primary arms share the deterministic gate on exactly the same input corpus. All-attempt false attribution is not conditional claimed-case error. Unknown-owner cases are a separate safety test, excluded from owner-truth rate. False attribution is an erroneous attribution verdict about a delivery, not a structurally forbidden source-publication parameter update. Source publication is a parameter no-op by invariant.",
+    "assignment_change": "Change relative to the sealed pre-evidence decision with the same draw; diagnostic, not a success endpoint.",
+    "recovery": "Post-drift new-task payoff returns to 95% of the frozen matched oracle reference for 5 consecutive windows; independent of forgetting on the old-root cohort. Restricted mean recovery capped at 20 updates; no-recovery cases count as 20, not dropped.",
+    "service_cost_scope": "Primary complete-cost row is ArtifactRole only. PeerSelect latency/state is not monetized complete service cost; no currency prices or artifactrole token charges are imported. Full observed service resource accounting remains required at execution.",
+    "unknown_precision": "Among UNKNOWN verdicts, fraction where the oracle-audited public contract actually requires abstention (insufficient permitted evidence); owner truth exists privately for all cases in this cohort. Weighted using stratum weight times UNKNOWN mass, not unweighted stratum precision."
+  },
+  "primary": [
+    {
+      "id": "future_quality",
+      "label": "Future quality",
+      "track": "ArtifactRole",
+      "rare": 0.608,
+      "baseline": 0.588,
+      "delta": 0.02,
+      "plausible_delta_range": [
+        -0.016,
+        0.056
+      ]
+    },
+    {
+      "id": "complete_cost",
+      "label": "Complete cost",
+      "track": "ArtifactRole",
+      "rare": 1.34,
+      "baseline": 1.22,
+      "delta": 0.12,
+      "plausible_delta_range": [
+        0.05,
+        0.19
+      ]
+    },
+    {
+      "id": "utility",
+      "label": "Quality--cost utility",
+      "track": "ArtifactRole",
+      "rare": 0.474,
+      "baseline": 0.466,
+      "delta": 0.008,
+      "plausible_delta_range": [
+        -0.035,
+        0.051
+      ]
+    },
+    {
+      "id": "assignment_change",
+      "label": "Assignment change",
+      "track": "ArtifactRole",
+      "rare": 0.2,
+      "baseline": 0.16,
+      "delta": 0.04,
+      "plausible_delta_range": [
+        -0.025,
+        0.105
+      ]
+    },
+    {
+      "id": "brier",
+      "label": "Judgment Brier",
+      "track": "ArtifactRole common Qp cohort",
+      "rare": 0.203,
+      "baseline": 0.211,
+      "delta": -0.008,
+      "plausible_delta_range": [
+        -0.02,
+        0.004
+      ]
+    },
+    {
+      "id": "update_p95_state",
+      "label": "Update p95 / state bytes",
+      "track": "PeerSelect normal service",
+      "rare": [
+        68,
+        36864
+      ],
+      "baseline": [
+        52,
+        28672
+      ],
+      "delta": [
+        16,
+        8192
+      ],
+      "plausible_latency_delta_range": [
+        2,
+        42
+      ],
+      "state_difference_kind": "fixed-capacity scenario; not a confidence interval"
+    },
+    {
+      "id": "forgetting",
+      "label": "Old-root forgetting",
+      "track": "PeerSelect fixed old-root evaluation after drift",
+      "rare": 0.025,
+      "baseline": 0.041,
+      "delta": -0.016,
+      "plausible_delta_range": [
+        -0.04,
+        0.008
+      ]
+    },
+    {
+      "id": "unknown_fa",
+      "label": "UNKNOWN / false attribution",
+      "track": "ArtifactRole common mutation corpus",
+      "rare": [
+        0.498,
+        0.0066
+      ],
+      "baseline": [
+        0.498,
+        0.0066
+      ],
+      "delta": [
+        0.0,
+        0.0
+      ],
+      "difference_kind": "identical shared-gate input; equality constraint, no superiority claim"
+    }
+  ],
+  "factorial": [
+    {
+      "evidence": "Masked",
+      "update": "Off",
+      "quality": 0.532,
+      "cost": 1.02,
+      "utility": 0.43,
+      "plausible_utility_range": [
+        0.385,
+        0.475
+      ],
+      "change": 0.04,
+      "adoption": 0.48,
+      "rework": 0.3
+    },
+    {
+      "evidence": "Visible",
+      "update": "Off",
+      "quality": 0.566,
+      "cost": 1.18,
+      "utility": 0.448,
+      "plausible_utility_range": [
+        0.401,
+        0.495
+      ],
+      "change": 0.12,
+      "adoption": 0.54,
+      "rework": 0.24
+    },
+    {
+      "evidence": "Masked",
+      "update": "On",
+      "quality": 0.57,
+      "cost": 1.15,
+      "utility": 0.455,
+      "plausible_utility_range": [
+        0.405,
+        0.505
+      ],
+      "change": 0.13,
+      "adoption": 0.55,
+      "rework": 0.25
+    },
+    {
+      "evidence": "Visible",
+      "update": "On",
+      "quality": 0.608,
+      "cost": 1.34,
+      "utility": 0.474,
+      "plausible_utility_range": [
+        0.421,
+        0.527
+      ],
+      "change": 0.2,
+      "adoption": 0.59,
+      "rework": 0.21
+    }
+  ],
+  "factorial_contrasts": {
+    "observation_given_update": 0.019,
+    "update_given_observation": 0.026,
+    "total": 0.044,
+    "quality_interaction": 0.004,
+    "cost_interaction": 0.03,
+    "utility_interaction": 0.001,
+    "utility_interaction_range_from_marginals": [
+      -0.194,
+      0.196
+    ]
+  },
+  "information": [
+    {
+      "arm": "Raw acceptance",
+      "brier": 0.225,
+      "log_loss": 0.637,
+      "ece": 0.073
+    },
+    {
+      "arm": "Terminal only",
+      "brier": 0.22,
+      "log_loss": 0.625,
+      "ece": 0.068
+    },
+    {
+      "arm": "Contextual-trust-linear",
+      "brier": 0.211,
+      "log_loss": 0.604,
+      "ece": 0.06,
+      "heldout_root_brier": 0.231
+    },
+    {
+      "arm": "Task-conditioned ridge",
+      "brier": 0.207,
+      "log_loss": 0.595,
+      "ece": 0.058,
+      "heldout_root_brier": 0.223
+    },
+    {
+      "arm": "Matched composition",
+      "brier": 0.206,
+      "log_loss": 0.592,
+      "ece": 0.057,
+      "heldout_root_brier": 0.221
+    },
+    {
+      "arm": "RARE",
+      "brier": 0.203,
+      "log_loss": 0.584,
+      "ece": 0.055,
+      "heldout_root_brier": 0.217
+    }
+  ],
+  "locality": [
+    {
+      "regime": "Stable",
+      "arm": "Pooled",
+      "quality": 0.6,
+      "cost": 1.28,
+      "utility": 0.472,
+      "max_share": 0.4,
+      "min_propensity": 0.06
+    },
+    {
+      "regime": "Stable",
+      "arm": "RARE",
+      "quality": 0.608,
+      "cost": 1.34,
+      "utility": 0.474,
+      "max_share": 0.38,
+      "min_propensity": 0.08
+    },
+    {
+      "regime": "Sparse",
+      "arm": "Pooled",
+      "quality": 0.578,
+      "cost": 1.28,
+      "utility": 0.45,
+      "max_share": 0.38,
+      "min_propensity": 0.05
+    },
+    {
+      "regime": "Sparse",
+      "arm": "RARE",
+      "quality": 0.561,
+      "cost": 1.34,
+      "utility": 0.427,
+      "max_share": 0.42,
+      "min_propensity": 0.04
+    }
+  ],
+  "service": [
+    {
+      "regime": "Normal",
+      "arm": "Uniform",
+      "payoff": 0.5,
+      "update_p50_ms": null,
+      "update_p95_ms": null,
+      "backlog_p95": 0.0,
+      "state_bytes": 8192,
+      "update_kind": "not applicable: updates disabled",
+      "new_model_calls": 0,
+      "no_op_dispatch_p95_ms": 2.5
+    },
+    {
+      "regime": "Normal",
+      "arm": "No history",
+      "payoff": 0.532,
+      "update_p50_ms": null,
+      "update_p95_ms": null,
+      "backlog_p95": 0.0,
+      "state_bytes": 8192,
+      "update_kind": "not applicable: updates disabled",
+      "new_model_calls": 0,
+      "no_op_dispatch_p95_ms": 3.0
+    },
+    {
+      "regime": "Normal",
+      "arm": "History only",
+      "payoff": 0.565,
+      "update_p50_ms": 18,
+      "update_p95_ms": 32,
+      "backlog_p95": 0.4,
+      "state_bytes": 20480,
+      "new_model_calls": 0
+    },
+    {
+      "regime": "Normal",
+      "arm": "Contextual-trust-linear",
+      "payoff": 0.591,
+      "update_p50_ms": 29,
+      "update_p95_ms": 52,
+      "backlog_p95": 0.7,
+      "state_bytes": 28672,
+      "new_model_calls": 0
+    },
+    {
+      "regime": "Normal",
+      "arm": "Matched RLS",
+      "payoff": 0.6,
+      "update_p50_ms": 35,
+      "update_p95_ms": 66,
+      "backlog_p95": 0.8,
+      "state_bytes": 32768,
+      "new_model_calls": 0
+    },
+    {
+      "regime": "Normal",
+      "arm": "Matched SGD",
+      "payoff": 0.598,
+      "update_p50_ms": 31,
+      "update_p95_ms": 64,
+      "backlog_p95": 0.7,
+      "state_bytes": 30720,
+      "new_model_calls": 0
+    },
+    {
+      "regime": "Normal",
+      "arm": "Periodic refit",
+      "payoff": 0.602,
+      "update_p50_ms": 28,
+      "update_p95_ms": 120,
+      "backlog_p95": 1.5,
+      "state_bytes": 65536,
+      "new_model_calls": 0
+    },
+    {
+      "regime": "Normal",
+      "arm": "RARE",
+      "payoff": 0.606,
+      "update_p50_ms": 37,
+      "update_p95_ms": 68,
+      "backlog_p95": 1.0,
+      "state_bytes": 36864,
+      "new_model_calls": 0
+    },
+    {
+      "regime": "High load",
+      "arm": "Contextual-trust-linear",
+      "payoff": 0.558,
+      "update_p50_ms": 110,
+      "update_p95_ms": 290,
+      "backlog_p95": 4.8,
+      "state_bytes": 28672,
+      "drop_rate": 0.06,
+      "new_model_calls": 0
+    },
+    {
+      "regime": "High load",
+      "arm": "RARE",
+      "payoff": 0.542,
+      "update_p50_ms": 210,
+      "update_p95_ms": 480,
+      "backlog_p95": 8.0,
+      "state_bytes": 36864,
+      "drop_rate": 0.11,
+      "new_model_calls": 0
+    }
+  ],
+  "service_payoff_unit": "Normalized selected reward (raw reward+0.3)/0.6 for a native [-0.3,0.3] payoff; not mutual-cooperation rate. Transformation conditional on the pinned graph-IPD payoff contract; no aggregate reward claim. ITT over all 5000 scored arrivals; drops and timeouts score normalized zero (raw -0.3) and retain incurred resource cost. Completed-event-only averages are not displayed.",
+  "drift": [
+    {
+      "arm": "Frozen prior",
+      "payoff": 0.566,
+      "forgetting": 0.0,
+      "recovery_within_20_updates": 0.0
+    },
+    {
+      "arm": "Contextual-trust-linear",
+      "payoff": 0.589,
+      "forgetting": 0.041,
+      "restricted_mean_recovery_updates": 8.0,
+      "recovery_within_20_updates": 0.9
+    },
+    {
+      "arm": "RARE correction/replay",
+      "payoff": 0.607,
+      "forgetting": 0.025,
+      "restricted_mean_recovery_updates": 6.5,
+      "recovery_within_20_updates": 0.96,
+      "backlog_p95": 1.4,
+      "correction_replay_agreement": 1.0
+    },
+    {
+      "arm": "RARE without correction/replay",
+      "payoff": 0.58,
+      "forgetting": 0.048,
+      "restricted_mean_recovery_updates": 9.0,
+      "recovery_within_20_updates": 0.88,
+      "backlog_p95": 0.9,
+      "correction_replay_agreement": 0.86
+    }
+  ],
+  "attribution_strata": [
+    {
+      "stratum": "Producer-only",
+      "weight": 0.5,
+      "claim_coverage": 0.9,
+      "unknown": 0.1,
+      "false_attribution_all": 0.008,
+      "unknown_precision": 0.8
+    },
+    {
+      "stratum": "Recipient-only",
+      "weight": 0.2,
+      "claim_coverage": 0.04,
+      "unknown": 0.96,
+      "false_attribution_all": 0.004,
+      "unknown_precision": 0.99
+    },
+    {
+      "stratum": "Mixed",
+      "weight": 0.1,
+      "claim_coverage": 0.18,
+      "unknown": 0.82,
+      "false_attribution_all": 0.012,
+      "unknown_precision": 0.95
+    },
+    {
+      "stratum": "Sink-only",
+      "weight": 0.1,
+      "claim_coverage": 0.06,
+      "unknown": 0.94,
+      "false_attribution_all": 0.002,
+      "unknown_precision": 0.98
+    },
+    {
+      "stratum": "Resource failure",
+      "weight": 0.1,
+      "claim_coverage": 0.2,
+      "unknown": 0.8,
+      "false_attribution_all": 0.004,
+      "unknown_precision": 0.97
+    }
+  ],
+  "attribution_aggregate": {
+    "claim_coverage": 0.502,
+    "unknown": 0.498,
+    "false_attribution_all": 0.0066,
+    "false_attribution_claimed": 0.01314741036,
+    "shared_gate_same_for_primary_baseline": true,
+    "unknown_precision": 0.9592369477911646,
+    "source_publication_parameter_no_op_rate": 1.0,
+    "unknown_owner_invalid_credit_rate": 0.0
+  },
+  "ablations": [
+    {
+      "arm": "RARE",
+      "quality": 0.608,
+      "cost": 1.34,
+      "utility": 0.474,
+      "safety_common_corpus_fa": 0.0066
+    },
+    {
+      "arm": "Without ownership gate",
+      "quality": 0.588,
+      "cost": 1.27,
+      "utility": 0.461,
+      "safety_common_corpus_fa": 0.16
+    },
+    {
+      "arm": "Without public evidence",
+      "quality": 0.57,
+      "cost": 1.15,
+      "utility": 0.455,
+      "safety_common_corpus_fa": 0.0066
+    },
+    {
+      "arm": "Without delayed update",
+      "quality": 0.566,
+      "cost": 1.18,
+      "utility": 0.448,
+      "safety_common_corpus_fa": 0.0066
+    },
+    {
+      "arm": "Without locality",
+      "quality": 0.6,
+      "cost": 1.3,
+      "utility": 0.47,
+      "safety_common_corpus_fa": 0.0066
+    },
+    {
+      "arm": "Without correction/replay",
+      "quality": 0.597,
+      "cost": 1.29,
+      "utility": 0.468,
+      "safety_common_corpus_fa": 0.0066
+    }
+  ],
+  "unidentifiable_in_guide": "No probability that the actual means lie inside the subjective ranges is claimed. No same-protocol published RARE result exists; no unnamed published adapter gets an invented number. RARE need not beat contextual trust, ridge, pooled or matched composition in real experiments.",
+  "ablation_aliases": {
+    "Without updater": "Without delayed update"
+  }
+}

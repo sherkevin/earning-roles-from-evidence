@@ -25,13 +25,14 @@ def main() -> int:
     ap.add_argument("--source-pdf", type=Path)
     args = ap.parse_args()
     data = json.loads(args.json_path.read_text())
-    assert data["version"].startswith("expected_v")
+    version = data["version"]
+    assert version.startswith("expected_v")
     assert data["status"] == "GUIDE_EXPECTATION_NOT_OBSERVED"
     assert data["watermark_required"] is True
     assert data["scientific_result"] is False
     assert data["new_api_calls"] == data["gpu_jobs"] == data["benchmark_runs"] == 0
     correspondence = data["correspondence"]
-    assert correspondence == {
+    legacy_correspondence = {
         "overview": {"data_rows": 4, "columns": 5},
         "table_2_artifactrole": {"data_rows": 7, "columns": 6},
         "table_3_service_safety": {"data_rows": 7, "columns": 8},
@@ -42,6 +43,28 @@ def main() -> int:
             "table_4_ablations": ["No evidence / no update", "Public evidence only", "Delayed update only", "Evidence + delayed update (RARE)", "RARE without ownership gate", "RARE without selected-only rule", "RARE without correction/replay"],
         },
     }
+    if version.startswith("expected_v3"):
+        assert correspondence["overview"]["columns_exact"] == [
+            "RQ", "Track / unit", "Policy contrast", "Primary result table", "Primary estimand"
+        ]
+        assert correspondence["table_2_artifactrole"]["columns_exact"] == [
+            "Policy", "Brier ↓", "Calibration ↓", "Quality–cost utility ↑",
+            "Assignment change ↑", "Complete cost ↓", "Streams"
+        ]
+        assert correspondence["table_3_service_safety"]["columns_exact"] == [
+            "Policy / intervention", "Track", "Update p95 ↓", "Backlog p95 ↓",
+            "State bytes ↓", "False attribution ↓", "unknown precision ↑",
+            "Forgetting / recovery ↓"
+        ]
+        assert correspondence["table_4_ablations"]["columns_exact"] == [
+            "Intervention", "Removed or changed component", "Future utility ↑",
+            "Assignment change ↑", "False attribution ↓", "Complete cost ↓"
+        ]
+        assert correspondence["row_order"]["table_2_artifactrole"][-1] == "rare"
+        assert correspondence["row_order"]["table_3_service_safety"][3] == "rare"
+        assert correspondence["row_order"]["table_4_ablations"][3].endswith("(rare)")
+    else:
+        assert correspondence == legacy_correspondence
 
     assumptions = data["design_assumptions"]
     assert assumptions["structural_roots"] == 3
@@ -57,30 +80,34 @@ def main() -> int:
         expected_q = row["utility"] + lam * row["complete_cost"]
         assert close(row["implied_quality"], expected_q), (row["method"], expected_q, row["implied_quality"])
     by_name = {row["method"]: row for row in hero}
-    assert by_name["RARE"]["brier"] < by_name["Contextual-trust-linear"]["brier"]
-    assert by_name["RARE"]["calibration"] < by_name["Contextual-trust-linear"]["calibration"]
-    assert by_name["RARE"]["utility"] > by_name["Contextual-trust-linear"]["utility"]
-    assert by_name["RARE"]["complete_cost"] > by_name["Contextual-trust-linear"]["complete_cost"]
+    candidate_name = "rare" if version.startswith("expected_v3") else "RARE"
+    assert by_name[candidate_name]["brier"] < by_name["Contextual-trust-linear"]["brier"]
+    assert by_name[candidate_name]["calibration"] < by_name["Contextual-trust-linear"]["calibration"]
+    assert by_name[candidate_name]["utility"] > by_name["Contextual-trust-linear"]["utility"]
+    assert by_name[candidate_name]["complete_cost"] > by_name["Contextual-trust-linear"]["complete_cost"]
 
     service = data["table_3_service_safety"]
     assert len(service) == 7
     assert [row["method"] for row in service] == correspondence["row_order"]["table_3_service_safety"]
     assert all(row["streams"] == 9 for row in service)
     svc = {row["method"]: row for row in service}
-    assert svc["RARE"]["update_p95_ms"] > svc["Contextual-trust-linear"]["update_p95_ms"]
-    assert svc["RARE"]["backlog_p95"] > svc["Contextual-trust-linear"]["backlog_p95"]
-    assert svc["RARE"]["state_kib"] > svc["Contextual-trust-linear"]["state_kib"]
+    assert svc[candidate_name]["update_p95_ms"] > svc["Contextual-trust-linear"]["update_p95_ms"]
+    assert svc[candidate_name]["backlog_p95"] > svc["Contextual-trust-linear"]["backlog_p95"]
+    assert svc[candidate_name]["state_kib"] > svc["Contextual-trust-linear"]["state_kib"]
     # PeerSelect has no owner-truth contract; H4a is deliberately N/A there.
-    if data["version"].startswith("expected_v2"):
+    if version.startswith(("expected_v2", "expected_v3")):
         assert all(row["false_attribution"] is None for row in service[:4])
         assert all(row["owner_truth_recall"] is None for row in service[:4])
         assert all("unknown_abstention_rate" in row for row in service)
         for row in service:
             assert close(row["unknown_abstention_rate"], 1.0 - row["coverage"]), row["method"]
+        if version.startswith("expected_v3"):
+            assert all("unknown_precision" in row and "unknown_precision_sd" in row for row in service)
+            assert all(0.0 <= row["unknown_precision"] <= 1.0 for row in service)
     else:
-        assert svc["RARE"]["false_attribution"] < svc["Contextual-trust-linear"]["false_attribution"]
-    assert svc["RARE"]["coverage"] < svc["Contextual-trust-linear"]["coverage"]
-    assert svc["RARE"]["recovery_steps"] < svc["Contextual-trust-linear"]["recovery_steps"]
+        assert svc[candidate_name]["false_attribution"] < svc["Contextual-trust-linear"]["false_attribution"]
+    assert svc[candidate_name]["coverage"] < svc["Contextual-trust-linear"]["coverage"]
+    assert svc[candidate_name]["recovery_steps"] < svc["Contextual-trust-linear"]["recovery_steps"]
 
     ablations = data["table_4_ablations"]
     assert len(ablations) == 7
@@ -90,10 +117,13 @@ def main() -> int:
         expected_q = row["utility"] + lam * row["complete_cost"]
         assert close(row["implied_quality"], expected_q), (row["intervention"], expected_q, row["implied_quality"])
     ab = {row["intervention"]: row for row in ablations}
-    rare = ab["Evidence + delayed update (RARE)"]
+    rare_key = "Evidence + delayed update (rare)" if version.startswith("expected_v3") else "Evidence + delayed update (RARE)"
+    ownership_key = "rare without ownership gate" if version.startswith("expected_v3") else "RARE without ownership gate"
+    selected_only_key = "rare without selected-only rule" if version.startswith("expected_v3") else "RARE without selected-only rule"
+    rare = ab[rare_key]
     assert rare["utility"] > ab["No evidence / no update"]["utility"]
-    assert rare["false_attribution"] < ab["RARE without ownership gate"]["false_attribution"]
-    assert rare["false_attribution"] < ab["RARE without selected-only rule"]["false_attribution"]
+    assert rare["false_attribution"] < ab[ownership_key]["false_attribution"]
+    assert rare["false_attribution"] < ab[selected_only_key]["false_attribution"]
 
     if args.source_pdf:
         digest = hashlib.sha256(args.source_pdf.read_bytes()).hexdigest()

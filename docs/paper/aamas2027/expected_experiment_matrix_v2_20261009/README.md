@@ -1,3 +1,5 @@
+> 历史版本：已被 [v5](../expected_experiment_matrix_v5_20261009/README.md) 取代；原始正文保留供追溯。
+
 # Expected experiment matrix (v2, 2026-10-09)
 
 This directory stores the **numerical expected-result table** used as a planning

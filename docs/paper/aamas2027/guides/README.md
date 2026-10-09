@@ -1,5 +1,7 @@
 # 实验 Guide 版本登记
 
+最新主稿实验表号已更新为 5/7/8，expected v5 的 4/6/7 表题也待同步；不是已完成全部对应。
+
 Guide 是独立的研发参照，不能写入正式结果或替代唯一生效的研究规范。
 
 | 版本 | 状态 | 用途 |
@@ -10,12 +12,13 @@ Guide 是独立的研发参照，不能写入正式结果或替代唯一生效�
 | [v2_20261008](v2_20261008/README.md) | ARCHIVED_CONDITIONAL_DISTRIBUTION_REFERENCE | 同源联合分布、误差/协方差、置信度审计与空白对标模板；原计算/PDF留存 |
 | [v1_20261008](v1_20261008/README.md) | ARCHIVED_EXPECTATIONS_WITHDRAWN | 保留第一次目标矩阵和修订历史；其方法排序与误差假设不得用作高置信度预测 |
 
-独立的 [Expected experiment table v2](../expected_experiment_matrix_v2_20261009/README.md)
-保存与原始正文矩阵一一对应的 R1 场景数值预期。它带有
-`EXPECTED --- NOT OBSERVED` 水印，不能作为真实结果或科学 gate 收据；其
-canonical PDF 在 `artifacts/aamas2027/expected_experiment_matrix.pdf`。
-v1 保留在 [历史目录](../expected_experiment_matrix_v1_20261009/README.md)，
-不得作为当前目标。
+独立的 [Expected experiment table v5](../expected_experiment_matrix_v5_20261009/README.md)
+是唯一生效的手写数值参照，与当前主 PDF 的 Table 4、6、7 一一对应。
+此处对应指结构；2026-10-09 逐指标复核发现部分 updater、消融成本和责任情景尚未覆盖，
+完整对标状态为 PARTIAL，详见 v5 README 的核查链接。
+它带有 `EXPECTED -- NOT OBSERVED` 水印；正文只保留三张干净表，依据和两位
+Codex 审查意见放在附件。canonical PDF 为 `artifacts/aamas2027/expected_experiment_matrix.pdf`。
+v1–v4 只作历史记录，不再作为当前目标。
 
 唯一当前 [Guide PDF](../../../../artifacts/aamas2027/guide_experiment_matrix.pdf)
 和 [master receipt](../../../../artifacts/aamas2027/guide_experiment_matrix_master.json)

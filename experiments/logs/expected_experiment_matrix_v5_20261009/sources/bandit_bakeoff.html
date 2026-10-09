@@ -1,0 +1,172 @@
+<html>
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131826476-1"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-131826476-1');
+    </script>
+
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+  <!-- favicon -->
+  <link rel="icon" href="/img/favicon.ico">
+  <link rel="icon" type="image/png" href="/img/favicon-16x16.png">
+  <link rel="icon" type="image/png" href="/img/favicon-32x32.png">
+
+<title>A Contextual Bandit Bake-off</title>
+
+
+<link rel="alternate" type="application/rss+xml" href="/jmlr.xml" title="JMLR RSS">
+<link rel="stylesheet" type="text/css" href="/style.css">
+<style type="text/css">
+. {font-family:verdana,helvetica,sans-serif}
+a {text-decoration:none;color:#3030a0}
+
+#fixed {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 8em;
+    height: 100%;
+}
+body > #fixed {
+    position: fixed;
+}
+#content {
+    margin-top: 1em;
+    margin-left: 10em;
+    margin-right: 0.5em;
+}
+img.jmlr {
+    width: 7em;
+}
+img.rss {
+    width: 2em;
+}
+
+ul li {
+    margin-bottom: 0.5em;
+}
+</style>
+
+
+ <!-- MathJax -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$']]}});
+</script>
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<!-- Google Scholar Meta -->
+<meta name="citation_title" content="A Contextual Bandit Bake-off">
+<meta name="citation_author" content="Alberto Bietti">
+<meta name="citation_author" content="Alekh Agarwal">
+<meta name="citation_author" content="John Langford">
+<meta name="citation_journal_title" content="Journal of Machine Learning Research">
+<meta name="citation_volume" content="22">
+<meta name="citation_issue" content="133">
+<meta name="citation_firstpage" content="1">
+<meta name="citation_lastpage" content="49">
+<meta name="citation_pdf_url" content="http://jmlr.org/papers/volume22/18-863/18-863.pdf">
+<meta name="citation_publication_date" content="2021">
+<meta name="citation_public_url" content="http://jmlr.org/papers/v22/18-863.html">
+<meta name="citation_abstract_html_url" content="http://jmlr.org/papers/v22/18-863.html">
+<meta name="citation_issn" content="1533-7928">
+
+
+
+
+</head>
+<body>
+
+  <div id="fixed">
+  <br>
+  <a align="right" href="/" target=_top><img align="right" class="jmlr" src="/img/jmlr.jpg" border="0"></a> 
+  <p><br><br>
+  <p align="right"> <A href="/"> Home Page </A> 
+
+  <p align="right"> <A href="/papers"> Papers </A> 
+
+  <p align="right" > <A href="/author-info.html">  Submissions  </A> 
+    
+
+  <p align="right"> <A href="/news.html"> News </A> 
+
+  <!--<p align="right"> <A href="/scope.html"> Scope </A>-->
+
+  <p align="right" > <A href="/editorial-board.html"> Editorial Board </A> 
+
+    
+
+    <p align="right" > <A href="/special_issues/"> Special Issues </A> 
+
+        
+    
+  <p align="right"> <A href="/mloss">Open Source Software</A>
+
+  <p align="right"> <A href="https://proceedings.mlr.press/"> Proceedings (PMLR)</A>
+
+  <p align="right"> <A href="https://data.mlr.press/"> Data (DMLR) </A>
+      
+  <p align="right"> <A href="/tmlr"> Transactions (TMLR) </A>
+
+  <p align="right"> <A href="/search-jmlr.html"> Search </A>
+
+  <p align="right"> <A href="/stats.html">Statistics</A>
+
+  <p align="right"> <A href="/manudb"> Login </A></p>
+
+   <p align="right"> <A href="/faq.html">Frequently Asked Questions </A></p>
+                                     
+  <p align="right"> <A href="/contact.html"> Contact Us </A></p>
+
+  <br><br>
+  <p align="right"> <A href="/jmlr.xml"> 
+  <img src="/img/RSS.gif" class="rss" alt="RSS Feed">
+  </A>
+
+
+
+  </div>
+
+<div id="content">
+    
+<h2> A Contextual Bandit Bake-off </h2>
+
+<p><b><i>Alberto Bietti, Alekh Agarwal, John Langford</i></b>; 22(133):1&minus;49, 2021.</p>
+
+
+<h3>Abstract</h3>
+<p class="abstract">
+
+Contextual bandit algorithms are essential for solving many real-world interactive machine learning problems. Despite multiple recent successes on statistically optimal and computationally efficient methods, the practical behavior of these algorithms is still poorly understood. We leverage the availability of large numbers of supervised learning datasets to empirically evaluate contextual bandit algorithms, focusing on practical methods that learn by relying on optimization oracles from supervised learning. We find that a recent method (Foster et al., 2018) using optimism under uncertainty works the best overall. A surprisingly close second is a simple greedy baseline that only explores implicitly through the diversity of contexts, followed by a variant of Online Cover (Agarwal et al., 2014) which tends to be more conservative but robust to problem specification by design. Along the way, we also evaluate various components of contextual bandit algorithm design such as loss estimators. Overall, this is a thorough study and review of contextual bandit methodology.
+
+</p>
+
+
+
+<font color="gray"><p>[abs]</font>[<a id="pdf" target="_blank" href="/papers/volume22/18-863/18-863.pdf">pdf</a>][<a id="bib" href="/papers/v22/18-863.bib">bib</a>]
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    [<a href="https://github.com/albietz/cb_bakeoff">code</a>]
+    
+
+
+
+                      
+    <table width="100%"> <tr>
+    <td
+    align="right"><font size="-1">&copy <a target="_top"
+    href="https://www.jmlr.org">JMLR</a> 2021. 
+(<a href="https://github.com/JmlrOrg/v22/tree/main/18-863">edit</a>, <a href="http://jmlr.org/beta/papers/v22/18-863.html">beta</a>)
+</td> </tr> </table>
+    
+
+</div>
+<!-- for mastodon verification -->
+<a style="font-size: 0" rel="me" href="https://sigmoid.social/@jmlr">Mastodon</a>
+</body>
+</html>

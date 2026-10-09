@@ -1,0 +1,603 @@
+Research Paper Track                                                                                                      AAMAS 2027, 3–7 May 2027, Hanoi, Vietnam
+
+
+
+               Earning Roles: Situated Peer Evaluation and Dynamic
+                           Responsibility Assignment
+                                                               Anonymous Author(s)
+                                                        Submission Id: Anonymous submission
+Abstract                                                                                  work, evaluate whether the delivery was useful or required repair,
+In human collaboration, expertise is rarely established by self-                          and decide whether to entrust related responsibilities to that per-
+declaration alone. It emerges as partners use one another’s work,                         son again. Research on transactive memory describes how teams
+evaluate concrete deliveries, and decide whom to entrust with sim-                        develop shared knowledge of who knows what through collabora-
+ilar responsibilities next. Roles fixed before collaboration lack this                    tion [19, 33]. We adopt this rule without treating social reputation
+adjustment mechanism. We translate this principle into earning                            as ground-truth ability: value is inferred from concrete work and
+roles: an agent’s role is its task-situated eligibility for future re-                    tested by subsequent delegation.
+sponsibility, not a permanent title or a context-free reputation                             Role prompts and fixed handoff orders make multi-agent work-
+score. The system records a recipient’s acceptance, revision, or                          flows practical [14, 36], but a role name states what an agent is
+rejection of a versioned artifact together with its use context as                        expected to do, not what it has demonstrated in collaboration. Co-
+typed, noisy, auditable experience. Peer evaluation is exposed to                         ordination depends on managing dependencies between activities
+subsequent selection as an observation, while producer respon-                            [24]. When tasks or member performance change, a workflow that
+sibility is decided by an independent attribution check. Selector                         ignores collaboration experience continues to reuse its original
+parameters change only after a later assignment has been executed                         allocation. We therefore define earning roles as acquiring eligibility
+and its independent quality, responsibility, and complete cost have                       for future responsibility in a task context. A role is not a permanent
+passed validation; valid feedback may record either success or fail-                      position; expertise is not self-declared; and earning does not confer
+ure, whereas missing or unattributable outcomes do not update the                         ownership forever.
+policy. We evaluate this complete chain in an ArtifactRole track and                         Our evaluator is the agent that actually receives and uses a
+isolate local candidate sets, delayed feedback, and online service                        versioned delivery. Its acceptance, revision, or rejection is stored
+behavior in a complementary PeerSelect track. All comparisons                             with the task, artifact, and use trace as a collaboration experience.
+use matched candidates, public information, budgets, and feedback                         A selector reads these experiences on a later task. An independent
+timing. rare attains a future quality–cost utility of xx, differing                       responsibility check determines which outcomes are attributable
+from the same-information primary baseline by xx (stream-level                            to the producer, and the selected agent’s subsequent quality and
+95% CI: xx); judgment Brier score, false producer-attribution rate,                       complete cost determine whether that allocation should be repeated.
+and update p95 are xx, xx, and xx. Ablations separate the effects of                      Peer evaluation, responsibility attribution, and future assignment
+peer information, responsibility validation, and delayed updating.                        thus retain distinct meanings.
+                                                                                             Consider a queue-processing workflow. Agent 𝐵 supplies a prior-
+CCS Concepts                                                                              ity module and agent 𝐴 integrates it into a consumer. When another
+                                                                                          task requires queue processing, the selector may use 𝐴’s account
+• Computing methodologies → Multi-agent systems; Coopera-
+                                                                                          of whether and how the module worked, rather than rely only on
+tion and coordination.
+                                                                                          𝐵’s self-description. Yet a rejection is not automatically evidence
+Keywords                                                                                  of a producer defect. The same failed team outcome can arise be-
+                                                                                          cause 𝐵 violated the module contract or because 𝐵’s module was
+multi-agent systems, human social collaboration, dynamic roles,                           correct while 𝐴’s consumer was faulty. The system must retain the
+peer evaluation, online adaptation, responsibility attribution                            recipient judgment, actual use, and independent quality check to
+ACM Reference Format:                                                                     distinguish these cases.
+Anonymous Author(s). 2027. Earning Roles: Situated Peer Evaluation and                       We instantiate this principle as the earning-roles protocol. The
+Dynamic Responsibility Assignment. In Proc. of the 26th International Con-                selector combines current requirements, candidate information,
+ference on Autonomous Agents and Multiagent Systems (AAMAS 2027), Hanoi,                  and prior experiences before execution. Positive and negative re-
+Vietnam, 3–7 May 2027, IFAAMAS, 10 pages.
+                                                                                          cipient judgments remain observations; producer responsibility is
+                                                                                          validated separately. Publishing an observation can change a later
+1     Introduction
+                                                                                          selector input but cannot directly update its parameters. Only a
+In human societies, professional standing is seldom determined                            later, executed assignment with independently validated quality
+by self-description. It develops when collaborators use a person’s                        and complete cost can update the selector. A judgment is therefore
+                 This work is licensed under a Creative Commons Attribution Inter-        not converted into immediate reward or punishment.
+                 national 4.0 License.                                                       We call the responsibility-qualified component responsibility-
+                                                                                          aware role evidence (rare) and store it separately from raw eval-
+Proc. of the 26th International Conference on Autonomous Agents and Multiagent Systems
+(AAMAS 2027), M. Baldoni, F. Fang, W. Yeoh, N. Yorke-Smith (eds.), 3–7 May 2027, Hanoi,   uation. Figure 1 shows how this distinction supports subsequent
+Vietnam. © 2027 International Foundation for Autonomous Agents and Multiagent             delegation. The central test compares rare with acceptance-only,
+Systems (www.ifaamas.org).
+Research Paper Track                                                                                                AAMAS 2027, 3–7 May 2027, Hanoi, Vietnam
+
+
+terminal-only, and same-information contextual selectors to mea-         delivery used inside a recipient’s integration work. Contextual ban-
+sure its effect on unseen-task collaboration quality and its evalua-     dits and delayed-feedback learning provide strong update controls
+tion, validation, and update costs.                                      [15, 20]. Here, source evaluation is visible before a later choice,
+   The paper makes three contributions.                                  whereas target quality exists only after execution and cannot be
+     • We define task-situated collaboration experience that records     backfilled into the earlier decision.
+       who evaluated whose versioned delivery, how it was used,
+       and which outcomes are attributable to the producer. Both         3 Problem Formulation
+       positive and negative evaluations remain auditable in con-        3.1 Tasks, assignments, and collaboration
+       text.                                                                 experience
+     • We separate observation publication from delayed policy up-
+                                                                         At task 𝑡, context 𝑥𝑡 and legal candidate set 𝐶𝑡 specify requirements
+       dating. Published evaluations inform later choices, whereas
+                                                                         and delivery responsibility. Before execution, the selector chooses
+       parameters update only from independent outcomes of exe-
+       cuted assignments; factorial ablations isolate the two paths.           𝑎𝑡 ∼ 𝜋𝜓,Θ𝑡 (· | 𝑥𝑡 , 𝐶𝑡 , 𝑅𝑡 ),             𝑝𝑡 = 𝜋𝜓,Θ𝑡 (𝑎𝑡 | 𝑥𝑡 , 𝐶𝑡 , 𝑅𝑡 ),   (1)
+     • We introduce an ArtifactRole track for the complete delivery–     where 𝑎𝑡 ∈ 𝐶𝑡 , 𝑝𝑡 ∈ (0, 1], 𝑅𝑡 is the public experience available
+       evaluation–delegation–utility chain and a PeerSelect track        at that time, 𝜓 denotes fixed scoring parameters, and Θ𝑡 is online
+       for local selection, delay, drift, and service behavior. Same-    state. Public records and parameters are maintained separately, so
+       information baselines and responsibility interventions sep-       a new evaluation can change the choice input without immediately
+       arate information value, attribution error, and gains from        changing parameters.
+       additional information.                                              A source delivery forms the record
+                                                                                      𝑒𝑖src = (𝑥𝑖 , 𝐶𝑖 , 𝑎𝑖 , 𝑜𝑖 , 𝑗𝑖 , 𝐽𝑖 , 𝑚𝑖 , 𝑄𝑖 , 𝑌𝑖src, 𝜏𝑖 , 𝑐𝑖src ).   (2)
+2    Related Work and Positioning
+                                                                         Here 𝑜𝑖 is producer 𝑎𝑖 ’s versioned artifact; 𝑗𝑖 is the recipient that
+Peer feedback has recently been used to adapt multi-agent collabo-       uses it; 𝐽𝑖 is sealed before the recipient acts; 𝑚𝑖 is the subsequent use,
+ration. Meta-Team collects post-task accounts of how teammates           revision, or rejection; 𝑄𝑖 checks the original delivery against the
+affect downstream execution and updates teammate profiles and col-       producer’s responsibility; 𝑌𝑖src is the source episode’s independently
+laboration arrangements [12]. RAPS maintains peer reputation from        defined terminal or later-use outcome, or ⊥ if the contract defines
+first-hand content evaluations and witness reports [22]. Sero stud-      none; 𝜏𝑖 is publication order; and 𝑐𝑖src records model, tool, token, and
+ies contract-preserving role evolution [9], C3 studies exact credit      wall-clock cost. Source outcomes support observation and audit,
+assignment among cooperative agents [6], and DecisionBench del-          not future-assignment credit.
+egates from externally judged capability cards built from prior             For a target assignment 𝑗, the independent outcome is 𝑌 𝑗tar . After
+trajectories [8]. These works cover collaborative reflection, witness    the assignment is sealed, its candidates and probability are con-
+propagation, contract-bound roles, credit assignment, and historical     sistent, and execution completes, 𝑌 𝑗tar enters validate_later with
+capability summaries, respectively. They do not jointly bind a recip-    that assignment to produce feedback 𝐿 𝑗 . Only an 𝐿 𝑗 that passes
+ient’s use of one versioned delivery, a producer-responsibility gate,    responsibility, quality, complete-cost, and idempotency checks up-
+and a later executed responsibility opportunity into one auditable       dates Θ. Hence 𝑌𝑖src and 𝑌 𝑗tar are distinct, and neither is retroactively
+chain. Our analysis separates the evaluation of a concrete delivery,
+                                                                         available to an earlier choice.
+producer attribution, and the utility of subsequent delegation.
+                                                                            For example, let the queue task offer 𝐶𝑡 = {𝐵, 𝐶}. The selector
+   Computational trust and reputation provide the broader foun-
+                                                                         assigns the source delivery to 𝐵, whose priority module is received
+dation for using interaction history in open multi-agent systems
+                                                                         by 𝐴. Then 𝑄𝑖 checks the module for which 𝐵 is responsible, 𝑚𝑖
+[26, 30]. Trust models also account for inaccurate reports by third
+                                                                         records how 𝐴 integrates or changes the code, and 𝑌𝑖src records only
+parties [31]. Partner-selection methods adapt from social-game
+                                                                         the terminal or later-use result defined for that source episode. If
+payoffs [29, 34, 35], while language-agent societies use shared as-
+                                                                         𝐴 repairs only its own consumer, the experience can be retained,
+sessments or repeated interaction to sustain cooperation [2, 25, 28].
+                                                                         but that repair is not evidence of a defect in 𝐵’s module. Only a
+In the cited formulations, interaction-level feedback does not ex-
+                                                                         subsequent target outcome that produces valid 𝐿 𝑗 can affect future
+plicitly represent the producer–recipient artifact-ownership fields
+                                                                         parameters. This example also explains why an episode identifier
+needed here.
+                                                                         alone is insufficient: the source artifact, recipient action, and later
+   Graph and role systems reorganize agents from traces, routing
+                                                                         assignment serve different evidential roles.
+outcomes, contexts, or subtask performance [21, 37, 40, 42]. Gen-
+eral multi-agent frameworks likewise make role-based workflows           3.2    Visible information and objective
+practical [5, 14, 36]. Our object is narrower: an action on a specific
+delivery is separated from producer responsibility and from the          The selector reads a public projection 𝑒˜𝑖 = Πpub (𝑒𝑖 ) rather than the
+payoff of a later assignment. Table 1 summarizes this boundary.          audit record. The projection preserves agreed task fields, candidate
+   Task-allocation taxonomies distinguish who performs which task        identity, recipient judgment, actual action, and responsibility type;
+under different organizational constraints [10]. Cooperative multi-      hidden answers, private tests, and future outcomes remain unavail-
+agent learning separates shared return from individual contribution      able. Given context 𝑥, candidate 𝑎, and public history 𝑅𝑡 , situated
+through counterfactual credit or value factorization [7, 27]. These      assignment value is
+are related credit questions; our distinction concerns a versioned                       𝑉𝑡 (𝑎 | 𝑥, 𝑅𝑡 ) = E[𝑈 (𝑌 𝑗tar, 𝑐 tar
+                                                                                                                          𝑗 ) | 𝑥, 𝑅𝑡 , 𝑎],                   (3)
+Research Paper Track                                                                                            AAMAS 2027, 3–7 May 2027, Hanoi, Vietnam
+
+
+
+
+Figure 1: From peer evaluation to future responsibility. (a) Both cases receive a revision judgment, but responsibility differs.
+An independent check 𝑄 of producer 𝐵’s original version 𝑣0, together with the recipient’s use trace, determines whether the
+observation forms evidence 𝑒 attributable to 𝐵. (b) Collaboration experiences are read before a later assignment; the executed
+assignment changes subsequent selection only after outcome validation. File changes, candidate state, and selections are
+schematic.
+
+    Method family              Observation and update             Responsibility / credit       Experimental object        Difference tested here
+    Meta-Team; RAPS [12, 22] Post-task accounts or first-/second- Teammate or content useful- Adaptive collaboration / Versioned use, indepen-
+                                hand evaluation; profiles or reputa- ness                       publishing                 dent producer gate, later
+                                tion update                                                                                assignment utility
+    Sero; C3; DecisionBench [6, Contract evolution, precise team Role constraints, contribution Reasoning, cooperation, or Recipient action and pro-
+    8, 9]                       credit, or judged trajectory cards credit, or capability sum- delegation                   ducer attribution remain
+                                                                     maries                                                separate
+    Partner selection / reputa- Interaction outcomes and shared Peer payoff or pooled reputa- Social games / language- Producer–recipient arti-
+    tion [28, 29, 35]           assessments                          tion                       agent society              fact ownership
+    AgentNet; GPTSwarm [37, Traces, graph structure, and rout- Route or role utility            Graph / workflow coordi- Action bound to one de-
+    42]                         ing outcomes                                                    nation                     livery and future owner
+    Dynamic roles / experts Context and role/subtask perfor- Role or expert utility             Debate / mixture-of- Responsibility gate and
+    [21, 40]                    mance                                                           experts workflow           delayed correction
+    Finite-time bandit [3]      Selected-arm reward after execu- Arm-level reward               Pre-execution choice       Context, ownership, and
+                                tion                                                                                       delay require qualifica-
+                                                                                                                           tion
+Table 1: Comparison dimensions. Adapted experiments preserve matched public information, feedback timing, and complete
+cost; rows denote different research objects rather than interchangeable implementations.
+
+
+
+where 𝑈 is the frozen quality–complete-cost utility. This quan-                 calibrates the selector from the executed result. Responsibility val-
+tity asks where a candidate should again receive responsibility,                idation distinguishes what a peer observed from what can be at-
+not whether it has context-free global ability. Producer quality,               tributed to the producer. Table 2 gives the execution order; later
+recipient evaluation, and team outcome are recorded separately.                 results cannot change earlier assignments.
+Team success does not prove that every member performed well;                      Source evaluation and target execution can occur in different
+a negative judgment does not automatically label the producer.                  tasks: the source contributes experience, while the target supplies
+Self-description supplies at most an initial prior and never verified           feedback about an actual allocation. Publishing the former does not
+evidence.                                                                       imply that the latter has happened.
+
+                                                                                4.1     Observation and responsibility
+                                                                                We define observation completeness 𝑂𝑖 ∈ {0, 1} and producer-
+4    Earning Roles                                                              attribution eligibility 𝐺𝑖 ∈ {0, 1}. 𝑂𝑖 = 1 when the evaluation,
+The protocol preserves evaluations from actual collaborators, or-               versioned delivery, recipient action, and independent check are
+ganizes task-relevant history, assigns the next responsibility, and             completely bound under the prescribed time order. It does not
+Research Paper Track                                                                                                     AAMAS 2027, 3–7 May 2027, Hanoi, Vietnam
+
+
+Event                  Sealed information and state transition                         Explicitly, the two public views at a common read cut are
+1. Deliver             Record producer, responsibility contract, artifact ver-                        R𝑡obs = {𝑒˜𝑖 : 𝑂𝑖 = 1, 𝜏𝑖 ≤ 𝑤𝑡 },                       (6)
+                       sion 𝑜𝑖 , and source cost.
+2. Judge               The recipient seals 𝐽𝑖 before using or editing the deliv-                     R𝑡cred = {𝑒˜𝑖 : 𝑂𝑖 = 1, 𝐺𝑖 = 1, 𝜏𝑖 ≤ 𝑤𝑡 }.               (7)
+                       ery; no policy update occurs.
+3. Use                 Record acceptance, revision, or rejection as 𝑚𝑖 , together
+                                                                                    Thus R𝑡cred ⊆ R𝑡obs : attribution qualifies a subset without turning the
+                       with the actual use context.                                 remaining observations into failed deliveries. Attribution coverage
+4. Publish             Bind the observation and independent check in 𝑒𝑖src ;        and observation coverage can therefore change independently, and
+                       publish by arrival order, leaving Θ unchanged.               both are reported.
+5. Assign              At 𝑤𝑡 , resolve legal history and seal the candidate menu,     History is divided into an archive and a new delta:
+                       input snapshot, chosen 𝑎𝑡 , and propensity 𝑝𝑡 .
+6. Execute             Run the sealed choice without resampling; obtain 𝑌 𝑗tar                 𝑃 𝑣,𝑘 = summarize{𝑒˜𝑖 ∈ E𝑡obs (𝑣) : 𝜏𝑖 < 𝜅𝑘 },                 (8)
+                       and complete cost for the selected assignment.                         𝐷 𝑣,𝑘,𝑡 = summarize{𝑒˜𝑖 ∈ E𝑡obs (𝑣) : 𝜅𝑘 ≤ 𝜏𝑖 ≤ 𝑤𝑡 },           (9)
+7. Validate            Match feedback to its assignment. Only valid, selected-
+                       only, once-only 𝐿 𝑗 updates later residual state.                      𝑧𝑡 (𝑣) = [𝜙 (𝑥𝑡 ) ∥ 𝜙 (𝑃 𝑣,𝑘 ) ∥ 𝜙 (𝐷 𝑣,𝑘,𝑡 ) ∥ 𝑏𝑡 (𝑣)].      (10)
+Table 2: Operational order across a source delivery and a                           The structured summaries retain source identifiers; empty history
+subsequent target assignment. A source evaluation is never                          is explicit. The archive cut satisfies 𝜅𝑘 ≤ 𝑤𝑡 , and archive and delta
+the outcome of an unexecuted target.                                                never duplicate a source in the same snapshot. Corrections rebuild
+                                                                                    an affected archive before its next read, advance the archive version,
+                                                                                    and repartition the delta. This prevents an obsolete record from
+                                                                                    remaining in the archive while its correction is counted again in
+                                                                                    the delta.
+depend on whether the recipient accepts, revises, or rejects; all
+                                                                                       The frozen encoder 𝜙 (·) ∈ R𝑑 represents the task, archive, and
+three remain collaboration experience.
+                                                                                    delta. Public version and coverage fields form 𝑏𝑡 (𝑣) ∈ R𝑑𝑏 , so con-
+   𝐺𝑖 = 1 adds responsibility requirements: the original delivery
+                                                                                    catenation yields 𝑧𝑡 (𝑣) ∈ R3𝑑+𝑑𝑏 . The archive summarizes others’
+maps uniquely to a predeclared producer duty, the recipient actu-
+                                                                                    evaluations of actual work; self-description supplies only an initial
+ally used it, the independent check supports attribution, and the
+                                                                                    reference. Joint task and history encoding allows the same candi-
+evidence does not mix recipient-owned integration changes. Re-
+                                                                                    date to receive different responsibility opportunities under different
+sponsibility follows the task contract, artifact lineage, and actual
+                                                                                    requirements.
+modifications rather than the evaluator’s assertion. Recipient-only
+                                                                                       A fixed head and candidate-specific residual define
+work, mixed ownership, or unresolved responsibility does not gen-
+                                                                                                                                   ⊤
+erate producer reward or penalty. Records with 𝑂𝑖 = 1, 𝐺𝑖 = 0                                             𝑠𝑡 (𝑣) = 𝑔𝜓 (𝑧𝑡 (𝑣)) + 𝜃 𝑣,𝑡 𝜙 (𝑥𝑡 ).             (11)
+remain typed contextual observations but cannot be reinterpreted
+as producer-quality labels. In the queue example, 𝐴’s integration dif-              Here 𝑔𝜓    : R3𝑑+𝑑𝑏   → R is fixed during online operation, while
+ficulty may affect future collaboration choice, but it cannot become                𝜃 𝑣,𝑡 ∈ R𝑑 is the candidate’s residual and Θ𝑡 = {𝜃 𝑣,𝑡 } 𝑣 . The first term
+evidence that 𝐵’s module is defective.                                              reads current collaboration experience; the second calibrates scores
+                                                                                    from previously validated execution outcomes. With temperature
+                                                                                    𝑇 > 0 and exploration 0 < 𝜀 < 1,
+4.2      History and assignment
+At read cut 𝑤𝑡 , candidate version 𝑣 exposes                                                                     exp(𝑠𝑡 (𝑣)/𝑇 )
+                                                                                                 𝑞𝑡 (𝑣) = Í                           ,                     (12)
+                                                                                                               𝑢 ∈𝐶𝑡 exp(𝑠𝑡 (𝑢)/𝑇 )
+      E𝑡obs (𝑣) = Resolve𝑤𝑡 {𝑒˜𝑖 : 𝑂𝑖 = 1, 𝑎𝑖 = 𝑣, 𝜏𝑖 ≤ 𝑤𝑡 },                 (4)                𝜋𝑡 (𝑣) = (1 − 𝜀)𝑞𝑡 (𝑣) + 𝜀/|𝐶𝑡 |,            𝑎 𝑡 ∼ 𝜋𝑡 .    (13)
+      E𝑡cred (𝑣) = Resolve𝑤𝑡 {𝑒˜𝑖 : 𝑂𝑖 = 1, 𝐺𝑖 = 1, 𝑎𝑖 = 𝑣, 𝜏𝑖 ≤ 𝑤𝑡 }.        (5)   Every candidate therefore retains nonzero opportunity. The as-
+Resolve𝑤𝑡 deduplicates by source and retains only the valid ver-                    signment record seals the candidate set, sample, probability, and
+sion known at 𝑤𝑡 . Different versions of one agent remain distinct                  history version before target execution. Unselected candidates re-
+candidates. Records are filtered by publication arrival, not task oc-               ceive no outcome labels. Complete cost includes selected-agent
+currence, so late evaluations affect only later choices. The public                 work, recipient integration, evaluation, and validation.
+projection retains judgment category, recipient identity, use context,                 More precisely, 𝜋𝑡 (𝑣) ≥ 𝜀/|𝐶𝑡 | for every legal candidate, in-
+and attribution type.                                                               cluding those with little recorded experience. Temperature and
+   Globally, R𝑡obs retains complete recipient observations, including               exploration remain fixed by the experimental configuration. The
+records with unresolved responsibility, whereas R𝑡cred contains at-                 sealed choice is executed without resampling after the outcome is
+tributable evidence. Publishing either view does not change Θ, the                  known.
+update count, or the policy digest. Records with 𝐺𝑖 = 0 may enter
+context as unknown or mixed responsibility, but cannot generate                     4.3    Delayed updating
+source credit or trigger a parameter update by themselves. Only a                   Publication and parameter updating are independent:
+validated later 𝐿 𝑗 can trigger updating. The gate therefore changes                                    publish(𝑒˜𝑖 ) : 𝑅 ← 𝑅 ∪ {𝑒˜𝑖 },                     (14)
+the meaning and update eligibility of evidence without silently
+discarding observations that lack attribution.                                                          update(𝐿 𝑗 ) : Θ+ = 𝑈 delay (Θ; 𝐿 𝑗 ).              (15)
+Research Paper Track                                                                                            AAMAS 2027, 3–7 May 2027, Hanoi, Vietnam
+
+
+
+
+Figure 2: Experience reading and delayed updating. (a) Effective history is split into archive 𝑃 and delta 𝐷, then combined with
+task representation and public metadata. The candidate and propensity are sealed before execution. (b) After execution, the
+matching independent quality and cost outcome must pass identity, responsibility, and once-only checks before updating the
+residual used by later decisions.
+
+
+State                  Information and time of change                              This separation lets new evaluations inform a decision while
+Public record 𝑅        Versioned, typed experience; changes at publication      parameters remain fixed, and lets subsequent execution correct
+                       or correction arrival.                                   longer-term allocation. Experiments disable evaluation reading
+Archive 𝑃 𝑣,𝑘          Earlier valid experience; refreshed at archive cuts or   and parameter updating separately. Responsibility interventions
+                       corrected-source rebuilds.                               test whether recipient-owned work is mistakenly converted into
+Delta 𝐷 𝑣,𝑘,𝑡          New valid experience after the archive cut; read at      producer reward or punishment.
+                       the next selection.
+Residual Θ             Task-related score correction; changes once per val-
+                       idated assignment feedback.                              5   Benchmarks and Baselines
+Assignment 𝑎𝑡 , 𝑝𝑡     Selected candidate and propensity; fixed before exe-        ArtifactRole. The primary track uses TeamBench’s dependency
+                       cution, never overwritten.
+                                                                                structure [17] to expose producer delivery, recipient use and evalu-
+Table 3: Experience and parameters change at different times.                   ation, responsibility checks, later assignment, and complete cost.
+                                                                                DIST1 queue-race and PIPE3 stream-processing separate develop-
+                                                                                ment and confirmation roots; changing a random seed does not
+                                                                                create a new structural root. A root identifies a task-generation
+                                                                                mechanism and dependency structure. Results are reported per root
+The source record contains no 𝐿 𝑗 ; this feedback is constructed only           to distinguish adaptation within a task family from transfer across
+after the later assignment is executed and validated. Publication               tasks. Producer contract conformance and terminal usability are
+leaves Θ, the update count, and the policy digest unchanged. 𝐿 𝑗                scored separately because a recipient may normalize a nonconform-
+binds the pre-execution assignment, propensity, and input snapshot              ing delivery into a usable result. Every executed arm, including
+to the independent target outcome, responsibility check, quality,               no-update, receives terminal evaluation. Native benchmark con-
+and complete cost. The frozen activation manifest specifies repre-              formance remains a separate metric. Valid assignment credit is
+sentation, updater, initialization, clipping, batching, and stopping            required for updating, not for entry into the intention-to-treat out-
+constants. Validation checks assignment order, candidate identity,              come denominator.
+outcome completeness, reward semantics, and once-only use. Valid
+successes and failures both form feedback; missing or unattributable               PeerSelect. The secondary track uses a versioned benchmark of
+labels do not update.                                                           interactions on a local graph to isolate selected-only payoff, local
+   Each update uses the selected assignment’s sealed input, rather              candidate sets, online updating, drift, and service cost. It cannot
+than reconstructing that decision with a newer archive. It calibrates           establish artifact-specific judgment or producer attribution. The two
+future assignment value; it does not relabel the source delivery. The           tracks share event and selector interfaces while retaining separate
+source recipient’s own integration work cannot directly reward                  tasks, labels, scorers, denominators, and claims.
+or penalize the producer, and a target team’s terminal result alone                Agent benchmarks supply complementary coordination and in-
+is insufficient as a producer-ability label. Duplicate feedback is              teraction coverage [1, 23, 32, 38, 41]. They do not, by default, expose
+counted once. Corrections and delayed records affect only choices               the proposed producer–recipient lineage. All primary arms receive
+after their arrival. Table 3 makes the different update times explicit.         matched candidate menus, initial opportunities, model/API/tool
+Research Paper Track                                                                                      AAMAS 2027, 3–7 May 2027, Hanoi, Vietnam
+
+
+budgets, exploration, feedback arrival schedules, failure handling,       prevents selective exclusion of unsuccessful or unobservable as-
+and complete-cost accounting.                                             signments from improving the apparent quality–cost result.
+   RLS, online logistic regression, SGD, and periodic refitting are          Each request reserves attempts, prompt and completion tokens,
+compared under the same selection interface. This separates updater       tool time, and storage before dispatch. Observed costs from errors
+computation from responsibility-aware information use. Continual-         are retained. Complete cost covers producer execution, recipient
+learning and multi-agent non-stationarity motivate the drift and          integration, judgment service, communication, retries, replay, val-
+forgetting analyses [13, 16]; agent ranking and human–LLM team-           idation, and returned artifacts. We record configuration, model
+ing motivate generality and deployment boundaries [18, 39].               route/version, code/data hashes, seed, hardware, timestamps, raw
+                                                                          responses, token use, actions, failures, unknown reasons, and per-
+6    Experimental Questions and Matrix                                    sample results. Reports include stream-level means, medians, 95%
+RQ1 (information value). Does eligible situated evaluation pre-           intervals, effect sizes, root heterogeneity, ITT and per-protocol
+dict an independent producer-contract or later-use result beyond          denominators, and quality–cost Pareto points.
+raw acceptance and terminal-only feedback? Measures are held-out             Development and search costs are reported separately from de-
+log loss, Brier score [4], AUC when defined, calibration [11], and        ployment costs. The pooled controller receives the same total ca-
+incremental value on an independent root.                                 pacity. Judgment-free arms either pay the declared comparison cost
+   RQ2 (assignment causality). Does public evidence change an             or share a judgment call whose output is masked. This prevents a
+assignment sealed before target execution, including transfer to          change in information access from silently changing the charged
+a future owner different from the source producer? Measures are           budget. We report observation-publication, attribution-pass, and
+assignment-change probability, propensity-weighted future quality,        valid-update rates alongside outcomes to expose the coverage lost
+adoption, rework, and complete cost. Evidence about 𝐵 cannot be           at each qualification step. Future assignment quality–complete-cost
+consumed as evidence about 𝐶.                                             utility is the primary endpoint; source producer scores are auxiliary
+   RQ3 (online behavior). Does delayed selected-only updating             and cannot replace it.
+satisfy the service contract? Measures are publication, selection, and       Mechanism ablations. Count-only and judgment-masked con-
+update p50/p95 latency; service lag; backlog; state bytes; processor,     trols preserve handoff count, arrival time, and cost while removing
+accelerator, and memory use; tokens, tools, and API calls; and replay     judgment category. The 2 × 2 design crosses public evaluation vis-
+time.                                                                     ibility 𝑒 with validated delayed updating 𝑢. With expected utility
+   RQ4 (stability and boundaries). How does the method behave             𝑉𝑒𝑢 ,
+under task or peer drift, delayed or out-of-order feedback, version                          Δobs|upd = 𝑉11 − 𝑉01,
+replacement, recipient-only work, mixed ownership, scorer failure,                          Δupd|obs = 𝑉11 − 𝑉10,                            (16)
+and resource failure? Measures are peak and mean old-root forget-
+                                                                                                    𝐼 = 𝑉11 − 𝑉10 − 𝑉01 + 𝑉00 .
+ting, recovery window, unknown rate, correction consistency, and
+false producer attribution.                                               These contrasts distinguish information, updating, and interaction
+   The uncertainty unit is an independently reset stream; events          on the same utility scale. The total difference 𝑉11 −𝑉00 > 0 can arise
+within a stream are dependent. We use paired stream-level esti-           entirely from reading evaluations and does not by itself establish an
+mates, bootstrap or randomization intervals over streams, and             updating benefit. Masking hides evaluation from the selector, with-
+preregistered multiplicity control. Missing, invalid, and unknown         out removing audit records or skipping responsibility validation.
+events remain in their declared denominators. H1 is judgment Brier        Disabling parameter updates still allows newly visible evaluations
+score, H2 future quality–complete-cost utility, H3 update p95 and         to affect a later choice.
+backlog, and H4 false producer-attribution rate. H2 is higher-is-            For example, after 𝐴 evaluates 𝐵’s delivery, the evaluation-only
+better; the others are lower-is-better. Comparison direction, pre-        arm may choose 𝐶 while keeping parameters fixed. The full arm
+cision target, 95% interval, and stopping rule are sealed before          additionally updates after a later executed task produces valid feed-
+confirmation outcomes are read.                                           back. Their subsequent executed tasks, rather than only score pre-
+                                                                          views, determine whether updating is useful. Neither arm may turn
+   Denominators. Eligibility for learning must not filter the popu-       𝐴’s own integration work into a negative label for 𝐵.
+lation used to estimate team performance. Table 6 distinguishes              The four arms share initial states and exogenous task schedules,
+the six relevant counts. Always 𝑁 credit ≤ 𝑁 outcome ; credit eligibil-   but each retains its own choices, deliveries, and histories. Uncer-
+ity never filters the H2 intention-to-treat denominator. Predictive       tainty is estimated over paired independent streams. Fixed-history
+metrics use only their predefined scorable-label subset while report-     replay tests input sensitivity, not online utility differences. Because
+ing the full denominator and reasons for missingness. Unselected          this ablation deliberately changes visible information, it does not re-
+candidates have no outcome labels and are not treated as failed           place the same-information primary comparison. Both the charging
+samples.                                                                  rule and measured costs are reported.
+   The count hierarchy locates failures without conflating them              Responsibility interventions fix the producer delivery and vary
+with learning eligibility. A scheduled target that never starts con-      recipient-owned integration. We inspect attribution labels, param-
+tributes to planned load and stopping rules, but not to the outcome       eter updates, and later choice probabilities separately: avoiding
+denominator. Once a target starts, scorer, attribution, or resource       a false producer label does not require every choice probability
+failures remain in H2 with their incurred cost, even when they            to remain unchanged. Other interventions remove the responsi-
+cannot supply an update. Reporting update coverage separately             bility gate, selected-only constraint, delay handling, locality, or
+Research Paper Track                                                                                                    AAMAS 2027, 3–7 May 2027, Hanoi, Vietnam
+
+
+        Arm                         Read / update contract                                             Alternative explanation tested
+        Uniform                     Candidate menu; fixed local-uniform sampling                       Random allocation and exploration floor
+        No update                   Initial prior and current context; feedback ignored                Static execution is sufficient
+        Raw acceptance              Recipient acceptance / rejection only                              Responsibility filtering adds no value
+        Terminal only               Independent terminal outcome only                                  Situated evaluation adds no information
+        Contextual trust / bandit   Same context, evaluation, propensity, delay, and budget as rare    Ordinary contextual learning explains the effect
+        Pooled controller           Permitted public history at matched total capacity                 Shared control explains the gain
+        Closest       published     Public-information adapter preserving source semantics             Existing role / organization method is sufficient
+        adapter
+        rare                        Observation and responsibility separated; validated selected as- Complete evaluation–delegation–calibration mecha-
+                                    signment updates                                                 nism
+   Table 4: Predeclared baselines. Same-information comparisons preserve context, feedback timing, and complete budget.
+
+
+
+     Cell          Track / root                Strategy / intervention                  Matched comparison                           Measurement / result
+     RQ1-I         ArtifactRole / dev          Raw vs. terminal vs. rare                Same delivery, recipient observation, legal Brier/log loss, calibra-
+                                                                                        feedback                                    tion: xx
+     RQ1-II        ArtifactRole / confirm      Contextual trust vs. rare                Same read cut, delay, propensity, model, Incremental prediction,
+                                                                                        budget                                      transfer: xx
+     RQ2-I         ArtifactRole / confirm      No evidence vs. public evidence          Preview and assignment before target exe- Change, quality, adop-
+                                                                                        cution                                      tion, rework: xx
+     RQ2-II        ArtifactRole / confirm      Delayed-only vs. evidence+delay          Same target and selected-only outcome       Future utility, complete
+                                                                                                                                    cost: xx
+     RQ2-III       ArtifactRole / confirm      rare vs. pooled controller               Same capacity and candidate menu            Utility, concentration,
+                                                                                                                                    propensity: xx
+     RQ3-I         PeerSelect / dev stream     Uniform, no/history, updater             Pinned graph and call/token budget          Payoff, p50/p95, state
+                                                                                                                                    bytes: xx
+     RQ3-II        PeerSelect / drift          Update with/without replay               Fixed peer/task drift and delay             Recovery, forgetting,
+                                                                                                                                    backlog: xx
+     RQ4-I         ArtifactRole / eligible Responsibility mutations                     Producer, recipient, mixed, unknown, fail- Attribution,          UN-
+                   roots                                                                ure                                         KNOWN, no-op: xx
+     RQ4-II        ArtifactRole / eligible Remove one mechanism                         Gate, evidence, delay, locality, updater    Utility, safety, cost, in-
+                   roots                                                                                                            teraction: xx
+Table 5: Preregistered matrix. Each cell is bound to a structural root, split, policy, seed, budget, scorer, cost record, and raw-event
+manifest.
+
+
+
+Count                   Definition and reporting use                                tests cover duplicates, late records, and corrections across archive
+𝑁 scheduled             Preregistered, eligible targets; planned load and stop-     cuts, verifying that effective history retains only one version of
+                        ping rules.                                                 each source.
+𝑁 started               Targets actually started after selection; coverage and
+                        resource use.                                               7     Results
+𝑁 outcome               All started targets, including failed, unknown, and
+                                                                                       RQ1: information value. In ArtifactRole, rare differed from raw
+                        invalid outcomes; H2 ITT denominator.
+                                                                                    acceptance, terminal-only feedback, and same-information contex-
+𝑁 credit                Subset with valid assignment, lineage, selected-only
+                        outcome, reward contract, and once-only feedback;           tual trust in Brier score by xx, xx, and xx (stream-level 95% CIs: xx,
+                        legal updates.                                              xx, and xx). Log loss, calibration error, and cross-root transfer were
+𝑁 obs                   Complete source observations (𝑂𝑖 = 1); information          xx, xx, and xx. The evaluation included xx valid observations, an
+                        coverage.                                                   unknown rate of xx, and judgment-service cost of xx. Predictive
+𝑁 attr                  Responsibility-qualified evidence (𝐺𝑖 = 1); attribu-        metrics remain distinct from team utility.
+                        tion coverage.
+                                                                                       RQ2: assignment change. Candidate sets, public history, propensi-
+Table 6: Outcome coverage and update eligibility are reported
+                                                                                    ties, and samples were sealed before target execution. We compared
+separately.
+                                                                                    executed later tasks under no evidence, public evidence only, de-
+                                                                                    layed updating only, and rare. Under rare, assignment-change
+                                                                                    rate, future quality, rework, and quality–complete-cost utility were
+                                                                                    xx, xx, xx, and xx (95% CI: xx). All scheduled targets that actually
+replay while matching models, candidates, and budgets. Version                      started entered the H2 ITT denominator, including quality-check,
+Research Paper Track                                                                                     AAMAS 2027, 3–7 May 2027, Hanoi, Vietnam
+
+
+ Endpoint                    rare         Same-info.   Difference /      aggregate success. PeerSelect describes responsibility opportunities
+                                          baseline     CI                within local candidate sets; broader organizational restructuring
+ Future quality           xx              xx           xx                requires candidate discovery and a new cost contract.
+ Complete cost            xx              xx           xx                   Human-inspired collaboration does not make peer evaluation
+ Quality–cost utility     xx              xx           xx                ground truth. A recipient may misjudge, report selectively, or at-
+ Assignment change        xx              xx           xx                tribute its own integration difficulty to the producer. Complete
+ Judgment Brier           xx              xx           xx                but unattributable records remain contextual observations rather
+ Update p95 / state bytes xx              xx           xx                than producer rewards, and missing or invalid records do not up-
+ Old-root forgetting      xx              xx           xx                date. This protects attribution at the cost of fewer learning exam-
+ UNKNOWN / false attribu- xx              xx           xx
+                                                                         ples. Cross-recipient judgment, quality calibration, and adversarial-
+ tion
+                                                                         feedback modeling are directions for improving reliability without
+Table 7: Primary results against contextual trust/bandit, the            relaxing the responsibility boundary.
+same-information baseline; intervals use independently re-                  Waiting for an executed future assignment grounds updating in
+set streams.                                                             actual allocation outcomes, but delays adaptation to change. Wait-
+                                                                         ing alone does not establish attribution; independent responsibility
+                                                                         checks remain necessary. The bounded selected-only update does
+            Evaluation Update Future utility (95% CI) Cost
+                                                                         not solve multi-step credit assignment over long chains. Hierar-
+                                                                         chical update timescales, risk-sensitive exploration, and resource
+            Masked     Off              xx             xx                scheduling for unresolved events remain outside the present scope.
+            Visible    Off              xx             xx
+                                                                            Frozen representations and a small update head reduce service
+            Masked     On               xx             xx
+                                                                         cost but may under-express rapid semantic or relational drift; up-
+            Visible    On               xx             xx
+                                                                         dating a larger encoder instead raises latency and forgetting risk.
+        Table 8: Evaluation–update factorial ablation.                   Real-time adaptation must therefore be evaluated jointly through
+                                                                         new-task adaptation, old-task retention, and complete service cost.
+                                                                         Parameter-efficient adaptation, compressed memory, and versioned
+                                                                         states that support rollback offer directions for extending this trade-
+unknown, invalid, resource, and scorer failures. Only the subset         off.
+passing assignment-credit validation produced 𝐿 𝑗 for delayed up-           Finally, complete lineage and audit records impose storage, pri-
+date and assignment credit.                                              vacy, and communication costs. Compressed delivery summaries
+  RQ3: service behavior. In PeerSelect, publish, read/assignment,        reduce cost but may discard details needed for judgment; cross-tool
+and update p50/p95 latency were xx, xx, and xx. Backlog, state           or cross-organization deployments may not share all responsibil-
+bytes, model calls, tokens, replay time, and complete service cost       ity fields. Practical systems must trade replayability against data
+were xx, xx, xx, xx, xx, and xx; the difference from matched-budget      minimization and preserve a safe unknown branch for absent in-
+updaters was xx. This track establishes the online service boundary      formation. These choices must be assessed under the same service
+but does not substitute for ArtifactRole attribution evidence.           budget, including the cost of retaining the records required to ex-
+                                                                         plain and replay an assignment.
+   RQ4: responsibility and drift. Under recipient-only repair, mixed
+ownership, unknown responsibility, version replacement, out-of-          9   Conclusion
+order feedback, and resource failure, false producer attribution,
+                                                                         Earning roles transfers a principle of human collaboration to multi-
+unknown precision, observation publication, valid update, drift
+                                                                         agent systems: future responsibility should depend on how partners
+recovery, old-root forgetting, and no-op rate were xx, xx, xx, xx, xx,
+                                                                         evaluate concrete work and on whether subsequent delegation suc-
+xx, and xx (95% CI: xx). Records whose responsibility could not be
+                                                                         ceeds. Recipient evaluation forms task-situated role evidence; inde-
+independently determined remained contextual observations and
+                                                                         pendent validation separates observation from producer attribution;
+did not trigger producer reward or an ineligible parameter update.
+                                                                         and later quality and complete cost calibrate the selector. The re-
+   Results are organized by structural root, candidate menu, public
+                                                                         sulting object is directly testable: whether collaborator evaluation
+information, feedback timing, budget, and stopping rule. ITT and
+                                                                         changes future assignments and improves team performance on
+per-protocol denominators, costs of failed runs, unknown reasons,
+                                                                         new tasks without sacrificing responsibility safety, service behavior,
+and version corrections are reported together. Runs with incomplete
+                                                                         stability, or cost.
+integrity records do not supply numerical effect estimates; they
+remain represented in coverage and missingness reports, and their
+incurred cost is retained. Responsibility safety, prediction accuracy,
+and team utility are reported separately.
+
+8    Discussion and Limitations
+The method applies when responsibility boundaries, artifact ver-
+sions, and later outcomes can be recorded explicitly. It does not
+discover open-ended workflows or infer general expertise from
+Research Paper Track                                                                                                              AAMAS 2027, 3–7 May 2027, Hanoi, Vietnam
+
+
+References                                                                                [20] Lihong Li, Wei Chu, John Langford, and Robert E. Schapire. 2010. A Contextual-
+ [1] Saaket Agashe, Yue Fan, Anthony Reyna, and Xin Eric Wang. 2025. LLM-                      Bandit Approach to Personalized News Article Recommendation. In Proceedings
+     Coordination: Evaluating and Analyzing Multi-agent Coordination Abilities                 of the 19th International Conference on World Wide Web. ACM, 661–670. doi:10.
+     in Large Language Models. In Findings of the Association for Computational Lin-           1145/1772690.1772758
+     guistics: NAACL 2025. Association for Computational Linguistics, 8053–8072.          [21] Peiwen Li, Shiyang Zhang, Yangtian Zhang, Sizhuang He, David van Dijk, and
+     doi:10.18653/v1/2025.findings-naacl.448                                                   Rex Ying. 2026. MoRSE: Task-Oriented Multi-Agent System with Mixture of
+ [2] Elif Akata, Lion Schulz, Julian Coda-Forno, Seong Joon Oh, Matthias Bethge, and           Role-Subtask Experts. arXiv:2608.09251 https://arxiv.org/abs/2608.09251
+     Eric Schulz. 2025. Playing Repeated Games with Large Language Models. Nature         [22] Ruizhe Li, Zhen Zhang, Xinyu Bo, Qian Dai, Cheng Li, Fei Wen, and Xilin Chen.
+     Human Behaviour 9, 7 (2025), 1380–1390. doi:10.1038/s41562-025-02172-y                    2026. Towards Adaptive, Scalable, and Robust Coordination of LLM Agents: A
+ [3] Peter Auer, Nicolò Cesa-Bianchi, and Paul Fischer. 2002. Finite-time Analysis of          Dynamic Ad-Hoc Networking Perspective. arXiv:2602.08009 https://arxiv.org/
+     the Multiarmed Bandit Problem. Machine Learning 47 (2002), 235–256. doi:10.               abs/2602.08009
+     1023/A:1013689704352                                                                 [23] Xiao Liu, Hao Yu, Hanchen Zhang, Yifan Xu, Xuanyu Lei, Hanyu Lai, Yu
+ [4] Glenn W. Brier. 1950. Verification of Forecasts Expressed in Terms of Probability.        Gu, Hangliang Ding, Kaiwen Men, Kejuan Yang, Shudan Zhang, Xiang Deng,
+     Monthly Weather Review 78, 1 (1950), 1–3. doi:10.1175/1520-0493(1950)078<0001:            Aohan Zeng, Zhengxiao Du, Chenhui Zhang, Sheng Shen, Tianjun Zhang,
+     VOFEIT>2.0.CO;2                                                                           Yu Su, Huan Sun, Minlie Huang, Yuxiao Dong, and Jie Tang. 2024. Agent-
+ [5] Weize Chen, Yusheng Su, Jingwei Zuo, Cheng Yang, Chenfei Yuan, Chi-                       Bench: Evaluating LLMs as Agents. In International Conference on Learn-
+     Min Chan, Heyang Yu, Yaxi Lu, Yi-Hsin Hung, Chen Qian, Yujia Qin,                         ing Representations. https://proceedings.iclr.cc/paper_files/paper/2024/hash/
+     Xin Cong, Ruobing Xie, Zhiyuan Liu, Maosong Sun, and Jie Zhou.                            e9df36b21ff4ee211a8b71ee8b7e9f57-Abstract-Conference.html
+     2024. AgentVerse: Facilitating Multi-Agent Collaboration and Exploring               [24] Thomas W. Malone and Kevin Crowston. 1994. The Interdisciplinary Study of
+     Emergent Behaviors. In International Conference on Learning Representa-                   Coordination. Comput. Surveys 26, 1 (1994), 87–119. doi:10.1145/174666.174668
+     tions. 20094–20136. https://proceedings.iclr.cc/paper_files/paper/2024/hash/         [25] Giorgio Piatti, Zhijing Jin, Max Kleiman-Weiner, Bernhard Schölkopf, Mrinmaya
+     578e65cdee35d00c708d4c64bce32971-Abstract-Conference.html                                 Sachan, and Rada Mihalcea. 2024. Cooperate or Collapse: Emergence of Sustain-
+ [6] Yuhang Chen, Yutao Sun, Hao Wang, Jiawei Wang, Xinyu Zhang, Xue Shen, Wei                 able Cooperation in a Society of LLM Agents. In Advances in Neural Information
+     Li, and Weinan Zhang. 2026. Exact Is Easier: Credit Assignment for Cooperative            Processing Systems, Vol. 37. 111715–111759. doi:10.52202/079017-3548
+     LLM Agents. arXiv:2603.06859 https://arxiv.org/abs/2603.06859                        [26] Iñigo Pinyol and Jordi Sabater-Mir. 2013. Computational Trust and Reputation
+ [7] Jakob Foerster, Gregory Farquhar, Triantafyllos Afouras, Nantas Nardelli, and             Models for Open Multi-Agent Systems: A Review. Artificial Intelligence Review
+     Shimon Whiteson. 2018. Counterfactual Multi-Agent Policy Gradients. In Pro-               40 (2013), 607–626. doi:10.1007/s10462-011-9277-z
+     ceedings of the Thirty-Second AAAI Conference on Artificial Intelligence, Vol. 32.   [27] Tabish Rashid, Mikayel Samvelyan, Christian Schroeder de Witt, Gregory Far-
+     doi:10.1609/aaai.v32i1.11794                                                              quhar, Jakob Foerster, and Shimon Whiteson. 2020. Monotonic Value Function
+ [8] Yiming Gao, Mengdi Wang, Yaoliang Yu, Zhicheng Ma, and Anru Qu. 2026.                     Factorisation for Deep Multi-Agent Reinforcement Learning. Journal of Machine
+     DecisionBench: A Benchmark for Emergent Delegation in Long-Horizon Agentic                Learning Research 21, 178 (2020), 1–51. https://www.jmlr.org/papers/v21/20-
+     Workflows. arXiv:2605.19099 https://arxiv.org/abs/2605.19099                              081.html
+ [9] Linyan Ge and Lan-Zhe Guo. 2026. Roles with Rails: Contract-Preserving Role          [28] Siyue Ren, Wanli Fu, Xinkun Zou, Chen Shen, Yi Cai, Chen Chu, Zhen Wang,
+     Evolution in Multi-Agent Structured Reasoning. arXiv:2605.28433 https://arxiv.            and Shuyue Hu. 2026. Reputation as a Solution to Cooperation Collapse in
+     org/abs/2605.28433                                                                        LLM-based MASs. In Proceedings of the 25th International Conference on Au-
+[10] Brian P. Gerkey and Maja J. Matarić. 2004. A Formal Analysis and Taxonomy of              tonomous Agents and Multiagent Systems. IFAAMAS. https://www.ifaamas.org/
+     Task Allocation in Multi-Robot Systems. The International Journal of Robotics             Proceedings/aamas2026/pdfs/UEHN4980.pdf
+     Research 23, 9 (2004), 939–954. doi:10.1177/0278364904045564                         [29] Benedict Russell, Chin wing Leung, and Paolo Turrini. 2026. Defection at
+[11] Chuan Guo, Geoff Pleiss, Yu Sun, and Kilian Q. Weinberger. 2017. On Calibration           First Sight: Learning Partner Selection in Optional Social Dilemmas without
+     of Modern Neural Networks. In Proceedings of the 34th International Conference            Prior Information. In Proceedings of the 25th International Conference on Au-
+     on Machine Learning (Proceedings of Machine Learning Research, Vol. 70). PMLR,            tonomous Agents and Multiagent Systems. IFAAMAS. https://www.ifaamas.org/
+     1321–1330. https://proceedings.mlr.press/v70/guo17a.html                                  Proceedings/aamas2026/pdfs/IBSZ1473.pdf
+[12] Zixuan Hao, Tianyi Wang, Hongwei Dong, Zihan Liu, Haoyu Wang, Xinyu Lin,             [30] Jordi Sabater and Carles Sierra. 2002. Reputation and Social Network Analysis in
+     Qing Lin, Chao Wang, Hao Dong, and Jie Chen. 2026. Evolve as a Team: Collab-              Multi-Agent Systems. In Proceedings of the First International Joint Conference on
+     orative Self-Evolution for LLM-based Multi-Agent Systems. arXiv:2605.29790                Autonomous Agents and Multiagent Systems. 475–482. doi:10.1145/544741.544854
+     https://arxiv.org/abs/2605.29790                                                     [31] W. T. Luke Teacy, Jigar Patel, Nicholas R. Jennings, and Michael Luck. 2006.
+[13] Pablo Hernandez-Leal, Michael Kaisers, Tim Baarslag, and Enrique Munoz de                 TRAVOS: Trust and Reputation in the Context of Inaccurate Information Sources.
+     Cote. 2017. A Survey of Learning in Multiagent Environments: Dealing with                 Autonomous Agents and Multi-Agent Systems 12, 2 (2006), 183–198. doi:10.1007/
+     Non-Stationarity. arXiv:1707.09183 https://arxiv.org/abs/1707.09183                       s10458-006-5952-x
+[14] Sirui Hong, Mingchen Zhuge, Jonathan Chen, Xiawu Zheng, Yuheng Cheng,                [32] Harsh Trivedi, Tushar Khot, Mareike Hartmann, Ruskin Manku, Vinty Dong,
+     Jinlin Wang, Ceyao Zhang, Zili Wang, Steven Ka Shing Yau, Zijuan Lin, Liyang              Edward Li, Shashank Gupta, Ashish Sabharwal, and Niranjan Balasubramanian.
+     Zhou, Chenyu Ran, Lingfeng Xiao, Chenglin Wu, and Jürgen Schmidhuber. 2024.               2024. AppWorld: A Controllable World of Apps and People for Benchmarking
+     MetaGPT: Meta Programming for a Multi-Agent Collaborative Framework. In                   Interactive Coding Agents. In Proceedings of the 62nd Annual Meeting of the
+     International Conference on Learning Representations. Oral presentation. https:           Association for Computational Linguistics (Volume 1: Long Papers). Association
+     //iclr.cc/virtual/2024/oral/19756                                                         for Computational Linguistics, 16022–16076. doi:10.18653/v1/2024.acl-long.850
+[15] Pooria Joulani, Andras Gyorgy, and Csaba Szepesvari. 2013. Online Learning           [33] Daniel M. Wegner. 1987. Transactive Memory: A Contemporary Analysis of
+     under Delayed Feedback. In Proceedings of the 30th International Conference on            the Group Mind. In Theories of Group Behavior. Springer New York, 185–208.
+     Machine Learning (Proceedings of Machine Learning Research, Vol. 28). PMLR,               doi:10.1007/978-1-4612-4634-3_9
+     107–115. https://proceedings.mlr.press/v28/joulani13.html                            [34] Chin wing Leung and Paolo Turrini. 2024. Learning Partner Selection Rules
+[16] Khimya Khetarpal, Matthew Riemer, Irina Rish, and Doina Precup. 2022. To-                 that Sustain Cooperation in Social Dilemmas with the Option of Opting Out. In
+     wards Continual Reinforcement Learning: A Review and Perspectives. Journal                Proceedings of the 23rd International Conference on Autonomous Agents and Mul-
+     of Artificial Intelligence Research 75 (2022), 1401–1476. doi:10.1613/jair.1.13673        tiagent Systems. IFAAMAS, 1110–1118. https://www.ifaamas.org/Proceedings/
+[17] Yubin Kim, Chanwoo Park, Taehan Kim, Eugene Park, Samuel Schmidgall, Salman               aamas2024/pdfs/p1110.pdf
+     Rahman, Chunjong Park, Cynthia Breazeal, Xin Liu, Hamid Palangi, Hae Won             [35] Chin wing Leung, Paolo Turrini, and Ann Nowé. 2025. Curiosity-Driven Partner
+     Park, and Daniel McDuff. 2026. TeamBench: Evaluating Agent Coordination                   Selection Accelerates Convention Emergence in Language Games. In Proceedings
+     under Enforced Role Separation. arXiv preprint arXiv:2605.07073 (2026). https:            of the 24th International Conference on Autonomous Agents and Multiagent Systems.
+     //arxiv.org/abs/2605.07073                                                                IFAAMAS, 1282–1290. https://www.ifaamas.org/Proceedings/aamas2025/pdfs/
+[18] Marc Lanctot, Kate Larson, Michael Kaisers, Quentin Berthet, Ian Gemp, Manfred            p1282.pdf
+     Diaz, Roberto-Rafael Maura-Rivero, Yoram Bachrach, Anna Koop, and Doina              [36] Qingyun Wu, Gagan Bansal, Jieyu Zhang, Yiran Wu, Beibin Li, Erkang Zhu, Li
+     Precup. 2025. Soft Condorcet Optimization for Ranking of General Agents. In               Jiang, Xiaoyun Zhang, Shaokun Zhang, Jiale Liu, Ahmed Hassan Awadallah,
+     Proceedings of the 24th International Conference on Autonomous Agents and Mul-            Ryen W. White, Doug Burger, and Chi Wang. 2024. AutoGen: Enabling Next-Gen
+     tiagent Systems. IFAAMAS. https://www.ifaamas.org/Proceedings/aamas2025/                  LLM Applications via Multi-Agent Conversations. In Proceedings of the First Con-
+     pdfs/p1253.pdf                                                                            ference on Language Modeling. https://openreview.net/forum?id=BAakY1hNKS
+[19] Kyle Lewis. 2003. Measuring Transactive Memory Systems in the Field: Scale           [37] Yingxuan Yang, Huacan Chai, Shuai Shao, Yuanyi Song, Siyuan Qi, Renting Rui,
+     Development and Validation. Journal of Applied Psychology 88, 4 (2003), 587–604.          and Weinan Zhang. 2025. AgentNet: Decentralized Evolutionary Coordination
+     doi:10.1037/0021-9010.88.4.587                                                            for LLM-based Multi-Agent Systems. In Advances in Neural Information Pro-
+                                                                                               cessing Systems, Vol. 38. https://papers.nips.cc/paper_files/paper/2025/hash/
+                                                                                               9a379c1b05793d1c42dc832269834515-Abstract-Conference.html
+Research Paper Track                                                                                                           AAMAS 2027, 3–7 May 2027, Hanoi, Vietnam
+
+
+[38] Shunyu Yao, Noah Shinn, Pedram Razavi, and Karthik Narasimhan. 2025. 𝜏 -           [41] Kunlun Zhu, Hongyi Du, Zhaochen Hong, Xiaocheng Yang, Shuyi Guo, Zhe
+     bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains. In            Wang, Zhenhailong Wang, Cheng Qian, Xiangru Tang, Heng Ji, and Jiaxuan
+     International Conference on Learning Representations. https://openreview.net/           You. 2025. MultiAgentBench: Evaluating the Collaboration and Competition
+     forum?id=roNSXZpUDN                                                                     of LLM Agents. In Proceedings of the 63rd Annual Meeting of the Association for
+[39] Mireia Yurrita, Davide Dell’Anna, Pradeep K. Murukannaiah, Catholijn M. Jonker,         Computational Linguistics (Volume 1: Long Papers). Association for Computational
+     and Pinar Yolum. 2026. Developing Guidelines for Human-LLM Agent Teams:                 Linguistics, 8580–8622. doi:10.18653/v1/2025.acl-long.421
+     A Multi-Stakeholder Lens. In Proceedings of the 25th International Conference on   [42] Mingchen Zhuge, Wenyi Wang, Louis Kirsch, Francesco Faccio, Dmitrii
+     Autonomous Agents and Multiagent Systems. IFAAMAS. doi:10.65109/JOWO4591                Khizbullin, and Jürgen Schmidhuber. 2024. GPTSwarm: Language Agents as Op-
+[40] Miao Zhang, Junsik Kim, Siyuan Xiang, Jian Gao, and Cheng Cao. 2026. Dynamic            timizable Graphs. In Proceedings of the 41st International Conference on Machine
+     Role Assignment for Multi-Agent Debate. arXiv:2601.17152 https://arxiv.org/             Learning (Proceedings of Machine Learning Research, Vol. 235). PMLR, 62743–62767.
+     abs/2601.17152                                                                          https://proceedings.mlr.press/v235/zhuge24a.html
+

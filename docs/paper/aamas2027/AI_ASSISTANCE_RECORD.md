@@ -1096,3 +1096,32 @@ focused count is 9/9; v1 receipts remain immutable and the scientific gate stays
 ## 2026-10-08 — Guide v4 benchmark+baseline closure gate repair
 
 Codex incorporated the user's correction that a result-direction guide is insufficient for closing the benchmark+baseline acceptance standard. v4 adds B1--B7 closure conditions, exact `OPEN`/`CLOSED_FULL`/`FAIL` semantics, explicit separation of evidence closure from method superiority, and a fail-closed receipt validator. Eight software-only tests reject duplicate gates, missing future-Y, zero denominators, API/stop mismatches, malformed IDs/enums, and incomplete target cells; a synthetic neutral receipt is accepted only as a structural contract test. The watermarked five-page Guide PDF was rebuilt and synced as the current conditional Guide. No new LLM/API, benchmark, or GPU experiment occurred; scientific closure remains OPEN. Report: `docs/coordination/task_reports/20261008_guide_closure_gate_repair.md`.
+
+
+## 2026-10-09 — Chinese-authoritative English main PDF
+
+Codex translated and typeset the user-edited FORMAL_PAPER_ZH source, retaining xx
+result placeholders. Two Codex gpt-6-sol collaborators independently audited
+bibliography and Chinese/English alignment. Seven new primary-source references
+were added; three publication metadata records were corrected. Six layout
+versions were retained. Final verification found eight body pages, two reference
+pages, 42 compiled references, no unresolved references, and no overfull boxes.
+The canonical main.pdf was synchronized with the reviewed v6 artifact. No
+empirical experiment or scientific-gate promotion occurred.
+Report: docs/coordination/task_reports/20261009_chinese_authoritative_english_master.md.
+
+## 2026-10-09 — Handwritten expected-result companion v5
+
+Codex compared prior v1–v4 artifacts, re-read primary sources, manually authored aggregate expected values and subjective ranges, and used two read-only gpt-6-sol reviewers. The two-page watermarked companion maps to current main.pdf Tables 4, 6, and 7. Cost, attribution populations, disabled updates, drift recovery, and high-load ITT semantics were corrected; no synthetic per-event results or empirical model effects were produced. Main manuscript values remain unfilled. See `docs/coordination/task_reports/20261009_expected_experiment_table_v5.md`.
+
+
+## 2026-10-09 — Source-grounded expansion to fill eight body pages
+
+Codex expanded the existing Chinese method and evaluation explanation in English,
+adding the seven-event order table and clarifying record views, exploration,
+feedback timing, and outcome denominators. A read-only gpt-6-sol collaborator
+verified source alignment and pages 4, 5, and 8. Four candidate builds are retained.
+The promoted full_body_20261009_v4 has eight body pages plus two bibliography
+pages; the last body column leaves approximately 1.64 lines. No experimental
+results or method claims were added, and the scientific gate remains unchanged.
+Report: docs/coordination/task_reports/20261009_eight_page_body_expansion.md.

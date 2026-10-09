@@ -1,429 +1,400 @@
-% Internal pre-results manuscript.  Empirical cells are intentionally blank.
 \documentclass[sigconf,anonymous]{aamas}
 \usepackage{amsmath}
 \usepackage{booktabs}
 \usepackage{array}
 \usepackage{url}
 \input{aamas_metadata}
-% The official balance pass reports a 1.326pt final-page rounding diagnostic;
-% keep the warning threshold below any visible layout overflow.
 \vfuzz=1.5pt
-\acmSubmissionID{INTERNAL PRE-RESULTS -- NOT FOR SUBMISSION}
+\acmSubmissionID{Anonymous submission}
 \submissionType{Research Paper Track}
 
-\title[Know Who You Are]{Know Who You Are: Earning Roles from Situated Peer Judgments}
+\title[Earning Roles]{Earning Roles: Situated Peer Evaluation and Dynamic Responsibility Assignment}
 \author{Anonymous Authors}
-\affiliation{\institution{Internal research draft}}
+\affiliation{\institution{Anonymous Institution}}
 \email{omitted}
 \ccsdesc[500]{Computing methodologies~Multi-agent systems}
 \ccsdesc[300]{Computing methodologies~Cooperation and coordination}
-\keywords{multi-agent systems, role formation, peer judgment, online adaptation, responsibility}
+\keywords{multi-agent systems, human social collaboration, dynamic roles, peer evaluation, online adaptation, responsibility attribution}
 
-\newcommand{\blank}{\textemdash}
-\newcommand{\unknown}{\textsc{unknown}}
 \newcommand{\rare}{\textsc{rare}}
+\newcommand{\unknown}{\textsc{unknown}}
 
 \begin{abstract}
-Multi-agent workflows often learn who should receive the next responsibility from acceptance signals or terminal success. Those signals are unsafe when a recipient must integrate a producer's artifact: the same failure can arise from a producer defect, recipient-owned work, or a downstream component. We identify this failure as \emph{responsibility confounding} and introduce \emph{earning roles}, a protocol that publishes version-bound, typed recipient judgments as noisy observations while separately testing producer attribution. A later selector reads a legal snapshot, seals its assignment before execution, and updates only after a future outcome passes an independent reward check. This ordering yields testable noninterference, attribution-safety, and replay invariants. We define an ArtifactRole track for producer--recipient evidence and a complementary PeerSelect track for local selection and drift, with matched information, candidate menus, feedback delays, and complete-cost accounting. The resulting evaluation asks whether situated evidence improves future assignment quality beyond acceptance, terminal-only, and same-information contextual baselines, while measuring latency, forgetting, and false attribution. The scope is responsibility adaptation in dependency-bearing workflows, rather than universal expertise or autonomous workflow discovery.
+In human collaboration, expertise is rarely established by self-declaration alone. It emerges as partners use one another's work, evaluate concrete deliveries, and decide whom to entrust with similar responsibilities next. Roles fixed before collaboration lack this adjustment mechanism. We translate this principle into \emph{earning roles}: an agent's role is its task-situated eligibility for future responsibility, not a permanent title or a context-free reputation score. The system records a recipient's acceptance, revision, or rejection of a versioned artifact together with its use context as typed, noisy, auditable experience. Peer evaluation is exposed to subsequent selection as an observation, while producer responsibility is decided by an independent attribution check. Selector parameters change only after a later assignment has been executed and its independent quality, responsibility, and complete cost have passed validation; valid feedback may record either success or failure, whereas missing or unattributable outcomes do not update the policy. We evaluate this complete chain in an ArtifactRole track and isolate local candidate sets, delayed feedback, and online service behavior in a complementary PeerSelect track. All comparisons use matched candidates, public information, budgets, and feedback timing. \rare{} attains a future quality--cost utility of xx, differing from the same-information primary baseline by xx (stream-level 95\% CI: xx); judgment Brier score, false producer-attribution rate, and update p95 are xx, xx, and xx. Ablations separate the effects of peer information, responsibility validation, and delayed updating.
 \end{abstract}
 
 \begin{document}
 \maketitle
 
 \section{Introduction}
+In human societies, professional standing is seldom determined by self-description. It develops when collaborators use a person's work, evaluate whether the delivery was useful or required repair, and decide whether to entrust related responsibilities to that person again. Research on transactive memory describes how teams develop shared knowledge of who knows what through collaboration \cite{wegner1987transactive,lewis2003transactive}. We adopt this rule without treating social reputation as ground-truth ability: value is inferred from concrete work and tested by subsequent delegation.
 
-In a dependency-bearing workflow, a collaborator's value is observed through another agent's attempt to use its artifact. Consider two queue-processing cases with the same rejection and failed team outcome. In one, a producer violates the priority-module contract; in the other, the module is correct but the recipient implements its consumer incorrectly. A terminal score or a bare rejection therefore points to the wrong future responsibility in at least one case. The recipient is closest to the delivery, yet the same integration step can expose a producer defect or create recipient-owned work.
+Role prompts and fixed handoff orders make multi-agent workflows practical \cite{metagpt2024,wu2023autogen}, but a role name states what an agent is expected to do, not what it has demonstrated in collaboration. Coordination depends on managing dependencies between activities \cite{malone1994coordination}. When tasks or member performance change, a workflow that ignores collaboration experience continues to reuse its original allocation. We therefore define \emph{earning roles} as acquiring eligibility for future responsibility in a task context. A role is not a permanent position; expertise is not self-declared; and earning does not confer ownership forever.
 
-This is \emph{responsibility confounding}: one feedback channel mixes producer correctness, recipient integration, and downstream outcome. Reputation and partner-selection systems make adaptive choice possible, but their usual interaction-level signal does not identify which side of a concrete producer--recipient dependency caused the failure \cite{sabater2002reputation,pinyol2013trust,leung2024partner,leung2025partner,russell2026partner}. Studies of cooperation among LLM agents likewise evaluate repeated-game or resource-sharing outcomes, rather than a version-bound artifact and its recipient-owned integration path \cite{piatti2024cooperate,akata2025repeated}. The problem is not solved by adding a larger score. The evidence must say what was observed, whose paths changed, and when that evidence became legal to use.
+Our evaluator is the agent that actually receives and uses a versioned delivery. Its acceptance, revision, or rejection is stored with the task, artifact, and use trace as a \emph{collaboration experience}. A selector reads these experiences on a later task. An independent responsibility check determines which outcomes are attributable to the producer, and the selected agent's subsequent quality and complete cost determine whether that allocation should be repeated. Peer evaluation, responsibility attribution, and future assignment thus retain distinct meanings.
 
-We ask: \emph{when can the agent that actually receives and uses a delivery provide reliable evidence about the producer's future responsibility?} The answer has a necessary sequence:
-\begin{equation}
-\begin{aligned}
-&\text{delivery}\rightarrow\text{recipient use and judgment}\rightarrow\text{typed observation}\\
-&\rightarrow\text{future assignment}\rightarrow\text{held-out future quality and cost}.
-\end{aligned}
-\label{eq:story}
-\end{equation}
-A final score cannot identify which producer caused a defect. An acceptance bit cannot distinguish a useful artifact from an easy integration. A recipient's normal integration work cannot become a producer penalty without an ownership check. Conversely, a role posterior that never changes a later pre-execution assignment is not role formation.
+Consider a queue-processing workflow. Agent $B$ supplies a priority module and agent $A$ integrates it into a consumer. When another task requires queue processing, the selector may use $A$'s account of whether and how the module worked, rather than rely only on $B$'s self-description. Yet a rejection is not automatically evidence of a producer defect. The same failed team outcome can arise because $B$ violated the module contract or because $B$'s module was correct while $A$'s consumer was faulty. The system must retain the recipient judgment, actual use, and independent quality check to distinguish these cases.
 
-Our central operation publishes a completed, version-bound recipient judgment as a typed noisy observation, whether it reports acceptance, rework, or rejection. Producer-attributable evidence requires a separate structural ownership check; normal recipient integration cannot directly reward or penalize the producer. Publication does not silently update the policy. Before a later task starts, a legal owner reads the snapshot and the selector seals its assignment and propensity. Only after the later task has an independent outcome and a predeclared quality, responsibility, and cost rule passes can one delayed credit update occur. The protocol therefore separates what a recipient saw from what a future responsibility produced, while keeping the separation visible in a replayable ledger.
+We instantiate this principle as the earning-roles protocol. The selector combines current requirements, candidate information, and prior experiences before execution. Positive and negative recipient judgments remain observations; producer responsibility is validated separately. Publishing an observation can change a later selector input but cannot directly update its parameters. Only a later, executed assignment with independently validated quality and complete cost can update the selector. A judgment is therefore not converted into immediate reward or punishment.
 
-Figure~\ref{fig:overview} contrasts the two responsibility cases and shows how eligible evidence reaches a later sealed choice.
+We call the responsibility-qualified component \emph{responsibility-aware role evidence} (\rare{}) and store it separately from raw evaluation. Figure~\ref{fig:overview} shows how this distinction supports subsequent delegation. The central test compares \rare{} with acceptance-only, terminal-only, and same-information contextual selectors to measure its effect on unseen-task collaboration quality and its evaluation, validation, and update costs.
 
-We call this protocol \emph{earning roles}: a collaborator earns a future responsibility opportunity through attributable evidence that changes assignment under a fixed information and cost contract. We use \emph{responsibility-aware role evidence} (RARE) for the protocol's evidence semantics, not for a particular encoder, head, RLS update, or periodic refit. The primary claim is deliberately narrow: situated observation is useful only if it adds information beyond event counts and raw acceptance, terminal-only outcomes, and an equally informed contextual selector.
-
-The paper makes four contributions.
+The paper makes three contributions.
 \begin{itemize}
-  \item We formulate responsibility confounding as an information and attribution problem, separating producer quality, recipient action, downstream adoption, final outcome, and \unknown{} while preserving delivery, version, read cut, and propensity.
-  \item We introduce the earning-roles protocol and three audit invariants: target outcomes cannot affect a sealed selection, recipient-only work cannot create producer reward, and replay cannot credit one assignment twice.
-  \item We define an ArtifactRole track and a secondary PeerSelect mechanism track, with pre-registered root-level split requirements, same-information baselines, and complete resource accounting that distinguish evidence value from closed-loop team benefit.
-  \item We make the claim falsifiable: no out-of-sample information, an equally informed contextual explanation, unsafe attribution, or a gain that disappears at matched cost invalidates the role-formation interpretation.
+  \item We define task-situated collaboration experience that records who evaluated whose versioned delivery, how it was used, and which outcomes are attributable to the producer. Both positive and negative evaluations remain auditable in context.
+  \item We separate observation publication from delayed policy updating. Published evaluations inform later choices, whereas parameters update only from independent outcomes of executed assignments; factorial ablations isolate the two paths.
+  \item We introduce an ArtifactRole track for the complete delivery--evaluation--delegation--utility chain and a PeerSelect track for local selection, delay, drift, and service behavior. Same-information baselines and responsibility interventions separate information value, attribution error, and gains from additional information.
 \end{itemize}
 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/overview.pdf}
-\caption{Responsibility confounding and earning roles. (a) Both cases receive a revise judgment. The original producer artifact is bound to $B$ at version $v0$; its independent contract check $Q$ and the recipient's use trace support producer-attributable evidence $e$. Consumer-only changes remain an attribution-audit case. (b) At a legal read cut, public evidence informs a local choice that is sealed before target execution. After the checks in Figure~\ref{fig:method-state}, delayed selected-only feedback changes a future state. File changes, the sampled peer, and state highlights are schematic.}
-\Description{Two file-level cases contrast a recipient repairing the producer's original queue artifact with a recipient changing its own consumer. Original-artifact checks and use trace feed version-bound producer evidence; consumer-only changes end at attribution audit. A public record then precedes a read cut, local peer choice, sealed assignment, target execution and outcome. Dashed delayed feedback enters only a future state.}
+\caption{From peer evaluation to future responsibility. (a) Both cases receive a revision judgment, but responsibility differs. An independent check $Q$ of producer $B$'s original version $v0$, together with the recipient's use trace, determines whether the observation forms evidence $e$ attributable to $B$. (b) Collaboration experiences are read before a later assignment; the executed assignment changes subsequent selection only after outcome validation. File changes, candidate state, and selections are schematic.}
+\Description{Two queue-processing cases contrast a producer defect with recipient-owned integration work. Versioned evidence enters a later selector before assignment; only a validated later outcome updates future state.}
 \label{fig:overview}
 \end{figure*}
 
-The following sections define the event and update order, comparison tracks, estimands, and falsification rules.
-
 \section{Related Work and Positioning}
+Peer feedback has recently been used to adapt multi-agent collaboration. Meta-Team collects post-task accounts of how teammates affect downstream execution and updates teammate profiles and collaboration arrangements \cite{hao2026metateam}. RAPS maintains peer reputation from first-hand content evaluations and witness reports \cite{li2026raps}. Sero studies contract-preserving role evolution \cite{ge2026sero}, C3 studies exact credit assignment among cooperative agents \cite{chen2026c3}, and DecisionBench delegates from externally judged capability cards built from prior trajectories \cite{gao2026decisionbench}. These works cover collaborative reflection, witness propagation, contract-bound roles, credit assignment, and historical capability summaries, respectively. They do not jointly bind a recipient's use of one versioned delivery, a producer-responsibility gate, and a later executed responsibility opportunity into one auditable chain. Our analysis separates the evaluation of a concrete delivery, producer attribution, and the utility of subsequent delegation.
 
-The nearest work differs from our question along three axes: what is observed, when state changes, and whose contribution receives credit. Table~\ref{tab:novelty} makes that boundary explicit. Partner-selection and reputation methods motivate adaptive choice, while graph and role systems motivate changing organization; neither, by itself, identifies whether a concrete producer delivery caused a recipient's action. Recent collaboration benchmarks measure team-level coordination and competition, while interactive agent benchmarks measure environment-level decisions and tool/user outcomes in stateful applications; neither by default turns a recipient's integration trace into a producer-owned label \cite{zhu2025multiagentbench,agashe2025llmcoordination,liu2024agentbench,appworld2024,yao2024taubench}. A contextual-trust or delayed-bandit adapter supplies a strong same-information alternative, not a synonym for the proposed mechanism.
+Computational trust and reputation provide the broader foundation for using interaction history in open multi-agent systems \cite{sabater2002reputation,pinyol2013trust}. Trust models also account for inaccurate reports by third parties \cite{teacy2006travos}. Partner-selection methods adapt from social-game payoffs \cite{leung2024partner,leung2025partner,russell2026partner}, while language-agent societies use shared assessments or repeated interaction to sustain cooperation \cite{ren2026reputation,piatti2024cooperate,akata2025repeated}. In the cited formulations, interaction-level feedback does not explicitly represent the producer--recipient artifact-ownership fields needed here.
+
+Graph and role systems reorganize agents from traces, routing outcomes, contexts, or subtask performance \cite{yang2025agentnet,zhuge2024gptswarm,zhang2026dynamic,li2026morse}. General multi-agent frameworks likewise make role-based workflows practical \cite{wu2023autogen,metagpt2024,agentverse2024}. Our object is narrower: an action on a specific delivery is separated from producer responsibility and from the payoff of a later assignment. Table~\ref{tab:positioning} summarizes this boundary.
 
 \begin{table*}[t]
-\centering\scriptsize
-\setlength{\tabcolsep}{3.2pt}
-\begin{tabular}{p{0.16\textwidth}p{0.22\textwidth}p{0.19\textwidth}p{0.17\textwidth}p{0.17\textwidth}}
+\centering\small
+\setlength{\tabcolsep}{2.7pt}
+\begin{tabular}{p{.17\textwidth}p{.22\textwidth}p{.19\textwidth}p{.17\textwidth}p{.16\textwidth}}
 \toprule
-Representative method and problem & Observed signal and update & Responsibility / credit semantics & Experimental object & Difference / test here \\
+Method family & Observation and update & Responsibility / credit & Experimental object & Difference tested here \\
 \midrule
-Curiosity-Driven Partner Selection; Defection at First Sight \cite{leung2025partner,russell2026partner} & Interaction outcomes; partner state changes after social-game feedback & Peer-level interaction payoff; the cited formulations do not expose a producer--recipient artifact gate & Convention or dilemma games & Versioned delivery use and producer attribution \\
-Reputation as a Solution to Cooperation Collapse \cite{ren2026reputation} & Shared assessments and cooperation history; pooled reputation update & Broad reputation/cooperation score; the cited formulation does not expose producer and recipient ownership fields & Language-agent social cooperation & Public responsibility-safe evidence and explicit \unknown{} \\
-AgentNet; GPTSwarm \cite{yang2025agentnet,zhuge2024gptswarm} & Agent traces, graph structure, or routing outcomes; organization changes over time & Route/role utility; the cited formulations do not define a producer-artifact credit label & Graph or workflow coordination & Recipient action bound to one delivery and future-owner assignment \\
-Dynamic Role Assignment; MoRSE \cite{zhang2026dynamic,li2026morse} & Task context and role/subtask performance; roles or experts are reassigned & Role/expert utility; the cited formulations do not expose producer-artifact attribution inside recipient integration & Debate or mixture-of-experts workflows & Responsibility gate, cross-owner propagation, and delayed correction \\
-Finite-time multi-armed bandit \cite{auer2002finite} & Selected-arm rewards; update after an observed arm payoff & Arm-level reward; no producer--recipient ownership contract & Pre-execution selection under observed payoff & Classical selected-reward control; contextual and delayed adapters require separate qualification \\
+Meta-Team; RAPS \cite{hao2026metateam,li2026raps} & Post-task accounts or first-/second-hand evaluation; profiles or reputation update & Teammate or content usefulness & Adaptive collaboration / publishing & Versioned use, independent producer gate, later assignment utility \\
+Sero; C3; DecisionBench \cite{ge2026sero,chen2026c3,gao2026decisionbench} & Contract evolution, precise team credit, or judged trajectory cards & Role constraints, contribution credit, or capability summaries & Reasoning, cooperation, or delegation & Recipient action and producer attribution remain separate \\
+Partner selection / reputation \cite{leung2025partner,russell2026partner,ren2026reputation} & Interaction outcomes and shared assessments & Peer payoff or pooled reputation & Social games / language-agent society & Producer--recipient artifact ownership \\
+AgentNet; GPTSwarm \cite{yang2025agentnet,zhuge2024gptswarm} & Traces, graph structure, and routing outcomes & Route or role utility & Graph / workflow coordination & Action bound to one delivery and future owner \\
+Dynamic roles / experts \cite{zhang2026dynamic,li2026morse} & Context and role/subtask performance & Role or expert utility & Debate / mixture-of-experts workflow & Responsibility gate and delayed correction \\
+Finite-time bandit \cite{auer2002finite} & Selected-arm reward after execution & Arm-level reward & Pre-execution choice & Context, ownership, and delay require qualification \\
 \bottomrule
 \end{tabular}
-\caption{Novelty boundary used in the paper. The rows are comparison families, not claims that each source implements the same task. A faithful adapter must preserve the listed visible information, arrival order, selected-only denominator, and complete cost before entering the scientific matrix.}
-\label{tab:novelty}
+\caption{Comparison dimensions. Adapted experiments preserve matched public information, feedback timing, and complete cost; rows denote different research objects rather than interchangeable implementations.}
+\label{tab:positioning}
 \end{table*}
 
-LLM collaboration frameworks enable role-based workflows, but task success does not resolve artifact ownership \cite{wu2023autogen,metagpt2024,agentverse2024,zhuge2024gptswarm}. Source judgments precede later assignments; target quality follows execution. Target outcomes may update future decisions but cannot revise a sealed assignment or label the source artifact without independent attribution. Bandit estimators are update comparators, while this protocol tests the timing, ownership, and service cost of that separation.
-
-Cooperative multi-agent learning has long treated credit assignment as a separate problem, using counterfactual advantages or value factorisation to distribute a team payoff \cite{foerster2018coma,rashid2020qmix}. Those methods establish why a shared outcome is insufficient for individual credit, but their reward/state contracts do not identify ownership of a concrete artifact inside a recipient's integration path; this is the boundary tested here.
+Task-allocation taxonomies distinguish who performs which task under different organizational constraints \cite{gerkey2004allocation}. Cooperative multi-agent learning separates shared return from individual contribution through counterfactual credit or value factorization \cite{foerster2018coma,rashid2020qmix}. These are related credit questions; our distinction concerns a versioned delivery used inside a recipient's integration work. Contextual bandits and delayed-feedback learning provide strong update controls \cite{li2010contextual,joulani2013delayed}. Here, source evaluation is visible before a later choice, whereas target quality exists only after execution and cannot be backfilled into the earlier decision.
 
 \section{Problem Formulation}
 \label{sec:problem}
-
-\subsection{Objects and information boundary}
-At episode $t$, the task supplies context $x_t$ and a legal candidate set $C_t$. The selector chooses one candidate before any candidate in $C_t$ executes:
+\subsection{Tasks, assignments, and collaboration experience}
+At task $t$, context $x_t$ and legal candidate set $C_t$ specify requirements and delivery responsibility. Before execution, the selector chooses
 \begin{equation}
- a_t\sim\pi_{\theta}(\cdot\mid x_t,C_t,R_t),\qquad a_t\in C_t,
- \label{eq:choice}
+ a_t\sim\pi_{\psi,\Theta_t}(\cdot\mid x_t,C_t,R_t),\qquad
+ p_t=\pi_{\psi,\Theta_t}(a_t\mid x_t,C_t,R_t),
+\label{eq:choice}
 \end{equation}
-where $R_t$ is the public evidence snapshot available at read cut $w_t$. Only the selected candidate is charged for execution. The candidate emits a versioned delivery $o_t$ with digest $d_t$; a recipient $j_t$ reads that delivery and takes action $m_t$. The recipient may accept, revise, reject, or be unable to complete the integration.
+where $a_t\in C_t$, $p_t\in(0,1]$, $R_t$ is the public experience available at that time, $\psi$ denotes fixed scoring parameters, and $\Theta_t$ is online state. Public records and parameters are maintained separately, so a new evaluation can change the choice input without immediately changing parameters.
 
-The smallest auditable event is
+A source delivery forms the record
 \begin{equation}
- e_t=(x_t,C_t,a_t,o_t,j_t,J_t,m_t,Q_t,Y_t,\tau_t,c_t),
- \label{eq:event}
+ e_i^{\mathrm{src}}=(x_i,C_i,a_i,o_i,j_i,J_i,m_i,Q_i,Y_i^{\mathrm{src}},\tau_i,c_i^{\mathrm{src}}).
+\label{eq:event}
 \end{equation}
-where $J_t$ is the recipient judgment, $Q_t$ is the producer-contract check, $Y_t$ is an independent later or terminal outcome when the task defines one, $\tau_t$ is feedback-arrival metadata, and $c_t$ is the complete cost record. The event also stores the candidate version, task/root identifier, artifact digest, feature-schema version, selection probability $p_t=\pi_\theta(a_t\mid x_t,C_t,R_t)$, read-cut digest, and evidence lineage.
+Here $o_i$ is producer $a_i$'s versioned artifact; $j_i$ is the recipient that uses it; $J_i$ is sealed before the recipient acts; $m_i$ is the subsequent use, revision, or rejection; $Q_i$ checks the original delivery against the producer's responsibility; $Y_i^{\mathrm{src}}$ is the source episode's independently defined terminal or later-use outcome, or $\bot$ if the contract defines none; $\tau_i$ is publication order; and $c_i^{\mathrm{src}}$ records model, tool, token, and wall-clock cost. Source outcomes support observation and audit, not future-assignment credit.
 
-\paragraph{Concrete instance.} In the queue case, $x_t$ is the JSON task request, $C_t=\{A,B\}$ is the legal producer menu, and $a_t=B$ selects producer $B$. The delivery $o_t$ is $B$'s versioned priority-module artifact with digest $d_t$; recipient field $j_t=k$ records $k$'s import, test, or repair action as $m_t$; $Q_t$ checks only the producer-owned queue and priority paths; $Y_t$ is the later consumer outcome; and $c_t$ contains model, tool, token, and wall-clock cost.
+For a target assignment $j$, the independent outcome is $Y_j^{\mathrm{tar}}$. After the assignment is sealed, its candidates and probability are consistent, and execution completes, $Y_j^{\mathrm{tar}}$ enters $\operatorname{validate\_later}$ with that assignment to produce feedback $L_j$. Only an $L_j$ that passes responsibility, quality, complete-cost, and idempotency checks updates $\Theta$. Hence $Y_i^{\mathrm{src}}$ and $Y_j^{\mathrm{tar}}$ are distinct, and neither is retroactively available to an earlier choice.
 
-A repair to $k$'s consumer path remains a publishable, typed handoff observation if complete; it does not create producer-attributable evidence or reward for $B$.
+For example, let the queue task offer $C_t=\{B,C\}$. The selector assigns the source delivery to $B$, whose priority module is received by $A$. Then $Q_i$ checks the module for which $B$ is responsible, $m_i$ records how $A$ integrates or changes the code, and $Y_i^{\mathrm{src}}$ records only the terminal or later-use result defined for that source episode. If $A$ repairs only its own consumer, the experience can be retained, but that repair is not evidence of a defect in $B$'s module. Only a subsequent target outcome that produces valid $L_j$ can affect future parameters. This example also explains why an episode identifier alone is insufficient: the source artifact, recipient action, and later assignment serve different evidential roles.
 
-The policy may consume only public events whose arrival is at or before its read cut. Hidden gold, a private scorer, a future target outcome, another policy's state, and an unexecuted candidate cannot affect selection, retry, stopping, or update. A missing event is \unknown{}; a complete but non-attributable event may remain a noisy observation, never a producer-negative label. This boundary is the difference between a role signal and a convenient retrospective score.
+\subsection{Visible information and objective}
+The selector reads a public projection $\tilde e_i=\Pi_{\mathrm{pub}}(e_i)$ rather than the audit record. The projection preserves agreed task fields, candidate identity, recipient judgment, actual action, and responsibility type; hidden answers, private tests, and future outcomes remain unavailable. Given context $x$, candidate $a$, and public history $R_t$, situated assignment value is
+\begin{equation}
+ V_t(a\mid x,R_t)=\mathbb{E}[U(Y_j^{\mathrm{tar}},c_j^{\mathrm{tar}})\mid x,R_t,a],
+\label{eq:value}
+\end{equation}
+where $U$ is the frozen quality--complete-cost utility. This quantity asks where a candidate should again receive responsibility, not whether it has context-free global ability. Producer quality, recipient evaluation, and team outcome are recorded separately. Team success does not prove that every member performed well; a negative judgment does not automatically label the producer. Self-description supplies at most an initial prior and never verified evidence.
 
-\subsection{Observation and attribution gates}
-For a source episode, $O_t=1$ requires a frozen contract and registry, sealed pre-action judgment, traceable delivery and recipient action, complete independent checks and terminal outcome, valid identifiers and digests, and completed source lineage. Acceptance, rework, and rejection have equal publication eligibility across their legally paired recipient actions; no arbitrary $J$--action mutation is assumed. Positive or negative checks do not by themselves filter publication. Before completion the judgment is auxiliary only; publication creates a versioned noisy observation and leaves persistent policy state unchanged. Separately, define $G_t=1$ for producer attribution only when all of the following hold: (i) the frozen contract, candidate registry, changed paths, and independent producer check yield a unique producer structural owner (or a pre-registered source defect is uniquely bound to the producer); (ii) the recipient inspected $o_t$ and its action is traceable to $o_t$; (iii) recipient-owned integration paths are empty; (iv) $O_t=1$; and (v) independent defect or quality evidence supports the producer-specific claim. The judge's free-text target role is retained as a calibration observation and its disagreement with the structural owner is logged, but it cannot by itself create or cancel evidence. Otherwise $G_t=0$: its typed observation can remain public, but it cannot create producer evidence or reward.
+\section{Earning Roles}
+\label{sec:method}
+The protocol preserves evaluations from actual collaborators, organizes task-relevant history, assigns the next responsibility, and calibrates the selector from the executed result. Responsibility validation distinguishes what a peer observed from what can be attributed to the producer. Table~\ref{tab:event-order} gives the execution order; later results cannot change earlier assignments.
 
-This gate distinguishes four observations that are often collapsed: a producer-content defect, a recipient's own integration work, a sink or final-task failure, and an unresolved attribution. The public record retains the observation type and the reason for $G_t=0$. A typed observation is not a native evidence identifier: the bridge to a future assignment requires its own qualified binding and is not yet established. This makes safety measurable: a method that refuses ambiguous evidence may have a higher \unknown{} rate while producing fewer false producer penalties.
+\begin{table}[t]
+\centering\small
+\begin{tabular}{@{}p{.21\columnwidth}p{.73\columnwidth}@{}}
+\toprule
+Event & Sealed information and state transition \\
+\midrule
+1. Deliver & Record producer, responsibility contract, artifact version $o_i$, and source cost. \\
+2. Judge & The recipient seals $J_i$ before using or editing the delivery; no policy update occurs. \\
+3. Use & Record acceptance, revision, or rejection as $m_i$, together with the actual use context. \\
+4. Publish & Bind the observation and independent check in $e_i^{\mathrm{src}}$; publish by arrival order, leaving $\Theta$ unchanged. \\
+5. Assign & At $w_t$, resolve legal history and seal the candidate menu, input snapshot, chosen $a_t$, and propensity $p_t$. \\
+6. Execute & Run the sealed choice without resampling; obtain $Y_j^{\mathrm{tar}}$ and complete cost for the selected assignment. \\
+7. Validate & Match feedback to its assignment. Only valid, selected-only, once-only $L_j$ updates later residual state. \\
+\bottomrule
+\end{tabular}
+\caption{Operational order across a source delivery and a subsequent target assignment. A source evaluation is never the outcome of an unexecuted target.}
+\label{tab:event-order}
+\end{table}
 
-Figure~\ref{fig:method-state} expands the separate interfaces for choosing at a legal read cut and updating after a target outcome.
+Source evaluation and target execution can occur in different tasks: the source contributes experience, while the target supplies feedback about an actual allocation. Publishing the former does not imply that the latter has happened.
+
+\subsection{Observation and responsibility}
+We define observation completeness $O_i\in\{0,1\}$ and producer-attribution eligibility $G_i\in\{0,1\}$. $O_i=1$ when the evaluation, versioned delivery, recipient action, and independent check are completely bound under the prescribed time order. It does not depend on whether the recipient accepts, revises, or rejects; all three remain collaboration experience.
+
+$G_i=1$ adds responsibility requirements: the original delivery maps uniquely to a predeclared producer duty, the recipient actually used it, the independent check supports attribution, and the evidence does not mix recipient-owned integration changes. Responsibility follows the task contract, artifact lineage, and actual modifications rather than the evaluator's assertion. Recipient-only work, mixed ownership, or unresolved responsibility does not generate producer reward or penalty. Records with $O_i=1,G_i=0$ remain typed contextual observations but cannot be reinterpreted as producer-quality labels. In the queue example, $A$'s integration difficulty may affect future collaboration choice, but it cannot become evidence that $B$'s module is defective.
+
+\subsection{History and assignment}
+At read cut $w_t$, candidate version $v$ exposes
+\begin{align}
+\mathcal E_t^{\mathrm{obs}}(v)&=\operatorname{Resolve}_{w_t}
+ \{\tilde e_i:O_i=1,a_i=v,\tau_i\leq w_t\},\\
+\mathcal E_t^{\mathrm{cred}}(v)&=\operatorname{Resolve}_{w_t}
+ \{\tilde e_i:O_i=1,G_i=1,a_i=v,\tau_i\leq w_t\}.
+\label{eq:views}
+\end{align}
+$\operatorname{Resolve}_{w_t}$ deduplicates by source and retains only the valid version known at $w_t$. Different versions of one agent remain distinct candidates. Records are filtered by publication arrival, not task occurrence, so late evaluations affect only later choices. The public projection retains judgment category, recipient identity, use context, and attribution type.
+
+Globally, $\mathcal R_t^{\mathrm{obs}}$ retains complete recipient observations, including records with unresolved responsibility, whereas $\mathcal R_t^{\mathrm{cred}}$ contains attributable evidence. Publishing either view does not change $\Theta$, the update count, or the policy digest. Records with $G_i=0$ may enter context as unknown or mixed responsibility, but cannot generate source credit or trigger a parameter update by themselves. Only a validated later $L_j$ can trigger updating. The gate therefore changes the meaning and update eligibility of evidence without silently discarding observations that lack attribution.
+
+Explicitly, the two public views at a common read cut are
+\begin{align}
+\mathcal R_t^{\mathrm{obs}}&=\{\tilde e_i:O_i=1,\tau_i\leq w_t\},\\
+\mathcal R_t^{\mathrm{cred}}&=\{\tilde e_i:O_i=1,G_i=1,\tau_i\leq w_t\}.
+\end{align}
+Thus $\mathcal R_t^{\mathrm{cred}}\subseteq\mathcal R_t^{\mathrm{obs}}$: attribution qualifies a subset without turning the remaining observations into failed deliveries. Attribution coverage and observation coverage can therefore change independently, and both are reported.
+
+History is divided into an archive and a new delta:
+\begin{align}
+ P_{v,k}&=\operatorname{summarize}\{\tilde e_i\in\mathcal E_t^{\mathrm{obs}}(v):\tau_i<\kappa_k\},\\
+ D_{v,k,t}&=\operatorname{summarize}\{\tilde e_i\in\mathcal E_t^{\mathrm{obs}}(v):\kappa_k\leq\tau_i\leq w_t\},\\
+ z_t(v)&=[\phi(x_t)\,\|\,\phi(P_{v,k})\,\|\,\phi(D_{v,k,t})\,\|\,b_t(v)].
+\label{eq:representation}
+\end{align}
+The structured summaries retain source identifiers; empty history is explicit. The archive cut satisfies $\kappa_k\leq w_t$, and archive and delta never duplicate a source in the same snapshot. Corrections rebuild an affected archive before its next read, advance the archive version, and repartition the delta. This prevents an obsolete record from remaining in the archive while its correction is counted again in the delta.
+
+The frozen encoder $\phi(\cdot)\in\mathbb R^d$ represents the task, archive, and delta. Public version and coverage fields form $b_t(v)\in\mathbb R^{d_b}$, so concatenation yields $z_t(v)\in\mathbb R^{3d+d_b}$. The archive summarizes others' evaluations of actual work; self-description supplies only an initial reference. Joint task and history encoding allows the same candidate to receive different responsibility opportunities under different requirements.
+
+A fixed head and candidate-specific residual define
+\begin{equation}
+ s_t(v)=g_\psi(z_t(v))+\theta_{v,t}^{\top}\phi(x_t).
+\end{equation}
+Here $g_\psi:\mathbb R^{3d+d_b}\rightarrow\mathbb R$ is fixed during online operation, while $\theta_{v,t}\in\mathbb R^d$ is the candidate's residual and $\Theta_t=\{\theta_{v,t}\}_v$. The first term reads current collaboration experience; the second calibrates scores from previously validated execution outcomes. With temperature $T>0$ and exploration $0<\varepsilon<1$,
+\begin{align}
+ q_t(v)&=\frac{\exp(s_t(v)/T)}{\sum_{u\in C_t}\exp(s_t(u)/T)},\\
+ \pi_t(v)&=(1-\varepsilon)q_t(v)+\varepsilon/|C_t|,\qquad a_t\sim\pi_t.
+\label{eq:policy}
+\end{align}
+Every candidate therefore retains nonzero opportunity. The assignment record seals the candidate set, sample, probability, and history version before target execution. Unselected candidates receive no outcome labels. Complete cost includes selected-agent work, recipient integration, evaluation, and validation.
+
+More precisely, $\pi_t(v)\geq\varepsilon/|C_t|$ for every legal candidate, including those with little recorded experience. Temperature and exploration remain fixed by the experimental configuration. The sealed choice is executed without resampling after the outcome is known.
 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/method_state.pdf}
-\caption{Choice and update interfaces of the candidate selector. (a) Complete source records ($O=1$) are split at $\kappa$ into profile $P$ and delta $D$. Frozen task and history representations, with public metadata $b(v)$, feed head $g$; the task representation also feeds a candidate-specific residual score. A local sample is sealed as $(j,B,p)$. (b) After target execution, that same assignment $j$ and its independent outcome $Y$ must pass identity, reward-contract, and once-only checks before changing the next residual state. The strips and sampled peer are illustrative; the encoder, head, and updater remain replaceable.}
-\Description{The upper interface separates source records through completion gate O, with incomplete records ending at audit. Disjoint profile and delta histories and the task enter frozen representations, concatenate with public metadata into z, and feed the head. A separate task-feature branch feeds the residual score; their sum precedes sampling and a sealed assignment. In the lower interface the matching assignment and outcome feed validation, a valid one-time update and a distinct next state. Invalid records end at no-op. Target execution occurs between the two interfaces and is not redrawn.}
+\caption{Experience reading and delayed updating. (a) Effective history is split into archive $P$ and delta $D$, then combined with task representation and public metadata. The candidate and propensity are sealed before execution. (b) After execution, the matching independent quality and cost outcome must pass identity, responsibility, and once-only checks before updating the residual used by later decisions.}
+\Description{The upper path reads a versioned archive, delta, task, and public metadata to sample a candidate before execution. The lower path validates the executed assignment and updates only future residual state.}
 \label{fig:method-state}
 \end{figure*}
 
-\section{Earning Roles: A Responsibility-Aware Protocol}
-\label{sec:method}
-
-The equations below specify the candidate realization used to qualify the protocol interfaces;
-they do not lock the final backbone or updater. Those choices remain an experimental question and
-will be fixed only after the same-information controls expose the relevant bottleneck.
-
-\subsection{Two-stage evidence and update}
-Publication and delayed updating are independent interfaces:
+\subsection{Delayed updating}
+Publication and parameter updating are independent:
 \begin{align}
- \operatorname{publish}(e_t)&\rightarrow \{\text{typed},\;\unknown{},\;\text{invalid}\},\\
- \operatorname{choose}(x_t,C_t,R_t)&\rightarrow (a_t,p_t,\delta_t),\\
- \operatorname{validate}(j_t)&\rightarrow \{\text{credit},\;\unknown{},\;\text{invalid}\},\\
- \operatorname{update}(\text{credit})&\rightarrow \{\text{updated once},\;\text{no-op}\}.
- \label{eq:interfaces}
+ \operatorname{publish}(\tilde e_i)&:R\leftarrow R\cup\{\tilde e_i\},\\
+ \operatorname{update}(L_j)&:\Theta^{+}=U_{\mathrm{delay}}(\Theta;L_j).
+\label{eq:update}
 \end{align}
-Publication may change a later assignment's public input, but cannot update persistent policy state. For a later target assignment $j$, ledger binding is necessary but not a reward: credit is legal only if the assignment was written before target selection and task start, the selected candidate and propensity match the sealed preview, the target delivery and outcome are complete, a predeclared responsibility/quality/cost rule passes, and the assignment has not already been credited. The update then evaluates that future responsibility opportunity, never the source episode.
+The source record contains no $L_j$; this feedback is constructed only after the later assignment is executed and validated.
+Publication leaves $\Theta$, the update count, and the policy digest unchanged. $L_j$ binds the pre-execution assignment, propensity, and input snapshot to the independent target outcome, responsibility check, quality, and complete cost. The frozen activation manifest specifies representation, updater, initialization, clipping, batching, and stopping constants. Validation checks assignment order, candidate identity, outcome completeness, reward semantics, and once-only use. Valid successes and failures both form feedback; missing or unattributable labels do not update.
 
-The event-time contract is therefore
-\begin{equation}
-\begin{aligned}
-&\text{source selection}\rightarrow\text{delivery}\rightarrow(Q,J,m,Y)\rightarrow O,G\\
-&\rightarrow\text{evidence publication}\rightarrow\text{assignment}\rightarrow\text{target outcome}\\
-&\rightarrow\text{delayed selected-only update}.
-\end{aligned}
-\label{eq:timeline}
-\end{equation}
-A correction creates a superseding evidence version and affects only future snapshots. Duplicate, late, out-of-order, resource-failed, or invalid events are idempotent no-ops or explicit \unknown{} records. Ledger replay must reproduce the same state digest and choice sequence.
-
-\subsection{Evidence representation and candidate score}
-A minimal public state for producer $v$ in context $r$ is
-\begin{equation}
- R(v,r)=(n(v,r),s(v,r),u(v,r)),
- \label{eq:state}
-\end{equation}
-Here $n$ counts typed observations, $s$ summarizes noisy judgment categories without implying producer reward, and $u$ audits unresolved attribution. Count-only or $J$-masked views remove judgment content. A candidate score can combine a task representation $h(x,v,r)$ with the public evidence term:
-\begin{equation}
- \operatorname{score}(v\mid x,r)=w^\top h(x,v,r)+\beta\frac{s(v,r)}{n(v,r)+\alpha}.
- \label{eq:score}
-\end{equation}
-For the queue instance, $r$ is the priority-contract context, $h(x,B,r)$ is the fixed task--candidate representation for producer $B$, and $n,s,u$ summarize versioned observations and their attribution flags. A recipient-only repair can remain in $n$ and $u$ as a typed observation; it cannot supply producer reward for $B$.
-
-The representation $h$, updater, and constants are replaceable implementation conditions rather than the scientific object. The score is a contract-level construction, not a theorem or a claim that one backbone is optimal. The selector uses a pre-registered exploration floor, records $p_t$, and uses preview--assignment--commit so that writing a future assignment cannot resample the selected candidate.
-
-The same protocol yields three observable predictions. First, responsibility safety is measured by false producer-attribution and \unknown{} rates under recipient-only interventions. Second, temporal validity is measured by read-cut and assignment-order invariants and by the absence of target-outcome fields at selection. Third, bounded online service is measured by per-event update latency, backlog, state bytes, and complete cost. These predictions map to the RQ2--RQ4 endpoints; they are not assumptions that the score automatically satisfies.
-
-\subsection{Executable selector and update contract}
-A candidate selector uses a frozen encoder for tasks, public profiles, and published observations. To avoid reusing a training label, it separates a timestamped profile from later evidence:
-\begin{align}
- P_{v,k}&=\operatorname{summarize}\{e_i:O_i=1,\;t_i<\kappa_k\},\\
- D_{v,k,t}&=\operatorname{summarize}\{e_i:O_i=1,\;\kappa_k\leq t_i\leq w_t\},\\
- z_t(v)&=[\phi(x_t)\,\|\,\phi(P_{v,k})\,\|\,\phi(D_{v,k,t})\,\|\,b(v)] .
- \label{eq:selector-state}
-\end{align}
-Here $\kappa_k$ is the profile cut, $w_t$ the legal read cut, $\phi$ frozen, and $b(v)$ public version and uncertainty features. Empty inputs remain explicit; each event enters at most one of $P$, $D$, or target credit.
-
-The candidate distribution is
-\begin{equation}
- q_t(v)=\operatorname{softmax}_{v\in C_t}\left(g_\psi(z_t(v))+\theta_v^\top\phi(x_t)\right),
- \qquad a_t\sim q_t,
- \label{eq:selector}
-\end{equation}
-Here $g_\psi$ is a candidate fixed head and $\theta_v$ a residual updated only after a selected assignment passes the independent reward contract. Head, exploration, clipping, and learning rate are fixed before confirmation; profile-only, delta-only, residual-only, and no-history controls isolate components.
-
-The candidate runtime contract requires five auditable operations. (1) It appends the sealed source judgment, publishes a complete typed observation, and checks attribution separately; incomplete records become \unknown{}. (2) It advances a read watermark and materializes a state snapshot, recording the feature-schema and state digest. (3) It scores only the legal candidate menu and writes the candidate set, probabilities, sampled action, and assignment digest before the target starts. (4) When the target outcome arrives, it verifies the matching assignment, selected-only eligibility, version, idempotency key, and independent reward contract. (5) It applies one bounded residual update and emits a new state digest; profile and delta materialization wait for the next declared read cut. The sequence is required to permit replay after a crash without changing a sealed choice.
+Each update uses the selected assignment's sealed input, rather than reconstructing that decision with a newer archive. It calibrates future assignment value; it does not relabel the source delivery. The source recipient's own integration work cannot directly reward or penalize the producer, and a target team's terminal result alone is insufficient as a producer-ability label. Duplicate feedback is counted once. Corrections and delayed records affect only choices after their arrival. Table~\ref{tab:state-timing} makes the different update times explicit.
 
 \begin{table}[t]
-\centering\scriptsize
-\setlength{\tabcolsep}{2pt}
-\caption{State fields and their legal update event. A field is read only after its listed cut and never retroactively edits a sealed assignment.}
-\label{tab:state-contract}
-\begin{tabular}{p{.25\columnwidth}p{.25\columnwidth}p{.38\columnwidth}}
+\centering\small
+\begin{tabular}{@{}p{.25\columnwidth}p{.69\columnwidth}@{}}
 \toprule
-Field & Source & Update boundary \\
+State & Information and time of change \\
 \midrule
-Profile $P_{v,k}$ & Published typed observations before $\kappa_k$ & Next profile cut; immutable thereafter \\
-Delta $D_{v,k,t}$ & New typed observations after $\kappa_k$ & Read watermark $w_t$ \\
-Residual $\theta_v$ & Validated selected target reward & Matching delayed update only \\
-Uncertainty $u(v)$ & Unknown, duplicate, or correction records & Monotone audit update \\
-Assignment $a_t,p_t$ & Candidate menu and snapshot & Sealed before target execution \\
+Public record $R$ & Versioned, typed experience; changes at publication or correction arrival. \\
+Archive $P_{v,k}$ & Earlier valid experience; refreshed at archive cuts or corrected-source rebuilds. \\
+Delta $D_{v,k,t}$ & New valid experience after the archive cut; read at the next selection. \\
+Residual $\Theta$ & Task-related score correction; changes once per validated assignment feedback. \\
+Assignment $a_t,p_t$ & Selected candidate and propensity; fixed before execution, never overwritten. \\
 \bottomrule
 \end{tabular}
+\caption{Experience and parameters change at different times.}
+\label{tab:state-timing}
 \end{table}
 
-This candidate contract makes late judgments visible only to future snapshots, excludes recipient repair from producer reward, and leaves missing outcomes without updates. Confirmation must measure latency, state size, and utility; if a calibrated control matches it at equal information and cost, no fusion gain is claimed.
+This separation lets new evaluations inform a decision while parameters remain fixed, and lets subsequent execution correct longer-term allocation. Experiments disable evaluation reading and parameter updating separately. Responsibility interventions test whether recipient-owned work is mistakenly converted into producer reward or punishment.
 
-\section{Benchmark and Baselines}
-\label{sec:benchmark}
+\section{Benchmarks and Baselines}
+\paragraph{ArtifactRole.} The primary track uses TeamBench's dependency structure \cite{kim2026teambench} to expose producer delivery, recipient use and evaluation, responsibility checks, later assignment, and complete cost. DIST1 queue-race and PIPE3 stream-processing separate development and confirmation roots; changing a random seed does not create a new structural root. A root identifies a task-generation mechanism and dependency structure. Results are reported per root to distinguish adaptation within a task family from transfer across tasks. Producer contract conformance and terminal usability are scored separately because a recipient may normalize a nonconforming delivery into a usable result. Every executed arm, including no-update, receives terminal evaluation. Native benchmark conformance remains a separate metric. Valid assignment credit is required for updating, not for entry into the intention-to-treat outcome denominator.
 
-\subsection{Two complementary tracks}
-The primary track, \textbf{ArtifactRole}, is a TeamBench-derived candidate benchmark \cite{kim2026teambench}. It is specified to expose producer artifacts, recipient dependencies, use/rework/rejection actions, responsibility checks, later assignments, downstream adoption, and complete cost. DIST1 queue-race and PIPE3 stream-processing are candidate structural roots; renamed seeds are not independent roots, and the development/confirmation split is frozen only by the versioned parity card before execution. Promotion requires material visibility, write permissions, scorer coverage, root independence, and clean replay. This stricter contract is intentional: TeamBench's role separation supplies the dependency scaffold, while ArtifactRole adds the producer--recipient attribution and future-assignment fields needed by our question.
+\paragraph{PeerSelect.} The secondary track uses a versioned benchmark of interactions on a local graph to isolate selected-only payoff, local candidate sets, online updating, drift, and service cost. It cannot establish artifact-specific judgment or producer attribution. The two tracks share event and selector interfaces while retaining separate tasks, labels, scorers, denominators, and claims.
 
-Producer conformance and terminal usability are scored separately: a recipient may normalize a nonconforming delivery into a usable result. Every executed arm, including no-update, receives terminal evaluation. A prior valid, evidence-bound assignment and an independently validated reward are required for assignment credit, not for inclusion in the outcome denominator; native benchmark conformance remains a separate endpoint.
+Agent benchmarks supply complementary coordination and interaction coverage \cite{zhu2025multiagentbench,agashe2025llmcoordination,liu2024agentbench,appworld2024,yao2024taubench}. They do not, by default, expose the proposed producer--recipient lineage. All primary arms receive matched candidate menus, initial opportunities, model/API/tool budgets, exploration, feedback arrival schedules, failure handling, and complete-cost accounting.
 
-The secondary \textbf{PeerSelect} track uses a pinned local graph interaction benchmark for selected-only payoff, local candidate sets, online updates, drift, and service cost. It isolates update behavior but cannot establish situated artifact judgment or producer attribution. The tracks share event and selector interfaces while keeping tasks, labels, scorers, denominators, and claims separate.
-
-\subsection{Predeclared baselines}
-All primary arms receive the same candidate menu, initial opportunities, model/API/tool budget, exploration opportunity, feedback arrival schedule, failure handling, and complete cost accounting. Each arm reads only its legal history. Table~\ref{tab:baselines} names the alternative explanations that the matrix must rule out.
 \begin{table*}[t]
 \centering\small
-\begin{tabular}{p{0.18\textwidth}p{0.38\textwidth}p{0.32\textwidth}}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{p{.16\textwidth}p{.42\textwidth}p{.33\textwidth}}
 \toprule
-Arm & Read/update contract & Alternative explanation tested\\
+Arm & Read / update contract & Alternative explanation tested \\
 \midrule
-Uniform & Candidate menu; fixed local-uniform sampling & Random allocation and exploration lower bound\\
-No update & Initial prior and current context; feedback ignored & Static execution is sufficient\\
-Raw acceptance & Recipient accept/reject only & Responsibility filtering adds no value\\
-Terminal only & Independent final outcome only & Situated judgment adds no information\\
-Contextual trust linear & Same public $\phi$, menu, judgment, propensity, delay, and budget as RARE; ordinary feature-aware diagonal RLS & The effect is ordinary contextual trust or bandit learning\\
-Pooled controller & Permitted public history under the same total capacity & A shared controller explains the gain\\
-Closest published adapter & Faithful public-information adapter, if it passes qualification; otherwise an explicit \textsc{no-go} cell & Existing role/organization method is sufficient\\
-RARE & Typed observations, attribution checks, and validated delayed credit & Candidate closed-loop mechanism\\
+Uniform & Candidate menu; fixed local-uniform sampling & Random allocation and exploration floor \\
+No update & Initial prior and current context; feedback ignored & Static execution is sufficient \\
+Raw acceptance & Recipient acceptance / rejection only & Responsibility filtering adds no value \\
+Terminal only & Independent terminal outcome only & Situated evaluation adds no information \\
+Contextual trust / bandit & Same context, evaluation, propensity, delay, and budget as \rare{} & Ordinary contextual learning explains the effect \\
+Pooled controller & Permitted public history at matched total capacity & Shared control explains the gain \\
+Closest published adapter & Public-information adapter preserving source semantics & Existing role / organization method is sufficient \\
+\rare{} & Observation and responsibility separated; validated selected assignment updates & Complete evaluation--delegation--calibration mechanism \\
 \bottomrule
 \end{tabular}
-\caption{Primary comparison boundary. A named arm enters the scientific matrix only after an executable adapter, information declaration, cost contract, and independent qualification pass.}
+\caption{Predeclared baselines. Same-information comparisons preserve context, feedback timing, and complete budget.}
 \label{tab:baselines}
 \end{table*}
 
-The context-only Beta trust arm remains a diagnostic historical comparator; it is not the
-strongest same-information control. If the closest published method cannot preserve the same public fields, candidate menu,
-arrival order, selected-only rule, and complete-cost contract, the confirmation card records
-an explicit \textsc{no-go}; it does not replace that missing adapter with a self-authored
-weak control.
-
-RLS, online logistic/SGD, periodic refitting, and any candidate incremental updater are training comparators. They are not counted as separate selection policies and are not presented as the innovation merely because they are fast. The contextual-trust-linear arm follows the same information contract as classical contextual bandits \cite{li2010contextual}; its delay handling is compared with the general delayed-feedback setting \cite{joulani2013delayed}. Agent ranking and human--LLM teaming provide additional positioning points, but neither substitutes for the producer--recipient label contract \cite{lanctot2025soft,yurrita2026guidelines}.
+RLS, online logistic regression, SGD, and periodic refitting are compared under the same selection interface. This separates updater computation from responsibility-aware information use. Continual-learning and multi-agent non-stationarity motivate the drift and forgetting analyses \cite{khetarpal2022continual,hernandezleal2017nonstationarity}; agent ranking and human--LLM teaming motivate generality and deployment boundaries \cite{lanctot2025soft,yurrita2026guidelines}.
 
 \section{Experimental Questions and Matrix}
-\label{sec:experiments}
+\textbf{RQ1 (information value).} Does eligible situated evaluation predict an independent producer-contract or later-use result beyond raw acceptance and terminal-only feedback? Measures are held-out log loss, Brier score \cite{brier1950verification}, AUC when defined, calibration \cite{guo2017calibration}, and incremental value on an independent root.
 
-The matrix below is a pre-specified design scaffold, not an observed result table. A cell enters
-the confirmation analysis only after its root, stream, seed, budget, scorer, cost contract,
-stopping rule, and manifest digest are frozen before the corresponding calls; otherwise it
-remains planned or \unknown{}.
+\textbf{RQ2 (assignment causality).} Does public evidence change an assignment sealed before target execution, including transfer to a future owner different from the source producer? Measures are assignment-change probability, propensity-weighted future quality, adoption, rework, and complete cost. Evidence about $B$ cannot be consumed as evidence about $C$.
 
-\subsection{Research questions and estimands}
-\textbf{RQ1 (information value).} Does an eligible situated judgment predict an independent producer-contract or later-use result beyond raw acceptance and terminal-only feedback? The primary estimands are out-of-sample log loss, Brier score, AUC when defined, calibration, and incremental predictive value on an independent root. The confirmation card also freezes a field-level feature manifest: a judgment-only view, a producer-check/terminal-only view, and their declared fusion. Artifact, structural owner, Qp, Y, read cut, arrival schedule, and cost remain fixed while legally paired recipient-judgment/action variants test whether the assignment or score actually responds to J.
+\textbf{RQ3 (online behavior).} Does delayed selected-only updating satisfy the service contract? Measures are publication, selection, and update p50/p95 latency; service lag; backlog; state bytes; processor, accelerator, and memory use; tokens, tools, and API calls; and replay time.
 
-\textbf{RQ2 (assignment causality).} Does public evidence change an assignment made before target execution, including when the future owner did not produce the source judgment? We measure assignment-change probability, propensity-weighted future quality, adoption, rework, and complete cost. Evidence from producer $B$ cannot be consumed as if it belonged to producer $C$.
+\textbf{RQ4 (stability and boundaries).} How does the method behave under task or peer drift, delayed or out-of-order feedback, version replacement, recipient-only work, mixed ownership, scorer failure, and resource failure? Measures are peak and mean old-root forgetting, recovery window, \unknown{} rate, correction consistency, and false producer attribution.
 
-\textbf{RQ3 (online behavior).} Does the update path satisfy the service contract under selected-only delayed feedback? We report publish, read/assignment, and update p50/p95 latency, service lag, backlog, state bytes, CPU/GPU/RAM, token/tool/API calls, and replay time.
+The uncertainty unit is an independently reset stream; events within a stream are dependent. We use paired stream-level estimates, bootstrap or randomization intervals over streams, and preregistered multiplicity control. Missing, invalid, and unknown events remain in their declared denominators. H1 is judgment Brier score, H2 future quality--complete-cost utility, H3 update p95 and backlog, and H4 false producer-attribution rate. H2 is higher-is-better; the others are lower-is-better. Comparison direction, precision target, 95\% interval, and stopping rule are sealed before confirmation outcomes are read.
 
-\textbf{RQ4 (stability and boundaries).} How does the method behave under task or peer drift, delayed or out-of-order feedback, version replacement, recipient-only work, mixed ownership, scorer failure, and resource failure? These are standard continual-learning and multi-agent non-stationarity stressors, but here they are coupled to responsibility attribution \cite{khetarpal2022continual,hernandezleal2017nonstationarity}. We report old-root peak and mean forgetting, drift recovery window, \unknown{} rate, correction consistency, and false producer attribution.
-
-The primary unit of uncertainty is an independently reset stream. Episodes inside one stream are dependent. We use paired stream-level estimates, bootstrap or randomization intervals over streams, and pre-registered multiplicity control for the primary contrasts. Missing, invalid, or unknown events remain in the denominator and are never silently recoded as failures or successes.
-
-\paragraph{Primary endpoint design.} The design reserves four card identifiers: \texttt{H1} uses independent-target Brier score (lower is better) for incremental situated signal; \texttt{H2} uses future assignment quality--complete-cost utility (higher is better) against the same-information control; \texttt{H3} uses selected-feedback update p95 latency and backlog under the fixed arrival budget (lower is better); and \texttt{H4} uses false producer-attribution rate under ownership mutations (lower is better). Each card is required to fix its control, minimum practically important difference or precision target, exploration floor/positivity condition, stream-level 95\% interval, and stopping rule before outcomes are observed; the current design-only manifest records which fields remain unfrozen.
-
-Only these H1--H4 endpoints are primary for the headline interpretation. The remaining measures in the matrix are secondary or exploratory and cannot be promoted after outcomes are observed.
-
-\subsection{Complete experiment matrix}
-Table~\ref{tab:matrix} is the main-paper overview of the execution skeleton. The
-detailed nine-cell cards expand each row into a root, split, policy, seed, budget,
-scorer, cost contract, and raw event manifest before confirmation; the overview
-does not replace those requirements.
 \begin{table*}[t]
 \centering\small
-\setlength{\tabcolsep}{3pt}
-\renewcommand{\arraystretch}{1.08}
-\begin{tabular}{p{0.08\textwidth}p{0.17\textwidth}p{0.25\textwidth}p{0.28\textwidth}p{0.13\textwidth}}
+\setlength{\tabcolsep}{2.6pt}
+\begin{tabular}{p{.07\textwidth}p{.16\textwidth}p{.25\textwidth}p{.27\textwidth}p{.15\textwidth}}
 \toprule
-RQ & Track / unit & Contrast & Primary endpoint & Stress / split\\
+Cell & Track / root & Strategy / intervention & Matched comparison & Measurement / result \\
 \midrule
-RQ1 & ArtifactRole / root & RARE / raw / terminal / contextual-trust-linear & Held-out Brier/log loss; calibration & Development $\rightarrow$ confirmation; matched public information\\
-RQ2 & ArtifactRole / target & Evidence+delayed credit / no evidence / delayed-only / pooled & Future quality--cost utility; assignment change & Pre-execution sealed assignment\\
-RQ3 & PeerSelect / stream & Updater / uniform / no-history / history-only & Payoff/regret; update p95; backlog/state & Selected-only; fixed call/token budget\\
-RQ4 & Both / mutation and drift & Ownership mutation / correction-replay / leave-one-out & False attribution; UNKNOWN; forgetting/recovery & Recipient/mixed; delayed order\\
+RQ1-I & ArtifactRole / dev & Raw vs. terminal vs. \rare{} & Same delivery, recipient observation, legal feedback & Brier/log loss, calibration: xx \\
+RQ1-II & ArtifactRole / confirm & Contextual trust vs. \rare{} & Same read cut, delay, propensity, model, budget & Incremental prediction, transfer: xx \\
+RQ2-I & ArtifactRole / confirm & No evidence vs. public evidence & Preview and assignment before target execution & Change, quality, adoption, rework: xx \\
+RQ2-II & ArtifactRole / confirm & Delayed-only vs. evidence+delay & Same target and selected-only outcome & Future utility, complete cost: xx \\
+RQ2-III & ArtifactRole / confirm & \rare{} vs. pooled controller & Same capacity and candidate menu & Utility, concentration, propensity: xx \\
+RQ3-I & PeerSelect / dev stream & Uniform, no/history, updater & Pinned graph and call/token budget & Payoff, p50/p95, state bytes: xx \\
+RQ3-II & PeerSelect / drift & Update with/without replay & Fixed peer/task drift and delay & Recovery, forgetting, backlog: xx \\
+RQ4-I & ArtifactRole / eligible roots & Responsibility mutations & Producer, recipient, mixed, unknown, failure & Attribution, UNKNOWN, no-op: xx \\
+RQ4-II & ArtifactRole / eligible roots & Remove one mechanism & Gate, evidence, delay, locality, updater & Utility, safety, cost, interaction: xx \\
 \bottomrule
 \end{tabular}
-\caption{Pre-specified experiment matrix overview. Each row routes one research question to its track, contrast, primary endpoint, and stress condition. The confirmation cards expand these four rows into the nine execution cells and bind each cell to a root, split, policy, seed, budget, scorer, cost record, and raw event manifest before interpretation.}
+\caption{Preregistered matrix. Each cell is bound to a structural root, split, policy, seed, budget, scorer, cost record, and raw-event manifest.}
 \label{tab:matrix}
 \end{table*}
 
-Table~\ref{tab:matrix} maps the two tracks to the four research-question endpoints while keeping the main-paper table readable.
+\paragraph{Denominators.} Eligibility for learning must not filter the population used to estimate team performance. Table~\ref{tab:denominators} distinguishes the six relevant counts. Always $N_{\mathrm{credit}}\leq N_{\mathrm{outcome}}$; credit eligibility never filters the H2 intention-to-treat denominator. Predictive metrics use only their predefined scorable-label subset while reporting the full denominator and reasons for missingness. Unselected candidates have no outcome labels and are not treated as failed samples.
 
-Table~\ref{tab:headline} fixes the primary endpoint contract that will carry the headline comparison once the confirmation manifest is complete.
 \begin{table}[t]
 \centering\small
-\setlength{\tabcolsep}{2.5pt}
-\caption{Primary endpoint contract fixed before confirmation. Direction and unit are defined before outcomes are observed; numeric values and stream-level 95\% intervals enter only after the matching card is executed.}
-\label{tab:headline}
-\begin{tabular}{p{.10\columnwidth}p{.36\columnwidth}p{.14\columnwidth}p{.25\columnwidth}}
+\begin{tabular}{@{}p{.24\columnwidth}p{.70\columnwidth}@{}}
 \toprule
-Card & Primary endpoint & Direction & Unit\\
+Count & Definition and reporting use \\
 \midrule
-H1 & Incremental situated signal & lower & held-out Brier / log loss\\
-H2 & Future responsibility allocation & higher & quality--cost utility\\
-H3 & Real-time service & lower & update p95 / backlog\\
-H4 & Attribution and stability & lower & false attribution / forgetting\\
+$N_{\mathrm{scheduled}}$ & Preregistered, eligible targets; planned load and stopping rules. \\
+$N_{\mathrm{started}}$ & Targets actually started after selection; coverage and resource use. \\
+$N_{\mathrm{outcome}}$ & All started targets, including failed, unknown, and invalid outcomes; H2 ITT denominator. \\
+$N_{\mathrm{credit}}$ & Subset with valid assignment, lineage, selected-only outcome, reward contract, and once-only feedback; legal updates. \\
+$N_{\mathrm{obs}}$ & Complete source observations ($O_i=1$); information coverage. \\
+$N_{\mathrm{attr}}$ & Responsibility-qualified evidence ($G_i=1$); attribution coverage. \\
 \bottomrule
 \end{tabular}
+\caption{Outcome coverage and update eligibility are reported separately.}
+\label{tab:denominators}
 \end{table}
 
-\subsection{Budget, statistics, and reporting}
-Every model request reserves attempted calls, prompt tokens, maximum completion tokens, tool time, and storage before dispatch; errors release only unused reservations and retain their observed cost. We charge producer execution, recipient integration, judgment service, communication, retries, replay, verification, and returned artifacts. Development/search cost is reported separately from deployment cost. A pooled controller receives the same total capacity, and arms that do not use a judgment still pay the declared comparison cost or use a shared judgment call whose output is masked.
+The count hierarchy locates failures without conflating them with learning eligibility. A scheduled target that never starts contributes to planned load and stopping rules, but not to the outcome denominator. Once a target starts, scorer, attribution, or resource failures remain in H2 with their incurred cost, even when they cannot supply an update. Reporting update coverage separately prevents selective exclusion of unsuccessful or unobservable assignments from improving the apparent quality--cost result.
 
-For each stream we record configuration, model route and version metadata, code and data hashes, seed, hardware, timestamps, raw API responses, token usage, intermediate actions, failure traces, \unknown{} reasons, and per-sample outcomes. We report means and medians with 95\% stream-level intervals, effect sizes for pre-registered contrasts, per-root heterogeneity, ITT and per-protocol denominators, and quality--cost Pareto points. The main endpoint is assignment-level future quality--complete-cost utility; source producer score is auxiliary and cannot replace it.
+Each request reserves attempts, prompt and completion tokens, tool time, and storage before dispatch. Observed costs from errors are retained. Complete cost covers producer execution, recipient integration, judgment service, communication, retries, replay, validation, and returned artifacts. We record configuration, model route/version, code/data hashes, seed, hardware, timestamps, raw responses, token use, actions, failures, unknown reasons, and per-sample results. Reports include stream-level means, medians, 95\% intervals, effect sizes, root heterogeneity, ITT and per-protocol denominators, and quality--cost Pareto points.
 
-For every primary contrast, the experiment card fixes the direction, minimum practically important difference or precision target, stream-level 95\% interval, and stopping rule before confirmation. A row without those fields is a design specification rather than an interpretable result.
+Development and search costs are reported separately from deployment costs. The pooled controller receives the same total capacity. Judgment-free arms either pay the declared comparison cost or share a judgment call whose output is masked. This prevents a change in information access from silently changing the charged budget. We report observation-publication, attribution-pass, and valid-update rates alongside outcomes to expose the coverage lost at each qualification step. Future assignment quality--complete-cost utility is the primary endpoint; source producer scores are auxiliary and cannot replace it.
 
-\subsection{Ablations and falsification}
-A count-only/$J$-masked control holds the same published handoffs and costs while removing judgment-category information. The minimum ablation grid is: (A) no evidence/no update; (B) public evidence only, with persistent state unchanged; (C) delayed update only, without new public evidence; and (D) public evidence plus delayed update. Additional interventions remove responsibility filtering, selected-only restriction, delay, locality, correction/replay, or the assignment binding one at a time while holding information, model, candidate menu, and budget fixed. A content mutation that changes a visible judgment while holding terminal quality fixed must change the comparator score if the comparator actually consumes that judgment.
+\paragraph{Mechanism ablations.} Count-only and judgment-masked controls preserve handoff count, arrival time, and cost while removing judgment category. The $2\times2$ design crosses public evaluation visibility $e$ with validated delayed updating $u$. With expected utility $V_{eu}$,
+\begin{equation}
+\begin{aligned}
+ \Delta_{\mathrm{obs}|\mathrm{upd}}&=V_{11}-V_{01},\\
+ \Delta_{\mathrm{upd}|\mathrm{obs}}&=V_{11}-V_{10},\\
+ I&=V_{11}-V_{10}-V_{01}+V_{00}.
+\end{aligned}
+\label{eq:factorial}
+\end{equation}
+These contrasts distinguish information, updating, and interaction on the same utility scale. The total difference $V_{11}-V_{00}>0$ can arise entirely from reading evaluations and does not by itself establish an updating benefit. Masking hides evaluation from the selector, without removing audit records or skipping responsibility validation. Disabling parameter updates still allows newly visible evaluations to affect a later choice.
 
-The main claim is withdrawn if an observation publication implicitly changes persistent policy; if a recipient repair is credited to a producer; if assignment or read-cut order is invalid; if unknown or duplicate events update state; if contextual trust explains the complete effect; or if gains disappear at matched complete cost. A null, a trade-off, or a qualified protocol result is scientifically valid, but it cannot be written as successful role formation.
+For example, after $A$ evaluates $B$'s delivery, the evaluation-only arm may choose $C$ while keeping parameters fixed. The full arm additionally updates after a later executed task produces valid feedback. Their subsequent executed tasks, rather than only score previews, determine whether updating is useful. Neither arm may turn $A$'s own integration work into a negative label for $B$.
 
+The four arms share initial states and exogenous task schedules, but each retains its own choices, deliveries, and histories. Uncertainty is estimated over paired independent streams. Fixed-history replay tests input sensitivity, not online utility differences. Because this ablation deliberately changes visible information, it does not replace the same-information primary comparison. Both the charging rule and measured costs are reported.
 
-\paragraph{Separating information from learning.}
-Let $V_{eu}$ denote expected future assignment utility when public observations
-are visible ($e=1$) or masked ($e=0$), and validated delayed updates are enabled
-($u=1$) or disabled ($u=0$). Utility uses the same predeclared quality--complete-cost
-rule in all four cells. Masking changes the selector's input, not the audit trail
-or the responsibility checks. With updates disabled, persistent parameters stay
-fixed even when newly published evidence changes the input. The secondary
-contrasts are
-\begin{align}
- \Delta_{\mathrm{obs}\mid\mathrm{upd}} &= V_{11}-V_{01},\\
- \Delta_{\mathrm{upd}\mid\mathrm{obs}} &= V_{11}-V_{10},\\
- I &= V_{11}-V_{10}-V_{01}+V_{00}.
- \label{eq:factorial}
-\end{align}
-The first contrast adds observations to a learner; the second adds learning to
-an evidence-conditioned selector. The interaction $I$ measures departure from
-additivity on the declared utility scale. A positive total difference
-$V_{11}-V_{00}$ can arise entirely from the observations; it does not by itself
-establish a benefit from parameter updates. These identities organise the test,
-not a performance guarantee or a new training algorithm.
+Responsibility interventions fix the producer delivery and vary recipient-owned integration. We inspect attribution labels, parameter updates, and later choice probabilities separately: avoiding a false producer label does not require every choice probability to remain unchanged. Other interventions remove the responsibility gate, selected-only constraint, delay handling, locality, or replay while matching models, candidates, and budgets. Version tests cover duplicates, late records, and corrections across archive cuts, verifying that effective history retains only one version of each source.
 
-For example, after $A$ judges $B$'s delivery, the evidence-only cell may assign a
-new task to $C$ while retaining the same parameters. The complete cell can also
-update after the new task finishes and its reward is validated. Comparing their
-\emph{subsequent executed assignments}, rather than their score previews, tests
-whether that update improves allocation. The observation remains noisy in both
-cells: $A$'s own integration work cannot become a negative label for $B$.
+\section{Results}
+\begin{table}[t]
+\centering\small
+\setlength{\tabcolsep}{2.2pt}
+\begin{tabular}{p{.39\columnwidth}p{.16\columnwidth}p{.18\columnwidth}p{.18\columnwidth}}
+\toprule
+Endpoint & \rare{} & Same-info. baseline & Difference / CI \\
+\midrule
+Future quality & xx & xx & xx \\
+Complete cost & xx & xx & xx \\
+Quality--cost utility & xx & xx & xx \\
+Assignment change & xx & xx & xx \\
+Judgment Brier & xx & xx & xx \\
+Update p95 / state bytes & xx & xx & xx \\
+Old-root forgetting & xx & xx & xx \\
+UNKNOWN / false attribution & xx & xx & xx \\
+\bottomrule
+\end{tabular}
+\caption{Primary results against contextual trust/bandit, the same-information baseline; intervals use independently reset streams.}
+\label{tab:results}
+\end{table}
 
-Each cell starts from the same initial state and external task schedule, but
-keeps its own selected deliveries and evolving history. Paired independent
-streams provide uncertainty estimates; individual handoffs are not independent
-replicates. A fixed-history score replay diagnoses input sensitivity only and
-cannot estimate these online utility contrasts. Unlike the primary
-same-information baseline comparison, these ablations deliberately change
-visibility. Their declared charging rule and observed costs must therefore
-accompany Table~\ref{tab:factorial-results}.
+\paragraph{RQ1: information value.} In ArtifactRole, \rare{} differed from raw acceptance, terminal-only feedback, and same-information contextual trust in Brier score by xx, xx, and xx (stream-level 95\% CIs: xx, xx, and xx). Log loss, calibration error, and cross-root transfer were xx, xx, and xx. The evaluation included xx valid observations, an \unknown{} rate of xx, and judgment-service cost of xx. Predictive metrics remain distinct from team utility.
 
-\subsection{Reproducibility and reporting}
-Before execution, each experiment card fixes the matrix cell, root, stream, model, budget, scorer, estimand, and stopping rule. A hash-linked ledger connects every aggregate to its raw calls and per-episode outcomes. Failed attempts retain their observed cost; incomplete cells remain \textsc{tbd}, never zero. We report safety without utility gain as a safety result, and prediction without changed future assignment as an information result. Neither alone establishes role formation.
+\paragraph{RQ2: assignment change.} Candidate sets, public history, propensities, and samples were sealed before target execution. We compared executed later tasks under no evidence, public evidence only, delayed updating only, and \rare{}. Under \rare{}, assignment-change rate, future quality, rework, and quality--complete-cost utility were xx, xx, xx, and xx (95\% CI: xx). All scheduled targets that actually started entered the H2 ITT denominator, including quality-check, \unknown{}, invalid, resource, and scorer failures. Only the subset passing assignment-credit validation produced $L_j$ for delayed update and assignment credit.
 
-\section{Results and Evidence Boundary}
-\label{sec:current}
+\paragraph{RQ3: service behavior.} In PeerSelect, publish, read/assignment, and update p50/p95 latency were xx, xx, and xx. Backlog, state bytes, model calls, tokens, replay time, and complete service cost were xx, xx, xx, xx, xx, and xx; the difference from matched-budget updaters was xx. This track establishes the online service boundary but does not substitute for ArtifactRole attribution evidence.
+
+\paragraph{RQ4: responsibility and drift.} Under recipient-only repair, mixed ownership, unknown responsibility, version replacement, out-of-order feedback, and resource failure, false producer attribution, \unknown{} precision, observation publication, valid update, drift recovery, old-root forgetting, and no-op rate were xx, xx, xx, xx, xx, xx, and xx (95\% CI: xx). Records whose responsibility could not be independently determined remained contextual observations and did not trigger producer reward or an ineligible parameter update.
 
 \begin{table}[t]
 \centering\small
 \setlength{\tabcolsep}{3pt}
-\caption{Information--update ablation results to be measured on independent
-streams. Dashes denote unrun cells, not zero effects. Utility includes its
-stream-level 95\% interval; complete cost is reported separately.}
-\label{tab:factorial-results}
 \begin{tabular}{llcc}
 \toprule
-Observations & Updates & Future utility & Full cost\\
+Evaluation & Update & Future utility (95\% CI) & Cost \\
 \midrule
-Masked & Off & --- & ---\\
-Visible & Off & --- & ---\\
-Masked & On & --- & ---\\
-Visible & On & --- & ---\\
+Masked & Off & xx & xx \\
+Visible & Off & xx & xx \\
+Masked & On & xx & xx \\
+Visible & On & xx & xx \\
 \bottomrule
 \end{tabular}
+\caption{Evaluation--update factorial ablation.}
+\label{tab:factorial-results}
 \end{table}
 
-
-\textbf{RQ1--RQ2 (information and assignment).} The confirmation card will fill the held-out Brier score, matched-information comparison, assignment-change rate, and future quality--cost utility routed by Tables~\ref{tab:headline} and~\ref{tab:matrix}: \textsc{tbd}. Prediction without a sealed future assignment supports an information claim only; assignment without an independent target outcome does not establish responsibility transfer.
-
-\textbf{RQ3--RQ4 (service and safety).} The latency, backlog, state-size, forgetting, \unknown{}, and false-attribution cells remain \textsc{tbd}. We will interpret a safe null, a quality--cost trade-off, and a qualified positive result as different claims rather than as interchangeable evidence.
-
-Current development traces expose attribution and measurement hazards, but do not establish predictive utility, future assignment gains, or real-time learning. No confirmation cell is filled from these traces. Results require qualified roots, independent streams, matched baselines, and complete cost.
+Results are organized by structural root, candidate menu, public information, feedback timing, budget, and stopping rule. ITT and per-protocol denominators, costs of failed runs, unknown reasons, and version corrections are reported together. Runs with incomplete integrity records do not supply numerical effect estimates; they remain represented in coverage and missingness reports, and their incurred cost is retained. Responsibility safety, prediction accuracy, and team utility are reported separately.
 
 \section{Discussion and Limitations}
+The method applies when responsibility boundaries, artifact versions, and later outcomes can be recorded explicitly. It does not discover open-ended workflows or infer general expertise from aggregate success. PeerSelect describes responsibility opportunities within local candidate sets; broader organizational restructuring requires candidate discovery and a new cost contract.
 
-The mechanism addresses responsibility opportunities in tasks with an actual producer--recipient dependency. It does not establish general expertise or autonomous workflow discovery. PeerSelect can isolate local adaptation, but cannot replace ArtifactRole's attribution evidence; conversely, an ArtifactRole result cannot be interpreted as general bandit performance.
+Human-inspired collaboration does not make peer evaluation ground truth. A recipient may misjudge, report selectively, or attribute its own integration difficulty to the producer. Complete but unattributable records remain contextual observations rather than producer rewards, and missing or invalid records do not update. This protects attribution at the cost of fewer learning examples. Cross-recipient judgment, quality calibration, and adversarial-feedback modeling are directions for improving reliability without relaxing the responsibility boundary.
 
-Judge error, selective exposure, root dependence, incomplete responsibility coverage, and judgment cost threaten validity. We therefore preserve \unknown{} events, log selection propensities, assess judge reliability, and evaluate independent roots and streams. Terminal usability also differs from producer conformance: successful downstream normalization need not vindicate an upstream contract violation. Neither metric alone identifies the producer's contribution to future team utility.
+Waiting for an executed future assignment grounds updating in actual allocation outcomes, but delays adaptation to change. Waiting alone does not establish attribution; independent responsibility checks remain necessary. The bounded selected-only update does not solve multi-step credit assignment over long chains. Hierarchical update timescales, risk-sensitive exploration, and resource scheduling for unresolved events remain outside the present scope.
 
-Backbone and updater selection remains an empirical question. Frozen representations with incremental heads, online logistic/RLS updates, and periodic refitting are matched candidates. Latency alone cannot establish useful adaptation: a fast update may reinforce a misattributed label or forget previously useful distinctions. The drift and old-task evaluations must accompany update timing before a real-time learning claim is supported.
+Frozen representations and a small update head reduce service cost but may under-express rapid semantic or relational drift; updating a larger encoder instead raises latency and forgetting risk. Real-time adaptation must therefore be evaluated jointly through new-task adaptation, old-task retention, and complete service cost. Parameter-efficient adaptation, compressed memory, and versioned states that support rollback offer directions for extending this tradeoff.
 
-Deployment must expose refusals to learn, preserve correction lineage, and retain enough provenance to replay decisions after evidence compression. Tool selection can share this event interface, but requires its own execution oracle; peer judgments retain the ownership gate. The release will include versioned code, prompts, scorer contracts, raw-event manifests, and table-generation scripts. Offline replay reconstructs decision order; reproducing API latency and token costs requires fresh calls. These boundaries distinguish an executable protocol from demonstrated improvements in role formation.
+Finally, complete lineage and audit records impose storage, privacy, and communication costs. Compressed delivery summaries reduce cost but may discard details needed for judgment; cross-tool or cross-organization deployments may not share all responsibility fields. Practical systems must trade replayability against data minimization and preserve a safe unknown branch for absent information. These choices must be assessed under the same service budget, including the cost of retaining the records required to explain and replay an assignment.
 
 \section{Conclusion}
+Earning roles transfers a principle of human collaboration to multi-agent systems: future responsibility should depend on how partners evaluate concrete work and on whether subsequent delegation succeeds. Recipient evaluation forms task-situated role evidence; independent validation separates observation from producer attribution; and later quality and complete cost calibrate the selector. The resulting object is directly testable: whether collaborator evaluation changes future assignments and improves team performance on new tasks without sacrificing responsibility safety, service behavior, stability, or cost.
 
-This paper defines a precise object for self-evolving multi-agent roles: a recipient's situated judgment becomes a typed noisy observation, producer attribution is checked separately, and a later sealed assignment is evaluated with independent quality and complete cost. The protocol makes each arrow auditable and gives close alternatives the same information and budget. The current draft records the method contract, benchmark and baseline matrix, statistical plan, and falsification boundary while leaving empirical cells empty. The decisive result will be whether the complete loop improves future responsibility allocation beyond equally informed alternatives without sacrificing attribution safety, online service, stability, or cost.
-
-\balance
 \clearpage
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{references}

@@ -1,0 +1,866 @@
+{
+  "version": "expected_v4_20261009",
+  "passed": true,
+  "checks": [
+    {
+      "name": "utility_identity_all_rows",
+      "passed": true,
+      "detail": {
+        "max_abs_residual": 0.0,
+        "row_count": 40
+      }
+    },
+    {
+      "name": "cost_breakdown_all_rows",
+      "passed": true,
+      "detail": {
+        "max_abs_residual": 0.0,
+        "row_count": 40
+      }
+    },
+    {
+      "name": "wall_time_all_rows",
+      "passed": true,
+      "detail": {
+        "row_count": 40
+      }
+    },
+    {
+      "name": "cost_component_sums",
+      "passed": true,
+      "detail": {
+        "computed": {
+          "uniform": 1.0,
+          "no_update": 1.02,
+          "raw": 1.1,
+          "terminal": 1.15,
+          "context": 1.22,
+          "task_ridge": 1.29,
+          "matched_composition": 1.31,
+          "matched_rls": 1.31,
+          "matched_sgd": 1.29,
+          "matched_periodic_refit": 1.35,
+          "pooled": 1.28,
+          "rare": 1.34,
+          "public_only": 1.18,
+          "delayed_only": 1.15,
+          "history_only": 1.16
+        },
+        "expected": {
+          "uniform": 1.0,
+          "no_update": 1.02,
+          "raw": 1.1,
+          "terminal": 1.15,
+          "context": 1.22,
+          "task_ridge": 1.29,
+          "matched_composition": 1.31,
+          "matched_rls": 1.31,
+          "matched_sgd": 1.29,
+          "matched_periodic_refit": 1.35,
+          "pooled": 1.28,
+          "rare": 1.34,
+          "public_only": 1.18,
+          "delayed_only": 1.15,
+          "history_only": 1.16
+        }
+      }
+    },
+    {
+      "name": "factorial_quality",
+      "passed": true,
+      "detail": {
+        "value": 0.004
+      }
+    },
+    {
+      "name": "factorial_cost",
+      "passed": true,
+      "detail": {
+        "value": 0.03
+      }
+    },
+    {
+      "name": "factorial_utility",
+      "passed": true,
+      "detail": {
+        "value": 0.001
+      }
+    },
+    {
+      "name": "factorial_cross_identity",
+      "passed": true,
+      "detail": {
+        "I_U": 0.001,
+        "I_Y_minus_lambda_I_C": 0.001
+      }
+    },
+    {
+      "name": "rq4i_coverage_plus_unknown",
+      "passed": true,
+      "detail": [
+        [
+          "producer_only",
+          1.0
+        ],
+        [
+          "recipient_only",
+          1.0
+        ],
+        [
+          "sink_only",
+          1.0
+        ],
+        [
+          "mixed_ownership",
+          1.0
+        ],
+        [
+          "unknown_owner",
+          1.0
+        ],
+        [
+          "resource_failure",
+          1.0
+        ]
+      ]
+    },
+    {
+      "name": "rq4i_false_attribution_denominator_transform",
+      "passed": true,
+      "detail": [
+        [
+          "producer_only",
+          0.011,
+          0.011
+        ],
+        [
+          "recipient_only",
+          0.033,
+          0.033
+        ],
+        [
+          "sink_only",
+          0.03,
+          0.03
+        ],
+        [
+          "mixed_ownership",
+          0.111,
+          0.111
+        ],
+        [
+          "resource_failure",
+          0.033,
+          0.033
+        ]
+      ]
+    },
+    {
+      "name": "rq4i_sink_only_present",
+      "passed": true,
+      "detail": [
+        "mixed_ownership",
+        "producer_only",
+        "recipient_only",
+        "resource_failure",
+        "sink_only",
+        "unknown_owner"
+      ]
+    },
+    {
+      "name": "rq4i_no_op_visible",
+      "passed": true,
+      "detail": {
+        "producer_only": 0.07,
+        "recipient_only": 0.93,
+        "sink_only": 0.89,
+        "mixed_ownership": 0.8,
+        "unknown_owner": 0.95,
+        "resource_failure": 0.68
+      }
+    },
+    {
+      "name": "rq4ii_coverage_plus_unknown",
+      "passed": true,
+      "detail": [
+        [
+          "full_rare",
+          1.0
+        ],
+        [
+          "no_evidence_no_update",
+          1.0
+        ],
+        [
+          "minus_ownership_gate",
+          1.0
+        ],
+        [
+          "minus_public_evidence",
+          1.0
+        ],
+        [
+          "minus_delayed_update",
+          1.0
+        ],
+        [
+          "minus_locality",
+          1.0
+        ],
+        [
+          "minus_updater",
+          1.0
+        ],
+        [
+          "minus_selected_only_rule",
+          1.0
+        ],
+        [
+          "minus_correction_replay",
+          1.0
+        ]
+      ]
+    },
+    {
+      "name": "rq4ii_false_attribution_denominator_transform",
+      "passed": true,
+      "detail": [
+        [
+          "full_rare",
+          0.0064,
+          0.0064
+        ],
+        [
+          "no_evidence_no_update",
+          0.018,
+          0.018
+        ],
+        [
+          "minus_ownership_gate",
+          0.18,
+          0.18
+        ],
+        [
+          "minus_public_evidence",
+          0.04,
+          0.04
+        ],
+        [
+          "minus_delayed_update",
+          0.0495,
+          0.0495
+        ],
+        [
+          "minus_locality",
+          0.018,
+          0.018
+        ],
+        [
+          "minus_updater",
+          0.02,
+          0.02
+        ],
+        [
+          "minus_selected_only_rule",
+          0.039,
+          0.039
+        ],
+        [
+          "minus_correction_replay",
+          0.0336,
+          0.0336
+        ]
+      ]
+    },
+    {
+      "name": "rq1ii_required_counterfactuals_present",
+      "passed": true,
+      "detail": [
+        "closest_published_adapter",
+        "contextual_trust_linear",
+        "count_only",
+        "j_masked",
+        "j_permutation",
+        "matched_composition",
+        "menu_id_permutation",
+        "rare",
+        "task_conditioned_ridge",
+        "trace_only"
+      ]
+    },
+    {
+      "name": "h1_targets_separated",
+      "passed": true,
+      "detail": [
+        "closest_published_adapter",
+        "contextual_trust_linear",
+        "count_only",
+        "j_masked",
+        "j_permutation",
+        "matched_composition",
+        "menu_id_permutation",
+        "rare",
+        "task_conditioned_ridge",
+        "trace_only"
+      ]
+    },
+    {
+      "name": "informative_qp_positive",
+      "passed": true,
+      "detail": {
+        "trace_only": 0.216,
+        "count_only": 0.213,
+        "j_masked": 0.212,
+        "j_permutation": 0.213,
+        "menu_id_permutation": 0.214,
+        "contextual_trust_linear": 0.211,
+        "task_conditioned_ridge": 0.207,
+        "matched_composition": 0.206,
+        "rare": 0.203,
+        "closest_published_adapter": null
+      }
+    },
+    {
+      "name": "informative_later_use_positive",
+      "passed": true,
+      "detail": {
+        "trace_only": 0.223,
+        "count_only": 0.219,
+        "j_masked": 0.218,
+        "j_permutation": 0.22,
+        "menu_id_permutation": 0.221,
+        "contextual_trust_linear": 0.217,
+        "task_conditioned_ridge": 0.214,
+        "matched_composition": 0.213,
+        "rare": 0.209,
+        "closest_published_adapter": null
+      }
+    },
+    {
+      "name": "rq2iii_locality_controls_present",
+      "passed": true,
+      "detail": [
+        "sparse_pooled",
+        "sparse_rare",
+        "stable_local_uniform",
+        "stable_nonlocal_global",
+        "stable_pooled",
+        "stable_rare",
+        "stable_same_cost_centralized"
+      ]
+    },
+    {
+      "name": "stable_crossover_small_positive",
+      "passed": true,
+      "detail": {
+        "delta": 0.002
+      }
+    },
+    {
+      "name": "sparse_clear_negative",
+      "passed": true,
+      "detail": {
+        "delta": -0.023
+      }
+    },
+    {
+      "name": "rq3i_matched_updaters_present",
+      "passed": true,
+      "detail": [
+        "high_load_rare",
+        "high_load_uniform",
+        "normal_history_only",
+        "normal_matched_online_sgd",
+        "normal_matched_periodic_refit",
+        "normal_matched_rls",
+        "normal_no_history",
+        "normal_rare",
+        "normal_uniform"
+      ]
+    },
+    {
+      "name": "rq3i_full_service_fields",
+      "passed": true,
+      "detail": {
+        "required": [
+          "backlog_p95_events",
+          "cpu_ms_per_event",
+          "drop_timeout_rate",
+          "gpu_ms_per_event",
+          "input_tokens_per_1000_arrivals",
+          "model_calls_per_1000_arrivals",
+          "output_tokens_per_1000_arrivals",
+          "publish_p50_ms",
+          "publish_p95_ms",
+          "ram_peak_mib",
+          "read_assignment_p50_ms",
+          "read_assignment_p95_ms",
+          "replay_ms_per_1000_arrivals",
+          "service_lag_p95_ms",
+          "state_kib",
+          "tool_calls_per_1000_arrivals",
+          "update_p50_ms",
+          "update_p95_ms"
+        ],
+        "rows": 9
+      }
+    },
+    {
+      "name": "normal_updater_edge_small",
+      "passed": true,
+      "detail": {
+        "rare": 0.472,
+        "best_updater": 0.469,
+        "delta": 0.003
+      }
+    },
+    {
+      "name": "high_load_clear_negative",
+      "passed": true,
+      "detail": {
+        "delta": -0.028,
+        "rare_update_p95": 480.0
+      }
+    },
+    {
+      "name": "rq3ii_drift_controls_present",
+      "passed": true,
+      "detail": [
+        "delayed_with_correction_replay",
+        "delayed_without_correction_replay",
+        "gradual_drift_frozen_prior",
+        "gradual_drift_matched_rls",
+        "gradual_drift_matched_sgd",
+        "gradual_drift_periodic_refit",
+        "gradual_drift_rare_correction_replay",
+        "stale_rare",
+        "stale_version_aware_reset"
+      ]
+    },
+    {
+      "name": "rq3ii_full_service_fields",
+      "passed": true,
+      "detail": {
+        "required": [
+          "backlog_p95_events",
+          "cpu_ms_per_event",
+          "drop_timeout_rate",
+          "gpu_ms_per_event",
+          "input_tokens_per_1000_arrivals",
+          "model_calls_per_1000_arrivals",
+          "output_tokens_per_1000_arrivals",
+          "publish_p50_ms",
+          "publish_p95_ms",
+          "ram_peak_mib",
+          "read_assignment_p50_ms",
+          "read_assignment_p95_ms",
+          "replay_ms_per_1000_arrivals",
+          "service_lag_p95_ms",
+          "state_kib",
+          "tool_calls_per_1000_arrivals",
+          "update_p50_ms",
+          "update_p95_ms"
+        ],
+        "rows": 9
+      }
+    },
+    {
+      "name": "stale_clear_negative_safety_positive",
+      "passed": true,
+      "detail": {
+        "delta": -0.026,
+        "stale_rare": {
+          "quality": 0.557,
+          "complete_cost": 1.34,
+          "utility": 0.423,
+          "cost_template_id": "row_specific_C_1.34",
+          "cost_breakdown": {
+            "selection": 0.08,
+            "execution": 0.3,
+            "publish_read": 0.1,
+            "judgment_or_matched_masked_call": 0.15,
+            "assignment_commit": 0.02,
+            "communication": 0.04,
+            "model_api_token_tool": 0.17,
+            "verification": 0.01,
+            "update": 0.1645,
+            "queue_retry": 0.1175,
+            "repair": 0.047,
+            "state_storage": 0.0846,
+            "replay": 0.0564
+          },
+          "expected_wall_seconds_per_attempt": 0.19,
+          "payoff": 0.557,
+          "regret_vs_oracle_0_650": 0.093,
+          "publish_p50_ms": 13.2,
+          "publish_p95_ms": 22.0,
+          "read_assignment_p50_ms": 27.6,
+          "read_assignment_p95_ms": 46.0,
+          "update_p50_ms": 49.2,
+          "update_p95_ms": 82.0,
+          "service_lag_p95_ms": 190.0,
+          "backlog_p95_events": 1.6,
+          "state_kib": 36.0,
+          "drop_timeout_rate": 0.012,
+          "cpu_ms_per_event": 38.0,
+          "gpu_ms_per_event": 0.0,
+          "ram_peak_mib": 160.0,
+          "model_calls_per_1000_arrivals": 0,
+          "input_tokens_per_1000_arrivals": 0,
+          "output_tokens_per_1000_arrivals": 0,
+          "tool_calls_per_1000_arrivals": 0,
+          "replay_ms_per_1000_arrivals": 40.0,
+          "brier": 0.232,
+          "false_attribution_all_attempts": 0.04,
+          "recovery_selected_updates": 8.5
+        },
+        "reset": {
+          "quality": 0.579,
+          "complete_cost": 1.3,
+          "utility": 0.449,
+          "cost_template_id": "row_specific_C_1.30",
+          "cost_breakdown": {
+            "selection": 0.08,
+            "execution": 0.3,
+            "publish_read": 0.1,
+            "judgment_or_matched_masked_call": 0.15,
+            "assignment_commit": 0.02,
+            "communication": 0.04,
+            "model_api_token_tool": 0.17,
+            "verification": 0.01,
+            "update": 0.1505,
+            "queue_retry": 0.1075,
+            "repair": 0.043,
+            "state_storage": 0.0774,
+            "replay": 0.0516
+          },
+          "expected_wall_seconds_per_attempt": 0.12,
+          "payoff": 0.579,
+          "regret_vs_oracle_0_650": 0.071,
+          "publish_p50_ms": 10.8,
+          "publish_p95_ms": 18.0,
+          "read_assignment_p50_ms": 21.6,
+          "read_assignment_p95_ms": 36.0,
+          "update_p50_ms": 30.0,
+          "update_p95_ms": 50.0,
+          "service_lag_p95_ms": 120.0,
+          "backlog_p95_events": 0.8,
+          "state_kib": 24.0,
+          "drop_timeout_rate": 0.006,
+          "cpu_ms_per_event": 24.0,
+          "gpu_ms_per_event": 0.0,
+          "ram_peak_mib": 96.0,
+          "model_calls_per_1000_arrivals": 0,
+          "input_tokens_per_1000_arrivals": 0,
+          "output_tokens_per_1000_arrivals": 0,
+          "tool_calls_per_1000_arrivals": 0,
+          "replay_ms_per_1000_arrivals": 20.0,
+          "brier": 0.224,
+          "false_attribution_all_attempts": 0.06,
+          "recovery_selected_updates": 6.0
+        }
+      }
+    },
+    {
+      "name": "correction_replay_tradeoff",
+      "passed": true,
+      "detail": {
+        "with": {
+          "quality": 0.607,
+          "complete_cost": 1.39,
+          "utility": 0.468,
+          "cost_template_id": "row_specific_C_1.39",
+          "cost_breakdown": {
+            "selection": 0.08,
+            "execution": 0.3,
+            "publish_read": 0.1,
+            "judgment_or_matched_masked_call": 0.15,
+            "assignment_commit": 0.02,
+            "communication": 0.04,
+            "model_api_token_tool": 0.17,
+            "verification": 0.01,
+            "update": 0.182,
+            "queue_retry": 0.13,
+            "repair": 0.052,
+            "state_storage": 0.0936,
+            "replay": 0.0624
+          },
+          "expected_wall_seconds_per_attempt": 0.175,
+          "payoff": 0.607,
+          "regret_vs_oracle_0_650": 0.043,
+          "publish_p50_ms": 14.4,
+          "publish_p95_ms": 24.0,
+          "read_assignment_p50_ms": 28.8,
+          "read_assignment_p95_ms": 48.0,
+          "update_p50_ms": 44.4,
+          "update_p95_ms": 74.0,
+          "service_lag_p95_ms": 175.0,
+          "backlog_p95_events": 1.4,
+          "state_kib": 39.0,
+          "drop_timeout_rate": 0.01,
+          "cpu_ms_per_event": 40.0,
+          "gpu_ms_per_event": 0.0,
+          "ram_peak_mib": 176.0,
+          "model_calls_per_1000_arrivals": 0,
+          "input_tokens_per_1000_arrivals": 0,
+          "output_tokens_per_1000_arrivals": 0,
+          "tool_calls_per_1000_arrivals": 0,
+          "replay_ms_per_1000_arrivals": 42.0,
+          "forgetting": 0.11,
+          "recovery_selected_updates": 6.5,
+          "replay_equality": 1.0
+        },
+        "without": {
+          "quality": 0.58,
+          "complete_cost": 1.25,
+          "utility": 0.455,
+          "cost_template_id": "row_specific_C_1.25",
+          "cost_breakdown": {
+            "selection": 0.08,
+            "execution": 0.3,
+            "publish_read": 0.1,
+            "judgment_or_matched_masked_call": 0.15,
+            "assignment_commit": 0.02,
+            "communication": 0.04,
+            "model_api_token_tool": 0.17,
+            "verification": 0.01,
+            "update": 0.133,
+            "queue_retry": 0.095,
+            "repair": 0.038,
+            "state_storage": 0.0684,
+            "replay": 0.0456
+          },
+          "expected_wall_seconds_per_attempt": 0.14,
+          "payoff": 0.58,
+          "regret_vs_oracle_0_650": 0.07,
+          "publish_p50_ms": 12.0,
+          "publish_p95_ms": 20.0,
+          "read_assignment_p50_ms": 24.0,
+          "read_assignment_p95_ms": 40.0,
+          "update_p50_ms": 36.0,
+          "update_p95_ms": 60.0,
+          "service_lag_p95_ms": 140.0,
+          "backlog_p95_events": 0.9,
+          "state_kib": 30.0,
+          "drop_timeout_rate": 0.012,
+          "cpu_ms_per_event": 30.0,
+          "gpu_ms_per_event": 0.0,
+          "ram_peak_mib": 128.0,
+          "model_calls_per_1000_arrivals": 0,
+          "input_tokens_per_1000_arrivals": 0,
+          "output_tokens_per_1000_arrivals": 0,
+          "tool_calls_per_1000_arrivals": 0,
+          "replay_ms_per_1000_arrivals": 18.0,
+          "forgetting": 0.17,
+          "recovery_selected_updates": 9.0,
+          "replay_equality": 0.86
+        }
+      }
+    },
+    {
+      "name": "drift_no_universal_rare_win",
+      "passed": true,
+      "detail": {
+        "rare": 0.468,
+        "matched_rls": 0.471
+      }
+    },
+    {
+      "name": "ownership_gate_safety",
+      "passed": true,
+      "detail": {
+        "full": {
+          "quality": 0.608,
+          "complete_cost": 1.34,
+          "utility": 0.474,
+          "cost_template_id": "row_specific_C_1.34",
+          "cost_breakdown": {
+            "selection": 0.08,
+            "execution": 0.3,
+            "publish_read": 0.1,
+            "judgment_or_matched_masked_call": 0.15,
+            "assignment_commit": 0.02,
+            "communication": 0.04,
+            "model_api_token_tool": 0.17,
+            "verification": 0.01,
+            "update": 0.1645,
+            "queue_retry": 0.1175,
+            "repair": 0.047,
+            "state_storage": 0.0846,
+            "replay": 0.0564
+          },
+          "expected_wall_seconds_per_attempt": 24.12,
+          "coverage": 0.08,
+          "unknown_rate": 0.92,
+          "false_attribution_all_attempts": 0.0064,
+          "false_attribution_claimed": 0.08
+        },
+        "minus_gate": {
+          "quality": 0.588,
+          "complete_cost": 1.27,
+          "utility": 0.461,
+          "cost_template_id": "row_specific_C_1.27",
+          "cost_breakdown": {
+            "selection": 0.08,
+            "execution": 0.3,
+            "publish_read": 0.1,
+            "judgment_or_matched_masked_call": 0.15,
+            "assignment_commit": 0.02,
+            "communication": 0.04,
+            "model_api_token_tool": 0.17,
+            "verification": 0.01,
+            "update": 0.14,
+            "queue_retry": 0.1,
+            "repair": 0.04,
+            "state_storage": 0.072,
+            "replay": 0.048
+          },
+          "expected_wall_seconds_per_attempt": 22.86,
+          "coverage": 0.75,
+          "unknown_rate": 0.25,
+          "false_attribution_all_attempts": 0.18,
+          "false_attribution_claimed": 0.24
+        }
+      }
+    },
+    {
+      "name": "planning_halfwidth_reproducible",
+      "passed": true,
+      "detail": [
+        [
+          "single_arm",
+          "brier",
+          0.0
+        ],
+        [
+          "single_arm",
+          "log_loss_nats",
+          -0.0
+        ],
+        [
+          "single_arm",
+          "ece_10_equal_mass_bins",
+          0.0
+        ],
+        [
+          "single_arm",
+          "auc",
+          -0.0
+        ],
+        [
+          "single_arm",
+          "quality_or_payoff",
+          -0.0
+        ],
+        [
+          "single_arm",
+          "complete_cost",
+          -0.0
+        ],
+        [
+          "single_arm",
+          "utility",
+          0.0
+        ],
+        [
+          "single_arm",
+          "rate",
+          -0.0
+        ],
+        [
+          "single_arm",
+          "forgetting",
+          -0.0
+        ],
+        [
+          "single_arm",
+          "recovery_selected_updates",
+          -0.0
+        ],
+        [
+          "paired_contrast",
+          "brier",
+          0.0
+        ],
+        [
+          "paired_contrast",
+          "log_loss_nats",
+          -0.0
+        ],
+        [
+          "paired_contrast",
+          "ece_10_equal_mass_bins",
+          -0.0
+        ],
+        [
+          "paired_contrast",
+          "auc",
+          0.0
+        ],
+        [
+          "paired_contrast",
+          "quality_or_payoff",
+          0.0
+        ],
+        [
+          "paired_contrast",
+          "complete_cost",
+          -0.0
+        ],
+        [
+          "paired_contrast",
+          "utility",
+          0.0
+        ],
+        [
+          "paired_contrast",
+          "rate",
+          -0.0
+        ],
+        [
+          "paired_contrast",
+          "forgetting",
+          -0.0
+        ],
+        [
+          "paired_contrast",
+          "recovery_selected_updates",
+          -0.0
+        ]
+      ]
+    },
+    {
+      "name": "nine_cell_identity",
+      "passed": true,
+      "detail": [
+        "RQ1-I",
+        "RQ1-II",
+        "RQ2-I",
+        "RQ2-II",
+        "RQ2-III",
+        "RQ3-I",
+        "RQ3-II",
+        "RQ4-I",
+        "RQ4-II"
+      ]
+    },
+    {
+      "name": "no_tbd_placeholder",
+      "passed": true,
+      "detail": "No TBD token in the numeric ledger"
+    },
+    {
+      "name": "no_ambiguous_plus_minus",
+      "passed": true,
+      "detail": "Expected intervals use explicit definitions/ranges"
+    },
+    {
+      "name": "scientific_gate_open",
+      "passed": true,
+      "detail": {
+        "scientific_result": false,
+        "benchmark_runs": 0
+      }
+    }
+  ]
+}

@@ -1,5 +1,7 @@
 # 决议文件夹
 
+- [0054 — 数值回填与表格排版微调](0054-numeric-backfill-with-table-layout-adjustments.md)：用户确认允许仅微调表格恢复 8 页，正文文字保持不变。
+
 存放位置：`docs/user/decisions/`。一份决议对应一个文件，索引保留全部历史编号。
 
 当前管理规则与研究质量标准见 [ADR 0038](0038-decision-record-governance-and-research-invariants.md)。新增或实质修改正式决议须经用户与助手双方明确确认；未确认建议、实验结果和任务进展分别保存在研究文档或任务报告中。
@@ -56,3 +58,6 @@
 - [0049 — 区分评价观察与可归因收益](0049-separate-judgment-observation-from-credit.md)：保留绑定真实交付的正负评价作为 noisy observation，责任与延迟收益另验；发布不更新，接收方工作不成为产出方奖惩。
 - [0050 — Canonical main PDF and versioned builds](0050-canonical-main-pdf-and-versioned-builds.md)：`artifacts/aamas2027/main.pdf` 是唯一当前主版；版本目录只保存候选/历史，经过页面与审查门后才提升到上一级。
 - [0051 — Archive the complete research snapshot to GitHub](0051-github-archive-current-research-snapshot.md): archive source, evidence, logs and status on the GitHub remote while excluding only local operational state and ignored credentials.
+- [0052 — 中文稿唯一内容依据与正文页数](0052-chinese-authoritative-paper-and-body-page-budget.md)：英文主稿以 FORMAL_PAPER_ZH 为准；正文目标恰好 8 页，参考文献另起页且不计入正文。
+
+- [0053 — 单一手写预期实验矩阵](0053-single-handwritten-expected-experiment-table.md)：主 PDF 实验表逐项映射、手写预期数值、保留历史、独立审核，只有一份数值对标主版。
