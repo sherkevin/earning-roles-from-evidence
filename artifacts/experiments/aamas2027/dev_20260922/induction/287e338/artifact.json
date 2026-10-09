@@ -1,0 +1,47 @@
+{
+  "family": "287e338",
+  "source_task": "287e338_1",
+  "source_trace_sha256": "562812b3ebbccbbafe971d53f322c967c722ac5e5a6aaaf84e4607394470ae21",
+  "training_success": true,
+  "candidate": {
+    "title": "Find most frequent artist in personalized recommendations",
+    "applicability": "Music-service tasks asking which artist appears most in personalized recommendations returned as paginated songs with nested artists.",
+    "procedure": [
+      "Check recommendation API docs for authentication, pagination limits, and nested artist response shape.",
+      "Login and keep the access token required for personalized recommendations.",
+      "Fetch pages using max allowed page size; stop on empty or short page.",
+      "Flatten artists arrays from all songs.",
+      "Count occurrences by stable artist ID while storing display names.",
+      "Return the display name of the highest-count artist.",
+      "Confirm aggregation covered all pages before answering."
+    ],
+    "pitfalls": [
+      "Personalized data may require a valid access token.",
+      "Recommendations may be songs, not artist rankings; aggregate nested artists.",
+      "Page size may be capped; invalid limits can fail.",
+      "One page may omit the top artist.",
+      "Counting songs can misrank artists with multiple tracks.",
+      "Tie handling was not demonstrated."
+    ],
+    "evidence_steps": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  "error": null,
+  "usage": {
+    "input_tokens": 4307,
+    "output_tokens": 2652,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  },
+  "attempted_calls": 1,
+  "api_errors": 0,
+  "api_seconds": 60.55034750001505,
+  "unknown_usage_attempts": 0
+}

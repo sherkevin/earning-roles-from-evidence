@@ -48,10 +48,10 @@ The paper should use one compact overview and three result-bearing tables. The o
 \toprule
 RQ & Track / unit & Policy contrast & Primary result table & Primary estimand\\
 \midrule
-RQ1 & ArtifactRole / independent root & \rare{} vs raw acceptance, terminal-only, and contextual-trust-linear & Table~\ref{tab:main-results} & Held-out Brier/log loss and calibration\\
-RQ2 & ArtifactRole / target assignment & Evidence plus delayed credit vs no evidence, delayed-only, and pooled & Tables~\ref{tab:main-results} and~\ref{tab:ablation} & Future quality--cost utility and assignment change\\
+RQ1 & ArtifactRole / independent root & \rare{} vs raw acceptance, terminal-only, contextual-trust-linear, task-conditioned ridge, and information counterfactuals & Table~\ref{tab:main-results} & Common-cohort Brier/log loss and calibration\\
+RQ2 & ArtifactRole / target assignment & Evidence plus delayed credit vs no evidence, delayed-only, and pooled & Tables~\ref{tab:main-results} and~\ref{tab:ablation} & Future quality--cost utility, adoption and rework\\
 RQ3 & PeerSelect / independent stream & Updater vs uniform, no-history, and history-only & Table~\ref{tab:service-safety} & Payoff/regret, update p95, backlog, state bytes\\
-RQ4 & Both / mutation and drift streams & Ownership mutation, correction/replay, and leave-one-out & Tables~\ref{tab:service-safety} and~\ref{tab:ablation} & False attribution, \unknown{} precision, forgetting/recovery\\
+RQ4 & Both / mutation and drift streams & Ownership mutation, correction/replay, and leave-one-out & Tables~\ref{tab:service-safety} and~\ref{tab:ablation} & False attribution with coverage, old-root forgetting, recovery delay\\
 \bottomrule
 \end{tabular}
 \caption{Paper-facing experiment map. Each row points to the table that will carry the corresponding measured contrast. The table set is an overview of the pre-registered matrix; it is not evidence until the matching confirmation card is executed.}
@@ -71,19 +71,21 @@ The first result table is the hero table. Its policy rows are the complete match
 \small
 \setlength{\tabcolsep}{3pt}
 \renewcommand{\arraystretch}{1.13}
-\begin{tabular}{p{0.17\textwidth}*{6}{>{\centering\arraybackslash}p{0.105\textwidth}}}
+\begin{tabular}{p{0.17\textwidth}*{5}{>{\centering\arraybackslash}p{0.105\textwidth}}}
 \toprule
-\multirow{2}{*}{Policy} & \multicolumn{2}{c}{RQ1: situated signal} & \multicolumn{2}{c}{RQ2: future assignment} & \multicolumn{1}{c}{Cost} & \multirow{2}{*}{Streams}\\
-\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-6}
- & \metric{Brier\\$\downarrow$} & \metric{Calibration\\$\downarrow$} & \metric{Quality--cost\\utility\\$\uparrow$} & \metric{Assignment\\change\\$\uparrow$} & \metric{Complete\\cost\\$\downarrow$} & \\
+\multirow{2}{*}{Policy} & \multicolumn{2}{c}{RQ1: situated signal} & \multicolumn{1}{c}{RQ2: future assignment} & \multicolumn{1}{c}{Cost} & \multirow{2}{*}{Streams}\\
+\cmidrule(lr){2-3}\cmidrule(lr){4-4}\cmidrule(lr){5-5}
+ & \metric{Brier\\$\downarrow$} & \metric{Calibration\\$\downarrow$} & \metric{Future quality--cost\\utility\\$\uparrow$} & \metric{Complete\\cost\\$\downarrow$} & \\
 \midrule
-Uniform & \blank & \blank & \blank & \blank & \blank & \blank\\
-No update & \blank & \blank & \blank & \blank & \blank & \blank\\
-Raw acceptance & \blank & \blank & \blank & \blank & \blank & \blank\\
-Terminal only & \blank & \blank & \blank & \blank & \blank & \blank\\
-Contextual-trust-linear & \blank & \blank & \blank & \blank & \blank & \blank\\
-Pooled controller & \blank & \blank & \blank & \blank & \blank & \blank\\
-\rare{} & \blank & \blank & \blank & \blank & \blank & \blank\\
+Uniform & \blank & \blank & \blank & \blank & \blank\\
+No update & \blank & \blank & \blank & \blank & \blank\\
+Raw acceptance & \blank & \blank & \blank & \blank & \blank\\
+Terminal only & \blank & \blank & \blank & \blank & \blank\\
+Contextual-trust-linear & \blank & \blank & \blank & \blank & \blank\\
+Task-conditioned ridge & \blank & \blank & \blank & \blank & \blank\\
+Pooled controller & \blank & \blank & \blank & \blank & \blank\\
+Closest published adapter (NO-GO until qualified) & \blank & \blank & \blank & \blank & \blank\\
+\rare{} & \blank & \blank & \blank & \blank & \blank\\
 \bottomrule
 \end{tabular}
 \caption{Primary ArtifactRole result table. Every arm receives the same candidate menu, opportunity schedule, public-information boundary, selected-only rule, and complete-cost contract. Values are filled only after the independent root, later assignment, and outcome checks pass; intervals are stream-level intervals from the frozen card.}
@@ -103,7 +105,7 @@ The second result table keeps operational claims separate from the hero utility 
 \toprule
 \multirow{2}{*}{Policy / intervention} & \multirow{2}{*}{Track} & \multicolumn{3}{c}{RQ3: service} & \multicolumn{3}{c}{RQ4: safety and stability}\\
 \cmidrule(lr){3-5}\cmidrule(lr){6-8}
- & & \metric{Update\\p95\\$\downarrow$} & \metric{Backlog\\p95\\$\downarrow$} & \metric{State\\bytes\\$\downarrow$} & \metric{False\\attribution\\$\downarrow$} & \metric{\unknown{}\\precision\\$\uparrow$} & \metric{Forgetting /\\recovery\\$\downarrow$}\\
+ & & \metric{Update\\p95\\$\downarrow$} & \metric{Backlog\\p95\\$\downarrow$} & \metric{State\\bytes\\(resource)} & \metric{False\\attribution\\$\downarrow$} & \metric{Coverage /\\UNKNOWN} & \metric{Old-root drop\\and recovery}\\
 \midrule
 No update & PeerSelect & \blank & \blank & \blank & \blank & \blank & \blank\\
 History only & PeerSelect & \blank & \blank & \blank & \blank & \blank & \blank\\
@@ -131,7 +133,7 @@ The third table answers why any observed gain occurs. It holds the task roots, m
 \toprule
 \multirow{2}{*}{Intervention} & \multirow{2}{*}{\makecell[l]{Removed or changed\\component}} & \multicolumn{4}{c}{Primary endpoints}\\
 \cmidrule(lr){3-6}
- & & \metric{Future\\utility\\$\uparrow$} & \metric{Assignment\\change\\$\uparrow$} & \metric{False\\attribution\\$\downarrow$} & \metric{Complete\\cost\\$\downarrow$}\\
+ & & \metric{Future\\utility\\$\uparrow$} & \metric{Adoption /\\rework} & \metric{False\\attribution\\$\downarrow$} & \metric{Complete\\cost\\$\downarrow$}\\
 \midrule
 No evidence / no update & Public evidence and persistent update & \blank & \blank & \blank & \blank\\
 Public evidence only & Persistent delayed update & \blank & \blank & \blank & \blank\\

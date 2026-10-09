@@ -1,0 +1,56 @@
+{
+  "family": "7d7fbf6",
+  "source_task": "7d7fbf6_1",
+  "source_trace_sha256": "7d7f5be7d44f6863b2970d18d5ccb60d03ba5af022e07810690aee1d423610c3",
+  "training_success": true,
+  "candidate": {
+    "title": "Compress and clean subdirectories via authenticated file API",
+    "applicability": "Use when an authenticated file API supports listing, compression, existence checks, and deletion, and subdirectories must become archives in a designated output directory.",
+    "procedure": [
+      "Discover operations and read parameter docs before acting.",
+      "Authenticate with authorized credentials without echoing secrets; keep the token.",
+      "List target shallow and recursively to identify subdirectories and existing archives.",
+      "Derive archive names from subdirectory names; choose noncolliding output paths.",
+      "Compress each subdirectory separately with explicit archive paths.",
+      "Verify each archive exists before deleting its source directory.",
+      "Delete source directories only after verification.",
+      "Re-list destination to confirm only archives remain."
+    ],
+    "pitfalls": [
+      "Do not assume listing defaults; inspect docs and both views.",
+      "Do not delete sources before archive existence is confirmed.",
+      "Do not rely on default archive location when output path matters.",
+      "Do not expose secrets or tokens.",
+      "Distinguish preexisting archives from new outputs before overwriting."
+    ],
+    "evidence_steps": [
+      1,
+      2,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18
+    ]
+  },
+  "error": null,
+  "usage": {
+    "input_tokens": 5461,
+    "output_tokens": 3467,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  },
+  "attempted_calls": 1,
+  "api_errors": 0,
+  "api_seconds": 82.5639251669636,
+  "unknown_usage_attempts": 0
+}

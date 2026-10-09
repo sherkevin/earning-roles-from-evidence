@@ -1,0 +1,10 @@
+# GitHub 工作区完整补交 — 2026-10-09
+
+- [done] 核对 macOS 原仓库、GitHub 目标、分支与原有远端；不改 GitLab origin。
+- [done] 枚举已跟踪、未跟踪、忽略项及九个 benchmark 子仓库。
+- [done] 对新增候选内容做凭证模式扫描；保留含令牌原件，生成公开脱敏副本。
+- [done] 补入非缓存实验材料和图表；核对现有 benchmark 补丁与数据副本，补存 graph-ipd 本地结果。
+- [done] 生成逐文件来源、哈希、排除原因清单，附恢复步骤。
+- [doing] 校验暂存内容、提交并推送 GitHub；最终以远端提交与本地提交逐字相同为准。
+
+归档入口：`docs/archive/github_full_sync_20261009/README.md`。此操作不更新科学结论或改动原始实验结果。

@@ -1,0 +1,272 @@
+{
+  "entries": [
+    {
+      "family": "aa8502b",
+      "source_task": "aa8502b_1",
+      "source_trace_sha256": "d680023eb7e64cda959c45ce7fb553f4500c5977f171247b91c9f2ac9c1ae940",
+      "training_success": true,
+      "candidate": {
+        "title": "Bulk follow creators from liked content",
+        "applicability": "Authenticated media-library tasks where liked items expose nested creators and follow endpoints exist; use after login and respect pagination limits.",
+        "procedure": [
+          "Inspect API docs to identify login, liked-item, follow-status, and follow-action endpoints.",
+          "Authenticate and retain the returned access token for authorized calls.",
+          "Fetch all liked items by paginating with the maximum allowed page size until an empty or short page appears.",
+          "Extract creator identifiers from each item, deduplicating by stable ID rather than display name.",
+          "Fetch current followed creators with the same pagination pattern and build an already-followed ID set.",
+          "Follow only missing IDs and capture per-item success or failure.",
+          "Re-fetch the followed list and verify every target ID is present before completion."
+        ],
+        "pitfalls": [
+          "Do not treat the first page as complete; default limits may be small.",
+          "Do not match creators by name; use IDs and handle multiple creators per item.",
+          "Do not assume mutations succeeded without a post-action read.",
+          "Do not call private endpoints without a valid token."
+        ],
+        "evidence_steps": [
+          1,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ]
+      },
+      "error": null,
+      "usage": {
+        "input_tokens": 6959,
+        "output_tokens": 1671,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0
+      },
+      "attempted_calls": 1,
+      "api_errors": 0,
+      "api_seconds": 40.72292408300564,
+      "unknown_usage_attempts": 0
+    },
+    {
+      "family": "6ea6792",
+      "source_task": "6ea6792_1",
+      "source_trace_sha256": "c2c8572437fdbe2a1aea258c4850367a3d1d16e12166e400b1fd9ed86bae65e8",
+      "training_success": true,
+      "candidate": {
+        "title": "Bulk approval of pending requests by contact group",
+        "applicability": "Use when approving pending payment or similar requests limited to people identified by contact relationship.",
+        "procedure": [
+          "Inspect API descriptions and endpoint docs before acting; confirm login, listing, filtering, approval, and verification parameters.",
+          "Authenticate to each required service and retain the returned access token.",
+          "Identify targets from a contact source by relationship labels; enumerate relationship values first if available.",
+          "Fetch contacts for each needed relationship with pagination, using maximum page size until a short or empty page.",
+          "Fetch pending received requests with status filtering and pagination; collect all pages before deciding.",
+          "Build a target identifier set from contact fields, normalize case, and match sender identifiers.",
+          "Check balance or funding source if approvals debit funds; omit optional funding identifiers unless required.",
+          "Approve selected requests individually and record responses.",
+          "Re-query pending requests with the same filters and confirm no target requests remain."
+        ],
+        "pitfalls": [
+          "Do not approve requests outside the requested relationship set.",
+          "Do not assume one page contains all records.",
+          "Do not rely on display names alone when stable identifiers exist.",
+          "Do not consider approvals complete without response checks and a follow-up query."
+        ],
+        "evidence_steps": [
+          2,
+          4,
+          5,
+          8,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20
+        ]
+      },
+      "error": null,
+      "usage": {
+        "input_tokens": 8085,
+        "output_tokens": 3186,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0
+      },
+      "attempted_calls": 1,
+      "api_errors": 0,
+      "api_seconds": 72.58654516702518,
+      "unknown_usage_attempts": 0
+    },
+    {
+      "family": "771d8fc",
+      "source_task": "771d8fc_1",
+      "source_trace_sha256": "e86006509e74c275df5d091fe56d58d6e72fa5eccd679806a8907cf334578a42",
+      "training_success": true,
+      "candidate": {
+        "title": "Delete contact-specific phone messages",
+        "applicability": "Use when all text and voice messages tied to one contact identifier must be removed from a phone messaging account after authorized login.",
+        "procedure": [
+          "List API descriptions to find login, search, delete, and verification operations for both message types.",
+          "Obtain credentials through the authorized credential source, log in, and reuse the returned token.",
+          "Check search docs for contact filtering, pagination bounds, and sorting.",
+          "For each message type, page through results filtered by the contact identifier until an empty or short page ends pagination.",
+          "Collect all message IDs, then delete each with the matching type-specific delete call.",
+          "Log deletion outcomes and rerun the same filtered searches to confirm no remaining records before completion."
+        ],
+        "pitfalls": [
+          "Text and voice messages may require separate endpoints and ID fields.",
+          "Default page limits can hide records; paginate fully.",
+          "A delete response alone is insufficient; verify with fresh searches.",
+          "Do not embed credentials or target identifiers in reusable logic."
+        ],
+        "evidence_steps": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ]
+      },
+      "error": null,
+      "usage": {
+        "input_tokens": 8732,
+        "output_tokens": 3041,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0
+      },
+      "attempted_calls": 1,
+      "api_errors": 0,
+      "api_seconds": 68.665289125056,
+      "unknown_usage_attempts": 0
+    },
+    {
+      "family": "7d7fbf6",
+      "source_task": "7d7fbf6_1",
+      "source_trace_sha256": "7d7f5be7d44f6863b2970d18d5ccb60d03ba5af022e07810690aee1d423610c3",
+      "training_success": true,
+      "candidate": {
+        "title": "Compress and clean subdirectories via authenticated file API",
+        "applicability": "Use when an authenticated file API supports listing, compression, existence checks, and deletion, and subdirectories must become archives in a designated output directory.",
+        "procedure": [
+          "Discover operations and read parameter docs before acting.",
+          "Authenticate with authorized credentials without echoing secrets; keep the token.",
+          "List target shallow and recursively to identify subdirectories and existing archives.",
+          "Derive archive names from subdirectory names; choose noncolliding output paths.",
+          "Compress each subdirectory separately with explicit archive paths.",
+          "Verify each archive exists before deleting its source directory.",
+          "Delete source directories only after verification.",
+          "Re-list destination to confirm only archives remain."
+        ],
+        "pitfalls": [
+          "Do not assume listing defaults; inspect docs and both views.",
+          "Do not delete sources before archive existence is confirmed.",
+          "Do not rely on default archive location when output path matters.",
+          "Do not expose secrets or tokens.",
+          "Distinguish preexisting archives from new outputs before overwriting."
+        ],
+        "evidence_steps": [
+          1,
+          2,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18
+        ]
+      },
+      "error": null,
+      "usage": {
+        "input_tokens": 5461,
+        "output_tokens": 3467,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0
+      },
+      "attempted_calls": 1,
+      "api_errors": 0,
+      "api_seconds": 82.5639251669636,
+      "unknown_usage_attempts": 0
+    },
+    {
+      "family": "287e338",
+      "source_task": "287e338_1",
+      "source_trace_sha256": "562812b3ebbccbbafe971d53f322c967c722ac5e5a6aaaf84e4607394470ae21",
+      "training_success": true,
+      "candidate": {
+        "title": "Find most frequent artist in personalized recommendations",
+        "applicability": "Music-service tasks asking which artist appears most in personalized recommendations returned as paginated songs with nested artists.",
+        "procedure": [
+          "Check recommendation API docs for authentication, pagination limits, and nested artist response shape.",
+          "Login and keep the access token required for personalized recommendations.",
+          "Fetch pages using max allowed page size; stop on empty or short page.",
+          "Flatten artists arrays from all songs.",
+          "Count occurrences by stable artist ID while storing display names.",
+          "Return the display name of the highest-count artist.",
+          "Confirm aggregation covered all pages before answering."
+        ],
+        "pitfalls": [
+          "Personalized data may require a valid access token.",
+          "Recommendations may be songs, not artist rankings; aggregate nested artists.",
+          "Page size may be capped; invalid limits can fail.",
+          "One page may omit the top artist.",
+          "Counting songs can misrank artists with multiple tracks.",
+          "Tie handling was not demonstrated."
+        ],
+        "evidence_steps": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      },
+      "error": null,
+      "usage": {
+        "input_tokens": 4307,
+        "output_tokens": 2652,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0
+      },
+      "attempted_calls": 1,
+      "api_errors": 0,
+      "api_seconds": 60.55034750001505,
+      "unknown_usage_attempts": 0
+    }
+  ],
+  "text": "{\"title\": \"Bulk follow creators from liked content\", \"applicability\": \"Authenticated media-library tasks where liked items expose nested creators and follow endpoints exist; use after login and respect pagination limits.\", \"procedure\": [\"Inspect API docs to identify login, liked-item, follow-status, and follow-action endpoints.\", \"Authenticate and retain the returned access token for authorized calls.\", \"Fetch all liked items by paginating with the maximum allowed page size until an empty or short page appears.\", \"Extract creator identifiers from each item, deduplicating by stable ID rather than display name.\", \"Fetch current followed creators with the same pagination pattern and build an already-followed ID set.\", \"Follow only missing IDs and capture per-item success or failure.\", \"Re-fetch the followed list and verify every target ID is present before completion.\"], \"pitfalls\": [\"Do not treat the first page as complete; default limits may be small.\", \"Do not match creators by name; use IDs and handle multiple creators per item.\", \"Do not assume mutations succeeded without a post-action read.\", \"Do not call private endpoints without a valid token.\"], \"evidence_steps\": [1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]}\n\n{\"title\": \"Bulk approval of pending requests by contact group\", \"applicability\": \"Use when approving pending payment or similar requests limited to people identified by contact relationship.\", \"procedure\": [\"Inspect API descriptions and endpoint docs before acting; confirm login, listing, filtering, approval, and verification parameters.\", \"Authenticate to each required service and retain the returned access token.\", \"Identify targets from a contact source by relationship labels; enumerate relationship values first if available.\", \"Fetch contacts for each needed relationship with pagination, using maximum page size until a short or empty page.\", \"Fetch pending received requests with status filtering and pagination; collect all pages before deciding.\", \"Build a target identifier set from contact fields, normalize case, and match sender identifiers.\", \"Check balance or funding source if approvals debit funds; omit optional funding identifiers unless required.\", \"Approve selected requests individually and record responses.\", \"Re-query pending requests with the same filters and confirm no target requests remain.\"], \"pitfalls\": [\"Do not approve requests outside the requested relationship set.\", \"Do not assume one page contains all records.\", \"Do not rely on display names alone when stable identifiers exist.\", \"Do not consider approvals complete without response checks and a follow-up query.\"], \"evidence_steps\": [2, 4, 5, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]}\n\n{\"title\": \"Delete contact-specific phone messages\", \"applicability\": \"Use when all text and voice messages tied to one contact identifier must be removed from a phone messaging account after authorized login.\", \"procedure\": [\"List API descriptions to find login, search, delete, and verification operations for both message types.\", \"Obtain credentials through the authorized credential source, log in, and reuse the returned token.\", \"Check search docs for contact filtering, pagination bounds, and sorting.\", \"For each message type, page through results filtered by the contact identifier until an empty or short page ends pagination.\", \"Collect all message IDs, then delete each with the matching type-specific delete call.\", \"Log deletion outcomes and rerun the same filtered searches to confirm no remaining records before completion.\"], \"pitfalls\": [\"Text and voice messages may require separate endpoints and ID fields.\", \"Default page limits can hide records; paginate fully.\", \"A delete response alone is insufficient; verify with fresh searches.\", \"Do not embed credentials or target identifiers in reusable logic.\"], \"evidence_steps\": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]}\n\n{\"title\": \"Compress and clean subdirectories via authenticated file API\", \"applicability\": \"Use when an authenticated file API supports listing, compression, existence checks, and deletion, and subdirectories must become archives in a designated output directory.\", \"procedure\": [\"Discover operations and read parameter docs before acting.\", \"Authenticate with authorized credentials without echoing secrets; keep the token.\", \"List target shallow and recursively to identify subdirectories and existing archives.\", \"Derive archive names from subdirectory names; choose noncolliding output paths.\", \"Compress each subdirectory separately with explicit archive paths.\", \"Verify each archive exists before deleting its source directory.\", \"Delete source directories only after verification.\", \"Re-list destination to confirm only archives remain.\"], \"pitfalls\": [\"Do not assume listing defaults; inspect docs and both views.\", \"Do not delete sources before archive existence is confirmed.\", \"Do not rely on default archive location when output path matters.\", \"Do not expose secrets or tokens.\", \"Distinguish preexisting archives from new outputs before overwriting.\"], \"evidence_steps\": [1, 2, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]}\n\n{\"title\": \"Find most frequent artist in personalized recommendations\", \"applicability\": \"Music-service tasks asking which artist appears most in personalized recommendations returned as paginated songs with nested artists.\", \"procedure\": [\"Check recommendation API docs for authentication, pagination limits, and nested artist response shape.\", \"Login and keep the access token required for personalized recommendations.\", \"Fetch pages using max allowed page size; stop on empty or short page.\", \"Flatten artists arrays from all songs.\", \"Count occurrences by stable artist ID while storing display names.\", \"Return the display name of the highest-count artist.\", \"Confirm aggregation covered all pages before answering.\"], \"pitfalls\": [\"Personalized data may require a valid access token.\", \"Recommendations may be songs, not artist rankings; aggregate nested artists.\", \"Page size may be capped; invalid limits can fail.\", \"One page may omit the top artist.\", \"Counting songs can misrank artists with multiple tracks.\", \"Tie handling was not demonstrated.\"], \"evidence_steps\": [1, 2, 3, 4, 5, 6, 7]}",
+  "valid_candidate_count": 5,
+  "retention_order": [
+    "692c77d",
+    "aa8502b",
+    "6ea6792",
+    "771d8fc",
+    "7d7fbf6",
+    "287e338"
+  ],
+  "qualification_status": "CANDIDATE; formatting/source-step checks are not semantic validation"
+}

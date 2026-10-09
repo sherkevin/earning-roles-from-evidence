@@ -1,0 +1,42 @@
+{
+  "success": false,
+  "difficulty": 1,
+  "num_tests": 7,
+  "passes": [
+    {
+      "requirement": "obtain added, updated, removed venmo.Transaction records using models.changed_records,\nand assert 0 transactions were added or removed.",
+      "label": "no_op_pass"
+    },
+    {
+      "requirement": "obtain added, updated, removed venmo.TransactionLike records using models.changed_records,\nand assert 0 transaction likes were removed.",
+      "label": "no_op_pass"
+    }
+  ],
+  "failures": [
+    {
+      "requirement": "assert answers match.",
+      "trace": "```python\nwith test(\n    \"\"\"\n    assert answers match.\n    \"\"\"\n):\n    test.answer(predicted_answer, ground_truth_answer)\n```\n----------\nAssertionError:  '<<not_given>>' == 'null'",
+      "label": "no_op_fail"
+    },
+    {
+      "requirement": "assert model changes match venmo.Transaction, venmo.TransactionLike",
+      "trace": "```python\nwith test(\n    \"\"\"\n    assert model changes match venmo.Transaction, venmo.TransactionLike\n    \"\"\"\n):\n    changed_model_names = models.changed_model_names()\n    test.case(\n        changed_model_names,\n```\n----------\nAssertionError:  set() == {'venmo.TransactionLike', 'venmo.Transaction'}\n\nIn right but not left:\n['venmo.TransactionLike', 'venmo.Transaction']",
+      "label": "no_op_fail"
+    },
+    {
+      "requirement": "assert updated transactions have only changed in like_count field using models.changed_field_names.",
+      "trace": "```python\nwith test(\n    \"\"\"\n    assert updated transactions have only changed in like_count field using models.changed_field_names.\n    \"\"\"\n):\n    transactions_changed_fields = [\n        models.changed_field_names(\"venmo.Transaction\", transaction.id)\n        for transaction in updated_transactions\n```\n----------\nAssertionError: The left modifier is 'all' with allow_left_empty=False, but left operand is empty.",
+      "label": "no_op_fail"
+    },
+    {
+      "requirement": "assert set of updated transaction ids match exactly to\nprivate_data.to_like_transaction_ids (ignore order).",
+      "trace": "```python\nwith test(\n    \"\"\"\n    assert set of updated transaction ids match exactly to\n    private_data.to_like_transaction_ids (ignore order).\n    \"\"\"\n):\n    updated_transaction_ids = unique_list_of(updated_transactions, \"id\")\n    test.case(\n```\n----------\nAssertionError:  [] == [1245, 3809, 3813, 6221, 6224]\n\nIn right but not left:\n[1245, 3809, 3813, 6221, 6224]\n\nOriginal values:\n[] == [3809, 3813, 6221, 6224, 1245]",
+      "label": "no_op_fail"
+    },
+    {
+      "requirement": "assert all updated transactions were created after private_data.min_transaction_datetime",
+      "trace": "```python\nwith test(\n    \"\"\"\n    assert all updated transactions were created after private_data.min_transaction_datetime\n    \"\"\"\n):\n    transaction_created_ats = list_of(updated_transactions, \"created_at\")\n    test.case(\n        transaction_created_ats,\n```\n----------\nAssertionError: The left modifier is 'all' with allow_left_empty=False, but left operand is empty.",
+      "label": "no_op_fail"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "family": "771d8fc",
+  "source_task": "771d8fc_1",
+  "source_trace_sha256": "e86006509e74c275df5d091fe56d58d6e72fa5eccd679806a8907cf334578a42",
+  "training_success": true,
+  "candidate": {
+    "title": "Delete contact-specific phone messages",
+    "applicability": "Use when all text and voice messages tied to one contact identifier must be removed from a phone messaging account after authorized login.",
+    "procedure": [
+      "List API descriptions to find login, search, delete, and verification operations for both message types.",
+      "Obtain credentials through the authorized credential source, log in, and reuse the returned token.",
+      "Check search docs for contact filtering, pagination bounds, and sorting.",
+      "For each message type, page through results filtered by the contact identifier until an empty or short page ends pagination.",
+      "Collect all message IDs, then delete each with the matching type-specific delete call.",
+      "Log deletion outcomes and rerun the same filtered searches to confirm no remaining records before completion."
+    ],
+    "pitfalls": [
+      "Text and voice messages may require separate endpoints and ID fields.",
+      "Default page limits can hide records; paginate fully.",
+      "A delete response alone is insufficient; verify with fresh searches.",
+      "Do not embed credentials or target identifiers in reusable logic."
+    ],
+    "evidence_steps": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13
+    ]
+  },
+  "error": null,
+  "usage": {
+    "input_tokens": 8732,
+    "output_tokens": 3041,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  },
+  "attempted_calls": 1,
+  "api_errors": 0,
+  "api_seconds": 68.665289125056,
+  "unknown_usage_attempts": 0
+}

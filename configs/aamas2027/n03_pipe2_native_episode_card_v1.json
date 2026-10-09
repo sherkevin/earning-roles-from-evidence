@@ -1,0 +1,146 @@
+{
+  "schema": "peerrolebench-native-episode-card-v1",
+  "experiment_id": "n03_pipe2_native_episode_v1",
+  "status": "DESIGN_ONLY",
+  "purpose": "Qualify one real PIPE2 episode for responsibility-aware observation before any selector update or GPU run.",
+  "track": "ArtifactRole",
+  "task_id": "PIPE2_data_pipeline",
+  "root": "TeamBench@d185aef1916fd86a9ba554d581fd256319a973af/PIPE2_data_pipeline",
+  "episode_count": 1,
+  "seed": 0,
+  "api_runs_allowed": false,
+  "gpu_runs_allowed": false,
+  "policy_update_allowed": false,
+  "scientific_claim_allowed": false,
+  "candidate_execution": {
+    "producer_source": "real_candidate_generation_only_after_card_activation",
+    "recipient_source": "opaque_artifact_only",
+    "source_and_artifact_digests_are_distinct": true,
+    "candidate_menu": ["peer-a@v1", "peer-b@v1"],
+    "local_neighborhood_is_logged": true,
+    "selection_propensity_is_logged": true
+  },
+  "native_ledger": {
+    "schema": "peer-role-protocol-20260925",
+    "required_events": [
+      "producer_delivery",
+      "recipient_judgment",
+      "consumer_action",
+      "terminal_outcome"
+    ],
+    "event_order": [
+      "producer_delivery",
+      "recipient_judgment",
+      "consumer_action",
+      "terminal_outcome"
+    ],
+    "required_event_fields": {
+      "producer_delivery": [
+        "delivery_id",
+        "candidate_source_digest",
+        "delivery_path",
+        "delivery_schema",
+        "delivery_artifact_sha256",
+        "event_index",
+        "record_hash"
+      ],
+      "recipient_judgment": [
+        "judgment_id",
+        "delivery_id",
+        "decision",
+        "observed_artifact_sha256",
+        "event_index",
+        "record_hash"
+      ],
+      "consumer_action": [
+        "action_id",
+        "delivery_id",
+        "action",
+        "used_artifact",
+        "recipient_before_manifest_digest",
+        "recipient_after_manifest_digest",
+        "recipient_changed_paths_digest",
+        "event_index",
+        "record_hash"
+      ],
+      "terminal_outcome": [
+        "outcome_id",
+        "delivery_id",
+        "success",
+        "independent_scorer_version",
+        "event_index",
+        "record_hash"
+      ]
+    },
+    "judgment_is_sealed_before_action": true,
+    "judgment_may_disagree_with_action": true,
+    "terminal_outcome_is_independent": true,
+    "canonical_replay_required": true,
+    "source_read_cut_must_contain_outcome": true,
+    "observation_available_after_outcome": true
+  },
+  "delayed_credit": {
+    "later_assignment_required": true,
+    "next_selection_required": true,
+    "assignment_before_execution": true,
+    "update_only_after_replay": true,
+    "future_outcome_hidden_at_selection": true
+  },
+  "same_information_controls": [
+    {
+      "name": "no_update",
+      "uses_judgment": false,
+      "uses_terminal_outcome": false,
+      "same_menu_and_propensity": true
+    },
+    {
+      "name": "j_masked_count_only",
+      "uses_judgment": false,
+      "uses_terminal_outcome": false,
+      "same_menu_and_propensity": true,
+      "public_history_summary": "count-only observations with identical arrival schedule"
+    }
+  ],
+  "cost_contract": {
+    "must_record": [
+      "api_attempts",
+      "input_tokens",
+      "output_tokens",
+      "wall_seconds",
+      "scorer_seconds",
+      "update_seconds",
+      "state_bytes",
+      "unknown_denominator"
+    ],
+    "unknown_usage_is_not_zero": true,
+    "maximum_episode_attempts": 1,
+    "maximum_retries": 0
+  },
+  "stop_rules": [
+    "missing_event_or_event_hash: UNKNOWN and no update",
+    "missing_recipient_pre_post_manifest: UNKNOWN and no update",
+    "non_independent_terminal_outcome: UNKNOWN and no update",
+    "source_or_artifact_digest_mismatch: UNKNOWN and stop episode",
+    "read_cut_or_future_outcome_leakage: UNKNOWN and stop episode",
+    "same_information_control_mismatch: UNKNOWN and no comparison",
+    "malformed_or_truncated_api_response: UNKNOWN and preserve raw response",
+    "no_retry_no_manual_label_repair_no_task_substitution"
+  ],
+  "promotion": {
+    "required_before_activation": [
+      "zero_call_card_validation_pass",
+      "native_runner_implements_all_required_events",
+      "v2_descriptor_replay_pass",
+      "one_real_episode_receipt_complete"
+    ],
+    "after_one_episode": "field qualification only; no efficacy or training claim",
+    "a800_allowed": false,
+    "selector_update_allowed": false
+  },
+  "references": {
+    "typed_descriptor": "scripts/peerrolebench_pipe2_handoff_descriptor_v2.py",
+    "field_gap_audit": "docs/coordination/task_reports/20261009_pipe2_v2_runtime_field_gap.md",
+    "scheme_b_decision": "docs/user/decisions/0049-separate-judgment-observation-from-credit.md",
+    "canonical_master_policy": "docs/user/decisions/0050-canonical-main-pdf-and-versioned-builds.md"
+  }
+}

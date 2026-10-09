@@ -1,0 +1,57 @@
+{
+  "family": "692c77d",
+  "source_task": "692c77d_1",
+  "source_job_id": "acquire_692c77d_retry1",
+  "source_trace_sha256": "e83176d7b40d754196fbee937dbce72df00df25c2bb8ae4aa5448016afd723f5",
+  "training_success": true,
+  "candidate": {
+    "title": "Bulk set maximum rating for liked playlist items",
+    "applicability": "Authenticated media APIs with user playlists, liked items, per-item reviews or ratings, and create/update endpoints.",
+    "procedure": [
+      "Login and retain the access token for subsequent calls.",
+      "Read API docs for playlist library, liked items, review listing, review creation, and review update.",
+      "Paginate playlist library with the largest allowed page size; stop when a page returns fewer items.",
+      "Collect item IDs from all playlists into a set.",
+      "Paginate liked items similarly and build a liked-ID set.",
+      "Intersect playlist IDs with liked IDs to form targets.",
+      "For each target, query existing reviews filtered to the authenticated user.",
+      "Update any existing review whose rating is below the target maximum; create a new review only when none exists.",
+      "Re-query each target's user review to confirm the final rating."
+    ],
+    "pitfalls": [
+      "Do not rate all liked items; restrict to items present in user playlists.",
+      "Do not assume an existing review exists; missing reviews require creation.",
+      "Do not create duplicate reviews before checking existing user reviews.",
+      "Respect rating bounds and only raise lower ratings when required.",
+      "Pagination defaults may be small; incomplete collection causes missed targets.",
+      "Verify after mutation because success messages alone may not prove final state."
+    ],
+    "evidence_steps": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      12,
+      13,
+      14,
+      15
+    ]
+  },
+  "error": null,
+  "usage": {
+    "input_tokens": 8579,
+    "output_tokens": 2110,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  },
+  "attempted_calls": 1,
+  "api_errors": 0,
+  "api_seconds": 47.312228332972154,
+  "error_codes": [],
+  "unknown_usage_attempts": 0
+}

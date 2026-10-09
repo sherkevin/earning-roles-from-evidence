@@ -1,0 +1,55 @@
+{
+  "family": "6ea6792",
+  "source_task": "6ea6792_1",
+  "source_trace_sha256": "c2c8572437fdbe2a1aea258c4850367a3d1d16e12166e400b1fd9ed86bae65e8",
+  "training_success": true,
+  "candidate": {
+    "title": "Bulk approval of pending requests by contact group",
+    "applicability": "Use when approving pending payment or similar requests limited to people identified by contact relationship.",
+    "procedure": [
+      "Inspect API descriptions and endpoint docs before acting; confirm login, listing, filtering, approval, and verification parameters.",
+      "Authenticate to each required service and retain the returned access token.",
+      "Identify targets from a contact source by relationship labels; enumerate relationship values first if available.",
+      "Fetch contacts for each needed relationship with pagination, using maximum page size until a short or empty page.",
+      "Fetch pending received requests with status filtering and pagination; collect all pages before deciding.",
+      "Build a target identifier set from contact fields, normalize case, and match sender identifiers.",
+      "Check balance or funding source if approvals debit funds; omit optional funding identifiers unless required.",
+      "Approve selected requests individually and record responses.",
+      "Re-query pending requests with the same filters and confirm no target requests remain."
+    ],
+    "pitfalls": [
+      "Do not approve requests outside the requested relationship set.",
+      "Do not assume one page contains all records.",
+      "Do not rely on display names alone when stable identifiers exist.",
+      "Do not consider approvals complete without response checks and a follow-up query."
+    ],
+    "evidence_steps": [
+      2,
+      4,
+      5,
+      8,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20
+    ]
+  },
+  "error": null,
+  "usage": {
+    "input_tokens": 8085,
+    "output_tokens": 3186,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  },
+  "attempted_calls": 1,
+  "api_errors": 0,
+  "api_seconds": 72.58654516702518,
+  "unknown_usage_attempts": 0
+}

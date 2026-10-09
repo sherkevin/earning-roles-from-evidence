@@ -1,0 +1,43 @@
+{
+  "success": false,
+  "difficulty": 2,
+  "num_tests": 7,
+  "passes": [
+    {
+      "requirement": "obtain added, updated, removed spotify.SongReview records using models.changed_records,\nand assert 0 have been removed.",
+      "label": "no_op_pass"
+    }
+  ],
+  "failures": [
+    {
+      "requirement": "assert answers match.",
+      "trace": "```python\nwith test(\n    \"\"\"\n    assert answers match.\n    \"\"\"\n):\n    test.answer(predicted_answer, ground_truth_answer)\n```\n----------\nAssertionError:  '<<not_given>>' == 'null'",
+      "label": "no_op_fail"
+    },
+    {
+      "requirement": "assert model changes match spotify.SongReview.",
+      "trace": "```python\nwith test(\n    \"\"\"\n    assert model changes match spotify.SongReview.\n    \"\"\"\n):\n    test.case(models.changed_model_names(), \"==\", {\"spotify.Song\", \"spotify.SongReview\"})\n```\n----------\nAssertionError:  set() == {'spotify.SongReview', 'spotify.Song'}\n\nIn right but not left:\n['spotify.SongReview', 'spotify.Song']",
+      "label": "no_op_fail"
+    },
+    {
+      "requirement": "assert song_ids of the updated song reviews match private_data.to_update_review_song_ids (ignore_order)",
+      "trace": "```python\nwith test(\n    \"\"\"\n    assert song_ids of the updated song reviews match private_data.to_update_review_song_ids (ignore_order)\n    \"\"\"\n):\n    updated_review_song_ids = list_of(updated_song_reviews, \"song_id\")\n    test.case(\n        updated_review_song_ids, \"==\", private_data.to_update_review_song_ids, ignore_order=True\n```\n----------\nAssertionError:  [] == [159, 211, 254]\n\nIn right but not left:\n[159, 211, 254]\n\nOriginal values:\n[] == [211, 254, 159]",
+      "label": "no_op_fail"
+    },
+    {
+      "requirement": "assert song_ids of the added song reviews match private_data.to_add_review_song_ids (ignore_order)",
+      "trace": "```python\nwith test(\n    \"\"\"\n    assert song_ids of the added song reviews match private_data.to_add_review_song_ids (ignore_order)\n    \"\"\"\n):\n    added_review_song_ids = list_of(added_song_reviews, \"song_id\")\n    test.case(\n        added_review_song_ids, \"==\", private_data.to_add_review_song_ids, ignore_order=True\n```\n----------\nAssertionError:  [] == [28, 40, 95, 122, 175, 231, 239, 249]\n\nIn right but not left:\n[28, 40, 95, 122, 175, 231, 239, 249]\n\nOriginal values:\n[] == [231, 40, 175, 239, 249, 122, 28, 95]",
+      "label": "no_op_fail"
+    },
+    {
+      "requirement": "assert all added_review_song_ids have rating of public_data.target_rating.",
+      "trace": "```python\nwith test(\n    \"\"\"\n    assert all added_review_song_ids have rating of public_data.target_rating.\n    \"\"\"\n):\n    test.case(list_of(added_song_reviews, \"rating\"), \"all ==\", public_data.target_rating)\n```\n----------\nAssertionError: The left modifier is 'all' with allow_left_empty=False, but left operand is empty.",
+      "label": "no_op_fail"
+    },
+    {
+      "requirement": "assert all updated_review_song_ids have rating of public_data.target_rating.",
+      "trace": "```python\nwith test(\n    \"\"\"\n    assert all updated_review_song_ids have rating of public_data.target_rating.\n    \"\"\"\n):\n```\n----------\nAssertionError: The left modifier is 'all' with allow_left_empty=False, but left operand is empty.",
+      "label": "no_op_fail"
+    }
+  ]
+}

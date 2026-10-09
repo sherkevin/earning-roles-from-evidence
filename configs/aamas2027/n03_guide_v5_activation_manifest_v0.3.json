@@ -1,0 +1,135 @@
+{
+  "manifest_version": "peerrolebench-guide-v5-activation-v0.3",
+  "guide_version": "v5_20261008",
+  "created_at": "2026-10-09",
+  "status": "BLOCKED_PRE_ACTIVATION",
+  "scientific_claim_allowed": false,
+  "api_runs_allowed": false,
+  "gpu_runs_allowed": false,
+  "reason": "No root has yet passed authority/material/scorer/later-Y qualification and no arm has completed live same-information parity.",
+  "primary_track": "ArtifactRole",
+  "secondary_track": "PeerSelect",
+  "proceedings_ready_target": {
+    "minimum_structural_roots": 3,
+    "minimum_independent_streams_per_root_arm": 3,
+    "root_or_stream_seed_variants_do_not_count_as_roots": true,
+    "structural_holdout_required": true,
+    "temporal_holdout_required": true,
+    "precision_justification_required_before_activation": true
+  },
+  "root_slots": [
+    {
+      "root_id": "AR-dev-DIST1",
+      "role": "development",
+      "source": "TeamBench@d185aef1916fd86a9ba554d581fd256319a973af",
+      "structural_signature": "DIST1_queue_race",
+      "status": "BLOCKED_ROOT_QUALIFICATION",
+      "independent_streams": 0,
+      "authority_material_scorer_later_y": "OPEN",
+      "reason": "Native grader does not execute the consumer and later assignment/independent Y is not qualified."
+    },
+    {
+      "root_id": "AR-confirm-PIPE3",
+      "role": "candidate_confirmation",
+      "source": "TeamBench@d185aef1916fd86a9ba554d581fd256319a973af",
+      "structural_signature": "PIPE3_stream_processing",
+      "status": "BLOCKED_LATER_Y_AND_PARITY",
+      "independent_streams": 0,
+      "authority_material_scorer_later_y": "OPEN",
+      "reason": "Existing live snapshot has one structural root, no post-update future task, and no full live parity."
+    },
+    {
+      "root_id": "AR-confirm-PIPE2",
+      "role": "candidate_confirmation",
+      "source": "TeamBench@d185aef1916fd86a9ba554d581fd256319a973af",
+      "structural_signature": "PIPE2_extracted_rows_handoff",
+      "status": "CANDIDATE_NEXT_ZERO_CALL_QUALIFICATION",
+      "independent_streams": 0,
+      "authority_material_scorer_later_y": "OPEN",
+      "reason": "Typed handoff descriptor is qualified, but judgment, recipient use, assignment and independent later Y are not yet connected."
+    }
+  ],
+  "required_arms": [
+    {"arm_id": "uniform_no_update", "kind": "weak_control", "status": "NOT_LIVE_QUALIFIED"},
+    {"arm_id": "no_update", "kind": "frozen_control", "status": "NOT_LIVE_QUALIFIED"},
+    {"arm_id": "raw_acceptance", "kind": "signal_control", "status": "NOT_LIVE_QUALIFIED"},
+    {"arm_id": "terminal_only", "kind": "signal_control", "status": "NOT_LIVE_QUALIFIED"},
+    {"arm_id": "contextual_trust_linear_full_public_phi", "kind": "strong_same_information_control", "status": "NOT_LIVE_QUALIFIED"},
+    {"arm_id": "task_conditioned_ridge", "kind": "strong_matching_control", "status": "NOT_LIVE_QUALIFIED"},
+    {"arm_id": "pooled_controller_own_namespace", "kind": "pooling_control", "status": "NOT_LIVE_QUALIFIED"},
+    {"arm_id": "RARE_frozen_card", "kind": "candidate", "status": "IMPLEMENTATION_NOT_FROZEN"},
+    {"arm_id": "closest_published_adapter", "kind": "published_control_or_no_go", "status": "NO_GO_ROW_REQUIRED"}
+  ],
+  "mandatory_factor_blocks": {
+    "evidence_delayed_credit": [
+      "neither",
+      "public_evidence_only",
+      "delayed_credit_only",
+      "public_evidence_plus_delayed_credit"
+    ],
+    "information_counterfactuals": ["count_only", "j_masked", "trace_only", "j_permutation"],
+    "locality": ["local_neighbors", "nonlocal_global", "same_cost_centralized_diagnostic"],
+    "updater": ["rls", "online_sgd_or_logistic", "periodic_refit", "rare_frozen_updater"],
+    "ownership_stress": ["producer_only", "recipient_only", "sink_only", "mixed", "unknown", "resource_failure"],
+    "drift": ["stable", "gradual", "abrupt_replacement", "version_swap", "delayed_feedback"]
+  },
+  "common_read_and_cost_contract": {
+    "same_candidate_menu_and_version": true,
+    "same_legal_read_cut": true,
+    "same_public_representation_and_encoder_schema": true,
+    "same_arrival_propensity_opportunity_and_delay": true,
+    "same_service_model_api_tool_token_retry_state_queue_budget": true,
+    "independent_realized_history_namespace_per_arm": true,
+    "unknown_retained_in_all_attempt_denominator": true,
+    "complete_cost_fields": [
+      "producer_api", "recipient_api", "judge_api", "selection", "publication", "read",
+      "assignment", "update", "communication", "retry", "repair", "scorer", "replay",
+      "input_tokens", "output_tokens", "wall_seconds", "state_bytes", "queue_delay", "drop_timeout"
+    ]
+  },
+  "event_order": [
+    "source_selection", "delivery", "producer_contract_check", "recipient_judgment",
+    "recipient_action_or_use", "independent_source_outcome", "typed_attribution_gate",
+    "public_snapshot_at_read_cut", "assignment_before_target_selection", "target_action_or_use",
+    "independent_future_y", "selected_only_delayed_credit", "idempotent_update"
+  ],
+  "endpoint_contract": {
+    "H1": {
+      "estimand": "paired common-cohort Brier/log-loss for Qp and later Y separately",
+      "evaluation_population": "frozen common held-out cohort or pre-registered randomized transport",
+      "status": "OPEN_MDE_AND_COHORT_NOT_FROZEN"
+    },
+    "H2": {
+      "estimand": "paired future utility U=Y-lambda*C with all-attempt ITT and UNKNOWN bounds",
+      "status": "OPEN_LAMBDA_MDE_AND_FUTURE_Y_NOT_FROZEN"
+    },
+    "H3": {
+      "estimand": "publish/read/update p95, backlog, drops/timeouts under fixed service envelope",
+      "status": "OPEN_IMPLEMENTATION_AND_SERVICE_ENVELOPE_NOT_FROZEN"
+    },
+    "H4": {
+      "estimand": "false owner attribution plus coverage, abstention, UNKNOWN and owner-truth recall",
+      "status": "OPEN_OWNER_TRUTH_AND_COVERAGE_NOT_FROZEN"
+    }
+  },
+  "activation_checks": {
+    "all_roots_authority_material_scorer_pass": false,
+    "three_structural_roots_pass": false,
+    "three_independent_streams_per_root_arm_pass": false,
+    "all_required_arms_live_parity_pass": false,
+    "future_assignment_independent_y_pass": false,
+    "common_cohort_or_randomized_transport_pass": false,
+    "mde_lambda_precision_stopping_frozen": false,
+    "complete_cost_and_denominator_pass": false,
+    "clean_replay_pass": false,
+    "independent_scientific_review_pass": false
+  },
+  "activation_rule": "All activation_checks must be true and every root/stream/arm/factor target cell must have a sealed card before api_runs_allowed or gpu_runs_allowed may become true.",
+  "supersedes": "configs/aamas2027/n03_candidate_cell_manifest_v0.2.json",
+  "goal_comparison": {
+    "guide_direction_matrix": "v5_20261008",
+    "benchmark_baseline_gate": "OPEN",
+    "method_outcome": "UNSTUDIED",
+    "goal_changed": false
+  }
+}

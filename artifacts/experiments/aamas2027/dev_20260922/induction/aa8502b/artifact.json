@@ -1,0 +1,49 @@
+{
+  "family": "aa8502b",
+  "source_task": "aa8502b_1",
+  "source_trace_sha256": "d680023eb7e64cda959c45ce7fb553f4500c5977f171247b91c9f2ac9c1ae940",
+  "training_success": true,
+  "candidate": {
+    "title": "Bulk follow creators from liked content",
+    "applicability": "Authenticated media-library tasks where liked items expose nested creators and follow endpoints exist; use after login and respect pagination limits.",
+    "procedure": [
+      "Inspect API docs to identify login, liked-item, follow-status, and follow-action endpoints.",
+      "Authenticate and retain the returned access token for authorized calls.",
+      "Fetch all liked items by paginating with the maximum allowed page size until an empty or short page appears.",
+      "Extract creator identifiers from each item, deduplicating by stable ID rather than display name.",
+      "Fetch current followed creators with the same pagination pattern and build an already-followed ID set.",
+      "Follow only missing IDs and capture per-item success or failure.",
+      "Re-fetch the followed list and verify every target ID is present before completion."
+    ],
+    "pitfalls": [
+      "Do not treat the first page as complete; default limits may be small.",
+      "Do not match creators by name; use IDs and handle multiple creators per item.",
+      "Do not assume mutations succeeded without a post-action read.",
+      "Do not call private endpoints without a valid token."
+    ],
+    "evidence_steps": [
+      1,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13
+    ]
+  },
+  "error": null,
+  "usage": {
+    "input_tokens": 6959,
+    "output_tokens": 1671,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  },
+  "attempted_calls": 1,
+  "api_errors": 0,
+  "api_seconds": 40.72292408300564,
+  "unknown_usage_attempts": 0
+}

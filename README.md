@@ -29,3 +29,7 @@
 - 重组前来源的字节副本见 [`docs/archive/document_reorganization_20260928/`](docs/archive/document_reorganization_20260928/)。
 
 详细结构见 [`PROJECT_STRUCTURE.md`](PROJECT_STRUCTURE.md)。
+
+## 本地完整归档
+
+2026-10-09 的工作区补充上传、脱敏记录、文件校验清单及 benchmark 本地改动恢复方法见 [完整同步归档](docs/archive/github_full_sync_20261009/README.md)。
