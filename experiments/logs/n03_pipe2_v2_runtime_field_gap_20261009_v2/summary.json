@@ -1,0 +1,271 @@
+{
+  "runner_version": "pipe2-v2-runtime-field-gap-audit-v1",
+  "input_summary": "experiments/logs/n03_pipe2_derived_root_runtime_qualification_20261003_v3/summary.json",
+  "input_summary_sha256": "33e27eb3035ad242524a91bd2a52d0578e61479c274822d31fc9ed8c1b531300",
+  "descriptor_schema": "pipe2-typed-handoff-v2",
+  "fixture_mode": "read-only-real-runtime-receipt-field-audit",
+  "candidate_code_executed": false,
+  "llm_calls": 0,
+  "gpu_jobs": 0,
+  "native_grader_invoked": false,
+  "benchmark_qualified": false,
+  "scientific_claim_allowed": false,
+  "git_commit": "ad8af938301ddd54251cb88aeb08acebba417a33",
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "started_at_utc": "2026-10-09T04:35:55.723892+00:00",
+  "status": "FIELD_GAP_CONFIRMED",
+  "case_count_in_source": 10,
+  "first_case_path_count": 188,
+  "descriptor_field_count": 33,
+  "available_field_count": 2,
+  "missing_field_count": 31,
+  "missing_fields": [
+    "schema",
+    "source_task_index",
+    "candidate_key",
+    "candidate_source_digest",
+    "delivery_id",
+    "delivery_path",
+    "delivery_schema",
+    "producer_contract_digest",
+    "recipient_before_manifest_digest",
+    "recipient_after_manifest_digest",
+    "recipient_changed_paths_digest",
+    "judgment",
+    "action",
+    "used_artifact",
+    "outcome_status",
+    "delivery_event_index",
+    "judgment_event_index",
+    "action_event_index",
+    "outcome_event_index",
+    "judgment_id",
+    "action_id",
+    "outcome_id",
+    "judgment_record_hash",
+    "action_record_hash",
+    "outcome_record_hash",
+    "target_task_index",
+    "source_read_cut",
+    "observation_available_index",
+    "policy_update_allowed",
+    "producer_credit_allowed",
+    "descriptor_digest"
+  ],
+  "non_substitutable_fields": [
+    "judgment",
+    "action",
+    "used_artifact",
+    "outcome_status",
+    "judgment_id",
+    "action_id",
+    "outcome_id",
+    "judgment_record_hash",
+    "action_record_hash",
+    "outcome_record_hash",
+    "target_task_index"
+  ],
+  "interpretation": "The real PIPE2 receipt contains producer and recipient-adoption evidence, but no bound recipient judgment, consumer action, independent terminal outcome, later assignment, or pre/post recipient source snapshots. Adoption, recipient_self, output_sha256, and producer label remain non-substitutes. The audit does not qualify the benchmark or method.",
+  "field_rows": [
+    {
+      "descriptor_field": "schema",
+      "receipt_mapping": "descriptor schema is defined as pipe2-typed-handoff-v2; receipt does not carry it",
+      "available": false,
+      "safe_substitution": null
+    },
+    {
+      "descriptor_field": "task_id",
+      "receipt_mapping": "task_id",
+      "available": true,
+      "safe_substitution": null
+    },
+    {
+      "descriptor_field": "source_task_index",
+      "receipt_mapping": "not present in the native receipt",
+      "available": false,
+      "safe_substitution": null
+    },
+    {
+      "descriptor_field": "candidate_key",
+      "receipt_mapping": "not present in the native receipt",
+      "available": false,
+      "safe_substitution": null
+    },
+    {
+      "descriptor_field": "candidate_source_digest",
+      "receipt_mapping": "not present in the native receipt",
+      "available": false,
+      "safe_substitution": null
+    },
+    {
+      "descriptor_field": "delivery_id",
+      "receipt_mapping": "artifact evidence is present, but no typed delivery identity/path/schema field is recorded",
+      "available": false,
+      "safe_substitution": null
+    },
+    {
+      "descriptor_field": "delivery_path",
+      "receipt_mapping": "artifact evidence is present, but no typed delivery identity/path/schema field is recorded",
+      "available": false,
+      "safe_substitution": null
+    },
+    {
+      "descriptor_field": "delivery_schema",
+      "receipt_mapping": "artifact evidence is present, but no typed delivery identity/path/schema field is recorded",
+      "available": false,
+      "safe_substitution": null
+    },
+    {
+      "descriptor_field": "delivery_artifact_sha256",
+      "receipt_mapping": "producer.*.artifact_sha256 and recipient.*.artifact_sha256; digest exists but is not event-bound",
+      "available": true,
+      "safe_substitution": null
+    },
+    {
+      "descriptor_field": "producer_contract_digest",
+      "receipt_mapping": "not present in the native receipt",
+      "available": false,
+      "safe_substitution": null
+    },
+    {
+      "descriptor_field": "recipient_before_manifest_digest",
+      "receipt_mapping": "not present in the native receipt",
+      "available": false,
+      "safe_substitution": null
+    },
+    {
+      "descriptor_field": "recipient_after_manifest_digest",
+      "receipt_mapping": "not present in the native receipt",
+      "available": false,
+      "safe_substitution": null
+    },
+    {
+      "descriptor_field": "recipient_changed_paths_digest",
+      "receipt_mapping": "not present in the native receipt",
+      "available": false,
+      "safe_substitution": null
+    },
+    {
+      "descriptor_field": "judgment",
+      "receipt_mapping": "not present in the native receipt",
+      "available": false,
+      "safe_substitution": false
+    },
+    {
+      "descriptor_field": "action",
+      "receipt_mapping": "not present in the native receipt",
+      "available": false,
+      "safe_substitution": false
+    },
+    {
+      "descriptor_field": "used_artifact",
+      "receipt_mapping": "not present in the native receipt",
+      "available": false,
+      "safe_substitution": false
+    },
+    {
+      "descriptor_field": "outcome_status",
+      "receipt_mapping": "not present in the native receipt",
+      "available": false,
+      "safe_substitution": false
+    },
+    {
+      "descriptor_field": "delivery_event_index",
+      "receipt_mapping": "not present in the native receipt",
+      "available": false,
+      "safe_substitution": null
+    },
+    {
+      "descriptor_field": "judgment_event_index",
+      "receipt_mapping": "not present in the native receipt",
+      "available": false,
+      "safe_substitution": null
+    },
+    {
+      "descriptor_field": "action_event_index",
+      "receipt_mapping": "not present in the native receipt",
+      "available": false,
+      "safe_substitution": null
+    },
+    {
+      "descriptor_field": "outcome_event_index",
+      "receipt_mapping": "not present in the native receipt",
+      "available": false,
+      "safe_substitution": null
+    },
+    {
+      "descriptor_field": "judgment_id",
+      "receipt_mapping": "not present in the native receipt",
+      "available": false,
+      "safe_substitution": false
+    },
+    {
+      "descriptor_field": "action_id",
+      "receipt_mapping": "not present in the native receipt",
+      "available": false,
+      "safe_substitution": false
+    },
+    {
+      "descriptor_field": "outcome_id",
+      "receipt_mapping": "not present in the native receipt",
+      "available": false,
+      "safe_substitution": false
+    },
+    {
+      "descriptor_field": "judgment_record_hash",
+      "receipt_mapping": "not present in the native receipt",
+      "available": false,
+      "safe_substitution": false
+    },
+    {
+      "descriptor_field": "action_record_hash",
+      "receipt_mapping": "not present in the native receipt",
+      "available": false,
+      "safe_substitution": false
+    },
+    {
+      "descriptor_field": "outcome_record_hash",
+      "receipt_mapping": "not present in the native receipt",
+      "available": false,
+      "safe_substitution": false
+    },
+    {
+      "descriptor_field": "target_task_index",
+      "receipt_mapping": "not present in the native receipt",
+      "available": false,
+      "safe_substitution": false
+    },
+    {
+      "descriptor_field": "source_read_cut",
+      "receipt_mapping": "not present in the native receipt",
+      "available": false,
+      "safe_substitution": null
+    },
+    {
+      "descriptor_field": "observation_available_index",
+      "receipt_mapping": "not present in the native receipt",
+      "available": false,
+      "safe_substitution": null
+    },
+    {
+      "descriptor_field": "policy_update_allowed",
+      "receipt_mapping": "generated by the descriptor builder; not recorded by the native receipt",
+      "available": false,
+      "safe_substitution": null
+    },
+    {
+      "descriptor_field": "producer_credit_allowed",
+      "receipt_mapping": "generated by the descriptor builder; not recorded by the native receipt",
+      "available": false,
+      "safe_substitution": null
+    },
+    {
+      "descriptor_field": "descriptor_digest",
+      "receipt_mapping": "generated by the descriptor builder; not recorded by the native receipt",
+      "available": false,
+      "safe_substitution": null
+    }
+  ],
+  "ended_at_utc": "2026-10-09T04:35:55.726083+00:00"
+}
