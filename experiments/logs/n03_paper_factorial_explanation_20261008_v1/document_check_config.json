@@ -1,0 +1,27 @@
+{
+  "timestamp_utc": "2026-10-08T08:29:19.217830+00:00",
+  "commands": [
+    [
+      "python3",
+      "scripts/check_aamas_documents.py",
+      "--sync-gate",
+      "--check-gate"
+    ],
+    [
+      "python3",
+      "scripts/check_research_registry.py"
+    ],
+    [
+      "git",
+      "diff",
+      "--check",
+      "--",
+      "article/aamas2027/main.tex",
+      "article/aamas2027/README.md",
+      "docs/coordination/AAMAS_TASKS.md",
+      "docs/paper/aamas2027/FORMAL_PAPER_ZH.md"
+    ]
+  ],
+  "api_calls": 0,
+  "gpu_calls": 0
+}

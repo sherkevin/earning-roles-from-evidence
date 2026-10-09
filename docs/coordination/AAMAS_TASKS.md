@@ -1,5 +1,9 @@
 # AAMAS 2027 task ledger
 
+**Latest real diagnostic — 2026-10-08:** two real scoped-judgment calls stopped on a false producer acceptance: the model misread `datetime.__str__` as producing T. Recipient-owned defects were correctly identified. Two later zero-API public sandbox traces expose the T/space difference; model use and learning effects remain untested. Documented attempts are 33; remaining two cells unstarted. Goal/ACTIVE specifications unchanged. See [report](task_reports/20261008_scoped_judgment_execution.md).
+
+**Task-conditioned comparator increment — 2026-10-08:** classical disjoint signed ridge now passes 22 focused checks and expresses authored crossing preferences. A local MiniLM probe truncated the current public contract; cached BGE retained the four supplied texts. Full task/recipient/history input, real selection-time sealing, legal utility/cost and same-information live comparison remain open. No final encoder, ACTIVE matrix or Goal change; no new task API/GPU. See [report](task_reports/20261008_task_conditioned_comparator.md).
+
 **Latest PIPE1 native rebind repair — 2026-10-08:** the adapter–route join now requires
 original native event rows and the exact adapter request, recomputes the adapter projection,
 and compares binding-critical fields before returning `READY_FOR_PREFLIGHT`. Missing native
@@ -35,18 +39,16 @@ benchmark authority, live parity, later-use, cost and scientific gate remain ope
 [`n03_candidate_runner_arm_registry_20261007_v1`](../../experiments/logs/n03_candidate_runner_arm_registry_20261007_v1/summary.json).
 
 **Latest canonical main PDF synchronization — 2026-10-08:** the parent-level
-`artifacts/aamas2027/main.pdf` now matches the isolated
-`baseline_sync_20261007_v2` version byte-for-byte (SHA-256
-`9092c81938e12a9bcf8b234bc28c7fe758c6f3fa3e55b70bfc9ac224da671edc`). The prior v1 and all
-older rounds remain preserved. The current build has 8 body pages/9 total pages with
-References beginning on page 9; citations are resolved, overfull boxes are 0, and
-`submission_ready=false`. The parent provenance points to v2 and records the same hash. See
-[sync report](task_reports/20261008_main_pdf_master_baseline_sync_v2.md) and
-[`main_pdf_master.json`](../../artifacts/aamas2027/main_pdf_master.json).
-
-The synchronized wording and references are paper-only. Page 8 still has unused right-column
-space and is recorded as a substantive density debt for a later isolated revision. This
-synchronization does not freeze a benchmark, run a baseline, or open the scientific gate.
+`artifacts/aamas2027/main.pdf` now matches `information_update_20261008_v1` (SHA-256
+`85fdb1f46ce9919de21a28bbd8e51a7b79862de13eec1d7befa98893a0150591`). Source and Chinese reading copy now explain
+the already-required four-cell ablation using separate observation/update contrasts,
+a concrete case and an explicitly unmeasured results table. The build has 8 body
+pages, 9 total pages, References on page 9, 30 resolved references and 0 overfull
+boxes. Page 8 is still not filled; no API/GPU calls or scientific gate change.
+The earlier balance-only revision remains preserved. See [contrast report]
+(task_reports/20261008_information_update_contrasts.md), [corrected layout review]
+(task_reports/20261008_main_pdf_master_current_review.md) and
+[master provenance](../../artifacts/aamas2027/main_pdf_master.json).
 
 **Latest baseline parity candidate card — 2026-10-07:** `n03_baseline_live_parity_candidate_v0.2`
 freezes a candidate-only ArtifactRole/PIPE3 matrix with `uniform`, `no_update`,
@@ -1193,3 +1195,16 @@ Update order: change requirements only with rationale; update this ledger's gap/
 - [partial] N03-next-r5.71 (2026-10-05): [delayed policy adapter qualification](task_reports/20261005_delayed_policy_adapter_qualification.md)复用真实 `FeatureContextualTrustPolicy` 与 `DelayedCreditLedger`，实现 `RoleEvidenceOffer` publication 不更新持久 state、later target feedback 才能更新、assignment-level alternate-outcome 拒绝、candidate/channel/namespace 绑定、容量与回滚；随后接入 canonical replay、`derive_later_credit_from_ledger` 与 history binding，v9 8/8 zero-call cases、26 项定向测试通过，0 API/0 GPU，并在 clean commit `3c269cc` 重放。该回执只关闭 policy update 的 canonical 接缝，adapter 自身仍未接 preview→assignment→commit 和 independent histories，baseline 不冻结，Goal 不降级。
 - [partial] N03-next-r5.72 (2026-10-05): [PIPE3 feature-aware two-stage composition qualification](task_reports/20261005_pipe3_feature_composition_qualification.md)将 `contextual_trust_linear` 接入已有 canonical `preview→assignment→commit`，source/target selection 统一传入 `hash64-v1`、`matrix-features-v1`、64 维 bounded one-hot feature contract；3 control 的 zero-call composition 通过，feature receipt 1/1，110 项定向回归通过，0 API/0 GPU。该回执只关闭 canonical feature-input 工程缺口，chosen-candidate 独立 delivery/action/adoption/later outcome、baseline freeze、second root、live API/A800 与 scientific efficacy 仍开放，Goal 不降级。
 - [partial] N03-next-r5.73 (2026-10-05): [六份研究主文档质量审计](task_reports/20261005_six_research_documents_quality_audit.md)复核唯一 active registry 与三对主文档/评价标准；文档治理和要求表达约 8/10，但六份文档不能被解释为 scientific readiness。补齐方法公式的符号—PIPE3 case 实例，修正 active baseline 表中 `contextual_trust_linear`/contextual-only diagnostic 的歧义；novelty table、machine-checkable gate matrix、benchmark freeze、independent live history、真实效果仍开放，Goal 不降级。
+
+- [partial] 2026-10-08 ADR0049 实现修复：delayed adapter 默认禁止旧 target-J/terminal 更新，C1 须显式诊断；成本汇总可计独立 producer API，但不代表 full route cost。首轮快照别名失败及复测见 [报告](task_reports/20261008_reward_boundary_and_generation_cost.md)。合法 signed reward/live future utility 仍缺，不扩大调用。
+
+- [partial] 2026-10-08 signed full-ridge 数值候选已验证；保留对角版本，未改变正式矩阵。v1抵消失败、v2正确性/局部计时与剩余接入缺口见 [报告](task_reports/20261008_signed_ridge_comparator.md)。
+
+- [partial] 2026-10-08 执行前决策输入保存与恢复：source/target在启动前封存sidecar、证据与实际评分投影，精确候选版本可核对；v1失败保留，v2 48项软件检查通过，0API/GPU。任务语义表示、合法收益与真实效果仍未接通。见 [报告](task_reports/20261008_preexecution_decision_capture.md)。
+
+- [partial] 2026-10-08 公开任务/接收方合同已用缓存BGE真实CPU编码接入既有选择/capture，54项软件检查通过；保留全文/版本/readcut与独立摘要绑定。未编码接收方源码或过去经验，未训练；新增可加表示不能表达任务–接收方互补的数学反例。见 [报告](task_reports/20261008_public_context_representation.md)。下一步需同一公开经验与合法后续收益的真实比较，不扩encoder/日志功能。
+
+- [screen_stopped] 2026-10-08 两次 fresh producer 真实生成进入独立个人经历，但两组有限 Qp 均为3/3 PASS，按卡停止，target/J/A/Y均未执行。累计35次episode、72次task请求；修复历史容量预检并接上可选fresh入口，未证明未来选择或更新收益。下一步审查原生任务依赖与强控制。见 [报告](task_reports/20261008_fresh_producer_support_screen.md)。
+- [blocked_pre_execution] 2026-10-08 PIPE2 Scheme-B bridge compatibility：真实 PIPE2 recipient 只接收 `artifact/extracted_rows.json`，不接收 producer source；现有 source-file bridge 不能直接复用，runtime receipt 缺显式 J/A/Y 与 recipient pre/post diff。v1 synthetic fixture 不计科学证据；1 项定向测试、0 API/0 GPU。下一步先做 typed handoff descriptor/schema mutation qualification，不启动真实 judgment/A800。见 [报告](task_reports/20261008_pipe2_observation_bridge_compatibility.md)。
+- [partial] 2026-10-08 PIPE2 typed handoff descriptor qualification：`pipe2-typed-handoff-v1` 分离 producer source provenance 与 opaque data artifact path/schema/hash，8 项 zero-call checks 通过；未接真实 J/A/Y、runtime replay 或 selector，0 API/0 GPU。见 [报告](task_reports/20261008_pipe2_handoff_descriptor_qualification.md)。
+- [partial] 2026-10-08 PIPE2 descriptor v2 replay：实际 seed-0 payload visibility 与 `validate_extracted_rows` artifact hash contract 纳入，9 项 focused 通过；v1 回执保持不可变，未产生 J/A/Y 或科学结果。见 [报告](task_reports/20261008_pipe2_handoff_descriptor_qualification.md)。

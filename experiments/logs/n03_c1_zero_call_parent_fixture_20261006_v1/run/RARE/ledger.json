@@ -1,0 +1,248 @@
+[
+  {
+    "event_type": "peer_selection",
+    "payload": {
+      "selection_id": "selection-RARE-0",
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 0,
+      "selector_id": "peer-a",
+      "role": "producer",
+      "candidate_ids": [
+        "peer-b",
+        "peer-c"
+      ],
+      "chosen_peer_id": "peer-b",
+      "propensity": 0.5
+    },
+    "previous_hash": "GENESIS",
+    "record_hash": "ead5caba478e2ad5de4b78d7027b0996b349135af499daae929696413fbdd38e"
+  },
+  {
+    "event_type": "task_start",
+    "payload": {
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 0
+    },
+    "previous_hash": "ead5caba478e2ad5de4b78d7027b0996b349135af499daae929696413fbdd38e",
+    "record_hash": "40b46cceaa8ea3c217a33ff7fecb2496bb07405f37965d6126c2925aacdf9fac"
+  },
+  {
+    "event_type": "producer_delivery",
+    "payload": {
+      "delivery_id": "RARE-delivery-0",
+      "task_id": "PIPE3_stream_processing",
+      "producer_id": "peer-b",
+      "recipient_id": "peer-a",
+      "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "source_event_id": "request-RARE-0",
+      "task_index": 0,
+      "selection_id": "selection-RARE-0",
+      "candidate_source_digest": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2"
+    },
+    "previous_hash": "40b46cceaa8ea3c217a33ff7fecb2496bb07405f37965d6126c2925aacdf9fac",
+    "record_hash": "033b6edbbb15a000cf6522f549b1d9a759d4a8b0c882bc0dd9ea0213c5515e94"
+  },
+  {
+    "event_type": "producer_score",
+    "payload": {
+      "producer_score_id": "RARE-producer-score-0",
+      "delivery_id": "RARE-delivery-0",
+      "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "scorer_version": "pipe3-producer-objective-v2",
+      "status": "FAIL",
+      "label": 0,
+      "quality_score": 0.6666666666666666,
+      "score_payload_sha256": "470d153773afa0d97e10cf0aa37355cdacc97168692d801b486f991b6489038c",
+      "coverage_complete": true,
+      "decision_complete": true
+    },
+    "previous_hash": "033b6edbbb15a000cf6522f549b1d9a759d4a8b0c882bc0dd9ea0213c5515e94",
+    "record_hash": "7f53b61cb204d52911bc372ffd17da311d35a1b5cb63f22341cabcf126010bc7"
+  },
+  {
+    "event_type": "recipient_judgment",
+    "payload": {
+      "judgment_id": "RARE-judgment-0",
+      "delivery_id": "RARE-delivery-0",
+      "consumer_id": "peer-a",
+      "decision": "accept",
+      "observed_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "terminal_outcome_available": false,
+      "repair_note": ""
+    },
+    "previous_hash": "7f53b61cb204d52911bc372ffd17da311d35a1b5cb63f22341cabcf126010bc7",
+    "record_hash": "19a158af3787ffac32ed33f864c4a031ecc04f26ae8648a1512982ac88a7a948"
+  },
+  {
+    "event_type": "consumer_action",
+    "payload": {
+      "action_id": "RARE-action-0",
+      "delivery_id": "RARE-delivery-0",
+      "consumer_id": "peer-a",
+      "used_artifact": true,
+      "input_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "output_artifact_sha256": "819118801d4ccfab2801b36032d4f0808bdf938eedf9ee532d8ea798fd7ffa29",
+      "repair_cost": 0.0,
+      "action": "use"
+    },
+    "previous_hash": "19a158af3787ffac32ed33f864c4a031ecc04f26ae8648a1512982ac88a7a948",
+    "record_hash": "3994fc5eb3de2aee81f20a90a19ff16ea65625bf52c9ae2be5915eb5bc2db144"
+  },
+  {
+    "event_type": "terminal_outcome",
+    "payload": {
+      "outcome_id": "RARE-outcome-0",
+      "delivery_id": "RARE-delivery-0",
+      "success": false,
+      "scorer_version": "pipe3-adoption-v1",
+      "partial_score": 0.5,
+      "score_payload_sha256": "cfc2ff07c8962cdfbca9fb136fdff1386d9d760cf80ef8a1515efcae3ed04f6d"
+    },
+    "previous_hash": "3994fc5eb3de2aee81f20a90a19ff16ea65625bf52c9ae2be5915eb5bc2db144",
+    "record_hash": "c9a89add3b27467070e9536c2314c05861e9c7af90a9b3c49df22d1dd4086b08"
+  },
+  {
+    "event_type": "role_evidence_update",
+    "payload": {
+      "evidence_id": "evidence-RARE-source",
+      "judgment_id": "RARE-judgment-0",
+      "action_id": "RARE-action-0",
+      "outcome_id": "RARE-outcome-0",
+      "update_version": "pipe3-two-stage-composition-v1.8",
+      "arrived_at": 1.0
+    },
+    "previous_hash": "c9a89add3b27467070e9536c2314c05861e9c7af90a9b3c49df22d1dd4086b08",
+    "record_hash": "bdce19297f445135103ad86d20396e2fc826eff7b77d31af490bb36b722a9950"
+  },
+  {
+    "event_type": "later_assignment",
+    "payload": {
+      "assignment_id": "assignment-RARE",
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 1,
+      "agent_id": "peer-b",
+      "role": "producer",
+      "evidence_ids": [
+        "evidence-RARE-source"
+      ],
+      "decision_propensity": 0.5825702064623147
+    },
+    "previous_hash": "bdce19297f445135103ad86d20396e2fc826eff7b77d31af490bb36b722a9950",
+    "record_hash": "4171547b3a24d9a7b5fc97aa0cc47eefad522eef05536cea8a1c6eb2109e987d"
+  },
+  {
+    "event_type": "peer_selection",
+    "payload": {
+      "selection_id": "selection-RARE-1",
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 1,
+      "selector_id": "peer-a",
+      "role": "producer",
+      "candidate_ids": [
+        "peer-b",
+        "peer-c"
+      ],
+      "chosen_peer_id": "peer-b",
+      "propensity": 0.5825702064623147
+    },
+    "previous_hash": "4171547b3a24d9a7b5fc97aa0cc47eefad522eef05536cea8a1c6eb2109e987d",
+    "record_hash": "f6ffa9a162421ff1aff2e8b2867edfebf0654a3bad39fc9b5ff647e01df5be58"
+  },
+  {
+    "event_type": "task_start",
+    "payload": {
+      "task_id": "PIPE3_stream_processing",
+      "task_index": 1
+    },
+    "previous_hash": "f6ffa9a162421ff1aff2e8b2867edfebf0654a3bad39fc9b5ff647e01df5be58",
+    "record_hash": "c450530aa26a3fd27232f2968fb09aa1e215b5f87c8851d5ba2c59195823d20e"
+  },
+  {
+    "event_type": "producer_delivery",
+    "payload": {
+      "delivery_id": "RARE-delivery-1",
+      "task_id": "PIPE3_stream_processing",
+      "producer_id": "peer-b",
+      "recipient_id": "peer-a",
+      "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "source_event_id": "request-RARE-1",
+      "task_index": 1,
+      "selection_id": "selection-RARE-1",
+      "candidate_source_digest": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2"
+    },
+    "previous_hash": "c450530aa26a3fd27232f2968fb09aa1e215b5f87c8851d5ba2c59195823d20e",
+    "record_hash": "f6eca92f3d24811cdcd319bb8cf93c60f945613d6935abe6cb63c966957f7e12"
+  },
+  {
+    "event_type": "producer_score",
+    "payload": {
+      "producer_score_id": "RARE-producer-score-1",
+      "delivery_id": "RARE-delivery-1",
+      "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "scorer_version": "pipe3-producer-objective-v2",
+      "status": "FAIL",
+      "label": 0,
+      "quality_score": 0.6666666666666666,
+      "score_payload_sha256": "c2c07d03f5736646828657de511d0898050a2d1e29cda490b2a1468fb40797e9",
+      "coverage_complete": true,
+      "decision_complete": true
+    },
+    "previous_hash": "f6eca92f3d24811cdcd319bb8cf93c60f945613d6935abe6cb63c966957f7e12",
+    "record_hash": "43212fcf784d961aed2f57efd1bbb6498bc597bd74ac987ca6171f8e26d9cbf1"
+  },
+  {
+    "event_type": "recipient_judgment",
+    "payload": {
+      "judgment_id": "RARE-judgment-1",
+      "delivery_id": "RARE-delivery-1",
+      "consumer_id": "peer-a",
+      "decision": "accept",
+      "observed_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "terminal_outcome_available": false,
+      "repair_note": ""
+    },
+    "previous_hash": "43212fcf784d961aed2f57efd1bbb6498bc597bd74ac987ca6171f8e26d9cbf1",
+    "record_hash": "8bcdea02bfef37719a69c0cc19fb7ea481de71f6e5b4bc4473a5a181407839e6"
+  },
+  {
+    "event_type": "consumer_action",
+    "payload": {
+      "action_id": "RARE-action-1",
+      "delivery_id": "RARE-delivery-1",
+      "consumer_id": "peer-a",
+      "used_artifact": true,
+      "input_artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+      "output_artifact_sha256": "819118801d4ccfab2801b36032d4f0808bdf938eedf9ee532d8ea798fd7ffa29",
+      "repair_cost": 0.0,
+      "action": "use"
+    },
+    "previous_hash": "8bcdea02bfef37719a69c0cc19fb7ea481de71f6e5b4bc4473a5a181407839e6",
+    "record_hash": "d8a9b8518f59774e4c98aed3f9cdde36636348dac833b065799dc63a66fa97e8"
+  },
+  {
+    "event_type": "terminal_outcome",
+    "payload": {
+      "outcome_id": "RARE-outcome-1",
+      "delivery_id": "RARE-delivery-1",
+      "success": false,
+      "scorer_version": "pipe3-adoption-v1",
+      "partial_score": 0.5,
+      "score_payload_sha256": "cc75f1ee63bbcf10d43da1d928c7526f0f09f26aa5266eb6f09f6acbaadab178"
+    },
+    "previous_hash": "d8a9b8518f59774e4c98aed3f9cdde36636348dac833b065799dc63a66fa97e8",
+    "record_hash": "95c4671b5ba0598643c84bec6b714e2a69513b10ecd29288440ca9a56816d382"
+  },
+  {
+    "event_type": "role_evidence_update",
+    "payload": {
+      "evidence_id": "RARE-target-completion-evidence",
+      "judgment_id": "RARE-judgment-1",
+      "action_id": "RARE-action-1",
+      "outcome_id": "RARE-outcome-1",
+      "update_version": "c1-target-completion-v1",
+      "arrived_at": 2.0
+    },
+    "previous_hash": "95c4671b5ba0598643c84bec6b714e2a69513b10ecd29288440ca9a56816d382",
+    "record_hash": "e9e6a83af06f84180fc234ffb22877f27ea88a48a1d03a32ec245d17b15456c9"
+  }
+]

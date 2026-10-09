@@ -1,0 +1,69 @@
+{
+  "experiment_id": "n03_pipe3_policy_sidecar_fixture_20260928",
+  "passed": true,
+  "replay_result": {
+    "status": "PASS",
+    "ledger_status": "PASS",
+    "sidecar_status": "PASS",
+    "update_allowed": true,
+    "update_count": 1,
+    "unknown_count": 1,
+    "duplicate_count": 0,
+    "ignored_channel_count": 0,
+    "pending_count": 0,
+    "manifest_root": "844ad362c195ce4a790a6fad8bc4c0dc8594cf1e17959cbb0f300dc6a44cf625",
+    "final_snapshot": {
+      "policy": "terminal_only",
+      "temperature": 1.0,
+      "updates": 1,
+      "decision_count": 1,
+      "seen_feedback": [
+        "feedback-outcome-0"
+      ],
+      "seen_source_channels": [
+        [
+          "policy-selection-0",
+          "terminal_outcome"
+        ]
+      ],
+      "decisions": {
+        "policy-selection-0": {
+          "context_key": "PIPE3:0",
+          "selector_id": "peer-a",
+          "candidate_keys": [
+            "peer-b@fixture-v1",
+            "peer-c@fixture-v1"
+          ],
+          "chosen_key": "peer-b@fixture-v1",
+          "base_scores": [
+            0.5,
+            0.5
+          ],
+          "probabilities": [
+            0.5,
+            0.5
+          ],
+          "propensity": 0.5,
+          "state_version": "fixture-state-0",
+          "encoder_version": "fixture-encoder-0",
+          "feature_schema": "fixture-phi-0",
+          "selected_at": 10.0,
+          "captured_features": {}
+        }
+      },
+      "state": {
+        "prior": 1.0,
+        "counts": {
+          "peer-b@fixture-v1": [
+            2.0,
+            1.0
+          ]
+        }
+      }
+    }
+  },
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "ended_at_utc": "2026-09-27T17:08:18.465652+00:00"
+}

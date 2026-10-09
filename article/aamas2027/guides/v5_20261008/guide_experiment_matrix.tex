@@ -1,0 +1,170 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=16mm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,booktabs,array,tabularx,xcolor,fancyhdr,draftwatermark,hyperref,makecell}
+\usepackage[T1]{fontenc}\usepackage{lmodern}
+\hypersetup{pdftitle={Experiment GUIDE v5: Conditional Direction Matrix},pdfsubject={Conditional directions and benchmark-baseline closure; not observed results},pdfauthor={Earning Roles project}}
+\SetWatermarkText{GUIDE --- NOT OBSERVED}\SetWatermarkColor{red!14}
+\SetWatermarkAngle{35}\SetWatermarkFontSize{31pt}\SetWatermarkScale{1}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\color{red!70!black}\bfseries GUIDE v5: CONDITIONAL DIRECTIONS}
+\fancyhead[R]{\color{red!70!black}NOT RESULTS}
+\fancyfoot[L]{\color{red!70!black}2026-10-08 / UNFITTED HYPOTHESES / NOT FOR SUBMISSION}
+\fancyfoot[R]{\thepage}
+\setlength{\parindent}{0pt}\setlength{\parskip}{4pt}
+\setlength{\tabcolsep}{3pt}\renewcommand{\arraystretch}{1.08}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcommand{\rare}{\textsc{rare}}
+\newcommand{\unknown}{?}
+\newcommand{\nog}{\textsc{no-go}}
+\newcommand{\lead}[1]{\vspace{3pt}\textbf{#1}\par}
+\newcommand{\caution}{\textcolor{red!70!black}{\textbf{Conditional directions only. No numeric result, method rank, or gate closure is asserted.}}\par}
+\begin{document}
+{\Large\bfseries When Should \rare{} Win---and Lose?}\par
+\caution
+This v5 guide repairs the link between the proposed mechanism and the paper-facing
+experiment tables. It keeps the v4 benchmark--baseline closure contract and adds an
+explicit regime-by-contrast direction matrix. A direction is eligible for confirmation
+only after its premise, read cut, common evaluation population, cost envelope and
+falsifier are frozen on a development stream or by an exogenous mutation. Conditions
+must never be named after seeing the confirmation result.
+
+\lead{Status and interpretation}
+The current status is \texttt{CURRENT\_CONDITIONAL\_DIRECTION\_GUIDE\_PENDING\_EVIDENCE}.
+The current evidence has no qualified confirmation roots, complete live baseline parity,
+independent future assignment outcomes, or scientific closure receipt. The v1 numerical
+targets were withdrawn and cannot be reused. The synthetic receipt tests validate only
+the software contract, not this matrix or a method effect.
+
+\begin{center}\small
+\begin{tabularx}{\linewidth}{@{}L{.14\linewidth}X L{.22\linewidth}@{}}\toprule
+Symbol & Meaning & Rule for use\\\midrule
+$>$ & \rare{} should be better than the named baseline on this endpoint & Only after the premise and parity contract are sealed.\\
+$=$ & Pre-registered equivalence or non-inferiority relation & A margin and paired estimator are required; non-significance is not equivalence.\\
+$<$ & \rare{} should be worse in this negative regime & A deliberate loss boundary, retained as evidence.\\
+$?$ & Two-sided or not identifiable before data & No superiority claim; estimate both signs.\\
+\texttt{N/A} & Arm or endpoint is not qualified & Preserve a NO-GO reason; an empty cell is not a ranking.\\\bottomrule
+\end{tabularx}\end{center}
+
+\lead{Four independent endpoints}
+H1 is Brier/log loss on the same already-selected held-out cohort (lower is better),
+with producer contract $Q_p$ and later-use $Y$ kept separate. H2 is independent
+future-assignment utility $U=Y-\lambda C$ (higher is better), with all-attempt ITT
+denominators and UNKNOWN bounds. H3 is full publish/read/update p95, backlog and
+drop/timeout rate under a fixed arrival and resource envelope (lower is better).
+H4a is false producer attribution with independent owner truth (lower is better).
+Coverage, abstention, UNKNOWN and owner-truth recall are H4b companion quantities;
+abstention cannot be used to manufacture an H4a win.
+
+\clearpage
+{\large\bfseries Table 1: Baseline and Factor Qualification}\par\caution
+Every row below is a required arm or a deliberately retained NO-GO. The same candidate
+menu/version, legal read cut, public representation, encoder/checkpoint/schema,
+opportunity set, delay, exploration, capacity, service/API/token/tool/state/queue
+budget and complete cost must be used. Each adaptive arm keeps its own independent
+realized-history namespace; a pooled controller pools only inside its own policy.
+
+\begin{center}\scriptsize
+\begin{tabularx}{\linewidth}{@{}L{.23\linewidth}L{.18\linewidth}X L{.19\linewidth}@{}}\toprule
+Arm & Role & Required qualification & If absent\\\midrule
+Uniform / no update & Primary weak control & Same material-generation path and opportunity schedule; no learned state & RARE cannot claim learning over a prior.\\
+Raw acceptance / terminal-only & Signal controls & Same public trace and target cohort; isolate raw verdict and terminal evidence & H1/H2 information increment unidentified.\\
+Contextual-trust-linear & Strong same-info control & Full public $\phi$, same capacity/read cut/cost/history opportunity and own state & No ordinary contextual-learning claim.\\
+Task-conditioned ridge & Strong matching control & Task--peer interactions, same gate/trace/menu and live parity; identity-only ridge is insufficient & Task--peer gain is unidentifiable; retain \texttt{NO\_GO}.\\
+Pooled controller & Data-pooling control & Own namespace and predeclared capacity; cannot read another arm's live state & Local personalization claim is confounded.\\
+\rare{} frozen card & Candidate & Exact representation, head/updater, gates, delay and service contract sealed & No method-level latency/forgetting claim.\\
+Closest published adapter & Timeliness/reference & Faithful same-protocol adapter, or explicit \texttt{NO\_GO} with reason & Published comparison cannot support superiority.\\
+Count-only / J-masked / trace-only / J-permutation & Information counterfactuals & Same trace/menu/version/read cut; selected cohort and costs retained & J-specific claim fails closed.\\\bottomrule
+\end{tabularx}\end{center}
+
+\lead{Mandatory factorial and locality blocks}
+Evidence and delayed credit are one four-arm matched factorial: (i) neither,
+(ii) public evidence only, (iii) delayed credit only, (iv) both. The interaction
+$I_U=U_{11}-U_{10}-U_{01}+U_{00}$ uses the qualified stream covariance. Locality
+requires local, nonlocal/global, and same-cost centralized diagnostics. Graph-IPD is
+an external native cooperation reference and cannot fill these cells without a
+qualified adapter. Updater comparisons (RLS, online SGD/logistic, periodic refit)
+are nested under the same information policy; they are not silently omitted from a
+claim about update speed or recovery.
+
+\clearpage
+{\large\bfseries Table 2: Conditional Direction Matrix (H1/H2)}\par\caution
+Cells are the relation of \rare{} to the named baseline. The premise column is part
+of the experiment card. A condition not established before confirmation is `?' for all
+affected contrasts, regardless of the observed result.
+
+\begin{center}\scriptsize
+\begin{tabularx}{\linewidth}{@{}L{.18\linewidth}L{.23\linewidth}C{.055\linewidth}C{.055\linewidth}C{.055\linewidth}C{.055\linewidth}X@{}}\toprule
+Regime & Contrast & H1 & H2 & H3 & H4a & Falsifier / allowed interpretation\\\midrule
+Typed informative evidence & Uniform / no update & $>$ & $>$ & $?$ & $>$ & J and typed ownership/version fields add signal beyond controls; trace/J masking or matched composition reproducing the gain falsifies mechanism superiority.\\
+Typed informative evidence & Contextual trust / task ridge & $>$ & $>$ & $?$ & $>$ & Only after the strong same-info control is qualified; otherwise this is not an identified gain.\\
+Trace explains defect & Trace-only & $=$ & $=$ & $<$ & $?$ & C1-like public execution facts already explain the defect; any gain after J masking suggests leakage or unequal inputs.\\
+Stable task--peer crossover & Pooled controller & $>$ & $>$ & $?$ & $?$ & Requires repeatable crossover and sufficient local support on root/time holdout; pooling may win when data are sparse.\\
+Constant J / cold start & Uniform / no update & $=$ & $<$ & $<$ & $=$ & Extra evidence/update cost has no signal to buy; a surviving J-specific gain is a hard leakage check.\\
+Stale / version mismatch & Version-aware reset & $<$ & $<$ & $?$ & $>$ & Version isolation may reduce false credit while slowing recovery; a control missing the version field is invalid.\\
+Sparse / shifted semantics & Pooled or task ridge & $<$ & $<$ & $?$ & $?$ & Personalization has high variance and negative transfer; repeated-template-only gains fail the holdout.\\
+High arrival / evidence cost & Matched local uniform & $?$ & $<$ & $<$ & $?$ & Quality may rise while queue/backlog and complete cost erase utility; core update time is insufficient.\\
+Gradual legal drift & Frozen prior & $>$ & $>$ & $?$ & $?$ & Drift schedule and delayed labels are sealed; report recovery separately from old-root forgetting.\\\bottomrule
+\end{tabularx}\end{center}
+
+The first two rows are the only candidate-positive regimes. They require a development
+test that typed responsibility/version information is incrementally predictive. Against
+the strong contextual/task-conditioned control, `>' is not assumed merely because the
+candidate uses a learned ledger. A tie or a control win is an explicit method falsifier.
+
+\clearpage
+{\large\bfseries Table 3: Conditional Direction Matrix (H3/H4 and Stability)}\par\caution
+The method is a protocol with a replaceable implementation until the frozen card names
+the encoder, head, updater, capacity and service path. Therefore H3 and continual
+learning directions are not inferred from a 0.297 ms core update or from a native
+Graph-IPD score. They require end-to-end receipts.
+
+\begin{center}\scriptsize
+\begin{tabularx}{\linewidth}{@{}L{.20\linewidth}L{.25\linewidth}C{.07\linewidth}C{.07\linewidth}C{.07\linewidth}X@{}}\toprule
+Regime & Contrast & H3 p95 & H3 backlog & H4a & Stability interpretation\\\midrule
+Informative, sufficient support & Strong same-info control & $?$ & $?$ & $>$ & Quality evidence may cost more; report a Pareto point, not a universal speed win.\\
+Trace-only explanation & Trace-only & $<$ & $<$ & $?$ & Extra J/retrieval is a service loss unless it buys independent future utility.\\
+Constant J / cold start & No update & $<$ & $<$ & $=$ & Same attribution semantics with extra work; no safety gain is presumed.\\
+Stale replacement & Version-aware reset & $?$ & $?$ & $>$ & Safety gate may abstain and lower coverage; report coverage and recovery cost together.\\
+Sparse local history & Pooled / ridge & $?$ & $?$ & $?$ & State or communication cost can dominate; no direction is sealed without the implementation card.\\
+High arrival / queue pressure & Matched local uniform & $<$ & $<$ & $?$ & Drops/timeouts and failed attempts stay in the denominator and cost ledger.\\
+Gradual drift & Matched RLS/SGD/refit & $?$ & $?$ & $?$ & Separate old-root forgetting from recovery delay; updater superiority is not automatic.\\\bottomrule
+\end{tabularx}\end{center}
+
+\lead{Stability and safety definitions}
+Old-root forgetting is the drop from the pre-drift held-out performance on the old
+root. Recovery delay is time/steps to regain a predeclared threshold on the new root.
+They are separate endpoints. State bytes is a resource axis, not a success direction:
+lineage-safe provenance can require more state. False attribution, false negatives,
+coverage, abstention and UNKNOWN must be reported jointly, stratified by producer-only,
+recipient-only, sink-only, mixed ownership and resource failure.
+
+\clearpage
+{\large\bfseries Table 4: Result Entry and Closure}\par\caution
+No direction row can be entered as a result until the root, stream, arm, factor and
+future outcome fields below are present. This is the ledger that connects a compact
+paper table to a real receipt.
+
+\begin{center}\scriptsize
+\begin{tabularx}{\linewidth}{@{}L{.19\linewidth}X L{.24\linewidth}@{}}\toprule
+Field & Required evidence & Failure interpretation\\\midrule
+Root / stream & At least three structural roots for proceedings-ready, or a pre-registered precision-justified two-root design; independent realized histories and structural/time holdout & Seeds or topology labels alone do not create roots.\\
+Common population & Same held-out cohort for H1, or randomized transport with overlap/weight uncertainty; $Q_p$ and $Y$ separate & Policy-dependent selected populations make Brier/log loss non-identifiable.\\
+Future $Y$ & Sealed assignment before target execution and blinded independent scorer; missing/partial is UNKNOWN & No future $Y$ means H2 is UNSTUDIED, never neutral.\\
+Denominators & ITT all attempts, started/completed/known/unknown/failed/unstarted, selected/unselected and coverage by owner stratum & Dropping UNKNOWN or hard cases can reverse ranking.\\
+Cost & Selection, publish, read, judgment, scorer, update, assignment, communication, retry, tool/API/token, state, queue, repair and replay costs plus wall time & Quality gains that lose after complete cost are trade-offs.\\
+Statistics & Paired stream/root effects, covariance for $U$, p95 tail estimator, UNKNOWN worst/best bounds, multiplicity/stopping and predeclared MDE/margin & A single aggregate or normal error bar is insufficient.\\
+Falsifiers & J permutation, trace-only, menu/id permutation, version swap, recipient-only/mixed/UNKNOWN, unselected-label censoring, replay idempotence and gold future-label injection & Any hard-fail invalidates the closure attempt; preserve raw evidence.\\
+Replay/review & Independent environment/code path, blind scorer, hashes, raw event chain, clean replay and independent scientific reviewer & Software validator pass alone cannot close the scientific gate.\\\bottomrule
+\end{tabularx}\end{center}
+
+\lead{Closure rule}
+The v4 B1--B7 receipt remains the sole benchmark+baseline closure rule. Guide alignment
+is necessary and not sufficient. The scientific gate is \texttt{OPEN} until all required
+roots, live baseline parity, independent streams, future-$Y$ cells, complete tables,
+statistics/cost, clean replay and independent review are present and verified. A full
+positive, neutral or adverse result can close the evidence gate; an incomplete,
+\texttt{UNSTUDIED} or findings-ready result cannot. A closed evidence gate never turns
+a null or adverse method result into a positive claim.
+
+\end{document}

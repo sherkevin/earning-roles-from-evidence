@@ -1,0 +1,260 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=18mm,headheight=15pt]{geometry}
+\usepackage{amsmath,booktabs,array,makecell,xcolor,graphicx,fancyhdr,draftwatermark,hyperref}
+\usepackage[T1]{fontenc}\usepackage{lmodern}
+\hypersetup{pdftitle={Experiment GUIDE v2: Confidence, Joint Distributions and Errors},pdfsubject={Assumption-conditional analytic guide; not observed or empirically fitted; not for submission},pdfauthor={Earning Roles project}}
+\SetWatermarkText{GUIDE --- NOT OBSERVED}\SetWatermarkColor{red!14}
+\SetWatermarkAngle{35}\SetWatermarkFontSize{32pt}\SetWatermarkScale{1}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\color{red!70!black}\bfseries GUIDE v2: CONDITIONAL MODEL}
+\fancyhead[R]{\color{red!70!black}NOT EXPERIMENTAL RESULTS}
+\fancyfoot[L]{\color{red!70!black}2026-10-08 / ASSUMPTIONS NOT FITTED / NOT FOR SUBMISSION}
+\fancyfoot[R]{\thepage}
+\setlength{\parindent}{0pt}\setlength{\parskip}{5pt}
+\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.12}
+\newcommand{\lead}[1]{\vspace{3pt}\textbf{#1}\par}
+\newcommand{\status}{\textcolor{red!70!black}{\textbf{Exact conditional calculations; no empirical confidence in method rankings.}}\par}
+\begin{document}
+{\Large\bfseries Confidence, Joint Distributions and Errors}\par\status
+This v2 replaces v1's independently assigned method means and error assumptions.
+It gives a mathematically coherent \emph{conditional reference}, not a fitted
+prediction of RARE or any baseline. Scientists can test metric relationships
+and error patterns against it, while recording which assumptions fail.
+
+\lead{Confidence audit: what the existing data identify}
+\begin{center}\small
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lll@{}}\toprule
+Quantity & Existing support & Confidence scope\\\midrule
+API provenance & 8 complete calls, one PIPE3 root & High for recorded calls\\
+Core update time & 0.520 / 0.297 ms; one per arm & Exact events; no p95 forecast\\
+Serialized state & 3,408 / 4,688 bytes & Exact snapshots; no future size\\
+Future method effect & No post-update task executed & Not identified\\
+Brier / calibration & No qualified probability/outcome population & Not identified\\
+Drift / forgetting & No matched live drift streams & Not identified\\
+Method/root covariance & No independent paired future histories & Not identified\\\bottomrule
+\end{tabular*}\end{center}
+All three live arms chose the same peer and reused the same artifact. Their
+producer, recipient and old adoption checks were 2/3, 3/3 and 1/2. These are
+check fractions, not success-rate estimates. The source updates do not implement
+the active method's validated future-credit contract. Numerical precision in a
+guide cannot raise confidence in unobserved performance.
+
+\lead{One joint model, one selected outcome}
+In each task, candidate $H$ has assumed success probability $.7$ and $L$ has
+$.3$. Task context swaps their peer identities. These are latent \emph{evaluation}
+roles, never oracle information supplied to the selector. Reduced-form routing
+skill $\kappa$ means probability of choosing $H$ is $(1+\kappa)/2$.
+For the chosen peer only, $Y\in\{0,1\}$ is an independent terminal outcome.
+\[
+ Q=\mathbb E[Y]=.5+.2\kappa,\qquad
+ C=\frac{1+h+(1-Y)}{1.5}+\xi,\qquad U=Y-.1C.
+\]
+Case: $h=.02$ is assumed policy overhead; failure adds one repair-cost unit.
+The baseline expected cost is 1.5 units. Jitter $\xi$ takes $\pm.1$ normalized
+cost units with equal probability, independently of $Y$. Thus quality and
+cost are related through failure, rather than separate invented columns.
+All these parameters are \emph{unestimated assumptions}.
+
+\lead{Table 1 counterpart: coherent conditional scenarios, not named methods}
+\begin{center}\small
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrrr@{}}\toprule
+Scenario & $Q$ & Brier & Population ECE & $\mathbb E[C]$ & $\mathbb E[U]$\\\midrule
+S0 & 0.500 & 0.2500 & 0.000 & 1.000 & 0.400\\
+S1 & 0.500 & 0.2100 & 0.000 & 1.013 & 0.399\\
+S2 & 0.550 & 0.2125 & 0.050 & 0.980 & 0.452\\
+S3 & 0.600 & 0.2125 & 0.050 & 0.947 & 0.505\\
+S4 & 0.600 & 0.2325 & 0.150 & 0.967 & 0.503\\
+\bottomrule\end{tabular*}\end{center}
+S0: random routing and constant .5 forecast. S1: routing unchanged, hypothetical
+perfectly calibrated forecast. S2: $\kappa=.25$, forecast bias .05. S3:
+$\kappa=.50$, same bias. S4: $\kappa=.50$, bias .15, overhead .05 instead of .02.
+Forecasts $p=q_{\rm chosen}+e$ are hypothetical calibration scenarios using the
+model's latent $q$, not an implementable oracle predictor or evidence of judgment
+information. Forecast skill alone improves Brier in S1 but not task quality.
+S3 improves routing over S2 without automatically improving Brier or ECE.
+No real method is assigned an S-label or $\kappa$.
+
+\clearpage
+\lead{Distribution and error matrix: S3, 30 iid frozen-policy episodes}\status
+\begin{center}\small
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrr@{}}\toprule
+Stream statistic & Mean & SD & Central 95\% prediction interval & Mass (\%)\\\midrule
+Quality & 0.6000 & 0.0894 & [0.4333, 0.7667] & 96.2\\
+Brier & 0.2125 & 0.0383 & [0.1405, 0.2905] & 95.1\\
+Sample ECE & 0.0999 & 0.0559 & [0.0167, 0.2300] & 95.9\\
+Cost & 0.9467 & 0.0624 & [0.8267, 1.0711] & 95.3\\
+Utility & 0.5053 & 0.0954 & [0.3256, 0.6838] & 95.1\\
+\bottomrule\end{tabular*}\end{center}
+These are \emph{exact finite-count distributions for the iid frozen-policy model
+and specified Rademacher jitter}, not
+confidence intervals for empirical method parameters. Quality comes from
+success counts. Brier and sample ECE use the \emph{same} selected labels and
+forecasts; cost uses the same failures plus specified jitter; utility uses
+those same quality and cost records. No independent error bars are assigned.
+Mass is the model's probability inside the unrounded endpoints; discreteness
+can make it exceed 95\%. It is not measured holdout coverage.
+
+\lead{Dependence matrix for the same conditional stream}
+\begin{center}\small
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrrr@{}}\toprule
+Correlation & $Q$ & Brier & ECE & Cost & Utility\\\midrule
+Q & 1.0000 & -0.6124 & -0.5386 & -0.9562 & 0.9998\\
+Brier & -0.6124 & 1.0000 & 0.5093 & 0.5855 & -0.6123\\
+ECE & -0.5386 & 0.5093 & 1.0000 & 0.5150 & -0.5385\\
+Cost & -0.9562 & 0.5855 & 0.5150 & 1.0000 & -0.9616\\
+Utility & 0.9998 & -0.6123 & -0.5385 & -0.9616 & 1.0000\\
+\bottomrule\end{tabular*}\end{center}
+Utility is derived, not an extra independent endpoint. The covariance matrix
+is positive semidefinite but includes this linear dependence. Do not invert
+it as though all five endpoints were independent. Cost/quality correlation
+here follows an assumed failure-repair model; the real correlation must be
+measured and can differ.
+\[
+ \operatorname{Var}(\bar U)=\operatorname{Var}(\bar Q)
+ +.1^2\operatorname{Var}(\bar C)-.2\operatorname{Cov}(\bar Q,\bar C).
+\]
+Case: the negative quality--cost covariance widens utility variability relative
+to an independence calculation, because a failure reduces quality and adds
+repair cost simultaneously.
+
+\lead{How the prediction and error distributions are calculated}
+For a chosen type with success rate $q$ and fixed forecast $p$,
+\[
+ \mathbb E[(p-Y)^2]=q(1-q)+(p-q)^2.
+\]
+Case: S3 selects $.7$ with probability $.75$ and $.3$ with probability $.25$;
+forecasts are $.75$ and $.35$. Both conditional Brier means are
+$.21+.05^2=.2125$. The resulting selected success rate is $.60$, not the
+$.50$ prevalence of an unselected balanced population.
+
+For $N=30$, integrate $N_H\sim\operatorname{Bin}(30,.75)$, followed by
+$S_H\sim\operatorname{Bin}(N_H,.7)$ and
+$S_L\sim\operatorname{Bin}(30-N_H,.3)$. Then
+\[
+ \widehat{\mathrm{ECE}}=
+ \frac{|.75N_H-S_H|+|.35(30-N_H)-S_L|}{30}.
+\]
+Case: each occupied forecast bin contributes its absolute forecast/count error;
+empty bins contribute zero. Finite-sample ECE has an upward absolute-value bias,
+so its expected sample value exceeds population ECE .05. For S0 both forecast
+types merge into one .5 bin; treating them as two bins would be incorrect.
+The calculation enumerates binomial counts and jitter counts exactly. It does
+not generate fake agent predictions, real API labels, or synthetic paper results.
+
+\clearpage
+\lead{Paired errors: outcome coupling cannot be assumed away}\status
+Compare S3 with S2 on the same frozen task/quality population. Couple route
+draws for this analytical sensitivity only. The chosen peer differs with
+probability $D=(.50-.25)/2=.125$, and
+$\Delta Q=0.050$, $\Delta U=0.0533$ when overhead is equal.
+Let $u=\Pr(Y_H=1,Y_L=1)$; its feasible range is $[0,.3]$.
+\[
+ \operatorname{Var}(\Delta Y)=.125(1-2u)-.05^2,
+ \quad\operatorname{Var}(\Delta U)=
+ (1+.1/1.5)^2\operatorname{Var}(\Delta Y)+2(.1)^2(.1)^2.
+\]
+Case: the final term is specific to independent Rademacher cost jitters.
+Correlated jitters require the covariance term; merely bounded jitter does not
+justify this equality. The potential outcomes are evaluation assumptions;
+unselected outcomes never enter learning feedback.
+\begin{center}\small
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrr@{}}\toprule
+Assumed $u$ & Paired episode quality variance & 30-episode paired utility SD\\\midrule
+0.00 & 0.1225 & 0.0682\\
+0.21 & 0.0700 & 0.0516\\
+0.30 & 0.0475 & 0.0425\\
+\bottomrule\end{tabular*}\end{center}
+Same marginal quality improvement can have materially different paired errors.
+The shared-potential-outcome assumption applies only to this frozen-policy
+one-step model. Real adaptive arms have independent histories and may change
+candidate artifacts, tasks, costs and missingness; the same RNG seed does not
+make their realized outcomes paired counterfactuals.
+
+\lead{Three body tables: what can receive empirical confidence}
+\begin{center}\small
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lp{.34\linewidth}p{.34\linewidth}@{}}\toprule
+Paper matrix & Joint quantities required & Current forecast status\\\midrule
+1: methods & $Y,p,a,C$, root and policy-history identity & All eight method rows unidentifiable\\
+2: online/drift & Full service times, arrivals, retained state, old/new holdouts & Core anchors only; tails/adaptation unknown\\
+3: mechanisms & Four-cell joint stream outcomes; independent owner truth & Interaction and ungated rate unknown\\\bottomrule
+\end{tabular*}\end{center}
+An unqualified published adapter must not be replaced by guessed values for a
+strong control. Choice propensity is not predicted success probability. Store
+the two separately. Legal varied judgments and count-only/J-masked controls are
+necessary before attributing information gains to judgment content.
+
+\lead{Interaction and safety targets must describe observable relationships}
+For evidence/credit cells, define $I_U=U_{11}-U_{10}-U_{01}+U_{00}$.
+Its variance is $c^\top\Sigma c$ with $c=(1,-1,-1,1)$ and the cells' joint
+stream covariance; four independent guessed SDs cannot replace $\Sigma$.
+In this model $I_U=(1+.1/1.5)(.2)I_\kappa-(.1/1.5)I_h$.
+Case: additive routing and overhead imply zero interaction. A utility interaction
+target .02 with $I_h=0$ requires $I_\kappa=0.09375$;
+it is a testable skill requirement, not an already predicted gain.
+
+Fail-closed producer credit is a protocol requirement. Its real violation rate
+and owner-oracle coverage need independent negative cases, UNKNOWN denominators
+and root/stream-aware error analysis. V1's .25/.15/.10/.05 ungated rates are
+withdrawn as unsupported expectations. A core timing of .297 ms also cannot
+identify p95. A 5 ms maximum envelope would drain four events in 20 ms, but that
+is a conditional queue implication; full service and tail measurements remain
+required, including backbone/retrieval and publish/read costs.
+
+\clearpage
+\lead{Root and history variation can overturn apparent precision}\status
+Use $u=.21$ only as an independent-potential-outcome sensitivity point.
+Let $\rho$ be the ICC of \emph{paired episode utility differences}; for 30
+exchangeable episodes, $DE=1+29\rho$ and
+$\sigma_{\rm stream}^2=\operatorname{Var}(\Delta U)DE/30$.
+With three roots and six independent streams per root,
+\[
+ \operatorname{SE}^2(\overline{\Delta U})=
+ \frac{\sigma_{\rm root}^2}{3}+\frac{\sigma_{\rm stream}^2}{18}.
+\]
+Case: stream variance already incorporates episodes and dependence; do not
+divide by 30 again. Root variance reflects differing method effects across
+tasks; increasing episodes within three roots cannot remove it.
+\begin{center}\small
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}rrrr@{}}\toprule
+Assumed $\rho$ & Assumed root SD & Stream SD & Conditional normal 95\% planning band\\\midrule
+0.00 & 0.00 & 0.0516 & [0.030, 0.077]\\
+0.00 & 0.02 & 0.0516 & [0.020, 0.086]\\
+0.00 & 0.05 & 0.0516 & [-0.008, 0.115]\\
+0.05 & 0.00 & 0.0808 & [0.016, 0.091]\\
+0.05 & 0.02 & 0.0808 & [0.010, 0.097]\\
+0.05 & 0.05 & 0.0808 & [-0.014, 0.121]\\
+0.10 & 0.00 & 0.1019 & [0.006, 0.100]\\
+0.10 & 0.02 & 0.1019 & [0.001, 0.106]\\
+0.10 & 0.05 & 0.1019 & [-0.020, 0.127]\\
+\bottomrule\end{tabular*}\end{center}
+Every row has the \emph{same} assumed mean effect, yet bands differ and can cross
+zero. These are known-variance planning approximations, not real intervals,
+power guarantees or fitted confidence. Three roots cannot reliably estimate a
+root-effect distribution; actual root-aware inference and small-sample critical
+values must be specified before confirmation. No measured variance is available.
+
+\lead{What scientists should collect before calibrating a forecast}
+\begin{enumerate}\setlength{\itemsep}{2pt}
+\item Qualify structural roots, scorer/owner truth and baselines first. Freeze
+  predicted-success labels separately from propensities and channel eligibility.
+\item In a bounded real development pilot, preserve root/stream/task identity,
+  before-selection state, predictions, choice probabilities, diverse legal J,
+  actual action, independent $Q_p/Y$, complete costs, timestamps and UNKNOWN.
+  Each arm has its own realized history.
+\item Estimate means \emph{and} joint stream covariance, quality--cost dependence,
+  paired differences, autocorrelation, missingness and cross-root heterogeneity.
+  A fixed all-accept source cannot identify judgment-content information.
+\item Fit prospective distributions using development data only. Validate on
+  future held-out streams/roots: bias, 80\%/95\% interval coverage and width,
+  calibration and negative/failed cases. Insufficient coverage means the forecast
+  lacks confidence even if its mean happens to match.
+\item Freeze confirmation estimands, roots, budgets and stopping rules after the
+  forecast is calibrated. Do not manufacture narrow errors or lower the Goal
+  to make a negative result agree with a guide.
+\end{enumerate}
+Until those observations exist, method means, rankings and error distributions
+remain unestimated. The equations and count laws have checked conditional
+validity; they do not certify that the assumed world describes the benchmark.
+This guide changes neither the method nor the acceptance standards, and uses
+zero new API calls or GPU jobs. All v1 artifacts remain archived.
+\end{document}

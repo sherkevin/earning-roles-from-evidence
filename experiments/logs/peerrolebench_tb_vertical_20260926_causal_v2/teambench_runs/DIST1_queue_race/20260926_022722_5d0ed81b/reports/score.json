@@ -1,0 +1,10 @@
+{
+  "pass": true,
+  "secondary": {
+    "partial_score": 1.0000,
+    "checks_passed": 12,
+    "total_checks": 12
+  },
+  "failure_modes": [],
+  "checklist": [{"id":"C1","ok":true,"note":"Syntax valid: queue.py, priority.py, consumer.py parse cleanly"},{"id":"C2","ok":true,"note":"Single-thread tests still pass (no regression)"},{"id":"C3","ok":true,"note":"Bug 1 fixed: put() lock covers both capacity check and append"},{"id":"C4","ok":true,"note":"test_capacity.py passes: capacity never exceeded under concurrent puts"},{"id":"C5","ok":true,"note":"Bug 2 fixed: acknowledgment pattern (in_flight + ack method) present"},{"id":"C6","ok":true,"note":"get() returns (message, receipt) tuple"},{"id":"C7","ok":true,"note":"test_crash_recovery.py passes: unacked message re-queued on nack"},{"id":"C8","ok":true,"note":"Bug 3 fixed: priority comparator uses type-safe tie-breaker"},{"id":"C9","ok":true,"note":"No TypeError from equal-priority messages with dict payloads"},{"id":"C10","ok":true,"note":"test_ordering.py passes: priority ordering maintained"},{"id":"C11","ok":true,"note":"test_message_loss.py passes: zero message loss confirmed"},{"id":"C12","ok":true,"note":"test_concurrent.py passes: 10K messages across 20 threads"}]
+}

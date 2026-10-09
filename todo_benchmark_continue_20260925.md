@@ -99,3 +99,77 @@
 - [done] 2026-10-07 论文 claim 与 distinctness 同步：收紧 held-out/root-split/candidate benchmark 三处措辞；隔离编译正文8页、References第9页，0API/0GPU。→ [构建与Goal对照](docs/coordination/task_reports/20261007_paper_claim_distinctness_sync.md)。
 - [done] 2026-10-07 论文主版同步：上一层 `artifacts/aamas2027/main.pdf` 逐字节同步到已核验的 `microtype_20261007_v55`，正文8页、总9页；版本目录保持不可覆盖，provenance 与维护规则已记录。→ [主版汇报](docs/coordination/task_reports/20261007_main_pdf_master_sync.md)。
 - [done] 2026-10-07 PIPE1 route receipt 零调用资格：v1 占位 registry digest 失败已保留，v2 19 个突变测试通过；明确 source→artifact→Executor→Verifier、allocation、provider/TZ、成本和 selected-only 合同。→ [资格汇报](docs/coordination/task_reports/20261007_pipe1_route_receipt_qualification.md)。
+
+[doing] 2026-10-08 核实 balance_v2 最终日志及全部输入，合并主版；修正旧审计误读，不新增模型调用。继而补齐四格消融的可解释数学对照。
+
+[done] 2026-10-08 balance v2 源与父目录主版同步；最终引用检查通过；报告纠正旧日志误判。正文8页，但下部留白与科学门未完成。
+
+[doing] 2026-10-08 补齐已有四格消融的数学差值、实例与空结果表；目标：可解释训练增益，不新增算法/实验主张，编译后合并PDF。
+
+[done] 2026-10-08 四格消融数学解释与空结果表已并入正文/PDF/中文稿；正文8页、30条引用解析，末页密度与科学证据仍未完成。
+
+[done] 2026-10-08 复核唯一父目录主版 main.pdf 与版本/源输入一致，README 顶部固定主版入口；沿用 ADR 0050，每轮验收后同步主版、保留历史。→ 产出：docs/coordination/task_reports/20261008_information_update_contrasts.md。
+
+[doing] 2026-10-08 落实 ADR0049：隔离旧 target-J/terminal 更新为显式诊断，检查真实 C1 旁路；补齐现有成本汇总对 producer API 的计量。验收：默认零更新、诊断幂等/恢复不退化、费用无遗漏或重复计数；本轮零新 API/GPU，不冻结收益权重。
+
+[done] 2026-10-08 ADR0049 旧标签更新默认隔离、C1 显式诊断、producer API 费用计量已修复；v1 快照别名失败留存，v2 定向35项通过。未实现完整合法 reward，不打开科学门。→ docs/coordination/task_reports/20261008_reward_boundary_and_generation_cost.md。
+
+[done] 2026-10-08 本轮修复/报告/v1失败及v2通过日志已本地提交 bc887ef；fetch 与 push 均被远程 SSH 连接关闭，尚未推送。原始 pytest 输出的尾随空格按证据原样保留，排除原始 console 后提交检查通过。
+
+[doing] 2026-10-08 候选 signed full-ridge 数值基线：推导完整矩阵递推，对照 batch ridge 独立解验证相关特征与负收益。目标补强 comparator，非方法创新/合法奖励接口；不替换 ACTIVE 矩阵，零新增实验API/GPU。
+
+[done] 2026-10-08 signed full-ridge 数值核心：18测试/258前缀与batch一致；v1常规通过却反例失败已保留。只补强候选对照，不宣称合法live更新；下一步接同一selected-only signed目标。→ docs/coordination/task_reports/20261008_signed_ridge_comparator.md。
+
+[done] 2026-10-08 signed ridge 数值核心/数学说明/来源/失败与通过回执已本地提交782522d6；核心与测试仍匹配v2封存源码，未来checker仅修正scope字段。远程上轮SSH失败，尚未声称同步。
+
+[done] 2026-10-08 用户重申主版维护要求：保留父目录唯一 main.pdf，补齐源文件合并和主版同步完成条件；10个源输入和PDF摘要一致，正文8页。无重编译/API/GPU，不改变科学门。→ docs/coordination/task_reports/20261008_main_pdf_maintenance_confirmation.md。
+
+[doing] 2026-10-08 上轮主版维护为已完成进展；回到方法泛化缺口：证明身份/可加线性特征不能表达任务交叉偏好，复用经典disjoint ridge与本地冻结encoder做最小候选对照。目的：给same-information baseline真实任务条件，度量：交叉偏好、菜单不变性、selected-only无旁写及可重复向量；仅数学/离线表示控制，不改ACTIVE方法，不发新API/GPU。
+
+[done] 2026-10-08 任务条件对照已实现并验证经典block ridge等价、交叉偏好和版本/菜单隔离；v1 MiniLM截断失败留存，v2缓存BGE覆盖467token合同。22项检查通过，实际CPU表示未产生收益标签；完整同信息/合法u仍开放。→ docs/coordination/task_reports/20261008_task_conditioned_comparator.md。
+
+[open] 2026-10-08 下一步复用DecisionSidecar保存真实决策时的任务/接收方条件、公开经验read cut及向量/encoder版本；C1旧digest不能补写为历史向量。不再扩encoder对比，不发未授权新API。
+
+[doing] 2026-10-08 Pre-execution capture repair: reuse SelectionSeal/DecisionSidecar, preserve exact selected feature and consumed offers before task start; test immutable reload and interrupted episodes. No new task API/GPU, no reward permission, no encoder switch. Prior contextual-comparator turn classified as progress.
+
+[done] 2026-10-08 执行前输入保存修复：v1 6失败保留，v2 48项定向检查通过；source/target原始向量、证据投影与版本可恢复，仍为诊断夹具。→ docs/coordination/task_reports/20261008_preexecution_decision_capture.md。
+
+[open] 2026-10-08 下一步将任务条件表示与同一公开经验投影接入已可封存的决策链，再接合法后续收益；不扩模型比较，不把保存完整性当学习效果。
+
+[done] 2026-10-08 本轮代码、测试、失败/通过日志、紧凑capture与报告已本地提交 ccdd0f63；源码仍匹配v2封存，主版PDF未改，未声称远程同步。
+
+[doing] 2026-10-08 上轮为进展；本轮只实现新决策的公开任务/接收方上下文编码与既有sidecar接线候选。复用冻结本地BGE和现有选择/保存接口，分别编码任务与接收方公开合同再按固定规则拼接；超长拒绝，不静默截断。保存全文/声明版本/向量/read cut，不把旧历史hash补成语义，不生成合法reward，不改ACTIVE。验收：完整token覆盖、真实本地向量能经选择封存/恢复、未来或不公开字段拒绝、0API/GPU。
+
+[done] 2026-10-08 新决策公开合同表示接线完成：54软件检查通过；真实缓存BGE CPU编码463/66token，768维原样封存/恢复。接收方代码仅摘要、历史经验尚无，0更新/API/GPU；补任务–接收方可加XOR反例，不冻结方法。→ docs/coordination/task_reports/20261008_public_context_representation.md。验收的公开性依赖caller公开字段来源，不是自然语言黑名单可证明。
+
+[done] 2026-10-08 本轮候选输入组件、检查脚本、源码/真实CPU向量/选择绑定、数学反例与报告已本地提交 276ae7b7；共享台账保留未提交改动，尚未声称远程同步。科学gate关闭，主稿PDF未改。
+
+[doing] 2026-10-08 真实四格职责分离诊断：按已有常规自主执行授权另立最多4次/零重试/错误即停卡；原31次累计不清零。先封存执行器与输入，再逐次复核理由；不做动作、训练或GPU。→ docs/coordination/task_reports/20261008_scoped_judgment_execution.md
+
+[doing] 2026-10-08 真实诊断第二格误判已停止（2次请求），不补跑。下步零API验证公开执行轨迹：同一合法输入、两份已封存producer、最多2次sandbox RPC；不返回私有gold，不改原结果。→ docs/research/candidates/public_execution_trace_repair_v0.1_20261008.md
+
+[done] 2026-10-08 真实判断诊断已收口：2调用/3945输入+565输出token，case0通过，case1错误接受，后两格不补跑；累计33尝试/70任务request_start。错误是datetime运行语义推断，不是已观察到的职责混淆。2次公开执行轨迹为修复提供事实，未验证模型改判。→ docs/coordination/task_reports/20261008_scoped_judgment_execution.md
+
+[open] 2026-10-08 下一科学步骤：冻结公开执行轨迹的新信息条件、trace-only/trace+J对照与成本/时序；不能复用旧失败为新条件，不能给ours独占额外证据。保持未见root/真实未来收益/在线训练标准不变；本轮不再调用API。
+
+[done] 2026-10-08 Local checkpoint 1fe5da16: frozen real2-call failure, public2-RPC feasibility, code/cards/raw logs/report committed. Remote fetch failed (SSH connection closed); no remote synchronization claimed. Shared append-only ledgers remain locally updated alongside existing collaborators' uncommitted work; no unrelated PDF/source edits staged. Scientific gate remains false.
+
+[doing] 2026-10-08 上轮主版复核没有科学新证据；本轮接入真实producer与持续ActorExperience，修复输出大于历史容量的事前检查。独立审查后先限定2次fresh source/Qp筛查（seed0/1，target2事前冻结不运行），向量同则停止，不花J/action更新预算。旧33次/70task请求继续计，Goal不变。→ configs/aamas2027/n03_fresh_support_screen_v1_20261008.json
+
+[done] 2026-10-08 两次fresh source真实生成完成，均P1/P2/P3 PASS，按卡停止；2504in/511out，累计35次/72task请求。各自个人历史已保存但未在未来消费；没有J/A/Y、训练或GPU。固定native坏/手工修好差异不能当自然peer差异。→ docs/coordination/task_reports/20261008_fresh_producer_support_screen.md
+
+[open] 2026-10-08 下一步先做第二root原生协作依赖/强控制的价值审查，复用已下载PIPE1及relay候选；不扩充当前时间戳诊断，不将Qp替代团队收益。共同target科学比较须先有完整recipient公开视图、独立Y和同信息比较卡，正式root/method重要调整仍共同确认。
+
+[done] 2026-10-08 PIPE1零调用隔离审计：复现Executor可读reports/expected及task brief，确认shell无命令白名单；确认run_all漏传task_dir导致generated spec/brief未进入TaskOrchestrator读取位置。未调用API/GPU，未修改历史结果；直接路由实验阻止，修复卡记录最小安全runner边界。→ docs/coordination/task_reports/20261008_pipe1_isolation_audit.md
+
+[open] 2026-10-08 PIPE1若继续，先做独立进程/sandbox工具隔离与材料接线的零调用mutation matrix，再做同target no_message/full_spec_relay/generated_planner最小筛查；不能用原生最终grade代替pre-Verifier评分，也不能把no_message冒充强selector baseline。
+
+[done] 2026-10-08 路线重审：PIPE3暂停同类时间戳判断；PIPE1因原生隔离/材料接线阻塞；PIPE2 derived 暂列最值得做零调用 source→future lineage 与 same-information parity 资格化的候选。没有升级active benchmark、没有API/GPU。→ docs/research/candidates/benchmark_route_reassessment_20261008.md
+
+[done] 2026-10-08 本轮代码、两次真实生成/评分原始证据、独立审查与报告已本地提交 dc8d9a33。27项软件检查通过，source pins与主版PDF源保持一致；未声称远程同步，上一轮SSH连接问题尚无新证据改变。共享台账已更新且未整批提交他人改动。
+
+- [done] 2026-10-08 PIPE2 observation bridge compatibility audit：确认真实 handoff 为 `artifact/extracted_rows.json` opaque data，现有 source-file bridge 前提不成立；runtime 回执缺 J/A/Y 与 recipient pre/post diff，拒绝直接接线。保留 v1 synthetic fixture 为失败记录；见 `task_reports/20261008_pipe2_observation_bridge_compatibility.md`。
+- [open] 为 PIPE2 设计并零调用资格化 typed handoff descriptor：artifact path/schema/hash 与 producer source provenance 分离，补 recipient pre/post action descriptor 和显式 J/A/Y；同时保持 observation/credit 分离与强同信息 parity。通过前不调用真实 judgment/API/GPU。
+- [done] 2026-10-08 PIPE2 typed handoff descriptor zero-call qualification：8项通过，artifact/source provenance、path/schema/hash、recipient manifest、J/A/Y identity与read-cut分开，policy/credit默认关闭；未接runtime或真实API。→ `task_reports/20261008_pipe2_handoff_descriptor_qualification.md`
+- [open] 将 descriptor 接入 PIPE2 实际 producer→artifact→recipient runner：先记录 recipient pre/post 与显式 J/A/Y，再做 observation bridge 的三种 J/A mutation；不得用 output/adoption 补字段。
+- [done] 2026-10-08 descriptor v2 replay：真实 PIPE2 seed-0 payload visibility 与 artifact hash 合同纳入检查，9项通过，v1失败/旧回执不改写；仍不产生J/A/Y或科学结果。→ `task_reports/20261008_pipe2_handoff_descriptor_qualification.md`

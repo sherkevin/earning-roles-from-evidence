@@ -1,0 +1,132 @@
+% Body-facing result-table skeleton v6. One-page review sheet, not a full paper.
+% Historical planning version: artifacts/aamas2027/experiment_matrices_20261008_v3/.
+% Every empirical cell is intentionally blank until its confirmation card is executed.
+\documentclass[sigconf,anonymous]{aamas}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{makecell}
+\usepackage{url}
+\input{aamas_metadata}
+
+\vfuzz=1.5pt
+\acmSubmissionID{INTERNAL PRE-RESULTS -- NOT FOR SUBMISSION}
+\submissionType{Research Paper Track}
+
+\title[Body-Facing Experiment Tables]{Body-Facing Experiment Tables}
+\author{Anonymous Authors}
+\affiliation{\institution{Internal research draft}}
+\email{omitted}
+\ccsdesc[500]{Computing methodologies~Multi-agent systems}
+\ccsdesc[300]{Computing methodologies~Cooperation and coordination}
+\keywords{multi-agent systems, role formation, peer judgment, online adaptation, experiments}
+
+\newcommand{\blank}{\textemdash}
+\newcommand{\rare}{\textsc{rare}}
+\newcommand{\unknown}{\textsc{unknown}}
+\newcommand{\metric}[1]{\makecell[c]{#1}}
+\newcommand{\dashrow}{\blank & \blank & \blank & \blank & \blank & \blank}
+
+\begin{abstract}
+This review copy fixes the compact, body-facing result-table layout. It keeps
+method rows and primary endpoints visible while moving roots, seeds, budgets,
+scorers, and execution metadata to the experiment manifest. Dashes reserve
+empirical cells; they are not zeros or predicted values.
+\end{abstract}
+
+\begin{document}
+\onecolumn
+\noindent\textbf{Experiment results: layout preview}\hfill\textit{No empirical values entered}
+
+\smallskip
+\noindent\small The three grids are candidates for the body results section.
+\rare{} is the candidate method; Ctx. trust denotes contextual-trust-linear.
+$U$ is future quality--complete-cost utility; $\Delta A$ is assignment-change
+rate. A dash is unfilled; planned entries use stream-level 95\% intervals.
+
+\begin{table}[!ht]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{@{}l*{6}{>{\centering\arraybackslash}p{0.10\textwidth}}@{}}
+\toprule
+Method & \multicolumn{2}{c}{ArtifactRole: prediction} & \multicolumn{3}{c}{ArtifactRole: allocation} & Streams\\
+\cmidrule(lr){2-3}\cmidrule(lr){4-6}
+ & Brier $\downarrow$ & Calib. $\downarrow$ & $U\uparrow$ & $\Delta A\uparrow$ & Cost $\downarrow$ & $n$\\
+\midrule
+Uniform & \blank & \blank & \blank & \blank & \blank & \blank\\
+No update & \blank & \blank & \blank & \blank & \blank & \blank\\
+Raw acceptance & \blank & \blank & \blank & \blank & \blank & \blank\\
+Terminal only & \blank & \blank & \blank & \blank & \blank & \blank\\
+Ctx.-trust linear & \blank & \blank & \blank & \blank & \blank & \blank\\
+Pooled controller & \blank & \blank & \blank & \blank & \blank & \blank\\
+Meta-Team L2-public$^{\dagger}$ & \dashrow\\
+\midrule
+\rare{} & \blank & \blank & \blank & \blank & \blank & \blank\\
+\bottomrule
+\end{tabular}
+\caption{ArtifactRole prediction and future allocation (RQ1--RQ2; H1--H2). $^{\dagger}$The published adapter is not yet qualified; its cells remain unfilled.}
+\label{tab:body-main-results}
+\end{table}
+
+\begin{table}[!ht]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{@{}l*{7}{>{\centering\arraybackslash}p{0.09\textwidth}}@{}}
+\toprule
+Method & \multicolumn{3}{c}{PeerSelect: service} & \multicolumn{3}{c}{PeerSelect: adaptation} & Streams\\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
+ & \metric{Update p95\\(ms) $\downarrow$} & Backlog $\downarrow$ & \metric{State\\(KiB) $\downarrow$} & Payoff $\uparrow$ & Forget $\downarrow$ & \metric{Recovery\\(steps) $\downarrow$} & $n$\\
+\midrule
+Local uniform & \dashrow & \blank\\
+No history & \dashrow & \blank\\
+History only & \dashrow & \blank\\
+Graph-IPD reference & \dashrow & \blank\\
+\midrule
+\rare{} & \dashrow & \blank\\
+\bottomrule
+\end{tabular}
+\caption{Online service and drift adaptation on PeerSelect (RQ3--RQ4; H3). Rows share the same local menu, feedback delay, arrival rate, and resource budget.}
+\label{tab:body-service}
+\end{table}
+
+\begin{table}[!ht]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.10}
+\begin{tabular}{@{}l*{4}{>{\centering\arraybackslash}p{0.135\textwidth}}@{}}
+\toprule
+\multicolumn{5}{l}{\textbf{(a) Mechanism ablations}}\\
+Variant & $U\uparrow$ & $\Delta A\uparrow$ & \metric{False attrib.\\$\downarrow$} & Cost $\downarrow$\\
+\midrule
+Full \rare{} & \blank & \blank & \blank & \blank\\
+No public evidence & \blank & \blank & \blank & \blank\\
+No delayed credit & \blank & \blank & \blank & \blank\\
+Neither evidence nor credit & \blank & \blank & \blank & \blank\\
+No ownership gate & \blank & \blank & \blank & \blank\\
+No locality & \blank & \blank & \blank & \blank\\
+No selected-only rule & \blank & \blank & \blank & \blank\\
+No correction / replay & \blank & \blank & \blank & \blank\\
+\midrule
+\multicolumn{5}{l}{\textbf{(b) Responsibility stress: false producer-attribution rate $\downarrow$}}\\
+Variant & \metric{Recipient\\owned} & \metric{Mixed\\ownership} & Unobserved & \metric{Resource\\failure}\\
+\midrule
+Full \rare{} & \blank & \blank & \blank & \blank\\
+No ownership gate & \blank & \blank & \blank & \blank\\
+\bottomrule
+\end{tabular}
+\caption{Mechanism ablations and responsibility stress on ArtifactRole (RQ2, RQ4; H4). Each contrast uses paired task streams and independent outcomes.}
+\label{tab:body-safety-ablation}
+\end{table}
+
+\noindent\footnotesize\textit{Scope.} ArtifactRole and PeerSelect are complementary
+tracks, not two interchangeable benchmarks. Independent-root and drift breakdowns,
+secondary metrics, denominator rules, and full execution cards remain in the
+experiment manifest. Benchmark qualification and baseline qualification remain
+open; this preview changes presentation only.
+
+\end{document}

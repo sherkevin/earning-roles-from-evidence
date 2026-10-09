@@ -1,0 +1,636 @@
+{
+  "runner_version": "pipe2-chain-qualification-v1",
+  "chain_version": "pipe2-responsibility-chain-v1",
+  "task_id": "PIPE2_data_pipeline",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "variants": [
+    "eligible",
+    "repair",
+    "mixed"
+  ],
+  "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+  "material_adapter": "peerrolebench_pipe2_derived_material_adapter",
+  "source_sha256": {
+    "scripts/peerrolebench_pipe2_chain_composition.py": "c6dc15150cef2cb07bfe1e29c5dfd461beeb1024d2c3d583aacf9c517b7b18a9",
+    "scripts/peerrolebench_pipe2_chain_qualification.py": "f042a178082971936dc7c9c8c9f0e6b9cf9b87cecea169b2a10dd89cb424e268",
+    "scripts/peerrolebench_pipe2_derived_material_adapter.py": "3dd1b31d83d7ffb5f46ebb469d74fcd0a2eb759254c8eb3f8495caada07f2390",
+    "scripts/peerrolebench_pipe2_responsibility_label.py": "48b37de3b26f7109eca3b1330f1c665844cec96e3456b894fb1126a67b227d1f",
+    "references/aamas/peer_role_protocol_20260925.py": "c9c3082f5edc45c69ad190eaa9ab9282656c93cd1d512df170f90e8bf7b98b86"
+  },
+  "fixture_mode": "authored-chain-controls-only",
+  "argv": [
+    "scripts/peerrolebench_pipe2_chain_qualification.py",
+    "--output",
+    "experiments/logs/n03_pipe2_chain_qualification_20261003_v3",
+    "--seeds",
+    "0",
+    "1",
+    "2",
+    "3",
+    "4"
+  ],
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "git_commit": "c51d640f590aa1b0f195a4d3098635115c4efa1d",
+  "candidate_code_executed": false,
+  "llm_calls": 0,
+  "gpu_jobs": 0,
+  "native_grader_invoked": false,
+  "benchmark_qualified": false,
+  "scientific_claim_allowed": false,
+  "started_at_utc": "2026-10-02T18:27:46.561365+00:00",
+  "status": "FAILED_OFFLINE",
+  "control_count": 15,
+  "passed_count": 5,
+  "failed_count": 10,
+  "cases": [
+    {
+      "seed": 0,
+      "variant": "eligible",
+      "expected": {
+        "feedback_status": "ELIGIBLE",
+        "evidence_recorded": true,
+        "assignment_recorded": true,
+        "next_selection_recorded": true,
+        "event_count": 11,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome",
+          "role_evidence_update",
+          "later_assignment",
+          "selection",
+          "task_start"
+        ]
+      },
+      "observed": {
+        "feedback_status": "ELIGIBLE",
+        "evidence_recorded": true,
+        "assignment_recorded": true,
+        "next_selection_recorded": true,
+        "event_count": 11,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome",
+          "role_evidence_update",
+          "later_assignment",
+          "peer_selection",
+          "task_start"
+        ]
+      },
+      "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+      "ledger_event_digest": "e4665d3abbb9166db412214d48e28e2ee6742f0c8c5f7543b6918f3efb59660b",
+      "passed": false
+    },
+    {
+      "seed": 0,
+      "variant": "repair",
+      "expected": {
+        "feedback_status": "PENDING_ATTRIBUTION",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "observed": {
+        "feedback_status": "PENDING_ATTRIBUTION",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+      "ledger_event_digest": "a527062f69b4ddde62c5597502cd6519e4f4b2204b7fef182901ff7320532a95",
+      "passed": true
+    },
+    {
+      "seed": 0,
+      "variant": "mixed",
+      "expected": {
+        "feedback_status": "UNKNOWN",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7
+      },
+      "observed": {
+        "feedback_status": "UNKNOWN",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+      "ledger_event_digest": "a3c1d1a24d6903a4305df278a3b4fb81ddb8e7f5e1ce5b95e9fc4a15fa83a75b",
+      "passed": false
+    },
+    {
+      "seed": 1,
+      "variant": "eligible",
+      "expected": {
+        "feedback_status": "ELIGIBLE",
+        "evidence_recorded": true,
+        "assignment_recorded": true,
+        "next_selection_recorded": true,
+        "event_count": 11,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome",
+          "role_evidence_update",
+          "later_assignment",
+          "selection",
+          "task_start"
+        ]
+      },
+      "observed": {
+        "feedback_status": "ELIGIBLE",
+        "evidence_recorded": true,
+        "assignment_recorded": true,
+        "next_selection_recorded": true,
+        "event_count": 11,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome",
+          "role_evidence_update",
+          "later_assignment",
+          "peer_selection",
+          "task_start"
+        ]
+      },
+      "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+      "ledger_event_digest": "7ade642dec6afb4aba70a6cf8583c59573fe17d76424f9dae8eea5d5f5d8762f",
+      "passed": false
+    },
+    {
+      "seed": 1,
+      "variant": "repair",
+      "expected": {
+        "feedback_status": "PENDING_ATTRIBUTION",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "observed": {
+        "feedback_status": "PENDING_ATTRIBUTION",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+      "ledger_event_digest": "6956962741401c16cbd7e0b01fb24ed82ec04bfe32631a969072bb08a06c3654",
+      "passed": true
+    },
+    {
+      "seed": 1,
+      "variant": "mixed",
+      "expected": {
+        "feedback_status": "UNKNOWN",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7
+      },
+      "observed": {
+        "feedback_status": "UNKNOWN",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+      "ledger_event_digest": "7d57d4597be039db001477527da065a526ad0f33d6d5c2ba0cedc3df010a10ef",
+      "passed": false
+    },
+    {
+      "seed": 2,
+      "variant": "eligible",
+      "expected": {
+        "feedback_status": "ELIGIBLE",
+        "evidence_recorded": true,
+        "assignment_recorded": true,
+        "next_selection_recorded": true,
+        "event_count": 11,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome",
+          "role_evidence_update",
+          "later_assignment",
+          "selection",
+          "task_start"
+        ]
+      },
+      "observed": {
+        "feedback_status": "ELIGIBLE",
+        "evidence_recorded": true,
+        "assignment_recorded": true,
+        "next_selection_recorded": true,
+        "event_count": 11,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome",
+          "role_evidence_update",
+          "later_assignment",
+          "peer_selection",
+          "task_start"
+        ]
+      },
+      "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+      "ledger_event_digest": "46bbe712cecf9cee8dec1cc71ccabad00c447df2ff0aa66bc38de4baf32e478c",
+      "passed": false
+    },
+    {
+      "seed": 2,
+      "variant": "repair",
+      "expected": {
+        "feedback_status": "PENDING_ATTRIBUTION",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "observed": {
+        "feedback_status": "PENDING_ATTRIBUTION",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+      "ledger_event_digest": "01329cefc59f7b8dedd2d2b002b8f8c2d1e74dd67edbe0beb7052028d8b5d336",
+      "passed": true
+    },
+    {
+      "seed": 2,
+      "variant": "mixed",
+      "expected": {
+        "feedback_status": "UNKNOWN",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7
+      },
+      "observed": {
+        "feedback_status": "UNKNOWN",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+      "ledger_event_digest": "b32a6c2b8f1852e731df506fd6c22351fc3705dc480ec988bf8c7bbc6af48f32",
+      "passed": false
+    },
+    {
+      "seed": 3,
+      "variant": "eligible",
+      "expected": {
+        "feedback_status": "ELIGIBLE",
+        "evidence_recorded": true,
+        "assignment_recorded": true,
+        "next_selection_recorded": true,
+        "event_count": 11,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome",
+          "role_evidence_update",
+          "later_assignment",
+          "selection",
+          "task_start"
+        ]
+      },
+      "observed": {
+        "feedback_status": "ELIGIBLE",
+        "evidence_recorded": true,
+        "assignment_recorded": true,
+        "next_selection_recorded": true,
+        "event_count": 11,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome",
+          "role_evidence_update",
+          "later_assignment",
+          "peer_selection",
+          "task_start"
+        ]
+      },
+      "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+      "ledger_event_digest": "1153867e6ffd6c30929c89a3d2e8071bb95ea525334a42d0b2e126c9134b7295",
+      "passed": false
+    },
+    {
+      "seed": 3,
+      "variant": "repair",
+      "expected": {
+        "feedback_status": "PENDING_ATTRIBUTION",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "observed": {
+        "feedback_status": "PENDING_ATTRIBUTION",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+      "ledger_event_digest": "05e4bf2a310247566037863458c4cb5763a234e50fcbd614c2257b27f8e0ab33",
+      "passed": true
+    },
+    {
+      "seed": 3,
+      "variant": "mixed",
+      "expected": {
+        "feedback_status": "UNKNOWN",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7
+      },
+      "observed": {
+        "feedback_status": "UNKNOWN",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+      "ledger_event_digest": "fb31ec681b087229489e9d0aa0f1e7c82aec40903f4e62b1fbb06fd02e747aa3",
+      "passed": false
+    },
+    {
+      "seed": 4,
+      "variant": "eligible",
+      "expected": {
+        "feedback_status": "ELIGIBLE",
+        "evidence_recorded": true,
+        "assignment_recorded": true,
+        "next_selection_recorded": true,
+        "event_count": 11,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome",
+          "role_evidence_update",
+          "later_assignment",
+          "selection",
+          "task_start"
+        ]
+      },
+      "observed": {
+        "feedback_status": "ELIGIBLE",
+        "evidence_recorded": true,
+        "assignment_recorded": true,
+        "next_selection_recorded": true,
+        "event_count": 11,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome",
+          "role_evidence_update",
+          "later_assignment",
+          "peer_selection",
+          "task_start"
+        ]
+      },
+      "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+      "ledger_event_digest": "126af6099835f0a9a53f9bdd863509317ba6e7128d7682001dcb44951caf9a44",
+      "passed": false
+    },
+    {
+      "seed": 4,
+      "variant": "repair",
+      "expected": {
+        "feedback_status": "PENDING_ATTRIBUTION",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "observed": {
+        "feedback_status": "PENDING_ATTRIBUTION",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+      "ledger_event_digest": "8ea0a621e93ec0316e8ce3d8001b3325c7c81d089a8c3a64fb845f0eb73745df",
+      "passed": true
+    },
+    {
+      "seed": 4,
+      "variant": "mixed",
+      "expected": {
+        "feedback_status": "UNKNOWN",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7
+      },
+      "observed": {
+        "feedback_status": "UNKNOWN",
+        "evidence_recorded": false,
+        "assignment_recorded": false,
+        "next_selection_recorded": false,
+        "event_count": 7,
+        "event_types": [
+          "peer_selection",
+          "task_start",
+          "producer_delivery",
+          "producer_score",
+          "recipient_judgment",
+          "consumer_action",
+          "terminal_outcome"
+        ]
+      },
+      "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+      "ledger_event_digest": "8013f202d6044222c86573df5d626ad60e1914ac0329cc1fcc3c2adfce09e41b",
+      "passed": false
+    }
+  ],
+  "interpretation": "Authored typed-ledger composition only.  This validates ordering, digest binding, responsibility gating and future-assignment plumbing; it supplies no model judgment, benchmark label, efficacy or training evidence.",
+  "ended_at_utc": "2026-10-02T18:28:14.637945+00:00"
+}

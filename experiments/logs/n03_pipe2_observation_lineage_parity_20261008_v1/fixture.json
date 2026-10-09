@@ -1,0 +1,274 @@
+{
+  "schema": "pipe2-observation-lineage-parity-v1",
+  "seed": 0,
+  "events": [
+    {
+      "schema": "pipe2-observation-lineage-parity-v1",
+      "event_type": "source_selection",
+      "previous_hash": "GENESIS",
+      "selection_id": "pipe2-source-selection-0",
+      "task_id": "PIPE2_data_pipeline",
+      "task_index": 0,
+      "candidate_menu": [
+        "producer-a@v1",
+        "producer-b@v1"
+      ],
+      "chosen": "producer-a@v1",
+      "propensity": 0.5,
+      "menu_digest": "9d1e9b182f5bfc32d627ab41c2898f4bbe7be9f04d041420ffa1a6050f7404d0",
+      "feature_digest": "6f3af130174b04d49b7cfdd15b30f0c536aadb40737d15356cef408f8b709f66",
+      "read_cut": 0,
+      "record_hash": "1fedb7129e8fc3b1671b6bbfde3c106ea2da943f8317e51a50f6abd3d158fce3"
+    },
+    {
+      "schema": "pipe2-observation-lineage-parity-v1",
+      "event_type": "source_delivery",
+      "previous_hash": "1fedb7129e8fc3b1671b6bbfde3c106ea2da943f8317e51a50f6abd3d158fce3",
+      "delivery_id": "pipe2-source-delivery-0",
+      "selection_id": "pipe2-source-selection-0",
+      "producer": "producer-a@v1",
+      "recipient": "recipient-0",
+      "artifact_sha256": "cb1b94d817e39cc43041cfa1ec39a7c15b31135946c6cf5a16c7f8779cbddbbd",
+      "task_index": 0,
+      "record_hash": "50df16336b4a516e776fd01f389baff1f7d79d17afd3002ebdeab2a77cab43e3"
+    },
+    {
+      "schema": "pipe2-observation-lineage-parity-v1",
+      "event_type": "source_judgment",
+      "previous_hash": "50df16336b4a516e776fd01f389baff1f7d79d17afd3002ebdeab2a77cab43e3",
+      "judgment_id": "pipe2-source-judgment-0",
+      "delivery_id": "pipe2-source-delivery-0",
+      "evaluator": "recipient-0",
+      "decision": "accept_with_rework",
+      "observed_artifact_sha256": "cb1b94d817e39cc43041cfa1ec39a7c15b31135946c6cf5a16c7f8779cbddbbd",
+      "sealed_before_action": true,
+      "record_hash": "01a4f801cfe6fa837af51936c685d51e0bcd5a799c64e6f137744bae4ab13c41"
+    },
+    {
+      "schema": "pipe2-observation-lineage-parity-v1",
+      "event_type": "source_action",
+      "previous_hash": "01a4f801cfe6fa837af51936c685d51e0bcd5a799c64e6f137744bae4ab13c41",
+      "action_id": "pipe2-source-action-0",
+      "delivery_id": "pipe2-source-delivery-0",
+      "action": "repair",
+      "used_artifact": true,
+      "recipient_changed_paths": [
+        "pipeline/transform.py"
+      ],
+      "input_artifact_sha256": "cb1b94d817e39cc43041cfa1ec39a7c15b31135946c6cf5a16c7f8779cbddbbd",
+      "output_artifact_sha256": "a6f428e4ce241c4dfa5af421cfdc8e0dcdb4e9a3cc096281a48fc63698c2c965",
+      "record_hash": "b8a410fa2d9c2cd5fad856c199efe711df5396c46379df45efe1147580b04968"
+    },
+    {
+      "schema": "pipe2-observation-lineage-parity-v1",
+      "event_type": "source_outcome",
+      "previous_hash": "b8a410fa2d9c2cd5fad856c199efe711df5396c46379df45efe1147580b04968",
+      "outcome_id": "pipe2-source-outcome-0",
+      "delivery_id": "pipe2-source-delivery-0",
+      "status": "PASS",
+      "scorer": "recipient-contract-v1",
+      "independent": true,
+      "record_hash": "68dd1540387f83993765d360fd20aa16d46138236a9af6b4eeba487acc68ff74"
+    },
+    {
+      "schema": "pipe2-observation-lineage-parity-v1",
+      "event_type": "noisy_observation",
+      "previous_hash": "68dd1540387f83993765d360fd20aa16d46138236a9af6b4eeba487acc68ff74",
+      "observation_id": "pipe2-observation-0",
+      "source_delivery_id": "pipe2-source-delivery-0",
+      "source_selection_id": "pipe2-source-selection-0",
+      "source_judgment_id": "pipe2-source-judgment-0",
+      "source_action_id": "pipe2-source-action-0",
+      "source_outcome_id": "pipe2-source-outcome-0",
+      "candidate_key": "producer-a@v1",
+      "role": "producer",
+      "judgment": "accept_with_rework",
+      "action": "repair",
+      "arrival_index": 3,
+      "read_cut": 3,
+      "artifact_sha256": "cb1b94d817e39cc43041cfa1ec39a7c15b31135946c6cf5a16c7f8779cbddbbd",
+      "observation_kind": "noisy_recipient_judgment",
+      "credit_eligible": false,
+      "record_hash": "59a009c276118ae9f4f9829da93d4ffd6f8a25212da4a96289f9706b28e6dcaf"
+    },
+    {
+      "schema": "pipe2-observation-lineage-parity-v1",
+      "event_type": "future_assignment",
+      "previous_hash": "59a009c276118ae9f4f9829da93d4ffd6f8a25212da4a96289f9706b28e6dcaf",
+      "assignment_id": "pipe2-assignment-1",
+      "task_id": "PIPE2_data_pipeline",
+      "task_index": 1,
+      "agent": "producer-a@v1",
+      "role": "producer",
+      "source_observation_id": "pipe2-observation-0",
+      "read_cut": 4,
+      "candidate_menu": [
+        "producer-a@v1",
+        "producer-b@v1"
+      ],
+      "menu_digest": "9d1e9b182f5bfc32d627ab41c2898f4bbe7be9f04d041420ffa1a6050f7404d0",
+      "feature_digest": "6f3af130174b04d49b7cfdd15b30f0c536aadb40737d15356cef408f8b709f66",
+      "arrival_digest": "ced5cfe54a81a8cd9a487045906eff01ca39d309d3ed5853662e1dab00afc463",
+      "propensity": 0.7,
+      "cost_scope": {
+        "unit": "wall_ms",
+        "scope": "selector+source_observation+target_route",
+        "complete": false
+      },
+      "policy_update_applied": false,
+      "record_hash": "52a12910812425482ffea7e6511df8f31416bff8792d0f1ead009736a69462ce"
+    },
+    {
+      "schema": "pipe2-observation-lineage-parity-v1",
+      "event_type": "target_selection",
+      "previous_hash": "52a12910812425482ffea7e6511df8f31416bff8792d0f1ead009736a69462ce",
+      "selection_id": "pipe2-target-selection-1",
+      "assignment_id": "pipe2-assignment-1",
+      "task_index": 1,
+      "candidate_menu": [
+        "producer-a@v1",
+        "producer-b@v1"
+      ],
+      "chosen": "producer-a@v1",
+      "propensity": 0.7,
+      "menu_digest": "9d1e9b182f5bfc32d627ab41c2898f4bbe7be9f04d041420ffa1a6050f7404d0",
+      "feature_digest": "6f3af130174b04d49b7cfdd15b30f0c536aadb40737d15356cef408f8b709f66",
+      "read_cut": 4,
+      "record_hash": "d2c1b7eb69025751876994a526a9b93fedc070dcaea9a65efc1974e250bedde7"
+    },
+    {
+      "schema": "pipe2-observation-lineage-parity-v1",
+      "event_type": "target_outcome",
+      "previous_hash": "d2c1b7eb69025751876994a526a9b93fedc070dcaea9a65efc1974e250bedde7",
+      "outcome_id": "pipe2-target-outcome-1",
+      "selection_id": "pipe2-target-selection-1",
+      "assignment_id": "pipe2-assignment-1",
+      "task_index": 1,
+      "delivery_id": "pipe2-target-delivery-1",
+      "artifact_sha256": "62358543475197bac1f60f4e6dbc103b4334ebaba49bab77c820ee066d657bdc",
+      "status": "PASS",
+      "scorer": "independent-target-v1",
+      "arrival_index": 8,
+      "independent": true,
+      "credit_computed": false,
+      "record_hash": "5284ce91740263a3bec36588a7442416c1570b7c800ea99db7179121c28f9864"
+    }
+  ],
+  "source_observation": {
+    "schema": "pipe2-observation-lineage-parity-v1",
+    "event_type": "noisy_observation",
+    "previous_hash": "68dd1540387f83993765d360fd20aa16d46138236a9af6b4eeba487acc68ff74",
+    "observation_id": "pipe2-observation-0",
+    "source_delivery_id": "pipe2-source-delivery-0",
+    "source_selection_id": "pipe2-source-selection-0",
+    "source_judgment_id": "pipe2-source-judgment-0",
+    "source_action_id": "pipe2-source-action-0",
+    "source_outcome_id": "pipe2-source-outcome-0",
+    "candidate_key": "producer-a@v1",
+    "role": "producer",
+    "judgment": "accept_with_rework",
+    "action": "repair",
+    "arrival_index": 3,
+    "read_cut": 3,
+    "artifact_sha256": "cb1b94d817e39cc43041cfa1ec39a7c15b31135946c6cf5a16c7f8779cbddbbd",
+    "observation_kind": "noisy_recipient_judgment",
+    "credit_eligible": false,
+    "record_hash": "59a009c276118ae9f4f9829da93d4ffd6f8a25212da4a96289f9706b28e6dcaf"
+  },
+  "public_observation": {
+    "observation_id": "pipe2-observation-0",
+    "source_delivery_id": "pipe2-source-delivery-0",
+    "source_judgment_id": "pipe2-source-judgment-0",
+    "candidate_key": "producer-a@v1",
+    "role": "producer",
+    "judgment": "accept_with_rework",
+    "action": "repair",
+    "arrival_index": 3,
+    "read_cut": 3,
+    "artifact_sha256": "cb1b94d817e39cc43041cfa1ec39a7c15b31135946c6cf5a16c7f8779cbddbbd",
+    "observation_kind": "noisy_recipient_judgment"
+  },
+  "future_assignment": {
+    "schema": "pipe2-observation-lineage-parity-v1",
+    "event_type": "future_assignment",
+    "previous_hash": "59a009c276118ae9f4f9829da93d4ffd6f8a25212da4a96289f9706b28e6dcaf",
+    "assignment_id": "pipe2-assignment-1",
+    "task_id": "PIPE2_data_pipeline",
+    "task_index": 1,
+    "agent": "producer-a@v1",
+    "role": "producer",
+    "source_observation_id": "pipe2-observation-0",
+    "read_cut": 4,
+    "candidate_menu": [
+      "producer-a@v1",
+      "producer-b@v1"
+    ],
+    "menu_digest": "9d1e9b182f5bfc32d627ab41c2898f4bbe7be9f04d041420ffa1a6050f7404d0",
+    "feature_digest": "6f3af130174b04d49b7cfdd15b30f0c536aadb40737d15356cef408f8b709f66",
+    "arrival_digest": "ced5cfe54a81a8cd9a487045906eff01ca39d309d3ed5853662e1dab00afc463",
+    "propensity": 0.7,
+    "cost_scope": {
+      "unit": "wall_ms",
+      "scope": "selector+source_observation+target_route",
+      "complete": false
+    },
+    "policy_update_applied": false,
+    "record_hash": "52a12910812425482ffea7e6511df8f31416bff8792d0f1ead009736a69462ce"
+  },
+  "target_selection": {
+    "schema": "pipe2-observation-lineage-parity-v1",
+    "event_type": "target_selection",
+    "previous_hash": "52a12910812425482ffea7e6511df8f31416bff8792d0f1ead009736a69462ce",
+    "selection_id": "pipe2-target-selection-1",
+    "assignment_id": "pipe2-assignment-1",
+    "task_index": 1,
+    "candidate_menu": [
+      "producer-a@v1",
+      "producer-b@v1"
+    ],
+    "chosen": "producer-a@v1",
+    "propensity": 0.7,
+    "menu_digest": "9d1e9b182f5bfc32d627ab41c2898f4bbe7be9f04d041420ffa1a6050f7404d0",
+    "feature_digest": "6f3af130174b04d49b7cfdd15b30f0c536aadb40737d15356cef408f8b709f66",
+    "read_cut": 4,
+    "record_hash": "d2c1b7eb69025751876994a526a9b93fedc070dcaea9a65efc1974e250bedde7"
+  },
+  "target_outcome": {
+    "schema": "pipe2-observation-lineage-parity-v1",
+    "event_type": "target_outcome",
+    "previous_hash": "d2c1b7eb69025751876994a526a9b93fedc070dcaea9a65efc1974e250bedde7",
+    "outcome_id": "pipe2-target-outcome-1",
+    "selection_id": "pipe2-target-selection-1",
+    "assignment_id": "pipe2-assignment-1",
+    "task_index": 1,
+    "delivery_id": "pipe2-target-delivery-1",
+    "artifact_sha256": "62358543475197bac1f60f4e6dbc103b4334ebaba49bab77c820ee066d657bdc",
+    "status": "PASS",
+    "scorer": "independent-target-v1",
+    "arrival_index": 8,
+    "independent": true,
+    "credit_computed": false,
+    "record_hash": "5284ce91740263a3bec36588a7442416c1570b7c800ea99db7179121c28f9864"
+  },
+  "parity_contract": {
+    "candidate_menu": [
+      "producer-a@v1",
+      "producer-b@v1"
+    ],
+    "menu_digest": "9d1e9b182f5bfc32d627ab41c2898f4bbe7be9f04d041420ffa1a6050f7404d0",
+    "feature_digest": "6f3af130174b04d49b7cfdd15b30f0c536aadb40737d15356cef408f8b709f66",
+    "arrival_digest": "ced5cfe54a81a8cd9a487045906eff01ca39d309d3ed5853662e1dab00afc463",
+    "read_cut": 4,
+    "propensity": 0.7,
+    "cost_scope": {
+      "unit": "wall_ms",
+      "scope": "selector+source_observation+target_route",
+      "complete": false
+    }
+  },
+  "credit": {
+    "observation_is_credit": false,
+    "policy_update_allowed": false,
+    "independent_target_outcome_present": true
+  }
+}

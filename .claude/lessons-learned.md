@@ -352,12 +352,19 @@
 - **避免:** 以完整 key sequence 和 row count 比较 lineage，记录 source/output digest；把 synthetic canary、drop-row、ignore-artifact 作为独立 sensitivity diagnostics，不能混入真实 handoff label。
 - **Evidence:** `scripts/peerrolebench_pipe2_runtime_qualification.py`；`experiments/logs/n03_pipe2_runtime_adoption_qualification_20261001_v8/`。
 
+
+### 0055-ai-figure-prompts-need-object-and-arrow-contracts | 2026-10-07 | earning-roles
+
+- **现象:** 图形有统一配色但仍重复出错：修正一个箭头或文字后，出现新的旁路、错标签、遗漏任务输入或未定义更新公式。
+- **根因:** “顶会风格、简洁、精致”不约束信息流；重复完整闭环增加交叉连接；模型可能自行补全数学式。栅格字形的墨迹高度也不能直接作为字体 em/pt。
+- **避免:** 从样例提取对象/操作/层级规则，拆成总览与独立接口；prompt 指定全部输入、每条边和禁止新增公式。独立逐箭头核查后在实际版心阅读；局部编辑连续失效时重构必要布局，不无界地重复同一路线。PDF 容器仅嵌图，不能据此声称矢量/字体生产通过。
+- **Evidence:** v35–v48 原图与实际提示词；`experiments/logs/figure_compact_gallery_round_20261007_v35_v36/independent_review.json`；图库设计分析任务报告。
+
 ### 0056-redaction-must-preserve-observable-obligations | 2026-10-07 | earning-roles
 - **现象:** PIPE3 actor 只看通用互通说明，私有 Qp 却考核被删除的 T 时间格式；先前分析把 FAIL 直接称为可见合同违规。
 - **根因:** 把含解法提示的原生文档整段删掉，缺少私有检查到公开行为条款的逐项对应。
 - **避免:** 分离行为要求和实现提示；新材料版本公开每个被考核义务，保留隐藏测试。旧分数不改，旧解释补充条件，不把一般 ISO 语义与特定任务合同混为一谈。
 - **Evidence:** `docs/coordination/task_reports/20261007_public_contract_and_budget_repair.md`；`scripts/peerrolebench_pipe3_public_contract_v2.py`。
-
 
 ### 0057-local-run-caps-do-not-enforce-a-cumulative-budget | 2026-10-07 | earning-roles
 - **现象:** 各卡有局部限额，历史实际31个任务episode、68次请求超过N03含N02的24次总上限。
@@ -376,3 +383,76 @@
 - **根因:** 离线审计把“计划中的完整矩阵”误当成“历史上已经产生的文件集合”，没有先读取每个 arm 的实际完成前缀。
 - **避免:** 审计输入先枚举存在的封存文件，再把缺失 target 明确记为 `request_count` 不足和不可作效果证据；失败审计保留，修正版不能补写缺失请求或把 UNKNOWN 当负例。
 - **Evidence:** `experiments/logs/n03_task_distinctness_audit_20261007_v1/failure.json`；`experiments/logs/n03_task_distinctness_audit_20261007_v2/summary.json`；`scripts/peerrolebench_task_distinctness_audit.py`。
+
+### 0060-judge-final-build-not-accumulated-console | 2026-10-08 | earning-roles
+- **现象:** 把多轮 latexmk console 的首轮引用警告误报成最终 PDF 缺陷，并用短超时推断模板不可用。
+- **根因:** 未区分首轮输出、最终 main.log 与仍在运行的进程；重复检查没有围绕产物决策。
+- **避免:** 观察同一运行句柄直至终态，以最终日志和实际 PDF 判定；超时仅记录观察期限，不宣布编译失败。晋升保存全部输入而非只保存 tex/bib 摘要。
+- **Evidence:** `docs/coordination/task_reports/20261008_main_pdf_master_current_review.md`。
+
+### 0061-lineage-is-not-reward-and-snapshots-are-values | 2026-10-08 | earning-roles
+- **现象:** 旧 delayed adapter 与 C1 路径把匹配的 target J 当训练标签；新增回滚测试还暴露快照保留内部字典引用。
+- **根因:** 把事件关联通过误等同于收益合法，把返回 dict 误等同于不可变的历史状态；只修包装器又会漏掉直接更新的 runner。
+- **避免:** 依据 ADR0049 在实际调用边界区分诊断与正式训练；查调用链而非只看类名。快照复制嵌套可变结构，反例检查修改返回值、更新失败和恢复模式。阶段费用 COMPLETE 不能充当完整 route cost。
+- **Evidence:** `docs/coordination/task_reports/20261008_reward_boundary_and_generation_cost.md`；v1 失败与 v2 复测源码/日志分别保留。
+
+### 0062-finite-inverse-state-can-still-be-wrong | 2026-10-08 | earning-roles
+- **现象:** 经典逆矩阵递推16个常规测试通过，却在极小正则、两次相反反馈下得到θ=1而非0。
+- **根因:** 大数相减将逆矩阵抵消为0，有限值检查不验证代数不变量。
+- **避免:** 用独立batch方程逐前缀检查相关/重复/零特征与极端正则；数值核心先用成熟求解器，速度收益单独测，不把理论恒等式当全浮点条件保证。
+- **Evidence:** `experiments/logs/n03_signed_ridge_20261008_v1/summary.json` 与v2；`docs/coordination/task_reports/20261008_signed_ridge_comparator.md`。
+
+### 0063-临时构建不能标为当前主版 | 2026-10-08 | earning-roles
+- **现象**：主版已更新，但 README 仍把旧 build/main.pdf 称为当前构建，历史构建目录还被用作命令示例。
+- **根因**：构建输出与被正式同步的主版身份混写，主版更新后未同步全部入口措辞。
+- **避免**：只链接父目录 main.pdf 作为当前论文；临时构建明确可滞后，示例要求新目录，每轮完成时核对源文件、版本PDF和主版摘要。
+
+### 0064-任务向量必须与候选发生交互 | 2026-10-08 | earning-roles
+- **现象**：候选one-hot只能学平均分；简单拼接任务向量，共享线性头的候选差值仍不随任务变化。
+- **根因**：把记录context字段或改变encoder名字，误当成模型已表达任务与候选的匹配。
+- **避免**：先用两个任务相反偏好的代数反例验表示；用身份/版本键固定参数块，不用菜单位置作身份。经典交互对照不冒充创新。
+
+### 0065-编码长度与数值边界要用实际文本检查 | 2026-10-08 | earning-roles
+- **现象**：467token公开合同被256上限截掉C5/C6；归一化float32向量仍略超严格单位球界。
+- **根因**：encode成功不保证合同完整进入输入，有限精度也不保证精确范数等于1。
+- **避免**：预注册文本视图、检查token覆盖并保留截断位置；向量按固定显式规则转float64并规范范数，记录原始/变换摘要。覆盖通过不等于语义有效。
+
+### 0066-内存里的输入不等于可重放的历史 | 2026-10-08 | earning-roles
+- **现象**：旧C1只存选择摘要；新增保存首轮又因tuple/list差异、测试卡版本和无证据候选失败，独立审查发现评分投影可缺失。
+- **根因**：未把序列化往返与真实执行边界放在一起检验；仅保存offer无法证明用了哪种投影。
+- **避免**：执行前保存既有typed输入，往返使用一致的JSON规范；成对核验公开offer和实际投影；用有证据固定候选检查序列化，用独立抽样检查选择策略，两者不混算实验。记录缺失不能事后回填为历史事实。
+
+### 0067-任务与接收方可加不等于情境互补 | 2026-10-08 | earning-roles
+- **现象**：候选独立权重让排序随任务变化，但分别编码再线性相加仍不能表达某些任务–接收方组合偏好。
+- **根因**：四个组合的候选分差满足对角和等于非对角和；需要相反符号的互补关系违反该恒等式。
+- **避免**：将其保留为可加对照，先验证真实数据是否包含互补再决定联合表示/交互。输入保存和token覆盖都不是能力、泛化或创新证据；恢复时从选择取独立摘要，不能只校验记录自己的hash。
+
+### 0068-显式引用合同不代表代码行为判断正确 | 2026-10-08 | earning-roles
+- **现象**：真实判断列出C2，却声称datetime.__str__产生T，错误接受含空格的交付；第二格即停止。
+- **根因**：判断靠静态语义记忆，缺实际运行依据；不能把该错误泛化成已发现的责任混淆。
+- **避免**：先封存并复现具体事实；公开执行工具与私有gold分离，所有同信息对照取得相同证据/预算。工具可运行不等于模型会使用，不等于训练有效。
+
+### 0069-逐格失败与审查者误读不能污染旧结果 | 2026-10-08 | earning-roles
+- **现象**：预审发现下一格失败会错标前格；审查者还曾漏看sink读取函数，误疑模型正确解释。预算回查又遇到未启动行null来源。
+- **根因**：共用completed索引混淆失败位置、只凭局部源码判断、假定每行有执行日志。
+- **避免**：失败格单独索引；先读完整公开调用链再判理由；未启动保持null。所有修正留痕，不伪造模型错误/成功，失败不重试。
+
+### 0070-先验证真实生成差异再购买选择信号 | 2026-10-08 | earning-roles
+- **现象**：固定native-bad/patched-good能区分，真实两次生成却均通过三项产出检查。
+- **根因**：把人工静态产物轴当成自然peer能力轴；模块可运行也曾被误认为已经进入真实caller。
+- **避免**：小额fresh source检查先行，按事前停止规则结束；不同task与actor混杂只描述组合。Qp不替代团队Y，源经历保存不代表未来已使用。
+
+### 0071-输出许可必须受持久状态预算约束 | 2026-10-08 | earning-roles
+- **现象**：stage允许64KiB响应，个人历史仅32KiB，合法回复可能在付费后无法存入。
+- **根因**：单次响应上限与两条历史、元数据和seen索引分别设计。
+- **避免**：规范JSON字节统一计量，调用前检查最大合法回复与实际保留历史的总容量，提前绑定interaction_id；不静默截断历史，保留旧版本回执。
+
+### 0072-角色提示不等于执行隔离 | 2026-10-08 | earning-roles
+- **现象**：PIPE1 原生配置的 Executor 可以读 `reports/expected.json`，shell 也没有命令白名单；动态 generator 的 spec/brief 还未写入 TaskOrchestrator 读取的目录。
+- **根因**：把 prompt 中的角色边界和 `allowed_roots` 当成安全边界，没有沿工具解析、父目录和 generator callsite 做端到端核对。
+- **避免**：真实路由前做路径逃逸、symlink、shell、空材料和 Verifier 写权限 mutation matrix；采用独立进程/sandbox，显式写入并哈希 actor 可见材料，先冻结 pre-Verifier 结果。
+
+### 0073-数据工件交接不能套用源码交接的观察桥 | 2026-10-08 | earning-roles
+- **现象**：PIPE2 recipient 只收到 `artifact/extracted_rows.json`，而现有 `FrozenObservationContract` 假定 recipient pre/post snapshot 含 producer-owned source；runtime receipt 还缺 J/A/Y 与 recipient diff。
+- **根因**：把 producer provenance、交付数据工件和 recipient 行为压成同一种 artifact，忽略了 benchmark 的可见性合同。
+- **避免**：先按实际 handoff 设计 typed descriptor，分别封存 artifact path/schema/hash、source provenance、recipient pre/post scope 和显式 J/A/Y；缺字段必须 UNKNOWN，不能用 adoption/output digest 补标签。zero-call fixture 通过不等于 bridge 与真实 root 兼容。

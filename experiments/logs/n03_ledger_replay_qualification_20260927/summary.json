@@ -1,0 +1,130 @@
+{
+  "qualification_version": "ledger-replay-v1",
+  "passed": true,
+  "cases": {
+    "valid": {
+      "timestamp_utc": "2026-09-27T06:25:28.244747+00:00",
+      "case": "valid",
+      "expected_code": null,
+      "allow_incomplete": false,
+      "event_count": 15,
+      "observed": {
+        "status": "PASS",
+        "code": null,
+        "complete": true,
+        "missing": []
+      }
+    },
+    "duplicate_event_id": {
+      "timestamp_utc": "2026-09-27T06:25:28.244861+00:00",
+      "case": "duplicate_event_id",
+      "expected_code": "duplicate_event_id",
+      "allow_incomplete": false,
+      "event_count": 16,
+      "observed": {
+        "status": "INVALID",
+        "code": "duplicate_event_id",
+        "complete": null,
+        "missing": []
+      }
+    },
+    "record_hash_mismatch": {
+      "timestamp_utc": "2026-09-27T06:25:28.244907+00:00",
+      "case": "record_hash_mismatch",
+      "expected_code": "record_hash_mismatch",
+      "allow_incomplete": false,
+      "event_count": 15,
+      "observed": {
+        "status": "INVALID",
+        "code": "record_hash_mismatch",
+        "complete": null,
+        "missing": []
+      }
+    },
+    "hash_chain_break": {
+      "timestamp_utc": "2026-09-27T06:25:28.244945+00:00",
+      "case": "hash_chain_break",
+      "expected_code": "hash_chain_break",
+      "allow_incomplete": false,
+      "event_count": 15,
+      "observed": {
+        "status": "INVALID",
+        "code": "hash_chain_break",
+        "complete": null,
+        "missing": []
+      }
+    },
+    "unknown_event_type": {
+      "timestamp_utc": "2026-09-27T06:25:28.244982+00:00",
+      "case": "unknown_event_type",
+      "expected_code": "unknown_event_type",
+      "allow_incomplete": false,
+      "event_count": 15,
+      "observed": {
+        "status": "INVALID",
+        "code": "unknown_event_type",
+        "complete": null,
+        "missing": []
+      }
+    },
+    "unsupported_retry": {
+      "timestamp_utc": "2026-09-27T06:25:28.245018+00:00",
+      "case": "unsupported_retry",
+      "expected_code": "unsupported_retry",
+      "allow_incomplete": false,
+      "event_count": 15,
+      "observed": {
+        "status": "INVALID",
+        "code": "unsupported_retry",
+        "complete": null,
+        "missing": []
+      }
+    },
+    "out_of_order": {
+      "timestamp_utc": "2026-09-27T06:25:28.245050+00:00",
+      "case": "out_of_order",
+      "expected_code": "out_of_order",
+      "allow_incomplete": false,
+      "event_count": 15,
+      "observed": {
+        "status": "INVALID",
+        "code": "out_of_order",
+        "complete": null,
+        "missing": []
+      }
+    },
+    "missing_evidence_strict": {
+      "timestamp_utc": "2026-09-27T06:25:28.245284+00:00",
+      "case": "missing_evidence_strict",
+      "expected_code": "incomplete_ledger",
+      "allow_incomplete": false,
+      "event_count": 14,
+      "observed": {
+        "status": "INVALID",
+        "code": "incomplete_ledger",
+        "complete": null,
+        "missing": []
+      }
+    },
+    "missing_evidence_allowed": {
+      "timestamp_utc": "2026-09-27T06:25:28.245509+00:00",
+      "case": "missing_evidence_allowed",
+      "expected_code": null,
+      "allow_incomplete": true,
+      "event_count": 14,
+      "observed": {
+        "status": "UNKNOWN",
+        "code": null,
+        "complete": false,
+        "missing": [
+          {
+            "stage": "role_evidence_update",
+            "delivery_id": "d1"
+          }
+        ]
+      }
+    }
+  },
+  "llm_calls": 0,
+  "scientific_claim_allowed": false
+}

@@ -4,6 +4,10 @@
 **Status:** Accepted
 **Scope:** `earning-roles` paper artifacts
 
+**Reconfirmed:** 2026-10-08. The user explicitly requires completed collaborator
+versions to be merged into the master, which lives one level above iteration
+directories. This confirmation preserves the existing decision.
+
 ## Context
 
 The paper has several historical PDF builds, because each layout and figure
@@ -20,6 +24,11 @@ Each candidate round may be compiled under a versioned child directory such as
 candidate or historical snapshot until it passes the paper-page checks. After a
 round passes, its PDF is copied to the parent `main.pdf`, and the copy operation,
 source hash, build hash, and review status are recorded in that round's receipt.
+
+Before promotion, the chosen changes must be merged into `article/aamas2027/main.tex`
+and its source dependencies. The primary maintainer performs the final merge and
+promotion; collaborators retain their own versioned drafts. A completed paper
+revision includes both source integration and master PDF synchronization.
 
 The active LaTeX build remains under `article/aamas2027/build/`; its output is
 an implementation workspace, not a second canonical paper. Historical PDFs are

@@ -1,0 +1,125 @@
+% Body-facing result-table skeleton.
+% Historical planning version: artifacts/aamas2027/experiment_matrices_20261008_v3/.
+% Every empirical cell is intentionally blank until its confirmation card is executed.
+\documentclass[sigconf,anonymous]{aamas}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{makecell}
+\usepackage{url}
+\input{aamas_metadata}
+
+\vfuzz=1.5pt
+\acmSubmissionID{INTERNAL PRE-RESULTS -- NOT FOR SUBMISSION}
+\submissionType{Research Paper Track}
+
+\title[Body-Facing Experiment Tables]{Body-Facing Experiment Tables}
+\author{Anonymous Authors}
+\affiliation{\institution{Internal research draft}}
+\email{omitted}
+\ccsdesc[500]{Computing methodologies~Multi-agent systems}
+\ccsdesc[300]{Computing methodologies~Cooperation and coordination}
+\keywords{multi-agent systems, role formation, peer judgment, online adaptation, experiments}
+
+\newcommand{\blank}{\textemdash}
+\newcommand{\rare}{\textsc{rare}}
+\newcommand{\unknown}{\textsc{unknown}}
+\newcommand{\metric}[1]{\makecell[c]{#1}}
+
+\begin{abstract}
+This review copy fixes the compact, body-facing result-table layout. It keeps
+method rows and primary endpoints visible while moving roots, seeds, budgets,
+scorers, and execution metadata to the experiment manifest. Dashes reserve
+empirical cells; they are not zeros or predicted values.
+\end{abstract}
+
+\begin{document}
+\maketitle
+
+The detailed nine-cell execution contract remains in the execution manifest.
+The body tables below show
+only the comparisons and endpoints that a reviewer needs to read the claims.
+Each numerical entry will be reported as a stream-level estimate with its
+pre-registered interval; a dash is an unfilled cell.
+
+\section{Primary results}
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{l*{6}{>{\centering\arraybackslash}p{0.10\textwidth}}}
+\toprule
+Policy & \multicolumn{2}{c}{RQ1: situated signal} & \multicolumn{2}{c}{RQ2: future assignment} & Cost & Streams\\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+ & \metric{Brier\\$\downarrow$} & \metric{Calibration\\$\downarrow$} & \metric{Quality--cost\\utility\\$\uparrow$} & \metric{Assignment\\change\\$\uparrow$} & \metric{Complete\\cost\\$\downarrow$} & \\
+\midrule
+Uniform & \blank & \blank & \blank & \blank & \blank & \blank\\
+No update & \blank & \blank & \blank & \blank & \blank & \blank\\
+Raw acceptance & \blank & \blank & \blank & \blank & \blank & \blank\\
+Terminal only & \blank & \blank & \blank & \blank & \blank & \blank\\
+Ctx.-trust linear & \blank & \blank & \blank & \blank & \blank & \blank\\
+Pooled controller & \blank & \blank & \blank & \blank & \blank & \blank\\
+\rare{} & \blank & \blank & \blank & \blank & \blank & \blank\\
+\bottomrule
+\end{tabular}
+\caption{Main matched-information comparison for situated judgment and future assignment (RQ1--RQ2). Entries are mean $\pm$ the interval fixed in the confirmation card; best values will be bold only after the complete-cost and independent-outcome checks pass.}
+\label{tab:body-main-results}
+\end{table*}
+
+\section{Online service and stability}
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{l*{6}{>{\centering\arraybackslash}p{0.10\textwidth}}}
+\toprule
+Policy & \metric{Payoff\\$\uparrow$} & \metric{Regret\\$\downarrow$} & \metric{Update p95\\ms $\downarrow$} & \metric{State\\KB $\downarrow$} & \metric{Recovery\\steps $\downarrow$} & \metric{Streams}\\
+\midrule
+Uniform & \blank & \blank & \blank & \blank & \blank & \blank\\
+No update & \blank & \blank & \blank & \blank & \blank & \blank\\
+History only & \blank & \blank & \blank & \blank & \blank & \blank\\
+Ctx.-trust linear & \blank & \blank & \blank & \blank & \blank & \blank\\
+\rare{} & \blank & \blank & \blank & \blank & \blank & \blank\\
+\bottomrule
+\end{tabular}
+\caption{PeerSelect service and drift comparison (RQ3). Arrival rate, selected-only payoff, model route, and resource budget are fixed across rows.}
+\label{tab:body-service}
+\end{table*}
+
+\section{Mechanism and responsibility checks}
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.10}
+\begin{tabular}{l*{4}{>{\centering\arraybackslash}p{0.13\textwidth}}}
+\toprule
+\multicolumn{5}{l}{\textbf{Mechanism ablations}}\\
+Variant & \metric{Future\\utility $\uparrow$} & \metric{Assignment\\change $\uparrow$} & \metric{False\\attribution $\downarrow$} & \metric{Complete\\cost $\downarrow$}\\
+\midrule
+Full \rare{} & \blank & \blank & \blank & \blank\\
+No public evidence & \blank & \blank & \blank & \blank\\
+No delayed credit & \blank & \blank & \blank & \blank\\
+No ownership gate & \blank & \blank & \blank & \blank\\
+No selected-only rule & \blank & \blank & \blank & \blank\\
+No correction / replay & \blank & \blank & \blank & \blank\\
+\midrule
+\multicolumn{5}{l}{\textbf{Responsibility and transport stress}}\\
+Scenario & \metric{False\\attribution $\downarrow$} & \metric{\unknown{}\\precision $\uparrow$} & \metric{No-op\\rate $\uparrow$} & \metric{Recovery\\steps $\downarrow$}\\
+\midrule
+Recipient-only mutation & \blank & \blank & \blank & \blank\\
+Mixed ownership mutation & \blank & \blank & \blank & \blank\\
+Delayed / out-of-order & \blank & \blank & \blank & \blank\\
+Resource failure & \blank & \blank & \blank & \blank\\
+\bottomrule
+\end{tabular}
+\caption{Mechanism and responsibility evidence (RQ4). The upper panel tests which components change future assignment; the lower panel tests whether ownership, delay, and resource failures fail closed rather than creating producer credit.}
+\label{tab:body-safety-ablation}
+\end{table*}
+
+\end{document}

@@ -1,0 +1,145 @@
+{
+  "experiment_id": "n03_canonical_manifest_validation_20261004_v1",
+  "kind": "zero_call_canonical_manifest_validator_qualification",
+  "started_at_utc": "2026-10-04T15:15:00.102020+00:00",
+  "git_commit": "5cd7d13e1baf30c2b560e81e4b8efd72c09a7fe5",
+  "python": "3.9.6",
+  "component_sha256": {
+    "scripts/peerrolebench_canonical_manifest.py": "6986d0120032f024ef98bf56a8e22154aa8f18e723da8bb3a48b758e8ee1fedf",
+    "scripts/peerrolebench_baseline_contract.py": "ca90ad16e9d8eaf11b41a9a89cb28707fa52dd40799851dcefda27a69840bf67",
+    "scripts/peerrolebench_baseline_root_contract.py": "0b6bc88ac612a75e3bfdd8cb037b55b0ec77a7768d50dd58b11f300d2ddc80d8",
+    "tests/test_peerrolebench_canonical_manifest.py": "55411c11b28268ad7b260b9aa8276cf6806f371634dec6d68f89d2ab4bd2b56a"
+  },
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "benchmark_qualified": false,
+  "status": "QUALIFIED_OFFLINE",
+  "passed": true,
+  "case_count": 15,
+  "checks": {
+    "valid_manifest": true,
+    "all_mutations_fail_closed": true
+  },
+  "records": [
+    {
+      "case": "valid",
+      "status": "PASS",
+      "runner_started": false,
+      "policy_updates": 0
+    },
+    {
+      "case": "missing_channel",
+      "status": "UNKNOWN",
+      "false_accept": false,
+      "runner_started": false,
+      "policy_updates": 0,
+      "error": "ValueError: channels must contain exactly three channel adapters"
+    },
+    {
+      "case": "arm_mutation",
+      "status": "UNKNOWN",
+      "false_accept": false,
+      "runner_started": false,
+      "policy_updates": 0,
+      "error": "ValueError: arm_specs[0].spec_digest mismatch"
+    },
+    {
+      "case": "phi_mutation",
+      "status": "UNKNOWN",
+      "false_accept": false,
+      "runner_started": false,
+      "policy_updates": 0,
+      "error": "ValueError: stream_digests.public_phi mismatch"
+    },
+    {
+      "case": "missing_closest",
+      "status": "UNKNOWN",
+      "false_accept": false,
+      "runner_started": false,
+      "policy_updates": 0,
+      "error": "ValueError: canonical manifest missing fields=['closest_published']"
+    },
+    {
+      "case": "live_with_blocked_closest",
+      "status": "UNKNOWN",
+      "false_accept": false,
+      "runner_started": false,
+      "policy_updates": 0,
+      "error": "ValueError: live/baseline_frozen status is forbidden while closest_published is blocked"
+    },
+    {
+      "case": "cell_disposition",
+      "status": "UNKNOWN",
+      "false_accept": false,
+      "runner_started": false,
+      "policy_updates": 0,
+      "error": "ValueError: cells[0] expected_disposition mismatch"
+    },
+    {
+      "case": "bad_envelope",
+      "status": "UNKNOWN",
+      "false_accept": false,
+      "runner_started": false,
+      "policy_updates": 0,
+      "error": "ValueError: canonical manifest_digest mismatch"
+    },
+    {
+      "case": "missing_root_metadata",
+      "status": "UNKNOWN",
+      "false_accept": false,
+      "runner_started": false,
+      "policy_updates": 0,
+      "error": "ValueError: root missing fields=['task_id']"
+    },
+    {
+      "case": "arm_policy_field",
+      "status": "UNKNOWN",
+      "false_accept": false,
+      "runner_started": false,
+      "policy_updates": 0,
+      "error": "ValueError: arm_specs[0].policy_factory is required"
+    },
+    {
+      "case": "bad_execution",
+      "status": "UNKNOWN",
+      "false_accept": false,
+      "runner_started": false,
+      "policy_updates": 0,
+      "error": "ValueError: execution.selected_only must be true"
+    },
+    {
+      "case": "bad_cost_digest",
+      "status": "UNKNOWN",
+      "false_accept": false,
+      "runner_started": false,
+      "policy_updates": 0,
+      "error": "ValueError: execution.cost_schema_digest does not bind contract cost_fields"
+    },
+    {
+      "case": "bad_negative_digest",
+      "status": "UNKNOWN",
+      "false_accept": false,
+      "runner_started": false,
+      "policy_updates": 0,
+      "error": "ValueError: execution.negative_cell_contract_digest mismatch"
+    },
+    {
+      "case": "bad_started_expectation",
+      "status": "UNKNOWN",
+      "false_accept": false,
+      "runner_started": false,
+      "policy_updates": 0,
+      "error": "ValueError: cells[0].expected_runner_started mismatch"
+    },
+    {
+      "case": "bad_update_expectation",
+      "status": "UNKNOWN",
+      "false_accept": false,
+      "runner_started": false,
+      "policy_updates": 0,
+      "error": "ValueError: cells[1].expected_updates mismatch"
+    }
+  ],
+  "ended_at_utc": "2026-10-04T15:15:00.116245+00:00"
+}

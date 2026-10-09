@@ -1,0 +1,60 @@
+{
+  "experiment_id": "n03_policy_sidecar_replay_qualification_20260928",
+  "passed": true,
+  "case_count": 4,
+  "updates": 1,
+  "final_policy_snapshot": {
+    "policy": "terminal_only",
+    "temperature": 1.0,
+    "updates": 1,
+    "decision_count": 1,
+    "seen_feedback": [
+      "feedback-o0",
+      "feedback-o1"
+    ],
+    "seen_source_channels": [
+      [
+        "e0",
+        "terminal_outcome"
+      ]
+    ],
+    "decisions": {
+      "e0": {
+        "context_key": "ctx",
+        "selector_id": "selector-1",
+        "candidate_keys": [
+          "peer-a@v1",
+          "peer-b@v1"
+        ],
+        "chosen_key": "peer-b@v1",
+        "base_scores": [
+          0.2,
+          0.8
+        ],
+        "probabilities": [
+          0.3,
+          0.7
+        ],
+        "propensity": 0.7,
+        "state_version": "state-0",
+        "encoder_version": "enc-0",
+        "feature_schema": "phi-0",
+        "selected_at": 1.0,
+        "captured_features": {}
+      }
+    },
+    "state": {
+      "prior": 1.0,
+      "counts": {
+        "peer-b@v1": [
+          2.0,
+          1.0
+        ]
+      }
+    }
+  },
+  "real_api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "ended_at_utc": "2026-09-27T16:40:17.852401+00:00"
+}

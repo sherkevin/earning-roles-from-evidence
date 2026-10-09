@@ -31,7 +31,7 @@ $$
 
 核心想法是：把完成交付后的接收方评价发布为绑定版本、带类型的有噪声观察，保留 accept、rework、reject 的差异。产出方可归因证据需要另经结构化责任检查；接收方正常集成工作不能直接奖惩产出方。证据发布不会悄悄触发策略更新。在后续任务开始之前，合法的责任所有者读取状态快照，选择器封存分派及其选择概率。只有在后续任务具有独立结果，并通过预先声明的责任、质量和完整成本规则之后，延迟信用更新才有资格发生。这样就把“接收方看到了什么”和“未来责任实际产生了什么”分开，并使这种分离在账本中可观察。
 
-图 1 展示了这一闭环；颜色分别表示情境化观察、公共证据和后续决策。
+图 1 对比两种责任情境，并展示合格证据怎样影响后续封存的选择。
 
 我们将该协议命名为“赢得角色”。这个名称描述的是一个可测量的过程：协作者通过经过检验的观察和可归因证据，在固定的信息和成本契约下改变未来分派，从而赢得责任机会。我们称这种证据为责任感知的角色证据（responsibility-aware role evidence，RARE）；这个名称指向闭环的证据语义，而不是某一种更新器。RARE 由“判断–归因–分派”闭环定义，而不是由某种表示、神经网络头、RLS 更新或周期性重拟合定义。要检验的科学主张是：与原始验收、仅终局结果和同信息情境信任相比，这一闭环能够识别有用的角色证据。
 
@@ -45,9 +45,9 @@ $$
 
 - 我们明确可证伪边界：如果接收方证据没有样本外信息、同信息信任基线能够解释效果、归因不安全，或在匹配的完整成本下质量收益消失，则角色形成主张不通过。
 
-**图 1：赢得角色协议。橙色表示情境化观察；绿色表示可归因于产出方的证据，而“未知”分支仅用于审计；蓝色表示已经封存的分派和评分结果。灰色虚线反馈是延迟的、仅针对已选机会的反馈，它进入未来状态和下一次读取截点，但不改变历史证据或已经封存的分派。同行关系边仅用于描述，不表示因果关系。**
+**图 1：责任混淆与赢得角色。（a）两个情境都收到 revise 评价。原始产出物绑定到 $B$ 的 $v0$ 版本；原始契约检查 $Q$ 与接收方使用轨迹共同支持可归因证据 $e$。只修改消费者路径的情境保留为归因审计。（b）公共证据在合法读取截点影响局部选择，分派先封存，再执行目标任务；通过图 2 所示的检查后，延迟、仅针对选中项的反馈进入未来状态。文件改动、被抽中的同行和状态色条均为示意。**
 
-[打开图 1](figures/overview.pdf)
+[打开图 1](../../../article/aamas2027/figures/overview.pdf)
 
 当前证据边界是有意设置的。开发阶段的追踪记录只验证协议的部分边界，并暴露了评分器和责任归属方面的失败；因此，下面的主张仍然绑定于独立冻结的实验及其证据等级。本文余下部分依次说明研究缺口，定义事件和信息契约，规定协议和匹配比较，给出研究问题、预留结果矩阵、当前证据和局限。
 
@@ -99,11 +99,11 @@ $$
 
 这个门区分了四类经常被合并的观察：产出物内容缺陷、接收方自己的集成工作、汇点或最终任务失败，以及无法解决的归因。公共记录保存观察类型与 $G_t=0$ 的原因。带类型观察本身不是原生 evidence id；通向未来原生分派的绑定桥接仍须单独验证。这样就可以测量安全性：拒绝含糊证据的方法可能具有更高的“未知”率，却产生更少的错误产出方惩罚。
 
-图 2 展示事件、公共证据和局部决策三条泳道。
+图 2 展开两个独立接口：在合法读取截点选择，以及在目标结果到达后更新。
 
-**图 2：从证据到角色状态。事件泳道记录产出方和接收方实际做了什么；公共证据泳道只投影经过类型检查和责任检查的字段；局部决策泳道在读取截点读取可用记录，然后封存分派。目标结果在封存之后到达，只更新相匹配的已选机会。表示和更新器保持可替换。**
+**图 2：候选选择器的选择与更新接口。（a）完整源记录（$O=1$）按 $\kappa$ 切成历史 $P$ 与增量 $D$。冻结的任务、历史表示与公共元数据 $b(v)$ 输入评分头 $g$；任务表示另输入各候选同行的残差评分。局部抽样结果封存为 $(j,B,p)$。（b）目标执行之后，同一分派 $j$ 与独立结果 $Y$ 通过身份、收益契约和一次性检查，才改变下一次残差状态。色条和抽中的同行是机制示意；编码器、评分头和更新器仍可替换。**
 
-[打开图 2](figures/method_state.pdf)
+[打开图 2](../../../article/aamas2027/figures/method_state.pdf)
 
 # 赢得角色：责任感知协议
 
@@ -248,11 +248,7 @@ RLS、在线逻辑回归/SGD、周期性重拟合以及任何候选增量更新�
 | RQ4-II | ArtifactRole / 所有合格结构根 | 去掉单个机制 | 删除门、公共证据、延迟、局部性或更新器 | 主要效用、安全、成本、交互效应 |  |
 
 
-图 3 将两条轨道连接到四个研究问题终点；它不合并两条轨道的标签或主张。
-
-**图 3：实验地图。ArtifactRole 测量情境化产出方–接收方现象；PeerSelect 隔离局部选择、漂移和服务成本。所有策略臂在四个研究问题评分前都获得相同的候选菜单、合法反馈计划、任务机会和完整成本预算。**
-
-[打开图 3](figures/experiment_map.pdf)
+表 4 将两条轨道连接到四个研究问题终点，同时保留各行的信号、比较条件和成本契约。
 
 **表 5：标题性终点。** 数值只由冻结的确认清单提供；区间为流级 95% 区间。
 
@@ -283,6 +279,31 @@ count-only/$J$-masked 对照保留相同的已发布交接和成本，只移除�
 
 如果观察发布隐式改变了持久化策略；如果接收方修复被计入产出方；如果分派或读取截点顺序无效；如果未知或重复事件改变状态；如果情境信任解释了完整效果；或者如果在匹配完整成本下收益消失，则撤回主要主张。无效、权衡或有条件的协议结果都是科学上有效的，但不能写成成功的角色形成。
 
+## 区分评价信息与参数更新
+
+令 $V_{eu}$ 表示四种开关条件下的未来分派期望效用：$e=1$ 允许选择器读取公开评价，$e=0$ 屏蔽；$u=1$ 允许合法的延迟更新，$u=0$ 关闭。四格使用同一预声明质量—完整成本规则。屏蔽不删除审计记录或跳过责任核验；关闭参数更新也不意味着新评价输入不能改变选择。
+
+$$
+\Delta_{\mathrm{obs}\mid\mathrm{upd}}=V_{11}-V_{01},\qquad
+\Delta_{\mathrm{upd}\mid\mathrm{obs}}=V_{11}-V_{10},\qquad
+I=V_{11}-V_{10}-V_{01}+V_{00}.
+$$
+
+第一个差值是在学习器中增加评价的作用；第二个差值是在已读取评价时增加更新的作用；$I$ 则是在既定效用尺度上偏离简单相加的交互。总差值 $V_{11}-V_{00}>0$ 可能完全来自评价信息，不能单独证明参数更新有效。这些是实验解释用的恒等式，不是性能保证或新训练算法。
+
+例如 A 评价 B 的交付后，“仅评价”条件可以在参数不变时改选 C。“完整方案”还会在后来任务完成且合法收益通过验证后更新参数。应比较此后真正执行的任务，而非只比较选择分数预览，判断更新是否带来收益。A 自己的集成工作在两种条件下都不能变成 B 的负标签。
+
+四格具有相同初始状态和外部任务安排，但保留各自的实际选择、交付和历史；不确定性以配对的独立流估计。固定历史回放仅检验输入敏感性，不能估计在线效用差。四格消融有意改变可见信息，不替代主结果的同信息强基线比较；计费规则和实测成本必须一起报告。
+
+| 公开评价 | 延迟更新 | 未来效用（流级 95% 区间） | 完整成本 |
+|---|---|---|---|
+| 屏蔽 | 关闭 | — | — |
+| 可见 | 关闭 | — | — |
+| 屏蔽 | 开启 | — | — |
+| 可见 | 开启 | — | — |
+
+破折号代表尚未运行，不是零效果；本表只预留结果位置。
+
 ## 可复现性与报告
 
 每张实验卡片在运行前固定矩阵单元、结构根、流、模型、预算、评分器、估计量和停止规则。哈希关联的账本将每个汇总值连接到原始调用和逐样本结果。失败尝试保留已观察到的成本；不完整的单元保持“待定”，不能填写为零。没有效用收益的安全改善只作为安全结果报告；没有改变未来分派的预测改善只作为信息结果报告。二者单独均不能证明角色形成。
@@ -309,9 +330,11 @@ count-only/$J$-masked 对照保留相同的已发布交接和成本，只移除�
 
 本文为自我进化的多智能体角色定义了一个精确对象：接收方的情境化判断成为带类型的有噪声观察，产出方归因另行核验，后续封存的分派接受独立质量与完整成本评价。协议使每一条箭头都可审计，并让接近的替代方案获得相同的信息和预算。当前稿件记录了方法契约、基准和基线矩阵、统计计划以及证伪边界，同时保留空的经验单元。决定性结果将是：在不牺牲归因安全、在线服务、稳定性和成本的前提下，完整闭环是否能够超越同等信息替代方案，改善未来责任分配。
 
-## 参考文献（正文引用）
+## 参考文献（中文阅读精选）
 
-以下条目对应英文主稿 `references.bib` 中的正文引用；中文阅读稿只列出正文实际引用的文献。
+以下是便于中文审阅的精选条目，不是独立的参考文献表；英文主稿 `references.bib`
+当前包含 30 条且全部被正文引用。完整元数据、来源链接和增删审计以英文稿和
+[`REFERENCE_SURVEY_20261007.md`](REFERENCE_SURVEY_20261007.md)为准。
 
 1. Leung, C.-w., Turrini, P., & Nowé, A. (2025). *Curiosity-Driven Partner Selection Accelerates Convention Emergence in Language Games*. [AAMAS 2025](https://www.ifaamas.org/Proceedings/aamas2025/pdfs/p1282.pdf).
 2. Russell, B., Leung, C.-w., & Turrini, P. (2026). *Defection at First Sight: Learning Partner Selection in Optional Social Dilemmas without Prior Information*. [AAMAS 2026](https://www.ifaamas.org/Proceedings/aamas2026/pdfs/IBSZ1473.pdf).
@@ -321,6 +344,14 @@ count-only/$J$-masked 对照保留相同的已发布交接和成本，只移除�
 6. Zhang, M., Kim, J., Xiang, S., et al. (2026). *Dynamic Role Assignment for Multi-Agent Debate*. [arXiv:2601.17152](https://arxiv.org/abs/2601.17152).
 7. Li, P., Zhang, S., Zhang, Y., et al. (2026). *MoRSE: Task-Oriented Multi-Agent System with Mixture of Role-Subtask Experts*. [arXiv:2608.09251](https://arxiv.org/abs/2608.09251).
 8. Auer, P., Cesa-Bianchi, N., & Fischer, P. (2002). *Finite-time Analysis of the Multiarmed Bandit Problem*. [Machine Learning 47](https://doi.org/10.1023/A:1013689704352).
+9. Leung, C.-w. & Turrini, P. (2024). *Learning Partner Selection Rules that Sustain Cooperation in Social Dilemmas with the Option of Opting Out*. [AAMAS 2024](https://www.ifaamas.org/Proceedings/aamas2024/pdfs/p1110.pdf).
+10. Hong, S., Zhuge, M., Chen, J., et al. (2024). *MetaGPT: Meta Programming for a Multi-Agent Collaborative Framework*. [ICLR 2024 oral](https://iclr.cc/virtual/2024/oral/19756).
+11. Chen, W., Su, Y., Zuo, J., et al. (2024). *AgentVerse: Facilitating Multi-Agent Collaboration and Exploring Emergent Behaviors*. [ICLR 2024](https://proceedings.iclr.cc/paper_files/paper/2024/hash/578e65cdee35d00c708d4c64bce32971-Abstract-Conference.html).
+12. Trivedi, H., Khot, T., Hartmann, M., et al. (2024). *AppWorld: A Controllable World of Apps and People for Benchmarking Interactive Coding Agents*. [ACL 2024](https://aclanthology.org/2024.acl-long.850/).
+13. Piatti, G., Jin, Z., Kleiman-Weiner, M., et al. (2024). *Cooperate or Collapse: Emergence of Sustainable Cooperation in a Society of LLM Agents*. [NeurIPS 2024](https://proceedings.neurips.cc/paper_files/paper/2024/hash/ca9567d8ef6b2ea2da0d7eed57b933ee-Abstract-Conference.html).
+14. Akata, E., Schulz, L., Coda-Forno, J., et al. (2025). *Playing Repeated Games with Large Language Models*. [Nature Human Behaviour](https://doi.org/10.1038/s41562-025-02172-y).
+15. Khetarpal, K., Riemer, M., Rish, I., & Precup, D. (2022). *Towards Continual Reinforcement Learning: A Review and Perspectives*. [JAIR 75](https://www.jair.org/index.php/jair/article/view/13673).
+16. Hernandez-Leal, P., Kaisers, M., Baarslag, T., & Munoz de Cote, E. (2017). *A Survey of Learning in Multiagent Environments: Dealing with Non-Stationarity*. [arXiv:1707.09183](https://arxiv.org/abs/1707.09183).
 ---
 
 ## 中文版阅读说明
@@ -328,5 +359,5 @@ count-only/$J$-masked 对照保留相同的已发布交接和成本，只移除�
 - 本文件是当前英文主稿的中文 Markdown 阅读版；英文 `main.tex` 仍是内容与科学状态的唯一权威来源。
 - 结果表中的空单元、“待定”和“未知”均按英文主稿保留，表示尚未达到确认条件，不是翻译遗漏，也不是零结果。
 - `ArtifactRole`、`PeerSelect`、`RARE`、`read cut`、`selected-only` 等术语保留原名，便于和代码、实验卡及英文稿逐一对应。
-- 图 1、图 2、图 3 沿用英文图形资产：[图 1](../../../article/aamas2027/figures/overview.pdf)、[图 2](../../../article/aamas2027/figures/method_state.pdf)、[图 3](../../../article/aamas2027/figures/experiment_map.pdf)。
-- 正文引用和参考文献条目沿用英文稿 `references.bib`；本文件末尾只列出正文实际引用的 8 条文献。
+- 正文保留两张图，沿用英文图形资产：[图 1](../../../article/aamas2027/figures/overview.pdf)、[图 2](../../../article/aamas2027/figures/method_state.pdf)。实验矩阵由表格承载；旧图 3 仍留在历史资产中。
+- 正文引用和完整参考文献条目沿用英文稿 `references.bib`；本文件末尾列出 16 条精选阅读项，不能替代英文稿的 30 条 active bibliography。

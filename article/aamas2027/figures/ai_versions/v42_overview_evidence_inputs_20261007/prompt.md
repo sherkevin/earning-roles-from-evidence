@@ -1,0 +1,7 @@
+Edit this academic Figure 1 only to clarify the two INPUTS of its eligible evidence object. Keep the canvas, files, all labels and objects, compact layout, typography, colors and every other arrow unchanged.
+
+The original queue.py(v0) with check Q is producer B's source artifact. Change its current thin gray dashed provenance connector into a continuous DARK-CHARCOAL SOLID line, ending with an arrowhead at the Eligible evidence record containing e and B:v0. This is the main original-artifact/check input. Keep its route just below the top row. Replace its long explanatory label with the SHORT label “Original + Q”.
+
+The repaired queue.py file after recipient C documents the recipient's use/action, not the producer's repaired-output quality. Its existing connector to e must become a thinner, muted-teal line labelled with the SHORT words “Use trace”. Place this label just below that short connector; no overlap. This is the SECOND required input alongside the original artifact/check. Do not remove recipient-use evidence and do not treat the repaired output's quality as B's quality. The two connectors jointly feed e; e remains explicitly bound to B:v0.
+
+The lower recipient-only case still ends at Audit only and has no producer-evidence output. The legal future path and Outcome→Next state feedback remain unchanged. No new prose, new objects, visual effects, numeric results or caption. Return one complete corrected image.

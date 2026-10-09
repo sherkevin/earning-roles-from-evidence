@@ -1,0 +1,56 @@
+{
+  "schema": "aamas-figure-round-v1",
+  "round": "figure_microtype_round_20261007_v53_v55",
+  "date": "2026-10-07",
+  "purpose": "Targeted Figure 2 paper-scale microtype correction with semantic preservation",
+  "image_generation_calls": 3,
+  "declared_maximum_calls": 4,
+  "generator": "Codex built-in imagegen",
+  "model_id": "undisclosed",
+  "seed": "not_exposed",
+  "scientific_api_calls": 0,
+  "gpu_jobs": 0,
+  "versions": [
+    {
+      "version": "v53",
+      "status": "superseded_no_observable_microtype_change",
+      "image": "article/aamas2027/figures/ai_versions/v53_method_microtype_20261007/figure2_v53.png",
+      "sha256": "7076b181ac73b1314f50e981914de9c2d9fb437a31fd01cb805f9abd01c1812f"
+    },
+    {
+      "version": "v54",
+      "status": "rejected_semantic_label_mutation",
+      "image": "article/aamas2027/figures/ai_versions/v54_method_microtype_stronger_20261007/figure2_v54.png",
+      "sha256": "d634f52606b37ffe9ffd92448898b50a70d21f8d211b32623b265dad34bb3d9a",
+      "reason": "Profile P (< kappa) was rendered as an incorrect-looking expression"
+    },
+    {
+      "version": "v55",
+      "status": "promoted_internal_candidate",
+      "image": "article/aamas2027/figures/ai_versions/v55_method_microtype_symbol_fix_20261007/figure2_v55.png",
+      "sha256": "a3cff3246d35fc9ba2c08be148cb143110b3b5e5df67f4a61ec5b65fbb295226",
+      "wrapper": "article/aamas2027/figures/ai_versions/v55_method_microtype_symbol_fix_20261007/method_state_v55.pdf",
+      "wrapper_sha256": "70b3ef829f7a272cd7f84ab748dfd18d8b851d3d1f72b38823aa6c9a53396777"
+    }
+  ],
+  "candidate": {
+    "pair": ["v51", "v55"],
+    "pdf": "artifacts/aamas2027/microtype_20261007_v55/main.pdf",
+    "sha256": "8b78fb9172eb49003cb6f74e19ae4f5ef45fe5ff53cc4afe2272d6d2775606f2",
+    "body_pages": 8,
+    "total_pages": 9,
+    "references_start_page": 9,
+    "unresolved_references": false,
+    "overfull_boxes": 0,
+    "paper_scale_review": "PASS for internal manuscript",
+    "raster_font_production": "OPEN",
+    "scientific_submission_gate": "UNCHANGED/CLOSED"
+  },
+  "canonical": {
+    "path": "artifacts/aamas2027/main.pdf",
+    "workspace_path": "article/aamas2027/build/main.pdf",
+    "sha256": "8b78fb9172eb49003cb6f74e19ae4f5ef45fe5ff53cc4afe2272d6d2775606f2",
+    "byte_identical_to_candidate": true,
+    "governance": "ADR 0050; versioned child PDFs remain history/rollback"
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "experiment_id": "reference_supplement_round_20261007",
+  "purpose": "audit bibliography scale/source distribution and add only argument-bearing references",
+  "scientific_api_or_gpu": false,
+  "started_utc": "2026-10-07T11:35:00Z",
+  "inputs": {
+    "main_tex": {
+      "path": "article/aamas2027/main.tex",
+      "sha256": "9c7a8ecebdec9d5ea29389513d9a64831902583c13a44daa0aa4fbc965b44eba"
+    },
+    "references_bib": {
+      "path": "article/aamas2027/references.bib",
+      "sha256": "e1714eadef902db15d6d250c9b4c9c721e9f2b515cbaf49e7316a2aeff313362"
+    },
+    "cited_key_count": 22,
+    "bib_entry_count": 28,
+    "uncited_keys": [
+      "albers2024roles",
+      "choi2026reactree",
+      "agrawal2025scmrag",
+      "yang2018hotpotqa",
+      "trivedi2022musique",
+      "ho20202wiki"
+    ]
+  },
+  "comparison_papers": [
+    {
+      "name": "CollabLLM: From Passive Responders to Active Collaborators",
+      "venue": "ICML 2025 oral, gallery award/best metadata",
+      "reference_count": 57,
+      "count_method": "extracted 57 bibitem records from arXiv source main.bbl",
+      "official_url": "https://proceedings.mlr.press/v267/wu25i.html",
+      "pdf_url": "https://raw.githubusercontent.com/mlresearch/v267/main/assets/wu25i/wu25i.pdf"
+    },
+    {
+      "name": "Cross-environment Cooperation Enables Zero-shot Multi-agent Coordination",
+      "venue": "ICML 2025 oral",
+      "reference_count": 65,
+      "count_method": "extracted 65 bibitem records from arXiv source example_paper.bbl",
+      "official_url": "https://proceedings.mlr.press/v267/jha25b.html",
+      "pdf_url": "https://raw.githubusercontent.com/mlresearch/v267/main/assets/jha25b/jha25b.pdf"
+    },
+    {
+      "name": "Learning Partner Selection Rules that Sustain Cooperation in Social Dilemmas with the Option of Opting Out",
+      "venue": "AAMAS 2024 full research paper",
+      "reference_count": 38,
+      "count_method": "highest numbered reference in official PDF text [1]--[38]",
+      "official_url": "https://www.ifaamas.org/Proceedings/aamas2024/pdfs/p1110.pdf"
+    },
+    {
+      "name": "Reputation as a Solution to Cooperation Collapse in LLM-based MASs",
+      "venue": "AAMAS 2026 research paper",
+      "reference_count": 55,
+      "count_method": "highest numbered reference in official PDF text [1]--[55]",
+      "official_url": "https://www.ifaamas.org/Proceedings/aamas2026/pdfs/UEHN4980.pdf"
+    },
+    {
+      "name": "MultiAgentBench: Evaluating the Collaboration and Competition of LLM Agents",
+      "venue": "ACL 2025 long paper",
+      "reference_count": 59,
+      "count_method": "author-year entries counted from the References section in the official PDF; one page-number false positive removed",
+      "official_url": "https://aclanthology.org/2025.acl-long.421/",
+      "pdf_url": "https://aclanthology.org/2025.acl-long.421.pdf"
+    }
+  ],
+  "planned_additions": [
+    {
+      "key": "leung2024partner",
+      "reason": "direct preceding AAMAS partner-selection result; closes temporal gap before 2025/2026 work"
+    },
+    {
+      "key": "metagpt2024",
+      "reason": "canonical role-based LLM collaboration framework used to position workflow orchestration"
+    },
+    {
+      "key": "agentverse2024",
+      "reason": "canonical multi-agent collaboration/emergent-behavior framework used to position orchestration"
+    },
+    {
+      "key": "appworld2024",
+      "reason": "authoritative stateful interactive-agent benchmark comparator in the benchmark positioning sentence"
+    },
+    {
+      "key": "piatti2024cooperate",
+      "reason": "direct LLM-society cooperation result for the social-cooperation boundary"
+    },
+    {
+      "key": "akata2025repeated",
+      "reason": "direct peer/social interaction evidence from Nature Human Behaviour, used to distinguish interaction payoff from artifact attribution"
+    },
+    {
+      "key": "khetarpal2022continual",
+      "reason": "continual-learning foundation for the stated stability/forgetting requirement"
+    },
+    {
+      "key": "hernandezleal2017nonstationarity",
+      "reason": "multi-agent non-stationarity foundation for the stated drift requirement"
+    }
+  ],
+  "exclusion_rule": "Do not add a citation only to increase count; every added entry must support a sentence already present or a narrowly added positioning clause."
+}

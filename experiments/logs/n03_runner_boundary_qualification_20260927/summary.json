@@ -1,0 +1,203 @@
+{
+  "timestamp_utc": "2026-09-27T06:45:18.579529+00:00",
+  "config_sha256": "ef0f653ceea457334deec77ef49a7b9262ab5d712f2da2484ffead35b178f415",
+  "raw_sha256": "28e6d6ba7ac1586754135e81c04b6ffa964d46b3d63c8b8c1f1d7592404d79e6",
+  "ledger_case_count": 5,
+  "scorer_case_count": 6,
+  "all_expectations_met": true,
+  "complete_ledger_passed": true,
+  "partial_or_retry_cases_safe": true,
+  "scorer_failures_are_unknown": true,
+  "llm_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "boundary": "Parent replay/scorer disposition only; no agent output, native score, or learning update.",
+  "ledger_cases": [
+    {
+      "case": "complete_real_v3",
+      "expected_status": "PASS",
+      "allow_incomplete": false,
+      "observed": {
+        "status": "PASS",
+        "complete": true,
+        "missing": [],
+        "event_count": 15,
+        "learning_update_allowed": true
+      },
+      "expectation_met": true
+    },
+    {
+      "case": "exception_after_selection",
+      "expected_status": "UNKNOWN",
+      "allow_incomplete": true,
+      "observed": {
+        "status": "UNKNOWN",
+        "complete": false,
+        "missing": [
+          {
+            "stage": "task_start",
+            "task_id": "DIST1_queue_race",
+            "task_index": 0
+          },
+          {
+            "stage": "producer_delivery",
+            "task_id": "DIST1_queue_race",
+            "task_index": 0
+          }
+        ],
+        "event_count": 1,
+        "learning_update_allowed": false
+      },
+      "expectation_met": true
+    },
+    {
+      "case": "exception_after_delivery",
+      "expected_status": "UNKNOWN",
+      "allow_incomplete": true,
+      "observed": {
+        "status": "UNKNOWN",
+        "complete": false,
+        "missing": [
+          {
+            "stage": "recipient_judgment",
+            "delivery_id": "delivery-0"
+          },
+          {
+            "stage": "consumer_action",
+            "delivery_id": "delivery-0"
+          },
+          {
+            "stage": "terminal_outcome",
+            "delivery_id": "delivery-0"
+          },
+          {
+            "stage": "role_evidence_update",
+            "delivery_id": "delivery-0"
+          }
+        ],
+        "event_count": 3,
+        "learning_update_allowed": false
+      },
+      "expectation_met": true
+    },
+    {
+      "case": "exception_after_judgment",
+      "expected_status": "UNKNOWN",
+      "allow_incomplete": true,
+      "observed": {
+        "status": "UNKNOWN",
+        "complete": false,
+        "missing": [
+          {
+            "stage": "consumer_action",
+            "delivery_id": "delivery-0"
+          },
+          {
+            "stage": "terminal_outcome",
+            "delivery_id": "delivery-0"
+          },
+          {
+            "stage": "role_evidence_update",
+            "delivery_id": "delivery-0"
+          }
+        ],
+        "event_count": 4,
+        "learning_update_allowed": false
+      },
+      "expectation_met": true
+    },
+    {
+      "case": "unsupported_retry_record",
+      "expected_status": "INVALID",
+      "allow_incomplete": false,
+      "observed": {
+        "status": "INVALID",
+        "complete": false,
+        "code": "unsupported_retry",
+        "error": "unsupported_retry at event 2: event type 'producer_retry' is not part of the append-only protocol",
+        "event_count": 15,
+        "learning_update_allowed": false
+      },
+      "expectation_met": true
+    }
+  ],
+  "scorer_cases": [
+    {
+      "case": "scorer_complete",
+      "kind": "complete",
+      "expected_status": "PASS",
+      "observed": {
+        "status": "PASS",
+        "terminal_label_available": true,
+        "evidence_update_allowed": true,
+        "reason": null
+      },
+      "expectation_met": true
+    },
+    {
+      "case": "scorer_timeout",
+      "kind": "timeout",
+      "expected_status": "UNKNOWN",
+      "observed": {
+        "status": "UNKNOWN",
+        "terminal_label_available": false,
+        "evidence_update_allowed": false,
+        "reason": "scorer_timeout"
+      },
+      "expectation_met": true
+    },
+    {
+      "case": "scorer_permission",
+      "kind": "permission",
+      "expected_status": "UNKNOWN",
+      "observed": {
+        "status": "UNKNOWN",
+        "terminal_label_available": false,
+        "evidence_update_allowed": false,
+        "reason": "scorer_permission_denied"
+      },
+      "expectation_met": true
+    },
+    {
+      "case": "scorer_invalid_json",
+      "kind": "invalid_json",
+      "expected_status": "UNKNOWN",
+      "observed": {
+        "status": "UNKNOWN",
+        "terminal_label_available": false,
+        "evidence_update_allowed": false,
+        "reason": "scorer_invalid_json"
+      },
+      "expectation_met": true
+    },
+    {
+      "case": "scorer_missing",
+      "kind": "missing",
+      "expected_status": "UNKNOWN",
+      "observed": {
+        "status": "UNKNOWN",
+        "terminal_label_available": false,
+        "evidence_update_allowed": false,
+        "reason": "scorer_missing_response"
+      },
+      "expectation_met": true
+    },
+    {
+      "case": "scorer_exception",
+      "kind": "exception",
+      "expected_status": "UNKNOWN",
+      "observed": {
+        "status": "UNKNOWN",
+        "terminal_label_available": false,
+        "evidence_update_allowed": false,
+        "reason": "scorer_exception"
+      },
+      "expectation_met": true
+    }
+  ],
+  "remaining_gates": [
+    "independent hidden scorer IPC in the actual runner",
+    "real producer/recipient dispatch and scorer response transport",
+    "second structural task root and a valid longitudinal signal"
+  ]
+}

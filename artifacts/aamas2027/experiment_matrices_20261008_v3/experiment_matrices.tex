@@ -1,0 +1,164 @@
+% Internal pre-results experiment-table blueprint.
+% Every empirical cell is intentionally blank until its confirmation card is executed.
+\documentclass[sigconf,anonymous]{aamas}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{makecell}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{url}
+\input{aamas_metadata}
+
+\vfuzz=1.5pt
+\acmSubmissionID{INTERNAL PRE-RESULTS -- NOT FOR SUBMISSION}
+\submissionType{Research Paper Track}
+
+\title[Experiment Matrix Blueprint]{Experiment Matrix and Result-Table Blueprint}
+\author{Anonymous Authors}
+\affiliation{\institution{Internal research draft}}
+\email{omitted}
+\ccsdesc[500]{Computing methodologies~Multi-agent systems}
+\ccsdesc[300]{Computing methodologies~Cooperation and coordination}
+\keywords{multi-agent systems, role formation, peer judgment, online adaptation, experiments}
+
+\newcommand{\blank}{\textemdash}
+\newcommand{\unknown}{\textsc{unknown}}
+\newcommand{\rare}{\textsc{rare}}
+\newcommand{\metric}[1]{\makecell[c]{#1}}
+
+\begin{abstract}
+This document fixes the paper-facing experiment tables before confirmation runs. The overview binds each research question to a track and result table; the three result tables bind policy rows to primary endpoints, service measures, and mechanism interventions. Numeric cells remain blank by design. They will be populated only from frozen experiment cards, raw event manifests, and stream-level uncertainty calculations.
+\end{abstract}
+
+\begin{document}
+\maketitle
+
+\section{Table set and correspondence}
+
+The paper should use one compact overview and three result-bearing tables. The overview is a routing table, not an empirical result. Table~\ref{tab:main-results} is the hero comparison for the primary ArtifactRole track and answers RQ1--RQ2. Table~\ref{tab:service-safety} reports the service and safety endpoints for RQ3--RQ4 across the two tracks. Table~\ref{tab:ablation} isolates the mechanism and responsibility boundaries. The exact nine-cell execution manifest remains the source of roots, seeds, budgets, scorers, stopping rules, and raw-log digests.
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{p{0.08\textwidth}p{0.16\textwidth}p{0.23\textwidth}p{0.24\textwidth}p{0.20\textwidth}}
+\toprule
+RQ & Track / unit & Policy contrast & Primary result table & Primary estimand\\
+\midrule
+RQ1 & ArtifactRole / independent root & \rare{} vs raw acceptance, terminal-only, and contextual-trust-linear & Table~\ref{tab:main-results} & Held-out Brier/log loss and calibration\\
+RQ2 & ArtifactRole / target assignment & Evidence plus delayed credit vs no evidence, delayed-only, and pooled & Tables~\ref{tab:main-results} and~\ref{tab:ablation} & Future quality--cost utility and assignment change\\
+RQ3 & PeerSelect / independent stream & Updater vs uniform, no-history, and history-only & Table~\ref{tab:service-safety} & Payoff/regret, update p95, backlog, state bytes\\
+RQ4 & Both / mutation and drift streams & Ownership mutation, correction/replay, and leave-one-out & Tables~\ref{tab:service-safety} and~\ref{tab:ablation} & False attribution, \unknown{} precision, forgetting/recovery\\
+\bottomrule
+\end{tabular}
+\caption{Paper-facing experiment map. Each row points to the table that will carry the corresponding measured contrast. The table set is an overview of the pre-registered matrix; it is not evidence until the matching confirmation card is executed.}
+\label{tab:overview}
+\end{table*}
+
+\paragraph{Placeholder rule.} A dash is an unfilled empirical cell, never zero and never a predicted value. Each result table will report stream-level estimates with the interval method fixed in the card. Counts, costs, and failures remain visible in the artifact manifest even when a primary cell is \unknown{}.
+
+\section{Primary result tables}
+
+\subsection{ArtifactRole: information and assignment}
+
+The first result table is the hero table. Its policy rows are the complete matched-information comparison boundary, while its columns are limited to the two primary scientific questions and complete cost. The row order is fixed before confirmation; the last row is the candidate mechanism, not a claim of superiority.
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.13}
+\begin{tabular}{p{0.17\textwidth}*{6}{>{\centering\arraybackslash}p{0.105\textwidth}}}
+\toprule
+\multirow{2}{*}{Policy} & \multicolumn{2}{c}{RQ1: situated signal} & \multicolumn{2}{c}{RQ2: future assignment} & \multicolumn{1}{c}{Cost} & \multirow{2}{*}{Streams}\\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-6}
+ & \metric{Brier\\$\downarrow$} & \metric{Calibration\\$\downarrow$} & \metric{Quality--cost\\utility\\$\uparrow$} & \metric{Assignment\\change\\$\uparrow$} & \metric{Complete\\cost\\$\downarrow$} & \\
+\midrule
+Uniform & \blank & \blank & \blank & \blank & \blank & \blank\\
+No update & \blank & \blank & \blank & \blank & \blank & \blank\\
+Raw acceptance & \blank & \blank & \blank & \blank & \blank & \blank\\
+Terminal only & \blank & \blank & \blank & \blank & \blank & \blank\\
+Contextual-trust-linear & \blank & \blank & \blank & \blank & \blank & \blank\\
+Pooled controller & \blank & \blank & \blank & \blank & \blank & \blank\\
+\rare{} & \blank & \blank & \blank & \blank & \blank & \blank\\
+\bottomrule
+\end{tabular}
+\caption{Primary ArtifactRole result table. Every arm receives the same candidate menu, opportunity schedule, public-information boundary, selected-only rule, and complete-cost contract. Values are filled only after the independent root, later assignment, and outcome checks pass; intervals are stream-level intervals from the frozen card.}
+\label{tab:main-results}
+\end{table*}
+
+\subsection{Online service and stability}
+
+The second result table keeps operational claims separate from the hero utility comparison. PeerSelect supplies the controlled local-stream service measurement; ArtifactRole supplies the responsibility mutations. A method cannot trade away attribution safety for a lower update latency without showing that trade-off here.
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{2.6pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{p{0.16\textwidth}p{0.10\textwidth}*{6}{>{\centering\arraybackslash}p{0.095\textwidth}}}
+\toprule
+\multirow{2}{*}{Policy / intervention} & \multirow{2}{*}{Track} & \multicolumn{3}{c}{RQ3: service} & \multicolumn{3}{c}{RQ4: safety and stability}\\
+\cmidrule(lr){3-5}\cmidrule(lr){6-8}
+ & & \metric{Update\\p95\\$\downarrow$} & \metric{Backlog\\p95\\$\downarrow$} & \metric{State\\bytes\\$\downarrow$} & \metric{False\\attribution\\$\downarrow$} & \metric{\unknown{}\\precision\\$\uparrow$} & \metric{Forgetting /\\recovery\\$\downarrow$}\\
+\midrule
+No update & PeerSelect & \blank & \blank & \blank & \blank & \blank & \blank\\
+History only & PeerSelect & \blank & \blank & \blank & \blank & \blank & \blank\\
+Contextual-trust-linear & PeerSelect & \blank & \blank & \blank & \blank & \blank & \blank\\
+\rare{} & PeerSelect & \blank & \blank & \blank & \blank & \blank & \blank\\
+Recipient-only mutation & ArtifactRole & \blank & \blank & \blank & \blank & \blank & \blank\\
+Mixed ownership mutation & ArtifactRole & \blank & \blank & \blank & \blank & \blank & \blank\\
+Delayed / out-of-order feedback & Both & \blank & \blank & \blank & \blank & \blank & \blank\\
+\bottomrule
+\end{tabular}
+\caption{Service and stability table. Latency, backlog, and state size are measured under a fixed arrival and resource budget. Mutation rows test whether recipient-owned, mixed, delayed, or out-of-order events produce safe no-op or \unknown{} behavior rather than false producer credit.}
+\label{tab:service-safety}
+\end{table*}
+
+\subsection{Mechanism and responsibility ablations}
+
+The third table answers why any observed gain occurs. It holds the task roots, menus, models, and complete-cost accounting fixed while removing one information or update component at a time. These rows are not additional baselines; they are interventions on the candidate mechanism.
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.13}
+\begin{tabular}{p{0.23\textwidth}p{0.15\textwidth}*{4}{>{\centering\arraybackslash}p{0.11\textwidth}}}
+\toprule
+\multirow{2}{*}{Intervention} & \multirow{2}{*}{\makecell[l]{Removed or changed\\component}} & \multicolumn{4}{c}{Primary endpoints}\\
+\cmidrule(lr){3-6}
+ & & \metric{Future\\utility\\$\uparrow$} & \metric{Assignment\\change\\$\uparrow$} & \metric{False\\attribution\\$\downarrow$} & \metric{Complete\\cost\\$\downarrow$}\\
+\midrule
+No evidence / no update & Public evidence and persistent update & \blank & \blank & \blank & \blank\\
+Public evidence only & Persistent delayed update & \blank & \blank & \blank & \blank\\
+Delayed update only & New public evidence & \blank & \blank & \blank & \blank\\
+Evidence + delayed update (\rare{}) & None & \blank & \blank & \blank & \blank\\
+\rare{} without ownership gate & Structural attribution gate & \blank & \blank & \blank & \blank\\
+\rare{} without selected-only rule & Selected-only credit restriction & \blank & \blank & \blank & \blank\\
+\rare{} without correction/replay & Version correction and replay checks & \blank & \blank & \blank & \blank\\
+\bottomrule
+\end{tabular}
+\caption{Mechanism and responsibility ablations. The primary interpretation requires both a change in future assignment and a valid independent outcome. A utility gain without attribution safety, or a safety gain without changed assignment, is reported as a boundary result rather than role formation.}
+\label{tab:ablation}
+\end{table*}
+
+\section{Population and result-entry contract}
+
+The tables will be populated in a fixed order: first the independent-root and
+same-information checks, then the primary ArtifactRole result, then the
+PeerSelect service/stability table, and finally the ablation table. A table row
+is reported as \unknown{} when its scorer, transport, or responsibility contract
+cannot observe the required quantity. Failed attempts retain their measured cost;
+they are not deleted to improve the mean. The final paper will add stream-level
+intervals, per-root variation, and a short error analysis next to the relevant
+table rather than hiding these quantities in a single aggregate number.
+
+This blueprint is an internal pre-results artifact. It fixes presentation and
+estimand alignment; it does not assert that any arm wins or that the benchmark
+and baseline gates have passed.
+
+\end{document}

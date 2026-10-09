@@ -1,0 +1,24 @@
+{
+  "schema": "n03-pipe2-observation-lineage-parity-v1",
+  "status": "QUALIFICATION_ONLY",
+  "candidate_root": "pipe2-csv-writer-v1",
+  "seeds": [0],
+  "variants": [
+    "observation",
+    "count_only",
+    "j_masked"
+  ],
+  "mutations": [
+    "judgment_after_action",
+    "assignment_before_observation",
+    "menu_mismatch",
+    "late_observation_read_cut",
+    "target_outcome_before_selection",
+    "recipient_edit_as_producer_credit"
+  ],
+  "api_calls": 0,
+  "gpu_jobs": 0,
+  "scientific_claim_allowed": false,
+  "policy_update_allowed": false,
+  "notes": "Authored zero-call lineage and same-information parity fixture. It does not promote PIPE2, train a selector, or measure efficacy."
+}

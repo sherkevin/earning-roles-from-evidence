@@ -1,0 +1,34 @@
+[
+  {
+    "command": [
+      "python3",
+      "scripts/check_aamas_documents.py",
+      "--sync-gate",
+      "--check-gate"
+    ],
+    "exit_code": 0,
+    "output": "{\n  \"requirements\": 15,\n  \"review_groups\": 13,\n  \"tasks\": 12,\n  \"local_links_checked\": 492,\n  \"archived_snapshots_verified\": 4,\n  \"acyclic_dependencies\": true,\n  \"task_statuses\": {\n    \"DONE\": 2,\n    \"RUNNING\": 2,\n    \"TODO\": 7,\n    \"WAITING_AUTHOR\": 1\n  },\n  \"all_requirements_mapped\": true,\n  \"all_reviews_mapped\": true,\n  \"requirements_sha256\": \"c6c9958e4d8831031606afb3cbe44977ba343444be0ba0eab5e89bc03dadd9c3\",\n  \"task_ledger_sha256\": \"f1492e67a3725ce1f69914aa6ba6e0bc1db82baf9edbd9755c7d9e80f5c3540a\",\n  \"scientific_readiness\": false\n}\n"
+  },
+  {
+    "command": [
+      "python3",
+      "scripts/check_research_registry.py"
+    ],
+    "exit_code": 0,
+    "output": "{\"categories\": 6, \"unique_active_documents\": 6, \"ok\": true}\n"
+  },
+  {
+    "command": [
+      "git",
+      "diff",
+      "--check",
+      "--",
+      "article/aamas2027/main.tex",
+      "article/aamas2027/README.md",
+      "docs/coordination/AAMAS_TASKS.md",
+      "docs/paper/aamas2027/FORMAL_PAPER_ZH.md"
+    ],
+    "exit_code": 0,
+    "output": ""
+  }
+]

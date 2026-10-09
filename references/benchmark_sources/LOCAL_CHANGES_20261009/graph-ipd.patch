@@ -1,0 +1,20 @@
+diff --git a/bin/train_ray.py b/bin/train_ray.py
+index 28a1ba3..084559e 100644
+--- a/bin/train_ray.py
++++ b/bin/train_ray.py
+@@ -373,6 +373,7 @@ def save_run(
+ def plot_iteration(
+     idx_rep,
+     config,
++    results_dir,
+     anet,
+     population,
+     selectors,
+@@ -733,6 +734,7 @@ def process_train(config, idx_rep, results_dir):
+     plot_iteration(
+         idx_rep,
+         config,
++        results_dir,
+         anet,
+         population,
+         selectors,

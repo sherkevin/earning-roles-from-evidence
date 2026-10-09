@@ -1,0 +1,48 @@
+{
+  "runner_version": "pipe2-chain-qualification-v1",
+  "chain_version": "pipe2-responsibility-chain-v1",
+  "task_id": "PIPE2_data_pipeline",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "variants": [
+    "eligible",
+    "repair",
+    "mixed"
+  ],
+  "material_root_digest": "03649bfec28ebe5a48585d83eecf98bda21a98bc498c5b24bbf875f7149fc967",
+  "material_adapter": "peerrolebench_pipe2_derived_material_adapter",
+  "source_sha256": {
+    "scripts/peerrolebench_pipe2_chain_composition.py": "c6dc15150cef2cb07bfe1e29c5dfd461beeb1024d2c3d583aacf9c517b7b18a9",
+    "scripts/peerrolebench_pipe2_chain_qualification.py": "f042a178082971936dc7c9c8c9f0e6b9cf9b87cecea169b2a10dd89cb424e268",
+    "scripts/peerrolebench_pipe2_derived_material_adapter.py": "3dd1b31d83d7ffb5f46ebb469d74fcd0a2eb759254c8eb3f8495caada07f2390",
+    "scripts/peerrolebench_pipe2_responsibility_label.py": "48b37de3b26f7109eca3b1330f1c665844cec96e3456b894fb1126a67b227d1f",
+    "references/aamas/peer_role_protocol_20260925.py": "c9c3082f5edc45c69ad190eaa9ab9282656c93cd1d512df170f90e8bf7b98b86"
+  },
+  "fixture_mode": "authored-chain-controls-only",
+  "argv": [
+    "scripts/peerrolebench_pipe2_chain_qualification.py",
+    "--output",
+    "experiments/logs/n03_pipe2_chain_qualification_20261003_v3",
+    "--seeds",
+    "0",
+    "1",
+    "2",
+    "3",
+    "4"
+  ],
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "platform": "macOS-26.3.2-arm64-arm-64bit",
+  "git_commit": "c51d640f590aa1b0f195a4d3098635115c4efa1d",
+  "candidate_code_executed": false,
+  "llm_calls": 0,
+  "gpu_jobs": 0,
+  "native_grader_invoked": false,
+  "benchmark_qualified": false,
+  "scientific_claim_allowed": false,
+  "started_at_utc": "2026-10-02T18:27:46.561365+00:00"
+}

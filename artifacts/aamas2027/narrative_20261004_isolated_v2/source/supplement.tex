@@ -1,0 +1,99 @@
+\documentclass[sigconf,anonymous]{aamas}
+\usepackage{amsmath}
+\input{aamas_metadata}
+\title{Supplement: When Should an Agent Earn Delegation?}
+\ccsdesc[500]{Computing methodologies~Multi-agent systems}
+\keywords{Delegation, reproducibility, experimental protocol}
+\begin{abstract}
+This internal supplement records the evidence boundaries, complete component comparisons, prospective execution contract, and AI-assistance disclosure for the revised manuscript. It is not a claim that the new protocol has been evaluated.
+\end{abstract}
+\begin{document}
+\maketitle
+
+\section{Historical Evidence and Reanalysis}
+
+All three headline implementation names begin with the prefix \path{edo_adaptive_protocol_router_}. Their suffixes are \path{backbone} for HotpotQA, \path{musique_role_pool_guarded} for MuSiQue, and \path{tool_pool_bridge_gated_v6} for 2Wiki. These names identify different settings and are not expanded into separate scientific concepts in the main text.
+
+The offline audit reads the stored prediction and metric files, checks unique task identifiers, and recomputes the project's token-F1 and exact-match functions for every headline example. It verifies aggregate agreement within the precision of four-decimal metric files. It also recomputes paired mean differences for MuSiQue and 2Wiki using available comparator predictions. The archived HotpotQA direct-baseline path is not present locally; its comparison is retained as an archived result with a narrower verification boundary.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lrrr}
+\toprule
+Dataset & Examples & Recomputed F1 & Recomputed EM \\
+\midrule
+HotpotQA & 7,405 & 0.432403 & 0.325456 \\
+MuSiQue & 4,834 & 0.338877 & 0.242449 \\
+2Wiki & 12,576 & 0.554537 & 0.496501 \\
+\bottomrule
+\end{tabular}
+\caption{Project-scored historical outputs. These are not new model runs.}
+\end{table}
+
+\paragraph{Scorer equivalence.}
+The official HotpotQA scorer removes punctuation before articles and treats mismatched \texttt{yes}, \texttt{no}, and \texttt{noanswer} responses specially. The historical project function differs. Applying the official answer-F1 function to the stored HotpotQA router outputs changes six rows and yields 0.432275 rather than 0.432403. The small aggregate difference does not justify calling the functions identical. Official-scored paired claims need both method and comparator outputs, consistent raw dataset identifiers, and the official task-specific scorer.
+
+\paragraph{What the hashes establish.}
+The local audit manifest hashes the files actually inspected. It does not establish the identity of an unavailable historical runtime snapshot, the absence of development-set reuse, or the completeness of remote model-request logs. These properties need separate provenance checks. Stored confidence intervals are reused as historical statistics and must not be relabeled as new independent replications.
+
+\section{Component Matrix}
+
+All rows in Table~\ref{tab:fullcomponents} use 500 matched HotpotQA examples and the recorded Qwen endpoint. Differences are condition minus full frame. The intervals are copied from the corresponding directional archived comparisons, which can differ slightly from intervals generated separately in the reverse direction because bootstrap sampling seeds differ.
+
+\begin{table*}[t]
+\centering
+\begin{tabular}{lrrrr}
+\toprule
+Condition & F1 & Difference & Archived 95\% CI & Recorded usage events \\
+\midrule
+Full frame & 0.4853 & -- & -- & 1,477 \\
+Direct single agent & 0.4346 & $-0.0507$ & [$-0.0902$, $-0.0130$] & 500 \\
+Task-tree control & 0.4154 & $-0.0699$ & [$-0.0990$, $-0.0413$] & 1,473 \\
+No memory & 0.4073 & $-0.0781$ & [$-0.1070$, $-0.0498$] & 1,476 \\
+Static tools & 0.3627 & $-0.1227$ & [$-0.1625$, $-0.0834$] & 1,475 \\
+All tools & 0.4858 & $+0.0005$ & [$-0.0068$, $+0.0086$] & 1,479 \\
+Random tools & 0.4863 & $+0.0010$ & [$-0.0040$, $+0.0070$] & 1,478 \\
+No tool history & 0.4882 & $+0.0028$ & [$-0.0018$, $+0.0089$] & 1,478 \\
+Split disabled & 0.4334 & $-0.0519$ & [$-0.0910$, $-0.0153$] & 500 \\
+Active task-tree audit & 0.4073 & $-0.0781$ & [$-0.1076$, $-0.0487$] & 1,476 \\
+\bottomrule
+\end{tabular}
+\caption{Complete principal component directions. Recorded usage events need not include failed or unlogged calls. Conditions from different parent configurations are not clean single-factor interventions.}
+\label{tab:fullcomponents}
+\end{table*}
+
+The active task-tree audit is harmful relative to its task-tree parent (mean difference $-0.0081$, archived interval approximately [$-0.0171$,$-0.0011$]). The three neutral selector/history variants cannot be omitted from an argument that the learned selector is necessary. Conversely, a neutral result does not prove equivalence: a sufficiently powered equivalence test would require a predeclared practical margin.
+
+\paragraph{Recorded resources.}
+The full-frame raw outputs contain 2,109,373 recorded tokens, compared with 926,631 for direct answering on the same 500 tasks. Missing usage, retries, failures, and endpoint concurrency must be audited before these are interpreted as complete deployment costs. The headline full-validation runs have a different logging surface; their call totals and wall-clock cannot be inferred from this component subset.
+
+\section{Worked Failure and Control-Flow Contract}
+
+The recorded example asks whether Scott Derrickson and Ed Wood had the same nationality. Both relevant context passages describe the person as American. At the first hop, the frame registers two subtasks, selects retrieval and consistency-check tools, and forwards an intermediate note. At the second hop, it logs \texttt{REJECT\_REROUTE} for the previous contribution, retrieves one memory event, and answers locally. The final answer is \texttt{no}; the stored gold answer is \texttt{yes}. The raw outputs include three usage entries totaling 3,824 tokens.
+
+This is a selected explanatory failure, not an estimate of failure frequency. The corrected runtime contract requires: (i) every audit has an attributed candidate; (ii) accepted evidence is distinguished from a final answer's correctness; (iii) every reroute or resplit outcome produces that transition, or a documented exhausted-budget termination; and (iv) rejected evidence cannot silently increase future competence. A test should inspect executed transitions, not merely the existence of the expected audit string in a trace.
+
+\section{Prospective Experiment Specification}
+
+\paragraph{Primary causal contrast.}
+Correct persistent reputation versus frozen reputation, with identical task evidence, prompts, tools, candidate executors, and resource caps. Add worker-shuffled and task-reset reputation as complementary controls. The primary outcome is mean external task utility over independent task streams. Auxiliary measurements are task-conditioned allocation, audit-error rates, concentration of workload, communication, and recovery from a worker change. A state intervention must actually change the routing input; deleting an unused logging field is not an ablation.
+
+\paragraph{Budget grid.}
+The initial design uses attempted-call caps of 4, 8, and 16 and separate token caps fixed during development. Report both caps and realized cost. Direct reasoning can spend the same budget on independent candidates and verification. Static teams and learned routers receive the same tool library. Development or offline optimization cost is reported separately from deployment cost for every method.
+
+\paragraph{Seeds and order.}
+For the primary claim use at least five independently reset streams, with task order seeds fixed in the manifest before outcomes are inspected. A stream is a full state trajectory. The same task order is used for paired methods within a stream, and state does not cross streams. Use uncertainty over independent streams, or a hierarchical method that respects stream dependence; do not pretend all adaptively connected tasks are independent observations. The number of streams alone is not a power guarantee.
+
+\paragraph{Selection discipline.}
+Use training or development tasks to choose task categories, prompts, thresholds, cost weight, update rate, and exploration. Lock one candidate per backbone before running the confirmatory tasks. Reserve one materially stronger backbone and an externally defined non-QA task. Report the full frozen comparison matrix. If a checkpoint or protocol is changed after observing evaluation errors, that evaluation is development evidence and needs a new held-out confirmation.
+
+\paragraph{Falsification.}
+Withdraw persistent-organization claims if correct history does not improve over frozen, shuffled, or reset state; withdraw equal-budget superiority if an equally resourced direct agent is competitive; restrict generality if stronger backbones or the second task family do not support it. No test requires every individual task to improve. Per-task oracle selection of the best baseline is an upper-bound diagnostic and must not be confused with the best deployable method chosen on development data.
+
+\section{AI-Assistance Disclosure for Author Finalization}
+
+An OpenAI Codex assistant was used for literature discovery, source inspection, diagnosis of the prior manuscript, proposing the revised evidence-conditioned delegation question, elementary mathematical derivations, experiment design, code-assisted offline checking, LaTeX authoring, and document validation. This goes beyond grammar correction. The assistant's system description identifies it as GPT-6; the exact served model build and version were not exposed as independently verifiable session metadata and must be confirmed from the author's session export. No model result from a prospective experiment has been fabricated or filled into a results table.
+
+The user prompt requested a thorough revision after an EMNLP rejection, incorporation of the stored reviews with an independent research perspective, downloading AAMAS requirements and templates, studying prior accepted papers, and preparing the project for AAMAS. The local assistance record preserves that prompt and the scope of the generated design. Before submission, the authors must supply the exact tool/version and relevant prompts in the supplementary material, check every proof and citation, validate the executed experiments, and finalize the disclosure. This paragraph is an internal completion record, not a declaration that those author checks have already occurred.
+
+\end{document}

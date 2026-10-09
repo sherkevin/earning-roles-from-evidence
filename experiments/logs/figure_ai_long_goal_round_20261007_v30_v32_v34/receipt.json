@@ -1,0 +1,105 @@
+{
+  "round": "figure_ai_long_goal_round_20261007_v30_v32_v34",
+  "timestamp_utc": "2026-10-06T15:16:57.131861+00:00",
+  "status": "partial_goal_active",
+  "goal_change_requested": false,
+  "goal_standard": "ER-G1 paper visual causal chain; no Goal downgrade",
+  "generation_tool": "Codex built-in image_gen; service model identifier undisclosed",
+  "generation_policy": "AI generated the textless visual bases; LuaLaTeX adds only exact embedded-font labels for production. No HTML/Python drawing was used.",
+  "candidates": {
+    "figure1": {
+      "base": "v29_textless_vector_base_20261007",
+      "production": "v30_vector_typeset_refined_20261007",
+      "active": "overview.pdf"
+    },
+    "figure2": {
+      "base": "v31_method_textless_vector_base_20261007",
+      "production": "v32_method_vector_typeset_refined_20261007",
+      "active": "method_state.pdf"
+    },
+    "figure3": {
+      "base": "v33_experiment_textless_vector_base_20261007",
+      "production": "v34_experiment_vector_typeset_refined_20261007",
+      "active": "experiment_map.pdf"
+    }
+  },
+  "production_gate": {
+    "all_visible_labels_embedded_true_type": true,
+    "figure1_pdffonts": "Arial-BoldMT CID TrueType emb=yes sub=yes uni=yes",
+    "figure2_pdffonts": "Arial-BoldMT CID TrueType emb=yes sub=yes uni=yes",
+    "figure3_pdffonts": "Arial-BoldMT CID TrueType emb=yes sub=yes uni=yes",
+    "pdfimages_expected": "one raster AI base plus embedded label font per figure",
+    "paper_scale_width_px": 1050,
+    "grayscale_render": "pdftocairo -gray at 120 dpi, then 1050 px inspection",
+    "semantic_visual_inspection": "pass"
+  },
+  "paper_build": {
+    "command": "python3 scripts/build_aamas2027.py --main-only --build-dir build/figure_set_v30_v32_v34_fresh_20261007 --require-content-pages 8",
+    "verification": "article/aamas2027/build/figure_set_v30_v32_v34_fresh_20261007/verification.json",
+    "pages_total": 10,
+    "content_pages": 8,
+    "references_start_page": 9,
+    "unresolved_references": false,
+    "overfull_boxes": 0,
+    "scientific_submission_gate": "still pending; no efficacy claim or Goal completion"
+  },
+  "artifacts": {
+    "article/aamas2027/figures/overview.pdf": {
+      "sha256": "50d5cc7ea739cb913ad7af2989e1eae9153d5a247a6169e36aa4b576b61a47ce",
+      "bytes": 678082
+    },
+    "article/aamas2027/figures/method_state.pdf": {
+      "sha256": "8f332b036860f87328dbcbda0555b88d6dbd4cab9cd527bdd0fc63f7f15f3326",
+      "bytes": 829749
+    },
+    "article/aamas2027/figures/experiment_map.pdf": {
+      "sha256": "46084c0f624ece78a6d33ca2fddef4af5a8dc600478feddc2768bf124781e55b",
+      "bytes": 827377
+    },
+    "article/aamas2027/figures/ai_versions/v30_vector_typeset_refined_20261007/figure1_v30_vector.pdf": {
+      "sha256": "50d5cc7ea739cb913ad7af2989e1eae9153d5a247a6169e36aa4b576b61a47ce",
+      "bytes": 678082
+    },
+    "article/aamas2027/figures/ai_versions/v32_method_vector_typeset_refined_20261007/figure2_v32_vector.pdf": {
+      "sha256": "8f332b036860f87328dbcbda0555b88d6dbd4cab9cd527bdd0fc63f7f15f3326",
+      "bytes": 829749
+    },
+    "article/aamas2027/figures/ai_versions/v34_experiment_vector_typeset_refined_20261007/figure3_v34_vector.pdf": {
+      "sha256": "46084c0f624ece78a6d33ca2fddef4af5a8dc600478feddc2768bf124781e55b",
+      "bytes": 827377
+    },
+    "article/aamas2027/figures/ai_versions/v29_textless_vector_base_20261007/figure1_v29_textless.png": {
+      "sha256": "95eaea23d54c9a2dd980caa3ed0d9519c6bf2a15140d03a31e39af321c741ffb",
+      "bytes": 681973
+    },
+    "article/aamas2027/figures/ai_versions/v31_method_textless_vector_base_20261007/figure2_v31_textless.png": {
+      "sha256": "5b699e789cf1e90d683117a1475975bf15eb733380f0974cd569b7585fdd9f41",
+      "bytes": 834297
+    },
+    "article/aamas2027/figures/ai_versions/v33_experiment_textless_vector_base_20261007/figure3_v33_textless.png": {
+      "sha256": "293cbf19c87f530cd431b0c06a395bc0f09020d0de7e6a39a4bd49350dd87c6c",
+      "bytes": 827476
+    },
+    "article/aamas2027/build/figure_set_v30_v32_v34_fresh_20261007/main.pdf": {
+      "sha256": "03fec737b470b5ee03a40d692ec975cad6e2807f56dc12fff35e46cd47b03536",
+      "bytes": 2844511
+    },
+    "article/aamas2027/build/figure_set_v30_v32_v34_fresh_20261007/verification.json": {
+      "sha256": "18dca5fafb2e89ddf4e0f5d11615f063ba31a6cf5388dc3142c91b6b1ffe2914",
+      "bytes": 1272
+    }
+  },
+  "retained_history": [
+    "v28/v23/v26 raster candidates",
+    "v27/v22/v24 rollback candidates",
+    "v29/v31/v33 textless bases",
+    "v30/v32/v34 production candidates"
+  ],
+  "open_gate": [
+    "independent final figure audit",
+    "paper-scale readability review by reviewer",
+    "scientific manuscript/benchmark gate remains unrelated and open"
+  ],
+  "paper_scale_and_grayscale_hashes": "experiments/logs/figure_ai_long_goal_round_20261007_v30_v32_v34/scale_grayscale_hashes.json",
+  "paper_scale_and_grayscale_updated_after_final_wrapper_compile": true
+}

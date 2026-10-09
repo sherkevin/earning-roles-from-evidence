@@ -1,0 +1,954 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BenchmarkBaselineClosureReceiptV4",
+  "description": "Format contract for a benchmark/baseline closure receipt. The companion Python validator checks paths, hashes and cross-field invariants; a schema-valid receipt is not by itself a scientific result.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "closure_scope",
+    "guide_version",
+    "goal_sha256",
+    "goal_ref",
+    "evaluation_sha256",
+    "evaluation_ref",
+    "pre_run_manifest_sha256",
+    "pre_run_manifest_ref",
+    "gates",
+    "track_manifest",
+    "roots",
+    "streams",
+    "arms",
+    "minimum_streams_per_arm",
+    "holdout",
+    "artifactrole",
+    "target_cells",
+    "hard_fail_sentinels",
+    "real_api_calls",
+    "stop_receipt",
+    "denominator_reconciliation",
+    "cost_reconciliation",
+    "independent_review",
+    "clean_replay",
+    "same_information_parity",
+    "blind_scorer",
+    "independent_environment",
+    "policy_state_masked",
+    "method_outcome",
+    "readiness_level",
+    "status"
+  ],
+  "properties": {
+    "closure_scope": {
+      "const": "benchmark_baseline_acceptance"
+    },
+    "guide_version": {
+      "const": "v4_20261008"
+    },
+    "goal_sha256": {
+      "$ref": "#/$defs/hash"
+    },
+    "evaluation_sha256": {
+      "$ref": "#/$defs/hash"
+    },
+    "pre_run_manifest_sha256": {
+      "$ref": "#/$defs/hash"
+    },
+    "goal_ref": {
+      "$ref": "#/$defs/artifactRef"
+    },
+    "evaluation_ref": {
+      "$ref": "#/$defs/artifactRef"
+    },
+    "pre_run_manifest_ref": {
+      "$ref": "#/$defs/artifactRef"
+    },
+    "gates": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "allOf": [
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "gate_id"
+            ],
+            "properties": {
+              "gate_id": {
+                "const": "B1"
+              }
+            }
+          }
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "gate_id"
+            ],
+            "properties": {
+              "gate_id": {
+                "const": "B2"
+              }
+            }
+          }
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "gate_id"
+            ],
+            "properties": {
+              "gate_id": {
+                "const": "B3"
+              }
+            }
+          }
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "gate_id"
+            ],
+            "properties": {
+              "gate_id": {
+                "const": "B4"
+              }
+            }
+          }
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "gate_id"
+            ],
+            "properties": {
+              "gate_id": {
+                "const": "B5"
+              }
+            }
+          }
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "gate_id"
+            ],
+            "properties": {
+              "gate_id": {
+                "const": "B6"
+              }
+            }
+          }
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "gate_id"
+            ],
+            "properties": {
+              "gate_id": {
+                "const": "B7"
+              }
+            }
+          }
+        }
+      ],
+      "items": {
+        "$ref": "#/$defs/gate"
+      }
+    },
+    "track_manifest": {
+      "$ref": "#/$defs/trackManifest"
+    },
+    "roots": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "$ref": "#/$defs/root"
+      }
+    },
+    "precision_justification": {
+      "type": "object",
+      "required": [
+        "pre_registered",
+        "reason",
+        "artifact"
+      ],
+      "properties": {
+        "pre_registered": {
+          "const": true
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "artifact": {
+          "$ref": "#/$defs/artifactRef"
+        }
+      },
+      "additionalProperties": false
+    },
+    "streams": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/stream"
+      }
+    },
+    "arms": {
+      "type": "array",
+      "minItems": 8,
+      "items": {
+        "$ref": "#/$defs/arm"
+      }
+    },
+    "target_cells": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/targetCell"
+      }
+    },
+    "artifactrole": {
+      "$ref": "#/$defs/artifactrole"
+    },
+    "hard_fail_sentinels": {
+      "type": "object",
+      "required": [
+        "judgment_permutation",
+        "trace_only",
+        "candidate_id_menu_order_permutation",
+        "version_swap_stale_evidence",
+        "recipient_only_mixed_unknown",
+        "unselected_label_censoring",
+        "replay_idempotence_correction_lineage",
+        "gold_future_label_injection"
+      ],
+      "additionalProperties": false,
+      "patternProperties": {
+        "^.*$": {
+          "$ref": "#/$defs/sentinel"
+        }
+      }
+    },
+    "real_api_calls": {
+      "$ref": "#/$defs/realApi"
+    },
+    "stop_receipt": {
+      "$ref": "#/$defs/stopReceipt"
+    },
+    "denominator_reconciliation": {
+      "$ref": "#/$defs/reconciliation"
+    },
+    "cost_reconciliation": {
+      "$ref": "#/$defs/reconciliation"
+    },
+    "independent_review": {
+      "$ref": "#/$defs/review"
+    },
+    "clean_replay": {
+      "const": true
+    },
+    "same_information_parity": {
+      "const": true
+    },
+    "blind_scorer": {
+      "const": true
+    },
+    "independent_environment": {
+      "const": true
+    },
+    "policy_state_masked": {
+      "const": true
+    },
+    "method_outcome": {
+      "enum": [
+        "positive",
+        "neutral",
+        "adverse",
+        "insufficient"
+      ]
+    },
+    "readiness_level": {
+      "enum": [
+        "exploratory",
+        "findings_ready",
+        "proceedings_ready"
+      ]
+    },
+    "open_reason": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "OPEN",
+        "CLOSED_FULL",
+        "FAIL"
+      ]
+    },
+    "minimum_streams_per_arm": {
+      "type": "integer",
+      "minimum": 2
+    },
+    "holdout": {
+      "$ref": "#/$defs/holdout"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "CLOSED_FULL"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "artifactrole"
+        ],
+        "properties": {
+          "readiness_level": {
+            "const": "proceedings_ready"
+          },
+          "method_outcome": {
+            "enum": [
+              "positive",
+              "neutral",
+              "adverse"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "OPEN"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "open_reason"
+        ]
+      }
+    }
+  ],
+  "$defs": {
+    "hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "artifactRef": {
+      "type": "object",
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "$ref": "#/$defs/hash"
+        }
+      },
+      "additionalProperties": false
+    },
+    "verifier": {
+      "type": "object",
+      "required": [
+        "identity",
+        "independent",
+        "report"
+      ],
+      "properties": {
+        "identity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "independent": {
+          "const": true
+        },
+        "report": {
+          "$ref": "#/$defs/artifactRef"
+        }
+      },
+      "additionalProperties": false
+    },
+    "denominator": {
+      "type": "object",
+      "required": [
+        "attempted",
+        "started",
+        "completed",
+        "known",
+        "unknown",
+        "failed",
+        "unstarted"
+      ],
+      "properties": {
+        "attempted": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "started": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "completed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unknown": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unstarted": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "gate": {
+      "type": "object",
+      "required": [
+        "gate_id",
+        "claim_scope",
+        "required_evidence",
+        "pre_run_hash",
+        "artifact_path",
+        "replay_command",
+        "denominator",
+        "verifier",
+        "status",
+        "decision_reason"
+      ],
+      "properties": {
+        "gate_id": {
+          "enum": [
+            "B1",
+            "B2",
+            "B3",
+            "B4",
+            "B5",
+            "B6",
+            "B7"
+          ]
+        },
+        "claim_scope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "required_evidence": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pre_run_hash": {
+          "$ref": "#/$defs/hash"
+        },
+        "artifact_path": {
+          "$ref": "#/$defs/artifactRef"
+        },
+        "replay_command": {
+          "type": "string",
+          "minLength": 1
+        },
+        "denominator": {
+          "$ref": "#/$defs/denominator"
+        },
+        "verifier": {
+          "$ref": "#/$defs/verifier"
+        },
+        "status": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "UNSTUDIED",
+            "BLOCKED",
+            "N_A_PREDECLARED"
+          ]
+        },
+        "decision_reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "na_rationale": {
+          "type": "string",
+          "minLength": 1
+        },
+        "na_cell_scope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "na_pre_registered": {
+          "const": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "trackManifest": {
+      "type": "object",
+      "required": [
+        "primary_track",
+        "secondary_track",
+        "manifest"
+      ],
+      "properties": {
+        "primary_track": {
+          "const": "ArtifactRole"
+        },
+        "secondary_track": {
+          "const": "PeerSelect"
+        },
+        "manifest": {
+          "$ref": "#/$defs/artifactRef"
+        }
+      },
+      "additionalProperties": false
+    },
+    "root": {
+      "type": "object",
+      "required": [
+        "root_id",
+        "structural_signature",
+        "split",
+        "manifest"
+      ],
+      "properties": {
+        "root_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "structural_signature": {
+          "type": "string",
+          "minLength": 1
+        },
+        "split": {
+          "type": "string",
+          "minLength": 1
+        },
+        "manifest": {
+          "$ref": "#/$defs/artifactRef"
+        }
+      },
+      "additionalProperties": false
+    },
+    "stream": {
+      "type": "object",
+      "required": [
+        "root_id",
+        "stream_id",
+        "arm_id",
+        "history_namespace",
+        "independent",
+        "status"
+      ],
+      "properties": {
+        "root_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "stream_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "arm_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "history_namespace": {
+          "type": "string",
+          "minLength": 1
+        },
+        "independent": {
+          "const": true
+        },
+        "status": {
+          "const": "COMPLETE"
+        }
+      },
+      "additionalProperties": false
+    },
+    "arm": {
+      "type": "object",
+      "required": [
+        "arm_id",
+        "version",
+        "qualified",
+        "same_information",
+        "history_namespace"
+      ],
+      "properties": {
+        "arm_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "qualified": {
+          "const": true
+        },
+        "same_information": {
+          "const": true
+        },
+        "history_namespace": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "targetCell": {
+      "type": "object",
+      "required": [
+        "cell_id",
+        "root_id",
+        "stream_id",
+        "arm_id",
+        "future_assignment_id",
+        "y_status",
+        "hypothesis",
+        "pre_run_sealed",
+        "execution_status",
+        "observed_regime",
+        "falsifier_status",
+        "estimate",
+        "interval",
+        "independent_verdict"
+      ],
+      "properties": {
+        "cell_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "hypothesis": {
+          "enum": [
+            "H1",
+            "H2",
+            "H3",
+            "safety"
+          ]
+        },
+        "pre_run_sealed": {
+          "const": true
+        },
+        "execution_status": {
+          "const": "COMPLETE"
+        },
+        "observed_regime": {
+          "enum": [
+            "favorable",
+            "neutral",
+            "adverse"
+          ]
+        },
+        "falsifier_status": {
+          "const": "PASS"
+        },
+        "estimate": {
+          "type": "number"
+        },
+        "interval": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "number"
+          }
+        },
+        "independent_verdict": {
+          "const": "PASS"
+        },
+        "root_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "stream_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "arm_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "future_assignment_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "y_status": {
+          "enum": [
+            "KNOWN",
+            "NOT_APPLICABLE"
+          ]
+        },
+        "y_artifact": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/artifactRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "hypothesis": {
+                "const": "H2"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "y_artifact"
+            ],
+            "properties": {
+              "y_status": {
+                "const": "KNOWN"
+              },
+              "y_artifact": {
+                "$ref": "#/$defs/artifactRef"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "hypothesis": {
+                "enum": [
+                  "H1",
+                  "H3",
+                  "safety"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "y_status": {
+                "const": "NOT_APPLICABLE"
+              },
+              "y_artifact": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "sentinel": {
+      "type": "object",
+      "required": [
+        "status",
+        "executed",
+        "reason",
+        "evidence"
+      ],
+      "properties": {
+        "status": {
+          "const": "PASS"
+        },
+        "executed": {
+          "const": true
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence": {
+          "$ref": "#/$defs/artifactRef"
+        }
+      },
+      "additionalProperties": false
+    },
+    "realApi": {
+      "type": "object",
+      "required": [
+        "attempted",
+        "charged",
+        "successful",
+        "raw_receipt",
+        "post_stop_calls"
+      ],
+      "properties": {
+        "attempted": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "charged": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "successful": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "raw_receipt": {
+          "$ref": "#/$defs/artifactRef"
+        },
+        "post_stop_calls": {
+          "const": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "stopReceipt": {
+      "type": "object",
+      "required": [
+        "stop_rule",
+        "pre_run_sealed",
+        "triggered",
+        "stop_time",
+        "attempted_calls",
+        "charged_calls",
+        "post_stop_calls",
+        "rerun_policy"
+      ],
+      "properties": {
+        "stop_rule": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pre_run_sealed": {
+          "const": true
+        },
+        "triggered": {
+          "const": true
+        },
+        "stop_time": {
+          "type": "string",
+          "minLength": 1
+        },
+        "attempted_calls": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "charged_calls": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "post_stop_calls": {
+          "const": 0
+        },
+        "rerun_policy": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "review": {
+      "type": "object",
+      "required": [
+        "identity",
+        "independent",
+        "scientific_review_passed",
+        "report"
+      ],
+      "properties": {
+        "identity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "independent": {
+          "const": true
+        },
+        "scientific_review_passed": {
+          "const": true
+        },
+        "report": {
+          "$ref": "#/$defs/artifactRef"
+        }
+      },
+      "additionalProperties": false
+    },
+    "holdout": {
+      "type": "object",
+      "required": [
+        "kind",
+        "sealed",
+        "artifact"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "structural_root",
+            "temporal",
+            "support_query"
+          ]
+        },
+        "sealed": {
+          "const": true
+        },
+        "artifact": {
+          "$ref": "#/$defs/artifactRef"
+        }
+      },
+      "additionalProperties": false
+    },
+    "artifactrole": {
+      "type": "object",
+      "required": [
+        "future_assignment_y_complete",
+        "evidence",
+        "cell_count"
+      ],
+      "properties": {
+        "future_assignment_y_complete": {
+          "const": true
+        },
+        "evidence": {
+          "$ref": "#/$defs/artifactRef"
+        },
+        "cell_count": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "reconciliation": {
+      "type": "object",
+      "required": [
+        "verified",
+        "ledger"
+      ],
+      "properties": {
+        "verified": {
+          "const": true
+        },
+        "ledger": {
+          "$ref": "#/$defs/artifactRef"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

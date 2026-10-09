@@ -1,0 +1,74 @@
+{
+  "schema_version": "c1-signal-channels-v1",
+  "Qp": {
+    "source": "producer_score",
+    "recorded": true,
+    "delivery_id": "contextual_trust_linear-delivery-1",
+    "artifact_sha256": "1529b41e454f5a1f7c8c48a7366bd50fe58be8c91686e773d3afe9d7afc693a2",
+    "status": "FAIL",
+    "label": 0,
+    "scorer_version": "pipe3-producer-objective-v2",
+    "response_digest": "c2c07d03f5736646828657de511d0898050a2d1e29cda490b2a1468fb40797e9"
+  },
+  "J": {
+    "source": "recipient_judgment",
+    "recorded": true,
+    "delivery_id": "contextual_trust_linear-delivery-1",
+    "mapping_version": "judgment-v1",
+    "decision": "accept",
+    "mapped_label": 1.0,
+    "judgment_id": "contextual_trust_linear-judgment-1"
+  },
+  "A": {
+    "source": "consumer_action",
+    "recorded": true,
+    "delivery_id": "contextual_trust_linear-delivery-1",
+    "consumer_id": "peer-a",
+    "action_id": "contextual_trust_linear-action-1",
+    "action": "use",
+    "used_artifact": true,
+    "input_source_sha256": "819118801d4ccfab2801b36032d4f0808bdf938eedf9ee532d8ea798fd7ffa29",
+    "output_source_sha256": "819118801d4ccfab2801b36032d4f0808bdf938eedf9ee532d8ea798fd7ffa29",
+    "status": "RECORDED",
+    "repair_cost": 0.0,
+    "action_record_hash": "4d273a2582f6014a36097804dca4aa065c60323b4a3a1c2b2cb7d33ce7fe8c3c",
+    "changed_paths": []
+  },
+  "D": {
+    "source": "downstream_adoption",
+    "recorded": true,
+    "delivery_id": "contextual_trust_linear-delivery-1",
+    "artifact_sha256": "819118801d4ccfab2801b36032d4f0808bdf938eedf9ee532d8ea798fd7ffa29",
+    "policy_visible": false,
+    "accepted_channel": false,
+    "status": "FAIL",
+    "label": 0,
+    "quality_score": 0.5,
+    "scorer_version": "pipe3-recipient-objective-v2",
+    "response_digest": "7f9dd554c9aff543f2c76cfa4a99caf5c3d5b9256028ef19d58df6120dfa46f3"
+  },
+  "Y": {
+    "source": "terminal_outcome",
+    "recorded": true,
+    "status": "UNKNOWN",
+    "quality_score": null,
+    "policy_visible": false,
+    "accepted_channel": false,
+    "derived_status": "FAIL",
+    "derived_quality_score": 0.5,
+    "derivation_version": "c1-recipient-adoption-conjunction-v1",
+    "outcome_id": "contextual_trust_linear-outcome-1",
+    "outcome_record_hash": "fc6b1a83084c0940ac15b9f8021082b72fa73f9edde939b8f07d45d3f4f759e2",
+    "derived_from": [
+      "D",
+      "recipient"
+    ],
+    "independent_terminal_measurement": false
+  },
+  "L": {
+    "source": "assignment_credit",
+    "recorded": false,
+    "status": "UNKNOWN",
+    "reason": "no later assignment/peer-history credit in this card"
+  }
+}
